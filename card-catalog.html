@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>GrailISO — Card Catalog</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+[data-theme="dark"]{--bg:#0D1F33;--bg2:#0a1628;--bg3:#112240;--border:rgba(0,170,255,0.12);--border2:rgba(255,255,255,0.07);--text:#E8F4FD;--text2:#8BA7C7;--text3:rgba(139,167,199,0.35);--input-bg:rgba(255,255,255,0.05);--input-border:rgba(0,170,255,0.25);--input-focus:#00AAFF;--pill-bg:rgba(255,255,255,0.04);--pill-border:rgba(255,255,255,0.1);--pill-text:#8BA7C7;--card-bg:linear-gradient(160deg,#112240,#0D1F33);--card-border:rgba(255,255,255,0.07);--shadow:rgba(0,0,0,0.5);--toggle-track:#1a3a5c;--select-bg:#0a1628;--hdr-bg:#0a1628;--missing-bg:rgba(255,184,0,0.05);--missing-border:rgba(255,184,0,0.18);--form-bg:rgba(255,255,255,0.04);--form-border:rgba(255,184,0,0.2)}
+[data-theme="light"]{--bg:#F2F6FA;--bg2:#ffffff;--bg3:#e8eef5;--border:rgba(0,120,200,0.15);--border2:rgba(0,0,0,0.08);--text:#0D1F33;--text2:#4a6a8a;--text3:rgba(74,106,138,0.4);--input-bg:#ffffff;--input-border:rgba(0,120,200,0.3);--input-focus:#0077CC;--pill-bg:rgba(0,0,0,0.04);--pill-border:rgba(0,0,0,0.12);--pill-text:#4a6a8a;--card-bg:linear-gradient(160deg,#ffffff,#f2f6fa);--card-border:rgba(0,0,0,0.09);--shadow:rgba(0,0,0,0.1);--toggle-track:#c8daea;--select-bg:#ffffff;--hdr-bg:#ffffff;--missing-bg:rgba(255,184,0,0.06);--missing-border:rgba(255,184,0,0.25);--form-bg:#ffffff;--form-border:rgba(255,184,0,0.3)}
+body{background:var(--bg);color:var(--text);font-family:'Barlow Condensed',sans-serif;min-height:100vh;transition:background .3s,color .3s;padding-bottom:60px}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:rgba(0,170,255,0.3);border-radius:2px}
+input::placeholder{color:var(--text3)}input:focus,select:focus{outline:none}
+
+/* ── HEADER ── */
+#header{background:var(--hdr-bg);border-bottom:1px solid var(--border);padding:14px 24px 14px;position:sticky;top:0;z-index:50;box-shadow:0 2px 16px var(--shadow);transition:background .3s,border-color .3s}
+.hdr-top{display:flex;align-items:center;justify-content:space-between}
+.logo-grail{font-family:'Bebas Neue';font-size:26px;letter-spacing:3px;transition:color .3s}
+[data-theme="dark"] .logo-grail{color:#ffffff}[data-theme="light"] .logo-grail{color:#0D1F33}
+.logo-iso{font-family:'Bebas Neue';font-size:26px;letter-spacing:3px;color:#00AAFF}
+.logo-sep{width:1px;height:18px;background:var(--border);margin:0 11px;display:inline-block;vertical-align:middle}
+.logo-sub{font-size:10px;color:var(--text2);letter-spacing:2px;font-weight:700;text-transform:uppercase;vertical-align:middle}
+.toggle-wrap{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.toggle-lbl{font-size:11px;color:var(--text2);font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.toggle-track{width:44px;height:24px;border-radius:12px;background:var(--toggle-track);border:1px solid var(--border);position:relative;cursor:pointer;transition:background .3s}
+.toggle-thumb{width:18px;height:18px;border-radius:50%;background:#00AAFF;position:absolute;top:2px;left:2px;transition:transform .25s;font-size:10px;display:flex;align-items:center;justify-content:center}
+[data-theme="light"] .toggle-thumb{transform:translateX(20px);background:#0077CC}
+
+/* ── SEARCH HERO ── */
+#searchHero{max-width:1240px;margin:0 auto;padding:28px 24px 22px;text-align:center}
+.hero-eyebrow{font-size:10px;color:var(--text2);letter-spacing:3px;font-weight:700;text-transform:uppercase;margin-bottom:8px}
+.hero-title{font-family:'Bebas Neue';font-size:30px;letter-spacing:3px;color:var(--text);margin-bottom:18px;transition:color .3s}
+.hero-title span{color:#00AAFF}
+.search-two{display:flex;gap:10px;max-width:600px;margin:0 auto;align-items:stretch}
+.search-name-wrap{position:relative;flex:1;display:flex}
+.search-name-wrap input{
+  width:100%;
+  background:var(--input-bg);
+  border:2px solid var(--input-border);
+  border-radius:12px;
+  padding:0 44px 0 46px;
+  color:var(--text);
+  font-family:'Barlow Condensed';
+  font-size:17px;
+  font-weight:600;
+  transition:all .2s;
+  box-shadow:0 4px 20px var(--shadow);
+  height:52px;
+  line-height:52px;
+}
+.search-name-wrap input:focus{border-color:var(--input-focus);box-shadow:0 4px 24px rgba(0,170,255,0.18)}
+.search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:16px;z-index:2;pointer-events:none}
+.search-clear{
+  position:absolute;
+  right:14px;
+  top:50%;
+  transform:translateY(-50%);
+  cursor:pointer;
+  color:var(--text2);
+  font-size:13px;
+  display:none;
+  background:rgba(0,170,255,0.1);
+  border:1px solid rgba(0,170,255,0.2);
+  border-radius:50%;
+  width:20px;
+  height:20px;
+  align-items:center;
+  justify-content:center;
+  z-index:5;
+  line-height:1;
+  transition:all .15s;
+}
+.search-clear:hover{background:rgba(0,170,255,0.2)}
+.year-sel{
+  background:var(--input-bg);
+  border:2px solid var(--input-border);
+  border-radius:12px;
+  padding:0 40px 0 16px;
+  color:var(--text);
+  font-family:'Barlow Condensed';
+  font-size:17px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .2s;
+  box-shadow:0 4px 20px var(--shadow);
+  min-width:120px;
+  height:52px;
+  -webkit-appearance:none;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2300AAFF' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 14px center;
+  background-color:var(--input-bg);
+}
+.year-sel:focus{border-color:var(--input-focus);box-shadow:0 4px 24px rgba(0,170,255,0.18)}
+@media(max-width:480px){.search-two{flex-direction:column}.year-sel{min-width:unset}}
+
+/* ── MAIN ── */
+#main{max-width:1240px;margin:0 auto;padding:0 24px 32px}
+
+/* ── EMPTY STATE ── */
+#emptyState{text-align:center;padding:60px 24px 40px;display:none}
+.empty-logo{font-family:'Bebas Neue';font-size:48px;letter-spacing:6px;margin-bottom:12px;opacity:.12}
+.empty-logo .el-grail{color:var(--text)}
+.empty-logo .el-iso{color:#00AAFF}
+.empty-tagline{font-size:12px;color:var(--text2);letter-spacing:2px;font-weight:700;text-transform:uppercase;opacity:.4}
+
+#noResults{display:none;text-align:center;padding:60px 24px;color:var(--text2)}
+#noResults .nr-icon{font-size:34px;margin-bottom:12px}
+#noResults .nr-title{font-family:'Bebas Neue';font-size:20px;letter-spacing:2px;margin-bottom:8px;color:var(--text)}
+#resultsHeader{display:none;margin-bottom:14px}
+.results-count{font-size:12px;color:var(--text2);letter-spacing:1px}
+.results-count span{color:#00AAFF;font-weight:700}
+
+/* ── CARD GRID ── */
+#cardGrid{display:none;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:12px}
+.card-tile{border-radius:12px;display:flex;flex-direction:column;transition:transform .17s,box-shadow .17s;box-shadow:0 2px 8px var(--shadow);position:relative;background:transparent}
+.card-tile.laser-on{transform:translateY(-4px);animation:laserPulse 1.1s ease-in-out infinite}
+.card-inner{position:relative;z-index:2;background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;overflow:hidden;flex:1;display:flex;flex-direction:column}
+@keyframes laserPulse{
+  0%,100%{box-shadow:0 0 0 1px #00AAFF,0 0 14px 3px rgba(0,170,255,0.45),0 10px 28px rgba(0,170,255,0.25)}
+  50%{box-shadow:0 0 0 2px #00FFFF,0 0 24px 6px rgba(0,255,255,0.55),0 14px 34px rgba(0,170,255,0.3)}
+}
+.card-topbar{height:2px}
+.card-img{height:96px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;border-bottom:1px solid var(--border2);position:relative;transition:background .3s}
+.no-img{font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase}
+.scan-hint{font-size:9px;letter-spacing:1.5px;font-weight:700}
+.badge-rc{position:absolute;top:7px;left:7px;background:rgba(255,184,0,0.15);border:1px solid rgba(255,184,0,0.4);border-radius:4px;padding:2px 6px;font-size:8px;font-weight:700;color:#FFB800;letter-spacing:1px}
+.badge-cat{position:absolute;top:7px;right:7px;border-radius:4px;padding:2px 6px;font-size:8px;font-weight:700;letter-spacing:1px}
+.card-body{padding:11px 13px 13px;flex:1;display:flex;flex-direction:column;gap:9px}
+.card-meta{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin-bottom:3px}
+.card-player{font-family:'Bebas Neue';font-size:16px;letter-spacing:1px;line-height:1.2;margin-bottom:2px;color:var(--text);transition:color .3s}
+.card-team{font-size:11px;color:var(--text2);line-height:1.3}
+.card-set{font-size:10px;letter-spacing:.5px;margin-top:3px}
+.parallel-sel{background:var(--input-bg);border:1px solid var(--input-border);border-radius:6px;padding:5px 8px;color:var(--text);font-size:11px;font-weight:600;cursor:pointer;width:100%;font-family:'Barlow Condensed';transition:all .3s}
+.iso-btn{width:100%;border-radius:6px;padding:8px 10px;font-family:'Bebas Neue';font-size:12px;letter-spacing:1.5px;cursor:pointer;text-transform:uppercase;border:1px solid;transition:all .14s}
+
+/* ── MISSING SECTION ── */
+#missingSection{display:none;margin-top:36px;background:var(--missing-bg);border:1px solid var(--missing-border);border-radius:14px;padding:22px 26px;transition:all .3s}
+.missing-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.missing-title{font-family:'Bebas Neue';font-size:18px;letter-spacing:2px;color:#FFB800;margin-bottom:4px}
+.missing-sub{font-size:12px;color:var(--text2);max-width:500px}
+#reportBtn{background:linear-gradient(135deg,rgba(255,184,0,0.2),rgba(255,184,0,0.08));border:1px solid rgba(255,184,0,0.4);border-radius:8px;padding:10px 20px;color:#FFB800;font-family:'Bebas Neue';font-size:14px;letter-spacing:2px;cursor:pointer;flex-shrink:0;transition:all .15s}
+#reportBtn:hover{background:rgba(255,184,0,0.25)}
+#reportForm{display:none;margin-top:20px;border-top:1px solid rgba(255,184,0,0.15);padding-top:20px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:680px}
+.form-label{font-size:9px;color:var(--text2);font-weight:700;letter-spacing:1.5px;margin-bottom:5px;text-transform:uppercase;display:block}
+.form-input{width:100%;background:var(--form-bg);border:1px solid var(--form-border);border-radius:7px;padding:9px 12px;color:var(--text);font-family:'Barlow Condensed';font-size:14px;transition:all .3s}
+.form-input:focus{border-color:rgba(255,184,0,0.5)}
+.full-col{grid-column:1/-1}
+.upload-row{display:flex;gap:10px}
+.upload-box{flex:1;height:80px;background:var(--pill-bg);border:2px dashed var(--form-border);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:5px;cursor:pointer;transition:all .15s}
+.upload-box:hover{border-color:rgba(255,184,0,0.5)}
+.upload-box.has-file{background:rgba(0,232,135,0.08);border-color:rgba(0,232,135,0.4)}
+.upload-icon{font-size:20px}
+.upload-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text2)}
+.upload-box.has-file .upload-label{color:#00E887}
+.upload-hint{font-size:10px;color:var(--text2);margin-top:7px}
+.form-btns{display:flex;gap:8px;margin-top:4px}
+.btn-cancel{flex:1;background:var(--pill-bg);border:1px solid var(--pill-border);border-radius:8px;padding:10px;color:var(--text2);font-family:'Bebas Neue';font-size:13px;letter-spacing:2px;cursor:pointer}
+.btn-submit{flex:2;background:linear-gradient(135deg,rgba(255,184,0,0.3),rgba(255,184,0,0.15));border:1px solid rgba(255,184,0,0.5);border-radius:8px;padding:10px;color:#FFB800;font-family:'Bebas Neue';font-size:13px;letter-spacing:2px;cursor:pointer}
+.btn-submit:disabled{background:rgba(255,184,0,0.06);border-color:rgba(255,184,0,0.15);color:rgba(255,184,0,0.3);cursor:not-allowed}
+#submitSuccess{display:none;text-align:center;padding:28px 0}
+#submitSuccess .ok{font-size:32px;margin-bottom:10px}
+#submitSuccess .ok-title{font-family:'Bebas Neue';font-size:20px;letter-spacing:2px;color:#00E887;margin-bottom:6px}
+#submitSuccess .ok-sub{font-size:12px;color:var(--text2)}
+
+/* ── MODAL ── */
+#modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(5px);z-index:200;align-items:center;justify-content:center;padding:24px}
+#modal.open{display:flex}
+.modal-box{background:var(--bg3);border:1px solid rgba(0,170,255,0.22);border-radius:16px;padding:28px 32px;max-width:440px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,0.5)}
+.modal-title{font-family:'Bebas Neue';font-size:22px;letter-spacing:2px;color:#00AAFF;margin-bottom:2px}
+.modal-player{font-family:'Bebas Neue';font-size:17px;letter-spacing:1px;margin-bottom:2px;color:var(--text)}
+.modal-set{font-size:12px;color:var(--text2);margin-bottom:10px}
+.modal-tags{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.tag{font-size:11px;border-radius:4px;padding:2px 8px;font-weight:700}
+.modal-info{background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.14);border-radius:8px;padding:12px 15px;margin-bottom:18px;font-size:12px;color:var(--text2);line-height:1.9}
+.modal-info-title{color:#00AAFF;font-weight:700;letter-spacing:1px;font-size:10px;margin-bottom:5px;display:block}
+.modal-btns{display:flex;gap:8px}
+.modal-cancel{flex:1;background:var(--pill-bg);border:1px solid var(--pill-border);border-radius:8px;padding:10px;color:var(--text2);font-family:'Bebas Neue';font-size:13px;letter-spacing:2px;cursor:pointer}
+.modal-post{flex:2;background:linear-gradient(135deg,#0077CC,#00AAFF);border:none;border-radius:8px;padding:10px;color:#fff;font-family:'Bebas Neue';font-size:13px;letter-spacing:2px;cursor:pointer;box-shadow:0 4px 14px rgba(0,170,255,0.3)}
+
+/* ── CARD TICKER ── */
+#cardTicker{position:fixed;bottom:0;left:0;right:0;height:36px;background:rgba(10,22,40,0.96);border-top:1px solid rgba(0,170,255,0.15);display:flex;align-items:center;overflow:hidden;z-index:100;backdrop-filter:blur(8px)}
+.ticker-label{font-family:'Bebas Neue';font-size:11px;letter-spacing:2px;color:#00AAFF;white-space:nowrap;padding:0 14px;border-right:1px solid rgba(0,170,255,0.2);flex-shrink:0;background:rgba(0,170,255,0.08)}
+.ticker-track{flex:1;overflow:hidden;position:relative;height:36px;display:flex;align-items:center}
+.ticker-inner{display:flex;gap:0;white-space:nowrap;animation:tickerScroll 80s linear infinite}
+.ticker-item{font-size:11px;font-weight:700;letter-spacing:1px;padding:0 24px;color:var(--text2);border-right:1px solid rgba(0,170,255,0.08);white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.ticker-item .t-name{color:var(--text)}
+.ticker-item .t-set{color:rgba(0,170,255,0.6);font-size:9px;letter-spacing:1.5px}
+.ticker-dot{width:4px;height:4px;border-radius:50%;background:#00AAFF;opacity:.5}
+@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+.sys-footer{margin-top:20px;text-align:center;font-family:monospace;font-size:9px;color:rgba(0,170,255,0.22);letter-spacing:2px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.card-tile{animation:fadeIn .2s ease}
+</style>
+</head>
+<body>
+<div id="header">
+  <div class="hdr-top">
+    <div><span class="logo-grail">GRAIL</span><span class="logo-iso">ISO</span><span class="logo-sep"></span><span class="logo-sub">Card Catalog</span></div>
+    <div class="toggle-wrap" onclick="toggleTheme()">
+      <span class="toggle-lbl" id="toggleLbl">LIGHT MODE</span>
+      <div class="toggle-track"><div class="toggle-thumb" id="toggleThumb">☀️</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="searchHero">
+  <div class="hero-eyebrow">GRAILISO CARD CATALOG</div>
+  <div class="hero-title">FIND YOUR <span>GRAIL</span></div>
+  <div class="search-two">
+    <div class="search-name-wrap">
+      <span class="search-icon">🔍</span>
+      <input id="searchInput" placeholder="Player, character, driver..." oninput="applyFilters()" autocomplete="off"/>
+      <span class="search-clear" id="clearBtn" onclick="clearSearch()">✕</span>
+    </div>
+    <select id="yearSelect" class="year-sel" onchange="applyFilters()">
+      <option value="">Year</option>
+      <option value="2026">2026</option>
+      <option value="2025">2025</option>
+      <option value="2024">2024</option>
+      <option value="2023">2023</option>
+      <option value="2022">2022</option>
+      <option value="2021">2021</option>
+      <option value="2020">2020</option>
+      <option value="2019">2019</option>
+      <option value="2018">2018</option>
+      <option value="2017">2017</option>
+      <option value="2016">2016</option>
+      <option value="2015">2015</option>
+      <option value="2014">2014</option>
+      <option value="2013">2013</option>
+      <option value="2012">2012</option>
+      <option value="2011">2011</option>
+      <option value="2010">2010</option>
+      <option value="1998">1998</option>
+      <option value="1997">1997</option>
+      <option value="1996">1996</option>
+      <option value="1995">1995</option>
+      <option value="1994">1994</option>
+      <option value="1993">1993</option>
+      <option value="1992">1992</option>
+      <option value="1991">1991</option>
+      <option value="1990">1990</option>
+      <option value="1989">1989</option>
+      <option value="1988">1988</option>
+    </select>
+  </div>
+</div>
+
+<div id="main">
+  <div id="emptyState" style="display:block">
+    <div class="empty-logo"><span class="el-grail">GRAIL</span><span class="el-iso">ISO</span></div>
+    <div class="empty-tagline">THE CARD CATALOG — SEARCH ANY NAME OR YEAR</div>
+  </div>
+  <div id="noResults">
+    <div class="nr-icon">🔍</div>
+    <div class="nr-title">NO CARDS FOUND</div>
+    <div style="font-size:13px;margin-bottom:10px">Try a different search or adjust your filters</div>
+    <div style="font-size:12px;color:rgba(255,184,0,0.7)">Don't see your card? Report it below ↓</div>
+  </div>
+  <div id="resultsHeader"><div class="results-count">Showing <span id="resultNum">0</span> cards</div></div>
+  <div id="cardGrid"></div>
+  <div id="missingSection">
+    <div class="missing-top">
+      <div><div class="missing-title">🔍 MISSING A CARD FROM THIS SET?</div><div class="missing-sub">Our catalog is always growing. Report a missing card, upload a scan, and earn ISO Credits.</div></div>
+      <button id="reportBtn" onclick="toggleReport()">REPORT MISSING CARD →</button>
+    </div>
+    <div id="reportForm">
+      <div id="submitSuccess"><div class="ok">✅</div><div class="ok-title">REPORT RECEIVED</div><div class="ok-sub">Our team will review and add the card. ISO Credits incoming.</div></div>
+      <div id="formFields">
+        <div class="form-grid">
+          <div><label class="form-label">Name *</label><input class="form-input" id="f_player" placeholder="Player, driver, fighter, character..." oninput="checkSubmit()"/></div>
+          <div><label class="form-label">Set Name *</label><input class="form-input" id="f_set" placeholder="e.g. 2025 Topps Chrome Baseball" oninput="checkSubmit()"/></div>
+          <div><label class="form-label">Year</label><input class="form-input" id="f_year" placeholder="2024 / 2025 / 2026"/></div>
+          <div><label class="form-label">Card Number</label><input class="form-input" id="f_num" placeholder="e.g. #45 or BT-12"/></div>
+          <div class="full-col"><label class="form-label">Notes</label><input class="form-input" id="f_notes" placeholder="e.g. Gold Refractor /50, auto, rookie"/></div>
+          <div class="full-col">
+            <label class="form-label">Upload Card Scan — Earn ISO Credits</label>
+            <div class="upload-row">
+              <div class="upload-box" id="frontBox" onclick="document.getElementById('frontFile').click()"><input type="file" id="frontFile" accept="image/*" style="display:none" onchange="handleFile('front',this)"/><div class="upload-icon">📷</div><div class="upload-label" id="frontLabel">Upload Front</div></div>
+              <div class="upload-box" id="backBox" onclick="document.getElementById('backFile').click()"><input type="file" id="backFile" accept="image/*" style="display:none" onchange="handleFile('back',this)"/><div class="upload-icon">📷</div><div class="upload-label" id="backLabel">Upload Back</div></div>
+            </div>
+            <div class="upload-hint">📸 Front + back = 2 ISO Credits.</div>
+          </div>
+          <div class="full-col form-btns">
+            <button class="btn-cancel" onclick="toggleReport()">CANCEL</button>
+            <button class="btn-submit" id="submitBtn" onclick="submitReport()" disabled>SUBMIT + EARN CREDITS →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sys-footer" id="sysFooter"></div>
+</div>
+
+<!-- CARD TICKER -->
+<div id="cardTicker">
+  <div class="ticker-label">LIVE CATALOG</div>
+  <div class="ticker-track">
+    <div class="ticker-inner" id="tickerInner"></div>
+  </div>
+</div>
+
+<!-- ISO MODAL -->
+<div id="modal" onclick="closeModal()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title">POST ISO</div>
+    <div class="modal-player" id="m_player"></div>
+    <div class="modal-set" id="m_set"></div>
+    <div class="modal-tags" id="m_tags"></div>
+    <div class="modal-info"><span class="modal-info-title">THIS WILL:</span>✓ Broadcast your want to all matching sellers<br/>✓ Cost 1 ISO Credit ($5 value)<br/>✓ Stay live for 30 days<br/>✓ Alert you instantly on a match</div>
+    <div class="modal-btns"><button class="modal-cancel" onclick="closeModal()">CANCEL</button><button class="modal-post">POST THIS ISO →</button></div>
+  </div>
+</div>
+
+<script>
+// ── PARALLELS ──────────────────────────────────────────────────────
+const PARALLELS={
+  Chrome:["Base","Refractor","Gold Refractor /50","Orange Refractor /25","Red Refractor /10","SuperFractor 1/1","Sapphire","Negative","Atomic","Logofractor"],
+  Finest:["Base","Refractor","Green /99","Gold /50","Orange /25","Red /10","SuperFractor 1/1"],
+  Sapphire:["Sapphire Base","Sapphire Gold /50","Sapphire Orange /25","Sapphire Red /10","Sapphire SuperFractor 1/1"],
+  Olympics:["Base","Gold /50","Blue /25","Red /10","SuperFractor 1/1","Sapphire"],
+  Disney:["Base","Hidden Mickey","Light Bulb","Gold /50","Red /10","SuperFractor 1/1"],
+  Auto:["Base Auto","Gold Auto /50","Orange Auto /25","Red Auto /10","SuperFractor Auto 1/1"],
+  Dynasty:["Base Auto","Gold /25","Red /10","1/1"],
+  Relic:["Base Relic","Gold /25","Red /10","1/1"],
+  Marvel:["Base","Gold /50","Orange /25","Red /10","SuperFractor 1/1","Negative"],
+  Score:["Base","Gold /150","Silver /200","Red /99","Platinum /25","1/1"],
+  Vintage:["Base","Variation"],
+};
+function getParallels(cat,set){
+  if(cat==="Auto"){if(set.includes("Dynasty"))return PARALLELS.Dynasty;return PARALLELS.Auto;}
+  if(cat==="Relic")return PARALLELS.Relic;
+  if(set.includes("Sapphire"))return PARALLELS.Sapphire;
+  if(set.includes("Chrome"))return PARALLELS.Chrome;
+  if(set.includes("Finest"))return PARALLELS.Finest;
+  if(set.includes("Olympics")||set.includes("Winter"))return PARALLELS.Olympics;
+  if(set.includes("Disney")||set.includes("Disneyland"))return PARALLELS.Disney;
+  if(set.includes("Deadpool")||set.includes("Marvel"))return PARALLELS.Marvel;
+  if(set.includes("Score"))return PARALLELS.Score;
+  return PARALLELS.Vintage;
+}
+
+const CAT_COLORS={Base:"#8BA7C7",Auto:"#FFB800",Insert:"#00E887",Relic:"#FF3B5C"};
+const SPORT_COLORS={
+  Baseball:"#00AAFF",Basketball:"#FF6B35",Football:"#00CC88",Soccer:"#9B59B6",
+  Hockey:"#5BC4D4",F1:"#FF3B5C",NASCAR:"#FF6B35",UFC:"#FF3B5C",WWE:"#FFB800",
+  Olympics:"#FFB800","Star Wars":"#4FC3F7",Marvel:"#FF3B5C",Disney:"#9B59B6",Entertainment:"#1ABC9C"
+};
+function sc(sport){return SPORT_COLORS[sport]||"#00AAFF";}
+
+// ── CARD DATA ──────────────────────────────────────────────────────
+let _id=1;
+const C=(player,num,set,year,sport,team,cat,insert,rc)=>({id:_id++,player,num,set,year,sport,team,cat,insert,rc:!!rc});
+
+// ─────── SET ALIASES ─────────────────────────────────────────────
+const OLY="2026 Topps Chrome Winter Olympics";
+const DIS="2025 Topps Disneyland 70th Anniversary";
+const MCD="2025 Topps Chrome McDonald's All-American";
+const SAP="2025 Topps Chrome F1 Sapphire Edition";
+const DPL="2025 Topps Chrome Deadpool";
+
+const CARDS=[
+// ── 2025 TOPPS CHROME UEFA ────────────────────────────────────────
+C("Kylian Mbappé","1","2025 Topps Chrome UEFA",2025,"Soccer","Real Madrid C.F.","Base",null,0),
+C("Erling Haaland","9","2025 Topps Chrome UEFA",2025,"Soccer","Manchester City","Base",null,0),
+C("Harry Kane","10","2025 Topps Chrome UEFA",2025,"Soccer","FC Bayern München","Base",null,0),
+C("Jude Bellingham","22","2025 Topps Chrome UEFA",2025,"Soccer","Real Madrid C.F.","Base",null,0),
+C("Lamine Yamal","27","2025 Topps Chrome UEFA",2025,"Soccer","FC Barcelona","Base",null,0),
+C("Cole Palmer","32","2025 Topps Chrome UEFA",2025,"Soccer","Chelsea FC","Base",null,0),
+C("Mohamed Salah","87","2025 Topps Chrome UEFA",2025,"Soccer","Liverpool FC","Base",null,0),
+C("Lionel Messi","H-1","2025 Topps Chrome UEFA",2025,"Soccer","FC Barcelona","Insert","Helix",0),
+C("Endrick","100","2025 Topps Chrome UEFA",2025,"Soccer","Real Madrid C.F.","Base",null,1),
+C("Erling Haaland","CA-EH","2025 Topps Chrome UEFA",2025,"Soccer","Manchester City","Auto",null,0),
+C("Lamine Yamal","CA-LY","2025 Topps Chrome UEFA",2025,"Soccer","FC Barcelona","Auto",null,0),
+C("Lionel Messi","CA-ME","2025 Topps Chrome UEFA",2025,"Soccer","FC Barcelona","Auto",null,0),
+// ── 2025 TOPPS FINEST F1 ──────────────────────────────────────────
+C("Max Verstappen","1","2025 Topps Finest F1",2025,"F1","Red Bull Racing","Base",null,0),
+C("Lewis Hamilton","6","2025 Topps Finest F1",2025,"F1","Mercedes-AMG Petronas","Base",null,0),
+C("Lando Norris","7","2025 Topps Finest F1",2025,"F1","McLaren F1 Team","Base",null,0),
+C("Charles Leclerc","3","2025 Topps Finest F1",2025,"F1","Scuderia Ferrari","Base",null,0),
+C("Oscar Piastri","8","2025 Topps Finest F1",2025,"F1","McLaren F1 Team","Base",null,0),
+C("Franco Colapinto","20","2025 Topps Finest F1",2025,"F1","Williams Racing","Base",null,1),
+C("Andrea Kimi Antonelli","22","2025 Topps Finest F1",2025,"F1","Mercedes-AMG Petronas","Base",null,1),
+C("Michael Schumacher","73","2025 Topps Finest F1",2025,"F1","Legend","Base",null,0),
+C("Ayrton Senna","74","2025 Topps Finest F1",2025,"F1","Legend","Base",null,0),
+C("Max Verstappen","FAC-VER","2025 Topps Finest F1",2025,"F1","Red Bull Racing","Auto",null,0),
+C("Lewis Hamilton","FAC-HAM","2025 Topps Finest F1",2025,"F1","Mercedes-AMG Petronas","Auto",null,0),
+C("Lando Norris","FAC-NOR","2025 Topps Finest F1",2025,"F1","McLaren F1 Team","Auto",null,0),
+// ── 2024 TOPPS DYNASTY F1 ─────────────────────────────────────────
+C("Max Verstappen","DAP-MVE","2024 Topps Dynasty F1",2024,"F1","Red Bull Racing","Auto","Dynasty Auto Patch",0),
+C("Lewis Hamilton","DAP-LHA","2024 Topps Dynasty F1",2024,"F1","Mercedes-AMG Petronas","Auto","Dynasty Auto Patch",0),
+C("Lando Norris","DAP-LNO","2024 Topps Dynasty F1",2024,"F1","McLaren F1 Team","Auto","Dynasty Auto Patch",0),
+C("Michael Schumacher","DCSRB","2024 Topps Dynasty F1",2024,"F1","Legend","Auto","Cut Signature",0),
+// ── 2024 TOPPS FINEST MLS ─────────────────────────────────────────
+C("Lionel Messi","10","2024 Topps Finest MLS",2024,"Soccer","Inter Miami CF","Base",null,0),
+C("Luis Suárez","9","2024 Topps Finest MLS",2024,"Soccer","Inter Miami CF","Base",null,0),
+C("Sergio Busquets","5","2024 Topps Finest MLS",2024,"Soccer","Inter Miami CF","Base",null,0),
+C("Olivier Giroud","12","2024 Topps Finest MLS",2024,"Soccer","LAFC","Base",null,0),
+C("Lionel Messi","LM","2024 Topps Finest MLS",2024,"Soccer","Inter Miami CF","Auto",null,0),
+C("Zlatan Ibrahimović","ZI","2024 Topps Finest MLS",2024,"Soccer","LA Galaxy","Auto",null,0),
+// ── 2025 TOPPS CHROME STAR WARS ───────────────────────────────────
+C("Darth Vader","50","2025 Topps Chrome Star Wars",2025,"Star Wars","Empire","Base",null,0),
+C("Luke Skywalker","83","2025 Topps Chrome Star Wars",2025,"Star Wars","Rebel Alliance","Base",null,0),
+C("Yoda","99","2025 Topps Chrome Star Wars",2025,"Star Wars","Jedi Order","Base",null,0),
+C("The Mandalorian","M-13","2025 Topps Chrome Star Wars",2025,"Star Wars","Mandalorian","Insert","Metal Characters",0),
+C("Grogu","M-16","2025 Topps Chrome Star Wars",2025,"Star Wars","Mandalorian","Insert","Metal Characters",0),
+C("Pedro Pascal","A-PP","2025 Topps Chrome Star Wars",2025,"Star Wars","The Mandalorian","Auto",null,0),
+C("Harrison Ford","BC-HF","2025 Topps Chrome Star Wars",2025,"Star Wars","Han Solo","Auto","Book Card",0),
+C("Mark Hamill","BC-MH","2025 Topps Chrome Star Wars",2025,"Star Wars","Luke Skywalker","Auto","Book Card",0),
+C("Natalie Portman","A-NP","2025 Topps Chrome Star Wars",2025,"Star Wars","Padmé Amidala","Auto",null,0),
+// ── 2025 TOPPS CHROME SW GALAXY ───────────────────────────────────
+C("Darth Vader","50","2025 Topps Chrome SW Galaxy",2025,"Star Wars","Empire / Mustafar","Base",null,0),
+C("Han Solo","59","2025 Topps Chrome SW Galaxy",2025,"Star Wars","Bespin","Base",null,0),
+C("Boba Fett","97","2025 Topps Chrome SW Galaxy",2025,"Star Wars","Bespin","Base",null,0),
+C("Harrison Ford","A-HF","2025 Topps Chrome SW Galaxy",2025,"Star Wars","Han Solo","Auto",null,0),
+C("Daisy Ridley","A-DR","2025 Topps Chrome SW Galaxy",2025,"Star Wars","Rey","Auto",null,0),
+C("Adam Driver","A-AD","2025 Topps Chrome SW Galaxy",2025,"Star Wars","Kylo Ren","Auto",null,0),
+// ── 2025 TOPPS CHROME VEEFRIENDS ─────────────────────────────────
+C("Hustling Hamster","41","2025 Topps Chrome VeeFriends",2025,"Entertainment","VeeFriends","Base",null,0),
+C("Empathy Elephant","9","2025 Topps Chrome VeeFriends",2025,"Entertainment","VeeFriends","Base",null,0),
+C("Bullish Bull","46","2025 Topps Chrome VeeFriends",2025,"Entertainment","VeeFriends","Base",null,0),
+C("Patient Pig","12","2025 Topps Chrome VeeFriends",2025,"Entertainment","VeeFriends","Base",null,0),
+// ── 2026 TOPPS CHROME WINTER OLYMPICS ────────────────────────────
+C("Dusty Henricksen","1",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Noah Elliott","2",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Ashley Wagner","3",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Nick Goepper","4",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Mikaela Shiffrin","5",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Grace Henderson","6",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Alysa Liu","7",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Jaelin Kauf","8",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Ryan Cochran-Siegle","9",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("John Shuster","10",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Bode Miller","11",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Lauren Macuga","12",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Amber Glenn","13",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Judd Henkes","14",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Nina O'Brien","15",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Chloe Kim","16",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Jason Brown","17",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Kelly Clark","18",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Red Gerard","19",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Maddie Mastro","20",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Alex Ferreira","21",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Winter Vinecki","22",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Kaysha Love","23",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Jordan Stolz","24",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Breezy Johnson","25",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Nathan Chen","26",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Brittany Bowe","27",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Jamie Anderson","28",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Dani Aravich","29",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Ross Powers","30",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Joey Okesson","31",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Hilary Knight","32",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Erin Jackson","33",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Rosie Brennan","34",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Chris Klug","35",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Mac Forehand","36",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Jack Hughes","37",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Shani Davis","38",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Jessie Diggins","39",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Aaron Blunck","40",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Evan Lysacek","41",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Kristen Santos-Griswold","42",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Devin Logan","43",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Evan Bates","44",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Madison Chock","45",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Jack Wallace","46",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Brittani Coury","47",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Hannah Teter","48",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Julia Marino","49",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Tristan Feinberg","50",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Alex Hall","51",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Oksana Masters","52",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Elana Meyers Taylor","53",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Ollie Martin","54",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Hunter Henderson","55",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Brenna Huckaby","56",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Konnor Ralph","57",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Meryl Davis","58",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Hanna Faulhaber","59",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Charlie White","60",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Seth Wescott","61",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Katie Uhlaender","62",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Keely Cashman","63",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Hannah Kearney","64",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Liz Lemley","65",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Ted Ligety","66",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Alli Macuga","67",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Sam Macuga","68",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Paula Moltzan","69",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Sam Morse","70",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Kikkan Randall","71",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Ava Sunshine","72",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Isabeau Levito","73",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Christopher Lillis","74",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Jen Lee","75",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Dan Cnossen","76",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Evan Strong","77",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Malik Jones","78",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Jack Eichel","79",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Jake Guentzel","80",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Jake Oettinger","81",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Alex Carpenter","82",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Colby Stevenson","83",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Hailey Langland","84",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("River Radamus","85",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Apolo Ohno","86",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Aerin Frankel","87",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Cayla Barnes","88",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Haley Winn","89",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Hannah Bilka","90",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Hayley Scamurra","91",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Ilia Malinin","92",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Jack O'Callahan","93",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Jake Canter","94",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Kristi Yamaguchi","95",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Lindsey Vonn","96",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Mike Eruzione","97",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Shaun White","98",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Tessa Janecke","99",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Julia Mancuso","100",OLY,2026,"Olympics","Team USA","Base",null,0),
+C("Dusty Henricksen","101",OLY,2026,"Olympics","Team USA","Base","Base II",0),
+C("Mikaela Shiffrin","105",OLY,2026,"Olympics","Team USA","Base","Base II",0),
+C("Alysa Liu","107",OLY,2026,"Olympics","Team USA","Base","Base II",0),
+C("Chloe Kim","116",OLY,2026,"Olympics","Team USA","Base","Base II",0),
+C("Nathan Chen","126",OLY,2026,"Olympics","Team USA","Base","Base II",0),
+C("Ilia Malinin","192",OLY,2026,"Olympics","Team USA","Base","Base II",0),
+C("Lindsey Vonn","196",OLY,2026,"Olympics","Team USA","Base","Base II",0),
+C("Shaun White","198",OLY,2026,"Olympics","Team USA","Base","Base II",0),
+C("Hilary Knight","BU-1",OLY,2026,"Olympics","Team USA","Insert","Buongiorno",0),
+C("Alysa Liu","BU-2",OLY,2026,"Olympics","Team USA","Insert","Buongiorno",0),
+C("Ilia Malinin","BU-3",OLY,2026,"Olympics","Team USA","Insert","Buongiorno",0),
+C("Mikaela Shiffrin","BU-4",OLY,2026,"Olympics","Team USA","Insert","Buongiorno",0),
+C("Nathan Chen","BU-5",OLY,2026,"Olympics","Team USA","Insert","Buongiorno",0),
+C("Lindsey Vonn","BU-6",OLY,2026,"Olympics","Team USA","Insert","Buongiorno",0),
+C("Apolo Ohno","BU-7",OLY,2026,"Olympics","Team USA","Insert","Buongiorno",0),
+C("Chloe Kim","BU-9",OLY,2026,"Olympics","Team USA","Insert","Buongiorno",0),
+C("Shaun White","BU-10",OLY,2026,"Olympics","Team USA","Insert","Buongiorno",0),
+C("Ilia Malinin","CR-1",OLY,2026,"Olympics","Team USA","Insert","Chasing the Rings",0),
+C("Mikaela Shiffrin","CR-6",OLY,2026,"Olympics","Team USA","Insert","Chasing the Rings",0),
+C("Lindsey Vonn","CR-11",OLY,2026,"Olympics","Team USA","Insert","Chasing the Rings",0),
+C("Apolo Ohno","CR-16",OLY,2026,"Olympics","Team USA","Insert","Chasing the Rings",0),
+C("Chloe Kim","CR-21",OLY,2026,"Olympics","Team USA","Insert","Chasing the Rings",0),
+C("Shaun White","CR-26",OLY,2026,"Olympics","Team USA","Insert","Chasing the Rings",0),
+C("Ilia Malinin","HG-1",OLY,2026,"Olympics","Team USA","Insert","Hidden Gems",0),
+C("Mikaela Shiffrin","HG-2",OLY,2026,"Olympics","Team USA","Insert","Hidden Gems",0),
+C("Lindsey Vonn","HG-3",OLY,2026,"Olympics","Team USA","Insert","Hidden Gems",0),
+C("Shaun White","HG-4",OLY,2026,"Olympics","Team USA","Insert","Hidden Gems",0),
+C("Chloe Kim","HG-5",OLY,2026,"Olympics","Team USA","Insert","Hidden Gems",0),
+C("Aaron Blunck","BCA-ABL",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Alex Ferreira","BCA-AFE",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Amber Glenn","BCA-AGL",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Alysa Liu","BCA-ALI",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Apolo Ohno","BCA-AOH",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Brittany Bowe","BCA-BBO",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Bode Miller","BCA-BMI",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Chloe Kim","BCA-CKI",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Dusty Henricksen","BCA-DHE",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Evan Bates","BCA-EBA",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Erin Jackson","BCA-EJA",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Hanna Faulhaber","BCA-HFA",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Hilary Knight","BCA-HKN",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Hailey Langland","BCA-HLA",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Isabeau Levito","BCA-ILE",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Ilia Malinin","BCA-IMA",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Jack Eichel","BCA-JEI",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Jake Guentzel","BCA-JGU",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Jack Hughes","BCA-JHU",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Jessie Diggins","BCA-JDI",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Jordan Stolz","BCA-JST",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Kristi Yamaguchi","BCA-KYA",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Lindsey Vonn","BCA-LVO",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Madison Chock","BCA-MCH",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Mikaela Shiffrin","BCA-MSH",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Nathan Chen","BCA-NCH",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Red Gerard","BCA-RGE",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Shaun White","BCA-SWH",OLY,2026,"Olympics","Team USA","Auto",null,0),
+C("Apolo Ohno","OC-AO",OLY,2026,"Olympics","Team USA","Auto","Olympic Champions",0),
+C("Bode Miller","OC-BM",OLY,2026,"Olympics","Team USA","Auto","Olympic Champions",0),
+C("Chloe Kim","OC-CK",OLY,2026,"Olympics","Team USA","Auto","Olympic Champions",0),
+C("Ilia Malinin","OC-IM",OLY,2026,"Olympics","Team USA","Auto","Olympic Champions",0),
+C("Jessie Diggins","OC-JD",OLY,2026,"Olympics","Team USA","Auto","Olympic Champions",0),
+C("Kristi Yamaguchi","OC-KY",OLY,2026,"Olympics","Team USA","Auto","Olympic Champions",0),
+C("Lindsey Vonn","OC-LV",OLY,2026,"Olympics","Team USA","Auto","Olympic Champions",0),
+C("Mikaela Shiffrin","OC-MS",OLY,2026,"Olympics","Team USA","Auto","Olympic Champions",0),
+C("Nathan Chen","OC-NC",OLY,2026,"Olympics","Team USA","Auto","Olympic Champions",0),
+C("Shaun White","OC-SW",OLY,2026,"Olympics","Team USA","Auto","Olympic Champions",0),
+C("Chloe Kim","DAP-CK",OLY,2026,"Olympics","Team USA","Relic","Dynasty Auto Patch",0),
+C("Hilary Knight","DAP-HK",OLY,2026,"Olympics","Team USA","Relic","Dynasty Auto Patch",0),
+C("Ilia Malinin","DAP-IM",OLY,2026,"Olympics","Team USA","Relic","Dynasty Auto Patch",0),
+C("Jack Eichel","DAP-JE",OLY,2026,"Olympics","Team USA","Relic","Dynasty Auto Patch",0),
+C("Jack Hughes","DAP-JH",OLY,2026,"Olympics","Team USA","Relic","Dynasty Auto Patch",0),
+C("Lindsey Vonn","DAP-LV",OLY,2026,"Olympics","Team USA","Relic","Dynasty Auto Patch",0),
+C("Mikaela Shiffrin","DAP-MS",OLY,2026,"Olympics","Team USA","Relic","Dynasty Auto Patch",0),
+C("Shaun White","DAP-SW",OLY,2026,"Olympics","Team USA","Relic","Dynasty Auto Patch",0),
+// ── 2025 TOPPS DISNEYLAND 70TH ANNIVERSARY ───────────────────────
+C("Disneyland Railroad THEN","1",DIS,2025,"Disney","Main Street, U.S.A.","Base","Then and Now",0),
+C("Disneyland Railroad NOW","2",DIS,2025,"Disney","Main Street, U.S.A.","Base","Then and Now",0),
+C("Main Street, U.S.A. NOW","3",DIS,2025,"Disney","Main Street, U.S.A.","Base","Then and Now",0),
+C("Great Moments with Mr. Lincoln THEN","4",DIS,2025,"Disney","Main Street, U.S.A.","Base","Then and Now",0),
+C("The Jungle Cruise THEN","9",DIS,2025,"Disney","Adventureland","Base","Then and Now",0),
+C("The Jungle Cruise NOW","10",DIS,2025,"Disney","Adventureland","Base","Then and Now",0),
+C("Indiana Jones Adventure THEN","13",DIS,2025,"Disney","Adventureland","Base","Then and Now",0),
+C("Big Thunder Mountain NOW","19",DIS,2025,"Disney","Frontierland","Base","Then and Now",0),
+C("Space Mountain THEN","48",DIS,2025,"Disney","Tomorrowland","Base","Then and Now",0),
+C("Space Mountain NOW","50",DIS,2025,"Disney","Tomorrowland","Base","Then and Now",0),
+C("Pirates of the Caribbean THEN","71",DIS,2025,"Disney","New Orleans Square","Base","Then and Now",0),
+C("Pirates of the Caribbean NOW","72",DIS,2025,"Disney","New Orleans Square","Base","Then and Now",0),
+C("The Haunted Mansion NOW","78",DIS,2025,"Disney","New Orleans Square","Base","Then and Now",0),
+C("Sleeping Beauty Castle Construction","83",DIS,2025,"Disney","Fantasyland","Base","Timeline",0),
+C("Mickey and Donald Celebrate the Grand Opening","84",DIS,2025,"Disney","Disneyland","Base","Timeline",0),
+C("Walt and Mickey in Engine No. 1","91",DIS,2025,"Disney","Disneyland","Base","Timeline",0),
+C("Mickey's Premium Ice Cream Bar","100",DIS,2025,"Disney","Disneyland","Base","Snack Time",0),
+C("Turkey Leg","103",DIS,2025,"Disney","Disneyland","Base","Snack Time",0),
+C("Churro","104",DIS,2025,"Disney","Disneyland","Base","Snack Time",0),
+C("Mickey Waffle","106",DIS,2025,"Disney","Disneyland","Base","Snack Time",0),
+C("Pineapple Soft Serve","107",DIS,2025,"Disney","Disneyland","Base","Snack Time",0),
+C("A Dream of the Happiest Place on Earth","118",DIS,2025,"Disney","Anaheim, California","Base","Concept Art",0),
+C("The Jungle Cruise (Concept Art)","123",DIS,2025,"Disney","Adventureland","Base","Concept Art",0),
+C("The Haunted Mansion (Concept Art)","124",DIS,2025,"Disney","New Orleans Square","Base","Concept Art",0),
+C("Entrance to Magic","EM-1",DIS,2025,"Disney","Disneyland","Insert","Entrance to Magic",0),
+C("Main Street, USA","LNDS-1",DIS,2025,"Disney","Main Street, U.S.A.","Insert","The Lands",0),
+C("Adventureland","LNDS-2",DIS,2025,"Disney","Adventureland","Insert","The Lands",0),
+C("Tomorrowland","LNDS-3",DIS,2025,"Disney","Tomorrowland","Insert","The Lands",0),
+C("Fantasyland","LNDS-5",DIS,2025,"Disney","Fantasyland","Insert","The Lands",0),
+C("Madame Leota","HHC-1",DIS,2025,"Disney","New Orleans Square","Insert","Happy Haunts Chrome",0),
+C("Walt Disney","T55-1",DIS,2025,"Disney","Disneyland","Insert","1955 Topps Disneyland Icons",0),
+C("Mickey Mouse","T55-10",DIS,2025,"Disney","Disneyland","Insert","1955 Topps Disneyland Icons",0),
+C("Minnie Mouse","T55-11",DIS,2025,"Disney","Disneyland","Insert","1955 Topps Disneyland Icons",0),
+C("Darth Vader (Star Tours)","77ST-10",DIS,2025,"Disney","Tomorrowland","Insert","1977 Topps Star Tours Chrome",0),
+C("Bret Iwan","T55A-BI",DIS,2025,"Disney","Sorcerer's Apprentice Mickey","Auto","1955 Topps Icons Auto",0),
+C("Tim Allen","T55A-TA",DIS,2025,"Disney","Buzz Lightyear","Auto","1955 Topps Icons Auto",0),
+C("Jim Cummings","T55A-JC",DIS,2025,"Disney","Winnie the Pooh","Auto","1955 Topps Icons Auto",0),
+C("Disney Dollar - Mickey","ER-DDM",DIS,2025,"Disney","Disneyland","Relic","Enchanted Relics",0),
+C("Hitchhiking Ghost Phineas Costume","ER-HGC",DIS,2025,"Disney","New Orleans Square","Relic","Enchanted Relics",0),
+// ── 2025 TOPPS CHROME McDONALD'S ALL-AMERICAN BASKETBALL ─────────
+C("Shon Abaev","1",MCD,2025,"Basketball","East","Base",null,0),
+C("Darius Adams","2",MCD,2025,"Basketball","East","Base",null,0),
+C("Nate Ament","3",MCD,2025,"Basketball","East","Base",null,0),
+C("Jalen Haralson","4",MCD,2025,"Basketball","East","Base",null,0),
+C("Zai Harwell","5",MCD,2025,"Basketball","East","Base",null,0),
+C("AJ Dybantsa","7",MCD,2025,"Basketball","West","Base",null,0),
+C("Brayden Burries","8",MCD,2025,"Basketball","West","Base",null,0),
+C("Mikel Brown Jr.","9",MCD,2025,"Basketball","West","Base",null,0),
+C("Koa Peat","13",MCD,2025,"Basketball","West","Base",null,0),
+C("Aaliyah Crump","16",MCD,2025,"Basketball","East","Base",null,0),
+C("Sienna Betts","38",MCD,2025,"Basketball","West","Base",null,0),
+C("Bronny James","77",MCD,2025,"Basketball","West","Base",null,0),
+C("Jayson Tatum","78",MCD,2025,"Basketball","East","Base",null,0),
+C("LeBron James","98",MCD,2025,"Basketball","East","Base",null,0),
+C("AJ Dybantsa","AA-1",MCD,2025,"Basketball","West","Insert","All American Drip",0),
+C("Koa Peat","AA-3",MCD,2025,"Basketball","West","Insert","All American Drip",0),
+C("LeBron James","HL-1",MCD,2025,"Basketball","East","Insert","Hype to Legacy",0),
+C("AJ Dybantsa","BI-AD",MCD,2025,"Basketball","West","Auto","Billboard Ink",0),
+C("Koa Peat","BI-KP",MCD,2025,"Basketball","West","Auto","Billboard Ink",0),
+C("Sienna Betts","BI-SB",MCD,2025,"Basketball","West","Auto","Billboard Ink",0),
+C("LeBron James","LA-LJ",MCD,2025,"Basketball","East","Auto","Legends Autographs",0),
+C("Jayson Tatum","LA-JT",MCD,2025,"Basketball","East","Auto","Legends Autographs",0),
+C("AJ Dybantsa","GP-AD",MCD,2025,"Basketball","West","Relic","Golden Patch Auto",0),
+C("Koa Peat","GP-KP",MCD,2025,"Basketball","West","Relic","Golden Patch Auto",0),
+// ── 2025 TOPPS CHROME F1 SAPPHIRE EDITION ─────────────────────────
+C("Max Verstappen","1",SAP,2025,"F1","Red Bull Racing","Base",null,0),
+C("Yuki Tsunoda","2",SAP,2025,"F1","Red Bull Racing","Base",null,1),
+C("Charles Leclerc","3",SAP,2025,"F1","Scuderia Ferrari","Base",null,0),
+C("Lewis Hamilton","4",SAP,2025,"F1","Scuderia Ferrari","Base",null,0),
+C("Lando Norris","5",SAP,2025,"F1","McLaren F1 Team","Base",null,0),
+C("Oscar Piastri","6",SAP,2025,"F1","McLaren F1 Team","Base",null,0),
+C("George Russell","7",SAP,2025,"F1","Mercedes-AMG Petronas","Base",null,0),
+C("Kimi Antonelli","8",SAP,2025,"F1","Mercedes-AMG Petronas","Base",null,1),
+C("Fernando Alonso","9",SAP,2025,"F1","Aston Martin","Base",null,0),
+C("Franco Colapinto","15",SAP,2025,"F1","Williams Racing","Base",null,1),
+C("Ayrton Senna","162",SAP,2025,"F1","Legend","Base","F1 Legends",0),
+C("Michael Schumacher","158",SAP,2025,"F1","Legend","Base","F1 Legends",0),
+C("Max Verstappen","CAC-VER",SAP,2025,"F1","Red Bull Racing","Auto",null,0),
+C("Lewis Hamilton","CAC-HAM",SAP,2025,"F1","Scuderia Ferrari","Auto",null,0),
+C("Lando Norris","CAC-NOR",SAP,2025,"F1","McLaren F1 Team","Auto",null,0),
+C("Kimi Antonelli","CAC-ANT",SAP,2025,"F1","Mercedes-AMG Petronas","Auto",null,1),
+C("Fernando Alonso","CAC-ALO",SAP,2025,"F1","Aston Martin","Auto",null,0),
+// ── 2025 TOPPS CHROME DEADPOOL ─────────────────────────────────────
+C("Deadpool","1",DPL,2025,"Marvel","Marvel","Base","Comic Accurate",0),
+C("Old Man Logan","2",DPL,2025,"Marvel","Marvel","Base","Comic Accurate",0),
+C("Cable","3",DPL,2025,"Marvel","Marvel","Base","Comic Accurate",0),
+C("Wolverine","5",DPL,2025,"Marvel","Marvel","Base","Comic Accurate",0),
+C("Deadpool","21",DPL,2025,"Marvel","Deadpool & Wolverine","Base","Characters",0),
+C("Wolverine","30",DPL,2025,"Marvel","Deadpool & Wolverine","Base","Characters",0),
+C("Cassandra Nova","46",DPL,2025,"Marvel","Villain","Base","Characters",0),
+C("Deadpool","CB-1",DPL,2025,"Marvel","Marvel","Insert","Comic Book Gold",0),
+C("Wolverine","CB-7",DPL,2025,"Marvel","Marvel","Insert","Comic Book Gold",0),
+C("Ryan Reynolds","TC-RR",DPL,2025,"Marvel","Deadpool","Auto",null,0),
+C("Hugh Jackman","TC-HJ",DPL,2025,"Marvel","Wolverine","Auto",null,0),
+C("Emma Corrin","TC-EC",DPL,2025,"Marvel","Cassandra Nova","Auto",null,0),
+C("Henry Cavill","TC-HC",DPL,2025,"Marvel","The Cavillrine","Auto",null,0),
+C("Dafne Keen","TC-DK",DPL,2025,"Marvel","X-23","Auto",null,0),
+C("Hugh Jackman & Ryan Reynolds","OC-RH",DPL,2025,"Marvel","Deadpool & Wolverine","Auto","On Card Dual Inscriptions",0),
+
+// ═══════════════════════════════════════════════════════════════════
+// ── SCORE TRADING CARDS — MASTER DISCOGRAPHY ──────────────────────
+// ═══════════════════════════════════════════════════════════════════
+
+// ── 1988 SCORE BASEBALL ───────────────────────────────────────────
+C("Jose Canseco","1","1988 Score Baseball",1988,"Baseball","Oakland Athletics","Base",null,0),
+C("Mark McGwire","5","1988 Score Baseball",1988,"Baseball","Oakland Athletics","Base",null,0),
+C("Barry Bonds","265","1988 Score Baseball",1988,"Baseball","Pittsburgh Pirates","Base",null,0),
+C("Will Clark","28","1988 Score Baseball",1988,"Baseball","San Francisco Giants","Base",null,0),
+C("Roger Clemens","220","1988 Score Baseball",1988,"Baseball","Boston Red Sox","Base",null,0),
+C("Cal Ripken Jr.","570","1988 Score Baseball",1988,"Baseball","Baltimore Orioles","Base",null,0),
+C("Mike Schmidt","140","1988 Score Baseball",1988,"Baseball","Philadelphia Phillies","Base",null,0),
+C("Nolan Ryan","500","1988 Score Baseball",1988,"Baseball","Houston Astros","Base",null,0),
+// ── 1988 SCORE ROOKIE & TRADED ────────────────────────────────────
+C("Roberto Alomar","105T","1988 Score Rookie & Traded",1988,"Baseball","San Diego Padres","Base",null,1),
+C("Craig Biggio","74T","1988 Score Rookie & Traded",1988,"Baseball","Houston Astros","Base",null,1),
+// ── 1989 SCORE BASEBALL ───────────────────────────────────────────
+C("Ken Griffey Jr.","100","1989 Score Baseball",1989,"Baseball","Seattle Mariners","Base",null,1),
+C("Randy Johnson","645","1989 Score Baseball",1989,"Baseball","Montreal Expos","Base",null,1),
+C("Wade Boggs","75","1989 Score Baseball",1989,"Baseball","Boston Red Sox","Base",null,0),
+C("Ozzie Smith","185","1989 Score Baseball",1989,"Baseball","St. Louis Cardinals","Base",null,0),
+C("Bo Jackson","180","1989 Score Baseball",1989,"Baseball","Kansas City Royals","Base",null,0),
+C("Ryne Sandberg","360","1989 Score Baseball",1989,"Baseball","Chicago Cubs","Base",null,0),
+C("Mike Greenwell","15","1989 Score Baseball",1989,"Baseball","Boston Red Sox","Base",null,0),
+// ── 1989 SCORE ROOKIE & TRADED ────────────────────────────────────
+C("John Smoltz","1T","1989 Score Rookie & Traded",1989,"Baseball","Atlanta Braves","Base",null,1),
+// ── 1989 SCORE FOOTBALL ───────────────────────────────────────────
+C("Barry Sanders","257","1989 Score Football",1989,"Football","Detroit Lions","Base",null,1),
+C("Troy Aikman","270","1989 Score Football",1989,"Football","Dallas Cowboys","Base",null,1),
+C("Deion Sanders","241","1989 Score Football",1989,"Football","Atlanta Falcons","Base",null,1),
+C("Tim Brown","211","1989 Score Football",1989,"Football","Los Angeles Raiders","Base",null,1),
+C("Joe Montana","10","1989 Score Football",1989,"Football","San Francisco 49ers","Base",null,0),
+C("Jerry Rice","80","1989 Score Football",1989,"Football","San Francisco 49ers","Base",null,0),
+// ── 1990 SCORE BASEBALL ───────────────────────────────────────────
+C("Frank Thomas","663","1990 Score Baseball",1990,"Baseball","Chicago White Sox","Base",null,1),
+C("Larry Walker","692","1990 Score Baseball",1990,"Baseball","Montreal Expos","Base",null,1),
+C("Ken Griffey Jr.","560","1990 Score Baseball",1990,"Baseball","Seattle Mariners","Base",null,0),
+C("Rickey Henderson","9","1990 Score Baseball",1990,"Baseball","Oakland Athletics","Base",null,0),
+C("Dwight Gooden","190","1990 Score Baseball",1990,"Baseball","New York Mets","Base",null,0),
+// ── 1990 SCORE ROOKIE & TRADED ────────────────────────────────────
+C("Sammy Sosa","86T","1990 Score Rookie & Traded",1990,"Baseball","Chicago White Sox","Base",null,1),
+C("Dave Justice","51T","1990 Score Rookie & Traded",1990,"Baseball","Atlanta Braves","Base",null,1),
+// ── 1990 SCORE FOOTBALL ───────────────────────────────────────────
+C("Emmitt Smith","211","1990 Score Football",1990,"Football","Dallas Cowboys","Base",null,1),
+C("Junior Seau","304","1990 Score Football",1990,"Football","San Diego Chargers","Base",null,1),
+C("Derrick Thomas","55","1990 Score Football",1990,"Football","Kansas City Chiefs","Base",null,1),
+C("Joe Montana","200","1990 Score Football",1990,"Football","San Francisco 49ers","Base",null,0),
+C("Jerry Rice","100","1990 Score Football",1990,"Football","San Francisco 49ers","Base",null,0),
+C("Barry Sanders","150","1990 Score Football",1990,"Football","Detroit Lions","Base",null,0),
+// ── 1991 SCORE BASEBALL ───────────────────────────────────────────
+C("Jeff Bagwell","383","1991 Score Baseball",1991,"Baseball","Houston Astros","Base",null,1),
+C("Ivan Rodriguez","671","1991 Score Baseball",1991,"Baseball","Texas Rangers","Base",null,1),
+C("Cal Ripken Jr.","1","1991 Score Baseball",1991,"Baseball","Baltimore Orioles","Base",null,0),
+C("Nolan Ryan","410","1991 Score Baseball",1991,"Baseball","Texas Rangers","Base",null,0),
+C("Ken Griffey Jr.","100","1991 Score Baseball",1991,"Baseball","Seattle Mariners","Base",null,0),
+C("Rickey Henderson","750","1991 Score Baseball",1991,"Baseball","Oakland Athletics","Base",null,0),
+// ── 1991 SCORE FOOTBALL ───────────────────────────────────────────
+C("Brett Favre","611","1991 Score Football",1991,"Football","Atlanta Falcons","Base",null,1),
+C("Herman Moore","330","1991 Score Football",1991,"Football","Detroit Lions","Base",null,1),
+C("Ricky Watters","340","1991 Score Football",1991,"Football","San Francisco 49ers","Base",null,1),
+C("Joe Montana","1","1991 Score Football",1991,"Football","San Francisco 49ers","Base",null,0),
+C("Emmitt Smith","75","1991 Score Football",1991,"Football","Dallas Cowboys","Base",null,0),
+C("Barry Sanders","80","1991 Score Football",1991,"Football","Detroit Lions","Base",null,0),
+// ── 1991 SCORE HOCKEY ─────────────────────────────────────────────
+C("Dominik Hasek","428","1991 Score Hockey",1991,"Hockey","Buffalo Sabres","Base",null,1),
+C("Eric Lindros","439","1991 Score Hockey",1991,"Hockey","Quebec Nordiques","Base",null,1),
+C("Jaromir Jagr","298","1991 Score Hockey",1991,"Hockey","Pittsburgh Penguins","Base",null,0),
+C("Mario Lemieux","1","1991 Score Hockey",1991,"Hockey","Pittsburgh Penguins","Base",null,0),
+C("Wayne Gretzky","300","1991 Score Hockey",1991,"Hockey","Los Angeles Kings","Base",null,0),
+C("Brett Hull","200","1991 Score Hockey",1991,"Hockey","St. Louis Blues","Base",null,0),
+// ── 1992 SCORE BASEBALL ───────────────────────────────────────────
+C("Mike Piazza","779","1992 Score Baseball",1992,"Baseball","Los Angeles Dodgers","Base",null,1),
+C("Manny Ramirez","779","1992 Score Baseball",1992,"Baseball","Cleveland Indians","Base",null,1),
+C("Frank Thomas","5","1992 Score Baseball",1992,"Baseball","Chicago White Sox","Base",null,0),
+C("Ken Griffey Jr.","785","1992 Score Baseball",1992,"Baseball","Seattle Mariners","Base",null,0),
+C("Nolan Ryan","1","1992 Score Baseball",1992,"Baseball","Texas Rangers","Base",null,0),
+// ── 1992 SCORE FOOTBALL ───────────────────────────────────────────
+C("Steve Young","18","1992 Score Football",1992,"Football","San Francisco 49ers","Base",null,0),
+C("Emmitt Smith","300","1992 Score Football",1992,"Football","Dallas Cowboys","Base",null,0),
+C("Barry Sanders","100","1992 Score Football",1992,"Football","Detroit Lions","Base",null,0),
+C("Desmond Howard","27","1992 Score Football",1992,"Football","Washington Redskins","Base",null,1),
+// ── 1992 SCORE HOCKEY ─────────────────────────────────────────────
+C("Teemu Selanne","508","1992 Score Hockey",1992,"Hockey","Winnipeg Jets","Base",null,1),
+C("Wayne Gretzky","1","1992 Score Hockey",1992,"Hockey","Los Angeles Kings","Base",null,0),
+C("Mario Lemieux","50","1992 Score Hockey",1992,"Hockey","Pittsburgh Penguins","Base",null,0),
+C("Patrick Roy","250","1992 Score Hockey",1992,"Hockey","Montreal Canadiens","Base",null,0),
+// ── 1993 SCORE BASEBALL ───────────────────────────────────────────
+C("Mike Piazza","100","1993 Score Baseball",1993,"Baseball","Los Angeles Dodgers","Base",null,0),
+C("Frank Thomas","1","1993 Score Baseball",1993,"Baseball","Chicago White Sox","Base",null,0),
+C("Barry Bonds","400","1993 Score Baseball",1993,"Baseball","San Francisco Giants","Base",null,0),
+C("Ken Griffey Jr.","200","1993 Score Baseball",1993,"Baseball","Seattle Mariners","Base",null,0),
+// ── 1993 SCORE FOOTBALL ───────────────────────────────────────────
+C("Jerome Bettis","272","1993 Score Football",1993,"Football","Los Angeles Rams","Base",null,1),
+C("Drew Bledsoe","270","1993 Score Football",1993,"Football","New England Patriots","Base",null,1),
+C("Garrison Hearst","280","1993 Score Football",1993,"Football","Phoenix Cardinals","Base",null,1),
+C("Jerry Rice","10","1993 Score Football",1993,"Football","San Francisco 49ers","Base",null,0),
+C("Steve Young","25","1993 Score Football",1993,"Football","San Francisco 49ers","Base",null,0),
+// ── 1993 SCORE HOCKEY ─────────────────────────────────────────────
+C("Wayne Gretzky","1","1993 Score Hockey",1993,"Hockey","Los Angeles Kings","Base",null,0),
+C("Teemu Selanne","100","1993 Score Hockey",1993,"Hockey","Winnipeg Jets","Base",null,0),
+C("Mario Lemieux","50","1993 Score Hockey",1993,"Hockey","Pittsburgh Penguins","Base",null,0),
+// ── 1994 SCORE BASEBALL ───────────────────────────────────────────
+C("Alex Rodriguez","261","1994 Score Baseball",1994,"Baseball","Seattle Mariners","Base",null,1),
+C("Tony Gwynn","5","1994 Score Baseball",1994,"Baseball","San Diego Padres","Base",null,0),
+C("Frank Thomas","1","1994 Score Baseball",1994,"Baseball","Chicago White Sox","Base",null,0),
+// ── 1994 SCORE FOOTBALL ───────────────────────────────────────────
+C("Marshall Faulk","276","1994 Score Football",1994,"Football","Indianapolis Colts","Base",null,1),
+C("Trent Dilfer","286","1994 Score Football",1994,"Football","Tampa Bay Buccaneers","Base",null,1),
+C("Steve Young","5","1994 Score Football",1994,"Football","San Francisco 49ers","Base",null,0),
+C("Emmitt Smith","100","1994 Score Football",1994,"Football","Dallas Cowboys","Base",null,0),
+// ── 1994 SCORE HOCKEY ─────────────────────────────────────────────
+C("Wayne Gretzky","252","1994 Score Hockey",1994,"Hockey","Los Angeles Kings","Base",null,0),
+C("Brendan Shanahan","50","1994 Score Hockey",1994,"Hockey","St. Louis Blues","Base",null,0),
+C("Martin Brodeur","125","1994 Score Hockey",1994,"Hockey","New Jersey Devils","Base",null,0),
+// ── 1995 SCORE BASEBALL ───────────────────────────────────────────
+C("Chipper Jones","260","1995 Score Baseball",1995,"Baseball","Atlanta Braves","Base",null,0),
+C("Mo Vaughn","1","1995 Score Baseball",1995,"Baseball","Boston Red Sox","Base",null,0),
+C("Ken Griffey Jr.","100","1995 Score Baseball",1995,"Baseball","Seattle Mariners","Base",null,0),
+// ── 1995 SCORE FOOTBALL ───────────────────────────────────────────
+C("Terrell Davis","219","1995 Score Football",1995,"Football","Denver Broncos","Base",null,1),
+C("Warren Sapp","272","1995 Score Football",1995,"Football","Tampa Bay Buccaneers","Base",null,1),
+C("Ki-Jana Carter","284","1995 Score Football",1995,"Football","Cincinnati Bengals","Base",null,1),
+C("Steve McNair","285","1995 Score Football",1995,"Football","Houston Oilers","Base",null,1),
+C("Jerry Rice","10","1995 Score Football",1995,"Football","San Francisco 49ers","Base",null,0),
+C("Emmitt Smith","50","1995 Score Football",1995,"Football","Dallas Cowboys","Base",null,0),
+// ── 1995 SCORE HOCKEY ─────────────────────────────────────────────
+C("Wayne Gretzky","100","1995 Score Hockey",1995,"Hockey","Los Angeles Kings","Base",null,0),
+C("Jaromir Jagr","50","1995 Score Hockey",1995,"Hockey","Pittsburgh Penguins","Base",null,0),
+C("Paul Kariya","150","1995 Score Hockey",1995,"Hockey","Mighty Ducks of Anaheim","Base",null,0),
+// ── 1996 SCORE BASEBALL ───────────────────────────────────────────
+C("Derek Jeter","1","1996 Score Baseball",1996,"Baseball","New York Yankees","Base",null,0),
+C("Alex Rodriguez","100","1996 Score Baseball",1996,"Baseball","Seattle Mariners","Base",null,0),
+C("Ken Griffey Jr.","200","1996 Score Baseball",1996,"Baseball","Seattle Mariners","Base",null,0),
+// ── 1996 SCORE FOOTBALL ───────────────────────────────────────────
+C("Ray Lewis","245","1996 Score Football",1996,"Football","Baltimore Ravens","Base",null,1),
+C("Marvin Harrison","101","1996 Score Football",1996,"Football","Indianapolis Colts","Base",null,1),
+C("Eddie George","270","1996 Score Football",1996,"Football","Houston Oilers","Base",null,1),
+C("Jerry Rice","10","1996 Score Football",1996,"Football","San Francisco 49ers","Base",null,0),
+C("Emmitt Smith","75","1996 Score Football",1996,"Football","Dallas Cowboys","Base",null,0),
+C("Barry Sanders","100","1996 Score Football",1996,"Football","Detroit Lions","Base",null,0),
+// ── 1996 SCORE HOCKEY ─────────────────────────────────────────────
+C("Wayne Gretzky","1","1996 Score Hockey",1996,"Hockey","St. Louis Blues","Base",null,0),
+C("Mario Lemieux","50","1996 Score Hockey",1996,"Hockey","Pittsburgh Penguins","Base",null,0),
+C("Paul Kariya","75","1996 Score Hockey",1996,"Hockey","Mighty Ducks of Anaheim","Base",null,0),
+// ── 1997 SCORE BASEBALL ───────────────────────────────────────────
+C("Ken Griffey Jr.","1","1997 Score Baseball",1997,"Baseball","Seattle Mariners","Base",null,0),
+C("Alex Rodriguez","50","1997 Score Baseball",1997,"Baseball","Seattle Mariners","Base",null,0),
+C("Derek Jeter","100","1997 Score Baseball",1997,"Baseball","New York Yankees","Base",null,0),
+C("Mike Piazza","200","1997 Score Baseball",1997,"Baseball","Los Angeles Dodgers","Base",null,0),
+// ── 1997 SCORE FOOTBALL ───────────────────────────────────────────
+C("Jerome Bettis","100","1997 Score Football",1997,"Football","Pittsburgh Steelers","Base",null,0),
+C("Terrell Davis","50","1997 Score Football",1997,"Football","Denver Broncos","Base",null,0),
+C("Emmitt Smith","10","1997 Score Football",1997,"Football","Dallas Cowboys","Base",null,0),
+C("Brett Favre","1","1997 Score Football",1997,"Football","Green Bay Packers","Base",null,0),
+// ── 1997 SCORE HOCKEY ─────────────────────────────────────────────
+C("Wayne Gretzky","1","1997 Score Hockey",1997,"Hockey","New York Rangers","Base",null,0),
+C("Jaromir Jagr","50","1997 Score Hockey",1997,"Hockey","Pittsburgh Penguins","Base",null,0),
+C("Mats Sundin","75","1997 Score Hockey",1997,"Hockey","Toronto Maple Leafs","Base",null,0),
+// ── 1998 SCORE BASEBALL ───────────────────────────────────────────
+C("Ken Griffey Jr.","1","1998 Score Baseball",1998,"Baseball","Seattle Mariners","Base",null,0),
+C("Mark McGwire","100","1998 Score Baseball",1998,"Baseball","St. Louis Cardinals","Base",null,0),
+C("Sammy Sosa","150","1998 Score Baseball",1998,"Baseball","Chicago Cubs","Base",null,0),
+C("Alex Rodriguez","50","1998 Score Baseball",1998,"Baseball","Seattle Mariners","Base",null,0),
+// ── 1998 SCORE FOOTBALL ───────────────────────────────────────────
+C("Peyton Manning","233","1998 Score Football",1998,"Football","Indianapolis Colts","Base",null,1),
+C("Randy Moss","174","1998 Score Football",1998,"Football","Minnesota Vikings","Base",null,1),
+C("Charles Woodson","211","1998 Score Football",1998,"Football","Oakland Raiders","Base",null,1),
+C("Fred Taylor","244","1998 Score Football",1998,"Football","Jacksonville Jaguars","Base",null,1),
+C("Brett Favre","1","1998 Score Football",1998,"Football","Green Bay Packers","Base",null,0),
+C("Jerry Rice","50","1998 Score Football",1998,"Football","San Francisco 49ers","Base",null,0),
+C("Emmitt Smith","75","1998 Score Football",1998,"Football","Dallas Cowboys","Base",null,0),
+// ── 2010 SCORE FOOTBALL ───────────────────────────────────────────
+C("Sam Bradford","332","2010 Score Football",2010,"Football","St. Louis Rams","Base",null,1),
+C("Dez Bryant","322","2010 Score Football",2010,"Football","Dallas Cowboys","Base",null,1),
+C("Rob Gronkowski","351","2010 Score Football",2010,"Football","New England Patriots","Base",null,1),
+C("Peyton Manning","1","2010 Score Football",2010,"Football","Indianapolis Colts","Base",null,0),
+C("Tom Brady","50","2010 Score Football",2010,"Football","New England Patriots","Base",null,0),
+// ── 2011 SCORE FOOTBALL ───────────────────────────────────────────
+C("Cam Newton","319","2011 Score Football",2011,"Football","Carolina Panthers","Base",null,1),
+C("A.J. Green","320","2011 Score Football",2011,"Football","Cincinnati Bengals","Base",null,1),
+C("Julio Jones","316","2011 Score Football",2011,"Football","Atlanta Falcons","Base",null,1),
+C("Tom Brady","1","2011 Score Football",2011,"Football","New England Patriots","Base",null,0),
+// ── 2012 SCORE FOOTBALL ───────────────────────────────────────────
+C("Andrew Luck","301","2012 Score Football",2012,"Football","Indianapolis Colts","Base",null,1),
+C("Russell Wilson","354","2012 Score Football",2012,"Football","Seattle Seahawks","Base",null,1),
+C("Robert Griffin III","310","2012 Score Football",2012,"Football","Washington Redskins","Base",null,1),
+C("Tom Brady","1","2012 Score Football",2012,"Football","New England Patriots","Base",null,0),
+// ── 2013 SCORE FOOTBALL ───────────────────────────────────────────
+C("EJ Manuel","336","2013 Score Football",2013,"Football","Buffalo Bills","Base",null,1),
+C("Geno Smith","350","2013 Score Football",2013,"Football","New York Jets","Base",null,1),
+C("Peyton Manning","1","2013 Score Football",2013,"Football","Denver Broncos","Base",null,0),
+C("Tom Brady","50","2013 Score Football",2013,"Football","New England Patriots","Base",null,0),
+// ── 2014 SCORE FOOTBALL ───────────────────────────────────────────
+C("Teddy Bridgewater","361","2014 Score Football",2014,"Football","Minnesota Vikings","Base",null,1),
+C("Sammy Watkins","375","2014 Score Football",2014,"Football","Buffalo Bills","Base",null,1),
+C("Odell Beckham Jr.","369","2014 Score Football",2014,"Football","New York Giants","Base",null,1),
+C("Peyton Manning","1","2014 Score Football",2014,"Football","Denver Broncos","Base",null,0),
+// ── 2015 SCORE FOOTBALL ───────────────────────────────────────────
+C("Marcus Mariota","355","2015 Score Football",2015,"Football","Tennessee Titans","Base",null,1),
+C("Jameis Winston","351","2015 Score Football",2015,"Football","Tampa Bay Buccaneers","Base",null,1),
+C("Tom Brady","1","2015 Score Football",2015,"Football","New England Patriots","Base",null,0),
+C("Aaron Rodgers","15","2015 Score Football",2015,"Football","Green Bay Packers","Base",null,0),
+// ── 2016 SCORE FOOTBALL ───────────────────────────────────────────
+C("Dak Prescott","361","2016 Score Football",2016,"Football","Dallas Cowboys","Base",null,1),
+C("Ezekiel Elliott","366","2016 Score Football",2016,"Football","Dallas Cowboys","Base",null,1),
+C("Carson Wentz","388","2016 Score Football",2016,"Football","Philadelphia Eagles","Base",null,1),
+C("Tom Brady","1","2016 Score Football",2016,"Football","New England Patriots","Base",null,0),
+// ── 2017 SCORE FOOTBALL ───────────────────────────────────────────
+C("Patrick Mahomes","348","2017 Score Football",2017,"Football","Kansas City Chiefs","Base",null,1),
+C("Deshaun Watson","394","2017 Score Football",2017,"Football","Houston Texans","Base",null,1),
+C("JuJu Smith-Schuster","402","2017 Score Football",2017,"Football","Pittsburgh Steelers","Base",null,1),
+C("Tom Brady","1","2017 Score Football",2017,"Football","New England Patriots","Base",null,0),
+// ── 2018 SCORE FOOTBALL ───────────────────────────────────────────
+C("Saquon Barkley","400","2018 Score Football",2018,"Football","New York Giants","Base",null,1),
+C("Josh Allen","411","2018 Score Football",2018,"Football","Buffalo Bills","Base",null,1),
+C("Baker Mayfield","402","2018 Score Football",2018,"Football","Cleveland Browns","Base",null,1),
+C("Patrick Mahomes","1","2018 Score Football",2018,"Football","Kansas City Chiefs","Base",null,0),
+// ── 2019 SCORE FOOTBALL ───────────────────────────────────────────
+C("Kyler Murray","360","2019 Score Football",2019,"Football","Arizona Cardinals","Base",null,1),
+C("Daniel Jones","364","2019 Score Football",2019,"Football","New York Giants","Base",null,1),
+C("Deebo Samuel","433","2019 Score Football",2019,"Football","San Francisco 49ers","Base",null,1),
+C("Patrick Mahomes","1","2019 Score Football",2019,"Football","Kansas City Chiefs","Base",null,0),
+// ── 2020 SCORE FOOTBALL ───────────────────────────────────────────
+C("Joe Burrow","375","2020 Score Football",2020,"Football","Cincinnati Bengals","Base",null,1),
+C("Justin Herbert","409","2020 Score Football",2020,"Football","Los Angeles Chargers","Base",null,1),
+C("Tua Tagovailoa","384","2020 Score Football",2020,"Football","Miami Dolphins","Base",null,1),
+C("Patrick Mahomes","1","2020 Score Football",2020,"Football","Kansas City Chiefs","Base",null,0),
+// ── 2021 SCORE FOOTBALL ───────────────────────────────────────────
+C("Trevor Lawrence","350","2021 Score Football",2021,"Football","Jacksonville Jaguars","Base",null,1),
+C("Justin Fields","369","2021 Score Football",2021,"Football","Chicago Bears","Base",null,1),
+C("Mac Jones","362","2021 Score Football",2021,"Football","New England Patriots","Base",null,1),
+C("Patrick Mahomes","1","2021 Score Football",2021,"Football","Kansas City Chiefs","Base",null,0),
+// ── 2022 SCORE FOOTBALL ───────────────────────────────────────────
+C("Kenny Pickett","360","2022 Score Football",2022,"Football","Pittsburgh Steelers","Base",null,1),
+C("Malik Willis","388","2022 Score Football",2022,"Football","Tennessee Titans","Base",null,1),
+C("Brock Purdy","440","2022 Score Football",2022,"Football","San Francisco 49ers","Base",null,1),
+C("Patrick Mahomes","1","2022 Score Football",2022,"Football","Kansas City Chiefs","Base",null,0),
+// ── 2023 SCORE FOOTBALL ───────────────────────────────────────────
+C("C.J. Stroud","350","2023 Score Football",2023,"Football","Houston Texans","Base",null,1),
+C("Bryce Young","351","2023 Score Football",2023,"Football","Carolina Panthers","Base",null,1),
+C("Anthony Richardson","360","2023 Score Football",2023,"Football","Indianapolis Colts","Base",null,1),
+C("Patrick Mahomes","1","2023 Score Football",2023,"Football","Kansas City Chiefs","Base",null,0),
+C("Brock Purdy","5","2023 Score Football",2023,"Football","San Francisco 49ers","Base",null,0),
+// ── 2024 SCORE FOOTBALL ───────────────────────────────────────────
+C("Caleb Williams","361","2024 Score Football",2024,"Football","Chicago Bears","Base",null,1),
+C("Jayden Daniels","380","2024 Score Football",2024,"Football","Washington Commanders","Base",null,1),
+C("Marvin Harrison Jr.","390","2024 Score Football",2024,"Football","Arizona Cardinals","Base",null,1),
+C("Drake Maye","375","2024 Score Football",2024,"Football","New England Patriots","Base",null,1),
+C("Patrick Mahomes","1","2024 Score Football",2024,"Football","Kansas City Chiefs","Base",null,0),
+C("Lamar Jackson","5","2024 Score Football",2024,"Football","Baltimore Ravens","Base",null,0),
+];
+
+// ── FILTER & RENDER ────────────────────────────────────────────────
+function applyFilters(){
+  const q=document.getElementById("searchInput").value.trim();
+  const yr=document.getElementById("yearSelect").value;
+  const clearBtn=document.getElementById("clearBtn");
+  clearBtn.style.display=q?"flex":"none";
+
+  const hasQ=q.length>=2;
+  const hasY=yr!=="";
+
+  if(!hasQ||!hasY){
+    showEmpty();
+    // Remove any stale hint
+    const h=document.getElementById("gateHint");
+    if(h)h.remove();
+    if((q.length>0&&q.length<2)||yr){
+      const hint=document.createElement("div");
+      hint.id="gateHint";
+      hint.style.cssText="margin-top:12px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#FFB800;opacity:.8";
+      if(!hasQ&&!hasY) hint.textContent="";
+      else if(!hasQ) hint.textContent="Enter at least 2 characters";
+      else hint.textContent="Select a year";
+      document.getElementById("searchHero").appendChild(hint);
+    }
+    return;
+  }
+
+  const h=document.getElementById("gateHint");
+  if(h)h.remove();
+
+  const ql=q.toLowerCase();
+  const results=CARDS.filter(c=>{
+    if(String(c.year)!==yr)return false;
+    return c.player.toLowerCase().includes(ql)||
+      (c.team||"").toLowerCase().includes(ql)||
+      c.set.toLowerCase().includes(ql)||
+      c.num.toLowerCase().includes(ql)||
+      (c.insert||"").toLowerCase().includes(ql);
+  });
+
+  document.getElementById("emptyState").style.display="none";
+  document.getElementById("missingSection").style.display="block";
+  document.getElementById("sysFooter").textContent=`[SYS] GRAILISO_v1.2.1 :: CARD CATALOG :: ${CARDS.length} CARDS LOADED`;
+
+  if(results.length===0){
+    document.getElementById("noResults").style.display="block";
+    document.getElementById("resultsHeader").style.display="none";
+    document.getElementById("cardGrid").style.display="none";
+    return;
+  }
+  document.getElementById("noResults").style.display="none";
+  document.getElementById("resultsHeader").style.display="block";
+  document.getElementById("resultNum").textContent=results.length;
+  document.getElementById("cardGrid").style.display="grid";
+  renderGrid(results);
+}
+
+function showEmpty(){
+  document.getElementById("emptyState").style.display="block";
+  document.getElementById("noResults").style.display="none";
+  document.getElementById("resultsHeader").style.display="none";
+  document.getElementById("cardGrid").style.display="none";
+  document.getElementById("missingSection").style.display="none";
+  document.getElementById("sysFooter").textContent="";
+}
+
+function renderGrid(cards){
+  const grid=document.getElementById("cardGrid");
+  grid.innerHTML="";
+  cards.forEach(c=>{
+    const color=sc(c.sport);
+    const cc=CAT_COLORS[c.cat]||"#8BA7C7";
+    const plist=getParallels(c.cat,c.set);
+    const opts=plist.map(p=>`<option value="${p}">${p}</option>`).join("");
+    const tile=document.createElement("div");
+    tile.className="card-tile";
+    tile.onmouseenter=()=>tile.classList.add("laser-on");
+    tile.onmouseleave=()=>tile.classList.remove("laser-on");
+    tile.innerHTML=`
+      <div class="card-inner">
+        <div class="card-topbar" style="background:linear-gradient(90deg,${color},${color}33)"></div>
+        <div class="card-img" style="background:linear-gradient(135deg,${color}0e,var(--bg2))">
+          <div class="scan-hint" style="color:${color}88">ISO/SCAN ↑</div>
+          <div class="no-img">NO IMAGE YET</div>
+          ${c.rc?'<div class="badge-rc">RC</div>':""}
+          <div class="badge-cat" style="background:${cc}18;border:1px solid ${cc}44;color:${cc}">${c.cat.toUpperCase()}</div>
+        </div>
+        <div class="card-body">
+          <div>
+            <div class="card-meta" style="color:${color}"><span>${c.year}</span><span style="opacity:.4">·</span><span>#${c.num}</span>${c.insert?`<span style="opacity:.4">·</span><span style="color:#00E887;font-size:8px">${c.insert}</span>`:""}</div>
+            <div class="card-player">${c.player}</div>
+            <div class="card-team">${c.team||""}</div>
+            <div class="card-set" style="color:${color}99">${c.set}</div>
+          </div>
+          <select class="parallel-sel" id="sel_${c.id}">${opts}</select>
+          <button class="iso-btn" style="color:${color};border-color:${color}44;background:linear-gradient(135deg,${color}1a,${color}0d)"
+            onmouseenter="this.style.background='${color}2e'"
+            onmouseleave="this.style.background='linear-gradient(135deg,${color}1a,${color}0d)'"
+            onclick="openModal(${c.id})">+ POST ISO</button>
+        </div>
+      </div>`;
+    grid.appendChild(tile);
+  });
+}
+
+function clearSearch(){
+  document.getElementById("searchInput").value="";
+  document.getElementById("yearSelect").value="";
+  document.getElementById("clearBtn").style.display="none";
+  const h=document.getElementById("gateHint");if(h)h.remove();
+  showEmpty();
+}
+
+function openModal(id){
+  const c=CARDS.find(x=>x.id===id);if(!c)return;
+  const parallel=document.getElementById(`sel_${c.id}`)?.value||"Base";
+  const cc=CAT_COLORS[c.cat]||"#8BA7C7";
+  document.getElementById("m_player").textContent=c.player;
+  document.getElementById("m_set").textContent=c.set;
+  document.getElementById("m_tags").innerHTML=`
+    <span class="tag" style="background:rgba(0,170,255,0.12);color:#00AAFF;border:1px solid rgba(0,170,255,0.3)">#${c.num}</span>
+    <span class="tag" style="background:${cc}18;color:${cc};border:1px solid ${cc}44">${c.cat}</span>
+    <span class="tag" style="background:rgba(255,184,0,0.1);color:#FFB800;border:1px solid rgba(255,184,0,0.3)">${parallel}</span>
+    ${c.rc?'<span class="tag" style="background:rgba(255,184,0,0.1);color:#FFB800;border:1px solid rgba(255,184,0,0.3)">RC</span>':""}`;
+  document.getElementById("modal").classList.add("open");
+}
+function closeModal(){document.getElementById("modal").classList.remove("open")}
+
+function toggleTheme(){
+  const dark=document.documentElement.getAttribute("data-theme")==="dark";
+  document.documentElement.setAttribute("data-theme",dark?"light":"dark");
+  document.getElementById("toggleLbl").textContent=dark?"DARK MODE":"LIGHT MODE";
+  document.getElementById("toggleThumb").textContent=dark?"🌙":"☀️";
+}
+
+// ── REPORT FORM ────────────────────────────────────────────────────
+let reportOpen=false;
+function toggleReport(){
+  reportOpen=!reportOpen;
+  document.getElementById("reportForm").style.display=reportOpen?"block":"none";
+  document.getElementById("reportBtn").textContent=reportOpen?"CLOSE ✕":"REPORT MISSING CARD →";
+}
+function handleFile(side,input){
+  const file=input.files[0];if(!file)return;
+  document.getElementById(side+"Box").classList.add("has-file");
+  document.getElementById(side+"Label").textContent=file.name.length>16?file.name.slice(0,14)+"…":file.name;
+  document.getElementById(side+"Box").querySelector(".upload-icon").textContent="✅";
+}
+function checkSubmit(){
+  const p=document.getElementById("f_player").value.trim();
+  const s=document.getElementById("f_set").value.trim();
+  document.getElementById("submitBtn").disabled=!(p&&s);
+}
+function submitReport(){
+  document.getElementById("formFields").style.display="none";
+  document.getElementById("submitSuccess").style.display="block";
+  setTimeout(()=>{
+    document.getElementById("submitSuccess").style.display="none";
+    document.getElementById("formFields").style.display="block";
+    document.getElementById("reportForm").style.display="none";
+    document.getElementById("reportBtn").textContent="REPORT MISSING CARD →";
+    reportOpen=false;
+    ["f_player","f_set","f_year","f_num","f_notes"].forEach(id=>document.getElementById(id).value="");
+    ["frontBox","backBox"].forEach(id=>{
+      document.getElementById(id).classList.remove("has-file");
+      document.getElementById(id).querySelector(".upload-icon").textContent="📷";
+    });
+    document.getElementById("frontLabel").textContent="Upload Front";
+    document.getElementById("backLabel").textContent="Upload Back";
+    document.getElementById("submitBtn").disabled=true;
+  },2800);
+}
+
+// ── TICKER ─────────────────────────────────────────────────────────
+function buildTicker(){
+  const inner=document.getElementById("tickerInner");
+  const picks=[];
+  // Sample ~60 notable cards from the catalog
+  const sample=CARDS.filter(c=>c.rc||c.cat==="Auto"||["Ken Griffey Jr.","Barry Sanders","Peyton Manning","Patrick Mahomes","LeBron James","Mikaela Shiffrin","Shaun White","Lindsey Vonn","Ryan Reynolds","Hugh Jackman","Lionel Messi","Max Verstappen","Kylian Mbappé","AJ Dybantsa","Chloe Kim","Ilia Malinin","Brett Favre","Emmitt Smith","Troy Aikman"].includes(c.player));
+  const ticker_cards=sample.slice(0,60);
+  if(ticker_cards.length<20)ticker_cards.push(...CARDS.slice(0,20));
+  // Duplicate for seamless loop
+  const all=[...ticker_cards,...ticker_cards];
+  const color=sc;
+  inner.innerHTML=all.map(c=>{
+    const sp=sc(c.sport);
+    return `<div class="ticker-item">
+      <span class="ticker-dot" style="background:${sp}"></span>
+      <span class="t-name">${c.player}</span>
+      <span class="t-set" style="color:${sp}88">${c.year} · ${c.cat}${c.rc?' · RC':''}</span>
+    </div>`;
+  }).join("");
+}
+
+buildTicker();
+showEmpty();
+</script>
+</body>
+</html>

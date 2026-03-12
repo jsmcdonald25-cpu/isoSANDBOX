@@ -1,0 +1,64 @@
+# ============================================================
+# GRAILISO — netlify.toml
+# Site: isosandbox.com
+# Repo: jsmcdonald25-cpu/isoSANDBOX
+# ============================================================
+
+[build]
+  publish = "/"
+
+# ── REDIRECTS ──────────────────────────────────────────────
+# Root → dashboard
+[[redirects]]
+  from = "/"
+  to = "/dashboard.html"
+  status = 302
+
+# Clean URLs (optional — lets you use /catalog instead of /card-catalog.html)
+[[redirects]]
+  from = "/catalog"
+  to = "/card-catalog.html"
+  status = 302
+
+[[redirects]]
+  from = "/vault"
+  to = "/vault-ui-mockup.html"
+  status = 302
+
+[[redirects]]
+  from = "/auth"
+  to = "/auth.html"
+  status = 302
+
+# Catch-all — any unknown route goes to dashboard
+[[redirects]]
+  from = "/*"
+  to = "/dashboard.html"
+  status = 302
+
+# ── HEADERS ────────────────────────────────────────────────
+# Security headers on all pages
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# Cache HTML — short (always fresh)
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Cache assets — long
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

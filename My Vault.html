@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<!-- saved from url=(0053)file:///C:/Users/jsmcd/Downloads/vault-ui-mockup.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GrailISO — My Vault</title>
+<link href="./My Vault_files/css2" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0D1F33;--bg2:#0a1628;--bg3:#112240;--bg4:#0d1e35;
+  --blue:#00AAFF;--cyan:#00FFFF;--gold:#FFB800;--green:#00E887;--red:#FF3B5C;
+  --text:#E8F4FD;--text2:#8BA7C7;--text3:rgba(139,167,199,0.3);
+  --border:rgba(0,170,255,0.12);--border2:rgba(255,255,255,0.06);
+  --shadow:rgba(0,0,0,0.5);
+}
+body{background:var(--bg);color:var(--text);font-family:'Barlow Condensed',sans-serif;min-height:100vh;padding-bottom:80px}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:rgba(0,170,255,0.25);border-radius:2px}
+
+/* ── HEADER ── */
+#hdr{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,0.4)}
+.logo{font-family:'Bebas Neue';font-size:24px;letter-spacing:3px}
+.logo-g{color:#fff}.logo-i{color:var(--blue)}
+.hdr-nav{display:flex;gap:4px}
+.nav-item{padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .15s;border:1px solid transparent;color:var(--text2)}
+.nav-item:hover{background:rgba(255,255,255,0.04);color:var(--text)}
+.nav-item.active{background:rgba(0,170,255,0.1);border-color:rgba(0,170,255,0.3);color:var(--blue)}
+.hdr-right{display:flex;align-items:center;gap:12px}
+.credit-pill{background:rgba(255,184,0,0.1);border:1px solid rgba(255,184,0,0.3);border-radius:20px;padding:5px 13px;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--gold);cursor:pointer;transition:all .15s}
+.credit-pill:hover{background:rgba(255,184,0,0.18)}
+.notif-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.04);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:15px;transition:all .15s}
+.notif-btn:hover{background:rgba(0,170,255,0.1);border-color:rgba(0,170,255,0.3)}
+.notif-dot{width:8px;height:8px;background:var(--red);border-radius:50%;position:absolute;top:4px;right:4px;border:2px solid var(--bg2);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:.7}}
+
+/* ── MATCH ALERT BANNER ── */
+#matchBanner{background:linear-gradient(135deg,rgba(0,232,135,0.08),rgba(0,170,255,0.06));border:1px solid rgba(0,232,135,0.2);border-radius:12px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin:24px 28px 0;cursor:pointer;transition:all .2s}
+#matchBanner:hover{background:linear-gradient(135deg,rgba(0,232,135,0.12),rgba(0,170,255,0.1));border-color:rgba(0,232,135,0.4)}
+.banner-left{display:flex;align-items:center;gap:12px}
+.banner-icon{font-size:22px}
+.banner-text-main{font-family:'Bebas Neue';font-size:16px;letter-spacing:2px;color:var(--green);margin-bottom:2px}
+.banner-text-sub{font-size:12px;color:var(--text2)}
+.banner-text-sub strong{color:var(--text);font-weight:700}
+.banner-cta{background:linear-gradient(135deg,var(--green),#00C070);border:none;border-radius:8px;padding:8px 18px;font-family:'Bebas Neue';font-size:13px;letter-spacing:2px;color:#0D1F33;cursor:pointer;white-space:nowrap;flex-shrink:0}
+
+/* ── VAULT STATS ── */
+#vaultStats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:20px 28px 0}
+.stat-card{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:16px 20px}
+.stat-val{font-family:'Bebas Neue';font-size:28px;letter-spacing:1px;margin-bottom:3px}
+.stat-lbl{font-size:10px;color:var(--text2);font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.stat-sub{font-size:10px;color:var(--text3);margin-top:2px}
+
+/* ── TOOLBAR ── */
+#toolbar{display:flex;align-items:center;gap:10px;padding:20px 28px 0;flex-wrap:wrap}
+.vault-search{flex:1;min-width:200px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(0,170,255,0.2);border-radius:10px;padding:10px 16px;color:var(--text);font-family:'Barlow Condensed';font-size:15px;font-weight:600;transition:all .2s}
+.vault-search:focus{outline:none;border-color:var(--blue);background:rgba(0,170,255,0.05)}
+.vault-search::placeholder{color:var(--text3)}
+.filter-sel{background:rgba(255,255,255,0.04);border:1.5px solid rgba(0,170,255,0.15);border-radius:10px;padding:10px 14px;color:var(--text2);font-family:'Barlow Condensed';font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;-webkit-appearance:none;min-width:100px}
+.filter-sel:focus{outline:none;border-color:var(--blue)}
+.add-btn{background:linear-gradient(135deg,rgba(0,170,255,0.25),rgba(0,170,255,0.12));border:1.5px solid rgba(0,170,255,0.4);border-radius:10px;padding:10px 20px;color:var(--blue);font-family:'Bebas Neue';font-size:14px;letter-spacing:2px;cursor:pointer;white-space:nowrap;transition:all .15s;display:flex;align-items:center;gap:7px}
+.add-btn:hover{background:rgba(0,170,255,0.25);border-color:var(--blue)}
+.view-toggle{display:flex;background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:8px;overflow:hidden}
+.vt-btn{padding:9px 12px;cursor:pointer;font-size:14px;transition:all .15s;border:none;background:none;color:var(--text3)}
+.vt-btn.active{background:rgba(0,170,255,0.12);color:var(--blue)}
+
+/* ── VAULT GRID ── */
+#vaultGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;padding:16px 28px}
+.vault-card{background:var(--bg3);border:1px solid var(--border2);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .18s;position:relative}
+.vault-card:hover{transform:translateY(-3px);border-color:rgba(0,170,255,0.3);box-shadow:0 8px 28px rgba(0,0,0,0.4)}
+.vault-card.has-match{border-color:rgba(0,232,135,0.35)}
+.match-badge{position:absolute;top:8px;left:8px;background:rgba(0,232,135,0.15);border:1px solid rgba(0,232,135,0.4);border-radius:20px;padding:2px 8px;font-size:9px;font-weight:700;letter-spacing:1px;color:var(--green);z-index:3;display:flex;align-items:center;gap:4px}
+.match-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 1.8s ease-in-out infinite}
+.vc-img{height:110px;display:flex;align-items:center;justify-content:center;position:relative;font-size:32px;overflow:hidden}
+.vc-img-actual{width:100%;height:100%;object-fit:cover}
+.vc-img-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:100%;height:100%}
+.vc-img-placeholder .ph-icon{font-size:28px;opacity:.2}
+.vc-img-placeholder .ph-lbl{font-size:8px;color:var(--text3);letter-spacing:1.5px;font-weight:700;text-transform:uppercase}
+.vc-grade{position:absolute;bottom:7px;right:7px;background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.1);border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700;color:var(--gold);letter-spacing:.5px}
+.vc-sale{position:absolute;bottom:7px;left:7px;background:rgba(0,170,255,0.15);border:1px solid rgba(0,170,255,0.35);border-radius:5px;padding:2px 7px;font-size:9px;font-weight:700;color:var(--blue);letter-spacing:.5px}
+.vc-body{padding:12px 13px 13px}
+.vc-sport{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.vc-player{font-family:'Bebas Neue';font-size:15px;letter-spacing:.5px;line-height:1.2;color:var(--text)}
+.vc-set{font-size:10px;color:var(--text2);margin-top:2px;margin-bottom:8px;line-height:1.3}
+.vc-meta{display:flex;gap:5px;flex-wrap:wrap}
+.vc-tag{font-size:9px;font-weight:700;letter-spacing:.8px;border-radius:4px;padding:2px 7px}
+.vc-footer{display:flex;gap:6px;margin-top:10px}
+.vc-btn{flex:1;border-radius:6px;padding:7px 4px;font-family:'Bebas Neue';font-size:11px;letter-spacing:1.5px;cursor:pointer;border:1px solid;transition:all .14s;text-align:center}
+
+/* ── ADD CARD DRAWER ── */
+#drawer{position:fixed;right:-460px;top:0;width:440px;height:100%;background:var(--bg2);border-left:1px solid rgba(0,170,255,0.15);z-index:300;transition:right .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;box-shadow:-20px 0 60px rgba(0,0,0,0.5)}
+#drawer.open{right:0}
+#drawerOverlay{position:fixed;inset:0;background:rgba(0,0,0,0);z-index:299;pointer-events:none;transition:background .3s}
+#drawerOverlay.open{background:rgba(0,0,0,0.6);pointer-events:all}
+.drawer-hdr{padding:24px 28px 20px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:2}
+.drawer-title{font-family:'Bebas Neue';font-size:20px;letter-spacing:2px;color:var(--blue)}
+.drawer-close{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--text2);transition:all .15s}
+.drawer-close:hover{background:rgba(255,255,255,0.1);color:var(--text)}
+.drawer-body{padding:24px 28px}
+.d-section{margin-bottom:24px}
+.d-section-title{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.d-section-title::after{content:'';flex:1;height:1px;background:rgba(0,170,255,0.12)}
+.d-field{margin-bottom:14px}
+.d-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);margin-bottom:6px;display:block}
+.d-input{width:100%;background:rgba(255,255,255,0.04);border:1.5px solid rgba(0,170,255,0.15);border-radius:9px;padding:10px 13px;color:var(--text);font-family:'Barlow Condensed';font-size:14px;transition:all .2s}
+.d-input:focus{outline:none;border-color:var(--blue);background:rgba(0,170,255,0.05)}
+.d-input::placeholder{color:var(--text3)}
+.d-select{width:100%;background:rgba(255,255,255,0.04);border:1.5px solid rgba(0,170,255,0.15);border-radius:9px;padding:10px 13px;color:var(--text);font-family:'Barlow Condensed';font-size:14px;cursor:pointer;-webkit-appearance:none}
+.d-select:focus{outline:none;border-color:var(--blue)}
+.d-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.upload-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.upload-zone{height:90px;border:2px dashed rgba(0,170,255,0.2);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;transition:all .15s;background:rgba(0,170,255,0.03)}
+.upload-zone:hover{border-color:rgba(0,170,255,0.45);background:rgba(0,170,255,0.07)}
+.upload-zone.uploaded{border-color:rgba(0,232,135,0.4);background:rgba(0,232,135,0.05)}
+.uz-icon{font-size:20px;opacity:.4}
+.uz-lbl{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text3)}
+.upload-zone.uploaded .uz-lbl{color:var(--green)}
+.credit-note{background:rgba(255,184,0,0.06);border:1px solid rgba(255,184,0,0.2);border-radius:8px;padding:10px 13px;font-size:11px;color:var(--text2);line-height:1.7;margin-top:10px}
+.credit-note strong{color:var(--gold)}
+.d-submit{width:100%;background:linear-gradient(135deg,rgba(0,170,255,0.3),rgba(0,170,255,0.15));border:1.5px solid rgba(0,170,255,0.5);border-radius:10px;padding:13px;color:var(--blue);font-family:'Bebas Neue';font-size:15px;letter-spacing:2.5px;cursor:pointer;transition:all .15s;margin-top:4px}
+.d-submit:hover{background:rgba(0,170,255,0.3);box-shadow:0 4px 20px rgba(0,170,255,0.2)}
+
+/* ── MATCH PANEL ── */
+#matchPanel{position:fixed;left:-420px;top:0;width:400px;height:100%;background:var(--bg2);border-right:1px solid rgba(0,232,135,0.2);z-index:300;transition:left .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;box-shadow:20px 0 60px rgba(0,0,0,0.5)}
+#matchPanel.open{left:0}
+.mp-hdr{padding:24px 24px 18px;border-bottom:1px solid rgba(0,232,135,0.12);position:sticky;top:0;background:var(--bg2);z-index:2}
+.mp-title{font-family:'Bebas Neue';font-size:20px;letter-spacing:2px;color:var(--green);margin-bottom:2px}
+.mp-sub{font-size:11px;color:var(--text2)}
+.mp-close{float:right;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:var(--text2);margin-top:-4px;float:right}
+.mp-body{padding:16px}
+.match-item{background:var(--bg3);border:1px solid rgba(0,232,135,0.15);border-radius:12px;padding:16px;margin-bottom:10px;transition:all .15s}
+.match-item:hover{border-color:rgba(0,232,135,0.35);background:#0f2035}
+.mi-card-name{font-family:'Bebas Neue';font-size:15px;letter-spacing:.5px;color:var(--text);margin-bottom:3px}
+.mi-set{font-size:10px;color:var(--text2);margin-bottom:10px}
+.mi-buyer{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding:9px 12px;background:rgba(0,170,255,0.05);border-radius:8px;border:1px solid rgba(0,170,255,0.1)}
+.mi-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#0D1F33;flex-shrink:0}
+.mi-buyer-name{font-size:12px;font-weight:700;color:var(--text)}
+.mi-buyer-meta{font-size:10px;color:var(--text2)}
+.mi-price{font-size:13px;font-weight:700;color:var(--gold)}
+.mi-btns{display:flex;gap:7px}
+.mi-interested{flex:2;background:linear-gradient(135deg,rgba(0,232,135,0.2),rgba(0,232,135,0.1));border:1px solid rgba(0,232,135,0.4);border-radius:7px;padding:8px;color:var(--green);font-family:'Bebas Neue';font-size:12px;letter-spacing:1.5px;cursor:pointer;transition:all .14s}
+.mi-interested:hover{background:rgba(0,232,135,0.25)}
+.mi-pass{flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:7px;padding:8px;color:var(--text2);font-family:'Bebas Neue';font-size:12px;letter-spacing:1.5px;cursor:pointer}
+
+/* ── EMPTY VAULT ── */
+#emptyVault{display:none;text-align:center;padding:80px 24px}
+.ev-logo{font-family:'Bebas Neue';font-size:52px;letter-spacing:6px;opacity:.06;margin-bottom:20px}
+.ev-title{font-family:'Bebas Neue';font-size:22px;letter-spacing:3px;color:var(--text2);margin-bottom:8px}
+.ev-sub{font-size:13px;color:var(--text3);line-height:1.7;margin-bottom:24px}
+.ev-btn{display:inline-block;background:linear-gradient(135deg,rgba(0,170,255,0.2),rgba(0,170,255,0.08));border:1.5px solid rgba(0,170,255,0.35);border-radius:10px;padding:12px 28px;color:var(--blue);font-family:'Bebas Neue';font-size:14px;letter-spacing:2px;cursor:pointer;transition:all .15s}
+.ev-btn:hover{background:rgba(0,170,255,0.2)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.vault-card{animation:fadeUp .2s ease both}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="hdr">
+  <div class="logo"><span class="logo-g">GRAIL</span><span class="logo-i">ISO</span></div>
+  <div class="hdr-nav">
+    <div class="nav-item" onclick="">CATALOG</div>
+    <div class="nav-item active">MY VAULT</div>
+    <div class="nav-item">ISO BOARD</div>
+    <div class="nav-item">MATCHES</div>
+  </div>
+  <div class="hdr-right">
+    <div class="credit-pill" title="ISO Credits">⚡ 5 CREDITS</div>
+    <div class="notif-btn" onclick="toggleMatchPanel()">🔔<div class="notif-dot"></div></div>
+  </div>
+</div>
+
+<!-- MATCH ALERT BANNER -->
+<div id="matchBanner" onclick="toggleMatchPanel()">
+  <div class="banner-left">
+    <div class="banner-icon">🎯</div>
+    <div>
+      <div class="banner-text-main">3 BUYERS WANT CARDS IN YOUR VAULT</div>
+      <div class="banner-text-sub">Someone is looking for your <strong>1989 Score Football Barry Sanders RC</strong> right now. See who's buying.</div>
+    </div>
+  </div>
+  <button class="banner-cta">SEE MATCHES →</button>
+</div>
+
+<!-- VAULT STATS -->
+<div id="vaultStats">
+  <div class="stat-card">
+    <div class="stat-val" style="color:var(--blue)">47</div>
+    <div class="stat-lbl">Cards in Vault</div>
+    <div class="stat-sub">+3 this week</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-val" style="color:var(--green)">3</div>
+    <div class="stat-lbl">Active Matches</div>
+    <div class="stat-sub">Buyers waiting</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-val" style="color:var(--gold)">12</div>
+    <div class="stat-lbl">Cards Scanned</div>
+    <div class="stat-sub">24 ISO Credits earned</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-val" style="color:#9B59B6">4</div>
+    <div class="stat-lbl">Sets Represented</div>
+    <div class="stat-sub">Football · Baseball · F1</div>
+  </div>
+</div>
+
+<!-- TOOLBAR -->
+<div id="toolbar">
+  <input class="vault-search" placeholder="Search your vault..." oninput="filterVault(this.value)">
+  <select class="filter-sel" onchange="filterVault()">
+    <option value="">All Sports</option>
+    <option value="Football">Football</option>
+    <option value="Baseball">Baseball</option>
+    <option value="Basketball">Basketball</option>
+    <option value="F1">Formula 1</option>
+  </select>
+  <select class="filter-sel" onchange="filterVault()">
+    <option value="">All Types</option>
+    <option value="Base">Base</option>
+    <option value="Auto">Auto</option>
+    <option value="Relic">Relic</option>
+  </select>
+  <div class="view-toggle">
+    <button class="vt-btn active" title="Grid">▦</button>
+    <button class="vt-btn" title="List">☰</button>
+  </div>
+  <button class="add-btn" onclick="openDrawer()">＋ ADD CARD</button>
+</div>
+
+<!-- VAULT GRID -->
+<div id="vaultGrid"><div class="vault-card has-match" style="animation-delay:0s" onclick="viewCard(1)">
+      <div class="match-badge">ISO MATCH x2</div>
+      <div class="vc-img" style="background:linear-gradient(135deg,#00CC8812,var(--bg2))">
+        <div class="vc-img-placeholder">
+          <div class="ph-icon">🃏</div>
+          <div class="ph-lbl">NO SCAN</div>
+        </div>
+        <div class="vc-grade">PSA 9</div>
+        
+      </div>
+      <div class="vc-body">
+        <div class="vc-sport" style="color:#00CC88">Football · 1989</div>
+        <div class="vc-player">Barry Sanders</div>
+        <div class="vc-set">1989 Score Football #257</div>
+        <div class="vc-meta">
+          <span class="vc-tag" style="background:#8BA7C715;border:1px solid #8BA7C730;color:#8BA7C7">Base</span>
+          <span class="vc-tag" style="background:rgba(255,184,0,0.1);border:1px solid rgba(255,184,0,0.3);color:#FFB800">RC</span>
+          
+        </div>
+        <div class="vc-footer">
+          <button class="vc-btn" style="color:#00E887;border-color:rgba(0,232,135,0.3);background:rgba(0,232,135,0.08)" onclick="event.stopPropagation();toggleMatchPanel()">🎯 SEE MATCH</button>
+          <button class="vc-btn" style="color:var(--blue);border-color:rgba(0,170,255,0.25);background:rgba(0,170,255,0.06)" onclick="event.stopPropagation()">✏️ EDIT</button>
+        </div>
+      </div>
+    </div><div class="vault-card" style="animation-delay:0.04s" onclick="viewCard(2)">
+      
+      <div class="vc-img" style="background:linear-gradient(135deg,#00AAFF12,var(--bg2))">
+        <div class="vc-img-placeholder">
+          <div class="ph-icon">🃏</div>
+          <div class="ph-lbl">NO SCAN</div>
+        </div>
+        
+        
+      </div>
+      <div class="vc-body">
+        <div class="vc-sport" style="color:#00AAFF">Baseball · 1989</div>
+        <div class="vc-player">Ken Griffey Jr.</div>
+        <div class="vc-set">1989 Score Baseball #100</div>
+        <div class="vc-meta">
+          <span class="vc-tag" style="background:#8BA7C715;border:1px solid #8BA7C730;color:#8BA7C7">Base</span>
+          <span class="vc-tag" style="background:rgba(255,184,0,0.1);border:1px solid rgba(255,184,0,0.3);color:#FFB800">RC</span>
+          
+        </div>
+        <div class="vc-footer">
+          <button class="vc-btn" style="color:var(--text2);border-color:var(--border2);background:transparent" onclick="event.stopPropagation()">📷 ADD SCAN</button>
+          <button class="vc-btn" style="color:var(--blue);border-color:rgba(0,170,255,0.25);background:rgba(0,170,255,0.06)" onclick="event.stopPropagation()">✏️ EDIT</button>
+        </div>
+      </div>
+    </div><div class="vault-card has-match" style="animation-delay:0.08s" onclick="viewCard(3)">
+      <div class="match-badge">ISO MATCH </div>
+      <div class="vc-img" style="background:linear-gradient(135deg,#00CC8812,var(--bg2))">
+        <div class="vc-img-placeholder">
+          <div class="ph-icon">🃏</div>
+          <div class="ph-lbl">NO SCAN</div>
+        </div>
+        <div class="vc-grade">PSA 10</div>
+        
+      </div>
+      <div class="vc-body">
+        <div class="vc-sport" style="color:#00CC88">Football · 2017</div>
+        <div class="vc-player">Patrick Mahomes</div>
+        <div class="vc-set">2017 Score Football #348</div>
+        <div class="vc-meta">
+          <span class="vc-tag" style="background:#8BA7C715;border:1px solid #8BA7C730;color:#8BA7C7">Base</span>
+          <span class="vc-tag" style="background:rgba(255,184,0,0.1);border:1px solid rgba(255,184,0,0.3);color:#FFB800">RC</span>
+          
+        </div>
+        <div class="vc-footer">
+          <button class="vc-btn" style="color:#00E887;border-color:rgba(0,232,135,0.3);background:rgba(0,232,135,0.08)" onclick="event.stopPropagation();toggleMatchPanel()">🎯 SEE MATCH</button>
+          <button class="vc-btn" style="color:var(--blue);border-color:rgba(0,170,255,0.25);background:rgba(0,170,255,0.06)" onclick="event.stopPropagation()">✏️ EDIT</button>
+        </div>
+      </div>
+    </div><div class="vault-card" style="animation-delay:0.12s" onclick="viewCard(4)">
+      
+      <div class="vc-img" style="background:linear-gradient(135deg,#00CC8812,var(--bg2))">
+        <div class="vc-img-placeholder">
+          <div class="ph-icon">🃏</div>
+          <div class="ph-lbl">NO SCAN</div>
+        </div>
+        <div class="vc-grade">BGS 9.5</div>
+        <div class="vc-sale">FOR SALE</div>
+      </div>
+      <div class="vc-body">
+        <div class="vc-sport" style="color:#00CC88">Football · 1998</div>
+        <div class="vc-player">Peyton Manning</div>
+        <div class="vc-set">1998 Score Football #233</div>
+        <div class="vc-meta">
+          <span class="vc-tag" style="background:#8BA7C715;border:1px solid #8BA7C730;color:#8BA7C7">Base</span>
+          <span class="vc-tag" style="background:rgba(255,184,0,0.1);border:1px solid rgba(255,184,0,0.3);color:#FFB800">RC</span>
+          
+        </div>
+        <div class="vc-footer">
+          <button class="vc-btn" style="color:var(--text2);border-color:var(--border2);background:transparent" onclick="event.stopPropagation()">📷 ADD SCAN</button>
+          <button class="vc-btn" style="color:var(--blue);border-color:rgba(0,170,255,0.25);background:rgba(0,170,255,0.06)" onclick="event.stopPropagation()">✏️ EDIT</button>
+        </div>
+      </div>
+    </div><div class="vault-card" style="animation-delay:0.16s" onclick="viewCard(5)">
+      
+      <div class="vc-img" style="background:linear-gradient(135deg,#FF3B5C12,var(--bg2))">
+        <div class="vc-img-placeholder">
+          <div class="ph-icon">🃏</div>
+          <div class="ph-lbl">NO SCAN</div>
+        </div>
+        
+        
+      </div>
+      <div class="vc-body">
+        <div class="vc-sport" style="color:#FF3B5C">F1 · 2025</div>
+        <div class="vc-player">Max Verstappen</div>
+        <div class="vc-set">2025 Topps Chrome F1 Sapphire Edition #1</div>
+        <div class="vc-meta">
+          <span class="vc-tag" style="background:#8BA7C715;border:1px solid #8BA7C730;color:#8BA7C7">Base</span>
+          
+          <span class="vc-tag" style="background:rgba(0,170,255,0.08);border:1px solid rgba(0,170,255,0.2);color:rgba(0,170,255,0.8)">Sapphire Base</span>
+        </div>
+        <div class="vc-footer">
+          <button class="vc-btn" style="color:var(--text2);border-color:var(--border2);background:transparent" onclick="event.stopPropagation()">📷 ADD SCAN</button>
+          <button class="vc-btn" style="color:var(--blue);border-color:rgba(0,170,255,0.25);background:rgba(0,170,255,0.06)" onclick="event.stopPropagation()">✏️ EDIT</button>
+        </div>
+      </div>
+    </div><div class="vault-card" style="animation-delay:0.2s" onclick="viewCard(6)">
+      
+      <div class="vc-img" style="background:linear-gradient(135deg,#00CC8812,var(--bg2))">
+        <div class="vc-img-placeholder">
+          <div class="ph-icon">🃏</div>
+          <div class="ph-lbl">NO SCAN</div>
+        </div>
+        <div class="vc-grade">PSA 8</div>
+        
+      </div>
+      <div class="vc-body">
+        <div class="vc-sport" style="color:#00CC88">Football · 1989</div>
+        <div class="vc-player">Troy Aikman</div>
+        <div class="vc-set">1989 Score Football #270</div>
+        <div class="vc-meta">
+          <span class="vc-tag" style="background:#8BA7C715;border:1px solid #8BA7C730;color:#8BA7C7">Base</span>
+          <span class="vc-tag" style="background:rgba(255,184,0,0.1);border:1px solid rgba(255,184,0,0.3);color:#FFB800">RC</span>
+          
+        </div>
+        <div class="vc-footer">
+          <button class="vc-btn" style="color:var(--text2);border-color:var(--border2);background:transparent" onclick="event.stopPropagation()">📷 ADD SCAN</button>
+          <button class="vc-btn" style="color:var(--blue);border-color:rgba(0,170,255,0.25);background:rgba(0,170,255,0.06)" onclick="event.stopPropagation()">✏️ EDIT</button>
+        </div>
+      </div>
+    </div><div class="vault-card" style="animation-delay:0.24s" onclick="viewCard(7)">
+      
+      <div class="vc-img" style="background:linear-gradient(135deg,#00CC8812,var(--bg2))">
+        <div class="vc-img-placeholder">
+          <div class="ph-icon">🃏</div>
+          <div class="ph-lbl">NO SCAN</div>
+        </div>
+        
+        
+      </div>
+      <div class="vc-body">
+        <div class="vc-sport" style="color:#00CC88">Football · 1990</div>
+        <div class="vc-player">Emmitt Smith</div>
+        <div class="vc-set">1990 Score Football #211</div>
+        <div class="vc-meta">
+          <span class="vc-tag" style="background:#8BA7C715;border:1px solid #8BA7C730;color:#8BA7C7">Base</span>
+          <span class="vc-tag" style="background:rgba(255,184,0,0.1);border:1px solid rgba(255,184,0,0.3);color:#FFB800">RC</span>
+          
+        </div>
+        <div class="vc-footer">
+          <button class="vc-btn" style="color:var(--text2);border-color:var(--border2);background:transparent" onclick="event.stopPropagation()">📷 ADD SCAN</button>
+          <button class="vc-btn" style="color:var(--blue);border-color:rgba(0,170,255,0.25);background:rgba(0,170,255,0.06)" onclick="event.stopPropagation()">✏️ EDIT</button>
+        </div>
+      </div>
+    </div><div class="vault-card" style="animation-delay:0.28s" onclick="viewCard(8)">
+      
+      <div class="vc-img" style="background:linear-gradient(135deg,#FFB80012,var(--bg2))">
+        <div class="vc-img-placeholder">
+          <div class="ph-icon">🃏</div>
+          <div class="ph-lbl">NO SCAN</div>
+        </div>
+        
+        
+      </div>
+      <div class="vc-body">
+        <div class="vc-sport" style="color:#FFB800">Olympics · 2026</div>
+        <div class="vc-player">Mikaela Shiffrin</div>
+        <div class="vc-set">2026 Topps Chrome Winter Olympics #5</div>
+        <div class="vc-meta">
+          <span class="vc-tag" style="background:#8BA7C715;border:1px solid #8BA7C730;color:#8BA7C7">Base</span>
+          
+          <span class="vc-tag" style="background:rgba(0,170,255,0.08);border:1px solid rgba(0,170,255,0.2);color:rgba(0,170,255,0.8)">Gold /50</span>
+        </div>
+        <div class="vc-footer">
+          <button class="vc-btn" style="color:var(--text2);border-color:var(--border2);background:transparent" onclick="event.stopPropagation()">📷 ADD SCAN</button>
+          <button class="vc-btn" style="color:var(--blue);border-color:rgba(0,170,255,0.25);background:rgba(0,170,255,0.06)" onclick="event.stopPropagation()">✏️ EDIT</button>
+        </div>
+      </div>
+    </div></div>
+<div id="emptyVault" style="display: none;">
+  <div class="ev-logo">GRAILISO</div>
+  <div class="ev-title">YOUR VAULT IS EMPTY</div>
+  <div class="ev-sub">Start building your digital collection. Every card you add<br>gets matched against live buyer ISOs automatically.</div>
+  <div class="ev-btn" onclick="openDrawer()">＋ ADD YOUR FIRST CARD</div>
+</div>
+
+<!-- ADD CARD DRAWER -->
+<div id="drawerOverlay" onclick="closeDrawer()"></div>
+<div id="drawer">
+  <div class="drawer-hdr">
+    <div class="drawer-title">ADD CARD TO VAULT</div>
+    <div class="drawer-close" onclick="closeDrawer()">✕</div>
+  </div>
+  <div class="drawer-body">
+    <div class="d-section">
+      <div class="d-section-title">CARD INFO</div>
+      <div class="d-field">
+        <label class="d-label">Player / Character *</label>
+        <input class="d-input" placeholder="e.g. Barry Sanders" id="d_player">
+      </div>
+      <div class="d-field">
+        <label class="d-label">Set Name *</label>
+        <input class="d-input" placeholder="e.g. 1989 Score Football" id="d_set">
+      </div>
+      <div class="d-row">
+        <div class="d-field">
+          <label class="d-label">Card Number</label>
+          <input class="d-input" placeholder="#257" id="d_num">
+        </div>
+        <div class="d-field">
+          <label class="d-label">Year</label>
+          <input class="d-input" placeholder="1989" id="d_year">
+        </div>
+      </div>
+      <div class="d-row">
+        <div class="d-field">
+          <label class="d-label">Parallel</label>
+          <select class="d-select" id="d_parallel">
+            <option>Base</option>
+            <option>Refractor</option>
+            <option>Gold /50</option>
+            <option>Orange /25</option>
+            <option>Red /10</option>
+            <option>SuperFractor 1/1</option>
+          </select>
+        </div>
+        <div class="d-field">
+          <label class="d-label">Print Run</label>
+          <input class="d-input" placeholder="e.g. 12/50" id="d_print">
+        </div>
+      </div>
+    </div>
+    <div class="d-section">
+      <div class="d-section-title">CONDITION &amp; GRADE</div>
+      <div class="d-row">
+        <div class="d-field">
+          <label class="d-label">Grade</label>
+          <select class="d-select" id="d_grade">
+            <option value="RAW">RAW (Ungraded)</option>
+            <option value="PSA 10">PSA 10</option>
+            <option value="PSA 9">PSA 9</option>
+            <option value="PSA 8">PSA 8</option>
+            <option value="BGS 9.5">BGS 9.5</option>
+            <option value="BGS 9">BGS 9</option>
+            <option value="SGC 10">SGC 10</option>
+            <option value="SGC 9.5">SGC 9.5</option>
+          </select>
+        </div>
+        <div class="d-field">
+          <label class="d-label">Cert Number</label>
+          <input class="d-input" placeholder="PSA / BGS cert #" id="d_cert">
+        </div>
+      </div>
+    </div>
+    <div class="d-section">
+      <div class="d-section-title">PROVENANCE</div>
+      <div class="d-row">
+        <div class="d-field">
+          <label class="d-label">Acquired From</label>
+          <select class="d-select" id="d_from">
+            <option>Pack</option>
+            <option>eBay</option>
+            <option>COMC</option>
+            <option>LCS</option>
+            <option>Trade</option>
+            <option>Show</option>
+            <option>Private Sale</option>
+          </select>
+        </div>
+        <div class="d-field">
+          <label class="d-label">Price Paid ($)</label>
+          <input class="d-input" placeholder="0.00" id="d_price" type="number">
+        </div>
+      </div>
+      <div class="d-field">
+        <label class="d-label">Notes</label>
+        <input class="d-input" placeholder="e.g. Pulled from hobby box, sharp corners" id="d_notes">
+      </div>
+    </div>
+    <div class="d-section">
+      <div class="d-section-title">CARD SCANS — EARN CREDITS</div>
+      <div class="upload-pair">
+        <div class="upload-zone" id="uz_front" onclick="simulateUpload(&#39;front&#39;)">
+          <div class="uz-icon">📷</div>
+          <div class="uz-lbl" id="uz_front_lbl">Upload Front</div>
+        </div>
+        <div class="upload-zone" id="uz_back" onclick="simulateUpload(&#39;back&#39;)">
+          <div class="uz-icon">📷</div>
+          <div class="uz-lbl" id="uz_back_lbl">Upload Back</div>
+        </div>
+      </div>
+      <div class="credit-note">
+        📸 Upload <strong>front + back scans</strong> and earn <strong>+2 ISO Credits</strong>.<br>
+        Your scans help other collectors — and credits unlock ISO posts.
+      </div>
+    </div>
+    <button class="d-submit" onclick="addCardToVault()">ADD TO MY VAULT →</button>
+  </div>
+</div>
+
+<!-- MATCH PANEL -->
+<div id="matchPanel">
+  <div class="mp-hdr">
+    <div class="mp-close" onclick="toggleMatchPanel()" style="float:right;display:flex">✕</div>
+    <div class="mp-title">🎯 ACTIVE MATCHES</div>
+    <div class="mp-sub">3 buyers want cards sitting in your vault right now</div>
+  </div>
+  <div class="mp-body" id="matchList">
+    <div class="match-item">
+      <div class="mi-card-name">1989 Score Football — Barry Sanders RC</div>
+      <div class="mi-set">Barry Sanders #257 · Base</div>
+      <div class="mi-buyer">
+        <div class="mi-avatar">K</div>
+        <div style="flex:1">
+          <div class="mi-buyer-name">@kb_kollector</div>
+          <div class="mi-buyer-meta">PSA 8+ preferred</div>
+        </div>
+        <div class="mi-price">Up to $320</div>
+      </div>
+      <div class="mi-btns">
+        <button class="mi-interested" onclick="showInterested(this)">I'M INTERESTED →</button>
+        <button class="mi-pass" onclick="this.closest(&#39;.match-item&#39;).style.opacity=&#39;.3&#39;">PASS</button>
+      </div>
+    </div>
+  
+    <div class="match-item">
+      <div class="mi-card-name">1989 Score Football — Barry Sanders RC</div>
+      <div class="mi-set">Barry Sanders #257 · Gold parallel</div>
+      <div class="mi-buyer">
+        <div class="mi-avatar">D</div>
+        <div style="flex:1">
+          <div class="mi-buyer-name">@detroitlion_cards</div>
+          <div class="mi-buyer-meta">Any grade</div>
+        </div>
+        <div class="mi-price">Up to $95</div>
+      </div>
+      <div class="mi-btns">
+        <button class="mi-interested" onclick="showInterested(this)">I'M INTERESTED →</button>
+        <button class="mi-pass" onclick="this.closest(&#39;.match-item&#39;).style.opacity=&#39;.3&#39;">PASS</button>
+      </div>
+    </div>
+  
+    <div class="match-item">
+      <div class="mi-card-name">2017 Score Football — Patrick Mahomes RC</div>
+      <div class="mi-set">Patrick Mahomes #348 · Base</div>
+      <div class="mi-buyer">
+        <div class="mi-avatar">C</div>
+        <div style="flex:1">
+          <div class="mi-buyer-name">@chiefsftw</div>
+          <div class="mi-buyer-meta">PSA 9+ only</div>
+        </div>
+        <div class="mi-price">Up to $180</div>
+      </div>
+      <div class="mi-btns">
+        <button class="mi-interested" onclick="showInterested(this)">I'M INTERESTED →</button>
+        <button class="mi-pass" onclick="this.closest(&#39;.match-item&#39;).style.opacity=&#39;.3&#39;">PASS</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── SAMPLE VAULT DATA ──────────────────────────────────────────
+const VAULT = [
+  {id:1, player:"Barry Sanders", set:"1989 Score Football", year:1989, num:"257", parallel:"Base", sport:"Football", grade:"PSA 9", hasMatch:true, matchCount:2, forSale:false, image:null, cat:"Base", rc:true},
+  {id:2, player:"Ken Griffey Jr.", set:"1989 Score Baseball", year:1989, num:"100", parallel:"Base", sport:"Baseball", grade:"RAW", hasMatch:false, matchCount:0, forSale:false, image:null, cat:"Base", rc:true},
+  {id:3, player:"Patrick Mahomes", set:"2017 Score Football", year:2017, num:"348", parallel:"Base", sport:"Football", grade:"PSA 10", hasMatch:true, matchCount:1, forSale:false, image:null, cat:"Base", rc:true},
+  {id:4, player:"Peyton Manning", set:"1998 Score Football", year:1998, num:"233", parallel:"Base", sport:"Football", grade:"BGS 9.5", hasMatch:false, matchCount:0, forSale:true, image:null, cat:"Base", rc:true},
+  {id:5, player:"Max Verstappen", set:"2025 Topps Chrome F1 Sapphire Edition", year:2025, num:"1", parallel:"Sapphire Base", sport:"F1", grade:"RAW", hasMatch:false, matchCount:0, forSale:false, image:null, cat:"Base", rc:false},
+  {id:6, player:"Troy Aikman", set:"1989 Score Football", year:1989, num:"270", parallel:"Base", sport:"Football", grade:"PSA 8", hasMatch:false, matchCount:0, forSale:false, image:null, cat:"Base", rc:true},
+  {id:7, player:"Emmitt Smith", set:"1990 Score Football", year:1990, num:"211", parallel:"Base", sport:"Football", grade:"RAW", hasMatch:false, matchCount:0, forSale:false, image:null, cat:"Base", rc:true},
+  {id:8, player:"Mikaela Shiffrin", set:"2026 Topps Chrome Winter Olympics", year:2026, num:"5", parallel:"Gold /50", sport:"Olympics", grade:"RAW", hasMatch:false, matchCount:0, forSale:false, image:null, cat:"Base", rc:false},
+];
+
+const MATCHES = [
+  {id:1, card:"1989 Score Football — Barry Sanders RC", set:"Barry Sanders #257 · Base", buyer:"kb_kollector", avatarInitial:"K", maxPrice:320, note:"PSA 8+ preferred"},
+  {id:2, card:"1989 Score Football — Barry Sanders RC", set:"Barry Sanders #257 · Gold parallel", buyer:"detroitlion_cards", avatarInitial:"D", maxPrice:95, note:"Any grade"},
+  {id:3, card:"2017 Score Football — Patrick Mahomes RC", set:"Patrick Mahomes #348 · Base", buyer:"chiefsftw", avatarInitial:"C", maxPrice:180, note:"PSA 9+ only"},
+];
+
+const SPORT_COLORS={Football:"#00CC88",Baseball:"#00AAFF",Basketball:"#FF6B35",Soccer:"#9B59B6",Hockey:"#5BC4D4",F1:"#FF3B5C",Olympics:"#FFB800",Entertainment:"#1ABC9C",Default:"#00AAFF"};
+function sc(sport){return SPORT_COLORS[sport]||SPORT_COLORS.Default}
+
+function renderVault(cards){
+  const grid=document.getElementById("vaultGrid");
+  const empty=document.getElementById("emptyVault");
+  if(!cards.length){grid.innerHTML="";empty.style.display="block";return;}
+  empty.style.display="none";
+  grid.innerHTML=cards.map((c,i)=>{
+    const color=sc(c.sport);
+    const catColor={Base:"#8BA7C7",Auto:"#FFB800",Insert:"#00E887",Relic:"#FF3B5C"}[c.cat]||"#8BA7C7";
+    return `<div class="vault-card${c.hasMatch?" has-match":""}" style="animation-delay:${i*0.04}s" onclick="viewCard(${c.id})">
+      ${c.hasMatch?`<div class="match-badge">ISO MATCH ${c.matchCount > 1 ? `x${c.matchCount}`:""}</div>`:""}
+      <div class="vc-img" style="background:linear-gradient(135deg,${color}12,var(--bg2))">
+        <div class="vc-img-placeholder">
+          <div class="ph-icon">🃏</div>
+          <div class="ph-lbl">NO SCAN</div>
+        </div>
+        ${c.grade!=="RAW"?`<div class="vc-grade">${c.grade}</div>`:""}
+        ${c.forSale?`<div class="vc-sale">FOR SALE</div>`:""}
+      </div>
+      <div class="vc-body">
+        <div class="vc-sport" style="color:${color}">${c.sport} · ${c.year}</div>
+        <div class="vc-player">${c.player}</div>
+        <div class="vc-set">${c.set} #${c.num}</div>
+        <div class="vc-meta">
+          <span class="vc-tag" style="background:${catColor}15;border:1px solid ${catColor}30;color:${catColor}">${c.cat}</span>
+          ${c.rc?'<span class="vc-tag" style="background:rgba(255,184,0,0.1);border:1px solid rgba(255,184,0,0.3);color:#FFB800">RC</span>':""}
+          ${c.parallel!=="Base"?`<span class="vc-tag" style="background:rgba(0,170,255,0.08);border:1px solid rgba(0,170,255,0.2);color:rgba(0,170,255,0.8)">${c.parallel}</span>`:""}
+        </div>
+        <div class="vc-footer">
+          ${c.hasMatch
+            ?`<button class="vc-btn" style="color:#00E887;border-color:rgba(0,232,135,0.3);background:rgba(0,232,135,0.08)" onclick="event.stopPropagation();toggleMatchPanel()">🎯 SEE MATCH</button>`
+            :`<button class="vc-btn" style="color:var(--text2);border-color:var(--border2);background:transparent" onclick="event.stopPropagation()">📷 ADD SCAN</button>`
+          }
+          <button class="vc-btn" style="color:var(--blue);border-color:rgba(0,170,255,0.25);background:rgba(0,170,255,0.06)" onclick="event.stopPropagation()">✏️ EDIT</button>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function renderMatches(){
+  const list=document.getElementById("matchList");
+  list.innerHTML=MATCHES.map(m=>`
+    <div class="match-item">
+      <div class="mi-card-name">${m.card}</div>
+      <div class="mi-set">${m.set}</div>
+      <div class="mi-buyer">
+        <div class="mi-avatar">${m.avatarInitial}</div>
+        <div style="flex:1">
+          <div class="mi-buyer-name">@${m.buyer}</div>
+          <div class="mi-buyer-meta">${m.note}</div>
+        </div>
+        <div class="mi-price">Up to $${m.maxPrice}</div>
+      </div>
+      <div class="mi-btns">
+        <button class="mi-interested" onclick="showInterested(this)">I'M INTERESTED →</button>
+        <button class="mi-pass" onclick="this.closest('.match-item').style.opacity='.3'">PASS</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function showInterested(btn){
+  const item=btn.closest(".match-item");
+  item.innerHTML=`<div style="text-align:center;padding:20px 0;color:var(--green)">
+    <div style="font-size:24px;margin-bottom:8px">✅</div>
+    <div style="font-family:'Bebas Neue';font-size:15px;letter-spacing:2px">BUYER NOTIFIED</div>
+    <div style="font-size:11px;color:var(--text2);margin-top:4px">They'll reach out to make an offer. 1 ISO Credit used.</div>
+  </div>`;
+}
+
+function filterVault(q){
+  const query=(q||"").toLowerCase();
+  const filtered=VAULT.filter(c=>
+    !query||c.player.toLowerCase().includes(query)||c.set.toLowerCase().includes(query)
+  );
+  renderVault(filtered);
+}
+
+function openDrawer(){
+  document.getElementById("drawer").classList.add("open");
+  document.getElementById("drawerOverlay").classList.add("open");
+}
+function closeDrawer(){
+  document.getElementById("drawer").classList.remove("open");
+  document.getElementById("drawerOverlay").classList.remove("open");
+}
+function toggleMatchPanel(){
+  document.getElementById("matchPanel").classList.toggle("open");
+}
+function simulateUpload(side){
+  const zone=document.getElementById(`uz_${side}`);
+  const lbl=document.getElementById(`uz_${side}_lbl`);
+  zone.classList.add("uploaded");
+  zone.querySelector(".uz-icon").textContent="✅";
+  lbl.textContent=side==="front"?"Front Uploaded":"Back Uploaded";
+}
+function addCardToVault(){
+  const player=document.getElementById("d_player").value.trim();
+  if(!player){document.getElementById("d_player").style.borderColor="var(--red)";return;}
+  closeDrawer();
+  // Would hit Supabase in real version
+  alert("Card added to vault! Checking ISO matches...");
+}
+function viewCard(id){
+  // Would open card detail panel in real version
+}
+
+renderVault(VAULT);
+renderMatches();
+</script>
+
+
+</body></html>

@@ -1086,17 +1086,18 @@ async function createAccount() {
 // ============================================================
 // STEP 2 — USERNAME
 // ============================================================
-const USERNAME_RE = /^[a-z0-9_]{3,20}$/;
+const USERNAME_RE = /^[a-zA-Z0-9_]{3,20}$/;
 
 function onUsernameInput(raw) {
-  const val      = raw.toLowerCase().replace(/[^a-z0-9_]/g, '');
+  // Allow letters (upper+lower), numbers, underscores only
+  const val      = raw.replace(/[^a-zA-Z0-9_]/g, '');
   const input    = document.getElementById('username');
   const preview  = document.getElementById('username-preview-val');
   const hint     = document.getElementById('username-hint');
   const statusEl = document.getElementById('username-status');
   const btn      = document.getElementById('btn-username');
 
-  // Sanitize and reflect
+  // Sanitize and reflect (strip invalid chars but preserve case)
   if (input.value !== val) input.value = val;
   preview.textContent = val ? `@${val}` : '@';
 
@@ -1126,6 +1127,7 @@ function onUsernameInput(raw) {
 }
 
 async function checkUsernameAvailability(val) {
+  val = val.toLowerCase(); // always check lowercase for uniqueness
   const hint     = document.getElementById('username-hint');
   const statusEl = document.getElementById('username-status');
   const btn      = document.getElementById('btn-username');
@@ -1168,16 +1170,17 @@ async function submitUsername() {
   if (!currentUser) return showMsg('msg-2', 'Session error — please refresh.');
   if (!usernameAvailable) return;
 
-  const btn           = document.getElementById('btn-username');
-  const username      = document.getElementById('username').value.trim().toLowerCase();
-  const bio           = document.getElementById('bio').value.trim();
+  const btn             = document.getElementById('btn-username');
+  const displayUsername = document.getElementById('username').value.trim();
+  const username        = displayUsername.toLowerCase();
+  const bio             = document.getElementById('bio').value.trim();
   const favPlayer     = document.getElementById('fav-player').value.trim();
   const favTeam       = document.getElementById('fav-team').value.trim();
   const favSportChip  = document.querySelector('.chip[data-fav].selected');
   const favSport      = favSportChip ? favSportChip.dataset.fav : null;
 
   if (!USERNAME_RE.test(username)) {
-    return showMsg('msg-2', 'Username must be 3–20 characters: letters, numbers, underscores only.');
+    return showMsg('msg-2', 'Username must be 3–20 characters: letters, numbers, and underscores only.');
   }
 
   btn.disabled  = true;
@@ -1203,6 +1206,7 @@ async function submitUsername() {
     // first_name, last_name, role are NOT in the trigger — must be written here
     const profileUpdate = {
       username,
+      display_username: displayUsername,
       first_name: currentUser.user_metadata?.first_name || '',
       last_name:  currentUser.user_metadata?.last_name  || '',
       role:       pendingRole,

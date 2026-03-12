@@ -1198,13 +1198,17 @@ async function submitUsername() {
 
     if (!profile) throw new Error('Profile not ready. Please try again in a moment.');
 
-    // Save username + profile card fields in one update
+    // Save username + core identity + profile card fields in one update
+    // first_name, last_name, role are NOT in the trigger — must be written here
     const profileUpdate = {
       username,
-      ...(bio        && { bio }),
-      ...(favPlayer  && { favorite_player: favPlayer }),
-      ...(favTeam    && { favorite_team: favTeam }),
-      ...(favSport   && { favorite_sport: favSport }),
+      first_name: currentUser.user_metadata?.first_name || '',
+      last_name:  currentUser.user_metadata?.last_name  || '',
+      role:       pendingRole,
+      ...(bio       && { bio }),
+      ...(favPlayer && { favorite_player: favPlayer }),
+      ...(favTeam   && { favorite_team:   favTeam }),
+      ...(favSport  && { favorite_sport:  favSport }),
     };
 
     const { error: usernameErr } = await sbClient

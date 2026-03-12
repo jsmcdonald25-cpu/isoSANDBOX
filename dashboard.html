@@ -53,16 +53,16 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .topbar-sub{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted-text);margin-top:1px}
 .topbar-actions{display:flex;align-items:center;gap:10px}
 /* CARD TICKER IN TOPBAR */
-.card-ticker-wrap{overflow:hidden;width:100%;max-width:680px}
-.card-ticker-inner{display:flex;gap:32px;white-space:nowrap;animation:cardTick 28s linear infinite}
+.card-ticker-wrap{overflow:hidden;width:100%;background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:6px;padding:5px 10px;margin-top:4px}
+.card-ticker-inner{display:flex;gap:32px;white-space:nowrap;animation:cardTick 32s linear infinite}
 .card-ticker-inner:hover{animation-play-state:paused}
 @keyframes cardTick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .ct-item{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--chrome);display:inline-flex;align-items:center;gap:8px;flex-shrink:0}
 .ct-item .ct-name{color:var(--white);font-weight:600}
 .ct-item .ct-price{color:var(--blue);font-weight:700}
 .ct-item .ct-chg.up{color:var(--green)}.ct-item .ct-chg.dn{color:var(--red)}
-.ct-item .ct-sep{color:var(--deep-border)}
-.ct-grail{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:4px;color:var(--deep-border);animation:cardTick 50s linear infinite}
+.ct-item .ct-sep{color:rgba(0,170,255,0.25)}
+.ct-grail{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:6px;color:rgba(0,170,255,0.3);animation:cardTick 55s linear infinite;display:block}
 .btn{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:8px 18px;border-radius:6px;border:none;cursor:pointer;transition:all .2s}
 .btn-primary{background:var(--blue);color:white}
 .btn-primary:hover{background:var(--blue-bright);box-shadow:0 0 20px var(--blue-glow)}
@@ -72,9 +72,17 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .notif-bell{position:relative;cursor:pointer;width:34px;height:34px;border-radius:8px;background:rgba(0,170,255,.08);border:1px solid var(--deep-border);display:flex;align-items:center;justify-content:center;color:var(--muted-text);transition:all .2s}
 .notif-bell:hover{border-color:var(--blue);color:var(--blue)}
 .notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--red);border-radius:50%;border:1.5px solid var(--deep2)}
-.content{flex:1;overflow-y:auto;padding:24px}
+.content{flex:1;overflow-y:auto;padding:24px;padding-bottom:58px}
 .content::-webkit-scrollbar{width:5px}
 .content::-webkit-scrollbar-thumb{background:var(--deep-border);border-radius:3px}
+@keyframes scoreTick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.score-chip{display:inline-flex;align-items:center;gap:10px;font-family:'Barlow Condensed',sans-serif;font-size:12px;flex-shrink:0;padding:3px 12px;border-left:1px solid rgba(0,170,255,0.12)}
+.score-chip .sc-teams{color:var(--white);font-weight:600;font-size:13px}
+.score-chip .sc-score{color:var(--blue);font-weight:700;font-size:14px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px}
+.score-chip .sc-status{font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:1px 5px;border-radius:3px}
+.score-chip .sc-status.live{color:var(--green);background:rgba(0,232,135,0.1)}
+.score-chip .sc-status.final{color:var(--muted-text)}
+.score-chip .sc-sport{font-size:10px;color:rgba(0,170,255,0.5);letter-spacing:1px;text-transform:uppercase}
 /* PANELS */
 .panel{display:none;animation:fadeIn .2s ease}
 .panel.active{display:block}
@@ -351,6 +359,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     <div class="nav-item" onclick="N('myisos',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div><span class="nav-label">My ISOs</span><span class="nav-badge">3</span></div>
     <div class="nav-item" onclick="N('notifs',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></div><span class="nav-label">Notifications</span><span class="nav-badge red">2</span></div>
     <div class="nav-item" onclick="N('market',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span class="nav-label">Market Data</span></div>
+    <div class="nav-item" onclick="N('leaderboard',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="14" width="4" height="8" rx="1"/><rect x="9" y="9" width="4" height="13" rx="1"/><rect x="16" y="4" width="4" height="18" rx="1"/><line x1="2" y1="22" x2="22" y2="22"/></svg></div><span class="nav-label">Leaderboard</span></div>
     <div class="nav-item" onclick="N('library',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div><span class="nav-label">Card Library</span></div>
     <div class="nav-item" onclick="N('isoticker',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><span class="nav-label">ISOTicker</span></div>
     <div class="nav-item" onclick="N('account',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><span class="nav-label">Account</span></div>
@@ -594,6 +603,44 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     </div>
   </div>
 
+  <!-- LEADERBOARD -->
+  <div class="panel" id="panel-leaderboard">
+    <div class="section-header"><div class="section-title">🏆 LEADERBOARD</div><span class="section-sub" style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted-text);letter-spacing:1px;">UPDATED DAILY</span></div>
+    <div class="two-col" style="gap:18px">
+      <!-- Most Active Buyers -->
+      <div class="card-block">
+        <div class="card-block-title"><div class="dot"></div> Most Active Buyers</div>
+        <div id="lb-buyers">
+          <div class="lb-row" style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--deep-border)"><span class="lb-rank" style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--blue);min-width:24px">1</span><div style="flex:1"><div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--white)">@jsmcdonald25</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text)">12 ISOs posted · 2 grails acquired</div></div><span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--green)">+890 pts</span></div>
+          <div class="lb-row" style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--deep-border)"><span class="lb-rank" style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--chrome);min-width:24px">2</span><div style="flex:1"><div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--white)">@grailhunter_tx</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text)">9 ISOs posted · 1 grail acquired</div></div><span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--green)">+610 pts</span></div>
+          <div class="lb-row" style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--deep-border)"><span class="lb-rank" style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:#CD7F32;min-width:24px">3</span><div style="flex:1"><div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--white)">@rookieking99</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text)">7 ISOs posted · 0 grails acquired</div></div><span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--green)">+420 pts</span></div>
+          <div class="lb-row" style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--deep-border)"><span class="lb-rank" style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--muted-text);min-width:24px">4</span><div style="flex:1"><div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--white)">@psa10only</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text)">5 ISOs posted · 1 grail acquired</div></div><span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--green)">+310 pts</span></div>
+          <div class="lb-row" style="display:flex;align-items:center;gap:10px;padding:9px 0"><span class="lb-rank" style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--muted-text);min-width:24px">5</span><div style="flex:1"><div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--white)">@sotofanatic</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text)">4 ISOs posted · 0 grails acquired</div></div><span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--green)">+200 pts</span></div>
+        </div>
+      </div>
+      <!-- Most Wanted Cards -->
+      <div class="card-block">
+        <div class="card-block-title"><div class="dot"></div> Most Wanted Cards</div>
+        <div>
+          <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--deep-border)"><span style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--blue);min-width:24px">1</span><div style="flex:1"><div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--white)">Juan Soto RC Auto Gold /50</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text)">2019 Bowman Chrome</div></div><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--blue)">14 ISOs</span></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--deep-border)"><span style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--chrome);min-width:24px">2</span><div style="flex:1"><div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--white)">Shohei Ohtani RC Auto /499</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text)">2018 Topps Chrome</div></div><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--blue)">11 ISOs</span></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--deep-border)"><span style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:#CD7F32;min-width:24px">3</span><div style="flex:1"><div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--white)">Ronald Acuña Jr Auto /25</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text)">2018 Bowman Chrome</div></div><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--blue)">9 ISOs</span></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--deep-border)"><span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--muted-text);min-width:24px">4</span><div style="flex:1"><div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--white)">Gunnar Henderson RC Prizm</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text)">2023 Topps Chrome</div></div><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--blue)">7 ISOs</span></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:9px 0"><span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--muted-text);min-width:24px">5</span><div style="flex:1"><div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--white)">Julio Rodriguez Gold /50</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text)">2022 Topps Chrome</div></div><span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--blue)">6 ISOs</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:18px" class="card-block">
+      <div class="card-block-title"><div class="dot"></div> Top Sellers This Week</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:4px">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:8px"><span style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--blue)">1</span><div><div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--white)">@vault_kingz</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text)">3 cards sold · $2,340 vol</div></div></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:8px"><span style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--chrome)">2</span><div><div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--white)">@slabs_only</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text)">2 cards sold · $1,890 vol</div></div></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:8px"><span style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:#CD7F32">3</span><div><div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--white)">@chrome_connect</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text)">2 cards sold · $1,200 vol</div></div></div>
+      </div>
+      <div style="margin-top:12px;font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(0,170,255,0.35);letter-spacing:1px;">LIVE RANKINGS LAUNCH AT FULL RELEASE · DATA SHOWN IS DEMO</div>
+    </div>
+  </div>
+
   <!-- ACCOUNT -->
   <div class="panel" id="panel-account">
     <div class="verify-bar"><div class="v-dot"></div><div class="v-text"><strong>Account Active</strong> — ID verification and card on file connect at API launch</div></div>
@@ -621,6 +668,29 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
   </div><!-- /content -->
 </div><!-- /main -->
 </div><!-- /app -->
+
+<!-- SCORES BAR -->
+<div id="scoresBar" style="position:fixed;bottom:0;left:var(--sidebar-w);right:0;height:44px;background:#0a1929;border-top:1px solid rgba(0,170,255,0.18);display:flex;align-items:center;z-index:900;overflow:hidden;">
+  <div style="display:flex;align-items:center;gap:0;flex:1;min-width:0;">
+    <!-- Toggle -->
+    <div style="display:flex;align-items:center;gap:8px;padding:0 14px;border-right:1px solid rgba(0,170,255,0.15);flex-shrink:0;height:44px;">
+      <span id="scoresToggleLabel" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#00AAFF;font-weight:600;">SCORES</span>
+      <div id="scoresToggle" onclick="toggleScoresMode()" style="width:36px;height:18px;background:rgba(0,170,255,0.2);border:1px solid rgba(0,170,255,0.35);border-radius:9px;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;">
+        <div id="scoresToggleThumb" style="position:absolute;top:2px;left:2px;width:12px;height:12px;background:#00AAFF;border-radius:50%;transition:transform .2s;"></div>
+      </div>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#7A95AE;">SCHEDULE</span>
+    </div>
+    <!-- Scores/Schedule scroll area -->
+    <div style="overflow:hidden;flex:1;height:44px;display:flex;align-items:center;padding:0 10px;">
+      <div id="scoresTicker" style="display:flex;gap:24px;white-space:nowrap;animation:scoreTick 60s linear infinite;align-items:center;">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:#7A95AE;letter-spacing:1px;">LOADING SCORES...</span>
+      </div>
+    </div>
+  </div>
+  <div style="padding:0 12px;flex-shrink:0;border-left:1px solid rgba(0,170,255,0.15);height:44px;display:flex;align-items:center;">
+    <span id="scoresDate" style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1px;color:rgba(0,170,255,0.4);text-transform:uppercase;"></span>
+  </div>
+</div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ═══════════════════════════════════════
@@ -752,6 +822,7 @@ const PM={
   notifs:{t:'NOTIFICATIONS',s:'2 unread'},
   account:{t:'ACCOUNT',s:'Verified buyer'},
   isoticker:{t:'ISOTICKER',s:'Your collection — value since purchase'},
+  leaderboard:{t:'LEADERBOARD',s:'Top buyers · sellers · most wanted cards'},
 };
 function N(id,el){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
@@ -1205,6 +1276,107 @@ renderMkt();renderLib();renderOvMkt();
     </span>`;
   });
   inner.innerHTML = items;
+})();
+
+// ── SCORES BAR ────────────────────────────────────────────────
+(function initScoresBar(){
+  const ticker = document.getElementById('scoresTicker');
+  const dateEl = document.getElementById('scoresDate');
+  const today = new Date();
+  const dateStr = today.toISOString().split('T')[0];
+  const display = today.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+  if(dateEl) dateEl.textContent = display;
+
+  let scoresMode = true; // true = scores, false = schedule
+
+  window.toggleScoresMode = function(){
+    scoresMode = !scoresMode;
+    const thumb = document.getElementById('scoresToggleThumb');
+    const label = document.getElementById('scoresToggleLabel');
+    if(thumb) thumb.style.transform = scoresMode ? 'translateX(0)' : 'translateX(18px)';
+    if(label){ label.textContent = scoresMode ? 'SCORES' : 'SCHEDULE'; label.style.color = scoresMode ? '#00AAFF' : '#7A95AE'; }
+    scoresMode ? loadScores() : loadSchedule();
+  };
+
+  async function loadScores(){
+    if(!ticker) return;
+    try {
+      // NBA scores for today
+      const res = await fetch(`https://www.balldontlie.io/api/v1/games?dates[]=${dateStr}&per_page=30`);
+      const data = await res.json();
+      const games = data.data || [];
+      if(!games.length){ showFallback('No games today · Check back tonight'); return; }
+      renderGames(games, false);
+    } catch(e){ showFallback('Scores unavailable · Check back soon'); }
+  }
+
+  async function loadSchedule(){
+    if(!ticker) return;
+    try {
+      // Next 7 days
+      const dates = [];
+      for(let i=0;i<7;i++){
+        const d = new Date(today); d.setDate(d.getDate()+i);
+        dates.push(d.toISOString().split('T')[0]);
+      }
+      const qs = dates.map(d=>`dates[]=${d}`).join('&');
+      const res = await fetch(`https://www.balldontlie.io/api/v1/games?${qs}&per_page=30`);
+      const data = await res.json();
+      const games = data.data || [];
+      if(!games.length){ showFallback('No upcoming games found'); return; }
+      renderGames(games, true);
+    } catch(e){ showFallback('Schedule unavailable · Check back soon'); }
+  }
+
+  function renderGames(games, isSchedule){
+    let html = '';
+    games.forEach(g => {
+      const home = g.home_team?.abbreviation || g.home_team?.full_name || '?';
+      const away = g.visitor_team?.abbreviation || g.visitor_team?.full_name || '?';
+      const status = g.status || '';
+      const isLive = status && !['Final',''].includes(status) && isNaN(Number(status));
+      const isFinal = status === 'Final';
+      const gameDate = g.date ? new Date(g.date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
+
+      let scoreOrTime = '';
+      let statusHtml = '';
+      if(isSchedule){
+        scoreOrTime = gameDate;
+        statusHtml = `<span class="sc-status final">${gameDate}</span>`;
+      } else if(isFinal){
+        scoreOrTime = `${g.visitor_team_score} - ${g.home_team_score}`;
+        statusHtml = `<span class="sc-status final">FINAL</span>`;
+      } else if(isLive){
+        scoreOrTime = `${g.visitor_team_score} - ${g.home_team_score}`;
+        statusHtml = `<span class="sc-status live">● ${status}</span>`;
+      } else {
+        const t = status || '–';
+        statusHtml = `<span class="sc-status final">${t}</span>`;
+        scoreOrTime = t;
+      }
+
+      html += `<div class="score-chip">
+        <span class="sc-sport">NBA</span>
+        <span class="sc-teams">${away} @ ${home}</span>
+        ${!isSchedule ? `<span class="sc-score">${scoreOrTime}</span>` : ''}
+        ${statusHtml}
+      </div>`;
+    });
+
+    // Double for seamless scroll
+    const full = html + html;
+    ticker.innerHTML = full;
+    ticker.style.animation = `scoreTick ${Math.max(40, games.length * 6)}s linear infinite`;
+  }
+
+  function showFallback(msg){
+    ticker.innerHTML = `<span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:#7A95AE;letter-spacing:1px;padding:0 16px">${msg}</span>`;
+    ticker.style.animation = 'none';
+  }
+
+  loadScores();
+  // Refresh every 90 seconds when on scores mode
+  setInterval(()=>{ if(scoresMode) loadScores(); }, 90000);
 })();
 
 </script>

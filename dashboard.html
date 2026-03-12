@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>GrailISO — Buyer Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--blue:#00AAFF;--blue-bright:#33CCFF;--blue-deep:#0055AA;--blue-glow:rgba(0,170,255,0.35);--white:#FFFFFF;--chrome-lt:#E2E8F0;--chrome:#B0BEC5;--muted-text:#7A95AE;--deep1:#0D1F33;--deep2:#112840;--deep3:#143050;--deep-border:rgba(0,170,255,0.15);--green:#00E887;--red:#FF3B5C;--sidebar-w:240px}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -267,23 +268,6 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .toast{position:fixed;bottom:24px;right:24px;background:var(--deep3);border:1px solid var(--blue);border-radius:8px;padding:13px 17px;display:flex;align-items:center;gap:11px;z-index:9998;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 20px rgba(0,170,255,.15);transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
 .toast.show{transform:translateY(0);opacity:1}
 .toast-text{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--white);font-weight:600}
-/* ── Portfolio Ticker ── */
-.port-ticker-bar{width:100%;height:28px;background:rgba(0,170,255,0.04);border-bottom:1px solid rgba(0,170,255,0.10);display:flex;align-items:center;flex-shrink:0;overflow:hidden}
-.port-ticker-label{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:2px;color:var(--blue);padding:0 14px;flex-shrink:0;border-right:1px solid rgba(0,170,255,0.12);height:100%;display:flex;align-items:center;white-space:nowrap;background:rgba(0,170,255,0.06)}
-.port-ticker-track{flex:1;overflow:hidden;height:100%;display:flex;align-items:center}
-.port-ticker-inner{display:flex;align-items:center;white-space:nowrap}
-.port-ticker-inner.scrolling{animation:portScroll 40s linear infinite}
-.port-ticker-inner.scrolling:hover{animation-play-state:paused}
-@keyframes portScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.port-ticker-card{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;color:var(--muted-text);padding:0 18px;flex-shrink:0;display:inline-flex;align-items:center;gap:6px}
-.port-ticker-card .ptc-name{color:var(--white)}
-.port-ticker-card .ptc-price{color:var(--blue)}
-.port-ticker-card .ptc-sep{color:rgba(0,170,255,0.25)}
-.port-ticker-placeholder{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(122,149,174,0.4);padding:0 18px;letter-spacing:.5px;font-style:italic;white-space:nowrap}
-/* ── Logout nav item ── */
-.nav-item.logout:hover{background:rgba(255,59,92,0.08)}
-.nav-item.logout:hover .nav-label{color:var(--red)}
-.nav-item.logout:hover .nav-icon{color:var(--red)}
 </style>
 </head>
 <body>
@@ -343,11 +327,11 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 <aside class="sidebar">
   <div class="sidebar-logo"><div class="logo-dot"></div><div class="wordmark"><span class="g">GRAIL</span><span class="i">ISO</span></div></div>
   <div class="sidebar-user">
-    <div class="user-avatar">JM</div>
-    <div><div class="user-name">Jason McDonald</div><div class="user-tier">Verified Buyer</div></div>
+    <div class="user-avatar" id="user-avatar">JM</div>
+    <div><div class="user-name" id="user-name">Jason McDonald</div><div class="user-tier" id="user-tier">Verified Buyer</div></div>
   </div>
   <div class="sidebar-credits">
-    <div><div class="credits-label">ISO Credits</div><div class="credits-value">12</div><div class="credits-sub">$5 per post · 5 free left</div></div>
+    <div><div class="credits-label">ISO Credits</div><div class="credits-value" id="credits-value">12</div><div class="credits-sub" id="credits-sub">$5 per post · 5 free left</div></div>
     <button class="credits-add" onclick="T('Credits — coming soon')">+</button>
   </div>
   <nav class="sidebar-nav">
@@ -362,8 +346,9 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     <div class="nav-item" onclick="N('isoticker',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><span class="nav-label">ISOTicker</span></div>
     <div class="nav-section-label">Account</div>
     <div class="nav-item" onclick="N('account',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><span class="nav-label">Account</span></div>
+    <div class="nav-item logout" onclick="logOut()"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div><span class="nav-label">Log Out</span></div>
   </nav>
-  <div class="sidebar-footer"><div class="build-stamp" id="build-stamp">[SYS] GrailISO :: LOADING...</div></div>
+  <div class="sidebar-footer"><div class="build-stamp">[SYS] GrailISO_v1.1.7 :: BUILD 20260308 :: STABLE</div></div>
 </aside>
 
 <!-- MAIN -->
@@ -375,6 +360,10 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
       <button class="btn btn-primary" onclick="N('post',document.querySelector('[onclick*=post]'))">+ Post ISO</button>
       <div class="notif-bell" onclick="N('notifs',document.querySelector('[onclick*=notifs]'))"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><div class="notif-dot"></div></div>
     </div>
+  </div><!-- /topbar -->
+  <div class="port-ticker-bar">
+    <div class="port-ticker-label">PORTFOLIO</div>
+    <div class="port-ticker-track"><div class="port-ticker-inner" id="port-ticker-inner"><span class="port-ticker-placeholder">Loading portfolio...</span></div></div>
   </div>
   <div class="content">
 
@@ -382,7 +371,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
   <div class="panel active" id="panel-overview">
     <div class="stat-row">
       <div class="stat-card"><div class="stat-label">Active ISOs</div><div class="stat-value blue">3</div><div class="stat-change">1 seller matched</div></div>
-      <div class="stat-card"><div class="stat-label">ISO Credits</div><div class="stat-value">12</div><div class="stat-change">5 free · 7 purchased</div></div>
+      <div class="stat-card"><div class="stat-label">ISO Credits</div><div class="stat-value" id="stat-credits">12</div><div class="stat-change">5 free · 7 purchased</div></div>
       <div class="stat-card"><div class="stat-label">Cards Acquired</div><div class="stat-value green">2</div><div class="stat-change up">Both verified at hub</div></div>
       <div class="stat-card"><div class="stat-label">Total Spent</div><div class="stat-value">$890</div><div class="stat-change">via GrailISO escrow</div></div>
     </div>
@@ -601,15 +590,15 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     <div class="two-col">
       <div class="card-block"><div class="card-block-title"><div class="dot"></div> Profile</div>
         <div class="acct-grid">
-          <div class="af"><div class="af-label">First Name</div><div class="af-val">Jason</div></div>
-          <div class="af"><div class="af-label">Last Name</div><div class="af-val">McDonald</div></div>
+          <div class="af"><div class="af-label">First Name</div><div class="af-val" id="acct-first">Jason</div></div>
+          <div class="af"><div class="af-label">Last Name</div><div class="af-val" id="acct-last">McDonald</div></div>
           <div class="af" style="grid-column:1/-1"><div class="af-label">Email</div><div class="af-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d6bcb7a5b9b896b1a4b7bfbabfa5b9f8b5b9bb">[email&#160;protected]</a></div></div>
-          <div class="af" style="grid-column:1/-1"><div class="af-label">Role</div><div class="af-val">Collector / Buyer</div></div>
+          <div class="af" style="grid-column:1/-1"><div class="af-label">Role</div><div class="af-val" id="acct-role">Collector / Buyer</div></div>
         </div>
         <div style="margin-top:14px"><button class="btn btn-ghost" onclick="T('Edit profile — coming soon')">Edit Profile</button></div>
       </div>
       <div class="card-block"><div class="card-block-title"><div class="dot"></div> ISO Credits</div>
-        <div style="margin-bottom:16px"><div class="stat-label">Balance</div><div class="stat-value blue">12</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted-text);margin-top:6px">$5 per ISO post · 5 free on verified account</div></div>
+        <div style="margin-bottom:16px"><div class="stat-label">Balance</div><div class="stat-value blue" id="acct-credits">12</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted-text);margin-top:6px">$5 per ISO post · 5 free on verified account</div></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn btn-ghost btn-sm" onclick="T('5 credits — $25 — coming soon')">5 Credits — $25</button>
           <button class="btn btn-ghost btn-sm" onclick="T('10 credits — $45 — coming soon')">10 Credits — $45</button>
@@ -1167,161 +1156,6 @@ window.addEventListener('resize',()=>{if(document.getElementById('panel-isoticke
 // INIT
 // ═══════════════════════════════════════
 renderMkt();renderLib();renderOvMkt();
-</script>
-
-<script>
-// ============================================================
-// GRAILISO DASHBOARD — Supabase auth + user hydration
-// ============================================================
-(async function() {
-  const SUPABASE_URL = 'https://jyfaegmnzkarlcximxjo.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_-JI4Y3ImXzqRVkwx1yIL1g_rVJVx5bn';
-  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-  const wait = ms => new Promise(r => setTimeout(r, ms));
-
-  async function fetchProfileWithRetry(userId, attempts = 8, delayMs = 800) {
-    for (let i = 0; i < attempts; i++) {
-      const { data: profile } = await sb
-        .from('profiles')
-        .select('first_name, last_name, username, role, identity_verified, iso_credits')
-        .eq('id', userId)
-        .single();
-      if (profile && profile.username) return profile;
-      if (i < attempts - 1) await wait(delayMs);
-    }
-    return null;
-  }
-
-  async function hydrateUser(user) {
-    try {
-      const profile = await fetchProfileWithRetry(user.id);
-      if (!profile) { window.location.href = 'auth.html'; return; }
-
-      renderPortfolioTicker(user.id);
-
-      const firstName = profile.first_name || user.user_metadata?.first_name || '';
-      const lastName  = profile.last_name  || user.user_metadata?.last_name  || '';
-      const username  = profile.username   || '';
-      const credits   = profile.iso_credits ?? 5;
-      const role      = profile.role       || 'buyer';
-      const verified  = profile.identity_verified || false;
-      const initials  = [firstName[0], lastName[0]].filter(Boolean).join('').toUpperCase() || 'GI';
-      const roleMap   = { buyer: 'Buyer', seller: 'Seller', both: 'Buyer + Seller' };
-      const roleLabel = roleMap[role] || 'Buyer';
-      const tierLabel = verified ? `Verified ${roleLabel}` : roleLabel;
-      const freeLeft  = Math.min(credits, 5);
-      const creditSub = credits > 5 ? `$5 per post · ${credits - 5} purchased` : `$5 per post · ${freeLeft} free left`;
-
-      document.getElementById('user-avatar').textContent   = initials;
-      document.getElementById('user-name').textContent     = username ? `@${username}` : [firstName, lastName].filter(Boolean).join(' ') || 'Collector';
-      document.getElementById('user-tier').textContent     = tierLabel;
-      document.getElementById('credits-value').textContent = credits;
-      document.getElementById('credits-sub').textContent   = creditSub;
-
-      const pgSub = document.getElementById('pgSub');
-      if (pgSub) pgSub.textContent = `Welcome back, ${firstName || username || 'Collector'}`;
-
-      const statCredits = document.getElementById('stat-credits');
-      if (statCredits) statCredits.textContent = credits;
-
-      const acctFirst = document.getElementById('acct-first');
-      const acctLast  = document.getElementById('acct-last');
-      const acctRole  = document.getElementById('acct-role');
-      const acctCreds = document.getElementById('acct-credits');
-      if (acctFirst) acctFirst.textContent = firstName || '—';
-      if (acctLast)  acctLast.textContent  = lastName  || '—';
-      if (acctRole)  acctRole.textContent  = roleLabel;
-      if (acctCreds) acctCreds.textContent = credits;
-
-      // Replace Cloudflare-obfuscated email
-      document.querySelectorAll('.af').forEach(af => {
-        if (af.querySelector('.__cf_email__') || (af.textContent.includes('Email') && af.querySelector('a'))) {
-          const valEl = af.querySelector('.af-val');
-          if (valEl) valEl.textContent = user.email;
-        }
-      });
-    } catch (err) {
-      console.warn('hydrateUser error:', err.message);
-    }
-  }
-
-  // Retry getSession up to 5x with 700ms gaps — covers fresh signup race condition
-  let session = null;
-  for (let i = 0; i < 5; i++) {
-    const { data } = await sb.auth.getSession();
-    if (data.session) { session = data.session; break; }
-    await wait(700);
-  }
-
-  if (!session) { window.location.href = 'auth.html'; return; }
-  await hydrateUser(session.user);
-
-  // Only redirect on explicit sign-out
-  sb.auth.onAuthStateChange((event) => {
-    if (event === 'SIGNED_OUT') window.location.href = 'auth.html';
-  });
-})();
-
-async function logOut() {
-  const sb = window.supabase.createClient(
-    'https://jyfaegmnzkarlcximxjo.supabase.co',
-    'sb_publishable_-JI4Y3ImXzqRVkwx1yIL1g_rVJVx5bn'
-  );
-  await sb.auth.signOut();
-  window.location.href = 'auth.html';
-}
-</script>
-
-<script>
-// ── Portfolio Ticker ──────────────────────────────────────────
-async function renderPortfolioTicker(userId) {
-  const sb = window.supabase.createClient(
-    'https://jyfaegmnzkarlcximxjo.supabase.co',
-    'sb_publishable_-JI4Y3ImXzqRVkwx1yIL1g_rVJVx5bn'
-  );
-  const inner = document.getElementById('port-ticker-inner');
-  if (!inner) return;
-  try {
-    const { data: vaultCards } = await sb.from('vault')
-      .select('card_name, estimated_value, grade').eq('user_id', userId).limit(30);
-    const { data: isoCards } = await sb.from('isos')
-      .select('card_name, max_price, sport').eq('user_id', userId).eq('status', 'active').limit(20);
-
-    const cards = [];
-    (vaultCards || []).forEach(c => cards.push({
-      name: c.card_name || 'Card', sub: c.grade ? `PSA ${c.grade}` : 'Ungraded',
-      price: c.estimated_value ? `$${Number(c.estimated_value).toLocaleString()}` : null
-    }));
-    (isoCards || []).forEach(c => cards.push({
-      name: c.card_name || 'ISO', sub: c.sport || '',
-      price: c.max_price ? `$${Number(c.max_price).toLocaleString()} max` : null
-    }));
-
-    if (!cards.length) {
-      inner.innerHTML = '<span class="port-ticker-placeholder">GRAILISO &mdash; Find the grails you\'ve always wanted. Post an ISO to get started.</span>';
-      return;
-    }
-    let html = '';
-    for (let i = 0; i < 2; i++) {
-      cards.forEach(c => {
-        html += `<span class="port-ticker-card"><span class="ptc-name">${c.name}</span><span class="ptc-sep">·</span><span>${c.sub}</span>${c.price ? `<span class="ptc-sep">·</span><span class="ptc-price">${c.price}</span>` : ''}</span><span style="color:rgba(0,170,255,0.2);padding:0 6px">|</span>`;
-      });
-    }
-    inner.className = 'port-ticker-inner scrolling';
-    inner.innerHTML = html;
-  } catch (err) { console.warn('Portfolio ticker:', err.message); }
-}
-</script>
-
-<script>
-// ── Build stamp ───────────────────────────────────────────────
-(function() {
-  const now = new Date();
-  const pad = n => String(n).padStart(2, '0');
-  const stamp = `[SYS] GrailISO_v1.2.1 :: BUILD ${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}.${pad(now.getHours())}${pad(now.getMinutes())} :: STABLE`;
-  const el = document.getElementById('build-stamp');
-  if (el) el.textContent = stamp;
-})();
 </script>
 </body>
 </html>

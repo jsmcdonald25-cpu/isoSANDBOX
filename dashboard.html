@@ -268,6 +268,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .toast.show{transform:translateY(0);opacity:1}
 .toast-text{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--white);font-weight:600}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <!-- PASSWORD GATE -->
@@ -326,11 +327,11 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 <aside class="sidebar">
   <div class="sidebar-logo"><div class="logo-dot"></div><div class="wordmark"><span class="g">GRAIL</span><span class="i">ISO</span></div></div>
   <div class="sidebar-user">
-    <div class="user-avatar">JM</div>
-    <div><div class="user-name">Jason McDonald</div><div class="user-tier">Verified Buyer</div></div>
+    <div class="user-avatar" id="user-avatar">JM</div>
+    <div><div class="user-name" id="user-name">Jason McDonald</div><div class="user-tier" id="user-tier">Verified Buyer</div></div>
   </div>
   <div class="sidebar-credits">
-    <div><div class="credits-label">ISO Credits</div><div class="credits-value">12</div><div class="credits-sub">$5 per post · 5 free left</div></div>
+    <div><div class="credits-label">ISO Credits</div><div class="credits-value" id="credits-value">12</div><div class="credits-sub" id="credits-sub">$5 per post · 5 free left</div></div>
     <button class="credits-add" onclick="T('Credits — coming soon')">+</button>
   </div>
   <nav class="sidebar-nav">
@@ -351,8 +352,16 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 
 <!-- MAIN -->
 <div class="main">
+  <!-- ISO TRENDING TICKER -->
+  <div class="iso-ticker-bar">
+    <div class="ticker-label">🔥 TRENDING ISOs</div>
+    <div class="iso-ticker-inner" id="iso-ticker-inner">
+      <!-- duplicated for seamless loop -->
+    </div>
+  </div>
+
   <div class="topbar">
-    <div><div class="topbar-title" id="pgTitle">OVERVIEW</div><div class="topbar-sub" id="pgSub">Welcome back, Jason</div></div>
+    <div><div class="topbar-title" id="pgTitle">OVERVIEW</div><div class="topbar-sub" id="pgSub">Welcome back</div></div>
     <div class="topbar-actions">
       <button class="btn btn-ghost" onclick="N('library',document.querySelector('[onclick*=library]'))">Search Cards</button>
       <button class="btn btn-primary" onclick="N('post',document.querySelector('[onclick*=post]'))">+ Post ISO</button>
@@ -365,7 +374,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
   <div class="panel active" id="panel-overview">
     <div class="stat-row">
       <div class="stat-card"><div class="stat-label">Active ISOs</div><div class="stat-value blue">3</div><div class="stat-change">1 seller matched</div></div>
-      <div class="stat-card"><div class="stat-label">ISO Credits</div><div class="stat-value">12</div><div class="stat-change">5 free · 7 purchased</div></div>
+      <div class="stat-card"><div class="stat-label">ISO Credits</div><div class="stat-value" id="stat-credits">12</div><div class="stat-change">5 free · 7 purchased</div></div>
       <div class="stat-card"><div class="stat-label">Cards Acquired</div><div class="stat-value green">2</div><div class="stat-change up">Both verified at hub</div></div>
       <div class="stat-card"><div class="stat-label">Total Spent</div><div class="stat-value">$890</div><div class="stat-change">via GrailISO escrow</div></div>
     </div>
@@ -584,15 +593,15 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     <div class="two-col">
       <div class="card-block"><div class="card-block-title"><div class="dot"></div> Profile</div>
         <div class="acct-grid">
-          <div class="af"><div class="af-label">First Name</div><div class="af-val">Jason</div></div>
-          <div class="af"><div class="af-label">Last Name</div><div class="af-val">McDonald</div></div>
+          <div class="af"><div class="af-label">First Name</div><div class="af-val" id="acct-first">Jason</div></div>
+          <div class="af"><div class="af-label">Last Name</div><div class="af-val" id="acct-last">McDonald</div></div>
           <div class="af" style="grid-column:1/-1"><div class="af-label">Email</div><div class="af-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d6bcb7a5b9b896b1a4b7bfbabfa5b9f8b5b9bb">[email&#160;protected]</a></div></div>
-          <div class="af" style="grid-column:1/-1"><div class="af-label">Role</div><div class="af-val">Collector / Buyer</div></div>
+          <div class="af" style="grid-column:1/-1"><div class="af-label">Role</div><div class="af-val" id="acct-role">Collector / Buyer</div></div>
         </div>
         <div style="margin-top:14px"><button class="btn btn-ghost" onclick="T('Edit profile — coming soon')">Edit Profile</button></div>
       </div>
       <div class="card-block"><div class="card-block-title"><div class="dot"></div> ISO Credits</div>
-        <div style="margin-bottom:16px"><div class="stat-label">Balance</div><div class="stat-value blue">12</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted-text);margin-top:6px">$5 per ISO post · 5 free on verified account</div></div>
+        <div style="margin-bottom:16px"><div class="stat-label">Balance</div><div class="stat-value blue" id="acct-credits">12</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted-text);margin-top:6px">$5 per ISO post · 5 free on verified account</div></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn btn-ghost btn-sm" onclick="T('5 credits — $25 — coming soon')">5 Credits — $25</button>
           <button class="btn btn-ghost btn-sm" onclick="T('10 credits — $45 — coming soon')">10 Credits — $45</button>
@@ -728,7 +737,7 @@ let libFilter='all';
 // NAVIGATION
 // ═══════════════════════════════════════
 const PM={
-  overview:{t:'OVERVIEW',s:'Welcome back, Jason'},
+  overview:{t:'OVERVIEW',s:'Welcome back'},
   post:{t:'POST ISO',s:'Broadcast exactly what you want'},
   myisos:{t:'MY ISOs',s:'3 active · 1 completed'},
   market:{t:'MARKET DATA',s:'Live bid · ask · last sale — Baseball'},
@@ -1151,5 +1160,239 @@ window.addEventListener('resize',()=>{if(document.getElementById('panel-isoticke
 // ═══════════════════════════════════════
 renderMkt();renderLib();renderOvMkt();
 </script>
+
+
+  <!-- MLB SCORES/SCHEDULE BAR -->
+  <div class="scores-bar" id="scores-bar">
+    <div class="scores-toggle" id="scores-toggle-btn" onclick="toggleScoresMode()">
+      <span id="scores-mode-label">SCORES</span>
+      <span class="toggle-icon">⇄</span>
+    </div>
+    <div class="scores-scroll">
+      <div class="scores-inner" id="scores-inner">
+        <!-- populated by JS -->
+      </div>
+    </div>
+  </div>
+
+<script>
+// ============================================================
+// GRAILISO DASHBOARD — Supabase user hydration
+// Runs on load: fetches session + profile, replaces hardcoded values
+// ============================================================
+(async function initDashboardUser() {
+  const SUPABASE_URL = 'https://jyfaegmnzkarlcximxjo.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_-JI4Y3ImXzqRVkwx1yIL1g_rVJVx5bn';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  try {
+    // Get current session
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      // No session — redirect to auth
+      window.location.href = 'auth.html';
+      return;
+    }
+
+    const user = session.user;
+
+    // Fetch profile
+    const { data: profile } = await sb
+      .from('profiles')
+      .select('first_name, last_name, username, role, identity_verified, iso_credits')
+      .eq('id', user.id)
+      .single();
+
+    if (!profile) {
+      // Profile not ready — send back to auth to complete onboarding
+      window.location.href = 'auth.html';
+      return;
+    }
+
+    // Username is required — if missing, onboarding is incomplete
+    if (!profile.username) {
+      window.location.href = 'auth.html';
+      return;
+    }
+
+    const firstName  = profile.first_name || user.user_metadata?.first_name || '';
+    const lastName   = profile.last_name  || user.user_metadata?.last_name  || '';
+    const fullName   = [firstName, lastName].filter(Boolean).join(' ') || 'Collector';
+    const username   = profile.username   || '';
+    const credits    = profile.iso_credits ?? 5;
+    const role       = profile.role       || 'buyer';
+    const verified   = profile.identity_verified || false;
+
+    // Initials for avatar
+    const initials = [firstName[0], lastName[0]].filter(Boolean).join('').toUpperCase() || 'GI';
+
+    // Role display
+    const roleMap   = { buyer: 'Buyer', seller: 'Seller', both: 'Buyer + Seller' };
+    const roleLabel = roleMap[role] || 'Buyer';
+    const tierLabel = verified ? `Verified ${roleLabel}` : roleLabel;
+
+    // Credits sub text
+    const freeLeft  = Math.min(credits, 5);
+    const creditSub = credits > 5
+      ? `$5 per post · ${credits - 5} purchased`
+      : `$5 per post · ${freeLeft} free left`;
+
+    // — Sidebar —
+    document.getElementById('user-avatar').textContent  = initials;
+    document.getElementById('user-name').textContent    = username ? `@${username}` : fullName;
+    document.getElementById('user-tier').textContent    = tierLabel;
+    document.getElementById('credits-value').textContent = credits;
+    document.getElementById('credits-sub').textContent  = creditSub;
+
+    // — Topbar welcome —
+    const pgSub = document.getElementById('pgSub');
+    if (pgSub && pgSub.textContent.includes('Jason')) {
+      pgSub.textContent = `Welcome back, ${firstName || username || 'Collector'}`;
+    }
+
+    // — Overview stat card —
+    const statCredits = document.getElementById('stat-credits');
+    if (statCredits) statCredits.textContent = credits;
+
+    // — Account panel —
+    const acctFirst = document.getElementById('acct-first');
+    const acctLast  = document.getElementById('acct-last');
+    const acctRole  = document.getElementById('acct-role');
+    const acctCreds = document.getElementById('acct-credits');
+    const acctEmail = document.querySelector('.af [href*="email-protection"], .af .af-val a');
+
+    if (acctFirst)  acctFirst.textContent  = firstName || '—';
+    if (acctLast)   acctLast.textContent   = lastName  || '—';
+    if (acctRole)   acctRole.textContent   = roleLabel;
+    if (acctCreds)  acctCreds.textContent  = credits;
+
+    // Email — replace the cloudflare-obfuscated email link with plain text
+    const emailEls = document.querySelectorAll('#acct-email, .af-val .__cf_email__');
+    emailEls.forEach(el => {
+      const parent = el.closest('.af-val') || el.parentElement;
+      if (parent) parent.textContent = user.email;
+    });
+    // Also try direct af-val containing the email anchor
+    document.querySelectorAll('.af').forEach(af => {
+      if (af.querySelector('.__cf_email__') || (af.textContent.includes('Email') && af.querySelector('a'))) {
+        const valEl = af.querySelector('.af-val');
+        if (valEl) valEl.textContent = user.email;
+      }
+    });
+
+  } catch (err) {
+    console.warn('Dashboard user init error:', err.message);
+  }
+})();
+</script>
+
+
+<script>
+// ═══════════════════════════════════════
+// ISO TRENDING TICKER
+// ═══════════════════════════════════════
+const TRENDING_ISOS = [
+  { card: 'Shohei Ohtani RC Auto /50', set: '2018 Topps Chrome', price: '$2,400' },
+  { card: 'Fernando Tatis Jr. Gold /10', set: '2019 Bowman Chrome', price: '$1,800' },
+  { card: 'Wander Franco RC Auto /99', set: '2021 Topps Chrome', price: '$890' },
+  { card: 'Patrick Mahomes Prizm /25', set: '2017 Panini Prizm', price: '$3,200' },
+  { card: 'Luka Doncic RPA /49', set: '2018 Panini National Treasures', price: '$5,500' },
+  { card: 'Victor Wembanyama RC /99', set: '2023 Topps Chrome', price: '$1,200' },
+  { card: 'Connor McDavid Auto /25', set: '2015 Upper Deck', price: '$2,100' },
+  { card: 'Juan Soto RC Gold /50', set: '2018 Bowman Chrome', price: '$1,400' },
+  { card: 'Julio Rodriguez RC Auto /199', set: '2022 Topps Chrome', price: '$650' },
+  { card: 'Erling Haaland RC /99', set: '2020 Topps Chrome UCL', price: '$980' },
+];
+
+function renderTicker() {
+  const inner = document.getElementById('iso-ticker-inner');
+  if (!inner) return;
+  // Build double set for seamless loop
+  let html = '';
+  for (let i = 0; i < 2; i++) {
+    TRENDING_ISOS.forEach(iso => {
+      html += `<span class="ticker-item"><span>${iso.card}</span> · ${iso.set} · <span>${iso.price} max bid</span></span><span class="ticker-sep">|</span>`;
+    });
+  }
+  inner.innerHTML = html;
+}
+renderTicker();
+
+// ═══════════════════════════════════════
+// MLB SCORES / SCHEDULE BAR
+// ═══════════════════════════════════════
+let scoresMode = 'scores'; // 'scores' | 'schedule'
+
+// Hardcoded sample data — replace with live API when ready
+const MLB_SCORES = [
+  { away: 'NYY', home: 'BOS', awayR: 4, homeR: 7, status: 'FINAL', inning: '' },
+  { away: 'LAD', home: 'SF',  awayR: 3, homeR: 3, status: 'LIVE',  inning: 'T7' },
+  { away: 'HOU', home: 'TEX', awayR: 6, homeR: 2, status: 'FINAL', inning: '' },
+  { away: 'ATL', home: 'NYM', awayR: 1, homeR: 5, status: 'FINAL', inning: '' },
+  { away: 'CHC', home: 'MIL', awayR: 0, homeR: 2, status: 'LIVE',  inning: 'B5' },
+  { away: 'MIN', home: 'CWS', awayR: 8, homeR: 3, status: 'FINAL', inning: '' },
+  { away: 'OAK', home: 'SEA', awayR: 2, homeR: 4, status: 'FINAL', inning: '' },
+];
+
+const MLB_SCHEDULE = [
+  { away: 'PHI', home: 'WSH', time: '1:05 PM ET' },
+  { away: 'CIN', home: 'PIT', time: '1:35 PM ET' },
+  { away: 'STL', home: 'KC',  time: '2:10 PM ET' },
+  { away: 'DET', home: 'CLE', time: '6:10 PM ET' },
+  { away: 'TB',  home: 'BAL', time: '6:35 PM ET' },
+  { away: 'MIA', home: 'COL', time: '8:40 PM ET' },
+  { away: 'ARI', home: 'SD',  time: '9:10 PM ET' },
+];
+
+function renderScores() {
+  const inner = document.getElementById('scores-inner');
+  if (!inner) return;
+  let html = '';
+
+  if (scoresMode === 'scores') {
+    const items = [...MLB_SCORES, ...MLB_SCORES]; // double for loop
+    items.forEach(g => {
+      const awayWin = g.awayR > g.homeR;
+      const homeWin = g.homeR > g.awayR;
+      const statusClass = g.status === 'LIVE' ? 'live' : 'final';
+      html += `
+        <div class="score-item">
+          <div class="score-teams">
+            <div class="score-team ${awayWin ? 'winner' : ''}">
+              <span class="score-team-name">${g.away}</span>
+              <span class="score-num">${g.awayR}</span>
+            </div>
+            <div class="score-team ${homeWin ? 'winner' : ''}">
+              <span class="score-team-name">${g.home}</span>
+              <span class="score-num">${g.homeR}</span>
+            </div>
+          </div>
+          <span class="score-status ${statusClass}">${g.status === 'LIVE' ? g.inning : 'F'}</span>
+        </div>`;
+    });
+  } else {
+    const items = [...MLB_SCHEDULE, ...MLB_SCHEDULE];
+    items.forEach(g => {
+      html += `
+        <div class="sched-item">
+          <span class="sched-teams">${g.away} @ ${g.home}</span>
+          <span class="sched-time">${g.time}</span>
+        </div>`;
+    });
+  }
+
+  inner.innerHTML = html;
+}
+
+function toggleScoresMode() {
+  scoresMode = scoresMode === 'scores' ? 'schedule' : 'scores';
+  document.getElementById('scores-mode-label').textContent = 
+    scoresMode === 'scores' ? 'SCORES' : 'SCHEDULE';
+  renderScores();
+}
+
+renderScores();
+</script>
+
 </body>
 </html>

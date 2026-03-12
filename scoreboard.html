@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GrailISO — Live Scores</title>
+<!--
+  GRAILISO Scoreboard Component v1.0.0
+  =====================================
+  API: BallDontLie (free tier, no key needed for NBA)
+       Get your free key at: https://www.balldontlie.io
+  
+  HOW TO GET YOUR API KEY:
+  1. Go to https://www.balldontlie.io
+  2. Sign up free — no credit card
+  3. Copy your API key
+  4. Replace BDLIE_KEY below
+  
+  SETUP IN dashboard.html:
+  - Copy the <style> block into your main stylesheet
+  - Copy the <div id="scores-widget"> into your panel-overview
+  - Copy the <script> block before </body>
+  
+  LEAGUES SUPPORTED (free tier):
+  - NBA, NFL, MLB (v1), NHL — all via BallDontLie
+  - Upgrade to $9/mo for real-time + more leagues
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --deep1: #0a0e14;
+    --deep2: #111720;
+    --deep3: #161d28;
+    --deep-border: rgba(255,255,255,0.06);
+    --blue: #00AAFF;
+    --blue-dim: rgba(0,170,255,0.12);
+    --blue-glow: rgba(0,170,255,0.3);
+    --green: #00FF87;
+    --red: #FF3B5C;
+    --gold: #FFB800;
+    --white: #E8EDF5;
+    --muted: #7A95AE;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--deep1); color: var(--white); font-family: 'Barlow', sans-serif; padding: 30px; }
+
+  /* ── SCORES WIDGET ── */
+  .sw { background: var(--deep2); border: 1px solid var(--deep-border); border-radius: 12px; overflow: hidden; }
+
+  /* Header */
+  .sw-head { 
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; border-bottom: 1px solid var(--deep-border);
+    background: rgba(0,170,255,0.03);
+  }
+  .sw-head-left { display: flex; align-items: center; gap: 14px; }
+  .sw-title { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; color: var(--white); }
+  .sw-live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--red); box-shadow: 0 0 8px var(--red); animation: pulse 1.4s ease-in-out infinite; flex-shrink: 0; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+  .sw-live-label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--red); text-transform: uppercase; }
+
+  /* League tabs */
+  .sw-tabs { display: flex; gap: 2px; }
+  .sw-tab { 
+    font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; 
+    letter-spacing: 1.5px; padding: 5px 12px; border-radius: 5px; cursor: pointer;
+    color: var(--muted); background: transparent; border: 1px solid transparent;
+    transition: all .15s; text-transform: uppercase;
+  }
+  .sw-tab:hover { color: var(--white); background: rgba(255,255,255,0.04); }
+  .sw-tab.active { color: var(--blue); background: var(--blue-dim); border-color: rgba(0,170,255,0.2); }
+
+  /* Mode toggle: Scores | Schedule */
+  .sw-mode-toggle { display: flex; align-items: center; gap: 8px; }
+  .sw-mode-label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 1px; color: var(--muted); text-transform: uppercase; }
+  .sw-toggle { position: relative; width: 40px; height: 20px; cursor: pointer; }
+  .sw-toggle input { display: none; }
+  .sw-toggle-track { position: absolute; inset: 0; background: rgba(255,255,255,0.06); border: 1px solid var(--deep-border); border-radius: 10px; transition: all .2s; }
+  .sw-toggle input:checked + .sw-toggle-track { background: var(--blue-dim); border-color: rgba(0,170,255,0.3); }
+  .sw-toggle-knob { position: absolute; top: 3px; left: 3px; width: 12px; height: 12px; background: var(--muted); border-radius: 50%; transition: all .2s; }
+  .sw-toggle input:checked ~ .sw-toggle-knob { transform: translateX(20px); background: var(--blue); }
+  .sw-mode-active { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 1px; color: var(--blue); text-transform: uppercase; min-width: 52px; }
+
+  /* Scrollable game cards row */
+  .sw-body { padding: 14px; overflow-x: auto; overflow-y: hidden; display: flex; gap: 10px; }
+  .sw-body::-webkit-scrollbar { height: 3px; }
+  .sw-body::-webkit-scrollbar-thumb { background: var(--deep-border); border-radius: 2px; }
+
+  /* Loading / Error / Empty states */
+  .sw-state { padding: 24px 18px; text-align: center; color: var(--muted); font-family: 'Barlow Condensed', sans-serif; font-size: 13px; letter-spacing: .5px; }
+  .sw-state .spinner { width: 18px; height: 18px; border: 2px solid var(--deep-border); border-top-color: var(--blue); border-radius: 50%; animation: spin .7s linear infinite; display: inline-block; margin-bottom: 8px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── SCORE CARD ── */
+  .sc { 
+    flex-shrink: 0; min-width: 118px; background: var(--deep3); 
+    border: 1px solid var(--deep-border); border-radius: 8px; 
+    padding: 12px; cursor: default; transition: border-color .15s;
+  }
+  .sc:hover { border-color: rgba(0,170,255,0.2); }
+  .sc.live { border-color: rgba(255,59,92,0.25); }
+
+  .sc-status { 
+    font-family: 'Barlow Condensed', sans-serif; font-size: 9px; letter-spacing: 1.5px; 
+    text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 5px;
+  }
+  .sc-status.live { color: var(--red); }
+  .sc-status.live::before { content:''; display:inline-block; width:5px; height:5px; background:var(--red); border-radius:50%; box-shadow:0 0 5px var(--red); animation: pulse 1.4s ease-in-out infinite; }
+  .sc-status.final { color: var(--muted); }
+  .sc-status.scheduled { color: var(--blue); }
+
+  .sc-teams { display: flex; flex-direction: column; gap: 6px; }
+  .sc-team { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .sc-team-name { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; color: var(--muted); letter-spacing: .3px; }
+  .sc-team-score { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--muted); line-height: 1; }
+  .sc-team.winner .sc-team-name { color: var(--white); }
+  .sc-team.winner .sc-team-score { color: var(--white); }
+
+  .sc-divider { height: 1px; background: var(--deep-border); margin: 8px 0; }
+
+  /* ── SCHEDULE CARD ── */
+  .sch { 
+    flex-shrink: 0; min-width: 130px; background: var(--deep3);
+    border: 1px solid var(--deep-border); border-radius: 8px; 
+    padding: 12px; display: flex; flex-direction: column; gap: 8px;
+    cursor: default; transition: border-color .15s;
+  }
+  .sch:hover { border-color: rgba(0,170,255,0.2); }
+  .sch-time { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 1px; color: var(--blue); text-transform: uppercase; }
+  .sch-teams { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; color: var(--white); letter-spacing: .3px; line-height: 1.4; }
+  .sch-vs { color: var(--muted); font-weight: 400; }
+  .sch-venue { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; color: var(--muted); letter-spacing: .3px; }
+
+  /* Footer */
+  .sw-foot { 
+    border-top: 1px solid var(--deep-border); padding: 8px 18px; 
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .sw-foot-note { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; color: var(--muted); letter-spacing: .3px; }
+  .sw-refresh-btn { 
+    font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 1px; 
+    color: var(--blue); background: none; border: none; cursor: pointer; 
+    text-transform: uppercase; opacity: .7; transition: opacity .15s; padding: 4px 0;
+  }
+  .sw-refresh-btn:hover { opacity: 1; }
+
+  /* Demo wrapper */
+  .demo { max-width: 900px; margin: 0 auto; }
+  .demo-label { font-family: 'Bebas Neue', sans-serif; font-size: 11px; letter-spacing: 3px; color: var(--muted); margin-bottom: 12px; }
+</style>
+</head>
+<body>
+<div class="demo">
+  <div class="demo-label">GrailISO — Scores Widget Preview</div>
+
+  <!-- SCORES WIDGET — paste this div into dashboard.html panel-overview -->
+  <div class="sw" id="scores-widget">
+    <div class="sw-head">
+      <div class="sw-head-left">
+        <div id="sw-live-indicator" style="display:flex;align-items:center;gap:6px">
+          <div class="sw-live-dot"></div>
+          <span class="sw-live-label">Live</span>
+        </div>
+        <div class="sw-title" id="sw-title">NBA Scores</div>
+        <div class="sw-tabs" id="sw-tabs">
+          <div class="sw-tab active" onclick="swSetLeague('nba',this)">NBA</div>
+          <div class="sw-tab" onclick="swSetLeague('nfl',this)">NFL</div>
+          <div class="sw-tab" onclick="swSetLeague('mlb',this)">MLB</div>
+          <div class="sw-tab" onclick="swSetLeague('nhl',this)">NHL</div>
+        </div>
+      </div>
+      <div class="sw-mode-toggle">
+        <span class="sw-mode-label">Scores</span>
+        <label class="sw-toggle">
+          <input type="checkbox" id="sw-mode-input" onchange="swToggleMode(this.checked)">
+          <div class="sw-toggle-track"></div>
+          <div class="sw-toggle-knob"></div>
+        </label>
+        <span class="sw-mode-active" id="sw-mode-active">Schedule</span>
+      </div>
+    </div>
+
+    <div class="sw-body" id="sw-body">
+      <div class="sw-state"><div class="spinner"></div><br>Loading games...</div>
+    </div>
+
+    <div class="sw-foot">
+      <span class="sw-foot-note" id="sw-foot-note">Powered by BallDontLie · Updates every 60s</span>
+      <button class="sw-refresh-btn" onclick="swLoad()">↻ Refresh</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// GRAILISO Scoreboard Widget
+// API: BallDontLie (balldontlie.io)
+//
+// FREE TIER SETUP:
+//   1. Sign up at https://www.balldontlie.io (free, no credit card)
+//   2. Get your API key from dashboard
+//   3. Replace SW_API_KEY below
+//
+// FREE TIER LIMITS:
+//   - 60 requests/minute
+//   - Data refreshes every ~10 min (not truly real-time)
+//   - NBA, NFL, MLB, NHL covered
+//
+// PAID ($9/mo) unlocks:
+//   - Live score updates (2-min refresh)
+//   - More sports (WNBA, NCAAB, etc.)
+//   - Video highlights
+// ============================================================
+
+const SW_API_KEY = 'YOUR_BALLDONTLIE_API_KEY'; // ← replace this
+const SW_BASE    = 'https://api.balldontlie.io/v1';
+
+let swLeague = 'nba';
+let swMode   = 'scores'; // 'scores' | 'schedule'
+let swTimer  = null;
+
+const LEAGUE_META = {
+  nba: { label: 'NBA Scores', season: 2024, endpoint: '/games' },
+  nfl: { label: 'NFL Scores', season: 2024, endpoint: '/nfl/games' },
+  mlb: { label: 'MLB Scores', season: 2024, endpoint: '/mlb/games' },
+  nhl: { label: 'NHL Scores', season: 2024, endpoint: '/nhl/games' },
+};
+
+function swSetLeague(league, el) {
+  swLeague = league;
+  document.querySelectorAll('.sw-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const meta = LEAGUE_META[league];
+  document.getElementById('sw-title').textContent = 
+    `${meta.label.replace('Scores','').trim()} ${swMode === 'scores' ? 'Scores' : 'Schedule'}`;
+  swLoad();
+}
+
+function swToggleMode(isSchedule) {
+  swMode = isSchedule ? 'schedule' : 'scores';
+  const meta = LEAGUE_META[swLeague];
+  const leagueName = meta.label.replace('Scores','').replace('Schedule','').trim();
+  document.getElementById('sw-title').textContent = `${leagueName} ${swMode === 'scores' ? 'Scores' : 'Schedule'}`;
+  document.getElementById('sw-mode-active').textContent = swMode === 'scores' ? 'Schedule' : 'Scores';
+  swLoad();
+}
+
+async function swLoad() {
+  const body = document.getElementById('sw-body');
+  body.innerHTML = '<div class="sw-state"><div class="spinner"></div><br>Loading...</div>';
+
+  // If no API key set, show helpful message with mock data
+  if (SW_API_KEY === 'YOUR_BALLDONTLIE_API_KEY') {
+    swRenderMock();
+    document.getElementById('sw-foot-note').textContent = 
+      '⚠ Demo mode — add your BallDontLie API key to go live';
+    return;
+  }
+
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const meta  = LEAGUE_META[swLeague];
+    let url;
+
+    if (swMode === 'scores') {
+      // Fetch today's games + yesterday's for scores
+      url = `${SW_BASE}${meta.endpoint}?dates[]=${today}&per_page=30`;
+    } else {
+      // Schedule: next 7 days
+      const dates = [];
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(); d.setDate(d.getDate() + i);
+        dates.push(d.toISOString().split('T')[0]);
+      }
+      url = `${SW_BASE}${meta.endpoint}?${dates.map(d=>`dates[]=${d}`).join('&')}&per_page=30`;
+    }
+
+    const res  = await fetch(url, { headers: { 'Authorization': SW_API_KEY } });
+    if (!res.ok) throw new Error(`API error ${res.status}`);
+    const json = await res.json();
+    swRender(json.data || []);
+    document.getElementById('sw-foot-note').textContent = 
+      `BallDontLie · Updated ${new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}`;
+
+  } catch (err) {
+    body.innerHTML = `<div class="sw-state">⚠ ${err.message}</div>`;
+    console.warn('Scores widget error:', err);
+  }
+}
+
+function swRender(games) {
+  const body = document.getElementById('sw-body');
+  if (!games.length) {
+    body.innerHTML = '<div class="sw-state">No games today</div>';
+    return;
+  }
+
+  if (swMode === 'scores') {
+    body.innerHTML = games.map(g => {
+      const isLive    = g.status === 'in progress';
+      const isFinal   = g.status === 'Final';
+      const statusCls = isLive ? 'live' : isFinal ? 'final' : 'scheduled';
+      const statusTxt = isLive ? (g.period ? `Q${g.period} ${g.time || ''}` : 'LIVE') 
+                      : isFinal ? 'FINAL'
+                      : new Date(g.date).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+
+      const homeWin = g.home_team_score > g.visitor_team_score;
+      const awayWin = g.visitor_team_score > g.home_team_score;
+
+      return `<div class="sc ${isLive ? 'live' : ''}">
+        <div class="sc-status ${statusCls}">${statusTxt}</div>
+        <div class="sc-teams">
+          <div class="sc-team ${awayWin && isFinal ? 'winner' : ''}">
+            <span class="sc-team-name">${g.visitor_team?.abbreviation || '—'}</span>
+            <span class="sc-team-score">${g.visitor_team_score ?? '—'}</span>
+          </div>
+          <div class="sc-divider"></div>
+          <div class="sc-team ${homeWin && isFinal ? 'winner' : ''}">
+            <span class="sc-team-name">${g.home_team?.abbreviation || '—'}</span>
+            <span class="sc-team-score">${g.home_team_score ?? '—'}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  } else {
+    // Schedule mode
+    body.innerHTML = games.map(g => {
+      const gameTime = new Date(g.date);
+      const timeStr  = gameTime.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZoneName:'short'});
+      const dateStr  = gameTime.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+      return `<div class="sch">
+        <div class="sch-time">${dateStr}</div>
+        <div class="sch-teams">
+          ${g.visitor_team?.abbreviation || '—'} <span class="sch-vs">@</span> ${g.home_team?.abbreviation || '—'}
+        </div>
+        <div class="sch-venue">${timeStr}</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ── MOCK DATA (shown when no API key is set) ──────────────────
+function swRenderMock() {
+  const body = document.getElementById('sw-body');
+  if (swMode === 'scores') {
+    const mock = [
+      { away:'BOS', home:'NYK', awayS:112, homeS:108, status:'FINAL', live:false },
+      { away:'LAL', home:'GSW', awayS:98,  homeS:101, status:'Q4 2:14', live:true },
+      { away:'MIA', home:'CHI', awayS:87,  homeS:79,  status:'FINAL', live:false },
+      { away:'PHX', home:'DEN', awayS:95,  homeS:99,  status:'FINAL', live:false },
+      { away:'MIL', home:'CLE', awayS:0,   homeS:0,   status:'7:30 PM', live:false },
+      { away:'DAL', home:'SAS', awayS:0,   homeS:0,   status:'8:00 PM', live:false },
+    ];
+    body.innerHTML = mock.map(g => {
+      const isFinal   = g.status === 'FINAL';
+      const statusCls = g.live ? 'live' : isFinal ? 'final' : 'scheduled';
+      const homeWin   = isFinal && g.homeS > g.awayS;
+      const awayWin   = isFinal && g.awayS > g.homeS;
+      return `<div class="sc ${g.live?'live':''}">
+        <div class="sc-status ${statusCls}">${g.status}</div>
+        <div class="sc-teams">
+          <div class="sc-team ${awayWin?'winner':''}">
+            <span class="sc-team-name">${g.away}</span>
+            <span class="sc-team-score">${isFinal||g.live ? g.awayS : '—'}</span>
+          </div>
+          <div class="sc-divider"></div>
+          <div class="sc-team ${homeWin?'winner':''}">
+            <span class="sc-team-name">${g.home}</span>
+            <span class="sc-team-score">${isFinal||g.live ? g.homeS : '—'}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  } else {
+    const mock = [
+      { away:'BOS', home:'MIA',  time:'1:00 PM ET',  date:'Today' },
+      { away:'LAL', home:'PHX',  time:'3:30 PM ET',  date:'Today' },
+      { away:'DAL', home:'GSW',  time:'7:00 PM ET',  date:'Today' },
+      { away:'NYK', home:'CHI',  time:'7:30 PM ET',  date:'Tomorrow' },
+      { away:'MIL', home:'CLE',  time:'8:00 PM ET',  date:'Tomorrow' },
+      { away:'DEN', home:'SAS',  time:'9:00 PM ET',  date:'Tomorrow' },
+    ];
+    body.innerHTML = mock.map(g => `
+      <div class="sch">
+        <div class="sch-time">${g.date}</div>
+        <div class="sch-teams">${g.away} <span class="sch-vs">@</span> ${g.home}</div>
+        <div class="sch-venue">${g.time}</div>
+      </div>`).join('');
+  }
+}
+
+// Auto-refresh every 60 seconds
+function swStartRefresh() {
+  if (swTimer) clearInterval(swTimer);
+  swTimer = setInterval(swLoad, 60000);
+}
+
+// Init
+swLoad();
+swStartRefresh();
+</script>
+</body>
+</html>

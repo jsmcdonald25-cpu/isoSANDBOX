@@ -348,16 +348,19 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     <div class="nav-item" onclick="N('account',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><span class="nav-label">Account</span></div>
     <div class="nav-item logout" onclick="logOut()"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div><span class="nav-label">Log Out</span></div>
   </nav>
-  <div class="sidebar-footer"><div class="build-stamp">[SYS] GrailISO_v1.1.7 :: BUILD 20260308 :: STABLE</div></div>
+  <div class="sidebar-footer"><div class="build-stamp" id="build-stamp">[SYS] GrailISO :: LOADING...</div></div>
 </aside>
 
 <!-- MAIN -->
 <div class="main">
-  <!-- ISO TRENDING TICKER -->
-  <div class="iso-ticker-bar">
-    <div class="ticker-label">🔥 TRENDING ISOs</div>
-    <div class="iso-ticker-inner" id="iso-ticker-inner">
-      <!-- duplicated for seamless loop -->
+
+  <!-- PORTFOLIO TICKER -->
+  <div class="port-ticker-bar" id="port-ticker-bar">
+    <div class="port-ticker-label">MY COLLECTION</div>
+    <div class="port-ticker-track">
+      <div class="port-ticker-inner" id="port-ticker-inner">
+        <span class="port-ticker-placeholder">GRAILISO &mdash; Your cards will appear here once you upload or complete an ISO</span>
+      </div>
     </div>
   </div>
 
@@ -379,25 +382,6 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
       <div class="stat-card"><div class="stat-label">Cards Acquired</div><div class="stat-value green">2</div><div class="stat-change up">Both verified at hub</div></div>
       <div class="stat-card"><div class="stat-label">Total Spent</div><div class="stat-value">$890</div><div class="stat-change">via GrailISO escrow</div></div>
     </div>
-    <!-- MLB SCORES / SCHEDULE BOX -->
-    <div class="scores-box" id="scores-box">
-      <div class="scores-header">
-        <div class="scores-title" id="scores-box-title">⚾ MLB SCORES</div>
-        <div class="scores-toggle-wrap">
-          <span class="scores-toggle-label" id="scores-label-left">Scores</span>
-          <label class="scores-switch">
-            <input type="checkbox" id="scores-toggle-input" onchange="toggleScoresMode(this.checked)">
-            <div class="scores-switch-track"></div>
-            <div class="scores-switch-thumb"></div>
-          </label>
-          <span class="scores-active-label" id="scores-label-right">Schedule</span>
-        </div>
-      </div>
-      <div class="scores-scroll-area" id="scores-inner">
-        <!-- populated by JS -->
-      </div>
-    </div>
-
     <div class="two-col">
       <div>
         <div class="section-header"><div class="section-title">ACTIVE ISOs</div><span class="section-link" onclick="N('myisos',document.querySelector('[onclick*=myisos]'))">View All</span></div>
@@ -1219,6 +1203,8 @@ renderMkt();renderLib();renderOvMkt();
         return;
       }
 
+    renderPortfolioTicker(user.id);
+
     const firstName  = profile.first_name || user.user_metadata?.first_name || '';
     const lastName   = profile.last_name  || user.user_metadata?.last_name  || '';
     const fullName   = [firstName, lastName].filter(Boolean).join(' ') || 'Collector';
@@ -1289,28 +1275,26 @@ renderMkt();renderLib();renderOvMkt();
     }
   }
 
-  // onAuthStateChange fires as soon as the session is ready —
-  // handles both returning users and fresh signups without race conditions
-  sb.auth.onAuthStateChange((event, session) => {
-    if (event === 'SIGNED_OUT' || (!session && event !== 'INITIAL_SESSION')) {
-      window.location.href = 'auth.html';
-      return;
-    }
-    if (session) {
-      hydrateUser(session.user);
-    }
-  });
+  // ── Session check with generous retry for fresh signups ──
+  // Fresh signups take a moment to write the session token to storage.
+  // We try up to 5x with 700ms gaps (~3.5s total) before giving up.
+  let session = null;
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const { data } = await sb.auth.getSession();
+    if (data.session) { session = data.session; break; }
+    await new Promise(r => setTimeout(r, 700));
+  }
 
-  // Also check immediately for already-logged-in users
-  sb.auth.getSession().then(({ data: { session } }) => {
-    if (!session) {
-      // Give onAuthStateChange a chance to fire first (500ms)
-      setTimeout(() => {
-        sb.auth.getSession().then(({ data: { session: s2 } }) => {
-          if (!s2) window.location.href = 'auth.html';
-        });
-      }, 500);
-    }
+  if (!session) {
+    window.location.href = 'auth.html';
+    return;
+  }
+
+  await hydrateUser(session.user);
+
+  // Only redirect on explicit SIGNED_OUT — ignore intermediate null events
+  sb.auth.onAuthStateChange((event) => {
+    if (event === 'SIGNED_OUT') window.location.href = 'auth.html';
   });
 })();
 
@@ -1324,109 +1308,97 @@ async function logOut() {
 </script>
 
 
+
 <script>
 // ═══════════════════════════════════════
-// ISO TRENDING TICKER
+// PORTFOLIO TICKER — user's own cards
 // ═══════════════════════════════════════
-const TRENDING_ISOS = [
-  { card: 'Shohei Ohtani RC Auto /50', set: '2018 Topps Chrome', price: '$2,400' },
-  { card: 'Fernando Tatis Jr. Gold /10', set: '2019 Bowman Chrome', price: '$1,800' },
-  { card: 'Wander Franco RC Auto /99', set: '2021 Topps Chrome', price: '$890' },
-  { card: 'Patrick Mahomes Prizm /25', set: '2017 Panini Prizm', price: '$3,200' },
-  { card: 'Luka Doncic RPA /49', set: '2018 Panini National Treasures', price: '$5,500' },
-  { card: 'Victor Wembanyama RC /99', set: '2023 Topps Chrome', price: '$1,200' },
-  { card: 'Connor McDavid Auto /25', set: '2015 Upper Deck', price: '$2,100' },
-  { card: 'Juan Soto RC Gold /50', set: '2018 Bowman Chrome', price: '$1,400' },
-  { card: 'Julio Rodriguez RC Auto /199', set: '2022 Topps Chrome', price: '$650' },
-  { card: 'Erling Haaland RC /99', set: '2020 Topps Chrome UCL', price: '$980' },
-];
-
-function renderTicker() {
-  const inner = document.getElementById('iso-ticker-inner');
+async function renderPortfolioTicker(userId) {
+  const SUPABASE_URL = 'https://jyfaegmnzkarlcximxjo.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_-JI4Y3ImXzqRVkwx1yIL1g_rVJVx5bn';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const inner = document.getElementById('port-ticker-inner');
   if (!inner) return;
-  // Build double set for seamless loop
-  let html = '';
-  for (let i = 0; i < 2; i++) {
-    TRENDING_ISOS.forEach(iso => {
-      html += `<span class="ticker-item"><span>${iso.card}</span> · ${iso.set} · <span>${iso.price} max bid</span></span><span class="ticker-sep">|</span>`;
-    });
+
+  try {
+    // Pull from vault (owned cards) + active ISOs as fallback
+    const { data: vaultCards } = await sb
+      .from('vault')
+      .select('card_name, estimated_value, grade')
+      .eq('user_id', userId)
+      .limit(30);
+
+    const { data: isoCards } = await sb
+      .from('isos')
+      .select('card_name, max_price, sport')
+      .eq('user_id', userId)
+      .eq('status', 'active')
+      .limit(20);
+
+    const cards = [];
+
+    if (vaultCards && vaultCards.length > 0) {
+      vaultCards.forEach(c => {
+        cards.push({
+          name: c.card_name || 'Unnamed Card',
+          sub: c.grade ? `PSA ${c.grade}` : 'Ungraded',
+          price: c.estimated_value ? `$${Number(c.estimated_value).toLocaleString()}` : null,
+          type: 'owned'
+        });
+      });
+    }
+
+    if (isoCards && isoCards.length > 0) {
+      isoCards.forEach(c => {
+        cards.push({
+          name: c.card_name || 'ISO',
+          sub: c.sport || '',
+          price: c.max_price ? `$${Number(c.max_price).toLocaleString()} max` : null,
+          type: 'iso'
+        });
+      });
+    }
+
+    if (cards.length === 0) {
+      // No cards — show GRAILISO catchphrase
+      inner.className = 'port-ticker-inner';
+      inner.innerHTML = '<span class="port-ticker-placeholder">GRAILISO &mdash; Find the grails you&rsquo;ve always wanted. Post an ISO to get started.</span>';
+      return;
+    }
+
+    // Build double set for seamless loop
+    let html = '';
+    for (let i = 0; i < 2; i++) {
+      cards.forEach(c => {
+        const priceTag = c.price ? `<span class="ptc-price">${c.price}</span>` : '';
+        html += `<span class="port-ticker-card">
+          <span class="ptc-name">${c.name}</span>
+          <span class="ptc-sep">·</span>
+          <span>${c.sub}</span>
+          ${priceTag ? '<span class="ptc-sep">·</span>' + priceTag : ''}
+        </span><span style="color:rgba(0,170,255,0.15);padding:0 4px">|</span>`;
+      });
+    }
+
+    inner.className = 'port-ticker-inner scrolling';
+    inner.innerHTML = html;
+
+  } catch (err) {
+    console.warn('Portfolio ticker error:', err.message);
   }
-  inner.innerHTML = html;
 }
-renderTicker();
-
-// ═══════════════════════════════════════
-// MLB SCORES / SCHEDULE BAR
-// ═══════════════════════════════════════
-let scoresMode = 'scores'; // 'scores' | 'schedule'
-
-// Hardcoded sample data — replace with live API when ready
-const MLB_SCORES = [
-  { away: 'NYY', home: 'BOS', awayR: 4, homeR: 7, status: 'FINAL', inning: '' },
-  { away: 'LAD', home: 'SF',  awayR: 3, homeR: 3, status: 'LIVE',  inning: 'T7' },
-  { away: 'HOU', home: 'TEX', awayR: 6, homeR: 2, status: 'FINAL', inning: '' },
-  { away: 'ATL', home: 'NYM', awayR: 1, homeR: 5, status: 'FINAL', inning: '' },
-  { away: 'CHC', home: 'MIL', awayR: 0, homeR: 2, status: 'LIVE',  inning: 'B5' },
-  { away: 'MIN', home: 'CWS', awayR: 8, homeR: 3, status: 'FINAL', inning: '' },
-  { away: 'OAK', home: 'SEA', awayR: 2, homeR: 4, status: 'FINAL', inning: '' },
-];
-
-const MLB_SCHEDULE = [
-  { away: 'PHI', home: 'WSH', time: '1:05 PM ET' },
-  { away: 'CIN', home: 'PIT', time: '1:35 PM ET' },
-  { away: 'STL', home: 'KC',  time: '2:10 PM ET' },
-  { away: 'DET', home: 'CLE', time: '6:10 PM ET' },
-  { away: 'TB',  home: 'BAL', time: '6:35 PM ET' },
-  { away: 'MIA', home: 'COL', time: '8:40 PM ET' },
-  { away: 'ARI', home: 'SD',  time: '9:10 PM ET' },
-];
-
-function renderScores() {
-  const inner = document.getElementById('scores-inner');
-  if (!inner) return;
-  let html = '';
-
-  if (scoresMode === 'scores') {
-    MLB_SCORES.forEach(g => {
-      const awayWin = g.awayR > g.homeR;
-      const homeWin = g.homeR > g.awayR;
-      const statusClass = g.status === 'LIVE' ? 'live' : 'final';
-      const statusLabel = g.status === 'LIVE' ? g.inning : 'FINAL';
-      html += `<div class="score-card">
-        <div class="score-card-teams">
-          <div class="score-card-team${awayWin ? ' winner' : ''}">
-            <span class="sc-name">${g.away}</span>
-            <span class="sc-run">${g.awayR}</span>
-          </div>
-          <div class="score-card-team${homeWin ? ' winner' : ''}">
-            <span class="sc-name">${g.home}</span>
-            <span class="sc-run">${g.homeR}</span>
-          </div>
-        </div>
-        <span class="score-card-status ${statusClass}">${statusLabel}</span>
-      </div>`;
-    });
-  } else {
-    MLB_SCHEDULE.forEach(g => {
-      html += `<div class="sched-card">
-        <div class="sched-matchup">${g.away} <span style="color:var(--muted-text);font-weight:400">@</span> ${g.home}</div>
-        <div class="sched-time">${g.time}</div>
-      </div>`;
-    });
-  }
-
-  inner.innerHTML = html;
-  const titleEl = document.getElementById('scores-box-title');
-  if (titleEl) titleEl.textContent = scoresMode === 'scores' ? '⚾ MLB SCORES' : '⚾ MLB SCHEDULE';
-}
-
-function toggleScoresMode(isSchedule) {
-  scoresMode = isSchedule ? 'schedule' : 'scores';
-  renderScores();
-}
-
-renderScores();
 </script>
 
+<script>
+// Dynamic build stamp — runs on every page load
+(function() {
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const date = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}`;
+  const time = `${pad(now.getHours())}${pad(now.getMinutes())}`;
+  const el = document.getElementById('build-stamp');
+  if (el) el.textContent = `[SYS] GrailISO_v1.2.0 :: BUILD ${date}.${time} :: STABLE`;
+})();
+</script>
 </body>
 </html>

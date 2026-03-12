@@ -956,6 +956,7 @@ let usernameCheckTimer = null;
 let pendingSports      = [];
 let pendingCardTypes   = [];
 let pendingRole        = 'both';
+let pendingUsername    = '';
 
 // ============================================================
 // STEP NAVIGATION
@@ -1086,11 +1087,11 @@ async function createAccount() {
 // ============================================================
 // STEP 2 — USERNAME
 // ============================================================
-const USERNAME_RE = /^[a-zA-Z0-9_]{3,20}$/;
+const USERNAME_RE = /^[a-z0-9_]{3,20}$/;
 
 function onUsernameInput(raw) {
-  // Allow letters (upper+lower), numbers, underscores only
-  const val      = raw.replace(/[^a-zA-Z0-9_]/g, '');
+  // Lowercase only — strip invalid chars and force lowercase
+  const val      = raw.toLowerCase().replace(/[^a-z0-9_]/g, ''); // force lowercase always
   const input    = document.getElementById('username');
   const preview  = document.getElementById('username-preview-val');
   const hint     = document.getElementById('username-hint');
@@ -1127,7 +1128,6 @@ function onUsernameInput(raw) {
 }
 
 async function checkUsernameAvailability(val) {
-  val = val.toLowerCase(); // always check lowercase for uniqueness
   const hint     = document.getElementById('username-hint');
   const statusEl = document.getElementById('username-status');
   const btn      = document.getElementById('btn-username');
@@ -1170,10 +1170,10 @@ async function submitUsername() {
   if (!currentUser) return showMsg('msg-2', 'Session error — please refresh.');
   if (!usernameAvailable) return;
 
-  const btn             = document.getElementById('btn-username');
-  const displayUsername = document.getElementById('username').value.trim();
-  const username        = displayUsername.toLowerCase();
-  const bio             = document.getElementById('bio').value.trim();
+  const btn      = document.getElementById('btn-username');
+  const username = document.getElementById('username').value.trim().toLowerCase();
+  pendingUsername = username;
+  const bio      = document.getElementById('bio').value.trim();
   const favPlayer     = document.getElementById('fav-player').value.trim();
   const favTeam       = document.getElementById('fav-team').value.trim();
   const favSportChip  = document.querySelector('.chip[data-fav].selected');
@@ -1206,7 +1206,6 @@ async function submitUsername() {
     // first_name, last_name, role are NOT in the trigger — must be written here
     const profileUpdate = {
       username,
-      display_username: displayUsername,
       first_name: currentUser.user_metadata?.first_name || '',
       last_name:  currentUser.user_metadata?.last_name  || '',
       role:       pendingRole,
@@ -1427,22 +1426,34 @@ function skipCard() {
 async function populateSummary() {
   if (!currentUser) return;
 
-  const { data: profile } = await sbClient
-    .from('profiles')
-    .select('first_name, username, role, identity_verified, iso_credits')
-    .eq('id', currentUser.id)
-    .single();
+  // Try fetching from Supabase — fall back to in-memory data if RLS blocks it
+  let profile = null;
+  try {
+    const { data } = await sbClient
+      .from('profiles')
+      .select('first_name, username, role, identity_verified, iso_credits')
+      .eq('id', currentUser.id)
+      .single();
+    profile = data;
+  } catch (e) {
+    console.warn('Profile fetch blocked, using in-memory data:', e.message);
+  }
 
-  document.getElementById('welcome-name').textContent = profile?.first_name || 'Collector';
-  // Use auth email directly — avoids the null profiles.email issue
+  // Use in-memory values as fallback for anything not returned
+  const firstName = profile?.first_name || currentUser.user_metadata?.first_name || 'Collector';
+  const username  = profile?.username   || pendingUsername || '—';
+  const role      = profile?.role       || pendingRole     || 'buyer';
+  const credits   = profile?.iso_credits ?? 5;
+
+  document.getElementById('welcome-name').textContent = firstName;
   document.getElementById('sum-email').textContent    = currentUser.email;
-  document.getElementById('sum-username').textContent = profile?.username ? `@${profile.username}` : '—';
+  document.getElementById('sum-username').textContent = username ? `@${username}` : '—';
 
   const roleMap = { buyer: 'Buyer', seller: 'Seller', both: 'Buyer + Seller' };
-  document.getElementById('sum-role').textContent = roleMap[profile?.role] || 'Buyer';
+  document.getElementById('sum-role').textContent = roleMap[role] || 'Buyer';
 
   const idEl = document.getElementById('sum-id');
-  if (profile?.identity_verified) {
+  if (profile?.identity_verified || verificationStatus === 'verified') {
     idEl.textContent = '✓ Verified';
     idEl.style.color = 'var(--green)';
   } else {
@@ -1450,9 +1461,7 @@ async function populateSummary() {
     idEl.style.color = 'var(--muted-text)';
   }
 
-  document.getElementById('sum-credits').textContent =
-    (profile?.iso_credits || 0) + ' free posts available';
-
+  document.getElementById('sum-credits').textContent = credits + ' free posts available';
   document.querySelectorAll('.step').forEach(s => s.classList.add('complete'));
 }
 

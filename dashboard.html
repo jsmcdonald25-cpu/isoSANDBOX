@@ -379,6 +379,25 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
       <div class="stat-card"><div class="stat-label">Cards Acquired</div><div class="stat-value green">2</div><div class="stat-change up">Both verified at hub</div></div>
       <div class="stat-card"><div class="stat-label">Total Spent</div><div class="stat-value">$890</div><div class="stat-change">via GrailISO escrow</div></div>
     </div>
+    <!-- MLB SCORES / SCHEDULE BOX -->
+    <div class="scores-box" id="scores-box">
+      <div class="scores-header">
+        <div class="scores-title" id="scores-box-title">⚾ MLB SCORES</div>
+        <div class="scores-toggle-wrap">
+          <span class="scores-toggle-label" id="scores-label-left">Scores</span>
+          <label class="scores-switch">
+            <input type="checkbox" id="scores-toggle-input" onchange="toggleScoresMode(this.checked)">
+            <div class="scores-switch-track"></div>
+            <div class="scores-switch-thumb"></div>
+          </label>
+          <span class="scores-active-label" id="scores-label-right">Schedule</span>
+        </div>
+      </div>
+      <div class="scores-scroll-area" id="scores-inner">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
     <div class="two-col">
       <div>
         <div class="section-header"><div class="section-title">ACTIVE ISOs</div><span class="section-link" onclick="N('myisos',document.querySelector('[onclick*=myisos]'))">View All</span></div>
@@ -613,19 +632,6 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
   </div>
 
   </div><!-- /content -->
-
-  <!-- MLB SCORES/SCHEDULE BAR -->
-  <div class="scores-bar" id="scores-bar">
-    <div class="scores-toggle" id="scores-toggle-btn" onclick="toggleScoresMode()">
-      <span id="scores-mode-label">SCORES</span>
-      <span class="toggle-icon">⇄</span>
-    </div>
-    <div class="scores-scroll">
-      <div class="scores-inner" id="scores-inner">
-        <!-- populated by JS -->
-      </div>
-    </div>
-  </div>
 
 </div><!-- /main -->
 </div><!-- /app -->
@@ -1381,44 +1387,41 @@ function renderScores() {
   let html = '';
 
   if (scoresMode === 'scores') {
-    const items = [...MLB_SCORES, ...MLB_SCORES]; // double for loop
-    items.forEach(g => {
+    MLB_SCORES.forEach(g => {
       const awayWin = g.awayR > g.homeR;
       const homeWin = g.homeR > g.awayR;
       const statusClass = g.status === 'LIVE' ? 'live' : 'final';
-      html += `
-        <div class="score-item">
-          <div class="score-teams">
-            <div class="score-team ${awayWin ? 'winner' : ''}">
-              <span class="score-team-name">${g.away}</span>
-              <span class="score-num">${g.awayR}</span>
-            </div>
-            <div class="score-team ${homeWin ? 'winner' : ''}">
-              <span class="score-team-name">${g.home}</span>
-              <span class="score-num">${g.homeR}</span>
-            </div>
+      const statusLabel = g.status === 'LIVE' ? g.inning : 'FINAL';
+      html += `<div class="score-card">
+        <div class="score-card-teams">
+          <div class="score-card-team${awayWin ? ' winner' : ''}">
+            <span class="sc-name">${g.away}</span>
+            <span class="sc-run">${g.awayR}</span>
           </div>
-          <span class="score-status ${statusClass}">${g.status === 'LIVE' ? g.inning : 'F'}</span>
-        </div>`;
+          <div class="score-card-team${homeWin ? ' winner' : ''}">
+            <span class="sc-name">${g.home}</span>
+            <span class="sc-run">${g.homeR}</span>
+          </div>
+        </div>
+        <span class="score-card-status ${statusClass}">${statusLabel}</span>
+      </div>`;
     });
   } else {
-    const items = [...MLB_SCHEDULE, ...MLB_SCHEDULE];
-    items.forEach(g => {
-      html += `
-        <div class="sched-item">
-          <span class="sched-teams">${g.away} @ ${g.home}</span>
-          <span class="sched-time">${g.time}</span>
-        </div>`;
+    MLB_SCHEDULE.forEach(g => {
+      html += `<div class="sched-card">
+        <div class="sched-matchup">${g.away} <span style="color:var(--muted-text);font-weight:400">@</span> ${g.home}</div>
+        <div class="sched-time">${g.time}</div>
+      </div>`;
     });
   }
 
   inner.innerHTML = html;
+  const titleEl = document.getElementById('scores-box-title');
+  if (titleEl) titleEl.textContent = scoresMode === 'scores' ? '⚾ MLB SCORES' : '⚾ MLB SCHEDULE';
 }
 
-function toggleScoresMode() {
-  scoresMode = scoresMode === 'scores' ? 'schedule' : 'scores';
-  document.getElementById('scores-mode-label').textContent = 
-    scoresMode === 'scores' ? 'SCORES' : 'SCHEDULE';
+function toggleScoresMode(isSchedule) {
+  scoresMode = isSchedule ? 'schedule' : 'scores';
   renderScores();
 }
 

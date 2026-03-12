@@ -1015,7 +1015,8 @@ document.querySelectorAll('.chip[data-fav]').forEach(chip => {
   });
 });
 
-
+// Sport + card type chips — multi select
+document.querySelectorAll('.chip[data-sport]').forEach(chip => {
   chip.addEventListener('click', () => chip.classList.toggle('selected'));
 });
 document.querySelectorAll('.chip[data-type]').forEach(chip => {

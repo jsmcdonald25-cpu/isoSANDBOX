@@ -365,7 +365,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     <div class="nav-item" onclick="N('account',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><span class="nav-label">Account</span></div>
     <div class="nav-item logout" onclick="logOut()"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div><span class="nav-label">Log Out</span></div>
   </nav>
-  <div class="sidebar-footer"><div class="build-stamp">[SYS] GrailISO_v1.1.7 :: BUILD 20260308 :: STABLE</div></div>
+  <div class="sidebar-footer"><div class="build-stamp" id="buildStamp">[SYS] GrailISO_v1.1.7 :: BUILD 20260312 :: STABLE</div></div>
 </aside>
 
 <!-- MAIN -->
@@ -1091,7 +1091,7 @@ function updateITHeader(){
   const cbEl=document.getElementById('itCostBasis');if(cbEl)cbEl.textContent='$'+totalPaid.toLocaleString();
   const gvEl=document.getElementById('itGainVal');
   if(gvEl){gvEl.textContent=(gain>=0?'+':'')+`\$${Math.abs(gain).toLocaleString()}`;gvEl.className='it-stat-val '+(gain>=0?'green':'red');}
-  const gpEl=document.getElementById('itGainPct');if(gpEl)gpEl.textContent=(gain>=0?'+')+pct+'%';
+  const gpEl=document.getElementById('itGainPct');if(gpEl)gpEl.textContent=(gain>=0?'+':'')+pct+'%';
   if(active.length){
     const best=active.reduce((a,b)=>((b.current-b.paid)/Math.max(b.paid,1)>(a.current-a.paid)/Math.max(a.paid,1)?b:a));
     const bpct=((best.current-best.paid)/Math.max(best.paid,1)*100).toFixed(1);
@@ -1274,7 +1274,34 @@ if(document.readyState === 'loading'){
   initCardTicker();
 }
 
-// ── SCORES BAR ────────────────────────────────────────────────
+// ── BUILD STAMP ───────────────────────────────────────────────
+(function(){
+  const el = document.getElementById('buildStamp');
+  if(!el) return;
+
+  // Netlify injects DEPLOY_ID and COMMIT_REF as meta tags if you add them to your build
+  // Fallback: track build count in localStorage, timestamp on each fresh load
+  const STORAGE_KEY = 'grailiso_build';
+  const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+
+  // Increment build count if this is a new session (sessionStorage flag not set)
+  const sessionKey = 'grailiso_session_counted';
+  if(!sessionStorage.getItem(sessionKey)){
+    stored.count = (stored.count || 20260312) + 1;
+    stored.ts = new Date().toISOString();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
+    sessionStorage.setItem(sessionKey, '1');
+  }
+
+  const buildNum = stored.count || 20260312;
+  const ts = stored.ts ? new Date(stored.ts) : new Date();
+  const pad = n => String(n).padStart(2,'0');
+  const dateStr = `${ts.getFullYear()}${pad(ts.getMonth()+1)}${pad(ts.getDate())}`;
+  const timeStr = `${pad(ts.getHours())}:${pad(ts.getMinutes())}`;
+
+  el.textContent = `[SYS] GrailISO_v1.1.7 :: BUILD ${buildNum} :: ${dateStr} ${timeStr} :: STABLE`;
+  el.title = `Last deployed: ${ts.toLocaleString()}`;
+})();
 (function initScoresBar(){
   const ticker = document.getElementById('scoresTicker');
   const dateEl = document.getElementById('scoresDate');

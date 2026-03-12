@@ -1180,18 +1180,16 @@ renderMkt();renderLib();renderOvMkt();
 <script>
 // ============================================================
 // GRAILISO DASHBOARD — Supabase user hydration
-// Runs on load: fetches session + profile, replaces hardcoded values
+// Uses onAuthStateChange so fresh signups don't race
 // ============================================================
-(async function initDashboardUser() {
+(function initDashboardUser() {
   const SUPABASE_URL = 'https://jyfaegmnzkarlcximxjo.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_-JI4Y3ImXzqRVkwx1yIL1g_rVJVx5bn';
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // Helper: wait for ms
   const wait = ms => new Promise(r => setTimeout(r, ms));
 
-  // Retry fetching profile until username exists (handles post-signup race condition)
-  async function fetchProfileWithRetry(userId, attempts = 6, delayMs = 800) {
+  async function fetchProfileWithRetry(userId, attempts = 8, delayMs = 800) {
     for (let i = 0; i < attempts; i++) {
       const { data: profile } = await sb
         .from('profiles')
@@ -1204,30 +1202,16 @@ renderMkt();renderLib();renderOvMkt();
     return null;
   }
 
-  try {
-    // Get current session — retry a few times for fresh signups
-    let session = null;
-    for (let i = 0; i < 4; i++) {
-      const { data } = await sb.auth.getSession();
-      if (data.session) { session = data.session; break; }
-      await wait(600);
-    }
+  async function hydrateUser(user) {
+    try {
+      // Fetch profile with retry — new accounts need time to propagate
+      const profile = await fetchProfileWithRetry(user.id);
 
-    if (!session) {
-      window.location.href = 'auth.html';
-      return;
-    }
-
-    const user = session.user;
-
-    // Fetch profile with retry — new accounts need a moment to propagate
-    const profile = await fetchProfileWithRetry(user.id);
-
-    if (!profile) {
-      // Still no profile/username after retries — onboarding incomplete
-      window.location.href = 'auth.html';
-      return;
-    }
+      if (!profile) {
+        // Onboarding incomplete after all retries
+        window.location.href = 'auth.html';
+        return;
+      }
 
     const firstName  = profile.first_name || user.user_metadata?.first_name || '';
     const lastName   = profile.last_name  || user.user_metadata?.last_name  || '';
@@ -1294,9 +1278,34 @@ renderMkt();renderLib();renderOvMkt();
       }
     });
 
-  } catch (err) {
-    console.warn('Dashboard user init error:', err.message);
+    } catch (err) {
+      console.warn('Dashboard hydrateUser error:', err.message);
+    }
   }
+
+  // onAuthStateChange fires as soon as the session is ready —
+  // handles both returning users and fresh signups without race conditions
+  sb.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_OUT' || (!session && event !== 'INITIAL_SESSION')) {
+      window.location.href = 'auth.html';
+      return;
+    }
+    if (session) {
+      hydrateUser(session.user);
+    }
+  });
+
+  // Also check immediately for already-logged-in users
+  sb.auth.getSession().then(({ data: { session } }) => {
+    if (!session) {
+      // Give onAuthStateChange a chance to fire first (500ms)
+      setTimeout(() => {
+        sb.auth.getSession().then(({ data: { session: s2 } }) => {
+          if (!s2) window.location.href = 'auth.html';
+        });
+      }, 500);
+    }
+  });
 })();
 
 async function logOut() {

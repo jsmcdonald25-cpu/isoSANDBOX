@@ -48,10 +48,21 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .build-stamp{font-family:'Courier New',monospace;font-size:9px;color:rgba(0,170,255,.35);letter-spacing:.5px}
 /* MAIN */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--deep-border);background:var(--deep2);flex-shrink:0}
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--deep-border);background:var(--deep2);flex-shrink:0}
 .topbar-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--white)}
 .topbar-sub{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted-text);margin-top:1px}
 .topbar-actions{display:flex;align-items:center;gap:10px}
+/* CARD TICKER IN TOPBAR */
+.card-ticker-wrap{overflow:hidden;width:100%;max-width:680px}
+.card-ticker-inner{display:flex;gap:32px;white-space:nowrap;animation:cardTick 28s linear infinite}
+.card-ticker-inner:hover{animation-play-state:paused}
+@keyframes cardTick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ct-item{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--chrome);display:inline-flex;align-items:center;gap:8px;flex-shrink:0}
+.ct-item .ct-name{color:var(--white);font-weight:600}
+.ct-item .ct-price{color:var(--blue);font-weight:700}
+.ct-item .ct-chg.up{color:var(--green)}.ct-item .ct-chg.dn{color:var(--red)}
+.ct-item .ct-sep{color:var(--deep-border)}
+.ct-grail{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:4px;color:var(--deep-border);animation:cardTick 50s linear infinite}
 .btn{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:8px 18px;border-radius:6px;border:none;cursor:pointer;transition:all .2s}
 .btn-primary{background:var(--blue);color:white}
 .btn-primary:hover{background:var(--blue-bright);box-shadow:0 0 20px var(--blue-glow)}
@@ -335,16 +346,13 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     <button class="credits-add" onclick="T('Credits — coming soon')">+</button>
   </div>
   <nav class="sidebar-nav">
-    <div class="nav-section-label">Main</div>
     <div class="nav-item active" onclick="N('overview',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div><span class="nav-label">Overview</span></div>
     <div class="nav-item" onclick="N('post',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div><span class="nav-label">Post ISO</span></div>
     <div class="nav-item" onclick="N('myisos',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div><span class="nav-label">My ISOs</span><span class="nav-badge">3</span></div>
     <div class="nav-item" onclick="N('notifs',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></div><span class="nav-label">Notifications</span><span class="nav-badge red">2</span></div>
-    <div class="nav-section-label">Market</div>
     <div class="nav-item" onclick="N('market',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span class="nav-label">Market Data</span></div>
     <div class="nav-item" onclick="N('library',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div><span class="nav-label">Card Library</span></div>
     <div class="nav-item" onclick="N('isoticker',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><span class="nav-label">ISOTicker</span></div>
-    <div class="nav-section-label">Account</div>
     <div class="nav-item" onclick="N('account',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><span class="nav-label">Account</span></div>
     <div class="nav-item logout" onclick="logOut()"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div><span class="nav-label">Log Out</span></div>
   </nav>
@@ -354,17 +362,19 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
-    <div><div class="topbar-title" id="pgTitle">OVERVIEW</div><div class="topbar-sub" id="pgSub">Welcome back, Jason</div></div>
-    <div class="topbar-actions">
+    <div style="flex:1;min-width:0">
+      <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:5px">
+        <div class="topbar-title" id="pgTitle">OVERVIEW</div>
+        <div class="topbar-sub" id="pgSub">Welcome back, Jason</div>
+      </div>
+      <div class="card-ticker-wrap"><div class="card-ticker-inner" id="cardTickerInner"></div></div>
+    </div>
+    <div class="topbar-actions" style="flex-shrink:0;margin-left:18px">
       <button class="btn btn-ghost" onclick="N('library',document.querySelector('[onclick*=library]'))">Search Cards</button>
       <button class="btn btn-primary" onclick="N('post',document.querySelector('[onclick*=post]'))">+ Post ISO</button>
       <div class="notif-bell" onclick="N('notifs',document.querySelector('[onclick*=notifs]'))"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><div class="notif-dot"></div></div>
     </div>
   </div><!-- /topbar -->
-  <div class="port-ticker-bar">
-    <div class="port-ticker-label">PORTFOLIO</div>
-    <div class="port-ticker-track"><div class="port-ticker-inner" id="port-ticker-inner"><span class="port-ticker-placeholder">Loading portfolio...</span></div></div>
-  </div>
   <div class="content">
 
   <!-- OVERVIEW -->
@@ -1156,6 +1166,47 @@ window.addEventListener('resize',()=>{if(document.getElementById('panel-isoticke
 // INIT
 // ═══════════════════════════════════════
 renderMkt();renderLib();renderOvMkt();
+
+// ── CARD TICKER ─────────────────────────────────────────────
+(function initCardTicker(){
+  // Demo data: user's vault/ISO cards. In prod, pull from Supabase vault + isos tables.
+  const demoCards = [
+    {name:'Juan Soto RC Auto Gold /50', grade:'PSA 10', price:'$1,200', chg:'+12.4%', dir:'up'},
+    {name:'Shohei Ohtani Chrome Auto /499', grade:'PSA 9', price:'$650', chg:'-3.1%', dir:'dn'},
+    {name:'Mike Trout 2011 Topps RC', grade:'PSA 10', price:'$890', chg:'+5.7%', dir:'up'},
+    {name:'Julio Rodriguez Gold /50', grade:'Raw', price:'$420', chg:'+8.2%', dir:'up'},
+    {name:'Ronald Acuña Jr Auto /25', grade:'BGS 9.5', price:'$1,850', chg:'+21.0%', dir:'up'},
+    {name:'Gunnar Henderson RC Prizm', grade:'PSA 10', price:'$310', chg:'+77.8%', dir:'up'},
+  ];
+
+  const inner = document.getElementById('cardTickerInner');
+  if(!inner) return;
+
+  // If no cards, show slow GRAILISO scroll
+  if(!demoCards || demoCards.length === 0){
+    inner.classList.add('ct-grail');
+    const txt = 'GRAILISO · '.repeat(20);
+    inner.textContent = txt;
+    inner.style.animation = 'cardTick 60s linear infinite';
+    return;
+  }
+
+  // Build doubled set for seamless loop
+  let items = '';
+  [...demoCards, ...demoCards].forEach(c => {
+    items += `<span class="ct-item">
+      <span class="ct-name">${c.name}</span>
+      <span class="ct-sep">·</span>
+      <span>${c.grade}</span>
+      <span class="ct-sep">·</span>
+      <span class="ct-price">${c.price}</span>
+      <span class="ct-chg ${c.dir}">${c.chg}</span>
+      <span class="ct-sep" style="margin-left:8px">⬥</span>
+    </span>`;
+  });
+  inner.innerHTML = items;
+})();
+
 </script>
 </body>
 </html>

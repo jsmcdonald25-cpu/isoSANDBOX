@@ -1239,8 +1239,8 @@ window.addEventListener('resize',()=>{if(document.getElementById('panel-isoticke
 renderMkt();renderLib();renderOvMkt();
 
 // ── CARD TICKER ─────────────────────────────────────────────
-(function initCardTicker(){
-  // Demo data: user's vault/ISO cards. In prod, pull from Supabase vault + isos tables.
+function initCardTicker(){
+  // Demo data — in prod pull from Supabase vault + isos tables
   const demoCards = [
     {name:'Juan Soto RC Auto Gold /50', grade:'PSA 10', price:'$1,200', chg:'+12.4%', dir:'up'},
     {name:'Shohei Ohtani Chrome Auto /499', grade:'PSA 9', price:'$650', chg:'-3.1%', dir:'dn'},
@@ -1253,41 +1253,36 @@ renderMkt();renderLib();renderOvMkt();
   const inner = document.getElementById('cardTickerInner');
   if(!inner) return;
 
-  // If no cards, show slow GRAILISO scroll
   if(!demoCards || demoCards.length === 0){
     inner.classList.add('ct-grail');
-    const txt = 'GRAILISO · '.repeat(20);
-    inner.textContent = txt;
+    inner.textContent = 'GRAILISO · '.repeat(20);
     inner.style.animation = 'cardTick 60s linear infinite';
     return;
   }
 
-  // Build doubled set for seamless loop
   let items = '';
   [...demoCards, ...demoCards].forEach(c => {
-    items += `<span class="ct-item">
-      <span class="ct-name">${c.name}</span>
-      <span class="ct-sep">·</span>
-      <span>${c.grade}</span>
-      <span class="ct-sep">·</span>
-      <span class="ct-price">${c.price}</span>
-      <span class="ct-chg ${c.dir}">${c.chg}</span>
-      <span class="ct-sep" style="margin-left:8px">⬥</span>
-    </span>`;
+    items += `<span class="ct-item"><span class="ct-name">${c.name}</span><span class="ct-sep">·</span><span>${c.grade}</span><span class="ct-sep">·</span><span class="ct-price">${c.price}</span><span class="ct-chg ${c.dir}">${c.chg}</span><span class="ct-sep" style="margin-left:8px">⬥</span></span>`;
   });
   inner.innerHTML = items;
-})();
+  inner.style.animation = 'cardTick 32s linear infinite';
+}
+// Run after DOM ready — handles any auth timing issues
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', initCardTicker);
+} else {
+  initCardTicker();
+}
 
 // ── SCORES BAR ────────────────────────────────────────────────
 (function initScoresBar(){
   const ticker = document.getElementById('scoresTicker');
   const dateEl = document.getElementById('scoresDate');
   const today = new Date();
-  const dateStr = today.toISOString().split('T')[0];
   const display = today.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
   if(dateEl) dateEl.textContent = display;
 
-  let scoresMode = true; // true = scores, false = schedule
+  let scoresMode = true;
 
   window.toggleScoresMode = function(){
     scoresMode = !scoresMode;
@@ -1298,75 +1293,91 @@ renderMkt();renderLib();renderOvMkt();
     scoresMode ? loadScores() : loadSchedule();
   };
 
+  const SPORTS = [
+    { label:'NBA', url:'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard' },
+    { label:'MLB', url:'https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard' },
+    { label:'NHL', url:'https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard' },
+    { label:'NFL', url:'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard' },
+  ];
+
   async function loadScores(){
     if(!ticker) return;
+    showFallback('LOADING...');
     try {
-      // NBA scores for today
-      const res = await fetch(`https://www.balldontlie.io/api/v1/games?dates[]=${dateStr}&per_page=30`);
-      const data = await res.json();
-      const games = data.data || [];
-      if(!games.length){ showFallback('No games today · Check back tonight'); return; }
-      renderGames(games, false);
-    } catch(e){ showFallback('Scores unavailable · Check back soon'); }
+      const results = await Promise.allSettled(SPORTS.map(s => fetch(s.url).then(r=>r.json()).then(d=>({sport:s.label,data:d}))));
+      let allEvents = [];
+      results.forEach(r => {
+        if(r.status==='fulfilled'){
+          const {sport,data} = r.value;
+          (data.events||[]).forEach(ev => {
+            const comp = ev.competitions?.[0];
+            if(!comp) return;
+            const home = comp.competitors?.find(c=>c.homeAway==='home');
+            const away = comp.competitors?.find(c=>c.homeAway==='away');
+            allEvents.push({sport, home, away, status: ev.status?.type });
+          });
+        }
+      });
+      if(!allEvents.length){ showFallback('No games today · Check back later'); return; }
+      renderEvents(allEvents, false);
+    } catch(e){ showFallback('Scores unavailable'); }
   }
 
   async function loadSchedule(){
     if(!ticker) return;
+    showFallback('LOADING...');
     try {
-      // Next 7 days
-      const dates = [];
-      for(let i=0;i<7;i++){
-        const d = new Date(today); d.setDate(d.getDate()+i);
-        dates.push(d.toISOString().split('T')[0]);
-      }
-      const qs = dates.map(d=>`dates[]=${d}`).join('&');
-      const res = await fetch(`https://www.balldontlie.io/api/v1/games?${qs}&per_page=30`);
-      const data = await res.json();
-      const games = data.data || [];
-      if(!games.length){ showFallback('No upcoming games found'); return; }
-      renderGames(games, true);
-    } catch(e){ showFallback('Schedule unavailable · Check back soon'); }
+      const results = await Promise.allSettled(SPORTS.map(s => fetch(s.url+'?limit=10').then(r=>r.json()).then(d=>({sport:s.label,data:d}))));
+      let allEvents = [];
+      results.forEach(r => {
+        if(r.status==='fulfilled'){
+          const {sport,data} = r.value;
+          (data.events||[]).forEach(ev => {
+            const comp = ev.competitions?.[0];
+            if(!comp) return;
+            const home = comp.competitors?.find(c=>c.homeAway==='home');
+            const away = comp.competitors?.find(c=>c.homeAway==='away');
+            const date = ev.date ? new Date(ev.date) : null;
+            allEvents.push({sport, home, away, status: ev.status?.type, date, detail: ev.status?.type?.shortDetail||'' });
+          });
+        }
+      });
+      if(!allEvents.length){ showFallback('No upcoming games found'); return; }
+      renderEvents(allEvents, true);
+    } catch(e){ showFallback('Schedule unavailable'); }
   }
 
-  function renderGames(games, isSchedule){
+  function renderEvents(events, isSchedule){
     let html = '';
-    games.forEach(g => {
-      const home = g.home_team?.abbreviation || g.home_team?.full_name || '?';
-      const away = g.visitor_team?.abbreviation || g.visitor_team?.full_name || '?';
-      const status = g.status || '';
-      const isLive = status && !['Final',''].includes(status) && isNaN(Number(status));
-      const isFinal = status === 'Final';
-      const gameDate = g.date ? new Date(g.date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
+    events.forEach(ev => {
+      const homeName = ev.home?.team?.abbreviation || '?';
+      const awayName = ev.away?.team?.abbreviation || '?';
+      const homeScore = ev.home?.score || '';
+      const awayScore = ev.away?.score || '';
+      const isLive = ev.status === 'in';
+      const isFinal = ev.status === 'post';
 
-      let scoreOrTime = '';
       let statusHtml = '';
-      if(isSchedule){
-        scoreOrTime = gameDate;
-        statusHtml = `<span class="sc-status final">${gameDate}</span>`;
-      } else if(isFinal){
-        scoreOrTime = `${g.visitor_team_score} - ${g.home_team_score}`;
-        statusHtml = `<span class="sc-status final">FINAL</span>`;
-      } else if(isLive){
-        scoreOrTime = `${g.visitor_team_score} - ${g.home_team_score}`;
-        statusHtml = `<span class="sc-status live">● ${status}</span>`;
-      } else {
-        const t = status || '–';
+      let scoreHtml = '';
+
+      if(isSchedule && ev.date){
+        const t = ev.date.toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ' ' + ev.date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
         statusHtml = `<span class="sc-status final">${t}</span>`;
-        scoreOrTime = t;
+      } else if(isLive){
+        scoreHtml = `<span class="sc-score">${awayScore}-${homeScore}</span>`;
+        statusHtml = `<span class="sc-status live">● LIVE</span>`;
+      } else if(isFinal){
+        scoreHtml = `<span class="sc-score">${awayScore}-${homeScore}</span>`;
+        statusHtml = `<span class="sc-status final">FINAL</span>`;
+      } else {
+        statusHtml = `<span class="sc-status final">TBD</span>`;
       }
 
-      html += `<div class="score-chip">
-        <span class="sc-sport">NBA</span>
-        <span class="sc-teams">${away} @ ${home}</span>
-        ${!isSchedule ? `<span class="sc-score">${scoreOrTime}</span>` : ''}
-        ${statusHtml}
-      </div>`;
+      html += `<div class="score-chip"><span class="sc-sport">${ev.sport}</span><span class="sc-teams">${awayName} @ ${homeName}</span>${scoreHtml}${statusHtml}</div>`;
     });
 
-    // Double for seamless scroll
-    const full = html + html;
-    ticker.innerHTML = full;
-    ticker.style.animation = `scoreTick ${Math.max(40, games.length * 6)}s linear infinite`;
+    ticker.innerHTML = html + html;
+    ticker.style.animation = `scoreTick ${Math.max(50, events.length * 5)}s linear infinite`;
   }
 
   function showFallback(msg){
@@ -1375,7 +1386,6 @@ renderMkt();renderLib();renderOvMkt();
   }
 
   loadScores();
-  // Refresh every 90 seconds when on scores mode
   setInterval(()=>{ if(scoresMode) loadScores(); }, 90000);
 })();
 

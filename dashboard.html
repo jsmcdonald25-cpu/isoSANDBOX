@@ -1639,7 +1639,6 @@ const CARDS=[
       {label:'Superfractor 1/1',color:'#FFD700',glow:'rgba(255,215,0,0.7)', run:1, superfractor:true,isBase:false,lastSale:'$4,200',isos:0,pop:1,watching:19},
     ]
   },
-,
   {
     id:50, player:'Ken Griffey Jr.', year:2025, brand:'Topps', set:'Stadium Club',
     parallel:'Base', run:null, auto:false, rc:false,
@@ -2668,7 +2667,7 @@ let _cdListenersAttached=false;
 let _cdCatalogFrontBlob=null, _cdCatalogBackBlob=null;
 
 async function openCardDetail(cardId){
-  const c = CARDS.find(x=>x.id===cardId);
+  const c = CARDS.find(x=>x && x.id===cardId);
   if(!c) return;
   window._cdCard = c;
 

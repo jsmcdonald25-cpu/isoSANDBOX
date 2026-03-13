@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -596,7 +596,7 @@
     .step-label { font-size: 0.55rem; }
   }
 </style>
-</head>
+<style>.grail-build-stamp{position:fixed;top:10px;right:14px;z-index:99999;font-family:'Courier New',monospace;font-size:9px;color:rgba(0,170,255,0.45);letter-spacing:.5px;pointer-events:none;white-space:nowrap}</style></head>
 <body>
 
 <div class="bg-gradient"></div>
@@ -1526,5 +1526,17 @@ async function signIn() {
 }
 </script>
 
-</body>
+<div class="grail-build-stamp" id="grailBuildStamp"></div>
+<script>
+(function(){
+  var el=document.getElementById('grailBuildStamp');if(!el)return;
+  var stored={};try{stored=JSON.parse(localStorage.getItem('grailiso_build')||'{}');}catch(e){}
+  if(!sessionStorage.getItem('grailiso_sc')){stored.count=(stored.count||20260312)+1;stored.ts=new Date().toISOString();try{localStorage.setItem('grailiso_build',JSON.stringify(stored));}catch(e){}sessionStorage.setItem('grailiso_sc','1');}
+  var ts=stored.ts?new Date(stored.ts):new Date();
+  var p=function(n){return String(n).padStart(2,'0');};
+  el.textContent='[SYS] GrailISO_v1.2.0 :: BUILD '+stored.count+' :: '+ts.getFullYear()+p(ts.getMonth()+1)+p(ts.getDate())+' '+p(ts.getHours())+':'+p(ts.getMinutes());
+  el.title='Last session: '+ts.toLocaleString();
+})();
+</script></body>
 </html>
+

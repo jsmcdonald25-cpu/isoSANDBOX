@@ -2851,12 +2851,17 @@ function _ivPrefetchCounts(){
   IV_SETS.forEach(s=>{
     window._sb.from(s.table).select('*',{count:'exact',head:true}).then(res=>{
       _ivCounts[s.table] = res.count || 0;
-      // Refresh tiles if sport already selected
-      const tile = document.getElementById('ivSetTile-'+s.table);
-      if(tile){
-        const ct = tile.querySelector('.iv-set-count');
+      // Refresh set tile count if visible
+      const setTile = document.getElementById('ivSetTile-'+s.table);
+      if(setTile){
+        const ct = setTile.querySelector('.iv-set-count');
         if(ct) ct.textContent = (_ivCounts[s.table]||0).toLocaleString()+' cards';
       }
+      // Refresh sport tile count
+      const sport = IV_SETS.filter(x=>x.sport===s.sport);
+      const total = sport.reduce((sum,x)=>sum+(_ivCounts[x.table]||0),0);
+      const sportCount = document.getElementById('ivSportCount-'+s.sport);
+      if(sportCount && total > 0) sportCount.textContent = total.toLocaleString()+' cards';
     });
   });
 }
@@ -2908,17 +2913,22 @@ function ivRenderSports(){
     const countStr = s.active
       ? (totalCards ? totalCards.toLocaleString()+' cards' : sets.length+' sets')
       : 'Coming soon';
-    return `<div class="iv-sport-tile${s.active?' active':'  inactive'}" onclick="${s.active?`ivSelectSport('${s.id}')`:''}" id="ivSportTile-${s.id}">
-      ${s.active ? '<div class="iv-sport-badge">LIVE</div>' : ''}
-      <div class="iv-sport-emoji">${s.emoji}</div>
-      <div class="iv-sport-name">${s.label}</div>
-      <div class="iv-sport-count">${countStr}</div>
-    </div>`;
+    const clickAttr = s.active ? 'onclick="ivSelectSport(\'' + s.id + '\')"' : '';
+    const badge = s.active ? '<div class="iv-sport-badge">LIVE</div>' : '';
+    const cls = s.active ? 'iv-sport-tile active' : 'iv-sport-tile inactive';
+    return '<div class="' + cls + '" ' + clickAttr + ' id="ivSportTile-' + s.id + '">'
+      + badge
+      + '<div class="iv-sport-emoji">' + s.emoji + '</div>'
+      + '<div class="iv-sport-name">' + s.label + '</div>'
+      + '<div class="iv-sport-count" id="ivSportCount-' + s.id + '">' + countStr + '</div>'
+      + '</div>';
   }).join('');
 }
 
 function ivSelectSport(sportId){
   _ivSport = sportId;
+  _ivYearFilter = 'all';
+  _ivBrandFilter = 'all';
   _ivShowState('sets');
   _ivRenderSetBrowser();
   _ivBreadcrumb(true, false);

@@ -2736,6 +2736,8 @@ async function _cdLoadCatalogImages(c){
       .eq('card_number', cardNum)
       .maybeSingle();
 
+    console.log('[CD] query table:', table, '| cardNum:', cardNum, '| error:', error, '| data:', data);
+
     if(error || !data || !data.var_images || !Object.keys(data.var_images).length){
       if(statusEl){ statusEl.textContent='No catalog images yet'; statusEl.style.color='rgba(122,149,174,0.5)';
         setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }

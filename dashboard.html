@@ -75,6 +75,45 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .content{flex:1;overflow-y:auto;padding:24px;padding-bottom:58px}
 .content::-webkit-scrollbar{width:5px}
 .content::-webkit-scrollbar-thumb{background:var(--deep-border);border-radius:3px}
+/* VAULT MODAL */
+.vault-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.vault-modal{background:var(--deep2);border:1px solid rgba(0,170,255,0.25);border-radius:14px;width:100%;max-width:580px;max-height:90vh;overflow-y:auto;padding:28px;position:relative}
+.vault-modal::-webkit-scrollbar{width:3px}.vault-modal::-webkit-scrollbar-thumb{background:var(--deep-border);border-radius:2px}
+.vm-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--white);margin-bottom:4px}
+.vm-sub{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:22px}
+.vm-card-info{background:rgba(0,170,255,0.06);border:1px solid var(--deep-border);border-radius:8px;padding:12px 14px;margin-bottom:22px}
+.vm-card-name{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:600;color:var(--white)}
+.vm-card-detail{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted-text);margin-top:2px}
+.vm-section{margin-bottom:20px}
+.vm-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.vm-label .req{color:var(--red);font-size:13px}
+.vm-upload-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vm-upload-box{border:2px dashed rgba(0,170,255,0.25);border-radius:10px;padding:20px 12px;text-align:center;cursor:pointer;transition:all .2s;position:relative;background:rgba(0,170,255,0.03)}
+.vm-upload-box:hover,.vm-upload-box.has-file{border-color:var(--blue);background:rgba(0,170,255,0.08)}
+.vm-upload-box input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.vm-upload-icon{font-size:24px;margin-bottom:6px}
+.vm-upload-label{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted-text);letter-spacing:.5px}
+.vm-upload-name{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--green);margin-top:4px;word-break:break-all}
+.vm-preview{width:100%;max-height:90px;object-fit:contain;border-radius:6px;margin-top:8px;display:none;border:1px solid var(--deep-border)}
+.vm-input{width:100%;background:rgba(0,0,0,0.25);border:1px solid var(--deep-border);border-radius:6px;padding:10px 13px;color:var(--white);font-family:'Barlow Condensed',sans-serif;font-size:14px;outline:none;transition:border-color .2s;box-sizing:border-box}
+.vm-input:focus{border-color:var(--blue)}.vm-input::placeholder{color:var(--muted-text)}
+.vm-serial-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+.vm-serial-of{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--muted-text);padding:10px 13px;background:rgba(0,0,0,0.15);border:1px solid var(--deep-border);border-radius:6px;white-space:nowrap}
+.vm-acq-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vm-acq-btn{background:rgba(0,0,0,0.2);border:1px solid var(--deep-border);border-radius:8px;padding:14px 12px;cursor:pointer;text-align:center;transition:all .2s}
+.vm-acq-btn:hover{border-color:rgba(0,170,255,0.4)}.vm-acq-btn.selected{border-color:var(--blue);background:rgba(0,170,255,0.12)}
+.vm-acq-icon{font-size:22px;margin-bottom:6px}
+.vm-acq-label{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--white)}
+.vm-acq-sub{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text);margin-top:2px}
+.vm-source-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.vm-source-btn{background:rgba(0,0,0,0.2);border:1px solid var(--deep-border);border-radius:6px;padding:10px;cursor:pointer;text-align:center;transition:all .2s;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted-text)}
+.vm-source-btn:hover{border-color:rgba(0,170,255,0.4);color:var(--white)}.vm-source-btn.selected{border-color:var(--blue);background:rgba(0,170,255,0.1);color:var(--white)}
+.vm-footer{display:flex;gap:10px;margin-top:24px;padding-top:18px;border-top:1px solid var(--deep-border)}
+.vm-close{position:absolute;top:16px;right:16px;width:30px;height:30px;background:rgba(255,255,255,0.06);border:none;border-radius:50%;color:var(--muted-text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;line-height:1}
+.vm-close:hover{background:rgba(255,59,92,0.15);color:var(--red)}
+.vm-error{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--red);margin-top:6px;display:none}
+.vm-progress{width:100%;height:3px;background:rgba(0,170,255,0.1);border-radius:2px;margin-top:14px;display:none}
+.vm-progress-bar{height:100%;background:var(--blue);border-radius:2px;width:0;transition:width .4s}
 @keyframes scoreTick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .score-chip{display:inline-flex;align-items:center;gap:10px;font-family:'Barlow Condensed',sans-serif;font-size:12px;flex-shrink:0;padding:3px 12px;border-left:1px solid rgba(0,170,255,0.12)}
 .score-chip .sc-teams{color:var(--white);font-weight:600;font-size:13px}
@@ -360,7 +399,8 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     <div class="nav-item" onclick="N('notifs',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></div><span class="nav-label">Notifications</span><span class="nav-badge red">2</span></div>
     <div class="nav-item" onclick="N('market',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span class="nav-label">Market Data</span></div>
     <div class="nav-item" onclick="N('leaderboard',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="14" width="4" height="8" rx="1"/><rect x="9" y="9" width="4" height="13" rx="1"/><rect x="16" y="4" width="4" height="18" rx="1"/><line x1="2" y1="22" x2="22" y2="22"/></svg></div><span class="nav-label">Leaderboard</span></div>
-    <div class="nav-item" onclick="N('library',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div><span class="nav-label">Card Library</span></div>
+    <div class="nav-item" onclick="N('myvault',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></div><span class="nav-label">My Vault</span></div>
+    <div class="nav-item" onclick="N('library',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div><span class="nav-label">ISOVault</span></div>
     <div class="nav-item" onclick="N('isoticker',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><span class="nav-label">ISOTicker</span></div>
     <div class="nav-item" onclick="N('account',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><span class="nav-label">Account</span></div>
     <div class="nav-item logout" onclick="logOut()"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div><span class="nav-label">Log Out</span></div>
@@ -543,7 +583,22 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     <div class="card-block"><div class="card-block-title"><div class="dot"></div> Baseball Market — Last Sale · Bid · Ask · Active ISOs</div><table class="market-table" id="mktTable"></table></div>
   </div>
 
-  <!-- CARD LIBRARY -->
+  <!-- MY VAULT -->
+  <div class="panel" id="panel-myvault">
+    <div class="section-header">
+      <div class="section-title">MY VAULT</div>
+      <button class="btn btn-primary btn-sm" onclick="openVaultModal()">+ Add Card</button>
+    </div>
+    <div id="myVaultEmpty" style="text-align:center;padding:60px 20px;color:var(--muted-text)">
+      <div style="font-size:48px;margin-bottom:16px">🃏</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--white);margin-bottom:8px">YOUR VAULT IS EMPTY</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;margin-bottom:20px">Browse ISOVault to find a card, then add it to your personal library.</div>
+      <button class="btn btn-primary" onclick="N('library',document.querySelector('[onclick*=library]'))">Browse ISOVault</button>
+    </div>
+    <div class="card-grid" id="myVaultGrid" style="display:none"></div>
+  </div>
+
+  <!-- CARD LIBRARY / ISOVAULT -->
   <div class="panel" id="panel-library">
     <div class="search-wrap"><div class="s-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><input type="text" id="libSearch" placeholder="Search player, year, set, parallel..." oninput="filterLib(this.value)"/></div>
     <div class="filter-row" id="libFilters"><div class="chip active" onclick="libType('all',this)">All</div><div class="chip" onclick="libType('rc',this)">Rookies</div><div class="chip" onclick="libType('auto',this)">Autos</div><div class="chip" onclick="libType('numbered',this)">Numbered</div><div class="chip" onclick="libType('vintage',this)">Vintage</div></div>
@@ -668,6 +723,88 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
   </div><!-- /content -->
 </div><!-- /main -->
 </div><!-- /app -->
+
+<!-- VAULT UPLOAD MODAL -->
+<div class="vault-modal-overlay" id="vaultModalOverlay" style="display:none" onclick="if(event.target===this)closeVaultModal()">
+  <div class="vault-modal">
+    <button class="vm-close" onclick="closeVaultModal()">×</button>
+    <div class="vm-title">ADD TO MY VAULT</div>
+    <div class="vm-sub" id="vmSub">Upload front &amp; back of your card to add it to your personal library.</div>
+
+    <!-- Card Info -->
+    <div class="vm-card-info" id="vmCardInfo" style="display:none">
+      <div class="vm-card-name" id="vmCardName"></div>
+      <div class="vm-card-detail" id="vmCardDetail"></div>
+    </div>
+
+    <!-- Photo Upload -->
+    <div class="vm-section">
+      <div class="vm-label">Card Photos <span class="req">*</span> <span style="color:rgba(0,170,255,0.5);font-size:10px">— BOTH REQUIRED</span></div>
+      <div class="vm-upload-row">
+        <div class="vm-upload-box" id="frontBox">
+          <input type="file" accept="image/*" id="frontFile" onchange="handleUpload(this,'front')">
+          <div class="vm-upload-icon">📸</div>
+          <div class="vm-upload-label">FRONT OF CARD</div>
+          <div class="vm-upload-name" id="frontName"></div>
+          <img class="vm-preview" id="frontPreview">
+        </div>
+        <div class="vm-upload-box" id="backBox">
+          <input type="file" accept="image/*" id="backFile" onchange="handleUpload(this,'back')">
+          <div class="vm-upload-icon">🔄</div>
+          <div class="vm-upload-label">BACK OF CARD</div>
+          <div class="vm-upload-name" id="backName"></div>
+          <img class="vm-preview" id="backPreview">
+        </div>
+      </div>
+      <div class="vm-error" id="photoError">Both front and back photos are required.</div>
+    </div>
+
+    <!-- Serial Number (shown only for numbered cards) -->
+    <div class="vm-section" id="vmSerialSection" style="display:none">
+      <div class="vm-label">Your Serial Number <span class="req">*</span> <span style="color:rgba(0,170,255,0.5);font-size:10px">— REQUIRED FOR NUMBERED CARDS</span></div>
+      <div class="vm-serial-row">
+        <input class="vm-input" type="number" id="vmSerialNum" min="1" placeholder="e.g. 47" oninput="validateSerial()">
+        <div class="vm-serial-of" id="vmSerialOf">/ —</div>
+      </div>
+      <div class="vm-error" id="serialError">Please enter your specific card number.</div>
+    </div>
+
+    <!-- How did you get it -->
+    <div class="vm-section">
+      <div class="vm-label">How did you obtain this card? <span class="req">*</span></div>
+      <div class="vm-acq-grid">
+        <div class="vm-acq-btn" id="acqRipped" onclick="selectAcq('ripped')">
+          <div class="vm-acq-icon">📦</div>
+          <div class="vm-acq-label">Ripped</div>
+          <div class="vm-acq-sub">Pack / Box pull</div>
+        </div>
+        <div class="vm-acq-btn" id="acqPurchased" onclick="selectAcq('purchased')">
+          <div class="vm-acq-icon">💰</div>
+          <div class="vm-acq-label">Purchased</div>
+          <div class="vm-acq-sub">Bought from someone</div>
+        </div>
+      </div>
+      <div id="vmSourceSection" style="display:none">
+        <div class="vm-label" style="margin-top:14px">Where did you purchase it? <span class="req">*</span></div>
+        <div class="vm-source-grid">
+          <div class="vm-source-btn" id="srcEbay" onclick="selectSource('ebay')">eBay</div>
+          <div class="vm-source-btn" id="srcFacebook" onclick="selectSource('facebook')">Facebook / Card Group</div>
+          <div class="vm-source-btn" id="srcLocal" onclick="selectSource('local_store')">Local Card Store</div>
+          <div class="vm-source-btn" id="srcIndividual" onclick="selectSource('individual')">Individual Seller</div>
+        </div>
+      </div>
+      <div class="vm-error" id="acqError">Please select how you obtained this card.</div>
+    </div>
+
+    <!-- Progress + Submit -->
+    <div class="vm-progress" id="vmProgress"><div class="vm-progress-bar" id="vmProgressBar"></div></div>
+    <div class="vm-footer">
+      <button class="btn btn-primary" style="flex:1" onclick="submitVault()" id="vmSubmitBtn">ADD TO MY VAULT</button>
+      <button class="btn btn-ghost" onclick="closeVaultModal()">Cancel</button>
+    </div>
+    <div class="vm-error" id="vmSubmitError" style="text-align:center;margin-top:8px"></div>
+  </div>
+</div>
 
 <!-- SCORES BAR -->
 <div id="scoresBar" style="position:fixed;bottom:0;left:var(--sidebar-w);right:0;height:44px;background:#0a1929;border-top:1px solid rgba(0,170,255,0.18);display:flex;align-items:center;z-index:900;overflow:hidden;">
@@ -818,7 +955,8 @@ const PM={
   post:{t:'POST ISO',s:'Broadcast exactly what you want'},
   myisos:{t:'MY ISOs',s:'3 active · 1 completed'},
   market:{t:'MARKET DATA',s:'Live bid · ask · last sale — Baseball'},
-  library:{t:'CARD LIBRARY',s:'Baseball card catalog — 48 cards'},
+  library:{t:'ISOVAULT',s:'Browse all 522+ cards — find your grail'},
+  myvault:{t:'MY VAULT',s:'Your personal card library'},
   notifs:{t:'NOTIFICATIONS',s:'2 unread'},
   account:{t:'ACCOUNT',s:'Verified buyer'},
   isoticker:{t:'ISOTICKER',s:'Your collection — value since purchase'},
@@ -832,6 +970,7 @@ function N(id,el){
   const m=PM[id];
   if(m){document.getElementById('pgTitle').textContent=m.t;document.getElementById('pgSub').textContent=m.s;}
   if(id==='library')renderLib();
+  if(id==='myvault')renderMyVault();
   if(id==='market')renderMkt();
   if(id==='post'){curStep=1;gS(1);}
   if(id==='overview')renderOvMkt();
@@ -954,7 +1093,7 @@ function renderLib(filt,search){
   const g=document.getElementById('libGrid');if(!g)return;
   g.innerHTML=cards.map(c=>{
     const b=[c.auto?'<span class="badge auto">AUTO</span>':'',c.rc?'<span class="badge rc">RC</span>':'',c.run?`<span class="badge num">/${c.run}</span>`:'',c.tags.includes('vintage')?'<span class="badge vtg">VTG</span>':''].filter(Boolean).join('');
-    return`<div class="card-thumb" onclick="T('${c.player} · ${c.year} ${c.brand} ${c.set} · ~$${c.price.toLocaleString()} — Post an ISO to hunt this card')">
+    return`<div class="card-thumb">
       <div class="ct-img">⚾</div>
       <div class="ct-info">
         <div class="ct-player">${c.player}</div>
@@ -962,6 +1101,10 @@ function renderLib(filt,search){
         <div class="ct-price">$${c.price.toLocaleString()}</div>
         <div>${b}</div>
         <div class="ct-iso">${c.isos} active ISOs</div>
+        <div style="display:flex;gap:6px;margin-top:8px">
+          <button class="btn btn-primary btn-sm" style="flex:1;font-size:10px;padding:5px 8px" onclick="openVaultModal(${JSON.stringify(c)})">+ Add to Vault</button>
+          <button class="btn btn-ghost btn-sm" style="font-size:10px;padding:5px 8px" onclick="N('post',document.querySelector('[onclick*=post]'))">Post ISO</button>
+        </div>
       </div>
     </div>`;
   }).join('')+
@@ -1272,6 +1415,243 @@ if(document.readyState === 'loading'){
   document.addEventListener('DOMContentLoaded', initCardTicker);
 } else {
   initCardTicker();
+}
+
+// ── MY VAULT ─────────────────────────────────────────────────
+let vmCard = null;
+let vmAcq = null;
+let vmSource = null;
+let vmFrontFile = null;
+let vmBackFile = null;
+
+// Supabase storage bucket
+const BUCKET = 'card-images';
+
+function openVaultModal(card){
+  vmCard = card || null;
+  vmAcq = null;
+  vmSource = null;
+  vmFrontFile = null;
+  vmBackFile = null;
+
+  // Reset all UI
+  ['frontBox','backBox'].forEach(id=>{document.getElementById(id).classList.remove('has-file');});
+  document.getElementById('frontName').textContent='';
+  document.getElementById('backName').textContent='';
+  document.getElementById('frontPreview').style.display='none';
+  document.getElementById('backPreview').style.display='none';
+  document.getElementById('frontFile').value='';
+  document.getElementById('backFile').value='';
+  document.getElementById('vmSerialNum').value='';
+  document.getElementById('vmSourceSection').style.display='none';
+  document.getElementById('vmProgress').style.display='none';
+  document.getElementById('vmProgressBar').style.width='0';
+  ['photoError','serialError','acqError','vmSubmitError'].forEach(id=>{document.getElementById(id).style.display='none';});
+  ['acqRipped','acqPurchased'].forEach(id=>{document.getElementById(id).classList.remove('selected');});
+  ['srcEbay','srcFacebook','srcLocal','srcIndividual'].forEach(id=>{document.getElementById(id).classList.remove('selected');});
+  document.getElementById('vmSubmitBtn').textContent='ADD TO MY VAULT';
+  document.getElementById('vmSubmitBtn').disabled=false;
+
+  // Populate card info if provided
+  if(card){
+    document.getElementById('vmCardInfo').style.display='block';
+    document.getElementById('vmCardName').textContent=card.player;
+    document.getElementById('vmCardDetail').textContent=`${card.year} ${card.brand} · ${card.set} · ${card.parallel}`;
+    document.getElementById('vmSub').textContent=`Uploading: ${card.player}`;
+    // Show serial section if numbered
+    if(card.run){
+      document.getElementById('vmSerialSection').style.display='block';
+      document.getElementById('vmSerialOf').textContent=`/ ${card.run}`;
+    } else {
+      document.getElementById('vmSerialSection').style.display='none';
+    }
+  } else {
+    document.getElementById('vmCardInfo').style.display='none';
+    document.getElementById('vmSub').textContent='Upload front & back of your card to add it to your personal library.';
+    document.getElementById('vmSerialSection').style.display='none';
+  }
+
+  document.getElementById('vaultModalOverlay').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+
+function closeVaultModal(){
+  document.getElementById('vaultModalOverlay').style.display='none';
+  document.body.style.overflow='';
+}
+
+function handleUpload(input, side){
+  const file = input.files[0];
+  if(!file) return;
+  const maxMB = 8;
+  if(file.size > maxMB * 1024 * 1024){ alert(`Image too large. Max ${maxMB}MB.`); input.value=''; return; }
+
+  // Compress + preview
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const img = new Image();
+    img.onload = function(){
+      // Compress to max 1000px wide, 0.75 quality
+      const canvas = document.createElement('canvas');
+      const maxW = 1000;
+      const scale = img.width > maxW ? maxW/img.width : 1;
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(blob => {
+        if(side==='front'){ vmFrontFile=blob; } else { vmBackFile=blob; }
+        const boxEl = document.getElementById(side+'Box');
+        boxEl.classList.add('has-file');
+        document.getElementById(side+'Name').textContent=file.name;
+        const prev = document.getElementById(side+'Preview');
+        prev.src = canvas.toDataURL('image/jpeg',0.75);
+        prev.style.display='block';
+        document.getElementById('photoError').style.display='none';
+      }, 'image/jpeg', 0.75);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function validateSerial(){
+  document.getElementById('serialError').style.display='none';
+}
+
+function selectAcq(type){
+  vmAcq = type;
+  document.getElementById('acqRipped').classList.toggle('selected', type==='ripped');
+  document.getElementById('acqPurchased').classList.toggle('selected', type==='purchased');
+  document.getElementById('vmSourceSection').style.display = type==='purchased' ? 'block' : 'none';
+  if(type==='ripped') vmSource = null;
+  document.getElementById('acqError').style.display='none';
+}
+
+function selectSource(src){
+  vmSource = src;
+  ['srcEbay','srcFacebook','srcLocal','srcIndividual'].forEach(id=>document.getElementById(id).classList.remove('selected'));
+  const map = {ebay:'srcEbay',facebook:'srcFacebook',local_store:'srcLocal',individual:'srcIndividual'};
+  if(map[src]) document.getElementById(map[src]).classList.add('selected');
+}
+
+async function submitVault(){
+  // Validate
+  let valid = true;
+  if(!vmFrontFile || !vmBackFile){ document.getElementById('photoError').style.display='block'; valid=false; }
+  const serialSection = document.getElementById('vmSerialSection');
+  if(serialSection.style.display!=='none'){
+    const sn = document.getElementById('vmSerialNum').value;
+    if(!sn || isNaN(sn) || parseInt(sn)<1){ document.getElementById('serialError').style.display='block'; valid=false; }
+    if(vmCard && vmCard.run && parseInt(sn) > vmCard.run){ document.getElementById('serialError').textContent=`Serial # can't exceed /${vmCard.run}`; document.getElementById('serialError').style.display='block'; valid=false; }
+  }
+  if(!vmAcq){ document.getElementById('acqError').style.display='block'; valid=false; }
+  if(vmAcq==='purchased' && !vmSource){ document.getElementById('acqError').textContent='Please select where you purchased it.'; document.getElementById('acqError').style.display='block'; valid=false; }
+  if(!valid) return;
+
+  // Show progress
+  const btn = document.getElementById('vmSubmitBtn');
+  btn.disabled=true; btn.textContent='UPLOADING...';
+  document.getElementById('vmProgress').style.display='block';
+  document.getElementById('vmProgressBar').style.width='15%';
+
+  try {
+    const { data:{ user } } = await supabase.auth.getUser();
+    if(!user) throw new Error('Not authenticated');
+
+    const ts = Date.now();
+    const uid = user.id.substring(0,8);
+
+    // Upload front
+    document.getElementById('vmProgressBar').style.width='30%';
+    const frontPath = `${uid}/${ts}_front.jpg`;
+    const { error: fe } = await supabase.storage.from(BUCKET).upload(frontPath, vmFrontFile, { contentType:'image/jpeg', upsert:true });
+    if(fe) throw fe;
+
+    // Upload back
+    document.getElementById('vmProgressBar').style.width='60%';
+    const backPath = `${uid}/${ts}_back.jpg`;
+    const { error: be } = await supabase.storage.from(BUCKET).upload(backPath, vmBackFile, { contentType:'image/jpeg', upsert:true });
+    if(be) throw be;
+
+    // Get public URLs
+    const frontURL = supabase.storage.from(BUCKET).getPublicUrl(frontPath).data.publicUrl;
+    const backURL = supabase.storage.from(BUCKET).getPublicUrl(backPath).data.publicUrl;
+
+    document.getElementById('vmProgressBar').style.width='80%';
+
+    // Write to vault table
+    const row = {
+      user_id: user.id,
+      card_id: vmCard ? vmCard.id : null,
+      player: vmCard ? vmCard.player : 'Unknown',
+      year: vmCard ? vmCard.year : null,
+      brand: vmCard ? vmCard.brand : null,
+      set_name: vmCard ? vmCard.set : null,
+      parallel: vmCard ? vmCard.parallel : null,
+      front_image_url: frontURL,
+      back_image_url: backURL,
+      serial_number: document.getElementById('vmSerialSection').style.display!=='none' ? parseInt(document.getElementById('vmSerialNum').value)||null : null,
+      serial_total: vmCard ? vmCard.run||null : null,
+      acquisition_type: vmAcq,
+      purchase_source: vmSource,
+      estimated_value: vmCard ? vmCard.price : null,
+    };
+
+    const { error: ve } = await supabase.from('vault').insert(row);
+    if(ve) throw ve;
+
+    document.getElementById('vmProgressBar').style.width='100%';
+    btn.textContent='✓ ADDED TO VAULT!';
+    btn.style.background='var(--green)';
+
+    setTimeout(()=>{
+      closeVaultModal();
+      btn.style.background='';
+      // Refresh My Vault panel if active
+      renderMyVault();
+      // Give vault credit
+      T('Card added to your vault! +1 ISO credit awarded.');
+    }, 1200);
+
+  } catch(err){
+    document.getElementById('vmSubmitError').textContent = err.message || 'Upload failed. Try again.';
+    document.getElementById('vmSubmitError').style.display='block';
+    btn.disabled=false; btn.textContent='ADD TO MY VAULT';
+    document.getElementById('vmProgressBar').style.width='0';
+  }
+}
+
+function renderMyVault(){
+  // Pull from Supabase vault table for current user
+  supabase.auth.getUser().then(({data:{user}})=>{
+    if(!user) return;
+    supabase.from('vault').select('*').eq('user_id',user.id).order('created_at',{ascending:false}).then(({data,error})=>{
+      const grid = document.getElementById('myVaultGrid');
+      const empty = document.getElementById('myVaultEmpty');
+      if(error||!data||!data.length){
+        if(grid) grid.style.display='none';
+        if(empty) empty.style.display='block';
+        return;
+      }
+      if(empty) empty.style.display='none';
+      if(grid){
+        grid.style.display='grid';
+        grid.innerHTML = data.map(c=>`
+          <div class="card-thumb">
+            <div class="ct-img" style="background:rgba(0,170,255,0.08);overflow:hidden;padding:0">
+              ${c.front_image_url ? `<img src="${c.front_image_url}" style="width:100%;height:100%;object-fit:cover">` : '⚾'}
+            </div>
+            <div class="ct-info">
+              <div class="ct-player">${c.player||'Unknown'}</div>
+              <div class="ct-set">${c.year||''} ${c.brand||''} · ${c.parallel||''}</div>
+              ${c.serial_number ? `<div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--blue);margin-top:3px">#${c.serial_number}/${c.serial_total||'?'}</div>` : ''}
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text);margin-top:3px;text-transform:uppercase;letter-spacing:.5px">${c.acquisition_type==='ripped'?'📦 Ripped':'💰 Purchased'}</div>
+              ${c.estimated_value ? `<div class="ct-price">~$${c.estimated_value.toLocaleString()}</div>` : ''}
+            </div>
+          </div>`).join('');
+      }
+    });
+  });
 }
 
 // ── BUILD STAMP ───────────────────────────────────────────────

@@ -3531,7 +3531,7 @@ function _ivRenderChecklist(){
       ivOpenCard(data);
     } catch(err) {
       console.error('[IV] click handler error:', err);
-      showToast('❌ Click error: ' + err.message, 'error');
+      T('❌ ' + err.message);
     }
   };
 }
@@ -3569,7 +3569,7 @@ function _ivRenderGrid(){
       ivOpenCard(data);
     } catch(err) {
       console.error('[IV] grid click error:', err);
-      showToast('❌ Click error: ' + err.message, 'error');
+      T('❌ ' + err.message);
     }
   };
 }
@@ -3580,8 +3580,8 @@ function ivOpenCard(row){
   try {
   // Check if there's a known CARDS entry
   const known = CARDS.find(c=>
-    c._cardNumber === row.card_number ||
-    (c.player === row.player && String(c.year) === String((row.year||'').toString().slice(0,4)))
+    c && (c._cardNumber === row.card_number ||
+    (c.player === row.player && String(c.year) === String((row.year||'').toString().slice(0,4))))
   );
   if(known){ openCardDetail(known.id); return; }
 
@@ -3637,7 +3637,7 @@ function ivOpenCard(row){
   _cdInitRotation();
   } catch(err) {
     console.error('[IV] ivOpenCard error:', err);
-    showToast('❌ Card open error: ' + err.message, 'error');
+    T('❌ ' + err.message);
   }
 }
 

@@ -3233,6 +3233,7 @@ let _ivSet      = null;   // selected IV_SETS entry
 let _ivData     = [];     // all rows for active set
 let _ivFiltered = [];     // after category + search filter
 let _ivCat      = 'all';
+window._ivRowCache = {}; // keyed by index for safe onclick
 let _ivSearch   = '';
 let _ivView     = 'list'; // 'list' | 'grid'
 let _ivCounts   = {};     // table → count cache
@@ -3483,7 +3484,9 @@ function _ivRenderChecklist(){
     <div style="font-size:10px;letter-spacing:1px;color:var(--muted-text);font-family:Barlow Condensed,sans-serif">IMG</div>
   </div>`;
 
-  const rows = _ivFiltered.slice(0, 500).map(r=>{
+  window._ivRowCache = {};
+  const rows = _ivFiltered.slice(0, 500).map((r, idx)=>{
+    window._ivRowCache[idx] = r;
     const cat = (r.category||'Base').toLowerCase();
     const catClass = cat.includes('auto') ? 'iv-cat-auto' : cat.includes('insert') ? 'iv-cat-insert' : r.is_rookie ? 'iv-cat-rookie' : 'iv-cat-base';
     const catLabel = r.is_rookie && cat==='base' ? 'RC' : (r.category||'Base');
@@ -3494,7 +3497,7 @@ function _ivRenderChecklist(){
     const priceHtml = mktPrice
       ? `<div class="iv-row-price">$${Number(mktPrice).toFixed(2)}</div>`
       : `<div class="iv-row-price no-data">—</div>`;
-    return `<div class="iv-row" style="grid-template-columns:60px 1fr 120px 80px 80px 60px" onclick="ivOpenCard(${JSON.stringify(r).replace(/"/g,'&quot;')})">
+    return `<div class="iv-row" style="grid-template-columns:60px 1fr 120px 80px 80px 60px;cursor:pointer" onclick="ivOpenCard(window._ivRowCache[${idx}])">
       <div class="iv-row-num">${r.card_number||'—'}</div>
       <div><div class="iv-row-player">${r.player||'—'}</div>${sub}</div>
       <div class="iv-row-team">${r.team||'—'}</div>
@@ -3513,12 +3516,13 @@ function _ivRenderGrid(){
   if(!el) return;
   if(!_ivFiltered.length){ el.innerHTML='<div class="iv-empty">No cards match</div>'; return; }
 
-  const cards = _ivFiltered.slice(0,200).map(r=>{
+  const cards = _ivFiltered.slice(0,200).map((r, idx)=>{
+    window._ivRowCache[idx] = r;
     const firstImg = r.var_images && Object.values(r.var_images)[0];
     const imgHtml = firstImg && firstImg.front
       ? `<img src="${firstImg.front}" style="width:100%;height:120px;object-fit:cover;display:block">`
       : `<div class="iv-grid-img">⚾</div>`;
-    return `<div class="iv-grid-card" onclick="ivOpenCard(${JSON.stringify(r).replace(/"/g,'&quot;')})">
+    return `<div class="iv-grid-card" onclick="ivOpenCard(window._ivRowCache[${idx}])">
       ${imgHtml}
       <div class="iv-grid-info">
         <div class="iv-grid-player">${r.player||'—'}</div>
@@ -3914,8 +3918,7 @@ window.addEventListener('popstate', function(){
   N('overview', document.querySelector('[onclick*="overview"]'));
 });
 
-const _ivOrigRenderLib = window.renderLib;
-window.renderLib = function(){ /* replaced by ivInit */ };
+// ivInit() handles ISOVault rendering on N('library',...)
 
 // ── ADMIN: Price Flag Review ──────────────────────────────────
 

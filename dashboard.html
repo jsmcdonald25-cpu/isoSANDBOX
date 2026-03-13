@@ -3520,8 +3520,19 @@ function _ivRenderChecklist(){
   el.innerHTML = `<div class="iv-checklist">${header}${rows}</div>`
     + (_ivFiltered.length > 500 ? `<div class="iv-meta" style="text-align:center;margin-top:10px">Showing 500 of ${_ivFiltered.length.toLocaleString()} — refine your search</div>` : '');
   el.onclick = function(e){
-    var row = e.target.closest('[data-rowidx]');
-    if(row) ivOpenCard(window._ivRowCache[row.getAttribute('data-rowidx')]);
+    try {
+      var row = e.target.closest('[data-rowidx]');
+      console.log('[IV] click fired. target:', e.target, 'row found:', row);
+      if(!row){ console.log('[IV] click did not hit a data-rowidx element'); return; }
+      var idx = row.getAttribute('data-rowidx');
+      var data = window._ivRowCache[idx];
+      console.log('[IV] rowidx:', idx, 'data:', data);
+      if(!data){ console.log('[IV] no data in _ivRowCache for idx', idx); return; }
+      ivOpenCard(data);
+    } catch(err) {
+      console.error('[IV] click handler error:', err);
+      showToast('❌ Click error: ' + err.message, 'error');
+    }
   };
 }
 
@@ -3549,13 +3560,24 @@ function _ivRenderGrid(){
   el.innerHTML = `<div class="iv-grid">${cards}</div>`
     + (_ivFiltered.length > 200 ? `<div class="iv-meta" style="text-align:center;margin-top:12px">Showing 200 of ${_ivFiltered.length.toLocaleString()} — refine your search</div>` : '');
   el.onclick = function(e){
-    var row = e.target.closest('[data-rowidx]');
-    if(row) ivOpenCard(window._ivRowCache[row.getAttribute('data-rowidx')]);
+    try {
+      var row = e.target.closest('[data-rowidx]');
+      console.log('[IV] grid click. target:', e.target, 'row:', row);
+      if(!row) return;
+      var data = window._ivRowCache[row.getAttribute('data-rowidx')];
+      if(!data) return;
+      ivOpenCard(data);
+    } catch(err) {
+      console.error('[IV] grid click error:', err);
+      showToast('❌ Click error: ' + err.message, 'error');
+    }
   };
 }
 
 // ── Card click → Detail panel ─────────────────────────────────
 function ivOpenCard(row){
+  console.log('[IV] ivOpenCard called with:', row);
+  try {
   // Check if there's a known CARDS entry
   const known = CARDS.find(c=>
     c._cardNumber === row.card_number ||
@@ -3613,6 +3635,10 @@ function ivOpenCard(row){
   _buildVariationPills(card);
   N('carddetail', null);
   _cdInitRotation();
+  } catch(err) {
+    console.error('[IV] ivOpenCard error:', err);
+    showToast('❌ Card open error: ' + err.message, 'error');
+  }
 }
 
 // ── Filters ───────────────────────────────────────────────────

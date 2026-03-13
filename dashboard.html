@@ -56,9 +56,9 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .nav-reorder-btn svg{flex-shrink:0}
 .nav-drag-handle{width:14px;height:14px;display:none;flex-shrink:0;cursor:grab;opacity:0.4;margin-right:2px}
 .nav-drag-handle:active{cursor:grabbing}
-.reorder-mode .nav-drag-handle{display:flex;align-items:center;justify-content:center}
-.reorder-mode .nav-item.reorderable{cursor:grab;border:1px dashed rgba(0,170,255,0.2);border-radius:6px;margin:2px 8px;padding:9px 12px}
-.reorder-mode .nav-item.reorderable:active{cursor:grabbing;background:rgba(0,170,255,0.1);border-color:var(--blue)}
+.reorder-mode #sidebarNav > .nav-item .nav-drag-handle{display:flex;align-items:center;justify-content:center}
+.reorder-mode #sidebarNav > .nav-item{cursor:grab;border:1px dashed rgba(0,170,255,0.2);border-radius:6px;margin:2px 8px;padding:9px 12px}
+.reorder-mode #sidebarNav > .nav-item:active{cursor:grabbing;background:rgba(0,170,255,0.1);border-color:var(--blue)}
 .nav-item.drag-over{background:rgba(0,170,255,0.12);border-color:var(--blue) !important}
 .nav-pinned-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;color:rgba(0,170,255,0.3);padding:6px 20px 2px;text-transform:uppercase}
 
@@ -89,16 +89,12 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .topbar-sub{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted-text);margin-top:1px}
 .topbar-actions{display:flex;align-items:center;gap:10px}
 /* CARD TICKER IN TOPBAR */
-.card-ticker-wrap{overflow:hidden;width:100%;background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:6px;padding:5px 10px;margin-top:4px}
-.card-ticker-inner{display:flex;gap:32px;white-space:nowrap;animation:cardTick 32s linear infinite}
 .card-ticker-inner:hover{animation-play-state:paused}
-@keyframes cardTick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .ct-item{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--chrome);display:inline-flex;align-items:center;gap:8px;flex-shrink:0}
 .ct-item .ct-name{color:var(--white);font-weight:600}
 .ct-item .ct-price{color:var(--blue);font-weight:700}
 .ct-item .ct-chg.up{color:var(--green)}.ct-item .ct-chg.dn{color:var(--red)}
 .ct-item .ct-sep{color:rgba(0,170,255,0.25)}
-.ct-grail{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:6px;color:rgba(0,170,255,0.3);animation:cardTick 55s linear infinite;display:block}
 .btn{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:8px 18px;border-radius:6px;border:none;cursor:pointer;transition:all .2s}
 .btn-primary{background:var(--blue);color:white}
 .btn-primary:hover{background:var(--blue-bright);box-shadow:0 0 20px var(--blue-glow)}
@@ -150,14 +146,6 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .vm-error{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--red);margin-top:6px;display:none}
 .vm-progress{width:100%;height:3px;background:rgba(0,170,255,0.1);border-radius:2px;margin-top:14px;display:none}
 .vm-progress-bar{height:100%;background:var(--blue);border-radius:2px;width:0;transition:width .4s}
-@keyframes scoreTick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.score-chip{display:inline-flex;align-items:center;gap:10px;font-family:'Barlow Condensed',sans-serif;font-size:12px;flex-shrink:0;padding:3px 12px;border-left:1px solid rgba(0,170,255,0.12)}
-.score-chip .sc-teams{color:var(--white);font-weight:600;font-size:13px}
-.score-chip .sc-score{color:var(--blue);font-weight:700;font-size:14px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px}
-.score-chip .sc-status{font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:1px 5px;border-radius:3px}
-.score-chip .sc-status.live{color:var(--green);background:rgba(0,232,135,0.1)}
-.score-chip .sc-status.final{color:var(--muted-text)}
-.score-chip .sc-sport{font-size:10px;color:rgba(0,170,255,0.5);letter-spacing:1px;text-transform:uppercase}
 /* PANELS */
 .panel{display:none;animation:fadeIn .2s ease}
 .panel.active{display:block}
@@ -665,22 +653,83 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     <button class="credits-add" onclick="T('Credits — coming soon')">+</button>
   </div>
   <nav class="sidebar-nav" id="sidebarNav">
-    <!-- ALL nav items rendered by JS — Post ISO + ISOVault always #1 & #2 -->
-    <div id="navReorderable"></div>
 
-    <!-- Reorder toggle button -->
+    <div class="nav-item" id="nav-post" onclick="N('post',this)">
+      <div class="nav-drag-handle">⠿</div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+      <span class="nav-label">Post ISO</span>
+    </div>
+
+    <div class="nav-item" id="nav-library" onclick="N('library',this)">
+      <div class="nav-drag-handle">⠿</div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div>
+      <span class="nav-label">ISOVault</span>
+    </div>
+
+    <div class="nav-item" id="nav-overview" onclick="N('overview',this)">
+      <div class="nav-drag-handle">⠿</div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+      <span class="nav-label">Overview</span>
+    </div>
+
+    <div class="nav-item" id="nav-myisos" onclick="N('myisos',this)">
+      <div class="nav-drag-handle">⠿</div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+      <span class="nav-label">My ISOs</span>
+      <span class="nav-badge" id="navBadge-myisos">3</span>
+    </div>
+
+    <div class="nav-item" id="nav-notifs" onclick="N('notifs',this)">
+      <div class="nav-drag-handle">⠿</div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></div>
+      <span class="nav-label">Notifications</span>
+      <span class="nav-badge red" id="navBadge-notifs">2</span>
+    </div>
+
+    <div class="nav-item" id="nav-market" onclick="N('market',this)">
+      <div class="nav-drag-handle">⠿</div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <span class="nav-label">Market Data</span>
+    </div>
+
+    <div class="nav-item" id="nav-leaderboard" onclick="N('leaderboard',this)">
+      <div class="nav-drag-handle">⠿</div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="14" width="4" height="8" rx="1"/><rect x="9" y="9" width="4" height="13" rx="1"/><rect x="16" y="4" width="4" height="18" rx="1"/><line x1="2" y1="22" x2="22" y2="22"/></svg></div>
+      <span class="nav-label">Leaderboard</span>
+    </div>
+
+    <div class="nav-item" id="nav-myvault" onclick="N('myvault',this)">
+      <div class="nav-drag-handle">⠿</div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></div>
+      <span class="nav-label">My Vault</span>
+    </div>
+
+    <div class="nav-item" id="nav-isoticker" onclick="N('isoticker',this)">
+      <div class="nav-drag-handle">⠿</div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+      <span class="nav-label">ISOTicker</span>
+    </div>
+
+    <div class="nav-item" id="nav-admin-price" onclick="N('admin-price',this);loadPriceFlags()">
+      <div class="nav-drag-handle">⠿</div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+      <span class="nav-label">Price Flags</span>
+      <span class="nav-badge red" id="navBadge-admin-price">!</span>
+    </div>
+
+    <!-- Reorder toggle -->
     <button class="nav-reorder-btn" id="navReorderBtn" onclick="toggleNavReorder()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       Reorder nav
     </button>
 
-    <!-- PINNED BOTTOM: Community + Account + Log Out — always last, never reorderable -->
+    <!-- Always pinned at bottom -->
     <div class="nav-bottom-fixed">
       <div class="nav-item" onclick="openCommunityPanel()">
         <div class="nav-icon"><svg viewBox="0 0 24 24" fill="#5865F2" width="16" height="16"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg></div>
         <span class="nav-label" style="color:#7289DA">Community</span>
       </div>
-      <div class="nav-item" onclick="N('account',this)">
+      <div class="nav-item" id="nav-account" onclick="N('account',this)">
         <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
         <span class="nav-label">Account</span>
       </div>
@@ -701,7 +750,6 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
         <div class="topbar-title" id="pgTitle">OVERVIEW</div>
         <div class="topbar-sub" id="pgSub">Welcome back, Jason</div>
       </div>
-      <div class="card-ticker-wrap"><div class="card-ticker-inner" id="cardTickerInner"></div></div>
     </div>
     <div class="topbar-actions" style="flex-shrink:0;margin-left:18px">
       <button class="btn btn-ghost" onclick="N('library',document.querySelector('[onclick*=library]'))">Search Cards</button>
@@ -1438,27 +1486,6 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 </div>
 
 <!-- SCORES BAR -->
-<div id="scoresBar" style="position:fixed;bottom:0;left:var(--sidebar-w);right:0;height:44px;background:#0a1929;border-top:1px solid rgba(0,170,255,0.18);display:flex;align-items:center;z-index:900;overflow:hidden;">
-  <div style="display:flex;align-items:center;gap:0;flex:1;min-width:0;">
-    <!-- Toggle -->
-    <div style="display:flex;align-items:center;gap:8px;padding:0 14px;border-right:1px solid rgba(0,170,255,0.15);flex-shrink:0;height:44px;">
-      <span id="scoresToggleLabel" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#00AAFF;font-weight:600;">SCORES</span>
-      <div id="scoresToggle" onclick="toggleScoresMode()" style="width:36px;height:18px;background:rgba(0,170,255,0.2);border:1px solid rgba(0,170,255,0.35);border-radius:9px;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;">
-        <div id="scoresToggleThumb" style="position:absolute;top:2px;left:2px;width:12px;height:12px;background:#00AAFF;border-radius:50%;transition:transform .2s;"></div>
-      </div>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#7A95AE;">SCHEDULE</span>
-    </div>
-    <!-- Scores/Schedule scroll area -->
-    <div style="overflow:hidden;flex:1;height:44px;display:flex;align-items:center;padding:0 10px;">
-      <div id="scoresTicker" style="display:flex;gap:24px;white-space:nowrap;animation:scoreTick 60s linear infinite;align-items:center;">
-        <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:#7A95AE;letter-spacing:1px;">LOADING SCORES...</span>
-      </div>
-    </div>
-  </div>
-  <div style="padding:0 12px;flex-shrink:0;border-left:1px solid rgba(0,170,255,0.15);height:44px;display:flex;align-items:center;">
-    <span id="scoresDate" style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1px;color:rgba(0,170,255,0.4);text-transform:uppercase;"></span>
-  </div>
-</div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ═══════════════════════════════════════
@@ -2058,45 +2085,7 @@ window.addEventListener('resize',()=>{if(document.getElementById('panel-isoticke
 // ═══════════════════════════════════════
 renderMkt();renderOvMkt(); // ISOVault inits on nav click via ivInit()
 
-// ── CARD TICKER ─────────────────────────────────────────────
-function initCardTicker(){
-  // Demo data — in prod pull from Supabase vault + isos tables
-  const demoCards = [
-    {name:'Juan Soto RC Auto Gold /50', grade:'PSA 10', price:'$1,200', chg:'+12.4%', dir:'up'},
-    {name:'Shohei Ohtani Chrome Auto /499', grade:'PSA 9', price:'$650', chg:'-3.1%', dir:'dn'},
-    {name:'Mike Trout 2011 Topps RC', grade:'PSA 10', price:'$890', chg:'+5.7%', dir:'up'},
-    {name:'Julio Rodriguez Gold /50', grade:'Raw', price:'$420', chg:'+8.2%', dir:'up'},
-    {name:'Ronald Acuña Jr Auto /25', grade:'BGS 9.5', price:'$1,850', chg:'+21.0%', dir:'up'},
-    {name:'Gunnar Henderson RC Prizm', grade:'PSA 10', price:'$310', chg:'+77.8%', dir:'up'},
-  ];
-
-  const inner = document.getElementById('cardTickerInner');
-  if(!inner) return;
-
-  if(!demoCards || demoCards.length === 0){
-    inner.classList.add('ct-grail');
-    inner.textContent = 'GRAILISO · '.repeat(20);
-    inner.style.animation = 'cardTick 60s linear infinite';
-    return;
-  }
-
-  let items = '';
-  [...demoCards, ...demoCards].forEach(c => {
-    items += `<span class="ct-item"><span class="ct-name">${c.name}</span><span class="ct-sep">·</span><span>${c.grade}</span><span class="ct-sep">·</span><span class="ct-price">${c.price}</span><span class="ct-chg ${c.dir}">${c.chg}</span><span class="ct-sep" style="margin-left:8px">⬥</span></span>`;
-  });
-  inner.innerHTML = items;
-  inner.style.animation = 'cardTick 32s linear infinite';
-}
-// Run after DOM ready — fires ticker + scores bar
-function _initDynamic(){
-  navRender();
-  initCardTicker();
-  initScoresBar();
-}
-if(document.readyState === 'loading'){
-  document.addEventListener('DOMContentLoaded', _initDynamic);
-} else {
-  _initDynamic();
+// ── CARD TICKER ───────────────────────────────────────────── else {
 }
 
 // ── MY VAULT ─────────────────────────────────────────────────
@@ -2522,122 +2511,7 @@ function renderMyVault(){
   el.textContent = `[SYS] GrailISO_v1.1.7 :: BUILD ${dateStr} ${timeStr} :: STABLE`;
   el.title = `Session started: ${now.toLocaleString()}`;
 })();
-function initScoresBar(){
-  const ticker = document.getElementById('scoresTicker');
-  const dateEl = document.getElementById('scoresDate');
-  const today = new Date();
-  const display = today.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
-  if(dateEl) dateEl.textContent = display;
 
-  let scoresMode = true;
-
-  window.toggleScoresMode = function(){
-    scoresMode = !scoresMode;
-    const thumb = document.getElementById('scoresToggleThumb');
-    const label = document.getElementById('scoresToggleLabel');
-    if(thumb) thumb.style.transform = scoresMode ? 'translateX(0)' : 'translateX(18px)';
-    if(label){ label.textContent = scoresMode ? 'SCORES' : 'SCHEDULE'; label.style.color = scoresMode ? '#00AAFF' : '#7A95AE'; }
-    scoresMode ? loadScores() : loadSchedule();
-  };
-
-  const SPORTS = [
-    { label:'NBA', url:'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard' },
-    { label:'MLB', url:'https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard' },
-    { label:'NHL', url:'https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard' },
-    { label:'NFL', url:'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard' },
-  ];
-
-  async function loadScores(){
-    if(!ticker) return;
-    showFallback('LOADING...');
-    try {
-      const results = await Promise.allSettled(SPORTS.map(s => fetch(s.url).then(r=>r.json()).then(d=>({sport:s.label,data:d}))));
-      let allEvents = [];
-      results.forEach(r => {
-        if(r.status==='fulfilled'){
-          const {sport,data} = r.value;
-          (data.events||[]).forEach(ev => {
-            const comp = ev.competitions?.[0];
-            if(!comp) return;
-            const home = comp.competitors?.find(c=>c.homeAway==='home');
-            const away = comp.competitors?.find(c=>c.homeAway==='away');
-            allEvents.push({sport, home, away, status: ev.status?.type });
-          });
-        }
-      });
-      if(!allEvents.length){ showFallback('No games today · Check back later'); return; }
-      renderEvents(allEvents, false);
-    } catch(e){ showFallback('Scores unavailable'); }
-  }
-
-  async function loadSchedule(){
-    if(!ticker) return;
-    showFallback('LOADING...');
-    try {
-      const results = await Promise.allSettled(SPORTS.map(s => fetch(s.url+'?limit=10').then(r=>r.json()).then(d=>({sport:s.label,data:d}))));
-      let allEvents = [];
-      results.forEach(r => {
-        if(r.status==='fulfilled'){
-          const {sport,data} = r.value;
-          (data.events||[]).forEach(ev => {
-            const comp = ev.competitions?.[0];
-            if(!comp) return;
-            const home = comp.competitors?.find(c=>c.homeAway==='home');
-            const away = comp.competitors?.find(c=>c.homeAway==='away');
-            const date = ev.date ? new Date(ev.date) : null;
-            allEvents.push({sport, home, away, status: ev.status?.type, date, detail: ev.status?.type?.shortDetail||'' });
-          });
-        }
-      });
-      if(!allEvents.length){ showFallback('No upcoming games found'); return; }
-      renderEvents(allEvents, true);
-    } catch(e){ showFallback('Schedule unavailable'); }
-  }
-
-  function renderEvents(events, isSchedule){
-    let html = '';
-    events.forEach(ev => {
-      const homeName = ev.home?.team?.abbreviation || '?';
-      const awayName = ev.away?.team?.abbreviation || '?';
-      const homeScore = ev.home?.score || '';
-      const awayScore = ev.away?.score || '';
-      const isLive = ev.status === 'in';
-      const isFinal = ev.status === 'post';
-
-      let statusHtml = '';
-      let scoreHtml = '';
-
-      if(isSchedule && ev.date){
-        const t = ev.date.toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ' ' + ev.date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-        statusHtml = `<span class="sc-status final">${t}</span>`;
-      } else if(isLive){
-        scoreHtml = `<span class="sc-score">${awayScore}-${homeScore}</span>`;
-        statusHtml = `<span class="sc-status live">● LIVE</span>`;
-      } else if(isFinal){
-        scoreHtml = `<span class="sc-score">${awayScore}-${homeScore}</span>`;
-        statusHtml = `<span class="sc-status final">FINAL</span>`;
-      } else {
-        statusHtml = `<span class="sc-status final">TBD</span>`;
-      }
-
-      html += `<div class="score-chip"><span class="sc-sport">${ev.sport}</span><span class="sc-teams">${awayName} @ ${homeName}</span>${scoreHtml}${statusHtml}</div>`;
-    });
-
-    ticker.innerHTML = html + html;
-    ticker.style.animation = `scoreTick ${Math.max(50, events.length * 5)}s linear infinite`;
-  }
-
-  function showFallback(msg){
-    ticker.innerHTML = `<span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:#7A95AE;letter-spacing:1px;padding:0 16px">${msg}</span>`;
-    ticker.style.animation = 'none';
-  }
-
-  loadScores();
-  setInterval(()=>{ if(scoresMode) loadScores(); }, 90000);
-}
-
-// ═══════════════════════════════════════
-// ═══════════════════════════════════════
 // ISOVAULT CARD DETAIL — Full Engine
 // ═══════════════════════════════════════
 window._cdCard = null;
@@ -3840,164 +3714,51 @@ function backToVault(){
 // SIDEBAR NAV REORDER ENGINE
 // ═══════════════════════════════════════════════════════════════
 
-// Nav version — bump this any time the nav structure changes to auto-clear stale localStorage
-const NAV_VERSION = 'v4';
-const NAV_ORDER_KEY = 'grailiso_nav_order_' + NAV_VERSION;
-
-// Locked first two — always Post ISO + ISOVault, never reorderable
-const NAV_ITEMS_LOCKED_TOP = [
-  { id:'post',    label:'Post ISO',   locked:true, icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>' },
-  { id:'library', label:'ISOVault',   locked:true, icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>' },
-];
-
-// Reorderable middle items
-const NAV_ITEMS_DEFAULT = [
-  { id:'overview',    label:'Overview',      badge:null, icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>' },
-  { id:'myisos',      label:'My ISOs',        badge:'3',  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>' },
-  { id:'notifs',      label:'Notifications',  badge:'2',  badgeClass:'red', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>' },
-  { id:'market',      label:'Market Data',    badge:null, icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>' },
-  { id:'leaderboard', label:'Leaderboard',    badge:null, icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="14" width="4" height="8" rx="1"/><rect x="9" y="9" width="4" height="13" rx="1"/><rect x="16" y="4" width="4" height="18" rx="1"/><line x1="2" y1="22" x2="22" y2="22"/></svg>' },
-  { id:'myvault',     label:'My Vault',       badge:null, icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>' },
-  { id:'isoticker',   label:'ISOTicker',      badge:null, icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>' },
-  { id:'admin-price', label:'Price Flags',    badge:'!',  badgeClass:'red', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' },
-];
-
+// ── Nav Reorder Toggle ──────────────────────────────────────
 let _navReorderMode = false;
-let _navDragSrc = null;
-
-function _navLoadOrder(){
-  try {
-    const saved = localStorage.getItem(NAV_ORDER_KEY);
-    if(!saved) return NAV_ITEMS_DEFAULT;
-    const ids = JSON.parse(saved);
-    const ordered = ids.map(id => NAV_ITEMS_DEFAULT.find(x=>x.id===id)).filter(Boolean);
-    NAV_ITEMS_DEFAULT.forEach(x=>{ if(!ordered.find(o=>o.id===x.id)) ordered.push(x); });
-    return ordered.length ? ordered : NAV_ITEMS_DEFAULT;
-  } catch(e){ return NAV_ITEMS_DEFAULT; }
-}
-
-function _navSaveOrder(){
-  const items = document.querySelectorAll('#navReorderable .nav-item[data-reorderable="true"]');
-  const ids = [...items].map(el=>el.dataset.navId).filter(Boolean);
-  localStorage.setItem(NAV_ORDER_KEY, JSON.stringify(ids));
-}
-
-function _navItemHTML(item, isActive, isLocked){
-  const badgeHtml = item.badge
-    ? `<span class="nav-badge${item.badgeClass?' '+item.badgeClass:''}" id="navBadge-${item.id}">${item.badge}</span>`
-    : '';
-  if(isLocked){
-    return `<div class="nav-item${isActive?' active':''}" data-nav-id="${item.id}" onclick="navItemClick(this,'${item.id}')">
-      <div class="nav-icon">${item.icon}</div>
-      <span class="nav-label">${item.label}</span>${badgeHtml}
-    </div>`;
-  }
-  return `<div class="nav-item reorderable${isActive?' active':''}"
-    data-nav-id="${item.id}" data-reorderable="true"
-    onclick="navItemClick(this,'${item.id}')"
-    draggable="false"
-    ondragstart="navDragStart(event,this)"
-    ondragover="navDragOver(event,this)"
-    ondrop="navDrop(event,this)"
-    ondragend="navDragEnd(event)">
-    <div class="nav-drag-handle">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
-        <line x1="3" y1="8" x2="21" y2="8"/>
-        <line x1="3" y1="12" x2="21" y2="12"/>
-        <line x1="3" y1="16" x2="21" y2="16"/>
-      </svg>
-    </div>
-    <div class="nav-icon">${item.icon}</div>
-    <span class="nav-label">${item.label}</span>${badgeHtml}
-  </div>`;
-}
-
-function navRender(){
-  const wrap = document.getElementById('navReorderable');
-  if(!wrap) return;
-  const activeId = document.querySelector('#navReorderable .nav-item.active')?.dataset.navId || 'overview';
-
-  // Locked top 2 — Post ISO + ISOVault — then divider — then reorderable
-  const lockedHTML = NAV_ITEMS_LOCKED_TOP.map(item=>
-    _navItemHTML(item, item.id===activeId, true)
-  ).join('');
-
-  const reorderable = _navLoadOrder();
-  const reorderHTML = reorderable.map(item=>
-    _navItemHTML(item, item.id===activeId, false)
-  ).join('');
-
-  wrap.innerHTML = lockedHTML + reorderHTML;
-}
-
-function navItemClick(el, id){
-  if(_navReorderMode) return; // don't navigate while reordering
-  N(id, el);
-}
-
 function toggleNavReorder(){
   _navReorderMode = !_navReorderMode;
   const nav = document.getElementById('sidebarNav');
   const btn = document.getElementById('navReorderBtn');
-  const items = document.querySelectorAll('#navReorderable .nav-item.reorderable');
-  
-  const reorderItems = document.querySelectorAll('#navReorderable .nav-item[data-reorderable="true"]');
   if(_navReorderMode){
     nav.classList.add('reorder-mode');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polyline points="20 6 9 17 4 12"/></svg> Done';
     btn.classList.add('active');
-    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polyline points="20 6 9 17 4 12"/></svg> Done`;
-    reorderItems.forEach(el=>{ el.setAttribute('draggable','true'); });
+    // Enable drag on all nav items in sidebarNav (except bottom-fixed)
+    document.querySelectorAll('#sidebarNav > .nav-item').forEach(el=>{
+      el.setAttribute('draggable','true');
+      el.addEventListener('dragstart', _navDragStart);
+      el.addEventListener('dragover', _navDragOver);
+      el.addEventListener('drop', _navDrop);
+      el.addEventListener('dragend', _navDragEnd);
+    });
   } else {
     nav.classList.remove('reorder-mode');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg> Reorder nav';
     btn.classList.remove('active');
-    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg> Reorder nav`;
-    reorderItems.forEach(el=>{ el.setAttribute('draggable','false'); });
-    _navSaveOrder();
+    document.querySelectorAll('#sidebarNav > .nav-item').forEach(el=>{
+      el.setAttribute('draggable','false');
+    });
   }
 }
-
-function navDragStart(e, el){
-  if(!_navReorderMode) return;
-  _navDragSrc = el;
-  e.dataTransfer.effectAllowed = 'move';
-  setTimeout(()=>el.style.opacity='0.4', 0);
-}
-
-function navDragOver(e, el){
-  if(!_navReorderMode || el === _navDragSrc) return;
+let _navDragSrc = null;
+function _navDragStart(e){ _navDragSrc = this; this.style.opacity='0.4'; }
+function _navDragOver(e){ e.preventDefault(); this.classList.add('drag-over'); }
+function _navDrop(e){
   e.preventDefault();
-  e.dataTransfer.dropEffect = 'move';
-  document.querySelectorAll('#navReorderable .nav-item').forEach(x=>x.classList.remove('drag-over'));
-  el.classList.add('drag-over');
+  if(_navDragSrc && _navDragSrc !== this){
+    const nav = document.getElementById('sidebarNav');
+    const items = [...nav.querySelectorAll(':scope > .nav-item')];
+    const srcIdx = items.indexOf(_navDragSrc);
+    const tgtIdx = items.indexOf(this);
+    if(srcIdx > tgtIdx) nav.insertBefore(_navDragSrc, this);
+    else nav.insertBefore(_navDragSrc, this.nextSibling);
+  }
+  this.classList.remove('drag-over');
 }
+function _navDragEnd(){ this.style.opacity='1'; document.querySelectorAll('.drag-over').forEach(el=>el.classList.remove('drag-over')); _navDragSrc=null; }
 
-function navDrop(e, el){
-  if(!_navReorderMode || el === _navDragSrc) return;
-  e.preventDefault();
-  const wrap = document.getElementById('navReorderable');
-  const items = [...wrap.querySelectorAll('.nav-item')];
-  const srcIdx = items.indexOf(_navDragSrc);
-  const tgtIdx = items.indexOf(el);
-  if(srcIdx < tgtIdx) wrap.insertBefore(_navDragSrc, el.nextSibling);
-  else wrap.insertBefore(_navDragSrc, el);
-  document.querySelectorAll('#navReorderable .nav-item').forEach(x=>x.classList.remove('drag-over'));
-}
-
-function navDragEnd(e){
-  if(_navDragSrc) _navDragSrc.style.opacity = '';
-  document.querySelectorAll('#navReorderable .nav-item').forEach(x=>x.classList.remove('drag-over'));
-  _navDragSrc = null;
-}
-
-// Override N() to sync active state across ALL nav items (locked + reorderable)
-const _origN = window.N;
-window.N = function(id, el){
-  document.querySelectorAll('#navReorderable .nav-item').forEach(x=>x.classList.remove('active'));
-  const navEl = document.querySelector('#navReorderable [data-nav-id="'+id+'"]');
-  if(navEl) navEl.classList.add('active');
-  if(_origN) _origN(id, el);
-  if(id === 'admin-price') loadPriceFlags();
-};
+// N() is the original function — no override needed
 
 // ── Trap browser back button — never leave the app ────────────
 history.pushState(null, '', window.location.href);

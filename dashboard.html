@@ -465,6 +465,32 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .err-textarea::placeholder{color:var(--muted-text)}
 .err-disclaimer{background:rgba(255,200,60,0.06);border:1px solid rgba(255,200,60,0.2);border-radius:8px;padding:12px 14px;margin:14px 0;font-family:'Barlow Condensed',sans-serif;font-size:12px;color:rgba(255,200,60,0.9);line-height:1.5}
 .err-disclaimer strong{color:#FFC83C}
+/* Price flag admin cards */
+.flag-card{background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:16px;margin-bottom:12px;transition:border-color .2s}
+.flag-card.high{border-left:3px solid #FF3B5C}
+.flag-card.low{border-left:3px solid #FFC83C}
+.flag-card.resolved{border-left:3px solid var(--green);opacity:.6}
+.flag-card.awaiting{border-left:3px solid #FFC83C}
+.flag-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.flag-card-meta{flex:1;min-width:0}
+.flag-card-name{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--white);letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.flag-card-var{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:rgba(122,149,174,0.7);margin-top:2px}
+.flag-badge{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:1.5px;padding:3px 10px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+.flag-badge.HIGH{background:rgba(255,59,92,0.15);color:#FF3B5C;border:1px solid rgba(255,59,92,0.3)}
+.flag-badge.LOW{background:rgba(255,200,60,0.12);color:#FFC83C;border:1px solid rgba(255,200,60,0.25)}
+.flag-badge.resolved{background:rgba(0,232,135,0.1);color:var(--green);border:1px solid rgba(0,232,135,0.25)}
+.flag-nums{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.flag-num-item{text-align:center;background:rgba(0,0,0,0.2);border-radius:6px;padding:10px 8px}
+.flag-num-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1.5px;color:var(--muted-text);margin-bottom:4px}
+.flag-num-val{font-family:'Bebas Neue',sans-serif;font-size:20px}
+.flag-num-val.submitted{color:var(--white)}
+.flag-num-val.avg{color:var(--blue)}
+.flag-num-val.dev{color:#FF3B5C}
+.flag-num-val.dev.low{color:#FFC83C}
+.flag-actions{display:flex;gap:8px}
+.flag-stat-card{background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;padding:14px;text-align:center}
+.flag-stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--white)}
+.flag-stat-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--muted-text);margin-top:3px}
 /* Market price in ISOVault list */
 .iv-row-price{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--blue);font-weight:700;text-align:right;white-space:nowrap}
 .iv-row-price.no-data{color:rgba(122,149,174,0.3);font-size:11px}
@@ -1113,6 +1139,24 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     </div>
   </div>
 
+  <!-- ADMIN PRICE REVIEW -->
+  <div class="panel" id="panel-admin-price">
+    <div class="section-header">
+      <div class="section-title">🚨 PRICE FLAG REVIEW</div>
+      <span class="section-sub" style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted-text);letter-spacing:1px">ADMIN ONLY · AUTO-FLAGGED ±40% DEVIATIONS</span>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap">
+      <div class="chip active" id="flagFilterAll"      onclick="flagFilter('all',this)">All Pending</div>
+      <div class="chip"        id="flagFilterHigh"     onclick="flagFilter('HIGH',this)">🔺 Priced High</div>
+      <div class="chip"        id="flagFilterLow"      onclick="flagFilter('LOW',this)">🔻 Priced Low</div>
+      <div class="chip"        id="flagFilterAwaiting" onclick="flagFilter('awaiting',this)">📧 Awaiting Reply</div>
+      <div class="chip"        id="flagFilterResolved" onclick="flagFilter('resolved',this)">✓ Resolved</div>
+      <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="loadPriceFlags()">↻ Refresh</button>
+    </div>
+    <div id="flagStats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px"></div>
+    <div id="flagList"><div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted-text);letter-spacing:1px;padding:30px;text-align:center">Loading flags...</div></div>
+  </div>
+
   <!-- ISOTICKER -->
   <div class="panel" id="panel-isoticker">
     <!-- Header stats -->
@@ -1550,7 +1594,8 @@ const PM={
   post:{t:'POST ISO',s:'Broadcast exactly what you want'},
   myisos:{t:'MY ISOs',s:'3 active · 1 completed'},
   market:{t:'MARKET DATA',s:'Live bid · ask · last sale — Baseball'},
-  library:{t:'ISOVAULT',s:'The world\'s most complete sports card search engine'},  myvault:{t:'MY VAULT',s:'Your personal card library'},
+  library:{t:'ISOVAULT',s:'The world\'s most complete sports card search engine'},
+  'admin-price':{t:'PRICE FLAG REVIEW',s:'Admin · Auto-flagged submissions ±40% deviation'},  myvault:{t:'MY VAULT',s:'Your personal card library'},
   notifs:{t:'NOTIFICATIONS',s:'2 unread'},
   account:{t:'ACCOUNT',s:'Verified buyer'},
   isoticker:{t:'ISOTICKER',s:'Your collection — value since purchase'},
@@ -2267,8 +2312,53 @@ async function submitVault(){
       variation:         document.getElementById('vmVariationSelect').value || (vmCard ? (vmCard.parallel || 'Base') : 'Base'),
     };
 
-    const { error: ve } = await window._sb.from('vault').insert(row);
+    const { data: vaultRow, error: ve } = await window._sb.from('vault').insert(row).select().single();
     if(ve) throw ve;
+
+    // ── PRICE ANOMALY CHECK (±40%) — silent, no user notice ─
+    if(vmAcq === 'purchased' && pricePaid > 0 && vmCard){
+      btn.textContent = 'CHECKING MARKET...';
+      try {
+        const cardNum = vmCard._cardNumber || vmCard.cardNum || null;
+        const variation = row.variation || 'Base';
+        // Fetch all previous purchased submissions for this card+variation
+        const { data: prevPrices } = await window._sb
+          .from('vault')
+          .select('price_paid, id')
+          .eq('card_number', cardNum)
+          .eq('variation', variation)
+          .eq('acquisition_type', 'purchased')
+          .not('price_paid', 'is', null)
+          .neq('id', vaultRow.id); // exclude the one we just inserted
+
+        if(prevPrices && prevPrices.length >= 2){
+          const vals = prevPrices.map(r => parseFloat(r.price_paid)).filter(v => v > 0);
+          if(vals.length >= 2){
+            const avg = vals.reduce((a,b)=>a+b,0) / vals.length;
+            const deviation = Math.abs(pricePaid - avg) / avg;
+            if(deviation >= 0.40){
+                const direction = pricePaid > avg ? 'HIGH' : 'LOW';
+              const pct = (deviation * 100).toFixed(1);
+              // Insert price flag for admin review
+              await window._sb.from('price_flags').insert({
+                vault_id:       vaultRow.id,
+                user_id:        user.id,
+                card_number:    cardNum,
+                card_name:      `${vmCard.year||''} ${vmCard.brand||''} ${vmCard.set||''} — ${vmCard.player||''}`.trim(),
+                set_table:      vmCard._setTable || null,
+                variation:      variation,
+                price_submitted: pricePaid,
+                market_avg:     parseFloat(avg.toFixed(2)),
+                deviation_pct:  parseFloat(pct),
+                direction:      direction,
+                status:         'pending',
+                flagged_at:     new Date().toISOString(),
+              });
+            }
+          }
+        }
+      } catch(flagErr){ console.warn('Price flag error (non-critical):', flagErr); }
+    }
 
     document.getElementById('vmProgressBar').style.width='100%';
     btn.textContent = '✓ ADDED!';
@@ -2278,7 +2368,7 @@ async function submitVault(){
       closeVaultModal();
       btn.style.background = '';
       renderMyVault();
-      T(`${vmCard?.player||'Card'} added to vault · $${pricePaid.toLocaleString()} paid · Market engine updated`);
+      T(`${vmCard?.player||'Card'} added to vault · $${pricePaid.toFixed(2)} paid`);
     }, 1100);
 
   } catch(err){
@@ -2659,43 +2749,62 @@ function _cdApplyOrientation(landscape){
   }
 }
 
+// ── Bulletproof orientation probe ───────────────────────────
+// Handles cached images (complete+naturalWidth), load race, and errors.
+// Calls callback(landscape:boolean) exactly once.
+function _cdProbeOrientation(url, callback){
+  if(!url){ callback(false); return; }
+  const img = new Image();
+  let fired = false;
+  function done(landscape){
+    if(fired) return;
+    fired = true;
+    callback(landscape);
+  }
+  img.onload  = function(){ done(this.naturalWidth > this.naturalHeight); };
+  img.onerror = function(){ done(false); };
+  img.src = url;
+  // If browser already had it cached, complete fires synchronously before onload
+  if(img.complete && img.naturalWidth > 0){
+    done(img.naturalWidth > img.naturalHeight);
+  }
+}
+
 function _cdSetViewerImages(frontUrl, backUrl){
   const imgFront = document.getElementById('cd-img-front');
   const phFront  = document.getElementById('cd-placeholder-front');
   const imgBack  = document.getElementById('cd-img-back');
   const phBack   = document.getElementById('cd-placeholder-back');
 
+  // Step 1: show/hide placeholders immediately
   if(frontUrl && imgFront){
-    imgFront.src = frontUrl;
     imgFront.style.display = 'block';
     if(phFront) phFront.style.display = 'none';
-    // Detect orientation from front image
-    imgFront.onload = function(){
-      const landscape = this.naturalWidth > this.naturalHeight;
-      _cdApplyOrientation(landscape);
-    };
   } else {
-    if(imgFront) imgFront.style.display = 'none';
-    if(phFront)  phFront.style.display  = 'flex';
-    // No front image — detect from back if available
-    if(backUrl && imgBack){
-      const probe = new Image();
-      probe.onload = function(){
-        _cdApplyOrientation(this.naturalWidth > this.naturalHeight);
-      };
-      probe.src = backUrl;
-    } else {
-      _cdApplyOrientation(false); // default portrait
-    }
+    if(imgFront){ imgFront.src=''; imgFront.style.display = 'none'; }
+    if(phFront)  phFront.style.display = 'flex';
   }
-
   if(backUrl && imgBack){
-    imgBack.src = backUrl;
     imgBack.style.display = 'block';
     if(phBack) phBack.style.display = 'none';
   } else {
-    if(imgBack) imgBack.style.display = 'none';
-    if(phBack)  phBack.style.display  = 'flex';
+    if(imgBack){ imgBack.src=''; imgBack.style.display = 'none'; }
+    if(phBack)  phBack.style.display = 'flex';
+  }
+
+  // Step 2: probe orientation from front image, fallback to back, fallback portrait
+  // Then APPLY orientation first, THEN set src — eliminates all race conditions.
+  const probeUrl = frontUrl || backUrl;
+  if(probeUrl){
+    _cdProbeOrientation(probeUrl, function(landscape){
+      _cdApplyOrientation(landscape);
+      // Set src after orientation is locked in
+      if(frontUrl && imgFront) imgFront.src = frontUrl;
+      if(backUrl  && imgBack)  imgBack.src  = backUrl;
+    });
+  } else {
+    // No images at all — portrait default
+    _cdApplyOrientation(false);
   }
 }
 
@@ -2820,7 +2929,8 @@ function _cdApplyTransform(){
 
 function _cdReset3D(){
   _cdRotX=0; _cdRotY=0; _cdFlipped=false;
-  _cdApplyOrientation(false); // reset to portrait until image loads
+  // Do NOT pre-apply orientation here — _cdSetViewerImages probes and applies it
+  // after the image loads, preventing a landscape→portrait flash on card open.
   if(_cdSpinner){ clearInterval(_cdSpinner); _cdSpinner=null; _cdSpinning=false; }
   const sb = document.getElementById('cd-spin-btn');
   if(sb) sb.textContent = 'Auto Spin';
@@ -3507,7 +3617,8 @@ async function _ivLoadMarketPrices(table){
       .select('card_number, price_paid, variation')
       .eq('set_name', table)
       .eq('acquisition_type', 'purchased')
-      .not('price_paid','is',null);
+      .not('price_paid','is',null)
+      .not('market_excluded','is',true);
     if(error || !data) return;
     // Group by card_number → compute avg per base variation (first entry = base)
     const map = {};
@@ -3614,6 +3725,7 @@ async function _cdLoadLiveMarket(card, variationLabel){
       .eq('card_number', card._cardNumber)
       .eq('variation', variationLabel)
       .not('price_paid', 'is', null)
+      .not('market_excluded', 'is', true)
       .order('date_acquired', { ascending: false })
       .limit(50);
 
@@ -3684,6 +3796,7 @@ const NAV_ITEMS_DEFAULT = [
   { id:'leaderboard',label:'Leaderboard',    badge:null,  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="14" width="4" height="8" rx="1"/><rect x="9" y="9" width="4" height="13" rx="1"/><rect x="16" y="4" width="4" height="18" rx="1"/><line x1="2" y1="22" x2="22" y2="22"/></svg>' },
   { id:'myvault',    label:'My Vault',       badge:null,  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>' },
   { id:'isoticker',  label:'ISOTicker',      badge:null,  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>' },
+  { id:'admin-price',label:'Price Flags',     badge:'!',   badgeClass:'red', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' },
 ];
 
 let _navReorderMode = false;
@@ -3819,6 +3932,352 @@ window.addEventListener('popstate', function(){
 
 const _ivOrigRenderLib = window.renderLib;
 window.renderLib = function(){ /* replaced by ivInit */ };
+
+// ── ADMIN: Price Flag Review ──────────────────────────────────
+
+let _flagData   = [];   // all loaded flags
+let _flagFilter = 'all'; // current filter
+
+async function loadPriceFlags(){
+  const list  = document.getElementById('flagList');
+  const stats = document.getElementById('flagStats');
+  if(!list) return;
+  list.innerHTML = '<div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted-text);letter-spacing:1px;padding:30px;text-align:center">Loading...</div>';
+
+  try {
+    const { data, error } = await window._sb
+      .from('price_flags')
+      .select('*')
+      .order('flagged_at', { ascending: false })
+      .limit(200);
+
+    if(error) throw error;
+    _flagData = data || [];
+    _renderFlagStats();
+    _renderFlagList();
+  } catch(e){
+    list.innerHTML = '<div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:rgba(255,59,92,0.7);padding:30px;text-align:center">Failed to load flags — ' + (e.message||'unknown error') + '</div>';
+  }
+}
+
+function _renderFlagStats(){
+  const stats = document.getElementById('flagStats');
+  if(!stats) return;
+  const RESOLVED_ST = ['admin_fixed','user_confirmed','user_corrected'];
+  const pending  = _flagData.filter(f=>f.status==='pending').length;
+  const awaiting = _flagData.filter(f=>f.status==='awaiting_confirmation').length;
+  const high     = _flagData.filter(f=>f.status==='pending'&&f.direction==='HIGH').length;
+  const low      = _flagData.filter(f=>f.status==='pending'&&f.direction==='LOW').length;
+  const resolved = _flagData.filter(f=>RESOLVED_ST.includes(f.status)).length;
+  const avgDev   = _flagData.length
+    ? (_flagData.reduce((a,f)=>a+(parseFloat(f.deviation_pct)||0),0)/_flagData.length).toFixed(1)
+    : '—';
+
+  stats.innerHTML =
+    '<div class="flag-stat-card"><div class="flag-stat-val" style="color:var(--white)">' + pending + '</div><div class="flag-stat-label">PENDING REVIEW</div></div>' +
+    '<div class="flag-stat-card"><div class="flag-stat-val" style="color:#FFC83C">' + awaiting + '</div><div class="flag-stat-label">📧 AWAITING REPLY</div></div>' +
+    '<div class="flag-stat-card"><div class="flag-stat-val" style="color:#FF3B5C">' + high + ' <span style="color:#FFC83C">/ ' + low + '</span></div><div class="flag-stat-label">HIGH / LOW FLAGS</div></div>' +
+    '<div class="flag-stat-card"><div class="flag-stat-val" style="color:var(--green)">' + resolved + '</div><div class="flag-stat-label">RESOLVED</div></div>';
+  // Expand grid to 4 columns
+  const statsEl = document.getElementById('flagStats');
+  if(statsEl) statsEl.style.gridTemplateColumns='repeat(4,1fr)';
+}
+
+function _renderFlagList(){
+  const list = document.getElementById('flagList');
+  if(!list) return;
+
+  const RESOLVED = ['admin_fixed','user_confirmed','user_corrected'];
+  let rows = _flagData;
+  if(_flagFilter === 'HIGH')       rows = rows.filter(f=>f.status==='pending'&&f.direction==='HIGH');
+  else if(_flagFilter === 'LOW')   rows = rows.filter(f=>f.status==='pending'&&f.direction==='LOW');
+  else if(_flagFilter === 'awaiting') rows = rows.filter(f=>f.status==='awaiting_confirmation');
+  else if(_flagFilter === 'resolved') rows = rows.filter(f=>RESOLVED.includes(f.status));
+  else rows = rows.filter(f=>f.status==='pending'); // 'all' = pending
+
+  if(!rows.length){
+    list.innerHTML = '<div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--muted-text);padding:40px;text-align:center;letter-spacing:1px">NO FLAGS IN THIS CATEGORY</div>';
+    return;
+  }
+
+  list.innerHTML = rows.map(f=>{
+    const dir       = f.direction || 'HIGH';
+    const st        = f.status || 'pending';
+    const isPending = st === 'pending';
+    const isAwaiting= st === 'awaiting_confirmation';
+    const resolved  = ['admin_fixed','user_confirmed','user_corrected'].includes(st);
+    const devColor  = dir === 'HIGH' ? '' : ' low';
+    const submitted = parseFloat(f.price_submitted||0).toFixed(2);
+    const avg       = parseFloat(f.market_avg||0).toFixed(2);
+    const dev       = parseFloat(f.deviation_pct||0).toFixed(1);
+    const flagDate  = f.flagged_at ? new Date(f.flagged_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit',hour:'2-digit',minute:'2-digit'}) : '—';
+
+    // Status label
+    const statusLabels = {
+      admin_fixed:          '🔧 Admin fixed',
+      user_confirmed:       '✓ User confirmed correct',
+      user_corrected:       '✏️ User self-corrected · +1 ISO credited',
+      awaiting_confirmation:'📧 Email sent — awaiting reply',
+    };
+    const resolvedLabel = statusLabels[st] || '';
+
+    // Corrected price line
+    const correctedLine = f.admin_corrected_price
+      ? `<div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--green);margin-top:4px">Corrected to: $${parseFloat(f.admin_corrected_price).toFixed(2)}</div>`
+      : f.user_corrected_price
+      ? `<div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--green);margin-top:4px">User corrected to: $${parseFloat(f.user_corrected_price).toFixed(2)}</div>`
+      : '';
+
+    // Action blocks per state
+    let actions = '';
+    if(isPending){
+      actions = `
+        <div style="width:100%">
+          <div style="display:flex;gap:8px;margin-bottom:8px">
+            <button class="btn btn-ghost btn-sm" style="flex:1;font-size:12px;border-color:rgba(0,170,255,0.3);color:var(--blue)"
+              onclick="flagShowFixPrice('${f.id}')">🔧 Fix Price</button>
+            <button class="btn btn-ghost btn-sm" style="flex:1;font-size:12px;border-color:rgba(255,200,60,0.3);color:#FFC83C"
+              onclick="flagSendEmail('${f.id}')">📧 Ask Collector</button>
+          </div>
+          <div id="flag-fixrow-${f.id}" style="display:none;background:rgba(0,0,0,0.25);border-radius:8px;padding:12px;margin-top:4px">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;color:var(--muted-text);margin-bottom:8px">ENTER CORRECTED PRICE</div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input type="number" id="flag-fixinput-${f.id}" min="0" step="0.01"
+                placeholder="$0.00" value="${submitted}"
+                style="flex:1;background:rgba(0,0,0,0.3);border:1px solid rgba(0,170,255,0.25);border-radius:6px;padding:8px 12px;color:var(--white);font-family:'Bebas Neue',sans-serif;font-size:16px;outline:none">
+              <button class="btn btn-primary btn-sm" onclick="flagApplyFix('${f.id}')">Apply Fix</button>
+            </div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(122,149,174,0.5);margin-top:8px">Updates vault entry directly. No notification sent to collector.</div>
+          </div>
+        </div>`;
+    } else if(isAwaiting){
+      // Email sent — waiting on user. Admin can manually mark outcome.
+      actions = `
+        <div style="width:100%">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:#FFC83C;margin-bottom:10px">📧 Confirmation email sent — mark outcome when user responds:</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" style="flex:1;font-size:12px;border-color:rgba(0,232,135,0.3);color:var(--green)"
+              onclick="flagUserConfirmed('${f.id}')">✓ They Confirmed Correct</button>
+            <div style="display:flex;flex-direction:column;gap:6px;flex:1">
+              <input type="number" id="flag-fixinput-${f.id}" min="0" step="0.01" placeholder="Corrected price"
+                style="background:rgba(0,0,0,0.3);border:1px solid rgba(0,170,255,0.25);border-radius:6px;padding:7px 10px;color:var(--white);font-family:'Barlow Condensed',sans-serif;font-size:14px;outline:none;width:100%;box-sizing:border-box">
+              <button class="btn btn-ghost btn-sm" style="font-size:12px;border-color:rgba(0,170,255,0.3);color:var(--blue)"
+                onclick="flagUserCorrected('${f.id}', parseFloat(document.getElementById('flag-fixinput-${f.id}').value))">✏️ They Corrected (+1 ISO)</button>
+            </div>
+          </div>
+        </div>`;
+    } else if(resolved){
+      actions = `<div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--green);letter-spacing:.3px">${resolvedLabel}</div>${correctedLine}`;
+    }
+
+    return `<div class="flag-card ${dir.toLowerCase()} ${resolved?'resolved':isAwaiting?'awaiting':''}" id="flag-${f.id}">
+      <div class="flag-card-header">
+        <div class="flag-card-meta">
+          <div class="flag-card-name">${f.card_name||'Unknown Card'}</div>
+          <div class="flag-card-var">Variation: ${f.variation||'Base'} · #${f.card_number||'—'} · ${flagDate}</div>
+        </div>
+        <div class="flag-badge ${dir}">${dir==='HIGH'?'🔺':'🔻'} ${dir} ${dev}%</div>
+      </div>
+      <div class="flag-nums">
+        <div class="flag-num-item">
+          <div class="flag-num-label">SUBMITTED</div>
+          <div class="flag-num-val submitted">$${submitted}</div>
+        </div>
+        <div class="flag-num-item">
+          <div class="flag-num-label">MARKET AVG</div>
+          <div class="flag-num-val avg">$${avg}</div>
+        </div>
+        <div class="flag-num-item">
+          <div class="flag-num-label">DEVIATION</div>
+          <div class="flag-num-val dev${devColor}">${dev}%</div>
+        </div>
+      </div>
+      <div class="flag-actions">${actions}</div>
+    </div>`;
+  }).join('');
+}
+
+function flagFilter(type, el){
+  _flagFilter = type;
+  document.querySelectorAll('#panel-admin-price .chip').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  _renderFlagList();
+}
+
+// Update _flagFilter logic inside _renderFlagList
+const _FLAG_RESOLVED_STATUSES = ['admin_fixed','user_confirmed','user_corrected'];
+
+// ── Fix Price inline ─────────────────────────────────────────
+function flagShowFixPrice(flagId){
+  const el = document.getElementById('flag-fixrow-' + flagId);
+  if(el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+async function flagApplyFix(flagId){
+  const flag   = _flagData.find(f=>f.id===flagId);
+  const input  = document.getElementById('flag-fixinput-' + flagId);
+  const newPrice = parseFloat(input ? input.value : '');
+
+  if(!flag || isNaN(newPrice) || newPrice <= 0){
+    T('Enter a valid price first'); return;
+  }
+
+  const card = document.getElementById('flag-' + flagId);
+  if(card){ card.style.opacity='.5'; card.style.pointerEvents='none'; }
+
+  try {
+    // Update price in vault row
+    if(flag.vault_id){
+      const { error: ve } = await window._sb.from('vault')
+        .update({ price_paid: newPrice })
+        .eq('id', flag.vault_id);
+      if(ve) throw ve;
+    }
+    // Close the flag — admin fixed it directly
+    const { error: fe } = await window._sb.from('price_flags')
+      .update({ status:'admin_fixed', admin_corrected_price: newPrice, resolved_at: new Date().toISOString() })
+      .eq('id', flagId);
+    if(fe) throw fe;
+
+    const f = _flagData.find(f=>f.id===flagId);
+    if(f){ f.status='admin_fixed'; f.admin_corrected_price=newPrice; }
+    _renderFlagStats();
+    _renderFlagList();
+    T(`Price corrected to $${newPrice.toFixed(2)} — flag closed`);
+  } catch(e){
+    if(card){ card.style.opacity='1'; card.style.pointerEvents=''; }
+    T('Fix failed — ' + (e.message||'try again'));
+  }
+}
+
+// ── Send Confirmation Email to User ──────────────────────────
+async function flagSendEmail(flagId){
+  const flag = _flagData.find(f=>f.id===flagId);
+  if(!flag) return;
+
+  const card = document.getElementById('flag-' + flagId);
+  if(card){ card.style.opacity='.5'; card.style.pointerEvents='none'; }
+
+  try {
+    // Mark flag as awaiting user confirmation
+    const { error } = await window._sb.from('price_flags')
+      .update({ status:'awaiting_confirmation', email_sent_at: new Date().toISOString() })
+      .eq('id', flagId);
+    if(error) throw error;
+
+    // Log in price_flag_emails for tracking
+    await window._sb.from('price_flag_emails').insert({
+      flag_id:         flagId,
+      vault_id:        flag.vault_id,
+      user_id:         flag.user_id,
+      card_name:       flag.card_name,
+      variation:       flag.variation,
+      price_submitted: flag.price_submitted,
+      market_avg:      flag.market_avg,
+      sent_at:         new Date().toISOString(),
+      status:          'sent',
+    });
+
+    const f = _flagData.find(f=>f.id===flagId);
+    if(f) f.status = 'awaiting_confirmation';
+    _renderFlagStats();
+    _renderFlagList();
+    T('Confirmation email queued — awaiting user response');
+  } catch(e){
+    if(card){ card.style.opacity='1'; card.style.pointerEvents=''; }
+    T('Failed — ' + (e.message||'try again'));
+  }
+}
+
+// ── User Self-Corrects (called when user responds + corrects) ─
+async function flagUserCorrected(flagId, newPrice){
+  const flag = _flagData.find(f=>f.id===flagId);
+  if(!flag) return;
+
+  try {
+    // Update vault price
+    if(flag.vault_id){
+      await window._sb.from('vault')
+        .update({ price_paid: newPrice })
+        .eq('id', flag.vault_id);
+    }
+    // Close flag as user-corrected
+    await window._sb.from('price_flags')
+      .update({ status:'user_corrected', user_corrected_price: newPrice, resolved_at: new Date().toISOString() })
+      .eq('id', flagId);
+
+    // Auto-credit 1 ISO to user for self-correcting
+    if(flag.user_id){
+      const { data: profile } = await window._sb
+        .from('profiles')
+        .select('credits')
+        .eq('id', flag.user_id)
+        .single();
+      const current = profile ? (parseInt(profile.credits)||0) : 0;
+      await window._sb.from('profiles')
+        .update({ credits: current + 1 })
+        .eq('id', flag.user_id);
+
+      // Log the credit event
+      await window._sb.from('credit_events').insert({
+        user_id:     flag.user_id,
+        amount:      1,
+        reason:      'price_correction',
+        note:        `Self-corrected price on ${flag.card_name} — ${flag.variation}`,
+        created_at:  new Date().toISOString(),
+      });
+    }
+
+    const f = _flagData.find(f=>f.id===flagId);
+    if(f){ f.status='user_corrected'; f.user_corrected_price=newPrice; }
+    _renderFlagStats();
+    _renderFlagList();
+    T('User correction recorded · +1 ISO credit awarded automatically');
+  } catch(e){
+    T('Failed — ' + (e.message||'try again'));
+  }
+}
+
+// ── User Confirms Price is Correct ───────────────────────────
+async function flagUserConfirmed(flagId){
+  try {
+    await window._sb.from('price_flags')
+      .update({ status:'user_confirmed', resolved_at: new Date().toISOString() })
+      .eq('id', flagId);
+    const f = _flagData.find(f=>f.id===flagId);
+    if(f) f.status = 'user_confirmed';
+    _renderFlagStats();
+    _renderFlagList();
+    T('Price confirmed by user — no change, flag closed');
+  } catch(e){
+    T('Failed — ' + (e.message||'try again'));
+  }
+}
+
+async function flagAction(flagId, action){
+  // Legacy approve path (kept for any edge cases)
+  const card = document.getElementById('flag-' + flagId);
+  if(card){ card.style.opacity='.5'; card.style.pointerEvents='none'; }
+  try {
+    await window._sb.from('price_flags')
+      .update({ status: action, resolved_at: new Date().toISOString() })
+      .eq('id', flagId);
+    const f = _flagData.find(f=>f.id===flagId);
+    if(f) f.status = action;
+    _renderFlagStats();
+    _renderFlagList();
+  } catch(e){
+    if(card){ card.style.opacity='1'; card.style.pointerEvents=''; }
+    T('Action failed — ' + (e.message||'try again'));
+  }
+}
+
+// Auto-load flags when navigating to admin panel
+const _origN = window.N;
+window.N = function(id, ...args){
+  _origN(id, ...args);
+  if(id === 'admin-price') loadPriceFlags();
+};
 
 </script>
 </body>

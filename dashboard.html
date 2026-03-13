@@ -441,6 +441,33 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 /* Catalog upload mini-modal */
 .cd-upload-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10001;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
 .cd-upload-modal{background:var(--deep2);border:1px solid rgba(0,232,135,0.3);border-radius:14px;width:100%;max-width:520px;padding:26px;position:relative}
+.cd-contrib-badge{background:rgba(0,232,135,0.08);border:1px solid rgba(0,232,135,0.2);border-radius:8px;padding:10px 14px;display:flex;align-items:flex-start;gap:10px;margin-bottom:16px}
+.cd-contrib-badge-icon{font-size:20px;flex-shrink:0}
+.cd-contrib-badge-text{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:rgba(122,149,174,0.9);line-height:1.5}
+.cd-contrib-badge-text strong{color:var(--green)}
+/* Error report */
+.cd-report-btn{width:100%;margin-top:10px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.18);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .2s;font-family:'Barlow Condensed',sans-serif}
+.cd-report-btn:hover{background:rgba(255,59,92,0.12);border-color:rgba(255,59,92,0.35)}
+.cd-report-btn-icon{font-size:16px}
+.cd-report-btn-text{flex:1;text-align:left}
+.cd-report-btn-label{font-size:13px;letter-spacing:.5px;color:rgba(255,59,92,0.9);font-weight:700}
+.cd-report-btn-sub{font-size:11px;color:var(--muted-text);margin-top:1px}
+.cd-report-badge{font-size:10px;letter-spacing:1px;background:rgba(255,200,60,0.12);border:1px solid rgba(255,200,60,0.25);border-radius:4px;padding:2px 7px;color:#FFC83C;font-weight:700;white-space:nowrap}
+/* Error report modal */
+.err-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:10001;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.err-modal{background:var(--deep2);border:1px solid rgba(255,59,92,0.25);border-radius:14px;width:100%;max-width:520px;padding:28px;position:relative}
+.err-modal-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--white);margin-bottom:4px}
+.err-modal-sub{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:18px;line-height:1.5}
+.err-field-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:6px}
+.err-readonly{background:rgba(0,0,0,0.25);border:1px solid var(--deep-border);border-radius:6px;padding:10px 13px;font-family:'Barlow Condensed',sans-serif;font-size:14px;color:rgba(122,149,174,0.7);margin-bottom:14px;letter-spacing:.3px}
+.err-textarea{width:100%;background:rgba(0,0,0,0.25);border:1px solid var(--deep-border);border-radius:6px;padding:10px 13px;color:var(--white);font-family:'Barlow Condensed',sans-serif;font-size:14px;outline:none;resize:vertical;min-height:100px;box-sizing:border-box;transition:border-color .2s}
+.err-textarea:focus{border-color:rgba(255,59,92,0.4)}
+.err-textarea::placeholder{color:var(--muted-text)}
+.err-disclaimer{background:rgba(255,200,60,0.06);border:1px solid rgba(255,200,60,0.2);border-radius:8px;padding:12px 14px;margin:14px 0;font-family:'Barlow Condensed',sans-serif;font-size:12px;color:rgba(255,200,60,0.9);line-height:1.5}
+.err-disclaimer strong{color:#FFC83C}
+/* Market price in ISOVault list */
+.iv-row-price{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--blue);font-weight:700;text-align:right;white-space:nowrap}
+.iv-row-price.no-data{color:rgba(122,149,174,0.3);font-size:11px}
 .cd-upload-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--white);margin-bottom:4px}
 .cd-upload-sub{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:20px;line-height:1.5}
 /* ═══════════════════════════════════════
@@ -1008,6 +1035,14 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
         <div class="cd-vault-cta">
           <div class="cd-vault-path-msg" id="cd-path-msg"></div>
           <button class="btn btn-primary" style="width:100%;font-size:14px;padding:12px" onclick="openVaultModal(window._cdCard)">+ Add This Variation to My Vault</button>
+          <div class="cd-report-btn" onclick="openErrorReport()">
+            <div class="cd-report-btn-icon">🚩</div>
+            <div class="cd-report-btn-text">
+              <div class="cd-report-btn-label">Report an Error</div>
+              <div class="cd-report-btn-sub">Wrong info, missing variation, bad image?</div>
+            </div>
+            <div class="cd-report-badge">+5 CREDITS</div>
+          </div>
         </div>
       </div>
     </div>
@@ -1017,8 +1052,16 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
   <div class="cd-upload-overlay" id="cdUploadOverlay" style="display:none" onclick="if(event.target===this)closeCatalogUpload()">
     <div class="cd-upload-modal">
       <button class="vm-close" onclick="closeCatalogUpload()">×</button>
-      <div class="cd-upload-title">UPLOAD CATALOG IMAGE</div>
-      <div class="cd-upload-sub" id="cdUploadSub">Upload the front and back of this card. This image becomes the catalog reference for all users.</div>
+      <div class="cd-upload-title">CONTRIBUTE CATALOG IMAGE</div>
+      <div class="cd-upload-sub" id="cdUploadSub" style="margin-bottom:12px">Your photo becomes the reference image for all collectors.</div>
+      <div class="cd-contrib-badge">
+        <div class="cd-contrib-badge-icon">📸</div>
+        <div class="cd-contrib-badge-text">
+          <strong>Community Contribution — +2 Credits</strong><br>
+          This upload is for catalog reference only. You do not need to own this card.
+          If you own it and paid for it, use <strong>+ Add to My Vault</strong> instead — that also feeds the market price engine.
+        </div>
+      </div>
       <div class="vm-upload-row" style="margin-bottom:14px">
         <div class="vm-upload-box" id="cdFrontBox">
           <input type="file" accept="image/*" id="cdFrontFile" onchange="handleCatalogUpload(this,'front')">
@@ -1038,9 +1081,35 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
       <div class="vm-error" id="cdUploadError" style="display:none">Both front and back are required.</div>
       <div class="vm-progress" id="cdUploadProgress" style="display:none"><div class="vm-progress-bar" id="cdUploadProgressBar"></div></div>
       <div style="display:flex;gap:10px;margin-top:4px">
-        <button class="btn btn-primary" style="flex:1" id="cdUploadSubmitBtn" onclick="submitCatalogUpload()">SAVE TO CATALOG</button>
+        <button class="btn btn-primary" style="flex:1" id="cdUploadSubmitBtn" onclick="submitCatalogUpload()">SAVE TO CATALOG (+2 CREDITS)</button>
         <button class="btn btn-ghost" onclick="closeCatalogUpload()">Cancel</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ERROR REPORT MODAL -->
+  <div class="err-modal-overlay" id="errModalOverlay" style="display:none" onclick="if(event.target===this)closeErrorReport()">
+    <div class="err-modal">
+      <button class="vm-close" onclick="closeErrorReport()">×</button>
+      <div class="err-modal-title">REPORT AN ERROR</div>
+      <div class="err-modal-sub">Help us keep ISOVault accurate. Manual review by our team — responses within 48 hours.</div>
+      <div class="err-field-label">Card</div>
+      <div class="err-readonly" id="errCardName">—</div>
+      <div class="err-field-label">Variation</div>
+      <div class="err-readonly" id="errVariation">—</div>
+      <div class="err-field-label">What's wrong? <span style="color:var(--red)">*</span></div>
+      <textarea class="err-textarea" id="errNoteBox" placeholder="Describe the error — wrong card number, incorrect variation name, bad image, missing parallel, wrong print run, etc."></textarea>
+      <div class="vm-error" id="errNoteError" style="display:none;margin-top:6px">Please describe the error before submitting.</div>
+      <div class="err-disclaimer">
+        <strong>🎁 Finder's Fee — 5 Credits</strong><br>
+        If your report identifies a genuine error and we correct it, we'll award 5 ISO Credits to your account. One report per card per error. Duplicate or invalid reports do not qualify.
+      </div>
+      <div class="vm-progress" id="errProgress" style="display:none"><div class="vm-progress-bar" id="errProgressBar"></div></div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-primary" style="flex:1;background:var(--red);border-color:var(--red)" id="errSubmitBtn" onclick="submitErrorReport()">SUBMIT REPORT</button>
+        <button class="btn btn-ghost" onclick="closeErrorReport()">Cancel</button>
+      </div>
+      <div class="vm-error" id="errSubmitError" style="text-align:center;margin-top:8px"></div>
     </div>
   </div>
 
@@ -3199,7 +3268,8 @@ async function ivSelectSet(table){
 
   _ivData = all;
   _ivCounts[table] = all.length;
-  _ivApplyCardFilters();
+  // Load market prices for this set in background — populates price column
+  _ivLoadMarketPrices(table).then(()=>_ivApplyCardFilters());
 }
 
 function _ivApplyCardFilters(){
@@ -3234,11 +3304,12 @@ function _ivRenderChecklist(){
   if(!el) return;
   if(!_ivFiltered.length){ el.innerHTML='<div class="iv-empty">No cards match</div>'; return; }
 
-  const header = `<div class="iv-row" style="cursor:default;border-bottom:1px solid rgba(0,170,255,.15);padding-bottom:6px;margin-bottom:2px">
+  const header = `<div class="iv-row" style="cursor:default;border-bottom:1px solid rgba(0,170,255,.15);padding-bottom:6px;margin-bottom:2px;grid-template-columns:60px 1fr 120px 80px 80px 60px">
     <div class="iv-row-num" style="color:var(--muted-text);font-size:10px;letter-spacing:1px">CARD #</div>
     <div class="iv-row-player" style="font-size:10px;letter-spacing:1px;color:var(--muted-text)">PLAYER</div>
     <div class="iv-row-team" style="font-size:10px;letter-spacing:1px;color:var(--muted-text)">TEAM</div>
     <div class="iv-row-cat" style="font-size:10px;letter-spacing:1px;color:var(--muted-text)">CATEGORY</div>
+    <div class="iv-row-price" style="font-size:10px;letter-spacing:1px;color:var(--muted-text)">MKT AVG</div>
     <div style="font-size:10px;letter-spacing:1px;color:var(--muted-text);font-family:'Barlow Condensed',sans-serif">IMG</div>
   </div>`;
 
@@ -3248,11 +3319,17 @@ function _ivRenderChecklist(){
     const catLabel = r.is_rookie && cat==='base' ? 'RC' : (r.category||'Base');
     const hasImg = r.var_images && Object.keys(r.var_images).length > 0;
     const sub = r.insert_name ? `<div class="iv-row-insert">${r.insert_name}</div>` : '';
-    return `<div class="iv-row" onclick="ivOpenCard(${JSON.stringify(r).replace(/"/g,'&quot;')})">
+    const cardKey = (r.card_number||'').toString();
+    const mktPrice = window._ivMarketCache && window._ivMarketCache[cardKey];
+    const priceHtml = mktPrice
+      ? `<div class="iv-row-price">$${Number(mktPrice).toFixed(2)}</div>`
+      : `<div class="iv-row-price no-data">—</div>`;
+    return `<div class="iv-row" style="grid-template-columns:60px 1fr 120px 80px 80px 60px" onclick="ivOpenCard(${JSON.stringify(r).replace(/"/g,'&quot;')})">
       <div class="iv-row-num">${r.card_number||'—'}</div>
       <div><div class="iv-row-player">${r.player||'—'}</div>${sub}</div>
       <div class="iv-row-team">${r.team||'—'}</div>
       <div class="iv-row-cat"><span class="iv-row-cat-badge ${catClass}">${catLabel}</span></div>
+      ${priceHtml}
       <div style="font-size:16px">${hasImg ? '🖼️' : '<span style="color:rgba(122,149,174,0.3)">—</span>'}</div>
     </div>`;
   }).join('');
@@ -3416,6 +3493,107 @@ function ivOpenGlobalResult(row){
   const setDef = IV_SETS.find(s=>s.table===row._setTable);
   if(setDef){ _ivSet = setDef; _ivSport = setDef.sport; }
   ivOpenCard(row);
+}
+
+// ── ISOVault Market Price Cache (per set load) ───────────────
+window._ivMarketCache = {}; // card_number → avg price paid
+
+async function _ivLoadMarketPrices(table){
+  window._ivMarketCache = {};
+  try {
+    // Fetch all purchased vault entries for this set's card numbers
+    const { data, error } = await window._sb
+      .from('vault')
+      .select('card_number, price_paid, variation')
+      .eq('set_name', table)
+      .eq('acquisition_type', 'purchased')
+      .not('price_paid','is',null);
+    if(error || !data) return;
+    // Group by card_number → compute avg per base variation (first entry = base)
+    const map = {};
+    data.forEach(r=>{
+      const k = (r.card_number||'').toString();
+      if(!map[k]) map[k] = [];
+      map[k].push(r.price_paid);
+    });
+    Object.keys(map).forEach(k=>{
+      const prices = map[k];
+      window._ivMarketCache[k] = prices.reduce((a,b)=>a+b,0)/prices.length;
+    });
+  } catch(e){ console.warn('Market cache error:', e); }
+}
+
+// ── Error Report Modal ────────────────────────────────────────
+function openErrorReport(){
+  const card = window._cdCard;
+  const varIdx = window._cdActiveVarIdx || 0;
+  const vars = window._cdVars || [];
+  const varLabel = vars[varIdx] ? vars[varIdx].label : (card ? (card.parallel||'Base') : 'Base');
+  const cardName = card
+    ? `${card.year} ${card.brand} ${card.set||''} — ${card.player} ${card.cardNum||''}`.trim()
+    : '—';
+
+  document.getElementById('errCardName').textContent   = cardName;
+  document.getElementById('errVariation').textContent  = varLabel;
+  document.getElementById('errNoteBox').value          = '';
+  document.getElementById('errNoteError').style.display= 'none';
+  document.getElementById('errSubmitError').style.display='none';
+  document.getElementById('errProgress').style.display  = 'none';
+  document.getElementById('errSubmitBtn').textContent   = 'SUBMIT REPORT';
+  document.getElementById('errSubmitBtn').disabled      = false;
+  document.getElementById('errModalOverlay').style.display = 'flex';
+}
+
+function closeErrorReport(){
+  document.getElementById('errModalOverlay').style.display = 'none';
+}
+
+async function submitErrorReport(){
+  const note = document.getElementById('errNoteBox').value.trim();
+  if(!note){
+    document.getElementById('errNoteError').style.display='block';
+    return;
+  }
+  document.getElementById('errNoteError').style.display='none';
+
+  const btn = document.getElementById('errSubmitBtn');
+  btn.disabled = true;
+  document.getElementById('errProgress').style.display = 'block';
+  document.getElementById('errProgressBar').style.width = '40%';
+
+  const card    = window._cdCard;
+  const varIdx  = window._cdActiveVarIdx || 0;
+  const vars    = window._cdVars || [];
+  const varLabel= vars[varIdx] ? vars[varIdx].label : 'Base';
+  const cardName= document.getElementById('errCardName').textContent;
+
+  try {
+    // Store in a reports / error_reports table (or reuse notifications channel)
+    const { error } = await window._sb.from('error_reports').insert({
+      card_name:     cardName,
+      card_number:   card ? (card._cardNumber || card.cardNum || null) : null,
+      set_table:     card ? (card._setTable || null) : null,
+      variation:     varLabel,
+      note:          note,
+      status:        'pending',
+      reported_at:   new Date().toISOString(),
+    });
+    document.getElementById('errProgressBar').style.width = '100%';
+    if(error) throw error;
+    btn.textContent = '✓ REPORT SUBMITTED';
+    btn.style.background = 'var(--green)';
+    setTimeout(()=>{
+      closeErrorReport();
+      btn.style.background = '';
+      T('Report submitted — we review manually within 48 hours. If valid, +5 credits awarded.');
+    }, 1200);
+  } catch(e){
+    document.getElementById('errSubmitError').textContent = 'Submission failed — please try again.';
+    document.getElementById('errSubmitError').style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'SUBMIT REPORT';
+    document.getElementById('errProgress').style.display = 'none';
+  }
 }
 
 // ── Live Market Data Engine ──────────────────────────────────

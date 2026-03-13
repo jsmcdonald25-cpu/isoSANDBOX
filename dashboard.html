@@ -50,6 +50,23 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .nav-label{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:500;color:var(--muted-text);letter-spacing:.3px;transition:color .15s}
 .nav-badge{margin-left:auto;background:var(--blue);color:white;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center}
 .nav-badge.red{background:var(--red)}
+.nav-reorder-btn{width:100%;background:none;border:none;border-top:1px solid var(--deep-border);padding:8px 20px;display:flex;align-items:center;gap:8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);cursor:pointer;transition:color .2s;margin-top:4px}
+.nav-reorder-btn:hover{color:var(--blue)}
+.nav-reorder-btn.active{color:var(--blue)}
+.nav-reorder-btn svg{flex-shrink:0}
+.nav-drag-handle{width:14px;height:14px;display:none;flex-shrink:0;cursor:grab;opacity:0.4;margin-right:2px}
+.nav-drag-handle:active{cursor:grabbing}
+.reorder-mode .nav-drag-handle{display:flex;align-items:center;justify-content:center}
+.reorder-mode .nav-item.reorderable{cursor:grab;border:1px dashed rgba(0,170,255,0.2);border-radius:6px;margin:2px 8px;padding:9px 12px}
+.reorder-mode .nav-item.reorderable:active{cursor:grabbing;background:rgba(0,170,255,0.1);border-color:var(--blue)}
+.nav-item.drag-over{background:rgba(0,170,255,0.12);border-color:var(--blue) !important}
+.nav-pinned-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;color:rgba(0,170,255,0.3);padding:6px 20px 2px;text-transform:uppercase}
+.nav-discord-section{border-top:1px solid var(--deep-border);padding:8px 0 4px;margin-top:4px}
+.nav-discord-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;color:rgba(0,170,255,0.35);padding:4px 20px 6px;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.nav-discord-item{display:flex;align-items:center;gap:10px;padding:7px 20px;cursor:pointer;transition:background .15s;color:var(--muted-text);font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:.5px;text-decoration:none}
+.nav-discord-item:hover{background:rgba(88,101,242,0.12);color:#fff}
+.nav-discord-dot{width:8px;height:8px;border-radius:50%;background:#5865F2;flex-shrink:0}
+.nav-bottom-fixed{border-top:1px solid var(--deep-border);margin-top:4px;padding-top:4px}
 .sidebar-footer{padding:12px 18px;border-top:1px solid var(--deep-border)}
 .build-stamp{font-family:'Courier New',monospace;font-size:9px;color:rgba(0,170,255,.35);letter-spacing:.5px}
 /* MAIN */
@@ -379,7 +396,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-scene:active{cursor:grabbing}
 .cd-card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.05s linear}
 .cd-front{position:absolute;width:280px;height:392px;top:0;left:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:10px;overflow:hidden;background:#000}
-.cd-back{position:absolute;width:392px;height:280px;top:56px;left:-56px;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);border-radius:10px;overflow:hidden;background:#000}
+.cd-back{position:absolute;width:280px;height:392px;top:0;left:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);border-radius:10px;overflow:hidden;background:#000}
 .cd-card-face{width:100%;height:100%;object-fit:fill;display:block;border-radius:10px}
 .cd-card-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;border-radius:10px}
 .cd-glare{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:2;border-radius:10px;transition:opacity 0.1s}
@@ -581,18 +598,61 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     <div><div class="credits-label">ISO Credits</div><div class="credits-value" id="credits-value">12</div><div class="credits-sub" id="credits-sub">$5 per post · 5 free left</div></div>
     <button class="credits-add" onclick="T('Credits — coming soon')">+</button>
   </div>
-  <nav class="sidebar-nav">
-    <div class="nav-item active" onclick="N('overview',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div><span class="nav-label">Overview</span></div>
-    <div class="nav-item" onclick="N('post',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div><span class="nav-label">Post ISO</span></div>
-    <div class="nav-item" onclick="N('myisos',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div><span class="nav-label">My ISOs</span><span class="nav-badge">3</span></div>
-    <div class="nav-item" onclick="N('notifs',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></div><span class="nav-label">Notifications</span><span class="nav-badge red">2</span></div>
-    <div class="nav-item" onclick="N('market',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span class="nav-label">Market Data</span></div>
-    <div class="nav-item" onclick="N('leaderboard',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="14" width="4" height="8" rx="1"/><rect x="9" y="9" width="4" height="13" rx="1"/><rect x="16" y="4" width="4" height="18" rx="1"/><line x1="2" y1="22" x2="22" y2="22"/></svg></div><span class="nav-label">Leaderboard</span></div>
-    <div class="nav-item" onclick="N('myvault',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></div><span class="nav-label">My Vault</span></div>
-    <div class="nav-item" onclick="N('library',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div><span class="nav-label">ISOVault</span></div>
-    <div class="nav-item" onclick="N('isoticker',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><span class="nav-label">ISOTicker</span></div>
-    <div class="nav-item" onclick="N('account',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><span class="nav-label">Account</span></div>
-    <div class="nav-item logout" onclick="logOut()"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div><span class="nav-label">Log Out</span></div>
+  <nav class="sidebar-nav" id="sidebarNav">
+    <!-- PINNED TOP: Post ISO + ISOVault always #1 & #2 -->
+    <div class="nav-pinned-label">Quick Actions</div>
+    <div class="nav-item" onclick="N('post',this)">
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+      <span class="nav-label">Post ISO</span>
+    </div>
+    <div class="nav-item" onclick="N('library',this)">
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div>
+      <span class="nav-label">ISOVault</span>
+    </div>
+
+    <!-- REORDERABLE MIDDLE -->
+    <div class="nav-pinned-label" style="margin-top:6px" id="navSectionLabel">Navigation</div>
+    <div id="navReorderable">
+      <!-- rendered by JS, order saved in localStorage -->
+    </div>
+
+    <!-- Reorder toggle button -->
+    <button class="nav-reorder-btn" id="navReorderBtn" onclick="toggleNavReorder()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      Reorder nav
+    </button>
+
+    <!-- DISCORD SECTION -->
+    <div class="nav-discord-section">
+      <div class="nav-discord-label">
+        <svg viewBox="0 0 24 24" fill="#5865F2" width="12" height="12"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
+        Community
+      </div>
+      <a class="nav-discord-item" href="https://discord.gg/BASEBALL_LINK" target="_blank">
+        <div class="nav-discord-dot"></div>⚾ Baseball
+      </a>
+      <a class="nav-discord-item" href="https://discord.gg/BASKETBALL_LINK" target="_blank">
+        <div class="nav-discord-dot"></div>🏀 Basketball
+      </a>
+      <a class="nav-discord-item" href="https://discord.gg/FOOTBALL_LINK" target="_blank">
+        <div class="nav-discord-dot"></div>🏈 Football
+      </a>
+      <a class="nav-discord-item" href="https://discord.gg/HOCKEY_LINK" target="_blank">
+        <div class="nav-discord-dot"></div>🏒 Hockey
+      </a>
+    </div>
+
+    <!-- PINNED BOTTOM: Account + Log Out always last -->
+    <div class="nav-bottom-fixed">
+      <div class="nav-item" onclick="N('account',this)">
+        <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <span class="nav-label">Account</span>
+      </div>
+      <div class="nav-item logout" onclick="logOut()">
+        <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
+        <span class="nav-label">Log Out</span>
+      </div>
+    </div>
   </nav>
   <div class="sidebar-footer"><div class="build-stamp" id="buildStamp">[SYS] GrailISO_v1.1.7 :: BUILD 20260312 :: STABLE</div></div>
 </aside>
@@ -932,17 +992,22 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
           <div class="cd-var-pills" id="cd-pills"></div>
         </div>
         <div class="cd-market-block">
-          <div class="cd-market-title"><div class="live-dot"></div> Market · <span id="cd-mkt-var-name">—</span></div>
+          <div class="cd-market-title"><div class="live-dot"></div> Live Market · <span id="cd-mkt-var-name">—</span></div>
           <div class="cd-mkt-grid">
-            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Last Sale</div><div class="cd-mkt-val blue" id="cd-last-sale">—</div></div>
-            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Active ISOs</div><div class="cd-mkt-val gold" id="cd-active-isos">—</div></div>
-            <div class="cd-mkt-item"><div class="cd-mkt-lbl">PSA 10 Pop</div><div class="cd-mkt-val" id="cd-pop">—</div></div>
+            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Avg Price Paid</div><div class="cd-mkt-val blue" id="cd-mkt-avg">—</div></div>
+            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Low / High</div><div class="cd-mkt-val" id="cd-mkt-range" style="font-size:13px">—</div></div>
+            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Vault Count</div><div class="cd-mkt-val gold" id="cd-mkt-count">—</div></div>
+          </div>
+          <div id="cd-mkt-sales-list" style="margin-top:10px;display:none">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1.5px;color:rgba(0,170,255,0.4);margin-bottom:6px">RECENT SUBMISSIONS</div>
+            <div id="cd-mkt-sales-rows"></div>
           </div>
           <div class="cd-watching"><span>👁</span>&nbsp;<strong id="cd-watching-ct">—</strong>&nbsp;collectors watching this variation right now</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:rgba(122,149,174,0.4);letter-spacing:.5px;margin-top:8px">Market price built from collector vault submissions · Built by collectors, for collectors</div>
         </div>
         <div class="cd-vault-cta">
           <div class="cd-vault-path-msg" id="cd-path-msg"></div>
-          <button class="btn btn-primary" style="width:100%;font-size:14px;padding:12px" onclick="openVaultModal(window._cdCard)">+ Add to My Vault</button>
+          <button class="btn btn-primary" style="width:100%;font-size:14px;padding:12px" onclick="openVaultModal(window._cdCard)">+ Add This Variation to My Vault</button>
         </div>
       </div>
     </div>
@@ -1154,6 +1219,15 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
       <div class="vm-error" id="serialError">Please enter your specific card number.</div>
     </div>
 
+    <!-- Variation Selector -->
+    <div class="vm-section" id="vmVariationSection" style="display:none">
+      <div class="vm-label">Which variation? <span class="req">*</span></div>
+      <select class="vm-input" id="vmVariationSelect" style="cursor:pointer">
+        <option value="">Select variation...</option>
+      </select>
+      <div class="vm-error" id="varError">Please select a variation.</div>
+    </div>
+
     <!-- How did you get it -->
     <div class="vm-section">
       <div class="vm-label">How did you obtain this card? <span class="req">*</span></div>
@@ -1330,6 +1404,35 @@ const CARDS=[
       {label:'Black /10',     color:'#888888', glow:'rgba(160,160,160,0.4)', run:10,   isBase:false,lastSale:'$490',  isos:1,  pop:5,   watching:6},
       {label:'Platinum /5',   color:'#C8E6FF', glow:'rgba(200,230,255,0.5)', run:5,    isBase:false,lastSale:'$820',  isos:0,  pop:2,   watching:3},
       {label:'Superfractor 1/1',color:'#FFD700',glow:'rgba(255,215,0,0.7)', run:1, superfractor:true,isBase:false,lastSale:'$4,200',isos:0,pop:1,watching:19},
+    ]
+  },
+,
+  {
+    id:50, player:'Ken Griffey Jr.', year:2025, brand:'Topps', set:'Stadium Club',
+    parallel:'Base', run:null, auto:false, rc:false,
+    tags:[], price:8, isos:3,
+    cardNum:'#SS-24', hasCatalogPic:false,
+    _setTable:'2025_stadium_club_v2', _cardNumber:'SS-24',
+    _team:'Seattle Mariners',
+    variations:[
+      {label:'Base',                color:'#00AAFF', glow:'rgba(0,170,255,0.45)',  run:null, isBase:true,  lastSale:'$8',     isos:3,  watching:4},
+      {label:'Red Foil',            color:'#FF3B5C', glow:'rgba(255,59,92,0.5)',   run:null, isBase:false, lastSale:'$3',     isos:1,  watching:2},
+      {label:'Sepia',               color:'#A0785A', glow:'rgba(160,120,90,0.45)', run:null, isBase:false, lastSale:'—',      isos:0,  watching:1},
+      {label:'Black & White',       color:'#CCCCCC', glow:'rgba(200,200,200,0.4)', run:null, isBase:false, lastSale:'—',      isos:0,  watching:1},
+      {label:'Bronze',              color:'#CD7F32', glow:'rgba(205,127,50,0.5)',  run:null, isBase:false, lastSale:'—',      isos:0,  watching:0},
+      {label:'Light Blue',          color:'#87CEEB', glow:'rgba(135,206,235,0.4)', run:null, isBase:false, lastSale:'—',      isos:0,  watching:0},
+      {label:'Lime Green',          color:'#32CD32', glow:'rgba(50,205,50,0.4)',   run:null, isBase:false, lastSale:'—',      isos:0,  watching:0},
+      {label:'Pink',                color:'#FF69B4', glow:'rgba(255,105,180,0.4)', run:null, isBase:false, lastSale:'—',      isos:0,  watching:0},
+      {label:'Member Only',         color:'#FFD700', glow:'rgba(255,215,0,0.45)',  run:null, isBase:false, lastSale:'—',      isos:0,  watching:0},
+      {label:"Photographer's Proof",color:'#B8860B', glow:'rgba(184,134,11,0.45)',run:null, isBase:false, lastSale:'—',      isos:0,  watching:0},
+      {label:'Green Foil /199',     color:'#00C851', glow:'rgba(0,200,81,0.45)',   run:199,  isBase:false, lastSale:'—',      isos:0,  watching:1},
+      {label:'Turquoise Foil /99',  color:'#00CED1', glow:'rgba(0,206,209,0.45)', run:99,   isBase:false, lastSale:'—',      isos:0,  watching:1},
+      {label:'Purple Foil /75',     color:'#9B59B6', glow:'rgba(155,89,182,0.45)',run:75,   isBase:false, lastSale:'—',      isos:0,  watching:1},
+      {label:'Gold Foil /50',       color:'#FFC83C', glow:'rgba(255,200,60,0.5)', run:50,   isBase:false, lastSale:'—',      isos:0,  watching:2},
+      {label:'Rainbow Foil /25',    color:'#FF6B6B', glow:'rgba(255,107,107,0.5)',run:25,   isBase:false, lastSale:'—',      isos:0,  watching:2},
+      {label:'First Day Issue /10', color:'#FF8C00', glow:'rgba(255,140,0,0.5)',  run:10,   isBase:false, lastSale:'—',      isos:0,  watching:3},
+      {label:'Gold Rainbow Foil 1/1',color:'#FFD700',glow:'rgba(255,215,0,0.7)', run:1, superfractor:true,isBase:false,lastSale:'—',isos:0,watching:5},
+      {label:'SuperFractor 1/1',    color:'#FFD700', glow:'rgba(255,215,0,0.7)',  run:1, superfractor:true,isBase:false,lastSale:'—',isos:0,watching:8},
     ]
   },
 ];
@@ -1802,7 +1905,7 @@ window.addEventListener('resize',()=>{if(document.getElementById('panel-isoticke
 // ═══════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════
-renderMkt();renderOvMkt(); // ISOVault inits on nav click via ivInit()
+renderMkt();renderOvMkt(); navRender(); // ISOVault inits on nav click via ivInit()
 
 // ── CARD TICKER ─────────────────────────────────────────────
 function initCardTicker(){
@@ -1883,6 +1986,22 @@ function openVaultModal(card){
     document.getElementById('vmCardName').textContent=card.player;
     document.getElementById('vmCardDetail').textContent=`${card.year||''} ${card.brand||''} · ${card.set||''} · ${card.parallel||''}`.trim().replace(/^·\s*/,'');
     document.getElementById('vmSub').textContent=`Adding to vault: ${card.player}`;
+
+    // Populate variation selector
+    const varSec = document.getElementById('vmVariationSection');
+    const varSel = document.getElementById('vmVariationSelect');
+    if(card.variations && card.variations.length > 1){
+      varSec.style.display = 'block';
+      // Get currently active variation
+      const activeIdx = window._cdActiveVarIdx || 0;
+      varSel.innerHTML = card.variations.map((v,i)=>{
+        const run = v.run ? ' /'+v.run : '';
+        return `<option value="${v.label}" ${i===activeIdx?'selected':''}>${v.label}${run}</option>`;
+      }).join('');
+    } else {
+      varSec.style.display = 'none';
+      varSel.innerHTML = '<option value="Base">Base</option>';
+    }
 
     // ── DUAL PATH ──────────────────────────────────────────
     if(card.hasCatalogPic){
@@ -1989,6 +2108,14 @@ async function submitVault(){
     if(!sn || isNaN(sn) || parseInt(sn)<1){ document.getElementById('serialError').style.display='block'; valid=false; }
     if(vmCard && vmCard.run && parseInt(sn) > vmCard.run){ document.getElementById('serialError').textContent=`Serial # can't exceed /${vmCard.run}`; document.getElementById('serialError').style.display='block'; valid=false; }
   }
+  // Variation validation
+  const varSec2 = document.getElementById('vmVariationSection');
+  const varVal = document.getElementById('vmVariationSelect').value;
+  if(varSec2.style.display !== 'none' && !varVal){
+    document.getElementById('varError').style.display='block'; valid=false;
+  } else {
+    document.getElementById('varError').style.display='none';
+  }
   if(!vmAcq){ document.getElementById('acqError').style.display='block'; valid=false; }
   if(vmAcq==='purchased' && !vmSource){ document.getElementById('acqError').textContent='Please select where you purchased it.'; document.getElementById('acqError').style.display='block'; valid=false; }
   // Price paid — MANDATORY
@@ -2068,6 +2195,7 @@ async function submitVault(){
       has_catalog_pic:   hasCatalogPic || false,
       card_number:       vmCard ? (vmCard.cardNum || vmCard._cardNumber || null) : null,
       team:              vmCard ? (vmCard._team || null) : null,
+      variation:         document.getElementById('vmVariationSelect').value || (vmCard ? (vmCard.parallel || 'Base') : 'Base'),
     };
 
     const { error: ve } = await window._sb.from('vault').insert(row);
@@ -2441,6 +2569,27 @@ function _cdShowUploadBtn(show){
   }
 }
 
+// ── Viewer orientation engine ─────────────────────────────────
+// Portrait card: 280 × 392  (ratio ~0.714)
+// Landscape card: 392 × 280 (ratio ~1.4)
+const _CD_PORT = {w:280, h:392};
+const _CD_LAND = {w:392, h:280};
+
+function _cdApplyOrientation(landscape){
+  const dim = landscape ? _CD_LAND : _CD_PORT;
+  const wrap  = document.querySelector('.cd-scene-wrap');
+  const front = document.getElementById('cd-front');
+  const back  = document.getElementById('cd-back');
+  if(wrap){  wrap.style.width  = dim.w+'px'; wrap.style.height = dim.h+'px'; }
+  if(front){ front.style.width = dim.w+'px'; front.style.height= dim.h+'px'; }
+  if(back){
+    back.style.width  = dim.w+'px';
+    back.style.height = dim.h+'px';
+    back.style.top    = '0';
+    back.style.left   = '0';
+  }
+}
+
 function _cdSetViewerImages(frontUrl, backUrl){
   const imgFront = document.getElementById('cd-img-front');
   const phFront  = document.getElementById('cd-placeholder-front');
@@ -2451,9 +2600,24 @@ function _cdSetViewerImages(frontUrl, backUrl){
     imgFront.src = frontUrl;
     imgFront.style.display = 'block';
     if(phFront) phFront.style.display = 'none';
+    // Detect orientation from front image
+    imgFront.onload = function(){
+      const landscape = this.naturalWidth > this.naturalHeight;
+      _cdApplyOrientation(landscape);
+    };
   } else {
     if(imgFront) imgFront.style.display = 'none';
     if(phFront)  phFront.style.display  = 'flex';
+    // No front image — detect from back if available
+    if(backUrl && imgBack){
+      const probe = new Image();
+      probe.onload = function(){
+        _cdApplyOrientation(this.naturalWidth > this.naturalHeight);
+      };
+      probe.src = backUrl;
+    } else {
+      _cdApplyOrientation(false); // default portrait
+    }
   }
 
   if(backUrl && imgBack){
@@ -2526,16 +2690,10 @@ function cdSelectVar(idx, skipShimmer){
     ph.style.background = `linear-gradient(135deg,#112840,${v.color}55,#1a3a5c)`;
   }
 
-  // Market block
-  const mktVar    = document.getElementById('cd-mkt-var-name');
-  const lastSale  = document.getElementById('cd-last-sale');
-  const activeISO = document.getElementById('cd-active-isos');
-  const pop       = document.getElementById('cd-pop');
-  const watching  = document.getElementById('cd-watching-ct');
+  // Market block — label only, data loaded by _cdLoadLiveMarket
+  const mktVar  = document.getElementById('cd-mkt-var-name');
+  const watching = document.getElementById('cd-watching-ct');
   if(mktVar)   mktVar.textContent   = v.label;
-  if(lastSale) lastSale.textContent = v.lastSale || '—';
-  if(activeISO)activeISO.textContent= v.isos!=null ? v.isos : '—';
-  if(pop)      pop.textContent      = v.pop!=null  ? v.pop  : '—';
   if(watching) watching.textContent = v.watching!=null ? v.watching : '—';
 
   // Shimmer on non-base parallels
@@ -2564,6 +2722,12 @@ function cdSelectVar(idx, skipShimmer){
       setTimeout(()=>{ statusEl.style.display='none'; }, 2000);
     }
   }
+
+  // Track active var index for vault modal pre-fill
+  window._cdActiveVarIdx = idx;
+
+  // Fire live market query for this variation
+  if(window._cdCard) _cdLoadLiveMarket(window._cdCard, v.label);
 }
 
 function _cdShimmer(){
@@ -2587,6 +2751,7 @@ function _cdApplyTransform(){
 
 function _cdReset3D(){
   _cdRotX=0; _cdRotY=0; _cdFlipped=false;
+  _cdApplyOrientation(false); // reset to portrait until image loads
   if(_cdSpinner){ clearInterval(_cdSpinner); _cdSpinner=null; _cdSpinning=false; }
   const sb = document.getElementById('cd-spin-btn');
   if(sb) sb.textContent = 'Auto Spin';
@@ -3253,12 +3418,219 @@ function ivOpenGlobalResult(row){
   ivOpenCard(row);
 }
 
+// ── Live Market Data Engine ──────────────────────────────────
+async function _cdLoadLiveMarket(card, variationLabel){
+  // Reset display
+  document.getElementById('cd-mkt-avg').textContent   = '...';
+  document.getElementById('cd-mkt-range').textContent = '...';
+  document.getElementById('cd-mkt-count').textContent = '...';
+  document.getElementById('cd-mkt-sales-list').style.display = 'none';
+
+  if(!card._setTable || !card._cardNumber) return;
+
+  try {
+    // Query vault for all submissions of this card + variation
+    const { data, error } = await window._sb
+      .from('vault')
+      .select('price_paid, date_acquired, variation, acquisition_type')
+      .eq('card_number', card._cardNumber)
+      .eq('variation', variationLabel)
+      .not('price_paid', 'is', null)
+      .order('date_acquired', { ascending: false })
+      .limit(50);
+
+    if(error || !data || !data.length){
+      document.getElementById('cd-mkt-avg').textContent   = '—';
+      document.getElementById('cd-mkt-range').textContent = '—';
+      document.getElementById('cd-mkt-count').textContent = '0';
+      return;
+    }
+
+    // Calc stats — only from purchased submissions (not ripped packs for market price)
+    const purchased = data.filter(r => r.acquisition_type === 'purchased' && r.price_paid > 0);
+    const allPrices = data.filter(r => r.price_paid > 0);
+    const prices = (purchased.length ? purchased : allPrices).map(r => r.price_paid);
+
+    if(!prices.length){
+      document.getElementById('cd-mkt-avg').textContent   = '—';
+      document.getElementById('cd-mkt-range').textContent = '—';
+      document.getElementById('cd-mkt-count').textContent = data.length;
+      return;
+    }
+
+    const avg = prices.reduce((a,b)=>a+b,0) / prices.length;
+    const low = Math.min(...prices);
+    const high = Math.max(...prices);
+
+    document.getElementById('cd-mkt-avg').textContent   = '$' + avg.toFixed(2);
+    document.getElementById('cd-mkt-range').textContent = '$' + low.toFixed(2) + ' – $' + high.toFixed(2);
+    document.getElementById('cd-mkt-count').textContent = data.length;
+
+    // Show recent submissions (last 5)
+    const recent = data.slice(0,5);
+    if(recent.length){
+      const rows = recent.map(r=>{
+        const price = r.price_paid ? '$'+Number(r.price_paid).toFixed(2) : '—';
+        const date  = r.date_acquired ? new Date(r.date_acquired).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'}) : '—';
+        const acq   = r.acquisition_type === 'ripped' ? '📦 Ripped' : '💰 Purchased';
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(0,170,255,0.07);font-family:'Barlow Condensed',sans-serif;font-size:12px">'
+          + '<span style="color:rgba(122,149,174,0.7)">' + acq + '</span>'
+          + '<span style="color:var(--white);font-weight:700">' + price + '</span>'
+          + '<span style="color:rgba(122,149,174,0.5)">' + date + '</span>'
+          + '</div>';
+      }).join('');
+      document.getElementById('cd-mkt-sales-rows').innerHTML = rows;
+      document.getElementById('cd-mkt-sales-list').style.display = 'block';
+    }
+  } catch(e){
+    console.error('Market query error:', e);
+  }
+}
+
 // ── Back to Vault from Card Detail ────────────────────────────
 function backToVault(){
   if(_cdSpinner){ clearInterval(_cdSpinner); _cdSpinner=null; _cdSpinning=false; }
   // Always land on Overview — never leave the app
   N('overview', document.querySelector('[onclick*="overview"]'));
 }
+
+// ═══════════════════════════════════════════════════════════════
+// SIDEBAR NAV REORDER ENGINE
+// ═══════════════════════════════════════════════════════════════
+
+const NAV_ITEMS_DEFAULT = [
+  { id:'overview',    label:'Overview',      badge:null,  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>' },
+  { id:'myisos',     label:'My ISOs',        badge:'3',   icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>' },
+  { id:'notifs',     label:'Notifications',  badge:'2',   badgeClass:'red', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>' },
+  { id:'market',     label:'Market Data',    badge:null,  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>' },
+  { id:'leaderboard',label:'Leaderboard',    badge:null,  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="14" width="4" height="8" rx="1"/><rect x="9" y="9" width="4" height="13" rx="1"/><rect x="16" y="4" width="4" height="18" rx="1"/><line x1="2" y1="22" x2="22" y2="22"/></svg>' },
+  { id:'myvault',    label:'My Vault',       badge:null,  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>' },
+  { id:'isoticker',  label:'ISOTicker',      badge:null,  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>' },
+];
+
+let _navReorderMode = false;
+let _navDragSrc = null;
+
+function _navLoadOrder(){
+  try {
+    const saved = localStorage.getItem('grailiso_nav_order');
+    if(!saved) return NAV_ITEMS_DEFAULT;
+    const ids = JSON.parse(saved);
+    const ordered = ids.map(id => NAV_ITEMS_DEFAULT.find(x=>x.id===id)).filter(Boolean);
+    // Add any new items not yet in saved order
+    NAV_ITEMS_DEFAULT.forEach(x=>{ if(!ordered.find(o=>o.id===x.id)) ordered.push(x); });
+    return ordered;
+  } catch(e){ return NAV_ITEMS_DEFAULT; }
+}
+
+function _navSaveOrder(){
+  const items = document.querySelectorAll('#navReorderable .nav-item');
+  const ids = [...items].map(el=>el.dataset.navId).filter(Boolean);
+  localStorage.setItem('grailiso_nav_order', JSON.stringify(ids));
+}
+
+function navRender(){
+  const wrap = document.getElementById('navReorderable');
+  if(!wrap) return;
+  const items = _navLoadOrder();
+  const activeId = document.querySelector('#navReorderable .nav-item.active')?.dataset.navId || 'overview';
+
+  wrap.innerHTML = items.map(item=>{
+    const badgeHtml = item.badge
+      ? `<span class="nav-badge${item.badgeClass?' '+item.badgeClass:''}" id="navBadge-${item.id}">${item.badge}</span>`
+      : '';
+    const isActive = item.id === activeId;
+    return `<div class="nav-item reorderable${isActive?' active':''}" 
+      data-nav-id="${item.id}"
+      onclick="navItemClick(this,'${item.id}')"
+      draggable="false"
+      ondragstart="navDragStart(event,this)"
+      ondragover="navDragOver(event,this)"
+      ondrop="navDrop(event,this)"
+      ondragend="navDragEnd(event)">
+      <div class="nav-drag-handle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
+          <line x1="3" y1="8" x2="21" y2="8"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="16" x2="21" y2="16"/>
+        </svg>
+      </div>
+      <div class="nav-icon">${item.icon}</div>
+      <span class="nav-label">${item.label}</span>
+      ${badgeHtml}
+    </div>`;
+  }).join('');
+}
+
+function navItemClick(el, id){
+  if(_navReorderMode) return; // don't navigate while reordering
+  N(id, el);
+}
+
+function toggleNavReorder(){
+  _navReorderMode = !_navReorderMode;
+  const nav = document.getElementById('sidebarNav');
+  const btn = document.getElementById('navReorderBtn');
+  const items = document.querySelectorAll('#navReorderable .nav-item.reorderable');
+  
+  if(_navReorderMode){
+    nav.classList.add('reorder-mode');
+    btn.classList.add('active');
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polyline points="20 6 9 17 4 12"/></svg> Done`;
+    items.forEach(el=>{ el.setAttribute('draggable','true'); });
+  } else {
+    nav.classList.remove('reorder-mode');
+    btn.classList.remove('active');
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg> Reorder nav`;
+    items.forEach(el=>{ el.setAttribute('draggable','false'); });
+    _navSaveOrder();
+  }
+}
+
+function navDragStart(e, el){
+  if(!_navReorderMode) return;
+  _navDragSrc = el;
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(()=>el.style.opacity='0.4', 0);
+}
+
+function navDragOver(e, el){
+  if(!_navReorderMode || el === _navDragSrc) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  document.querySelectorAll('#navReorderable .nav-item').forEach(x=>x.classList.remove('drag-over'));
+  el.classList.add('drag-over');
+}
+
+function navDrop(e, el){
+  if(!_navReorderMode || el === _navDragSrc) return;
+  e.preventDefault();
+  const wrap = document.getElementById('navReorderable');
+  const items = [...wrap.querySelectorAll('.nav-item')];
+  const srcIdx = items.indexOf(_navDragSrc);
+  const tgtIdx = items.indexOf(el);
+  if(srcIdx < tgtIdx) wrap.insertBefore(_navDragSrc, el.nextSibling);
+  else wrap.insertBefore(_navDragSrc, el);
+  document.querySelectorAll('#navReorderable .nav-item').forEach(x=>x.classList.remove('drag-over'));
+}
+
+function navDragEnd(e){
+  if(_navDragSrc) _navDragSrc.style.opacity = '';
+  document.querySelectorAll('#navReorderable .nav-item').forEach(x=>x.classList.remove('drag-over'));
+  _navDragSrc = null;
+}
+
+// Override N() to also mark active state in reorderable items
+const _origN = window.N;
+window.N = function(id, el){
+  // Clear active on reorderable items
+  document.querySelectorAll('#navReorderable .nav-item').forEach(x=>x.classList.remove('active'));
+  // Mark active if this id is in reorderable
+  const reorderEl = document.querySelector('#navReorderable [data-nav-id="'+id+'"]');
+  if(reorderEl) reorderEl.classList.add('active');
+  // Call original N
+  if(_origN) _origN(id, el);
+};
 
 // ── Trap browser back button — never leave the app ────────────
 history.pushState(null, '', window.location.href);

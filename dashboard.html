@@ -3138,7 +3138,7 @@ function ivOpenCard(row){
     player:  row.player,
     year:    parseInt((row.year||'').toString().slice(0,4)) || 2026,
     brand:   (()=>{ const s=row.set_name||''; return s.includes('Bowman')?'Bowman':s.includes('Panini')?'Panini':'Topps'; })(),
-    set:     row.insert_name || row.set_name || '',
+    set:     row.insert_name || (_ivSet ? _ivSet.name : '') || row.set_name || '',
     parallel: row.category + (row.insert_name ? ' — '+row.insert_name : ''),
     cardNum: row.card_number ? '#'+row.card_number : '',
     run:     null, auto: (row.category||'').toLowerCase().includes('auto'),

@@ -2721,7 +2721,28 @@ async function _cdLoadCatalogImages(c){
     return;
   }
 
-  const cardNum = c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber || null);
+  const cardNum = window._cdOverrideCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber || null));
+  window._cdOverrideCardNum = null; // clear after use
+
+  // If we already have var_images from the ISOVault row, use them directly
+  if(window._cdOverrideVarImages && Object.keys(window._cdOverrideVarImages).length){
+    const preloaded = window._cdOverrideVarImages;
+    window._cdOverrideVarImages = null;
+    window._cdCard._varImages = preloaded;
+    const activeVar = (window._cdVars || [])[window._cdActiveVar || 0];
+    const varKey = activeVar ? activeVar.label : null;
+    console.log('[CD] preloaded var_images keys:', Object.keys(preloaded), '| varKey:', varKey);
+    const imgs = varKey ? preloaded[varKey] : null;
+    if(imgs && (imgs.front || imgs.back)){
+      _cdSetViewerImages(imgs.front || null, imgs.back || null);
+      if(statusEl){ statusEl.textContent='✓ Images loaded'; statusEl.style.color='var(--green)';
+        setTimeout(()=>{ statusEl.style.display='none'; },2000); }
+      if(uploadBtn) uploadBtn.textContent='Replace Image';
+    }
+    return;
+  }
+  window._cdOverrideVarImages = null;
+
   if(!cardNum){
     if(statusEl){ statusEl.style.display='block'; statusEl.textContent='No card number'; statusEl.style.color='rgba(122,149,174,0.5)'; }
     return;
@@ -3585,7 +3606,13 @@ function ivOpenCard(row){
     c && (c._cardNumber === row.card_number ||
     (c.player === row.player && String(c.year) === String((row.year||'').toString().slice(0,4))))
   );
-  if(known){ openCardDetail(known.id); return; }
+  if(known){
+    // Use the actual DB card_number (may differ from CARDS._cardNumber)
+    window._cdOverrideCardNum = row.card_number || null;
+    window._cdOverrideVarImages = row.var_images || null;
+    openCardDetail(known.id);
+    return;
+  }
 
   // Build ad-hoc card object
   const card = {

@@ -2653,10 +2653,7 @@ function cdToggleSpin(){
   }
 }
 function cdReset(){ _cdReset3D(); }
-function backToVault(){
-  if(_cdSpinner){ clearInterval(_cdSpinner); _cdSpinner=null; _cdSpinning=false; }
-  N('library', document.querySelector('[onclick*="library"]'));
-}
+// backToVault defined below in ISOVault engine
 
 // ── Catalog Image Upload ────────────────────────────────────
 function openCatalogUpload(){
@@ -3259,14 +3256,17 @@ function ivOpenGlobalResult(row){
 // ── Back to Vault from Card Detail ────────────────────────────
 function backToVault(){
   if(_cdSpinner){ clearInterval(_cdSpinner); _cdSpinner=null; _cdSpinning=false; }
-  N('library', document.querySelector('[onclick*="library"]'));
-  // Restore the state the user was in
-  if(_ivSet){ _ivShowState('cards'); _ivBreadcrumb(true,true); }
-  else if(_ivSport){ _ivShowState('sets'); _ivBreadcrumb(true,false); }
-  else { ivGoHome(); }
+  // Always land on Overview — never leave the app
+  N('overview', document.querySelector('[onclick*="overview"]'));
 }
 
-// ── Auto-render on panel open ─────────────────────────────────
+// ── Trap browser back button — never leave the app ────────────
+history.pushState(null, '', window.location.href);
+window.addEventListener('popstate', function(){
+  history.pushState(null, '', window.location.href);
+  N('overview', document.querySelector('[onclick*="overview"]'));
+});
+
 const _ivOrigRenderLib = window.renderLib;
 window.renderLib = function(){ /* replaced by ivInit */ };
 

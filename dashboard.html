@@ -603,53 +603,206 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 </style>
 </head>
 <body>
-<!-- PASSWORD GATE -->
+<!-- AUTH GATE -->
 <div id="gate" style="position:fixed;inset:0;background:#0D1F33;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;">
-  <div style="width:100%;max-width:380px;padding:0 24px;text-align:center">
+  <div style="width:100%;max-width:400px;padding:0 24px;text-align:center">
     <div style="font-family:Bebas Neue,sans-serif;font-size:38px;letter-spacing:4px;margin-bottom:4px"><span style="color:white">GRAIL</span><span style="color:#00AAFF">ISO</span></div>
-    <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#7A95AE;margin-bottom:36px">Preview Access</div>
-    <div style="background:#112840;border:1px solid rgba(0,170,255,0.15);border-radius:12px;padding:28px 24px;">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:white;margin-bottom:18px">ENTER ACCESS CODE</div>
-      <input id="gateInput" type="password" placeholder="Access code" autocomplete="off"
-        style="width:100%;background:#0D1F33;border:1px solid rgba(0,170,255,0.2);border-radius:8px;padding:13px 16px;font-family:Barlow Condensed,sans-serif;font-size:18px;letter-spacing:3px;color:white;outline:none;text-align:center;margin-bottom:12px;transition:border-color .2s"
-        onkeydown="if(event.key==='Enter')checkGate()"
-        onfocus="this.style.borderColor='#00AAFF'"
-        onblur="this.style.borderColor='rgba(0,170,255,0.2)'"/>
-      <div id="gateErr" style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:#FF3B5C;letter-spacing:1px;min-height:18px;margin-bottom:10px"></div>
-      <button onclick="checkGate()"
-        style="width:100%;background:#00AAFF;border:none;border-radius:8px;padding:13px;font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:2px;color:white;cursor:pointer;transition:all .2s"
-        onmouseover="this.style.background='#33CCFF';this.style.boxShadow='0 0 20px rgba(0,170,255,0.4)'"
-        onmouseout="this.style.background='#00AAFF';this.style.boxShadow='none'">
-        ENTER
+    <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#7A95AE;margin-bottom:28px">Private Alpha</div>
+    <!-- Tab switcher -->
+    <div style="display:flex;background:#112840;border:1px solid rgba(0,170,255,0.15);border-radius:10px;padding:4px;margin-bottom:20px;">
+      <button id="tabLogin" onclick="switchAuthTab('login')"
+        style="flex:1;background:#00AAFF;border:none;border-radius:7px;padding:9px;font-family:Bebas Neue,sans-serif;font-size:14px;letter-spacing:2px;color:white;cursor:pointer;transition:all .2s">
+        SIGN IN
+      </button>
+      <button id="tabSignup" onclick="switchAuthTab('signup')"
+        style="flex:1;background:transparent;border:none;border-radius:7px;padding:9px;font-family:Bebas Neue,sans-serif;font-size:14px;letter-spacing:2px;color:#7A95AE;cursor:pointer;transition:all .2s">
+        CREATE ACCOUNT
       </button>
     </div>
-    <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:rgba(122,149,174,0.4);margin-top:20px;letter-spacing:1px">PREVIEW BUILD · NOT FOR DISTRIBUTION</div>
+    <div style="background:#112840;border:1px solid rgba(0,170,255,0.15);border-radius:12px;padding:28px 24px;">
+      <!-- Login form -->
+      <div id="formLogin">
+        <input id="loginEmail" type="email" placeholder="Email address" autocomplete="email"
+          style="width:100%;background:#0D1F33;border:1px solid rgba(0,170,255,0.2);border-radius:8px;padding:12px 16px;font-family:Barlow Condensed,sans-serif;font-size:16px;color:white;outline:none;margin-bottom:10px;transition:border-color .2s;display:block"
+          onfocus="this.style.borderColor='#00AAFF'" onblur="this.style.borderColor='rgba(0,170,255,0.2)'"
+          onkeydown="if(event.key==='Enter')authLogin()"/>
+        <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password"
+          style="width:100%;background:#0D1F33;border:1px solid rgba(0,170,255,0.2);border-radius:8px;padding:12px 16px;font-family:Barlow Condensed,sans-serif;font-size:16px;color:white;outline:none;margin-bottom:12px;transition:border-color .2s;display:block"
+          onfocus="this.style.borderColor='#00AAFF'" onblur="this.style.borderColor='rgba(0,170,255,0.2)'"
+          onkeydown="if(event.key==='Enter')authLogin()"/>
+        <div id="loginErr" style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:#FF3B5C;letter-spacing:1px;min-height:18px;margin-bottom:10px;text-align:left"></div>
+        <button id="loginBtn" onclick="authLogin()"
+          style="width:100%;background:#00AAFF;border:none;border-radius:8px;padding:13px;font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:2px;color:white;cursor:pointer;transition:all .2s"
+          onmouseover="this.style.background='#33CCFF';this.style.boxShadow='0 0 20px rgba(0,170,255,0.4)'"
+          onmouseout="this.style.background='#00AAFF';this.style.boxShadow='none'">
+          SIGN IN
+        </button>
+      </div>
+      <!-- Signup form -->
+      <div id="formSignup" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <input id="signupFirstName" type="text" placeholder="First name" autocomplete="given-name"
+            style="width:100%;background:#0D1F33;border:1px solid rgba(0,170,255,0.2);border-radius:8px;padding:12px 16px;font-family:Barlow Condensed,sans-serif;font-size:16px;color:white;outline:none;transition:border-color .2s"
+            onfocus="this.style.borderColor='#00AAFF'" onblur="this.style.borderColor='rgba(0,170,255,0.2)'"
+            onkeydown="if(event.key==='Enter')authSignup()"/>
+          <input id="signupLastName" type="text" placeholder="Last name" autocomplete="family-name"
+            style="width:100%;background:#0D1F33;border:1px solid rgba(0,170,255,0.2);border-radius:8px;padding:12px 16px;font-family:Barlow Condensed,sans-serif;font-size:16px;color:white;outline:none;transition:border-color .2s"
+            onfocus="this.style.borderColor='#00AAFF'" onblur="this.style.borderColor='rgba(0,170,255,0.2)'"
+            onkeydown="if(event.key==='Enter')authSignup()"/>
+        </div>
+        <input id="signupEmail" type="email" placeholder="Email address" autocomplete="email"
+          style="width:100%;background:#0D1F33;border:1px solid rgba(0,170,255,0.2);border-radius:8px;padding:12px 16px;font-family:Barlow Condensed,sans-serif;font-size:16px;color:white;outline:none;margin-bottom:10px;transition:border-color .2s;display:block"
+          onfocus="this.style.borderColor='#00AAFF'" onblur="this.style.borderColor='rgba(0,170,255,0.2)'"
+          onkeydown="if(event.key==='Enter')authSignup()"/>
+        <input id="signupPassword" type="password" placeholder="Password (min 6 chars)" autocomplete="new-password"
+          style="width:100%;background:#0D1F33;border:1px solid rgba(0,170,255,0.2);border-radius:8px;padding:12px 16px;font-family:Barlow Condensed,sans-serif;font-size:16px;color:white;outline:none;margin-bottom:12px;transition:border-color .2s;display:block"
+          onfocus="this.style.borderColor='#00AAFF'" onblur="this.style.borderColor='rgba(0,170,255,0.2)'"
+          onkeydown="if(event.key==='Enter')authSignup()"/>
+        <div id="signupErr" style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:#FF3B5C;letter-spacing:1px;min-height:18px;margin-bottom:10px;text-align:left"></div>
+        <button id="signupBtn" onclick="authSignup()"
+          style="width:100%;background:#00AAFF;border:none;border-radius:8px;padding:13px;font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:2px;color:white;cursor:pointer;transition:all .2s"
+          onmouseover="this.style.background='#33CCFF';this.style.boxShadow='0 0 20px rgba(0,170,255,0.4)'"
+          onmouseout="this.style.background='#00AAFF';this.style.boxShadow='none'">
+          CREATE ACCOUNT
+        </button>
+      </div>
+    </div>
+    <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:rgba(122,149,174,0.4);margin-top:20px;letter-spacing:1px">PRIVATE ALPHA · INVITE ONLY</div>
   </div>
 </div>
 <script>
 (function(){
-  const PASS='grail2026';
-  const KEY='grailiso_preview';
-  function checkGate(){
-    const v=document.getElementById('gateInput').value.trim().toLowerCase();
-    if(v===PASS){
-      sessionStorage.setItem(KEY,'1');
-      document.getElementById('gate').style.display='none';
-    } else {
-      const err=document.getElementById('gateErr');
-      err.textContent='Incorrect access code.';
-      document.getElementById('gateInput').value='';
-      document.getElementById('gateInput').style.borderColor='#FF3B5C';
-      setTimeout(()=>{err.textContent='';document.getElementById('gateInput').style.borderColor='rgba(0,170,255,0.2)';},2500);
+  // ── Tab switcher ──────────────────────────────────────────────
+  window.switchAuthTab = function(tab){
+    const isLogin = tab === 'login';
+    document.getElementById('formLogin').style.display  = isLogin ? 'block' : 'none';
+    document.getElementById('formSignup').style.display = isLogin ? 'none'  : 'block';
+    document.getElementById('tabLogin').style.background  = isLogin ? '#00AAFF' : 'transparent';
+    document.getElementById('tabLogin').style.color       = isLogin ? 'white'   : '#7A95AE';
+    document.getElementById('tabSignup').style.background = isLogin ? 'transparent' : '#00AAFF';
+    document.getElementById('tabSignup').style.color      = isLogin ? '#7A95AE' : 'white';
+  };
+
+  // ── Show auth error ────────────────────────────────────────────
+  function authErr(elId, msg){
+    const el = document.getElementById(elId);
+    if(!el) return;
+    el.textContent = msg;
+    setTimeout(()=>{ el.textContent=''; }, 4000);
+  }
+
+  // ── Set button loading state ──────────────────────────────────
+  function setBtnLoading(btnId, loading, label){
+    const btn = document.getElementById(btnId);
+    if(!btn) return;
+    btn.disabled = loading;
+    btn.textContent = loading ? '...' : label;
+    btn.style.opacity = loading ? '.6' : '1';
+  }
+
+  // ── Login ──────────────────────────────────────────────────────
+  window.authLogin = async function(){
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass  = document.getElementById('loginPassword').value;
+    if(!email || !pass){ authErr('loginErr','Enter your email and password.'); return; }
+    setBtnLoading('loginBtn', true, 'SIGN IN');
+    const { error } = await window._sb.auth.signInWithPassword({ email, password: pass });
+    setBtnLoading('loginBtn', false, 'SIGN IN');
+    if(error){ authErr('loginErr', error.message); return; }
+    // onAuthStateChange handles the rest
+  };
+
+  // ── Signup ─────────────────────────────────────────────────────
+  window.authSignup = async function(){
+    const firstName = document.getElementById('signupFirstName').value.trim();
+    const lastName  = document.getElementById('signupLastName').value.trim();
+    const email     = document.getElementById('signupEmail').value.trim();
+    const pass      = document.getElementById('signupPassword').value;
+    if(!firstName)          { authErr('signupErr','Enter your first name.'); return; }
+    if(!lastName)           { authErr('signupErr','Enter your last name.'); return; }
+    if(!email)              { authErr('signupErr','Enter your email address.'); return; }
+    if(pass.length < 6)     { authErr('signupErr','Password must be at least 6 characters.'); return; }
+    const name     = `${firstName} ${lastName}`;
+    const initials = (firstName[0] + lastName[0]).toUpperCase();
+    setBtnLoading('signupBtn', true, 'CREATE ACCOUNT');
+    const { data, error } = await window._sb.auth.signUp({ email, password: pass });
+    if(error){ setBtnLoading('signupBtn', false, 'CREATE ACCOUNT'); authErr('signupErr', error.message); return; }
+    if(data && data.user){
+      await window._sb.from('profiles').upsert({
+        id:         data.user.id,
+        full_name:  name,
+        first_name: firstName,
+        last_name:  lastName,
+        initials:   initials,
+        email:      email,
+        credits:    5,
+        tier:       'Alpha Member',
+        role:       'user',
+        created_at: new Date().toISOString()
+      }, { onConflict: 'id' });
     }
-  }
-  window.checkGate=checkGate;
-  if(sessionStorage.getItem(KEY)==='1'){
-    document.addEventListener('DOMContentLoaded',()=>{
-      const g=document.getElementById('gate');if(g)g.style.display='none';
-    });
-  }
+    setBtnLoading('signupBtn', false, 'CREATE ACCOUNT');
+    // onAuthStateChange handles the rest
+  };
+
+  // ── Auth state listener — runs on load + every auth change ────
+  window._sb.auth.onAuthStateChange(async (event, session) => {
+    if(session && session.user){
+      await initUserProfile(session.user);
+      const gate = document.getElementById('gate');
+      if(gate) gate.style.display = 'none';
+    } else {
+      const gate = document.getElementById('gate');
+      if(gate) gate.style.display = 'flex';
+      window._ownerMode = false;
+    }
+  });
 })();
+
+// ── Load + render user profile ─────────────────────────────────
+async function initUserProfile(user){
+  window._authUser = user;
+  let profile = null;
+  try {
+    const { data } = await window._sb.from('profiles').select('*').eq('id', user.id).single();
+    profile = data;
+  } catch(e){ /* profiles table may not exist yet — handled below */ }
+
+  const name     = profile?.full_name || profile?.name || user.email.split('@')[0];
+  const initials = profile?.initials  || name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const credits  = (profile?.credits !== undefined && profile?.credits !== null) ? profile.credits : 0;
+  const tier     = profile?.tier || 'Alpha Member';
+  const role     = profile?.role || 'user';
+
+  // Owner mode — role flag in profiles table
+  window._ownerMode = (role === 'owner');
+
+  // Populate sidebar
+  const avatarEl  = document.getElementById('user-avatar');
+  const nameEl    = document.getElementById('user-name');
+  const tierEl    = document.getElementById('user-tier');
+  const credEl    = document.getElementById('credits-value');
+  const credSub   = document.getElementById('credits-sub');
+  if(avatarEl) avatarEl.textContent = initials;
+  if(nameEl)   nameEl.textContent   = name;
+  if(tierEl)   tierEl.textContent   = tier;
+  if(credEl)   credEl.textContent   = credits;
+  if(credSub)  credSub.textContent  = `$5 per post · ${credits} left`;
+
+  // Owner badge on avatar
+  if(window._ownerMode && avatarEl){
+    avatarEl.style.background = 'linear-gradient(135deg, #00AAFF, #0055AA)';
+    avatarEl.title = 'Owner';
+  }
+}
+
+// ── Log out ────────────────────────────────────────────────────
+async function logOut(){
+  await window._sb.auth.signOut();
+  window._ownerMode = false;
+  window._authUser  = null;
+  // Gate will reappear via onAuthStateChange
+}
 </script>
 
 <div class="toast" id="toast"><span style="font-size:15px">✓</span><span class="toast-text" id="toastText"></span></div>
@@ -1323,7 +1476,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
         <div class="acct-grid">
           <div class="af"><div class="af-label">First Name</div><div class="af-val" id="acct-first">Jason</div></div>
           <div class="af"><div class="af-label">Last Name</div><div class="af-val" id="acct-last">McDonald</div></div>
-          <div class="af" style="grid-column:1/-1"><div class="af-label">Email</div><div class="af-val">support@grailiso.com</div></div>
+          <div class="af" style="grid-column:1/-1"><div class="af-label">Email</div><div class="af-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="05767075756a7771456277646c696c766a2b666a68">[email&#160;protected]</a></div></div>
           <div class="af" style="grid-column:1/-1"><div class="af-label">Role</div><div class="af-val" id="acct-role">Collector / Buyer</div></div>
         </div>
         <div style="margin-top:14px"><button class="btn btn-ghost" onclick="T('Edit profile — coming soon')">Edit Profile</button></div>
@@ -1543,7 +1696,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ═══════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════
@@ -4318,15 +4471,4 @@ async function flagAction(flagId, action){
       .update({ status: action, resolved_at: new Date().toISOString() })
       .eq('id', flagId);
     const f = _flagData.find(f=>f.id===flagId);
-    if(f) f.status = action;
-    _renderFlagStats();
-    _renderFlagList();
-  } catch(e){
-    if(card){ card.style.opacity='1'; card.style.pointerEvents=''; }
-    T('Action failed — ' + (e.message||'try again'));
-  }
-}
-
-</script>
-</body>
-</html>
+    if(f) f.statu

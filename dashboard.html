@@ -3309,22 +3309,26 @@ function _ivBreadcrumb(showSport, showSet){
 function ivRenderSports(){
   const g = document.getElementById('ivSportGrid');
   if(!g) return;
-  g.innerHTML = IV_SPORTS.map(s=>{
-    const sets = IV_SETS.filter(x=>x.sport===s.id);
-    const totalCards = sets.reduce((sum,x)=>sum+(_ivCounts[x.table]||0),0);
+  g.innerHTML = '';
+  IV_SPORTS.forEach(function(s){
+    const sets = IV_SETS.filter(function(x){ return x.sport===s.id; });
+    const totalCards = sets.reduce(function(sum,x){ return sum+(_ivCounts[x.table]||0); },0);
     const countStr = s.active
       ? (totalCards ? totalCards.toLocaleString()+' cards' : sets.length+' sets')
       : 'Coming soon';
-    const clickAttr = s.active ? 'onclick="ivSelectSport(\'' + s.id + '\')"' : '';
-    const badge = s.active ? '<div class="iv-sport-badge">LIVE</div>' : '';
-    const cls = s.active ? 'iv-sport-tile active' : 'iv-sport-tile inactive';
-    return '<div class="' + cls + '" ' + clickAttr + ' id="ivSportTile-' + s.id + '">'
-      + badge
-      + '<div class="iv-sport-emoji">' + s.emoji + '</div>'
-      + '<div class="iv-sport-name">' + s.label + '</div>'
-      + '<div class="iv-sport-count" id="ivSportCount-' + s.id + '">' + countStr + '</div>'
-      + '</div>';
-  }).join('');
+    const tile = document.createElement('div');
+    tile.className = s.active ? 'iv-sport-tile active' : 'iv-sport-tile inactive';
+    tile.id = 'ivSportTile-'+s.id;
+    if(s.active){
+      tile.style.cursor = 'pointer';
+      tile.addEventListener('click', (function(sid){ return function(){ ivSelectSport(sid); }; })(s.id));
+    }
+    tile.innerHTML = (s.active ? '<div class="iv-sport-badge">LIVE</div>' : '')
+      + '<div class="iv-sport-emoji">'+s.emoji+'</div>'
+      + '<div class="iv-sport-name">'+s.label+'</div>'
+      + '<div class="iv-sport-count" id="ivSportCount-'+s.id+'">'+countStr+'</div>';
+    g.appendChild(tile);
+  });
 }
 
 function ivSelectSport(sportId){
@@ -3381,19 +3385,24 @@ function _ivApplySetFilters(){
 function _ivRenderSetTiles(sets){
   const g = document.getElementById('ivSetGrid');
   if(!g) return;
+  g.innerHTML = '';
   if(!sets.length){
     g.innerHTML = '<div class="iv-empty">No sets match this filter</div>'; return;
   }
-  g.innerHTML = sets.map(s=>{
+  sets.forEach(function(s){
     const count = _ivCounts[s.table];
     const countStr = count != null ? count.toLocaleString()+' cards' : 'Loading...';
-    return `<div class="iv-set-tile" onclick="ivSelectSet('${s.table}')" id="ivSetTile-${s.table}">
-      <div class="iv-set-year">${s.year}</div>
-      <div class="iv-set-name">${s.name}</div>
-      <div class="iv-set-brand">${s.brand}</div>
-      <div class="iv-set-count" id="ivCount-${s.table}">${countStr}</div>
-    </div>`;
-  }).join('');
+    const tile = document.createElement('div');
+    tile.className = 'iv-set-tile';
+    tile.id = 'ivSetTile-'+s.table;
+    tile.style.cursor = 'pointer';
+    tile.innerHTML = '<div class="iv-set-year">'+s.year+'</div>'
+      + '<div class="iv-set-name">'+s.name+'</div>'
+      + '<div class="iv-set-brand">'+s.brand+'</div>'
+      + '<div class="iv-set-count" id="ivCount-'+s.table+'">'+countStr+'</div>';
+    tile.addEventListener('click', (function(tbl){ return function(){ ivSelectSet(tbl); }; })(s.table));
+    g.appendChild(tile);
+  });
 }
 
 // ── Card List ─────────────────────────────────────────────────
@@ -3497,7 +3506,7 @@ function _ivRenderChecklist(){
     const priceHtml = mktPrice
       ? `<div class="iv-row-price">$${Number(mktPrice).toFixed(2)}</div>`
       : `<div class="iv-row-price no-data">—</div>`;
-    return `<div class="iv-row" style="grid-template-columns:60px 1fr 120px 80px 80px 60px;cursor:pointer" onclick="ivOpenCard(window._ivRowCache[${idx}])">
+    return `<div class="iv-row" style="grid-template-columns:60px 1fr 120px 80px 80px 60px;cursor:pointer" data-rowidx="${idx}">
       <div class="iv-row-num">${r.card_number||'—'}</div>
       <div><div class="iv-row-player">${r.player||'—'}</div>${sub}</div>
       <div class="iv-row-team">${r.team||'—'}</div>
@@ -3509,6 +3518,9 @@ function _ivRenderChecklist(){
 
   el.innerHTML = `<div class="iv-checklist">${header}${rows}</div>`
     + (_ivFiltered.length > 500 ? `<div class="iv-meta" style="text-align:center;margin-top:10px">Showing 500 of ${_ivFiltered.length.toLocaleString()} — refine your search</div>` : '');
+  el.querySelectorAll('[data-rowidx]').forEach(function(el){
+    el.addEventListener('click', function(){ ivOpenCard(window._ivRowCache[this.dataset.rowidx]); });
+  });
 }
 
 function _ivRenderGrid(){
@@ -3522,7 +3534,7 @@ function _ivRenderGrid(){
     const imgHtml = firstImg && firstImg.front
       ? `<img src="${firstImg.front}" style="width:100%;height:120px;object-fit:cover;display:block">`
       : `<div class="iv-grid-img">⚾</div>`;
-    return `<div class="iv-grid-card" onclick="ivOpenCard(window._ivRowCache[${idx}])">
+    return `<div class="iv-grid-card" style="cursor:pointer" data-rowidx="${idx}">
       ${imgHtml}
       <div class="iv-grid-info">
         <div class="iv-grid-player">${r.player||'—'}</div>
@@ -3534,6 +3546,9 @@ function _ivRenderGrid(){
 
   el.innerHTML = `<div class="iv-grid">${cards}</div>`
     + (_ivFiltered.length > 200 ? `<div class="iv-meta" style="text-align:center;margin-top:12px">Showing 200 of ${_ivFiltered.length.toLocaleString()} — refine your search</div>` : '');
+  el.querySelectorAll('[data-rowidx]').forEach(function(el){
+    el.addEventListener('click', function(){ ivOpenCard(window._ivRowCache[this.dataset.rowidx]); });
+  });
 }
 
 // ── Card click → Detail panel ─────────────────────────────────

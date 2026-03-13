@@ -3449,7 +3449,8 @@ async function ivSelectSet(table){
   _ivData = all;
   _ivCounts[table] = all.length;
   // Load market prices for this set in background — populates price column
-  _ivLoadMarketPrices(table).then(()=>_ivApplyCardFilters());
+  _ivApplyCardFilters();
+  _ivLoadMarketPrices(table).then(()=>_ivRenderCards());
 }
 
 function _ivApplyCardFilters(){
@@ -3518,9 +3519,10 @@ function _ivRenderChecklist(){
 
   el.innerHTML = `<div class="iv-checklist">${header}${rows}</div>`
     + (_ivFiltered.length > 500 ? `<div class="iv-meta" style="text-align:center;margin-top:10px">Showing 500 of ${_ivFiltered.length.toLocaleString()} — refine your search</div>` : '');
-  el.querySelectorAll('[data-rowidx]').forEach(function(el){
-    el.addEventListener('click', function(){ ivOpenCard(window._ivRowCache[this.dataset.rowidx]); });
-  });
+  el.onclick = function(e){
+    var row = e.target.closest('[data-rowidx]');
+    if(row) ivOpenCard(window._ivRowCache[row.getAttribute('data-rowidx')]);
+  };
 }
 
 function _ivRenderGrid(){
@@ -3546,9 +3548,10 @@ function _ivRenderGrid(){
 
   el.innerHTML = `<div class="iv-grid">${cards}</div>`
     + (_ivFiltered.length > 200 ? `<div class="iv-meta" style="text-align:center;margin-top:12px">Showing 200 of ${_ivFiltered.length.toLocaleString()} — refine your search</div>` : '');
-  el.querySelectorAll('[data-rowidx]').forEach(function(el){
-    el.addEventListener('click', function(){ ivOpenCard(window._ivRowCache[this.dataset.rowidx]); });
-  });
+  el.onclick = function(e){
+    var row = e.target.closest('[data-rowidx]');
+    if(row) ivOpenCard(window._ivRowCache[row.getAttribute('data-rowidx')]);
+  };
 }
 
 // ── Card click → Detail panel ─────────────────────────────────

@@ -2669,6 +2669,9 @@ let _cdCatalogFrontBlob=null, _cdCatalogBackBlob=null;
 async function openCardDetail(cardId){
   const c = CARDS.find(x=>x && x.id===cardId);
   if(!c) return;
+  // _cdDbCardNum may have been set by ivOpenCard (ISOVault path) — preserve it.
+  // If opening directly (not from ISOVault), clear so fallback uses card's own number.
+  if(!window._cdDbCardNum) window._cdDbCardNum = null;
   window._cdCard = c;
 
   // Breadcrumb
@@ -2712,7 +2715,7 @@ async function openCardDetail(cardId){
 }
 
 async function _cdLoadCatalogImages(c){
-  const statusEl = document.getElementById('cd-img-status');
+  const statusEl  = document.getElementById('cd-img-status');
   const uploadBtn = document.getElementById('cd-upload-btn');
 
   const table = c._setTable || _cdGuessTable(c);
@@ -2721,33 +2724,36 @@ async function _cdLoadCatalogImages(c){
     return;
   }
 
-  const cardNum = window._cdOverrideCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber || null));
-  window._cdOverrideCardNum = null; // clear after use
-
-  // If we already have var_images from the ISOVault row, use them directly
-  if(window._cdOverrideVarImages && Object.keys(window._cdOverrideVarImages).length){
-    const preloaded = window._cdOverrideVarImages;
-    window._cdOverrideVarImages = null;
-    window._cdCard._varImages = preloaded;
-    const activeVar = (window._cdVars || [])[window._cdActiveVar || 0];
-    const varKey = activeVar ? activeVar.label : null;
-    console.log('[CD] preloaded var_images keys:', Object.keys(preloaded), '| varKey:', varKey);
-    const imgs = varKey ? preloaded[varKey] : null;
-    if(imgs && (imgs.front || imgs.back)){
-      _cdSetViewerImages(imgs.front || null, imgs.back || null);
-      if(statusEl){ statusEl.textContent='✓ Images loaded'; statusEl.style.color='var(--green)';
-        setTimeout(()=>{ statusEl.style.display='none'; },2000); }
-      if(uploadBtn) uploadBtn.textContent='Replace Image';
-    }
-    return;
-  }
-  window._cdOverrideVarImages = null;
-
+  // _cdDbCardNum = actual DB card_number from ISOVault row (may differ from card's _cardNumber)
+  const cardNum = window._cdDbCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber || null));
   if(!cardNum){
     if(statusEl){ statusEl.style.display='block'; statusEl.textContent='No card number'; statusEl.style.color='rgba(122,149,174,0.5)'; }
     return;
   }
 
+  // Fast path — var_images already loaded from ISOVault row, no Supabase query needed
+  const preloaded = window._cdPreloadVarImages;
+  window._cdPreloadVarImages = null;
+  if(preloaded && Object.keys(preloaded).length){
+    window._cdCard._varImages = preloaded;
+    const activeVar = (window._cdVars || [])[window._cdActiveVar || 0];
+    const varKey = activeVar ? activeVar.label : null;
+    const imgs = varKey ? preloaded[varKey] : null;
+    if(imgs && (imgs.front || imgs.back)){
+      _cdSetViewerImages(imgs.front || null, imgs.back || null);
+      if(statusEl){ statusEl.textContent='✓ Images loaded'; statusEl.style.color='var(--green)';
+        setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
+      if(uploadBtn) uploadBtn.textContent='Replace Image';
+    } else {
+      const hasAny = Object.keys(preloaded).length > 0;
+      if(statusEl){ statusEl.textContent = hasAny ? 'No image for this variation' : 'No catalog images yet';
+        statusEl.style.color='rgba(122,149,174,0.5)';
+        setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
+    }
+    return;
+  }
+
+  // Slow path — fetch from Supabase
   if(statusEl){ statusEl.style.display='block'; statusEl.textContent='Loading images...'; statusEl.style.color='var(--muted-text)'; }
 
   try {
@@ -2757,30 +2763,24 @@ async function _cdLoadCatalogImages(c){
       .eq('card_number', cardNum)
       .maybeSingle();
 
-    console.log('[CD] query table:', table, '| cardNum:', cardNum, '| error:', error, '| data:', data);
-
     if(error || !data || !data.var_images || !Object.keys(data.var_images).length){
       if(statusEl){ statusEl.textContent='No catalog images yet'; statusEl.style.color='rgba(122,149,174,0.5)';
         setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
       return;
     }
 
-    // Cache on card so cdSelectVar can use without re-fetching
     window._cdCard._varImages = data.var_images;
 
-    // Load active variation's images
     const activeVar = (window._cdVars || [])[window._cdActiveVar || 0];
     const varKey = activeVar ? activeVar.label : null;
-    console.log('[CD] var_images keys:', Object.keys(data.var_images), '| looking for varKey:', varKey);
     const imgs = varKey ? data.var_images[varKey] : null;
 
     if(imgs && (imgs.front || imgs.back)){
       _cdSetViewerImages(imgs.front || null, imgs.back || null);
       if(statusEl){ statusEl.textContent='✓ Images loaded'; statusEl.style.color='var(--green)';
         setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
-      if(uploadBtn){ uploadBtn.textContent='Replace Image'; }
+      if(uploadBtn) uploadBtn.textContent='Replace Image';
     } else {
-      // Other variations have images but not this one yet
       const hasAny = Object.keys(data.var_images).length > 0;
       if(statusEl){ statusEl.textContent = hasAny ? 'No image for this variation' : 'No catalog images yet';
         statusEl.style.color='rgba(122,149,174,0.5)';
@@ -3141,7 +3141,8 @@ async function submitCatalogUpload(){
   }
   const c=window._cdCard; if(!c) return;
   const table=c._setTable||_cdGuessTable(c);
-  const cardNum=c.cardNum?c.cardNum.replace('#',''):(c._cardNumber||null);
+  // Use actual DB card_number — _cdDbCardNum set by ISOVault row click, falls back to card's own number
+  const cardNum = window._cdDbCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber||null));
   if(!table||!cardNum){ T('Cannot identify set table for this card.'); return; }
 
   // Which variation are we uploading?
@@ -3156,23 +3157,23 @@ async function submitCatalogUpload(){
   bar.style.width='15%';
 
   try {
-    const ts=Date.now();
+    // Deterministic path — no timestamp — so upsert:true actually replaces on re-upload
     const slug=`catalog/${table}/${cardNum.replace(/[^a-zA-Z0-9-]/g,'_')}/${varSlug}`;
 
     // Upload front
     bar.style.width='30%';
     const { error:fe } = await window._sb.storage.from('card-images')
-      .upload(`${slug}_front_${ts}.jpg`, _cdCatalogFrontBlob, {contentType:'image/jpeg',upsert:true});
+      .upload(`${slug}_front.jpg`, _cdCatalogFrontBlob, {contentType:'image/jpeg',upsert:true});
     if(fe) throw fe;
 
     // Upload back
     bar.style.width='60%';
     const { error:be } = await window._sb.storage.from('card-images')
-      .upload(`${slug}_back_${ts}.jpg`, _cdCatalogBackBlob, {contentType:'image/jpeg',upsert:true});
+      .upload(`${slug}_back.jpg`, _cdCatalogBackBlob, {contentType:'image/jpeg',upsert:true});
     if(be) throw be;
 
-    const frontURL = window._sb.storage.from('card-images').getPublicUrl(`${slug}_front_${ts}.jpg`).data.publicUrl;
-    const backURL  = window._sb.storage.from('card-images').getPublicUrl(`${slug}_back_${ts}.jpg`).data.publicUrl;
+    const frontURL = window._sb.storage.from('card-images').getPublicUrl(`${slug}_front.jpg`).data.publicUrl;
+    const backURL  = window._sb.storage.from('card-images').getPublicUrl(`${slug}_back.jpg`).data.publicUrl;
 
     bar.style.width='75%';
 
@@ -3545,15 +3546,11 @@ function _ivRenderChecklist(){
   el.onclick = function(e){
     try {
       var row = e.target.closest('[data-rowidx]');
-      console.log('[IV] click fired. target:', e.target, 'row found:', row);
-      if(!row){ console.log('[IV] click did not hit a data-rowidx element'); return; }
-      var idx = row.getAttribute('data-rowidx');
-      var data = window._ivRowCache[idx];
-      console.log('[IV] rowidx:', idx, 'data:', data);
-      if(!data){ console.log('[IV] no data in _ivRowCache for idx', idx); return; }
+      if(!row) return;
+      var data = window._ivRowCache[row.getAttribute('data-rowidx')];
+      if(!data) return;
       ivOpenCard(data);
     } catch(err) {
-      console.error('[IV] click handler error:', err);
       T('❌ ' + err.message);
     }
   };
@@ -3585,13 +3582,11 @@ function _ivRenderGrid(){
   el.onclick = function(e){
     try {
       var row = e.target.closest('[data-rowidx]');
-      console.log('[IV] grid click. target:', e.target, 'row:', row);
       if(!row) return;
       var data = window._ivRowCache[row.getAttribute('data-rowidx')];
       if(!data) return;
       ivOpenCard(data);
     } catch(err) {
-      console.error('[IV] grid click error:', err);
       T('❌ ' + err.message);
     }
   };
@@ -3599,7 +3594,6 @@ function _ivRenderGrid(){
 
 // ── Card click → Detail panel ─────────────────────────────────
 function ivOpenCard(row){
-  console.log('[IV] ivOpenCard called with:', row);
   try {
   // Check if there's a known CARDS entry
   const known = CARDS.find(c=>
@@ -3607,9 +3601,9 @@ function ivOpenCard(row){
     (c.player === row.player && String(c.year) === String((row.year||'').toString().slice(0,4))))
   );
   if(known){
-    // Use the actual DB card_number (may differ from CARDS._cardNumber)
-    window._cdOverrideCardNum = row.card_number || null;
-    window._cdOverrideVarImages = row.var_images || null;
+    // Store actual DB card_number for the whole card detail session
+    window._cdDbCardNum = row.card_number || null;
+    window._cdPreloadVarImages = row.var_images || null;
     openCardDetail(known.id);
     return;
   }
@@ -3639,6 +3633,8 @@ function ivOpenCard(row){
     }]
   };
 
+  window._cdDbCardNum = row.card_number || null;
+  window._cdPreloadVarImages = row.var_images || null;
   window._cdCard = card;
   document.getElementById('cd-bc-sport').textContent = 'Baseball';
   document.getElementById('cd-bc-brand').textContent = card.brand;
@@ -3665,7 +3661,6 @@ function ivOpenCard(row){
   N('carddetail', null);
   _cdInitRotation();
   } catch(err) {
-    console.error('[IV] ivOpenCard error:', err);
     T('❌ ' + err.message);
   }
 }

@@ -2748,6 +2748,7 @@ async function _cdLoadCatalogImages(c){
     // Load active variation's images
     const activeVar = (window._cdVars || [])[window._cdActiveVar || 0];
     const varKey = activeVar ? activeVar.label : null;
+    console.log('[CD] var_images keys:', Object.keys(data.var_images), '| looking for varKey:', varKey);
     const imgs = varKey ? data.var_images[varKey] : null;
 
     if(imgs && (imgs.front || imgs.back)){

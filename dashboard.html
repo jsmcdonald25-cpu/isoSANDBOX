@@ -89,7 +89,21 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .topbar-sub{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted-text);margin-top:1px}
 .topbar-actions{display:flex;align-items:center;gap:10px}
 /* CARD TICKER IN TOPBAR */
+.card-ticker-wrap{overflow:hidden;width:100%;background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:6px;padding:5px 10px;margin-top:4px}
+.card-ticker-inner{display:flex;gap:32px;white-space:nowrap;animation:cardTick 32s linear infinite}
 .card-ticker-inner:hover{animation-play-state:paused}
+.ct-item{display:inline-flex;align-items:center;gap:6px;font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted-text);flex-shrink:0}
+.ct-name{color:var(--white);font-weight:600}.ct-price{color:var(--blue)}.ct-chg{font-weight:700}.ct-chg.up{color:var(--green)}.ct-chg.dn{color:#FF3B5C}.ct-sep{opacity:0.3}
+.ct-grail{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:6px;color:rgba(0,170,255,0.3);display:block}
+@keyframes cardTick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes scoreTick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.score-chip{display:inline-flex;align-items:center;gap:10px;font-family:'Barlow Condensed',sans-serif;font-size:12px;flex-shrink:0;padding:3px 12px;border-left:1px solid rgba(0,170,255,0.12)}
+.score-chip .sc-teams{color:var(--white);font-weight:600;font-size:13px}
+.score-chip .sc-score{color:var(--blue);font-weight:700;font-size:14px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px}
+.score-chip .sc-status{font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:1px 5px;border-radius:3px}
+.score-chip .sc-status.live{color:var(--green);background:rgba(0,232,135,0.1)}
+.score-chip .sc-status.final{color:var(--muted-text)}
+.score-chip .sc-sport{font-size:10px;color:rgba(0,170,255,0.5);letter-spacing:1px;text-transform:uppercase}
 .ct-item{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--chrome);display:inline-flex;align-items:center;gap:8px;flex-shrink:0}
 .ct-item .ct-name{color:var(--white);font-weight:600}
 .ct-item .ct-price{color:var(--blue);font-weight:700}
@@ -750,6 +764,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
         <div class="topbar-title" id="pgTitle">OVERVIEW</div>
         <div class="topbar-sub" id="pgSub">Welcome back, Jason</div>
       </div>
+      <div class="card-ticker-wrap"><div class="card-ticker-inner" id="cardTickerInner"></div></div>
     </div>
     <div class="topbar-actions" style="flex-shrink:0;margin-left:18px">
       <button class="btn btn-ghost" onclick="N('library',document.querySelector('[onclick*=library]'))">Search Cards</button>
@@ -1486,6 +1501,26 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 </div>
 
 <!-- SCORES BAR -->
+
+<div id="scoresBar" style="position:fixed;bottom:0;left:var(--sidebar-w);right:0;height:44px;background:#0a1929;border-top:1px solid rgba(0,170,255,0.18);display:flex;align-items:center;z-index:900;overflow:hidden;">
+  <div style="display:flex;align-items:center;gap:0;flex:1;min-width:0;">
+    <div style="display:flex;align-items:center;gap:8px;padding:0 14px;border-right:1px solid rgba(0,170,255,0.15);flex-shrink:0;height:44px;">
+      <span id="scoresToggleLabel" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#00AAFF;font-weight:600;">SCORES</span>
+      <div id="scoresToggle" onclick="toggleScoresMode()" style="width:36px;height:18px;background:rgba(0,170,255,0.2);border:1px solid rgba(0,170,255,0.35);border-radius:9px;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;">
+        <div id="scoresToggleThumb" style="position:absolute;top:2px;left:2px;width:12px;height:12px;background:#00AAFF;border-radius:50%;transition:transform .2s;"></div>
+      </div>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#7A95AE;">SCHEDULE</span>
+    </div>
+    <div style="overflow:hidden;flex:1;height:44px;display:flex;align-items:center;padding:0 10px;">
+      <div id="scoresTicker" style="display:flex;gap:24px;white-space:nowrap;animation:scoreTick 60s linear infinite;align-items:center;">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:#7A95AE;letter-spacing:1px;">LOADING SCORES...</span>
+      </div>
+    </div>
+  </div>
+  <div style="padding:0 12px;flex-shrink:0;border-left:1px solid rgba(0,170,255,0.15);height:44px;display:flex;align-items:center;">
+    <span id="scoresDate" style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1px;color:rgba(0,170,255,0.4);text-transform:uppercase;"></span>
+  </div>
+</div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ═══════════════════════════════════════
@@ -2511,6 +2546,95 @@ function renderMyVault(){
   el.textContent = `[SYS] GrailISO_v1.1.7 :: BUILD ${dateStr} ${timeStr} :: STABLE`;
   el.title = `Session started: ${now.toLocaleString()}`;
 })();
+
+// ── CARD TICKER ──────────────────────────────────────────────
+function initCardTicker(){
+  const demoCards = [
+    {name:'Juan Soto RC Auto Gold /50', grade:'PSA 10', price:'$1,200', chg:'+12.4%', dir:'up'},
+    {name:'Shohei Ohtani Chrome Auto /499', grade:'PSA 9', price:'$650', chg:'-3.1%', dir:'dn'},
+    {name:'Mike Trout 2011 Topps RC', grade:'PSA 10', price:'$890', chg:'+5.7%', dir:'up'},
+    {name:'Julio Rodriguez Gold /50', grade:'Raw', price:'$420', chg:'+8.2%', dir:'up'},
+    {name:'Ronald Acuña Jr Auto /25', grade:'BGS 9.5', price:'$1,850', chg:'+21.0%', dir:'up'},
+    {name:'Gunnar Henderson RC Prizm', grade:'PSA 10', price:'$310', chg:'+77.8%', dir:'up'},
+  ];
+  const inner = document.getElementById('cardTickerInner');
+  if(!inner) return;
+  let items = '';
+  [...demoCards, ...demoCards].forEach(c => {
+    items += `<span class="ct-item"><span class="ct-name">${c.name}</span><span class="ct-sep">·</span><span>${c.grade}</span><span class="ct-sep">·</span><span class="ct-price">${c.price}</span><span class="ct-chg ${c.dir}">${c.chg}</span><span class="ct-sep" style="margin-left:8px">⬥</span></span>`;
+  });
+  inner.innerHTML = items;
+  inner.style.animation = 'cardTick 32s linear infinite';
+}
+
+// ── SCORES BAR ────────────────────────────────────────────────
+function initScoresBar(){
+  const ticker = document.getElementById('scoresTicker');
+  const dateEl = document.getElementById('scoresDate');
+  if(!ticker) return;
+  const today = new Date();
+  if(dateEl) dateEl.textContent = today.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+  let scoresMode = true;
+  window.toggleScoresMode = function(){
+    scoresMode = !scoresMode;
+    const thumb = document.getElementById('scoresToggleThumb');
+    const label = document.getElementById('scoresToggleLabel');
+    if(thumb) thumb.style.transform = scoresMode ? 'translateX(0)' : 'translateX(18px)';
+    if(label){ label.textContent = scoresMode ? 'SCORES' : 'SCHEDULE'; label.style.color = scoresMode ? '#00AAFF' : '#7A95AE'; }
+    scoresMode ? loadScores() : loadSchedule();
+  };
+  const SPORTS = [
+    { label:'NBA', url:'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard' },
+    { label:'MLB', url:'https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard' },
+    { label:'NHL', url:'https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard' },
+    { label:'NFL', url:'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard' },
+  ];
+  function showFallback(msg){ ticker.innerHTML = `<span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:#7A95AE;letter-spacing:1px;padding:0 16px">${msg}</span>`; ticker.style.animation='none'; }
+  function renderEvents(events, isSchedule){
+    let html = '';
+    events.forEach(ev => {
+      const homeName = ev.home?.team?.abbreviation||'?';
+      const awayName = ev.away?.team?.abbreviation||'?';
+      const isLive = ev.status==='in', isFinal = ev.status==='post';
+      let statusHtml='', scoreHtml='';
+      if(isSchedule && ev.date){
+        const t = ev.date.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+ev.date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+        statusHtml=`<span class="sc-status final">${t}</span>`;
+      } else if(isLive){
+        scoreHtml=`<span class="sc-score">${ev.away?.score||0}-${ev.home?.score||0}</span>`;
+        statusHtml=`<span class="sc-status live">● LIVE</span>`;
+      } else if(isFinal){
+        scoreHtml=`<span class="sc-score">${ev.away?.score||0}-${ev.home?.score||0}</span>`;
+        statusHtml=`<span class="sc-status final">FINAL</span>`;
+      } else { statusHtml=`<span class="sc-status final">TBD</span>`; }
+      html+=`<div class="score-chip"><span class="sc-sport">${ev.sport}</span><span class="sc-teams">${awayName} @ ${homeName}</span>${scoreHtml}${statusHtml}</div>`;
+    });
+    ticker.innerHTML = html+html;
+    ticker.style.animation=`scoreTick ${Math.max(50,events.length*5)}s linear infinite`;
+  }
+  async function loadScores(){
+    showFallback('LOADING...');
+    try {
+      const results = await Promise.allSettled(SPORTS.map(s=>fetch(s.url).then(r=>r.json()).then(d=>({sport:s.label,data:d}))));
+      let allEvents=[];
+      results.forEach(r=>{ if(r.status==='fulfilled'){ const {sport,data}=r.value; (data.events||[]).forEach(ev=>{ const comp=ev.competitions?.[0]; if(!comp)return; allEvents.push({sport,home:comp.competitors?.find(c=>c.homeAway==='home'),away:comp.competitors?.find(c=>c.homeAway==='away'),status:ev.status?.type?.state}); }); } });
+      if(!allEvents.length){ showFallback('No games today'); return; }
+      renderEvents(allEvents, false);
+    } catch(e){ showFallback('Scores unavailable'); }
+  }
+  async function loadSchedule(){
+    showFallback('LOADING...');
+    try {
+      const results = await Promise.allSettled(SPORTS.map(s=>fetch(s.url+'?limit=10').then(r=>r.json()).then(d=>({sport:s.label,data:d}))));
+      let allEvents=[];
+      results.forEach(r=>{ if(r.status==='fulfilled'){ const {sport,data}=r.value; (data.events||[]).forEach(ev=>{ const comp=ev.competitions?.[0]; if(!comp)return; const date=ev.date?new Date(ev.date):null; allEvents.push({sport,home:comp.competitors?.find(c=>c.homeAway==='home'),away:comp.competitors?.find(c=>c.homeAway==='away'),status:ev.status?.type?.state,date}); }); } });
+      if(!allEvents.length){ showFallback('No upcoming games'); return; }
+      renderEvents(allEvents, true);
+    } catch(e){ showFallback('Schedule unavailable'); }
+  }
+  loadScores();
+  setInterval(()=>{ if(scoresMode) loadScores(); }, 90000);
+}
 
 // ISOVAULT CARD DETAIL — Full Engine
 // ═══════════════════════════════════════
@@ -3713,6 +3837,13 @@ function backToVault(){
 // ═══════════════════════════════════════════════════════════════
 // SIDEBAR NAV REORDER ENGINE
 // ═══════════════════════════════════════════════════════════════
+
+// Fire ticker + scores on load
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', function(){ initCardTicker(); initScoresBar(); });
+} else {
+  initCardTicker(); initScoresBar();
+}
 
 // ── Nav Reorder Toggle ──────────────────────────────────────
 let _navReorderMode = false;

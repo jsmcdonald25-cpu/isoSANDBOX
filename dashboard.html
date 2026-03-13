@@ -326,6 +326,73 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .toast{position:fixed;bottom:24px;right:24px;background:var(--deep3);border:1px solid var(--blue);border-radius:8px;padding:13px 17px;display:flex;align-items:center;gap:11px;z-index:9998;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 20px rgba(0,170,255,.15);transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
 .toast.show{transform:translateY(0);opacity:1}
 .toast-text{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--white);font-weight:600}
+
+/* ═══════════════════════════════════════
+   ISOVAULT CARD DETAIL PANEL
+═══════════════════════════════════════ */
+.cd-breadcrumb{display:flex;align-items:center;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.cd-crumb{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);cursor:pointer;transition:color .15s}
+.cd-crumb:hover{color:var(--blue)}
+.cd-crumb-sep{color:rgba(0,170,255,0.3);font-size:11px}
+.cd-crumb.active{color:var(--white)}
+.cd-back-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(0,170,255,0.08);border:1px solid var(--deep-border);border-radius:6px;padding:6px 12px;font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);cursor:pointer;transition:all .2s;margin-bottom:18px}
+.cd-back-btn:hover{background:rgba(0,170,255,0.15);border-color:var(--blue)}
+.cd-layout{display:grid;grid-template-columns:320px 1fr;gap:32px;align-items:start}
+/* 3D Card viewer */
+.cd-viewer-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px}
+.cd-scene-wrap{position:relative;width:280px;height:392px}
+.cd-shadow{position:absolute;inset:0;border-radius:10px;pointer-events:none;z-index:0;transition:box-shadow .4s}
+.cd-scene{position:absolute;inset:0;perspective:1200px;cursor:grab;user-select:none;z-index:1}
+.cd-scene:active{cursor:grabbing}
+.cd-card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.05s linear}
+.cd-front{position:absolute;width:280px;height:392px;top:0;left:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:10px;overflow:hidden;background:#000}
+.cd-back{position:absolute;width:392px;height:280px;top:56px;left:-56px;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);border-radius:10px;overflow:hidden;background:#000}
+.cd-card-face{width:100%;height:100%;object-fit:fill;display:block;border-radius:10px}
+.cd-card-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;border-radius:10px}
+.cd-glare{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:2;border-radius:10px;transition:opacity 0.1s}
+.cd-viewer-controls{display:flex;gap:8px}
+.cd-ctrl-btn{background:rgba(0,170,255,0.08);border:1px solid var(--deep-border);border-radius:6px;padding:8px 16px;font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);cursor:pointer;transition:all .2s}
+.cd-ctrl-btn:hover{background:rgba(0,170,255,0.2);border-color:var(--blue)}
+.cd-side-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)}
+/* Info panel */
+.cd-info{display:flex;flex-direction:column;gap:18px}
+.cd-card-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--white);line-height:1.1}
+.cd-card-sub{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--muted-text);margin-top:3px;letter-spacing:.5px}
+.cd-card-num{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:rgba(0,170,255,0.6);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.cd-currently{background:rgba(0,170,255,0.06);border:1px solid var(--deep-border);border-radius:8px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
+.cd-currently-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)}
+.cd-currently-val{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--white);display:flex;align-items:center;gap:8px}
+.cd-currently-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;transition:background .3s,box-shadow .3s}
+/* Variation pills */
+.cd-var-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:8px}
+.cd-var-pills{display:flex;flex-wrap:wrap;gap:7px}
+.cd-pill{padding:6px 14px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .25s;border:1.5px solid transparent;user-select:none;position:relative;overflow:hidden}
+.cd-pill.active{color:#fff}
+.cd-pill:not(.active){background:rgba(0,0,0,0.2);color:var(--muted-text);border-color:var(--deep-border)}
+.cd-pill:not(.active):hover{border-color:rgba(0,170,255,0.4);color:var(--white)}
+.cd-pill.superfractor{animation:superPulse 2.5s ease-in-out infinite}
+@keyframes superPulse{0%,100%{box-shadow:0 0 8px rgba(255,215,0,0.4)}50%{box-shadow:0 0 18px rgba(255,215,0,0.8),0 0 30px rgba(255,215,0,0.3)}}
+.cd-pill .pill-run{font-size:10px;opacity:.8;margin-left:4px}
+/* Shimmer effect on card */
+@keyframes shimmerSlide{0%{transform:translateX(-150%) rotate(20deg)}100%{transform:translateX(250%) rotate(20deg)}}
+.cd-shimmer{position:absolute;top:0;left:0;width:60%;height:200%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);pointer-events:none;z-index:3;border-radius:10px;animation:shimmerSlide 1.2s ease forwards}
+/* Market FOMO block */
+.cd-market-block{background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:16px}
+.cd-market-title{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--white);margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.cd-market-title .live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 6px var(--green);animation:pulse 2.5s ease-in-out infinite}
+.cd-mkt-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.cd-mkt-item{text-align:center}
+.cd-mkt-lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);margin-bottom:3px}
+.cd-mkt-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--white);line-height:1}
+.cd-mkt-val.blue{color:var(--blue)}
+.cd-mkt-val.green{color:var(--green)}
+.cd-mkt-val.gold{color:#FFC83C}
+.cd-watching{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted-text);margin-top:10px;padding-top:10px;border-top:1px solid var(--deep-border);display:flex;align-items:center;gap:6px}
+.cd-watching strong{color:var(--white)}
+/* Vault CTA */
+.cd-vault-cta{background:rgba(0,170,255,0.06);border:1px solid var(--deep-border);border-radius:10px;padding:16px}
+.cd-vault-path-msg{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--chrome);line-height:1.5;margin-bottom:14px}
+.cd-vault-path-msg strong{color:var(--white)}
 </style>
 </head>
 <body>
@@ -596,6 +663,94 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
       <button class="btn btn-primary" onclick="N('library',document.querySelector('[onclick*=library]'))">Browse ISOVault</button>
     </div>
     <div class="card-grid" id="myVaultGrid" style="display:none"></div>
+  </div>
+
+  <!-- ISOVAULT CARD DETAIL -->
+  <div class="panel" id="panel-carddetail">
+    <div class="cd-back-btn" onclick="backToVault()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to ISOVault
+    </div>
+    <div class="cd-breadcrumb">
+      <span class="cd-crumb" onclick="backToVault()">ISOVault</span>
+      <span class="cd-crumb-sep">›</span>
+      <span class="cd-crumb" id="cd-bc-sport">Baseball</span>
+      <span class="cd-crumb-sep">›</span>
+      <span class="cd-crumb" id="cd-bc-brand">Topps</span>
+      <span class="cd-crumb-sep">›</span>
+      <span class="cd-crumb" id="cd-bc-year">2026</span>
+      <span class="cd-crumb-sep">›</span>
+      <span class="cd-crumb active" id="cd-bc-set">Series 1 Mojo</span>
+    </div>
+    <div class="cd-layout">
+      <!-- LEFT: 3D Card Viewer -->
+      <div class="cd-viewer-wrap">
+        <div class="cd-scene-wrap">
+          <div class="cd-shadow" id="cd-shadow"></div>
+          <div class="cd-scene" id="cd-scene">
+            <div class="cd-card" id="cd-card">
+              <div class="cd-front" id="cd-front">
+                <div class="cd-card-placeholder" id="cd-placeholder-front" style="background:linear-gradient(135deg,#112840,#1a3a5c);width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+                  <div style="font-size:52px">⚾</div>
+                  <div style="font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;color:rgba(0,170,255,0.5)">FRONT</div>
+                </div>
+                <div class="cd-glare" id="cd-glare-front"></div>
+              </div>
+              <div class="cd-back" id="cd-back">
+                <div style="width:100%;height:100%;background:linear-gradient(135deg,#0d1f33,#112840);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px">
+                  <div style="font-size:28px">⚾</div>
+                  <div style="font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:2px;color:rgba(0,170,255,0.35)">BACK</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cd-viewer-controls">
+          <button class="cd-ctrl-btn" onclick="cdFlip()">Flip Card</button>
+          <button class="cd-ctrl-btn" id="cd-spin-btn" onclick="cdToggleSpin()">Auto Spin</button>
+          <button class="cd-ctrl-btn" onclick="cdReset()">Reset</button>
+        </div>
+        <div class="cd-side-label" id="cd-side-label">FRONT · Drag to rotate</div>
+      </div>
+      <!-- RIGHT: Info -->
+      <div class="cd-info">
+        <div>
+          <div class="cd-card-title" id="cd-title">—</div>
+          <div class="cd-card-sub" id="cd-sub"></div>
+          <div class="cd-card-num" id="cd-num"></div>
+        </div>
+        <div class="cd-currently">
+          <div>
+            <div class="cd-currently-label">Currently Viewing</div>
+            <div class="cd-currently-val">
+              <span class="cd-currently-dot" id="cd-curr-dot"></span>
+              <span id="cd-curr-name">—</span>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div class="cd-currently-label">Print Run</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--blue)" id="cd-curr-run">—</div>
+          </div>
+        </div>
+        <div>
+          <div class="cd-var-label">Variations — Click to Switch View</div>
+          <div class="cd-var-pills" id="cd-pills"></div>
+        </div>
+        <div class="cd-market-block">
+          <div class="cd-market-title"><div class="live-dot"></div> Market · <span id="cd-mkt-var-name">—</span></div>
+          <div class="cd-mkt-grid">
+            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Last Sale</div><div class="cd-mkt-val blue" id="cd-last-sale">—</div></div>
+            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Active ISOs</div><div class="cd-mkt-val gold" id="cd-active-isos">—</div></div>
+            <div class="cd-mkt-item"><div class="cd-mkt-lbl">PSA 10 Pop</div><div class="cd-mkt-val" id="cd-pop">—</div></div>
+          </div>
+          <div class="cd-watching"><span>👁</span>&nbsp;<strong id="cd-watching-ct">—</strong>&nbsp;collectors watching this variation right now</div>
+        </div>
+        <div class="cd-vault-cta">
+          <div class="cd-vault-path-msg" id="cd-path-msg"></div>
+          <button class="btn btn-primary" style="width:100%;font-size:14px;padding:12px" onclick="openVaultModal(window._cdCard)">+ Add to My Vault</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- CARD LIBRARY / ISOVAULT -->
@@ -909,6 +1064,18 @@ const CARDS=[
   {id:46,player:'Derek Jeter',year:1993,brand:'SP',set:'Foil',parallel:'RC',run:null,auto:false,rc:true,tags:['vintage','rc'],price:3200,isos:4},
   {id:47,player:'Hank Aaron',year:1954,brand:'Topps',set:'Base Set',parallel:'Base RC',run:null,auto:false,rc:true,tags:['vintage','rc'],price:12000,isos:2},
   {id:48,player:'Francisco Lindor',year:2015,brand:'Bowman',set:'Chrome',parallel:'Gold RC /50',run:50,auto:false,rc:true,tags:['rc','numbered'],price:340,isos:5},
+  {id:49,player:'Ichiro',year:2026,brand:'Topps',set:'Series 1 Mojo',parallel:'Base Mojo',run:null,auto:false,rc:false,tags:[],price:45,isos:7,cardNum:'#91C-25',hasCatalogPic:true,variations:[
+    {label:'Base Mojo',color:'#B0BEC5',glow:'rgba(176,190,197,0.4)',run:null,isBase:true,lastSale:'$45',isos:7,pop:214,watching:12},
+    {label:'Purple Mojo',color:'#9B59B6',glow:'rgba(155,89,182,0.55)',run:299,lastSale:'$110',isos:4,pop:88,watching:9},
+    {label:'Teal/Aqua Mojo',color:'#1ABC9C',glow:'rgba(26,188,156,0.5)',run:199,lastSale:'$155',isos:3,pop:64,watching:7},
+    {label:'Blue Mojo',color:'#3498DB',glow:'rgba(52,152,219,0.5)',run:150,lastSale:'$210',isos:2,pop:52,watching:11},
+    {label:'Green Mojo',color:'#2ECC71',glow:'rgba(46,204,113,0.5)',run:99,lastSale:'$320',isos:2,pop:36,watching:8},
+    {label:'Members SSP Gold Mojo',color:'#F1C40F',glow:'rgba(241,196,15,0.55)',run:50,ssp:true,lastSale:'$750',isos:1,pop:18,watching:14},
+    {label:'Orange Mojo',color:'#E67E22',glow:'rgba(230,126,34,0.5)',run:25,lastSale:'$1,200',isos:1,pop:9,watching:11},
+    {label:'Black Mojo',color:'#607D8B',glow:'rgba(96,125,139,0.5)',run:10,lastSale:'$2,400',isos:1,pop:4,watching:19},
+    {label:'Red Mojo',color:'#E74C3C',glow:'rgba(231,76,60,0.55)',run:5,lastSale:'$4,800',isos:0,pop:2,watching:22},
+    {label:'Superfractor Mojo',color:'#FFD700',glow:'rgba(255,215,0,0.7)',run:1,superfractor:true,lastSale:'$18,500',isos:0,pop:1,watching:41}
+  ]},
 ];
 
 const MKT=[
@@ -961,6 +1128,7 @@ const PM={
   account:{t:'ACCOUNT',s:'Verified buyer'},
   isoticker:{t:'ISOTICKER',s:'Your collection — value since purchase'},
   leaderboard:{t:'LEADERBOARD',s:'Top buyers · sellers · most wanted cards'},
+  carddetail:{t:'ISOVAULT',s:'Card detail'},
 };
 function N(id,el){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
@@ -1093,7 +1261,7 @@ function renderLib(filt,search){
   const g=document.getElementById('libGrid');if(!g)return;
   g.innerHTML=cards.map(c=>{
     const b=[c.auto?'<span class="badge auto">AUTO</span>':'',c.rc?'<span class="badge rc">RC</span>':'',c.run?`<span class="badge num">/${c.run}</span>`:'',c.tags.includes('vintage')?'<span class="badge vtg">VTG</span>':''].filter(Boolean).join('');
-    return`<div class="card-thumb">
+    return`<div class="card-thumb" onclick="openCardDetail(${c.id})">
       <div class="ct-img">⚾</div>
       <div class="ct-info">
         <div class="ct-player">${c.player}</div>
@@ -1101,8 +1269,8 @@ function renderLib(filt,search){
         <div class="ct-price">$${c.price.toLocaleString()}</div>
         <div>${b}</div>
         <div class="ct-iso">${c.isos} active ISOs</div>
-        <div style="display:flex;gap:6px;margin-top:8px">
-          <button class="btn btn-primary btn-sm" style="flex:1;font-size:10px;padding:5px 8px" onclick="openVaultModal(${JSON.stringify(c)})">+ Add to Vault</button>
+        <div style="display:flex;gap:6px;margin-top:8px" onclick="event.stopPropagation()">
+          <button class="btn btn-primary btn-sm" style="flex:1;font-size:10px;padding:5px 8px" onclick="openVaultModal(CARDS.find(x=>x.id===${c.id}))">+ Add to Vault</button>
           <button class="btn btn-ghost btn-sm" style="font-size:10px;padding:5px 8px" onclick="N('post',document.querySelector('[onclick*=post]'))">Post ISO</button>
         </div>
       </div>
@@ -1119,6 +1287,201 @@ function libType(type,el){
   document.querySelectorAll('#libFilters .chip').forEach(c=>c.classList.remove('active'));
   el.classList.add('active');
   renderLib(type);
+}
+
+// ═══════════════════════════════════════
+// ISOVAULT CARD DETAIL
+// ═══════════════════════════════════════
+window._cdCard=null;
+window._cdActiveVar=null;
+let _cdRotX=0,_cdRotY=0,_cdFlipped=false,_cdDragging=false,_cdLastX=0,_cdLastY=0,_cdSpinner=null,_cdSpinning=false;
+
+function openCardDetail(cardId){
+  const c=CARDS.find(x=>x.id===cardId);
+  if(!c)return;
+  window._cdCard=c;
+  // Set breadcrumb
+  const sport='Baseball';
+  document.getElementById('cd-bc-sport').textContent=sport;
+  document.getElementById('cd-bc-brand').textContent=c.brand;
+  document.getElementById('cd-bc-year').textContent=c.year;
+  document.getElementById('cd-bc-set').textContent=c.set;
+  // Set title
+  document.getElementById('cd-title').textContent=`${c.year} ${c.brand} ${c.set} — ${c.player}`.toUpperCase();
+  document.getElementById('cd-sub').textContent=`${sport} · ${c.year} · ${c.brand} · ${c.set}`;
+  document.getElementById('cd-num').textContent=c.cardNum||'';
+  // Set vault path message
+  const pathMsg=document.getElementById('cd-path-msg');
+  if(c.hasCatalogPic){
+    pathMsg.innerHTML='<strong>This card has a catalog image.</strong> To add it to your vault, confirm how you acquired it and the price you paid — no photo upload needed.';
+  } else {
+    pathMsg.innerHTML='<strong>No catalog image yet.</strong> Upload a front + back photo of your card, then confirm acquisition details and price paid to add it to your vault.';
+  }
+  // Build variation pills
+  _buildVariationPills(c);
+  // Reset 3D state
+  _cdReset3D();
+  // Navigate to panel
+  N('carddetail',null);
+  // Init rotation listeners (safe — checks for existing)
+  _cdInitRotation();
+}
+
+function _buildVariationPills(c){
+  const pillsEl=document.getElementById('cd-pills');
+  if(!pillsEl)return;
+  const vars=c.variations||[{label:c.parallel,color:'#00AAFF',glow:'rgba(0,170,255,0.4)',run:c.run,isBase:true,lastSale:'$'+c.price,isos:c.isos,pop:null,watching:null}];
+  window._cdVars=vars;
+  pillsEl.innerHTML=vars.map((v,i)=>{
+    const runLabel=v.run?`<span class="pill-run">/${v.run}</span>`:'';
+    const sf=v.superfractor?'superfractor':'';
+    return`<div class="cd-pill${i===0?' active':''} ${sf}" id="cd-pill-${i}"
+      style="${i===0?`background:${v.color};border-color:${v.color};box-shadow:0 0 10px ${v.glow}`:''}"
+      onclick="cdSelectVar(${i})">${v.label}${runLabel}</div>`;
+  }).join('');
+  cdSelectVar(0,true);
+}
+
+function cdSelectVar(idx,skipShimmer){
+  const vars=window._cdVars||[];
+  const v=vars[idx];
+  if(!v)return;
+  window._cdActiveVar=idx;
+  // Update pills
+  vars.forEach((_,i)=>{
+    const p=document.getElementById('cd-pill-'+i);
+    if(!p)return;
+    const vv=vars[i];
+    if(i===idx){
+      p.classList.add('active');
+      p.style.background=vv.color;
+      p.style.borderColor=vv.color;
+      p.style.boxShadow=`0 0 12px ${vv.glow}`;
+    } else {
+      p.classList.remove('active');
+      p.style.background='';
+      p.style.borderColor='';
+      p.style.boxShadow='';
+    }
+  });
+  // Update currently viewing
+  const dot=document.getElementById('cd-curr-dot');
+  const name=document.getElementById('cd-curr-name');
+  const run=document.getElementById('cd-curr-run');
+  if(dot){dot.style.background=v.color;dot.style.boxShadow=`0 0 8px ${v.glow}`;}
+  if(name)name.textContent=v.label;
+  if(run)run.textContent=v.run?`/${v.run}`:'Open Edition';
+  // Update shadow glow
+  const shadow=document.getElementById('cd-shadow');
+  if(shadow)shadow.style.boxShadow=`0 20px 50px ${v.glow},0 0 30px ${v.glow}`;
+  // Update card face gradient
+  const front=document.getElementById('cd-placeholder-front');
+  if(front){
+    front.style.background=`linear-gradient(135deg, #112840, ${v.color}55, #1a3a5c)`;
+    front.style.borderRadius='10px';
+  }
+  // Update market block
+  const mktVar=document.getElementById('cd-mkt-var-name');
+  const lastSale=document.getElementById('cd-last-sale');
+  const activeIsos=document.getElementById('cd-active-isos');
+  const pop=document.getElementById('cd-pop');
+  const watchingCt=document.getElementById('cd-watching-ct');
+  if(mktVar)mktVar.textContent=v.label;
+  if(lastSale)lastSale.textContent=v.lastSale||'—';
+  if(activeIsos)activeIsos.textContent=v.isos!=null?v.isos:'—';
+  if(pop)pop.textContent=v.pop!=null?v.pop:'—';
+  if(watchingCt)watchingCt.textContent=v.watching!=null?v.watching:'—';
+  // Shimmer on non-base
+  if(!skipShimmer&&!v.isBase){
+    _cdShimmer();
+  }
+}
+
+function _cdShimmer(){
+  const front=document.getElementById('cd-front');
+  if(!front)return;
+  const old=front.querySelector('.cd-shimmer');
+  if(old)old.remove();
+  const sh=document.createElement('div');
+  sh.className='cd-shimmer';
+  front.appendChild(sh);
+  setTimeout(()=>sh.remove(),1300);
+}
+
+// ── 3D Rotation (mechanics from card-viewer.html) ──
+function _cdApplyTransform(){
+  const card=document.getElementById('cd-card');
+  if(!card)return;
+  card.style.transform='rotateY('+(_cdRotY+(_cdFlipped?180:0))+'deg) rotateX('+_cdRotX+'deg)';
+  const lbl=document.getElementById('cd-side-label');
+  if(lbl)lbl.textContent=_cdFlipped?'BACK · Drag to rotate':'FRONT · Drag to rotate';
+}
+
+function _cdReset3D(){
+  _cdRotX=0;_cdRotY=0;_cdFlipped=false;
+  if(_cdSpinner){clearInterval(_cdSpinner);_cdSpinner=null;_cdSpinning=false;}
+  const sb=document.getElementById('cd-spin-btn');
+  if(sb)sb.textContent='Auto Spin';
+  _cdApplyTransform();
+}
+
+let _cdListenersAttached=false;
+function _cdInitRotation(){
+  if(_cdListenersAttached)return;
+  _cdListenersAttached=true;
+  const scene=document.getElementById('cd-scene');
+  const gf=document.getElementById('cd-glare-front');
+  if(!scene)return;
+
+  scene.addEventListener('mousedown',function(e){
+    _cdDragging=true;_cdLastX=e.clientX;_cdLastY=e.clientY;
+    if(_cdSpinner){clearInterval(_cdSpinner);_cdSpinner=null;_cdSpinning=false;const sb=document.getElementById('cd-spin-btn');if(sb)sb.textContent='Auto Spin';}
+  });
+  window.addEventListener('mousemove',function(e){
+    if(!_cdDragging)return;
+    _cdRotY+=(e.clientX-_cdLastX)*0.5;
+    _cdRotX-=(e.clientY-_cdLastY)*0.5;
+    _cdRotX=Math.max(-60,Math.min(60,_cdRotX));
+    _cdLastX=e.clientX;_cdLastY=e.clientY;
+    const r=scene.getBoundingClientRect();
+    const g='radial-gradient(ellipse at '+((e.clientX-r.left)/r.width*100).toFixed(1)+'% '+((e.clientY-r.top)/r.height*100).toFixed(1)+'%, rgba(255,255,255,0.16) 0%, transparent 65%)';
+    if(gf){gf.style.background=g;gf.style.opacity='1';}
+    _cdApplyTransform();
+  });
+  window.addEventListener('mouseup',function(){_cdDragging=false;if(gf)gf.style.opacity='0';});
+  scene.addEventListener('wheel',function(e){
+    e.preventDefault();
+    _cdRotX=Math.max(-60,Math.min(60,_cdRotX+e.deltaY*0.08));
+    _cdApplyTransform();
+  },{passive:false});
+  scene.addEventListener('touchstart',function(e){_cdLastX=e.touches[0].clientX;_cdLastY=e.touches[0].clientY;});
+  scene.addEventListener('touchmove',function(e){
+    e.preventDefault();
+    _cdRotY+=(e.touches[0].clientX-_cdLastX)*0.5;
+    _cdRotX-=(e.touches[0].clientY-_cdLastY)*0.5;
+    _cdRotX=Math.max(-60,Math.min(60,_cdRotX));
+    _cdLastX=e.touches[0].clientX;_cdLastY=e.touches[0].clientY;
+    _cdApplyTransform();
+  },{passive:false});
+}
+
+function cdFlip(){
+  _cdFlipped=!_cdFlipped;_cdRotX=0;_cdRotY=0;_cdApplyTransform();
+}
+function cdToggleSpin(){
+  if(_cdSpinning){
+    clearInterval(_cdSpinner);_cdSpinner=null;_cdSpinning=false;
+    const sb=document.getElementById('cd-spin-btn');if(sb)sb.textContent='Auto Spin';
+  } else {
+    _cdSpinning=true;
+    const sb=document.getElementById('cd-spin-btn');if(sb)sb.textContent='Stop';
+    _cdSpinner=setInterval(function(){_cdRotY+=1;_cdApplyTransform();},16);
+  }
+}
+function cdReset(){_cdReset3D();}
+function backToVault(){
+  if(_cdSpinner){clearInterval(_cdSpinner);_cdSpinner=null;_cdSpinning=false;}
+  N('library',document.querySelector('[onclick*=library]'));
 }
 
 // ═══════════════════════════════════════

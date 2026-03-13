@@ -2056,7 +2056,7 @@ window.addEventListener('resize',()=>{if(document.getElementById('panel-isoticke
 // ═══════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════
-renderMkt();renderOvMkt(); navRender(); // ISOVault inits on nav click via ivInit()
+renderMkt();renderOvMkt(); // ISOVault inits on nav click via ivInit()
 
 // ── CARD TICKER ─────────────────────────────────────────────
 function initCardTicker(){
@@ -2089,6 +2089,7 @@ function initCardTicker(){
 }
 // Run after DOM ready — fires ticker + scores bar
 function _initDynamic(){
+  navRender();
   initCardTicker();
   initScoresBar();
 }

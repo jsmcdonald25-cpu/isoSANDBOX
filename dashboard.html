@@ -2084,29 +2084,12 @@ function renderMyVault(){
 (function(){
   const el = document.getElementById('buildStamp');
   if(!el) return;
-
-  // Netlify injects DEPLOY_ID and COMMIT_REF as meta tags if you add them to your build
-  // Fallback: track build count in localStorage, timestamp on each fresh load
-  const STORAGE_KEY = 'grailiso_build';
-  const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-
-  // Increment build count if this is a new session (sessionStorage flag not set)
-  const sessionKey = 'grailiso_session_counted';
-  if(!sessionStorage.getItem(sessionKey)){
-    stored.count = (stored.count || 20260312) + 1;
-    stored.ts = new Date().toISOString();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
-    sessionStorage.setItem(sessionKey, '1');
-  }
-
-  const buildNum = stored.count || 20260312;
-  const ts = stored.ts ? new Date(stored.ts) : new Date();
+  const now = new Date();
   const pad = n => String(n).padStart(2,'0');
-  const dateStr = `${ts.getFullYear()}${pad(ts.getMonth()+1)}${pad(ts.getDate())}`;
-  const timeStr = `${pad(ts.getHours())}:${pad(ts.getMinutes())}`;
-
-  el.textContent = `[SYS] GrailISO_v1.1.7 :: BUILD ${buildNum} :: ${dateStr} ${timeStr} :: STABLE`;
-  el.title = `Last deployed: ${ts.toLocaleString()}`;
+  const dateStr = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}`;
+  const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  el.textContent = `[SYS] GrailISO_v1.1.7 :: BUILD ${dateStr} ${timeStr} :: STABLE`;
+  el.title = `Session started: ${now.toLocaleString()}`;
 })();
 (function initScoresBar(){
   const ticker = document.getElementById('scoresTicker');
@@ -2259,6 +2242,10 @@ async function openCardDetail(cardId){
     pathMsg.innerHTML = '<strong>No catalog image yet.</strong> Upload front + back, then confirm acquisition details and price paid.';
   }
 
+  // Show upload button immediately — hide/update after async image check
+  const uploadBtn = document.getElementById('cd-upload-btn');
+  if(uploadBtn){ uploadBtn.textContent='📷 Upload Image'; uploadBtn.style.display='inline-flex'; }
+
   // Reset viewer to placeholder state
   _cdSetViewerImages(null, null);
 
@@ -2280,39 +2267,44 @@ async function _cdLoadCatalogImages(c){
   const statusEl = document.getElementById('cd-img-status');
   const uploadBtn = document.getElementById('cd-upload-btn');
 
-  // Only Series 1 has the 91C cards in Supabase — map card to table
-  // Use _setTable if available, otherwise guess from year/brand
   const table = c._setTable || _cdGuessTable(c);
-  if(!table){ _cdShowUploadBtn(true); return; }
+  if(!table){
+    if(statusEl){ statusEl.style.display='block'; statusEl.textContent='No set table found'; statusEl.style.color='rgba(122,149,174,0.5)'; }
+    return; // button already visible
+  }
 
-  const cardNum = c.cardNum ? c.cardNum.replace('#','') : null;
-  if(!cardNum){ _cdShowUploadBtn(true); return; }
-
-  if(statusEl){ statusEl.style.display='block'; statusEl.textContent='Loading images...'; statusEl.style.color='var(--muted-text)'; }
-
-  const { data, error } = await supabase
-    .from(table)
-    .select('front_img,back_img')
-    .eq('card_number', cardNum)
-    .eq('player', c.player)
-    .maybeSingle();
-
-  if(error || !data){
-    if(statusEl){ statusEl.textContent='No catalog image'; statusEl.style.color='rgba(122,149,174,0.5)'; }
-    _cdShowUploadBtn(true);
+  const cardNum = c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber || null);
+  if(!cardNum){
+    if(statusEl){ statusEl.style.display='block'; statusEl.textContent='No card number'; statusEl.style.color='rgba(122,149,174,0.5)'; }
     return;
   }
 
-  if(data.front_img || data.back_img){
+  if(statusEl){ statusEl.style.display='block'; statusEl.textContent='Loading images...'; statusEl.style.color='var(--muted-text)'; }
+
+  try {
+    const { data, error } = await supabase
+      .from(table)
+      .select('front_img,back_img')
+      .eq('card_number', cardNum)
+      .maybeSingle();
+
+    if(error || !data || (!data.front_img && !data.back_img)){
+      if(statusEl){ statusEl.textContent='No catalog image yet'; statusEl.style.color='rgba(122,149,174,0.5)';
+        setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
+      // Upload button already visible — leave it
+      return;
+    }
+
+    // Images found — load them and update button to "Replace"
     _cdSetViewerImages(data.front_img, data.back_img);
     if(statusEl){ statusEl.textContent='✓ Catalog image loaded'; statusEl.style.color='var(--green)';
       setTimeout(()=>{ statusEl.style.display='none'; }, 2500); }
-    _cdShowUploadBtn(false); // Has image — hide upload btn (or keep as "Replace")
-    // If front loaded, show replace option subtly
-    if(uploadBtn){ uploadBtn.textContent='Replace Image'; uploadBtn.style.display='inline-flex'; }
-  } else {
-    if(statusEl){ statusEl.textContent='No catalog image yet'; statusEl.style.color='rgba(122,149,174,0.5)'; }
-    _cdShowUploadBtn(true);
+    if(uploadBtn){ uploadBtn.textContent='Replace Image'; }
+
+  } catch(e) {
+    if(statusEl){ statusEl.textContent='Could not load images'; statusEl.style.color='rgba(122,149,174,0.5)';
+      setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
+    // Upload button stays visible
   }
 }
 

@@ -6,6 +6,12 @@
 <title>GrailISO — Buyer Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const supabase = window.supabase.createClient(
+  'https://jyfaegmnzkarlcximxjo.supabase.co',
+  'sb_publishable_-JI4Y3ImXzqRVkwx1yIL1g_rVJVx5bn'
+);
+</script>
 <style>
 :root{--blue:#00AAFF;--blue-bright:#33CCFF;--blue-deep:#0055AA;--blue-glow:rgba(0,170,255,0.35);--white:#FFFFFF;--chrome-lt:#E2E8F0;--chrome:#B0BEC5;--muted-text:#7A95AE;--deep1:#0D1F33;--deep2:#112840;--deep3:#143050;--deep-border:rgba(0,170,255,0.15);--green:#00E887;--red:#FF3B5C;--sidebar-w:240px}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -326,19 +332,46 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .toast{position:fixed;bottom:24px;right:24px;background:var(--deep3);border:1px solid var(--blue);border-radius:8px;padding:13px 17px;display:flex;align-items:center;gap:11px;z-index:9998;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 20px rgba(0,170,255,.15);transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
 .toast.show{transform:translateY(0);opacity:1}
 .toast-text{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--white);font-weight:600}
-
+/* SET CATALOG */
+.set-picker-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
+.set-tile{background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:20px 18px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.set-tile::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--blue),transparent);opacity:0;transition:opacity .2s}
+.set-tile:hover{border-color:rgba(0,170,255,.3);transform:translateY(-2px)}.set-tile:hover::before{opacity:.6}
+.set-tile.active{border-color:var(--blue);background:rgba(0,170,255,.07)}.set-tile.active::before{opacity:1}
+.set-tile-year{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--blue);line-height:1}
+.set-tile-name{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--white);margin-top:4px}
+.set-tile-count{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text);margin-top:3px;letter-spacing:.5px}
+.set-tile-badge{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:3px;margin-top:8px;background:rgba(0,170,255,.12);color:var(--blue);border:1px solid rgba(0,170,255,.25)}
+.set-card-list{display:flex;flex-direction:column;gap:1px;background:var(--deep-border);border-radius:8px;overflow:hidden;margin-top:14px}
+.set-card-row{display:grid;grid-template-columns:72px 1fr 160px 100px 110px;align-items:center;gap:12px;padding:11px 14px;background:var(--deep2);cursor:pointer;transition:background .12s}
+.set-card-row:hover{background:rgba(0,170,255,.07)}
+.set-card-row.hdr{background:rgba(0,0,0,.25);cursor:default;padding:7px 14px}
+.set-card-row.hdr:hover{background:rgba(0,0,0,.25)}
+.scr-num{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--blue);font-weight:600}
+.scr-player{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--white)}
+.scr-team{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text)}
+.scr-insert{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--chrome)}
+.scr-cat{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:3px}
+.scr-cat.base{color:var(--muted-text);background:rgba(255,255,255,.06)}
+.scr-cat.insert{color:var(--blue);background:rgba(0,170,255,.12)}
+.scr-cat.auto{color:var(--green);background:rgba(0,232,135,.12)}
+.scr-cat.rc{color:#FFC83C;background:rgba(255,200,60,.12)}
+.scr-img{width:8px;height:8px;border-radius:50%;display:inline-block;vertical-align:middle;margin-right:5px}
+.scr-hdr{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)}
+.set-loading{text-align:center;padding:40px;font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:1px;color:var(--muted-text)}
+/* VAULT MODAL PRICE */
+.vm-price-wrap{border:1px solid rgba(0,170,255,.25);border-radius:8px;padding:14px;background:rgba(0,170,255,.04);margin-bottom:4px}
+.vm-price-required{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--blue);letter-spacing:1px;text-transform:uppercase;margin-top:6px;display:flex;align-items:center;gap:5px}
 /* ═══════════════════════════════════════
-   ISOVAULT CARD DETAIL PANEL
+   ISOVAULT CARD DETAIL
 ═══════════════════════════════════════ */
 .cd-breadcrumb{display:flex;align-items:center;gap:6px;margin-bottom:20px;flex-wrap:wrap}
 .cd-crumb{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);cursor:pointer;transition:color .15s}
-.cd-crumb:hover{color:var(--blue)}
+.cd-crumb:hover{color:var(--blue)}.cd-crumb.active{color:var(--white)}
 .cd-crumb-sep{color:rgba(0,170,255,0.3);font-size:11px}
-.cd-crumb.active{color:var(--white)}
 .cd-back-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(0,170,255,0.08);border:1px solid var(--deep-border);border-radius:6px;padding:6px 12px;font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);cursor:pointer;transition:all .2s;margin-bottom:18px}
 .cd-back-btn:hover{background:rgba(0,170,255,0.15);border-color:var(--blue)}
 .cd-layout{display:grid;grid-template-columns:320px 1fr;gap:32px;align-items:start}
-/* 3D Card viewer */
 .cd-viewer-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px}
 .cd-scene-wrap{position:relative;width:280px;height:392px}
 .cd-shadow{position:absolute;inset:0;border-radius:10px;pointer-events:none;z-index:0;transition:box-shadow .4s}
@@ -350,11 +383,12 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-card-face{width:100%;height:100%;object-fit:fill;display:block;border-radius:10px}
 .cd-card-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;border-radius:10px}
 .cd-glare{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:2;border-radius:10px;transition:opacity 0.1s}
-.cd-viewer-controls{display:flex;gap:8px}
+.cd-viewer-controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 .cd-ctrl-btn{background:rgba(0,170,255,0.08);border:1px solid var(--deep-border);border-radius:6px;padding:8px 16px;font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);cursor:pointer;transition:all .2s}
 .cd-ctrl-btn:hover{background:rgba(0,170,255,0.2);border-color:var(--blue)}
+.cd-ctrl-btn.upload{color:var(--green);border-color:rgba(0,232,135,0.3);background:rgba(0,232,135,0.06)}
+.cd-ctrl-btn.upload:hover{background:rgba(0,232,135,0.14);border-color:var(--green)}
 .cd-side-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)}
-/* Info panel */
 .cd-info{display:flex;flex-direction:column;gap:18px}
 .cd-card-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--white);line-height:1.1}
 .cd-card-sub{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--muted-text);margin-top:3px;letter-spacing:.5px}
@@ -363,7 +397,6 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-currently-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)}
 .cd-currently-val{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--white);display:flex;align-items:center;gap:8px}
 .cd-currently-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;transition:background .3s,box-shadow .3s}
-/* Variation pills */
 .cd-var-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:8px}
 .cd-var-pills{display:flex;flex-wrap:wrap;gap:7px}
 .cd-pill{padding:6px 14px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .25s;border:1.5px solid transparent;user-select:none;position:relative;overflow:hidden}
@@ -373,10 +406,8 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-pill.superfractor{animation:superPulse 2.5s ease-in-out infinite}
 @keyframes superPulse{0%,100%{box-shadow:0 0 8px rgba(255,215,0,0.4)}50%{box-shadow:0 0 18px rgba(255,215,0,0.8),0 0 30px rgba(255,215,0,0.3)}}
 .cd-pill .pill-run{font-size:10px;opacity:.8;margin-left:4px}
-/* Shimmer effect on card */
 @keyframes shimmerSlide{0%{transform:translateX(-150%) rotate(20deg)}100%{transform:translateX(250%) rotate(20deg)}}
 .cd-shimmer{position:absolute;top:0;left:0;width:60%;height:200%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);pointer-events:none;z-index:3;border-radius:10px;animation:shimmerSlide 1.2s ease forwards}
-/* Market FOMO block */
 .cd-market-block{background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:16px}
 .cd-market-title{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--white);margin-bottom:12px;display:flex;align-items:center;gap:7px}
 .cd-market-title .live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 6px var(--green);animation:pulse 2.5s ease-in-out infinite}
@@ -384,15 +415,17 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-mkt-item{text-align:center}
 .cd-mkt-lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);margin-bottom:3px}
 .cd-mkt-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--white);line-height:1}
-.cd-mkt-val.blue{color:var(--blue)}
-.cd-mkt-val.green{color:var(--green)}
-.cd-mkt-val.gold{color:#FFC83C}
+.cd-mkt-val.blue{color:var(--blue)}.cd-mkt-val.green{color:var(--green)}.cd-mkt-val.gold{color:#FFC83C}
 .cd-watching{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted-text);margin-top:10px;padding-top:10px;border-top:1px solid var(--deep-border);display:flex;align-items:center;gap:6px}
 .cd-watching strong{color:var(--white)}
-/* Vault CTA */
 .cd-vault-cta{background:rgba(0,170,255,0.06);border:1px solid var(--deep-border);border-radius:10px;padding:16px}
 .cd-vault-path-msg{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--chrome);line-height:1.5;margin-bottom:14px}
 .cd-vault-path-msg strong{color:var(--white)}
+/* Catalog upload mini-modal */
+.cd-upload-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10001;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.cd-upload-modal{background:var(--deep2);border:1px solid rgba(0,232,135,0.3);border-radius:14px;width:100%;max-width:520px;padding:26px;position:relative}
+.cd-upload-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--white);margin-bottom:4px}
+.cd-upload-sub{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:20px;line-height:1.5}
 </style>
 </head>
 <body>
@@ -468,6 +501,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     <div class="nav-item" onclick="N('leaderboard',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="14" width="4" height="8" rx="1"/><rect x="9" y="9" width="4" height="13" rx="1"/><rect x="16" y="4" width="4" height="18" rx="1"/><line x1="2" y1="22" x2="22" y2="22"/></svg></div><span class="nav-label">Leaderboard</span></div>
     <div class="nav-item" onclick="N('myvault',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></div><span class="nav-label">My Vault</span></div>
     <div class="nav-item" onclick="N('library',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div><span class="nav-label">ISOVault</span></div>
+    <div class="nav-item" onclick="N('sets',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><span class="nav-label">Set Catalog</span></div>
     <div class="nav-item" onclick="N('isoticker',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><span class="nav-label">ISOTicker</span></div>
     <div class="nav-item" onclick="N('account',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><span class="nav-label">Account</span></div>
     <div class="nav-item logout" onclick="logOut()"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div><span class="nav-label">Log Out</span></div>
@@ -665,6 +699,13 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     <div class="card-grid" id="myVaultGrid" style="display:none"></div>
   </div>
 
+  <!-- CARD LIBRARY / ISOVAULT -->
+  <div class="panel" id="panel-library">
+    <div class="search-wrap"><div class="s-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><input type="text" id="libSearch" placeholder="Search player, year, set, parallel..." oninput="filterLib(this.value)"/></div>
+    <div class="filter-row" id="libFilters"><div class="chip active" onclick="libType('all',this)">All</div><div class="chip" onclick="libType('rc',this)">Rookies</div><div class="chip" onclick="libType('auto',this)">Autos</div><div class="chip" onclick="libType('numbered',this)">Numbered</div><div class="chip" onclick="libType('vintage',this)">Vintage</div></div>
+    <div class="card-grid" id="libGrid"></div>
+  </div>
+
   <!-- ISOVAULT CARD DETAIL -->
   <div class="panel" id="panel-carddetail">
     <div class="cd-back-btn" onclick="backToVault()">
@@ -690,27 +731,33 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
           <div class="cd-scene" id="cd-scene">
             <div class="cd-card" id="cd-card">
               <div class="cd-front" id="cd-front">
-                <div class="cd-card-placeholder" id="cd-placeholder-front" style="background:linear-gradient(135deg,#112840,#1a3a5c);width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+                <div class="cd-card-placeholder" id="cd-placeholder-front" style="background:linear-gradient(135deg,#112840,#1a3a5c);width:100%;height:100%">
                   <div style="font-size:52px">⚾</div>
-                  <div style="font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;color:rgba(0,170,255,0.5)">FRONT</div>
+                  <div style="font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:2px;color:rgba(0,170,255,0.5)">FRONT</div>
                 </div>
+                <img id="cd-img-front" class="cd-card-face" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:10px" alt="Card front">
                 <div class="cd-glare" id="cd-glare-front"></div>
+                <div class="cd-shimmer" id="cd-shimmer-el" style="display:none"></div>
               </div>
               <div class="cd-back" id="cd-back">
-                <div style="width:100%;height:100%;background:linear-gradient(135deg,#0d1f33,#112840);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px">
+                <div id="cd-placeholder-back" style="width:100%;height:100%;background:linear-gradient(135deg,#0d1f33,#112840);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px">
                   <div style="font-size:28px">⚾</div>
                   <div style="font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:2px;color:rgba(0,170,255,0.35)">BACK</div>
                 </div>
+                <img id="cd-img-back" class="cd-card-face" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:10px" alt="Card back">
               </div>
             </div>
           </div>
         </div>
         <div class="cd-viewer-controls">
-          <button class="cd-ctrl-btn" onclick="cdFlip()">Flip Card</button>
+          <button class="cd-ctrl-btn" onclick="cdFlip()">Flip</button>
           <button class="cd-ctrl-btn" id="cd-spin-btn" onclick="cdToggleSpin()">Auto Spin</button>
           <button class="cd-ctrl-btn" onclick="cdReset()">Reset</button>
+          <button class="cd-ctrl-btn upload" id="cd-upload-btn" onclick="openCatalogUpload()" style="display:none">📷 Upload Image</button>
         </div>
         <div class="cd-side-label" id="cd-side-label">FRONT · Drag to rotate</div>
+        <!-- Image status indicator -->
+        <div id="cd-img-status" style="display:none;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;text-align:center;margin-top:4px"></div>
       </div>
       <!-- RIGHT: Info -->
       <div class="cd-info">
@@ -753,11 +800,78 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     </div>
   </div>
 
-  <!-- CARD LIBRARY / ISOVAULT -->
-  <div class="panel" id="panel-library">
-    <div class="search-wrap"><div class="s-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><input type="text" id="libSearch" placeholder="Search player, year, set, parallel..." oninput="filterLib(this.value)"/></div>
-    <div class="filter-row" id="libFilters"><div class="chip active" onclick="libType('all',this)">All</div><div class="chip" onclick="libType('rc',this)">Rookies</div><div class="chip" onclick="libType('auto',this)">Autos</div><div class="chip" onclick="libType('numbered',this)">Numbered</div><div class="chip" onclick="libType('vintage',this)">Vintage</div></div>
-    <div class="card-grid" id="libGrid"></div>
+  <!-- CATALOG IMAGE UPLOAD OVERLAY -->
+  <div class="cd-upload-overlay" id="cdUploadOverlay" style="display:none" onclick="if(event.target===this)closeCatalogUpload()">
+    <div class="cd-upload-modal">
+      <button class="vm-close" onclick="closeCatalogUpload()">×</button>
+      <div class="cd-upload-title">UPLOAD CATALOG IMAGE</div>
+      <div class="cd-upload-sub" id="cdUploadSub">Upload the front and back of this card. This image becomes the catalog reference for all users.</div>
+      <div class="vm-upload-row" style="margin-bottom:14px">
+        <div class="vm-upload-box" id="cdFrontBox">
+          <input type="file" accept="image/*" id="cdFrontFile" onchange="handleCatalogUpload(this,'front')">
+          <div class="vm-upload-icon">📸</div>
+          <div class="vm-upload-label">FRONT OF CARD</div>
+          <div class="vm-upload-name" id="cdFrontName"></div>
+          <img class="vm-preview" id="cdFrontPreview">
+        </div>
+        <div class="vm-upload-box" id="cdBackBox">
+          <input type="file" accept="image/*" id="cdBackFile" onchange="handleCatalogUpload(this,'back')">
+          <div class="vm-upload-icon">🔄</div>
+          <div class="vm-upload-label">BACK OF CARD</div>
+          <div class="vm-upload-name" id="cdBackName"></div>
+          <img class="vm-preview" id="cdBackPreview">
+        </div>
+      </div>
+      <div class="vm-error" id="cdUploadError" style="display:none">Both front and back are required.</div>
+      <div class="vm-progress" id="cdUploadProgress" style="display:none"><div class="vm-progress-bar" id="cdUploadProgressBar"></div></div>
+      <div style="display:flex;gap:10px;margin-top:4px">
+        <button class="btn btn-primary" style="flex:1" id="cdUploadSubmitBtn" onclick="submitCatalogUpload()">SAVE TO CATALOG</button>
+        <button class="btn btn-ghost" onclick="closeCatalogUpload()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SET CATALOG -->
+  <div class="panel" id="panel-sets">
+    <div class="set-picker-grid" id="setPickerGrid">
+      <div class="set-tile active" id="setTile-series1" onclick="selectSet('2026_series1_baseball',this,'2026 Topps Series 1','Series 1 Baseball')">
+        <div class="set-tile-year">2026</div>
+        <div class="set-tile-name">Topps Series 1</div>
+        <div class="set-tile-count" id="setCount-series1">Loading...</div>
+        <div class="set-tile-badge">⚾ Baseball</div>
+      </div>
+      <div class="set-tile" id="setTile-heritage" onclick="selectSet('2026_heritage_baseball',this,'2026 Topps Heritage','Heritage Baseball')">
+        <div class="set-tile-year">2026</div>
+        <div class="set-tile-name">Topps Heritage</div>
+        <div class="set-tile-count" id="setCount-heritage">Loading...</div>
+        <div class="set-tile-badge">⚾ Baseball</div>
+      </div>
+      <div class="set-tile" id="setTile-stadium" onclick="selectSet('2025_stadium_club_v2',this,'2025 Stadium Club','Stadium Club v2')">
+        <div class="set-tile-year">2025</div>
+        <div class="set-tile-name">Stadium Club</div>
+        <div class="set-tile-count" id="setCount-stadium">Loading...</div>
+        <div class="set-tile-badge">⚾ Baseball</div>
+      </div>
+    </div>
+    <!-- Controls -->
+    <div style="display:flex;gap:10px;margin-bottom:12px;align-items:center">
+      <div class="search-wrap" style="margin:0;flex:1">
+        <div class="s-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <input type="text" id="setCatalogSearch" placeholder="Search player, card number, insert..." oninput="filterCatalog(this.value)" style="padding-top:9px;padding-bottom:9px"/>
+      </div>
+      <div class="cat-filters" style="margin:0;gap:6px">
+        <div class="chip active" id="catChip-all" onclick="setCatFilter('all',this)">All</div>
+        <div class="chip" id="catChip-Base" onclick="setCatFilter('Base',this)">Base</div>
+        <div class="chip" id="catChip-Insert" onclick="setCatFilter('Insert',this)">Inserts</div>
+        <div class="chip" id="catChip-Auto" onclick="setCatFilter('Auto',this)">Autos</div>
+        <div class="chip" id="catChip-Rookie" onclick="setCatFilter('Rookie',this)">Rookies</div>
+      </div>
+    </div>
+    <!-- Card list -->
+    <div class="set-card-list" id="setCatalogList">
+      <div class="set-loading" id="setCatalogLoading">Loading set data...</div>
+    </div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(0,170,255,.3);letter-spacing:1px;text-align:center;margin-top:12px" id="setCatalogMeta"></div>
   </div>
 
   <!-- ISOTICKER -->
@@ -892,8 +1006,19 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
       <div class="vm-card-detail" id="vmCardDetail"></div>
     </div>
 
-    <!-- Photo Upload -->
-    <div class="vm-section">
+    <!-- Catalog pic notice (shown when card already has a catalog image) -->
+    <div class="vm-section" id="vmCatalogPicNotice" style="display:none">
+      <div style="background:rgba(0,232,135,0.08);border:1px solid rgba(0,232,135,0.2);border-radius:8px;padding:14px;display:flex;align-items:flex-start;gap:12px">
+        <div style="font-size:22px;flex-shrink:0">🖼️</div>
+        <div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--white);margin-bottom:3px">Catalog Image Available</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--chrome);line-height:1.5">This card already has a catalog image — no photo upload needed. Just confirm your acquisition details and price paid below.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Photo Upload (hidden when hasCatalogPic) -->
+    <div class="vm-section" id="vmPhotoSection">
       <div class="vm-label">Card Photos <span class="req">*</span> <span style="color:rgba(0,170,255,0.5);font-size:10px">— BOTH REQUIRED</span></div>
       <div class="vm-upload-row">
         <div class="vm-upload-box" id="frontBox">
@@ -949,6 +1074,28 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
         </div>
       </div>
       <div class="vm-error" id="acqError">Please select how you obtained this card.</div>
+    </div>
+
+    <!-- Price Paid — MANDATORY -->
+    <div class="vm-section">
+      <div class="vm-price-wrap">
+        <div class="vm-label" style="margin-bottom:10px">Price Paid <span class="req">*</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div>
+            <div class="vm-label" style="margin-bottom:5px;font-size:10px">Amount (USD) <span class="req">*</span></div>
+            <input class="vm-input" type="number" id="vmPricePaid" min="0" step="0.01" placeholder="0.00" style="font-size:18px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;color:var(--blue)" oninput="document.getElementById('priceError').style.display='none'"/>
+          </div>
+          <div>
+            <div class="vm-label" style="margin-bottom:5px;font-size:10px">Date Acquired</div>
+            <input class="vm-input" type="date" id="vmDateAcquired" style="color-scheme:dark"/>
+          </div>
+        </div>
+        <div class="vm-price-required">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Price paid feeds the market value engine — required to track ROI
+        </div>
+      </div>
+      <div class="vm-error" id="priceError">Price paid is required.</div>
     </div>
 
     <!-- Progress + Submit -->
@@ -1064,18 +1211,22 @@ const CARDS=[
   {id:46,player:'Derek Jeter',year:1993,brand:'SP',set:'Foil',parallel:'RC',run:null,auto:false,rc:true,tags:['vintage','rc'],price:3200,isos:4},
   {id:47,player:'Hank Aaron',year:1954,brand:'Topps',set:'Base Set',parallel:'Base RC',run:null,auto:false,rc:true,tags:['vintage','rc'],price:12000,isos:2},
   {id:48,player:'Francisco Lindor',year:2015,brand:'Bowman',set:'Chrome',parallel:'Gold RC /50',run:50,auto:false,rc:true,tags:['rc','numbered'],price:340,isos:5},
-  {id:49,player:'Ichiro',year:2026,brand:'Topps',set:'Series 1 Mojo',parallel:'Base Mojo',run:null,auto:false,rc:false,tags:[],price:45,isos:7,cardNum:'#91C-25',hasCatalogPic:true,variations:[
-    {label:'Base Mojo',color:'#B0BEC5',glow:'rgba(176,190,197,0.4)',run:null,isBase:true,lastSale:'$45',isos:7,pop:214,watching:12},
-    {label:'Purple Mojo',color:'#9B59B6',glow:'rgba(155,89,182,0.55)',run:299,lastSale:'$110',isos:4,pop:88,watching:9},
-    {label:'Teal/Aqua Mojo',color:'#1ABC9C',glow:'rgba(26,188,156,0.5)',run:199,lastSale:'$155',isos:3,pop:64,watching:7},
-    {label:'Blue Mojo',color:'#3498DB',glow:'rgba(52,152,219,0.5)',run:150,lastSale:'$210',isos:2,pop:52,watching:11},
-    {label:'Green Mojo',color:'#2ECC71',glow:'rgba(46,204,113,0.5)',run:99,lastSale:'$320',isos:2,pop:36,watching:8},
-    {label:'Members SSP Gold Mojo',color:'#F1C40F',glow:'rgba(241,196,15,0.55)',run:50,ssp:true,lastSale:'$750',isos:1,pop:18,watching:14},
-    {label:'Orange Mojo',color:'#E67E22',glow:'rgba(230,126,34,0.5)',run:25,lastSale:'$1,200',isos:1,pop:9,watching:11},
-    {label:'Black Mojo',color:'#607D8B',glow:'rgba(96,125,139,0.5)',run:10,lastSale:'$2,400',isos:1,pop:4,watching:19},
-    {label:'Red Mojo',color:'#E74C3C',glow:'rgba(231,76,60,0.55)',run:5,lastSale:'$4,800',isos:0,pop:2,watching:22},
-    {label:'Superfractor Mojo',color:'#FFD700',glow:'rgba(255,215,0,0.7)',run:1,superfractor:true,lastSale:'$18,500',isos:0,pop:1,watching:41}
-  ]},
+  {
+    id:49, player:'Ichiro Suzuki', year:2026, brand:'Topps', set:'Series 1 Mojo',
+    parallel:'Base Mojo', run:null, auto:false, rc:false,
+    tags:['insert'], price:45, isos:7,
+    cardNum:'#91C-25', hasCatalogPic:true,
+    _setTable:'2026_series1_baseball', _cardNumber:'91C-25',
+    variations:[
+      {label:'Base Mojo',     color:'#00AAFF', glow:'rgba(0,170,255,0.45)',  run:null, isBase:true, lastSale:'$45',   isos:7,  pop:214, watching:12},
+      {label:'Blue /150',     color:'#4488FF', glow:'rgba(68,136,255,0.45)', run:150,  isBase:false,lastSale:'$78',   isos:3,  pop:82,  watching:5},
+      {label:'Gold /50',      color:'#FFC83C', glow:'rgba(255,200,60,0.5)',  run:50,   isBase:false,lastSale:'$195',  isos:2,  pop:24,  watching:8},
+      {label:'Red /25',       color:'#FF4444', glow:'rgba(255,68,68,0.5)',   run:25,   isBase:false,lastSale:'$280',  isos:1,  pop:12,  watching:4},
+      {label:'Black /10',     color:'#888888', glow:'rgba(160,160,160,0.4)', run:10,   isBase:false,lastSale:'$490',  isos:1,  pop:5,   watching:6},
+      {label:'Platinum /5',   color:'#C8E6FF', glow:'rgba(200,230,255,0.5)', run:5,    isBase:false,lastSale:'$820',  isos:0,  pop:2,   watching:3},
+      {label:'Superfractor 1/1',color:'#FFD700',glow:'rgba(255,215,0,0.7)', run:1, superfractor:true,isBase:false,lastSale:'$4,200',isos:0,pop:1,watching:19},
+    ]
+  },
 ];
 
 const MKT=[
@@ -1128,6 +1279,7 @@ const PM={
   account:{t:'ACCOUNT',s:'Verified buyer'},
   isoticker:{t:'ISOTICKER',s:'Your collection — value since purchase'},
   leaderboard:{t:'LEADERBOARD',s:'Top buyers · sellers · most wanted cards'},
+  sets:{t:'SET CATALOG',s:'Browse all sets — search any card'},
   carddetail:{t:'ISOVAULT',s:'Card detail'},
 };
 function N(id,el){
@@ -1142,6 +1294,7 @@ function N(id,el){
   if(id==='market')renderMkt();
   if(id==='post'){curStep=1;gS(1);}
   if(id==='overview')renderOvMkt();
+  if(id==='sets')initSetCatalog();
   if(id==='isoticker')initISOTicker();
 }
 
@@ -1260,18 +1413,18 @@ function renderLib(filt,search){
   if(s)cards=cards.filter(c=>c.player.toLowerCase().includes(s)||c.set.toLowerCase().includes(s)||c.brand.toLowerCase().includes(s)||c.parallel.toLowerCase().includes(s)||String(c.year).includes(s));
   const g=document.getElementById('libGrid');if(!g)return;
   g.innerHTML=cards.map(c=>{
-    const b=[c.auto?'<span class="badge auto">AUTO</span>':'',c.rc?'<span class="badge rc">RC</span>':'',c.run?`<span class="badge num">/${c.run}</span>`:'',c.tags.includes('vintage')?'<span class="badge vtg">VTG</span>':''].filter(Boolean).join('');
-    return`<div class="card-thumb" onclick="openCardDetail(${c.id})">
-      <div class="ct-img">⚾</div>
+    const b=[c.auto?'<span class="badge auto">AUTO</span>':'',c.rc?'<span class="badge rc">RC</span>':'',c.run?`<span class="badge num">/${c.run}</span>`:'',c.tags.includes('vintage')?'<span class="badge vtg">VTG</span>':'',c.hasCatalogPic?'<span class="badge" style="background:rgba(0,232,135,0.15);color:var(--green);border:1px solid rgba(0,232,135,0.3)">IMG</span>':''].filter(Boolean).join('');
+    return`<div class="card-thumb" onclick="openCardDetail(${c.id})" style="cursor:pointer;transition:border-color .2s" onmouseover="this.style.borderColor='rgba(0,170,255,0.4)'" onmouseout="this.style.borderColor=''">
+      <div class="ct-img" style="font-size:32px;background:${c.hasCatalogPic?'linear-gradient(135deg,#112840,#00AAFF33)':''}">⚾</div>
       <div class="ct-info">
         <div class="ct-player">${c.player}</div>
         <div class="ct-set">${c.year} ${c.brand} · ${c.parallel}</div>
         <div class="ct-price">$${c.price.toLocaleString()}</div>
         <div>${b}</div>
         <div class="ct-iso">${c.isos} active ISOs</div>
-        <div style="display:flex;gap:6px;margin-top:8px" onclick="event.stopPropagation()">
-          <button class="btn btn-primary btn-sm" style="flex:1;font-size:10px;padding:5px 8px" onclick="openVaultModal(CARDS.find(x=>x.id===${c.id}))">+ Add to Vault</button>
-          <button class="btn btn-ghost btn-sm" style="font-size:10px;padding:5px 8px" onclick="N('post',document.querySelector('[onclick*=post]'))">Post ISO</button>
+        <div style="display:flex;gap:6px;margin-top:8px">
+          <button class="btn btn-primary btn-sm" style="flex:1;font-size:10px;padding:5px 8px" onclick="event.stopPropagation();openCardDetail(${c.id})">View Detail</button>
+          <button class="btn btn-ghost btn-sm" style="font-size:10px;padding:5px 8px" onclick="event.stopPropagation();openVaultModal(CARDS.find(x=>x.id===${c.id}))">+ Vault</button>
         </div>
       </div>
     </div>`;
@@ -1287,201 +1440,6 @@ function libType(type,el){
   document.querySelectorAll('#libFilters .chip').forEach(c=>c.classList.remove('active'));
   el.classList.add('active');
   renderLib(type);
-}
-
-// ═══════════════════════════════════════
-// ISOVAULT CARD DETAIL
-// ═══════════════════════════════════════
-window._cdCard=null;
-window._cdActiveVar=null;
-let _cdRotX=0,_cdRotY=0,_cdFlipped=false,_cdDragging=false,_cdLastX=0,_cdLastY=0,_cdSpinner=null,_cdSpinning=false;
-
-function openCardDetail(cardId){
-  const c=CARDS.find(x=>x.id===cardId);
-  if(!c)return;
-  window._cdCard=c;
-  // Set breadcrumb
-  const sport='Baseball';
-  document.getElementById('cd-bc-sport').textContent=sport;
-  document.getElementById('cd-bc-brand').textContent=c.brand;
-  document.getElementById('cd-bc-year').textContent=c.year;
-  document.getElementById('cd-bc-set').textContent=c.set;
-  // Set title
-  document.getElementById('cd-title').textContent=`${c.year} ${c.brand} ${c.set} — ${c.player}`.toUpperCase();
-  document.getElementById('cd-sub').textContent=`${sport} · ${c.year} · ${c.brand} · ${c.set}`;
-  document.getElementById('cd-num').textContent=c.cardNum||'';
-  // Set vault path message
-  const pathMsg=document.getElementById('cd-path-msg');
-  if(c.hasCatalogPic){
-    pathMsg.innerHTML='<strong>This card has a catalog image.</strong> To add it to your vault, confirm how you acquired it and the price you paid — no photo upload needed.';
-  } else {
-    pathMsg.innerHTML='<strong>No catalog image yet.</strong> Upload a front + back photo of your card, then confirm acquisition details and price paid to add it to your vault.';
-  }
-  // Build variation pills
-  _buildVariationPills(c);
-  // Reset 3D state
-  _cdReset3D();
-  // Navigate to panel
-  N('carddetail',null);
-  // Init rotation listeners (safe — checks for existing)
-  _cdInitRotation();
-}
-
-function _buildVariationPills(c){
-  const pillsEl=document.getElementById('cd-pills');
-  if(!pillsEl)return;
-  const vars=c.variations||[{label:c.parallel,color:'#00AAFF',glow:'rgba(0,170,255,0.4)',run:c.run,isBase:true,lastSale:'$'+c.price,isos:c.isos,pop:null,watching:null}];
-  window._cdVars=vars;
-  pillsEl.innerHTML=vars.map((v,i)=>{
-    const runLabel=v.run?`<span class="pill-run">/${v.run}</span>`:'';
-    const sf=v.superfractor?'superfractor':'';
-    return`<div class="cd-pill${i===0?' active':''} ${sf}" id="cd-pill-${i}"
-      style="${i===0?`background:${v.color};border-color:${v.color};box-shadow:0 0 10px ${v.glow}`:''}"
-      onclick="cdSelectVar(${i})">${v.label}${runLabel}</div>`;
-  }).join('');
-  cdSelectVar(0,true);
-}
-
-function cdSelectVar(idx,skipShimmer){
-  const vars=window._cdVars||[];
-  const v=vars[idx];
-  if(!v)return;
-  window._cdActiveVar=idx;
-  // Update pills
-  vars.forEach((_,i)=>{
-    const p=document.getElementById('cd-pill-'+i);
-    if(!p)return;
-    const vv=vars[i];
-    if(i===idx){
-      p.classList.add('active');
-      p.style.background=vv.color;
-      p.style.borderColor=vv.color;
-      p.style.boxShadow=`0 0 12px ${vv.glow}`;
-    } else {
-      p.classList.remove('active');
-      p.style.background='';
-      p.style.borderColor='';
-      p.style.boxShadow='';
-    }
-  });
-  // Update currently viewing
-  const dot=document.getElementById('cd-curr-dot');
-  const name=document.getElementById('cd-curr-name');
-  const run=document.getElementById('cd-curr-run');
-  if(dot){dot.style.background=v.color;dot.style.boxShadow=`0 0 8px ${v.glow}`;}
-  if(name)name.textContent=v.label;
-  if(run)run.textContent=v.run?`/${v.run}`:'Open Edition';
-  // Update shadow glow
-  const shadow=document.getElementById('cd-shadow');
-  if(shadow)shadow.style.boxShadow=`0 20px 50px ${v.glow},0 0 30px ${v.glow}`;
-  // Update card face gradient
-  const front=document.getElementById('cd-placeholder-front');
-  if(front){
-    front.style.background=`linear-gradient(135deg, #112840, ${v.color}55, #1a3a5c)`;
-    front.style.borderRadius='10px';
-  }
-  // Update market block
-  const mktVar=document.getElementById('cd-mkt-var-name');
-  const lastSale=document.getElementById('cd-last-sale');
-  const activeIsos=document.getElementById('cd-active-isos');
-  const pop=document.getElementById('cd-pop');
-  const watchingCt=document.getElementById('cd-watching-ct');
-  if(mktVar)mktVar.textContent=v.label;
-  if(lastSale)lastSale.textContent=v.lastSale||'—';
-  if(activeIsos)activeIsos.textContent=v.isos!=null?v.isos:'—';
-  if(pop)pop.textContent=v.pop!=null?v.pop:'—';
-  if(watchingCt)watchingCt.textContent=v.watching!=null?v.watching:'—';
-  // Shimmer on non-base
-  if(!skipShimmer&&!v.isBase){
-    _cdShimmer();
-  }
-}
-
-function _cdShimmer(){
-  const front=document.getElementById('cd-front');
-  if(!front)return;
-  const old=front.querySelector('.cd-shimmer');
-  if(old)old.remove();
-  const sh=document.createElement('div');
-  sh.className='cd-shimmer';
-  front.appendChild(sh);
-  setTimeout(()=>sh.remove(),1300);
-}
-
-// ── 3D Rotation (mechanics from card-viewer.html) ──
-function _cdApplyTransform(){
-  const card=document.getElementById('cd-card');
-  if(!card)return;
-  card.style.transform='rotateY('+(_cdRotY+(_cdFlipped?180:0))+'deg) rotateX('+_cdRotX+'deg)';
-  const lbl=document.getElementById('cd-side-label');
-  if(lbl)lbl.textContent=_cdFlipped?'BACK · Drag to rotate':'FRONT · Drag to rotate';
-}
-
-function _cdReset3D(){
-  _cdRotX=0;_cdRotY=0;_cdFlipped=false;
-  if(_cdSpinner){clearInterval(_cdSpinner);_cdSpinner=null;_cdSpinning=false;}
-  const sb=document.getElementById('cd-spin-btn');
-  if(sb)sb.textContent='Auto Spin';
-  _cdApplyTransform();
-}
-
-let _cdListenersAttached=false;
-function _cdInitRotation(){
-  if(_cdListenersAttached)return;
-  _cdListenersAttached=true;
-  const scene=document.getElementById('cd-scene');
-  const gf=document.getElementById('cd-glare-front');
-  if(!scene)return;
-
-  scene.addEventListener('mousedown',function(e){
-    _cdDragging=true;_cdLastX=e.clientX;_cdLastY=e.clientY;
-    if(_cdSpinner){clearInterval(_cdSpinner);_cdSpinner=null;_cdSpinning=false;const sb=document.getElementById('cd-spin-btn');if(sb)sb.textContent='Auto Spin';}
-  });
-  window.addEventListener('mousemove',function(e){
-    if(!_cdDragging)return;
-    _cdRotY+=(e.clientX-_cdLastX)*0.5;
-    _cdRotX-=(e.clientY-_cdLastY)*0.5;
-    _cdRotX=Math.max(-60,Math.min(60,_cdRotX));
-    _cdLastX=e.clientX;_cdLastY=e.clientY;
-    const r=scene.getBoundingClientRect();
-    const g='radial-gradient(ellipse at '+((e.clientX-r.left)/r.width*100).toFixed(1)+'% '+((e.clientY-r.top)/r.height*100).toFixed(1)+'%, rgba(255,255,255,0.16) 0%, transparent 65%)';
-    if(gf){gf.style.background=g;gf.style.opacity='1';}
-    _cdApplyTransform();
-  });
-  window.addEventListener('mouseup',function(){_cdDragging=false;if(gf)gf.style.opacity='0';});
-  scene.addEventListener('wheel',function(e){
-    e.preventDefault();
-    _cdRotX=Math.max(-60,Math.min(60,_cdRotX+e.deltaY*0.08));
-    _cdApplyTransform();
-  },{passive:false});
-  scene.addEventListener('touchstart',function(e){_cdLastX=e.touches[0].clientX;_cdLastY=e.touches[0].clientY;});
-  scene.addEventListener('touchmove',function(e){
-    e.preventDefault();
-    _cdRotY+=(e.touches[0].clientX-_cdLastX)*0.5;
-    _cdRotX-=(e.touches[0].clientY-_cdLastY)*0.5;
-    _cdRotX=Math.max(-60,Math.min(60,_cdRotX));
-    _cdLastX=e.touches[0].clientX;_cdLastY=e.touches[0].clientY;
-    _cdApplyTransform();
-  },{passive:false});
-}
-
-function cdFlip(){
-  _cdFlipped=!_cdFlipped;_cdRotX=0;_cdRotY=0;_cdApplyTransform();
-}
-function cdToggleSpin(){
-  if(_cdSpinning){
-    clearInterval(_cdSpinner);_cdSpinner=null;_cdSpinning=false;
-    const sb=document.getElementById('cd-spin-btn');if(sb)sb.textContent='Auto Spin';
-  } else {
-    _cdSpinning=true;
-    const sb=document.getElementById('cd-spin-btn');if(sb)sb.textContent='Stop';
-    _cdSpinner=setInterval(function(){_cdRotY+=1;_cdApplyTransform();},16);
-  }
-}
-function cdReset(){_cdReset3D();}
-function backToVault(){
-  if(_cdSpinner){clearInterval(_cdSpinner);_cdSpinner=null;_cdSpinning=false;}
-  N('library',document.querySelector('[onclick*=library]'));
 }
 
 // ═══════════════════════════════════════
@@ -1809,9 +1767,11 @@ function openVaultModal(card){
   document.getElementById('vmSourceSection').style.display='none';
   document.getElementById('vmProgress').style.display='none';
   document.getElementById('vmProgressBar').style.width='0';
-  ['photoError','serialError','acqError','vmSubmitError'].forEach(id=>{document.getElementById(id).style.display='none';});
+  ['photoError','serialError','acqError','vmSubmitError','priceError'].forEach(id=>{document.getElementById(id).style.display='none';});
   ['acqRipped','acqPurchased'].forEach(id=>{document.getElementById(id).classList.remove('selected');});
   ['srcEbay','srcFacebook','srcLocal','srcIndividual'].forEach(id=>{document.getElementById(id).classList.remove('selected');});
+  document.getElementById('vmPricePaid').value='';
+  document.getElementById('vmDateAcquired').value='';
   document.getElementById('vmSubmitBtn').textContent='ADD TO MY VAULT';
   document.getElementById('vmSubmitBtn').disabled=false;
 
@@ -1819,8 +1779,21 @@ function openVaultModal(card){
   if(card){
     document.getElementById('vmCardInfo').style.display='block';
     document.getElementById('vmCardName').textContent=card.player;
-    document.getElementById('vmCardDetail').textContent=`${card.year} ${card.brand} · ${card.set} · ${card.parallel}`;
-    document.getElementById('vmSub').textContent=`Uploading: ${card.player}`;
+    document.getElementById('vmCardDetail').textContent=`${card.year||''} ${card.brand||''} · ${card.set||''} · ${card.parallel||''}`.trim().replace(/^·\s*/,'');
+    document.getElementById('vmSub').textContent=`Adding to vault: ${card.player}`;
+
+    // ── DUAL PATH ──────────────────────────────────────────
+    if(card.hasCatalogPic){
+      // Path 2: catalog image exists — no upload needed
+      document.getElementById('vmPhotoSection').style.display='none';
+      document.getElementById('vmCatalogPicNotice').style.display='block';
+      vmFrontFile=null; vmBackFile=null; // skip upload validation
+    } else {
+      // Path 1: no catalog image — user must upload
+      document.getElementById('vmPhotoSection').style.display='block';
+      document.getElementById('vmCatalogPicNotice').style.display='none';
+    }
+
     // Show serial section if numbered
     if(card.run){
       document.getElementById('vmSerialSection').style.display='block';
@@ -1830,6 +1803,8 @@ function openVaultModal(card){
     }
   } else {
     document.getElementById('vmCardInfo').style.display='none';
+    document.getElementById('vmPhotoSection').style.display='block';
+    document.getElementById('vmCatalogPicNotice').style.display='none';
     document.getElementById('vmSub').textContent='Upload front & back of your card to add it to your personal library.';
     document.getElementById('vmSerialSection').style.display='none';
   }
@@ -1898,9 +1873,14 @@ function selectSource(src){
 }
 
 async function submitVault(){
+  const hasCatalogPic = vmCard && vmCard.hasCatalogPic;
+
   // Validate
   let valid = true;
-  if(!vmFrontFile || !vmBackFile){ document.getElementById('photoError').style.display='block'; valid=false; }
+  // Photo validation — only required when no catalog pic
+  if(!hasCatalogPic && (!vmFrontFile || !vmBackFile)){
+    document.getElementById('photoError').style.display='block'; valid=false;
+  }
   const serialSection = document.getElementById('vmSerialSection');
   if(serialSection.style.display!=='none'){
     const sn = document.getElementById('vmSerialNum').value;
@@ -1909,72 +1889,98 @@ async function submitVault(){
   }
   if(!vmAcq){ document.getElementById('acqError').style.display='block'; valid=false; }
   if(vmAcq==='purchased' && !vmSource){ document.getElementById('acqError').textContent='Please select where you purchased it.'; document.getElementById('acqError').style.display='block'; valid=false; }
+  // Price paid — MANDATORY
+  const pricePaid = parseFloat(document.getElementById('vmPricePaid').value);
+  if(!document.getElementById('vmPricePaid').value || isNaN(pricePaid) || pricePaid < 0){
+    document.getElementById('priceError').style.display='block'; valid=false;
+  }
   if(!valid) return;
 
-  // Show progress
   const btn = document.getElementById('vmSubmitBtn');
-  btn.disabled=true; btn.textContent='UPLOADING...';
+  btn.disabled=true;
   document.getElementById('vmProgress').style.display='block';
-  document.getElementById('vmProgressBar').style.width='15%';
+  document.getElementById('vmProgressBar').style.width='10%';
 
   try {
     const { data:{ user } } = await supabase.auth.getUser();
-    if(!user) throw new Error('Not authenticated');
+    if(!user) throw new Error('Not authenticated — please sign in');
 
     const ts = Date.now();
     const uid = user.id.substring(0,8);
+    let frontURL = null;
+    let backURL = null;
 
-    // Upload front
-    document.getElementById('vmProgressBar').style.width='30%';
-    const frontPath = `${uid}/${ts}_front.jpg`;
-    const { error: fe } = await supabase.storage.from(BUCKET).upload(frontPath, vmFrontFile, { contentType:'image/jpeg', upsert:true });
-    if(fe) throw fe;
+    if(hasCatalogPic){
+      // Path 2: catalog image — no upload, just pull from set table if available
+      btn.textContent = 'SAVING...';
+      document.getElementById('vmProgressBar').style.width='60%';
+      // Try to fetch front_img/back_img from the set table
+      if(vmCard._setTable && vmCard._cardNumber){
+        const { data: setRow } = await supabase
+          .from(vmCard._setTable)
+          .select('front_img,back_img')
+          .eq('card_number', vmCard._cardNumber)
+          .eq('player', vmCard.player)
+          .maybeSingle();
+        if(setRow){ frontURL = setRow.front_img; backURL = setRow.back_img; }
+      }
+      document.getElementById('vmProgressBar').style.width='80%';
+    } else {
+      // Path 1: user uploads front + back
+      btn.textContent = 'UPLOADING...';
 
-    // Upload back
-    document.getElementById('vmProgressBar').style.width='60%';
-    const backPath = `${uid}/${ts}_back.jpg`;
-    const { error: be } = await supabase.storage.from(BUCKET).upload(backPath, vmBackFile, { contentType:'image/jpeg', upsert:true });
-    if(be) throw be;
+      document.getElementById('vmProgressBar').style.width='25%';
+      const frontPath = `${uid}/${ts}_front.jpg`;
+      const { error: fe } = await supabase.storage.from(BUCKET).upload(frontPath, vmFrontFile, { contentType:'image/jpeg', upsert:true });
+      if(fe) throw fe;
 
-    // Get public URLs
-    const frontURL = supabase.storage.from(BUCKET).getPublicUrl(frontPath).data.publicUrl;
-    const backURL = supabase.storage.from(BUCKET).getPublicUrl(backPath).data.publicUrl;
+      document.getElementById('vmProgressBar').style.width='55%';
+      const backPath = `${uid}/${ts}_back.jpg`;
+      const { error: be } = await supabase.storage.from(BUCKET).upload(backPath, vmBackFile, { contentType:'image/jpeg', upsert:true });
+      if(be) throw be;
 
-    document.getElementById('vmProgressBar').style.width='80%';
+      frontURL = supabase.storage.from(BUCKET).getPublicUrl(frontPath).data.publicUrl;
+      backURL  = supabase.storage.from(BUCKET).getPublicUrl(backPath).data.publicUrl;
+      document.getElementById('vmProgressBar').style.width='80%';
+    }
 
     // Write to vault table
+    const dateVal = document.getElementById('vmDateAcquired').value;
     const row = {
-      user_id: user.id,
-      card_id: vmCard ? vmCard.id : null,
-      player: vmCard ? vmCard.player : 'Unknown',
-      year: vmCard ? vmCard.year : null,
-      brand: vmCard ? vmCard.brand : null,
-      set_name: vmCard ? vmCard.set : null,
-      parallel: vmCard ? vmCard.parallel : null,
-      front_image_url: frontURL,
-      back_image_url: backURL,
-      serial_number: document.getElementById('vmSerialSection').style.display!=='none' ? parseInt(document.getElementById('vmSerialNum').value)||null : null,
-      serial_total: vmCard ? vmCard.run||null : null,
-      acquisition_type: vmAcq,
-      purchase_source: vmSource,
-      estimated_value: vmCard ? vmCard.price : null,
+      user_id:           user.id,
+      card_id:           vmCard ? vmCard.id : null,
+      player:            vmCard ? vmCard.player : 'Unknown',
+      year:              vmCard ? vmCard.year : null,
+      brand:             vmCard ? vmCard.brand : null,
+      set_name:          vmCard ? (vmCard.set || vmCard._setTable || null) : null,
+      parallel:          vmCard ? vmCard.parallel : null,
+      front_image_url:   frontURL,
+      back_image_url:    backURL,
+      serial_number:     serialSection.style.display!=='none' ? parseInt(document.getElementById('vmSerialNum').value)||null : null,
+      serial_total:      vmCard ? vmCard.run||null : null,
+      acquisition_type:  vmAcq,
+      purchase_source:   vmSource,
+      price_paid:        pricePaid,
+      date_acquired:     dateVal || null,
+      estimated_value:   vmCard ? vmCard.price : null,
+      has_catalog_pic:   hasCatalogPic || false,
+      card_number:       vmCard ? (vmCard.cardNum || vmCard._cardNumber || null) : null,
+      team:              vmCard ? (vmCard._team || null) : null,
     };
 
     const { error: ve } = await supabase.from('vault').insert(row);
     if(ve) throw ve;
 
     document.getElementById('vmProgressBar').style.width='100%';
-    btn.textContent='✓ ADDED TO VAULT!';
-    btn.style.background='var(--green)';
+    btn.textContent = '✓ ADDED!';
+    btn.style.background = 'var(--green)';
 
     setTimeout(()=>{
       closeVaultModal();
-      btn.style.background='';
-      // Refresh My Vault panel if active
+      btn.style.background = '';
       renderMyVault();
-      // Give vault credit
-      T('Card added to your vault! +1 ISO credit awarded.');
-    }, 1200);
+      T(`${vmCard?.player||'Card'} added to vault · $${pricePaid.toLocaleString()} paid · Market engine updated`);
+    }, 1100);
 
   } catch(err){
     document.getElementById('vmSubmitError').textContent = err.message || 'Upload failed. Try again.';
@@ -1985,34 +1991,91 @@ async function submitVault(){
 }
 
 function renderMyVault(){
-  // Pull from Supabase vault table for current user
+  const grid  = document.getElementById('myVaultGrid');
+  const empty = document.getElementById('myVaultEmpty');
+
   supabase.auth.getUser().then(({data:{user}})=>{
-    if(!user) return;
-    supabase.from('vault').select('*').eq('user_id',user.id).order('created_at',{ascending:false}).then(({data,error})=>{
-      const grid = document.getElementById('myVaultGrid');
-      const empty = document.getElementById('myVaultEmpty');
-      if(error||!data||!data.length){
-        if(grid) grid.style.display='none';
-        if(empty) empty.style.display='block';
-        return;
-      }
-      if(empty) empty.style.display='none';
-      if(grid){
+    if(!user){
+      if(grid)  grid.style.display='none';
+      if(empty) empty.style.display='block';
+      return;
+    }
+    supabase
+      .from('vault')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at',{ascending:false})
+      .then(({data, error})=>{
+        if(error || !data || !data.length){
+          if(grid)  grid.style.display='none';
+          if(empty) empty.style.display='block';
+          return;
+        }
+        if(empty) empty.style.display='none';
+        if(!grid) return;
         grid.style.display='grid';
-        grid.innerHTML = data.map(c=>`
-          <div class="card-thumb">
-            <div class="ct-img" style="background:rgba(0,170,255,0.08);overflow:hidden;padding:0">
-              ${c.front_image_url ? `<img src="${c.front_image_url}" style="width:100%;height:100%;object-fit:cover">` : '⚾'}
+
+        // Summary bar
+        const totalPaid    = data.reduce((s,c)=>s+(parseFloat(c.price_paid)||0),0);
+        const totalEst     = data.reduce((s,c)=>s+(parseFloat(c.estimated_value)||0),0);
+        const gainLoss     = totalEst - totalPaid;
+        const gainPct      = totalPaid>0 ? ((gainLoss/totalPaid)*100).toFixed(1) : 0;
+        const glClass      = gainLoss>=0?'green':'red';
+
+        let summaryHtml = `
+          <div style="grid-column:1/-1;background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:4px">
+            <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Cards in Vault</div>
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--white)">${data.length}</div></div>
+            <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Total Cost Basis</div>
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--white)">$${totalPaid.toLocaleString()}</div></div>
+            <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Est. Market Value</div>
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--blue)">$${totalEst.toLocaleString()}</div></div>
+            <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Unrealized Gain/Loss</div>
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--${glClass})">${gainLoss>=0?'+':''}\$${Math.abs(gainLoss).toLocaleString()} <span style="font-size:14px;opacity:.7">(${gainLoss>=0?'+':''}${gainPct}%)</span></div></div>
+          </div>`;
+
+        const cardsHtml = data.map(c=>{
+          const paid  = parseFloat(c.price_paid)||0;
+          const est   = parseFloat(c.estimated_value)||0;
+          const gl    = est - paid;
+          const glPct = paid>0?((gl/paid)*100).toFixed(1):null;
+          const glColor = gl>=0?'var(--green)':'var(--red)';
+          const acqDate = c.date_acquired ? new Date(c.date_acquired).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : null;
+          const imgSrc = c.front_image_url;
+          return `
+          <div class="card-thumb" style="position:relative">
+            <div class="ct-img" style="height:110px;background:rgba(0,170,255,0.06);overflow:hidden;padding:0;position:relative">
+              ${imgSrc
+                ? `<img src="${imgSrc}" style="width:100%;height:100%;object-fit:cover" loading="lazy">`
+                : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:30px;color:rgba(0,170,255,0.3)">⚾</div>`}
+              <div style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.6);border-radius:4px;padding:2px 6px;font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:${c.acquisition_type==='ripped'?'var(--green)':'var(--blue)'}">
+                ${c.acquisition_type==='ripped'?'📦 Ripped':'💰 Purchased'}
+              </div>
             </div>
-            <div class="ct-info">
+            <div class="ct-info" style="padding-bottom:12px">
               <div class="ct-player">${c.player||'Unknown'}</div>
-              <div class="ct-set">${c.year||''} ${c.brand||''} · ${c.parallel||''}</div>
-              ${c.serial_number ? `<div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--blue);margin-top:3px">#${c.serial_number}/${c.serial_total||'?'}</div>` : ''}
-              <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text);margin-top:3px;text-transform:uppercase;letter-spacing:.5px">${c.acquisition_type==='ripped'?'📦 Ripped':'💰 Purchased'}</div>
-              ${c.estimated_value ? `<div class="ct-price">~$${c.estimated_value.toLocaleString()}</div>` : ''}
+              <div class="ct-set">${c.year||''} ${c.brand||''} · ${c.set_name||c.parallel||''}</div>
+              ${c.card_number?`<div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(0,170,255,0.6);margin-top:2px;letter-spacing:.5px">${c.card_number}</div>`:''}
+              ${c.serial_number?`<div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--blue);margin-top:2px">#${c.serial_number}/${c.serial_total||'?'}</div>`:''}
+              <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--deep-border)">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">Paid</div>
+                  <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--white)">$${paid.toLocaleString()}</div>
+                </div>
+                ${est?`<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">Est. Value</div>
+                  <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--blue)">$${est.toLocaleString()}</div>
+                </div>
+                <div style="display:flex;justify-content:flex-end">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:${glColor}">${gl>=0?'+':''}\$${Math.abs(gl).toLocaleString()}${glPct?` (${gl>=0?'+':''}${glPct}%)`:''}</div>
+                </div>`:''}
+                ${acqDate?`<div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted-text);margin-top:4px">${acqDate}</div>`:''}
+              </div>
             </div>
-          </div>`).join('');
-      }
+          </div>`;
+        }).join('');
+
+        grid.innerHTML = summaryHtml + cardsHtml;
     });
   });
 }
@@ -2158,6 +2221,682 @@ function renderMyVault(){
   loadScores();
   setInterval(()=>{ if(scoresMode) loadScores(); }, 90000);
 })();
+
+// ═══════════════════════════════════════
+// ═══════════════════════════════════════
+// ISOVAULT CARD DETAIL — Full Engine
+// ═══════════════════════════════════════
+window._cdCard = null;
+window._cdVars = [];
+window._cdActiveVar = 0;
+let _cdRotX=0, _cdRotY=0, _cdFlipped=false;
+let _cdDragging=false, _cdLastX=0, _cdLastY=0;
+let _cdSpinner=null, _cdSpinning=false;
+let _cdListenersAttached=false;
+let _cdCatalogFrontBlob=null, _cdCatalogBackBlob=null;
+
+async function openCardDetail(cardId){
+  const c = CARDS.find(x=>x.id===cardId);
+  if(!c) return;
+  window._cdCard = c;
+
+  // Breadcrumb
+  document.getElementById('cd-bc-sport').textContent = 'Baseball';
+  document.getElementById('cd-bc-brand').textContent = c.brand;
+  document.getElementById('cd-bc-year').textContent  = c.year;
+  document.getElementById('cd-bc-set').textContent   = c.set;
+
+  // Title block
+  document.getElementById('cd-title').textContent = `${c.year} ${c.brand} ${c.set} — ${c.player}`.toUpperCase();
+  document.getElementById('cd-sub').textContent   = `Baseball · ${c.year} · ${c.brand} · ${c.set}`;
+  document.getElementById('cd-num').textContent   = c.cardNum || '';
+
+  // Vault CTA path message
+  const pathMsg = document.getElementById('cd-path-msg');
+  if(c.hasCatalogPic){
+    pathMsg.innerHTML = '<strong>This card has a catalog image.</strong> Confirm how you acquired it and the price you paid — no photo upload needed.';
+  } else {
+    pathMsg.innerHTML = '<strong>No catalog image yet.</strong> Upload front + back, then confirm acquisition details and price paid.';
+  }
+
+  // Reset viewer to placeholder state
+  _cdSetViewerImages(null, null);
+
+  // Reset 3D state
+  _cdReset3D();
+
+  // Build variation pills first (so UI is responsive immediately)
+  _buildVariationPills(c);
+
+  // Navigate
+  N('carddetail', null);
+  _cdInitRotation();
+
+  // Now fetch catalog images from Supabase (async — loads in behind the scene)
+  await _cdLoadCatalogImages(c);
+}
+
+async function _cdLoadCatalogImages(c){
+  const statusEl = document.getElementById('cd-img-status');
+  const uploadBtn = document.getElementById('cd-upload-btn');
+
+  // Only Series 1 has the 91C cards in Supabase — map card to table
+  // Use _setTable if available, otherwise guess from year/brand
+  const table = c._setTable || _cdGuessTable(c);
+  if(!table){ _cdShowUploadBtn(true); return; }
+
+  const cardNum = c.cardNum ? c.cardNum.replace('#','') : null;
+  if(!cardNum){ _cdShowUploadBtn(true); return; }
+
+  if(statusEl){ statusEl.style.display='block'; statusEl.textContent='Loading images...'; statusEl.style.color='var(--muted-text)'; }
+
+  const { data, error } = await supabase
+    .from(table)
+    .select('front_img,back_img')
+    .eq('card_number', cardNum)
+    .eq('player', c.player)
+    .maybeSingle();
+
+  if(error || !data){
+    if(statusEl){ statusEl.textContent='No catalog image'; statusEl.style.color='rgba(122,149,174,0.5)'; }
+    _cdShowUploadBtn(true);
+    return;
+  }
+
+  if(data.front_img || data.back_img){
+    _cdSetViewerImages(data.front_img, data.back_img);
+    if(statusEl){ statusEl.textContent='✓ Catalog image loaded'; statusEl.style.color='var(--green)';
+      setTimeout(()=>{ statusEl.style.display='none'; }, 2500); }
+    _cdShowUploadBtn(false); // Has image — hide upload btn (or keep as "Replace")
+    // If front loaded, show replace option subtly
+    if(uploadBtn){ uploadBtn.textContent='Replace Image'; uploadBtn.style.display='inline-flex'; }
+  } else {
+    if(statusEl){ statusEl.textContent='No catalog image yet'; statusEl.style.color='rgba(122,149,174,0.5)'; }
+    _cdShowUploadBtn(true);
+  }
+}
+
+function _cdGuessTable(c){
+  if(c.year===2026 && c.brand==='Topps' && c.set && c.set.toLowerCase().includes('series')) return '2026_series1_baseball';
+  if(c.year===2026 && c.set && c.set.toLowerCase().includes('heritage')) return '2026_heritage_baseball';
+  if(c.year===2025 && c.set && c.set.toLowerCase().includes('stadium')) return '2025_stadium_club_v2';
+  return null;
+}
+
+function _cdShowUploadBtn(show){
+  const btn = document.getElementById('cd-upload-btn');
+  if(!btn) return;
+  if(show){
+    btn.textContent = '📷 Upload Image';
+    btn.style.display = 'inline-flex';
+  } else {
+    // Leave visible as "Replace Image" — set in caller
+  }
+}
+
+function _cdSetViewerImages(frontUrl, backUrl){
+  const imgFront = document.getElementById('cd-img-front');
+  const phFront  = document.getElementById('cd-placeholder-front');
+  const imgBack  = document.getElementById('cd-img-back');
+  const phBack   = document.getElementById('cd-placeholder-back');
+
+  if(frontUrl && imgFront){
+    imgFront.src = frontUrl;
+    imgFront.style.display = 'block';
+    if(phFront) phFront.style.display = 'none';
+  } else {
+    if(imgFront) imgFront.style.display = 'none';
+    if(phFront)  phFront.style.display  = 'flex';
+  }
+
+  if(backUrl && imgBack){
+    imgBack.src = backUrl;
+    imgBack.style.display = 'block';
+    if(phBack) phBack.style.display = 'none';
+  } else {
+    if(imgBack) imgBack.style.display = 'none';
+    if(phBack)  phBack.style.display  = 'flex';
+  }
+}
+
+// ── Variation Pills ─────────────────────────────────────────
+function _buildVariationPills(c){
+  const pillsEl = document.getElementById('cd-pills');
+  if(!pillsEl) return;
+  const vars = c.variations || [{
+    label: c.parallel, color:'#00AAFF', glow:'rgba(0,170,255,0.4)',
+    run: c.run, isBase:true, lastSale:'$'+c.price, isos:c.isos, pop:null, watching:null
+  }];
+  window._cdVars = vars;
+  pillsEl.innerHTML = vars.map((v,i)=>{
+    const runLabel = v.run ? `<span class="pill-run">/${v.run}</span>` : '';
+    const sfClass  = v.superfractor ? 'superfractor' : '';
+    return `<div class="cd-pill ${i===0?'active':''} ${sfClass}" id="cd-pill-${i}"
+      style="${i===0?`background:${v.color};border-color:${v.color};box-shadow:0 0 10px ${v.glow}`:''}"
+      onclick="cdSelectVar(${i})">${v.label}${runLabel}</div>`;
+  }).join('');
+  cdSelectVar(0, true);
+}
+
+function cdSelectVar(idx, skipShimmer){
+  const vars = window._cdVars || [];
+  const v = vars[idx];
+  if(!v) return;
+  window._cdActiveVar = idx;
+
+  // Update pills
+  vars.forEach((_,i)=>{
+    const p = document.getElementById('cd-pill-'+i);
+    if(!p) return;
+    const vv = vars[i];
+    if(i===idx){
+      p.classList.add('active');
+      p.style.background  = vv.color;
+      p.style.borderColor = vv.color;
+      p.style.boxShadow   = `0 0 12px ${vv.glow}`;
+    } else {
+      p.classList.remove('active');
+      p.style.background = p.style.borderColor = p.style.boxShadow = '';
+    }
+  });
+
+  // Currently viewing block
+  const dot  = document.getElementById('cd-curr-dot');
+  const name = document.getElementById('cd-curr-name');
+  const run  = document.getElementById('cd-curr-run');
+  if(dot)  { dot.style.background = v.color; dot.style.boxShadow = `0 0 8px ${v.glow}`; }
+  if(name)   name.textContent = v.label;
+  if(run)    run.textContent  = v.run ? `/${v.run}` : 'Open Edition';
+
+  // Shadow glow
+  const shadow = document.getElementById('cd-shadow');
+  if(shadow) shadow.style.boxShadow = `0 20px 50px ${v.glow},0 0 30px ${v.glow}`;
+
+  // Update placeholder gradient tint (only when no real image)
+  const ph = document.getElementById('cd-placeholder-front');
+  const imgF = document.getElementById('cd-img-front');
+  if(ph && imgF && imgF.style.display==='none'){
+    ph.style.background = `linear-gradient(135deg,#112840,${v.color}55,#1a3a5c)`;
+  }
+
+  // Market block
+  const mktVar    = document.getElementById('cd-mkt-var-name');
+  const lastSale  = document.getElementById('cd-last-sale');
+  const activeISO = document.getElementById('cd-active-isos');
+  const pop       = document.getElementById('cd-pop');
+  const watching  = document.getElementById('cd-watching-ct');
+  if(mktVar)   mktVar.textContent   = v.label;
+  if(lastSale) lastSale.textContent = v.lastSale || '—';
+  if(activeISO)activeISO.textContent= v.isos!=null ? v.isos : '—';
+  if(pop)      pop.textContent      = v.pop!=null  ? v.pop  : '—';
+  if(watching) watching.textContent = v.watching!=null ? v.watching : '—';
+
+  // Shimmer on non-base parallels
+  if(!skipShimmer && !v.isBase) _cdShimmer();
+}
+
+function _cdShimmer(){
+  const shimEl = document.getElementById('cd-shimmer-el');
+  if(!shimEl) return;
+  shimEl.style.display = 'block';
+  shimEl.style.animation = 'none';
+  void shimEl.offsetWidth; // reflow to restart
+  shimEl.style.animation = 'shimmerSlide 1.2s ease forwards';
+  setTimeout(()=>{ shimEl.style.display='none'; }, 1300);
+}
+
+// ── 3D Rotation Engine ──────────────────────────────────────
+function _cdApplyTransform(){
+  const card = document.getElementById('cd-card');
+  if(!card) return;
+  card.style.transform = `rotateY(${_cdRotY+(_cdFlipped?180:0)}deg) rotateX(${_cdRotX}deg)`;
+  const lbl = document.getElementById('cd-side-label');
+  if(lbl) lbl.textContent = _cdFlipped ? 'BACK · Drag to rotate' : 'FRONT · Drag to rotate';
+}
+
+function _cdReset3D(){
+  _cdRotX=0; _cdRotY=0; _cdFlipped=false;
+  if(_cdSpinner){ clearInterval(_cdSpinner); _cdSpinner=null; _cdSpinning=false; }
+  const sb = document.getElementById('cd-spin-btn');
+  if(sb) sb.textContent = 'Auto Spin';
+  _cdApplyTransform();
+}
+
+function _cdInitRotation(){
+  if(_cdListenersAttached) return;
+  _cdListenersAttached = true;
+  const scene  = document.getElementById('cd-scene');
+  const glareF = document.getElementById('cd-glare-front');
+  if(!scene) return;
+
+  scene.addEventListener('mousedown', e=>{
+    _cdDragging=true; _cdLastX=e.clientX; _cdLastY=e.clientY;
+    if(_cdSpinner){ clearInterval(_cdSpinner); _cdSpinner=null; _cdSpinning=false;
+      const sb=document.getElementById('cd-spin-btn'); if(sb) sb.textContent='Auto Spin'; }
+  });
+
+  window.addEventListener('mousemove', e=>{
+    if(!_cdDragging) return;
+    _cdRotY += (e.clientX-_cdLastX)*0.5;
+    _cdRotX -= (e.clientY-_cdLastY)*0.5;
+    _cdRotX  = Math.max(-60, Math.min(60, _cdRotX));
+    _cdLastX=e.clientX; _cdLastY=e.clientY;
+    const r = scene.getBoundingClientRect();
+    if(glareF){
+      glareF.style.background = `radial-gradient(ellipse at ${((e.clientX-r.left)/r.width*100).toFixed(1)}% ${((e.clientY-r.top)/r.height*100).toFixed(1)}%, rgba(255,255,255,0.16) 0%, transparent 65%)`;
+      glareF.style.opacity = '1';
+    }
+    _cdApplyTransform();
+  });
+
+  window.addEventListener('mouseup', ()=>{ _cdDragging=false; if(glareF) glareF.style.opacity='0'; });
+
+  scene.addEventListener('wheel', e=>{
+    e.preventDefault();
+    _cdRotX = Math.max(-60, Math.min(60, _cdRotX + e.deltaY*0.08));
+    _cdApplyTransform();
+  },{passive:false});
+
+  scene.addEventListener('touchstart', e=>{ _cdLastX=e.touches[0].clientX; _cdLastY=e.touches[0].clientY; });
+  scene.addEventListener('touchmove', e=>{
+    e.preventDefault();
+    _cdRotY += (e.touches[0].clientX-_cdLastX)*0.5;
+    _cdRotX -= (e.touches[0].clientY-_cdLastY)*0.5;
+    _cdRotX  = Math.max(-60, Math.min(60, _cdRotX));
+    _cdLastX=e.touches[0].clientX; _cdLastY=e.touches[0].clientY;
+    _cdApplyTransform();
+  },{passive:false});
+}
+
+function cdFlip(){
+  _cdFlipped=!_cdFlipped; _cdRotX=0; _cdRotY=0; _cdApplyTransform();
+}
+function cdToggleSpin(){
+  if(_cdSpinning){
+    clearInterval(_cdSpinner); _cdSpinner=null; _cdSpinning=false;
+    const sb=document.getElementById('cd-spin-btn'); if(sb) sb.textContent='Auto Spin';
+  } else {
+    _cdSpinning=true;
+    const sb=document.getElementById('cd-spin-btn'); if(sb) sb.textContent='Stop';
+    _cdSpinner = setInterval(()=>{ _cdRotY+=1; _cdApplyTransform(); }, 16);
+  }
+}
+function cdReset(){ _cdReset3D(); }
+function backToVault(){
+  if(_cdSpinner){ clearInterval(_cdSpinner); _cdSpinner=null; _cdSpinning=false; }
+  N('library', document.querySelector('[onclick*="library"]'));
+}
+
+// ── Catalog Image Upload ────────────────────────────────────
+function openCatalogUpload(){
+  _cdCatalogFrontBlob=null; _cdCatalogBackBlob=null;
+  ['cdFrontBox','cdBackBox'].forEach(id=>document.getElementById(id).classList.remove('has-file'));
+  ['cdFrontName','cdBackName'].forEach(id=>document.getElementById(id).textContent='');
+  ['cdFrontPreview','cdBackPreview'].forEach(id=>{ const el=document.getElementById(id); el.style.display='none'; el.src=''; });
+  ['cdFrontFile','cdBackFile'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('cdUploadError').style.display='none';
+  document.getElementById('cdUploadProgress').style.display='none';
+  document.getElementById('cdUploadProgressBar').style.width='0';
+  const btn=document.getElementById('cdUploadSubmitBtn');
+  btn.textContent='SAVE TO CATALOG'; btn.disabled=false;
+  const c=window._cdCard;
+  if(c) document.getElementById('cdUploadSub').textContent=
+    `${c.player} · ${c.year} ${c.brand} ${c.set} · ${c.cardNum||''}`;
+  document.getElementById('cdUploadOverlay').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+
+function closeCatalogUpload(){
+  document.getElementById('cdUploadOverlay').style.display='none';
+  document.body.style.overflow='';
+}
+
+function handleCatalogUpload(input, side){
+  const file=input.files[0]; if(!file) return;
+  if(file.size>10*1024*1024){ alert('Max 10MB'); input.value=''; return; }
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{
+      const canvas=document.createElement('canvas');
+      const maxW=1200; const scale=img.width>maxW?maxW/img.width:1;
+      canvas.width=Math.round(img.width*scale); canvas.height=Math.round(img.height*scale);
+      canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+      canvas.toBlob(blob=>{
+        if(side==='front') _cdCatalogFrontBlob=blob;
+        else               _cdCatalogBackBlob=blob;
+        const box=document.getElementById(side==='front'?'cdFrontBox':'cdBackBox');
+        box.classList.add('has-file');
+        document.getElementById(side==='front'?'cdFrontName':'cdBackName').textContent=file.name;
+        const prev=document.getElementById(side==='front'?'cdFrontPreview':'cdBackPreview');
+        prev.src=canvas.toDataURL('image/jpeg',0.85); prev.style.display='block';
+        document.getElementById('cdUploadError').style.display='none';
+      },'image/jpeg',0.85);
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function submitCatalogUpload(){
+  if(!_cdCatalogFrontBlob||!_cdCatalogBackBlob){
+    document.getElementById('cdUploadError').style.display='block'; return;
+  }
+  const c=window._cdCard; if(!c) return;
+  const table=c._setTable||_cdGuessTable(c);
+  const cardNum=c.cardNum?c.cardNum.replace('#',''):null;
+  if(!table||!cardNum){ T('Cannot identify set table for this card.'); return; }
+
+  const btn=document.getElementById('cdUploadSubmitBtn');
+  btn.disabled=true; btn.textContent='UPLOADING...';
+  document.getElementById('cdUploadProgress').style.display='block';
+  const bar=document.getElementById('cdUploadProgressBar');
+  bar.style.width='15%';
+
+  try {
+    const ts=Date.now();
+    const slug=`catalog/${table}/${cardNum.replace(/[^a-zA-Z0-9-]/g,'_')}`;
+
+    // Upload front
+    bar.style.width='30%';
+    const { error:fe } = await supabase.storage.from('card-images')
+      .upload(`${slug}_front_${ts}.jpg`, _cdCatalogFrontBlob, {contentType:'image/jpeg',upsert:true});
+    if(fe) throw fe;
+
+    // Upload back
+    bar.style.width='60%';
+    const { error:be } = await supabase.storage.from('card-images')
+      .upload(`${slug}_back_${ts}.jpg`, _cdCatalogBackBlob, {contentType:'image/jpeg',upsert:true});
+    if(be) throw be;
+
+    const frontURL = supabase.storage.from('card-images').getPublicUrl(`${slug}_front_${ts}.jpg`).data.publicUrl;
+    const backURL  = supabase.storage.from('card-images').getPublicUrl(`${slug}_back_${ts}.jpg`).data.publicUrl;
+
+    bar.style.width='80%';
+
+    // Write URLs back to set table row
+    const { error:ue } = await supabase
+      .from(table)
+      .update({ front_img: frontURL, back_img: backURL })
+      .eq('card_number', cardNum)
+      .eq('player', c.player);
+    if(ue) throw ue;
+
+    bar.style.width='100%';
+    btn.textContent='✓ SAVED!';
+
+    // Load images live into the 3D viewer
+    _cdSetViewerImages(frontURL, backURL);
+    const statusEl=document.getElementById('cd-img-status');
+    if(statusEl){ statusEl.style.display='block'; statusEl.textContent='✓ Catalog image live'; statusEl.style.color='var(--green)';
+      setTimeout(()=>statusEl.style.display='none', 3000); }
+
+    // Update upload button to "Replace Image"
+    const upBtn=document.getElementById('cd-upload-btn');
+    if(upBtn) upBtn.textContent='Replace Image';
+
+    // Also mark hasCatalogPic on the local card object
+    c.hasCatalogPic=true;
+    const pathMsg=document.getElementById('cd-path-msg');
+    if(pathMsg) pathMsg.innerHTML='<strong>Catalog image saved.</strong> Confirm acquisition details and price paid to add to your vault.';
+
+    setTimeout(()=>{ closeCatalogUpload(); T(`Catalog image saved for ${c.player} ${c.cardNum||''}`); }, 900);
+
+  } catch(err){
+    btn.disabled=false; btn.textContent='SAVE TO CATALOG';
+    bar.style.width='0';
+    document.getElementById('cdUploadError').textContent=err.message||'Upload failed — try again.';
+    document.getElementById('cdUploadError').style.display='block';
+  }
+}
+
+// ═══════════════════════════════════════
+// SET CATALOG — Live Supabase
+// ═══════════════════════════════════════
+const SET_TABLES = {
+  '2026_series1_baseball':  { label:'2026 Topps Series 1',    countId:'setCount-series1', tileId:'setTile-series1'  },
+  '2026_heritage_baseball': { label:'2026 Topps Heritage',     countId:'setCount-heritage', tileId:'setTile-heritage' },
+  '2025_stadium_club_v2':   { label:'2025 Stadium Club',       countId:'setCount-stadium',  tileId:'setTile-stadium'  },
+};
+
+let _activeSetTable = '2026_series1_baseball';
+let _catalogData = [];          // full set rows from Supabase
+let _catFilter = 'all';
+let _catSearch = '';
+
+async function initSetCatalog(){
+  // Load counts for all 3 set tiles
+  for(const [table, meta] of Object.entries(SET_TABLES)){
+    supabase.from(table).select('*', {count:'exact', head:true}).then(({count})=>{
+      const el = document.getElementById(meta.countId);
+      if(el) el.textContent = count ? `${count.toLocaleString()} cards` : 'Loading...';
+    });
+  }
+  await loadSetTable(_activeSetTable);
+}
+
+async function loadSetTable(table){
+  _activeSetTable = table;
+  _catFilter = 'all';
+  _catSearch = '';
+  const searchEl = document.getElementById('setCatalogSearch');
+  if(searchEl) searchEl.value = '';
+  // Reset cat chips
+  document.querySelectorAll('[id^="catChip-"]').forEach(c=>c.classList.remove('active'));
+  const allChip = document.getElementById('catChip-all');
+  if(allChip) allChip.classList.add('active');
+
+  const listEl = document.getElementById('setCatalogList');
+  if(listEl) listEl.innerHTML = '<div class="set-loading">Loading cards...</div>';
+
+  // Pull from Supabase — paginated 1000 at a time
+  let all = [];
+  let from = 0;
+  const PAGE = 1000;
+  while(true){
+    const { data, error } = await supabase
+      .from(table)
+      .select('player,card_number,set_name,year,sport,team,category,insert_name,is_rookie')
+      .range(from, from + PAGE - 1)
+      .order('card_number', {ascending:true});
+    if(error || !data || !data.length) break;
+    all = all.concat(data);
+    if(data.length < PAGE) break;
+    from += PAGE;
+  }
+
+  _catalogData = all;
+  renderCatalogList();
+
+  const metaEl = document.getElementById('setCatalogMeta');
+  if(metaEl) metaEl.textContent = `${all.length.toLocaleString()} CARDS LOADED FROM SUPABASE · ${SET_TABLES[table]?.label || table}`;
+}
+
+function renderCatalogList(){
+  const listEl = document.getElementById('setCatalogList');
+  if(!listEl) return;
+
+  let rows = [..._catalogData];
+
+  // Category filter
+  if(_catFilter !== 'all'){
+    if(_catFilter === 'Rookie') rows = rows.filter(r => r.is_rookie === true || r.is_rookie === 'true' || r.is_rookie === 'True');
+    else rows = rows.filter(r => (r.category||'').toLowerCase() === _catFilter.toLowerCase());
+  }
+
+  // Search
+  if(_catSearch){
+    const q = _catSearch.toLowerCase();
+    rows = rows.filter(r =>
+      (r.player||'').toLowerCase().includes(q) ||
+      (r.card_number||'').toLowerCase().includes(q) ||
+      (r.insert_name||'').toLowerCase().includes(q) ||
+      (r.team||'').toLowerCase().includes(q) ||
+      (r.category||'').toLowerCase().includes(q)
+    );
+  }
+
+  if(!rows.length){
+    listEl.innerHTML = '<div class="set-loading" style="opacity:.5">No cards match — try a different filter or search</div>';
+    return;
+  }
+
+  // Header row
+  let html = `<div class="set-card-row hdr">
+    <div class="scr-hdr">#</div>
+    <div class="scr-hdr">Player</div>
+    <div class="scr-hdr">Insert / Set</div>
+    <div class="scr-hdr">Category</div>
+    <div class="scr-hdr" style="text-align:right">Action</div>
+  </div>`;
+
+  // Cap display at 500 for perf
+  const display = rows.slice(0, 500);
+  display.forEach(r => {
+    const catClass = (() => {
+      const c = (r.category||'').toLowerCase();
+      if(c === 'auto') return 'auto';
+      if(c === 'insert') return 'insert';
+      if(c === 'base') return 'base';
+      return 'base';
+    })();
+    const isRC = r.is_rookie === true || r.is_rookie === 'true' || r.is_rookie === 'True';
+    const catLabel = isRC ? `${r.category||'Base'} RC` : (r.category||'Base');
+    const insertName = r.insert_name || r.set_name || '—';
+    html += `<div class="set-card-row" onclick="openSetCardDetail(${JSON.stringify(r).replace(/"/g,'&quot;')})">
+      <div class="scr-num">${r.card_number||'—'}</div>
+      <div>
+        <div class="scr-player">${r.player||'Unknown'}</div>
+        <div class="scr-team">${r.team||''}</div>
+      </div>
+      <div class="scr-insert">${insertName}</div>
+      <div><span class="scr-cat ${catClass}">${catLabel}</span></div>
+      <div style="text-align:right">
+        <button class="btn btn-primary btn-sm" style="font-size:10px;padding:5px 10px"
+          onclick="event.stopPropagation();openVaultFromSet(${JSON.stringify(r).replace(/"/g,'&quot;')})">
+          + Vault
+        </button>
+      </div>
+    </div>`;
+  });
+
+  if(rows.length > 500){
+    html += `<div class="set-loading" style="padding:14px;font-size:11px;opacity:.4">Showing 500 of ${rows.length.toLocaleString()} — refine your search to see more</div>`;
+  }
+
+  listEl.innerHTML = html;
+}
+
+function selectSet(table, el, label, sub){
+  document.querySelectorAll('.set-tile').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  loadSetTable(table);
+}
+
+function setCatFilter(cat, el){
+  _catFilter = cat;
+  document.querySelectorAll('[id^="catChip-"]').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderCatalogList();
+}
+
+function filterCatalog(q){
+  _catSearch = q;
+  renderCatalogList();
+}
+
+// Open a set card — builds a simple vault CTA modal since set rows aren't full CARDS objects
+function openSetCardDetail(row){
+  // Check if this row matches a known CARDS entry
+  const known = CARDS.find(c =>
+    c._cardNumber === row.card_number ||
+    (c.player === row.player && String(c.year) === String(row.year || '').split('-')[0])
+  );
+  if(known){
+    // Use the rich card detail viewer
+    openCardDetail(known.id);
+    return;
+  }
+  // Otherwise build an ad-hoc card object and open the viewer directly
+  const card = {
+    id: null,
+    player:  row.player,
+    year:    parseInt(row.year) || new Date().getFullYear(),
+    brand:   (()=>{ const s=row.set_name||''; return s.includes('Bowman')?'Bowman':'Topps'; })(),
+    set:     row.insert_name || row.set_name,
+    parallel: row.category + (row.insert_name ? ' — '+row.insert_name : ''),
+    cardNum: row.card_number ? '#'+row.card_number : '',
+    run:     null,
+    auto:    (row.category||'').toLowerCase().includes('auto'),
+    rc:      !!row.is_rookie,
+    tags:    row.is_rookie ? ['rc'] : [],
+    price:   0,
+    isos:    0,
+    hasCatalogPic: !!(row.front_img),
+    _setTable:    _activeSetTable,
+    _cardNumber:  row.card_number,
+    _team:        row.team,
+    _category:    row.category,
+    _frontImg:    row.front_img  || null,
+    _backImg:     row.back_img   || null,
+    variations: [{
+      label: row.insert_name || row.category || 'Base',
+      color: '#00AAFF', glow: 'rgba(0,170,255,0.4)',
+      run: null, isBase: true, lastSale: '—', isos: 0, pop: null, watching: null
+    }]
+  };
+  window._cdCard = card;
+  // Breadcrumb
+  document.getElementById('cd-bc-sport').textContent = 'Baseball';
+  document.getElementById('cd-bc-brand').textContent = card.brand;
+  document.getElementById('cd-bc-year').textContent  = card.year;
+  document.getElementById('cd-bc-set').textContent   = card.set || card.parallel;
+  document.getElementById('cd-title').textContent    = `${card.year} ${card.brand} ${card.set||''} — ${card.player}`.toUpperCase();
+  document.getElementById('cd-sub').textContent      = `Baseball · ${card.year} · ${card.brand}`;
+  document.getElementById('cd-num').textContent      = card.cardNum || '';
+  const pathMsg = document.getElementById('cd-path-msg');
+  if(pathMsg) pathMsg.innerHTML = card.hasCatalogPic
+    ? '<strong>This card has a catalog image.</strong> Confirm how you acquired it and the price you paid — no photo upload needed.'
+    : '<strong>No catalog image yet.</strong> Upload front + back, then confirm acquisition details and price paid.';
+  // Reset viewer
+  _cdSetViewerImages(card._frontImg, card._backImg);
+  _cdReset3D();
+  _buildVariationPills(card);
+  N('carddetail', null);
+  _cdInitRotation();
+  // If images came in the row, show them immediately; otherwise try loading from DB
+  if(!card._frontImg){
+    _cdLoadCatalogImages(card);
+  } else {
+    const upBtn = document.getElementById('cd-upload-btn');
+    if(upBtn){ upBtn.textContent='Replace Image'; upBtn.style.display='inline-flex'; }
+  }
+}
+
+function openVaultFromSet(row){
+  // Construct a minimal card object compatible with openVaultModal
+  const card = {
+    id: null,
+    player: row.player,
+    year: row.year,
+    brand: (() => {
+      const s = row.set_name || '';
+      if(s.includes('Topps')) return 'Topps';
+      if(s.includes('Bowman')) return 'Bowman';
+      return 'Topps';
+    })(),
+    set: row.insert_name || row.set_name,
+    parallel: row.category + (row.insert_name ? ' — ' + row.insert_name : ''),
+    run: null,
+    price: null,
+    // Store set-specific data
+    _cardNumber: row.card_number,
+    _setTable: _activeSetTable,
+    _team: row.team,
+    _category: row.category,
+  };
+  openVaultModal(card);
+}
 
 </script>
 </body>

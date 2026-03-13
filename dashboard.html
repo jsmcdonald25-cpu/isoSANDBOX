@@ -426,6 +426,95 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-upload-modal{background:var(--deep2);border:1px solid rgba(0,232,135,0.3);border-radius:14px;width:100%;max-width:520px;padding:26px;position:relative}
 .cd-upload-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--white);margin-bottom:4px}
 .cd-upload-sub{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:20px;line-height:1.5}
+/* ═══════════════════════════════════════
+   ISOVAULT SEARCH ENGINE
+═══════════════════════════════════════ */
+.iv-hero{text-align:center;padding:32px 0 28px}
+.iv-hero-title{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:6px;color:var(--white);line-height:1;background:linear-gradient(135deg,#fff 40%,#00AAFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.iv-hero-sub{font-family:'Barlow Condensed',sans-serif;font-size:15px;color:var(--muted-text);letter-spacing:1px;margin-top:6px;margin-bottom:22px}
+.iv-global-wrap{position:relative;max-width:600px;margin:0 auto;display:flex;align-items:center;background:var(--deep2);border:1px solid rgba(0,170,255,0.3);border-radius:10px;padding:0 14px;transition:border-color .2s}
+.iv-global-wrap:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,170,255,0.1)}
+.iv-global-wrap input{flex:1;background:none;border:none;outline:none;font-family:'Barlow Condensed',sans-serif;font-size:16px;color:var(--white);padding:13px 8px;letter-spacing:.3px}
+.iv-global-wrap input::placeholder{color:var(--muted-text)}
+.iv-section-label{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:rgba(0,170,255,0.5);margin-bottom:12px;margin-top:4px}
+/* Sport Grid */
+.iv-sport-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px}
+.iv-sport-tile{background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:18px 10px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.iv-sport-tile:hover{border-color:rgba(0,170,255,.4);transform:translateY(-2px);background:rgba(0,170,255,.06)}
+.iv-sport-tile.active{border-color:var(--blue);background:rgba(0,170,255,.08)}
+.iv-sport-tile.inactive{opacity:.38;cursor:default}
+.iv-sport-tile.inactive:hover{transform:none;border-color:var(--deep-border);background:var(--deep2)}
+.iv-sport-emoji{font-size:28px;margin-bottom:6px}
+.iv-sport-name{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--white)}
+.iv-sport-count{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text);margin-top:2px}
+.iv-sport-badge{position:absolute;top:7px;right:7px;background:var(--green);color:#000;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 5px;border-radius:3px}
+/* Breadcrumb */
+.iv-breadcrumb{display:flex;align-items:center;gap:7px;margin-bottom:18px;flex-wrap:wrap}
+.iv-crumb{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);cursor:pointer;transition:color .15s}
+.iv-crumb:hover{color:var(--blue)}.iv-crumb-active{color:var(--white);cursor:default}
+.iv-crumb-home{color:var(--blue)}
+.iv-sep{color:rgba(0,170,255,.3);font-size:12px}
+/* Filter row */
+.iv-filter-row{display:flex;gap:24px;margin-bottom:18px;flex-wrap:wrap}
+.iv-filter-group{display:flex;flex-direction:column;gap:7px}
+.iv-filter-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)}
+.iv-pill-row{display:flex;flex-wrap:wrap;gap:6px}
+.iv-pill{padding:5px 14px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .2s;border:1.5px solid var(--deep-border);background:rgba(0,0,0,.2);color:var(--muted-text)}
+.iv-pill:hover{border-color:rgba(0,170,255,.4);color:var(--white)}
+.iv-pill.active{background:rgba(0,170,255,.12);border-color:var(--blue);color:var(--white)}
+/* Set grid */
+.iv-set-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+.iv-set-tile{background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:18px 16px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.iv-set-tile::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--blue),transparent);opacity:0;transition:opacity .2s}
+.iv-set-tile:hover{border-color:rgba(0,170,255,.35);transform:translateY(-2px)}.iv-set-tile:hover::before{opacity:.7}
+.iv-set-year{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;color:var(--blue);text-transform:uppercase;margin-bottom:3px}
+.iv-set-name{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;color:var(--white);line-height:1.1}
+.iv-set-brand{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted-text);margin-top:3px}
+.iv-set-count{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--blue);margin-top:8px;font-weight:700}
+/* Card toolbar */
+.iv-card-toolbar{display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.iv-card-search-wrap{flex:1;min-width:200px;display:flex;align-items:center;background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;padding:0 12px;transition:border-color .2s}
+.iv-card-search-wrap:focus-within{border-color:var(--blue)}
+.iv-card-search-wrap input{flex:1;background:none;border:none;outline:none;font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--white);padding:9px 8px}
+.iv-card-search-wrap input::placeholder{color:var(--muted-text)}
+.iv-view-toggle{display:flex;gap:4px}
+.iv-view-btn{background:rgba(0,0,0,.2);border:1px solid var(--deep-border);border-radius:6px;padding:7px 12px;font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.5px;color:var(--muted-text);cursor:pointer;transition:all .2s}
+.iv-view-btn:hover{border-color:rgba(0,170,255,.3);color:var(--white)}
+.iv-view-btn.active{background:rgba(0,170,255,.1);border-color:var(--blue);color:var(--white)}
+.iv-meta{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;color:rgba(0,170,255,.4);margin-bottom:10px;text-transform:uppercase}
+/* Checklist view */
+.iv-checklist{display:flex;flex-direction:column;gap:0}
+.iv-row{display:grid;grid-template-columns:60px 1fr 120px 80px 100px;gap:0;align-items:center;padding:9px 12px;border-bottom:1px solid rgba(0,170,255,.07);cursor:pointer;transition:background .15s}
+.iv-row:hover{background:rgba(0,170,255,.06)}
+.iv-row-num{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--blue);letter-spacing:.5px}
+.iv-row-player{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--white)}
+.iv-row-insert{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text);margin-top:1px}
+.iv-row-team{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted-text)}
+.iv-row-cat{display:flex;gap:4px;flex-wrap:wrap}
+.iv-row-cat-badge{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:.5px;padding:2px 7px;border-radius:3px;font-weight:700}
+.iv-cat-base{background:rgba(0,170,255,.1);color:var(--blue)}
+.iv-cat-insert{background:rgba(255,200,60,.1);color:#FFC83C}
+.iv-cat-auto{background:rgba(0,232,135,.1);color:var(--green)}
+.iv-cat-rookie{background:rgba(255,59,92,.1);color:var(--red)}
+.iv-row-img{width:44px;height:30px;object-fit:cover;border-radius:3px;background:var(--deep3)}
+/* Grid view */
+.iv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.iv-grid-card{background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .2s}
+.iv-grid-card:hover{border-color:rgba(0,170,255,.4);transform:translateY(-2px)}
+.iv-grid-img{width:100%;height:120px;object-fit:cover;background:linear-gradient(135deg,#112840,#1a3a5c);display:flex;align-items:center;justify-content:center;font-size:32px}
+.iv-grid-info{padding:10px 12px}
+.iv-grid-player{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iv-grid-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--blue);margin-top:2px}
+.iv-grid-cat{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text)}
+.iv-empty{text-align:center;padding:60px 20px;font-family:'Barlow Condensed',sans-serif;font-size:15px;color:var(--muted-text);letter-spacing:1px}
+.iv-loading{text-align:center;padding:40px;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted-text);letter-spacing:1px;animation:pulse 2s ease-in-out infinite}
+/* Global search results */
+.iv-result-row{display:flex;align-items:center;gap:14px;padding:11px 14px;border-bottom:1px solid rgba(0,170,255,.07);cursor:pointer;transition:background .15s}
+.iv-result-row:hover{background:rgba(0,170,255,.06)}
+.iv-result-sport{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:1px;padding:3px 8px;border-radius:3px;background:rgba(0,170,255,.1);color:var(--blue);flex-shrink:0}
+.iv-result-player{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--white)}
+.iv-result-set{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted-text)}
+.iv-result-num{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--blue);margin-left:auto;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -501,7 +590,6 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     <div class="nav-item" onclick="N('leaderboard',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="14" width="4" height="8" rx="1"/><rect x="9" y="9" width="4" height="13" rx="1"/><rect x="16" y="4" width="4" height="18" rx="1"/><line x1="2" y1="22" x2="22" y2="22"/></svg></div><span class="nav-label">Leaderboard</span></div>
     <div class="nav-item" onclick="N('myvault',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></div><span class="nav-label">My Vault</span></div>
     <div class="nav-item" onclick="N('library',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div><span class="nav-label">ISOVault</span></div>
-    <div class="nav-item" onclick="N('sets',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><span class="nav-label">Set Catalog</span></div>
     <div class="nav-item" onclick="N('isoticker',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><span class="nav-label">ISOTicker</span></div>
     <div class="nav-item" onclick="N('account',this)"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><span class="nav-label">Account</span></div>
     <div class="nav-item logout" onclick="logOut()"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div><span class="nav-label">Log Out</span></div>
@@ -699,11 +787,71 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     <div class="card-grid" id="myVaultGrid" style="display:none"></div>
   </div>
 
-  <!-- CARD LIBRARY / ISOVAULT -->
+  <!-- ISOVAULT SEARCH ENGINE -->
   <div class="panel" id="panel-library">
-    <div class="search-wrap"><div class="s-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><input type="text" id="libSearch" placeholder="Search player, year, set, parallel..." oninput="filterLib(this.value)"/></div>
-    <div class="filter-row" id="libFilters"><div class="chip active" onclick="libType('all',this)">All</div><div class="chip" onclick="libType('rc',this)">Rookies</div><div class="chip" onclick="libType('auto',this)">Autos</div><div class="chip" onclick="libType('numbered',this)">Numbered</div><div class="chip" onclick="libType('vintage',this)">Vintage</div></div>
-    <div class="card-grid" id="libGrid"></div>
+    <!-- BREADCRUMB -->
+    <div class="iv-breadcrumb" id="ivBreadcrumb" style="display:none">
+      <span class="iv-crumb iv-crumb-home" onclick="ivGoHome()">ISOVault</span>
+      <span class="iv-sep">›</span>
+      <span class="iv-crumb" id="ivCrumbSport" style="display:none" onclick="ivGoSport()"></span>
+      <span class="iv-sep iv-sep2" style="display:none">›</span>
+      <span class="iv-crumb iv-crumb-active" id="ivCrumbSet" style="display:none"></span>
+    </div>
+    <!-- STATE 1: SPORT SELECTOR -->
+    <div id="iv-home">
+      <div class="iv-hero">
+        <div class="iv-hero-title">ISOVAULT</div>
+        <div class="iv-hero-sub">The world's most complete sports card search engine</div>
+        <div class="iv-global-wrap">
+          <div class="s-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+          <input type="text" id="ivGlobalSearch" placeholder="Search any player, card number, or set across all sports..." oninput="ivHandleGlobalSearch(this.value)" autocomplete="off"/>
+        </div>
+      </div>
+      <div class="iv-section-label">SELECT A SPORT</div>
+      <div class="iv-sport-grid" id="ivSportGrid"></div>
+    </div>
+    <!-- STATE 2: SET BROWSER -->
+    <div id="iv-sets" style="display:none">
+      <div class="iv-filter-row">
+        <div class="iv-filter-group">
+          <div class="iv-filter-label">YEAR</div>
+          <div class="iv-pill-row" id="ivYearPills"></div>
+        </div>
+        <div class="iv-filter-group">
+          <div class="iv-filter-label">BRAND</div>
+          <div class="iv-pill-row" id="ivBrandPills"></div>
+        </div>
+      </div>
+      <div class="iv-section-label" id="ivSetSectionLabel">SETS</div>
+      <div class="iv-set-grid" id="ivSetGrid"></div>
+    </div>
+    <!-- STATE 3: CARD LIST -->
+    <div id="iv-cards" style="display:none">
+      <div class="iv-card-toolbar">
+        <div class="iv-card-search-wrap">
+          <div class="s-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+          <input type="text" id="ivCardSearch" placeholder="Search player or card #..." oninput="ivFilterCards(this.value)" autocomplete="off"/>
+        </div>
+        <div class="iv-pill-row" id="ivCatPills" style="gap:6px">
+          <div class="chip active" onclick="ivCatFilter('all',this)">All</div>
+          <div class="chip" onclick="ivCatFilter('Base',this)">Base</div>
+          <div class="chip" onclick="ivCatFilter('Insert',this)">Inserts</div>
+          <div class="chip" onclick="ivCatFilter('Auto',this)">Autos</div>
+          <div class="chip" onclick="ivCatFilter('Rookie',this)">Rookies</div>
+        </div>
+        <div class="iv-view-toggle">
+          <button class="iv-view-btn active" id="ivBtnList" onclick="ivSetView('list',this)">☰ Checklist</button>
+          <button class="iv-view-btn" id="ivBtnGrid" onclick="ivSetView('grid',this)">⊞ Grid</button>
+        </div>
+      </div>
+      <div class="iv-meta" id="ivMeta"></div>
+      <div id="ivCardList"></div>
+    </div>
+    <!-- GLOBAL SEARCH RESULTS -->
+    <div id="iv-global-results" style="display:none">
+      <div class="iv-section-label">SEARCH RESULTS</div>
+      <div id="ivGlobalResultsList"></div>
+    </div>
   </div>
 
   <!-- ISOVAULT CARD DETAIL -->
@@ -829,49 +977,6 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
         <button class="btn btn-ghost" onclick="closeCatalogUpload()">Cancel</button>
       </div>
     </div>
-  </div>
-
-  <!-- SET CATALOG -->
-  <div class="panel" id="panel-sets">
-    <div class="set-picker-grid" id="setPickerGrid">
-      <div class="set-tile active" id="setTile-series1" onclick="selectSet('2026_series1_baseball',this,'2026 Topps Series 1','Series 1 Baseball')">
-        <div class="set-tile-year">2026</div>
-        <div class="set-tile-name">Topps Series 1</div>
-        <div class="set-tile-count" id="setCount-series1">Loading...</div>
-        <div class="set-tile-badge">⚾ Baseball</div>
-      </div>
-      <div class="set-tile" id="setTile-heritage" onclick="selectSet('2026_heritage_baseball',this,'2026 Topps Heritage','Heritage Baseball')">
-        <div class="set-tile-year">2026</div>
-        <div class="set-tile-name">Topps Heritage</div>
-        <div class="set-tile-count" id="setCount-heritage">Loading...</div>
-        <div class="set-tile-badge">⚾ Baseball</div>
-      </div>
-      <div class="set-tile" id="setTile-stadium" onclick="selectSet('2025_stadium_club_v2',this,'2025 Stadium Club','Stadium Club v2')">
-        <div class="set-tile-year">2025</div>
-        <div class="set-tile-name">Stadium Club</div>
-        <div class="set-tile-count" id="setCount-stadium">Loading...</div>
-        <div class="set-tile-badge">⚾ Baseball</div>
-      </div>
-    </div>
-    <!-- Controls -->
-    <div style="display:flex;gap:10px;margin-bottom:12px;align-items:center">
-      <div class="search-wrap" style="margin:0;flex:1">
-        <div class="s-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-        <input type="text" id="setCatalogSearch" placeholder="Search player, card number, insert..." oninput="filterCatalog(this.value)" style="padding-top:9px;padding-bottom:9px"/>
-      </div>
-      <div class="cat-filters" style="margin:0;gap:6px">
-        <div class="chip active" id="catChip-all" onclick="setCatFilter('all',this)">All</div>
-        <div class="chip" id="catChip-Base" onclick="setCatFilter('Base',this)">Base</div>
-        <div class="chip" id="catChip-Insert" onclick="setCatFilter('Insert',this)">Inserts</div>
-        <div class="chip" id="catChip-Auto" onclick="setCatFilter('Auto',this)">Autos</div>
-        <div class="chip" id="catChip-Rookie" onclick="setCatFilter('Rookie',this)">Rookies</div>
-      </div>
-    </div>
-    <!-- Card list -->
-    <div class="set-card-list" id="setCatalogList">
-      <div class="set-loading" id="setCatalogLoading">Loading set data...</div>
-    </div>
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(0,170,255,.3);letter-spacing:1px;text-align:center;margin-top:12px" id="setCatalogMeta"></div>
   </div>
 
   <!-- ISOTICKER -->
@@ -1273,13 +1378,11 @@ const PM={
   post:{t:'POST ISO',s:'Broadcast exactly what you want'},
   myisos:{t:'MY ISOs',s:'3 active · 1 completed'},
   market:{t:'MARKET DATA',s:'Live bid · ask · last sale — Baseball'},
-  library:{t:'ISOVAULT',s:'Browse all 522+ cards — find your grail'},
-  myvault:{t:'MY VAULT',s:'Your personal card library'},
+  library:{t:'ISOVAULT',s:'The world\'s most complete sports card search engine'},  myvault:{t:'MY VAULT',s:'Your personal card library'},
   notifs:{t:'NOTIFICATIONS',s:'2 unread'},
   account:{t:'ACCOUNT',s:'Verified buyer'},
   isoticker:{t:'ISOTICKER',s:'Your collection — value since purchase'},
   leaderboard:{t:'LEADERBOARD',s:'Top buyers · sellers · most wanted cards'},
-  sets:{t:'SET CATALOG',s:'Browse all sets — search any card'},
   carddetail:{t:'ISOVAULT',s:'Card detail'},
 };
 function N(id,el){
@@ -1289,12 +1392,11 @@ function N(id,el){
   if(el)el.classList.add('active');
   const m=PM[id];
   if(m){document.getElementById('pgTitle').textContent=m.t;document.getElementById('pgSub').textContent=m.s;}
-  if(id==='library')renderLib();
+  if(id==='library')ivInit();
   if(id==='myvault')renderMyVault();
   if(id==='market')renderMkt();
   if(id==='post'){curStep=1;gS(1);}
   if(id==='overview')renderOvMkt();
-  if(id==='sets')initSetCatalog();
   if(id==='isoticker')initISOTicker();
 }
 
@@ -1700,7 +1802,7 @@ window.addEventListener('resize',()=>{if(document.getElementById('panel-isoticke
 // ═══════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════
-renderMkt();renderLib();renderOvMkt();
+renderMkt();renderOvMkt(); // ISOVault inits on nav click via ivInit()
 
 // ── CARD TICKER ─────────────────────────────────────────────
 function initCardTicker(){
@@ -2270,7 +2372,7 @@ async function _cdLoadCatalogImages(c){
   const table = c._setTable || _cdGuessTable(c);
   if(!table){
     if(statusEl){ statusEl.style.display='block'; statusEl.textContent='No set table found'; statusEl.style.color='rgba(122,149,174,0.5)'; }
-    return; // button already visible
+    return;
   }
 
   const cardNum = c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber || null);
@@ -2284,27 +2386,40 @@ async function _cdLoadCatalogImages(c){
   try {
     const { data, error } = await window._sb
       .from(table)
-      .select('front_img,back_img')
+      .select('var_images')
       .eq('card_number', cardNum)
       .maybeSingle();
 
-    if(error || !data || (!data.front_img && !data.back_img)){
-      if(statusEl){ statusEl.textContent='No catalog image yet'; statusEl.style.color='rgba(122,149,174,0.5)';
+    if(error || !data || !data.var_images || !Object.keys(data.var_images).length){
+      if(statusEl){ statusEl.textContent='No catalog images yet'; statusEl.style.color='rgba(122,149,174,0.5)';
         setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
-      // Upload button already visible — leave it
       return;
     }
 
-    // Images found — load them and update button to "Replace"
-    _cdSetViewerImages(data.front_img, data.back_img);
-    if(statusEl){ statusEl.textContent='✓ Catalog image loaded'; statusEl.style.color='var(--green)';
-      setTimeout(()=>{ statusEl.style.display='none'; }, 2500); }
-    if(uploadBtn){ uploadBtn.textContent='Replace Image'; }
+    // Cache on card so cdSelectVar can use without re-fetching
+    window._cdCard._varImages = data.var_images;
+
+    // Load active variation's images
+    const activeVar = (window._cdVars || [])[window._cdActiveVar || 0];
+    const varKey = activeVar ? activeVar.label : null;
+    const imgs = varKey ? data.var_images[varKey] : null;
+
+    if(imgs && (imgs.front || imgs.back)){
+      _cdSetViewerImages(imgs.front || null, imgs.back || null);
+      if(statusEl){ statusEl.textContent='✓ Images loaded'; statusEl.style.color='var(--green)';
+        setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
+      if(uploadBtn){ uploadBtn.textContent='Replace Image'; }
+    } else {
+      // Other variations have images but not this one yet
+      const hasAny = Object.keys(data.var_images).length > 0;
+      if(statusEl){ statusEl.textContent = hasAny ? 'No image for this variation' : 'No catalog images yet';
+        statusEl.style.color='rgba(122,149,174,0.5)';
+        setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
+    }
 
   } catch(e) {
     if(statusEl){ statusEl.textContent='Could not load images'; statusEl.style.color='rgba(122,149,174,0.5)';
       setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
-    // Upload button stays visible
   }
 }
 
@@ -2425,6 +2540,30 @@ function cdSelectVar(idx, skipShimmer){
 
   // Shimmer on non-base parallels
   if(!skipShimmer && !v.isBase) _cdShimmer();
+
+  // Swap viewer images for this variation
+  const varImages = window._cdCard && window._cdCard._varImages;
+  const imgs = varImages ? varImages[v.label] : null;
+  if(imgs && (imgs.front || imgs.back)){
+    _cdSetViewerImages(imgs.front || null, imgs.back || null);
+    const uploadBtn = document.getElementById('cd-upload-btn');
+    if(uploadBtn) uploadBtn.textContent = 'Replace Image';
+  } else {
+    // No image for this variation — show placeholder and upload button
+    _cdSetViewerImages(null, null);
+    // Tint placeholder with variation color
+    const ph = document.getElementById('cd-placeholder-front');
+    if(ph) ph.style.background = `linear-gradient(135deg,#112840,${v.color}55,#1a3a5c)`;
+    const uploadBtn = document.getElementById('cd-upload-btn');
+    if(uploadBtn) uploadBtn.textContent = '📷 Upload Image';
+    const statusEl = document.getElementById('cd-img-status');
+    if(statusEl && !skipShimmer){
+      statusEl.style.display='block';
+      statusEl.textContent = varImages ? `No image for ${v.label}` : 'No catalog images yet';
+      statusEl.style.color='rgba(122,149,174,0.5)';
+      setTimeout(()=>{ statusEl.style.display='none'; }, 2000);
+    }
+  }
 }
 
 function _cdShimmer(){
@@ -2532,8 +2671,10 @@ function openCatalogUpload(){
   const btn=document.getElementById('cdUploadSubmitBtn');
   btn.textContent='SAVE TO CATALOG'; btn.disabled=false;
   const c=window._cdCard;
+  const activeVar = (window._cdVars||[])[window._cdActiveVar||0];
+  const varLabel = activeVar ? activeVar.label : 'Base';
   if(c) document.getElementById('cdUploadSub').textContent=
-    `${c.player} · ${c.year} ${c.brand} ${c.set} · ${c.cardNum||''}`;
+    `${c.player} · ${c.year} ${c.brand} ${c.set} · ${c.cardNum||''} · ${varLabel}`;
   document.getElementById('cdUploadOverlay').style.display='flex';
   document.body.style.overflow='hidden';
 }
@@ -2576,8 +2717,13 @@ async function submitCatalogUpload(){
   }
   const c=window._cdCard; if(!c) return;
   const table=c._setTable||_cdGuessTable(c);
-  const cardNum=c.cardNum?c.cardNum.replace('#',''):null;
+  const cardNum=c.cardNum?c.cardNum.replace('#',''):(c._cardNumber||null);
   if(!table||!cardNum){ T('Cannot identify set table for this card.'); return; }
+
+  // Which variation are we uploading?
+  const activeVar = (window._cdVars||[])[window._cdActiveVar||0];
+  const varLabel = activeVar ? activeVar.label : 'Base';
+  const varSlug = varLabel.replace(/[^a-zA-Z0-9]/g,'_').toLowerCase();
 
   const btn=document.getElementById('cdUploadSubmitBtn');
   btn.disabled=true; btn.textContent='UPLOADING...';
@@ -2587,7 +2733,7 @@ async function submitCatalogUpload(){
 
   try {
     const ts=Date.now();
-    const slug=`catalog/${table}/${cardNum.replace(/[^a-zA-Z0-9-]/g,'_')}`;
+    const slug=`catalog/${table}/${cardNum.replace(/[^a-zA-Z0-9-]/g,'_')}/${varSlug}`;
 
     // Upload front
     bar.style.width='30%';
@@ -2604,35 +2750,43 @@ async function submitCatalogUpload(){
     const frontURL = window._sb.storage.from('card-images').getPublicUrl(`${slug}_front_${ts}.jpg`).data.publicUrl;
     const backURL  = window._sb.storage.from('card-images').getPublicUrl(`${slug}_back_${ts}.jpg`).data.publicUrl;
 
-    bar.style.width='80%';
+    bar.style.width='75%';
 
-    // Write URLs back to set table row
+    // Fetch existing var_images so we can merge (not overwrite other variations)
+    const { data: existing } = await window._sb
+      .from(table).select('var_images').eq('card_number', cardNum).maybeSingle();
+    const varImages = (existing && existing.var_images) ? existing.var_images : {};
+    varImages[varLabel] = { front: frontURL, back: backURL };
+
+    bar.style.width='85%';
+
+    // Write merged var_images back
     const { error:ue } = await window._sb
       .from(table)
-      .update({ front_img: frontURL, back_img: backURL })
-      .eq('card_number', cardNum)
-      .eq('player', c.player);
+      .update({ var_images: varImages })
+      .eq('card_number', cardNum);
     if(ue) throw ue;
 
     bar.style.width='100%';
     btn.textContent='✓ SAVED!';
 
-    // Load images live into the 3D viewer
+    // Cache locally and load live into viewer
+    if(!window._cdCard._varImages) window._cdCard._varImages = {};
+    window._cdCard._varImages[varLabel] = { front: frontURL, back: backURL };
     _cdSetViewerImages(frontURL, backURL);
+
     const statusEl=document.getElementById('cd-img-status');
-    if(statusEl){ statusEl.style.display='block'; statusEl.textContent='✓ Catalog image live'; statusEl.style.color='var(--green)';
+    if(statusEl){ statusEl.style.display='block'; statusEl.textContent=`✓ ${varLabel} image live`; statusEl.style.color='var(--green)';
       setTimeout(()=>statusEl.style.display='none', 3000); }
 
-    // Update upload button to "Replace Image"
     const upBtn=document.getElementById('cd-upload-btn');
     if(upBtn) upBtn.textContent='Replace Image';
 
-    // Also mark hasCatalogPic on the local card object
     c.hasCatalogPic=true;
     const pathMsg=document.getElementById('cd-path-msg');
     if(pathMsg) pathMsg.innerHTML='<strong>Catalog image saved.</strong> Confirm acquisition details and price paid to add to your vault.';
 
-    setTimeout(()=>{ closeCatalogUpload(); T(`Catalog image saved for ${c.player} ${c.cardNum||''}`); }, 900);
+    setTimeout(()=>{ closeCatalogUpload(); T(`${varLabel} image saved · ${c.player} ${c.cardNum||''}`); }, 900);
 
   } catch(err){
     btn.disabled=false; btn.textContent='SAVE TO CATALOG';
@@ -2642,253 +2796,469 @@ async function submitCatalogUpload(){
   }
 }
 
-// ═══════════════════════════════════════
-// SET CATALOG — Live Supabase
-// ═══════════════════════════════════════
-const SET_TABLES = {
-  '2026_series1_baseball':  { label:'2026 Topps Series 1',    countId:'setCount-series1', tileId:'setTile-series1'  },
-  '2026_heritage_baseball': { label:'2026 Topps Heritage',     countId:'setCount-heritage', tileId:'setTile-heritage' },
-  '2025_stadium_club_v2':   { label:'2025 Stadium Club',       countId:'setCount-stadium',  tileId:'setTile-stadium'  },
-};
+// ═══════════════════════════════════════════════════════════════
+// ISOVAULT — The World's Greatest Sports Card Search Engine
+// ═══════════════════════════════════════════════════════════════
 
-let _activeSetTable = '2026_series1_baseball';
-let _catalogData = [];          // full set rows from Supabase
-let _catFilter = 'all';
-let _catSearch = '';
+// ── Sport + Set Registry ─────────────────────────────────────
+const IV_SPORTS = [
+  { id:'baseball',  label:'Baseball',     emoji:'⚾', active:true  },
+  { id:'basketball',label:'Basketball',   emoji:'🏀', active:false },
+  { id:'football',  label:'Football',     emoji:'🏈', active:false },
+  { id:'hockey',    label:'Hockey',       emoji:'🏒', active:false },
+  { id:'soccer',    label:'Soccer',       emoji:'⚽', active:false },
+  { id:'golf',      label:'Golf',         emoji:'⛳', active:false },
+  { id:'ufc',       label:'UFC / MMA',    emoji:'🥊', active:false },
+  { id:'tennis',    label:'Tennis',       emoji:'🎾', active:false },
+  { id:'nascar',    label:'NASCAR',       emoji:'🏎️', active:false },
+  { id:'wrestling', label:'Wrestling',    emoji:'🤼', active:false },
+  { id:'pokemon',   label:'Pokémon',      emoji:'⚡', active:false },
+  { id:'soccer2',   label:'Soccer Int\'l',emoji:'🌍', active:false },
+  { id:'lacrosse',  label:'Lacrosse',     emoji:'🥍', active:false },
+  { id:'olympic',   label:'Olympic',      emoji:'🏅', active:false },
+  { id:'multisport',label:'Multi-Sport',  emoji:'🎖️', active:false },
+];
 
-async function initSetCatalog(){
-  // Load counts for all 3 set tiles
-  for(const [table, meta] of Object.entries(SET_TABLES)){
-    window._sb.from(table).select('*', {count:'exact', head:true}).then(({count})=>{
-      const el = document.getElementById(meta.countId);
-      if(el) el.textContent = count ? `${count.toLocaleString()} cards` : 'Loading...';
-    });
+// All Supabase-backed set tables
+const IV_SETS = [
+  { table:'2026_series1_baseball',  sport:'baseball', year:2026, brand:'Topps',  name:'Series 1',  label:'2026 Topps Series 1'  },
+  { table:'2026_heritage_baseball', sport:'baseball', year:2026, brand:'Topps',  name:'Heritage',  label:'2026 Topps Heritage'  },
+  { table:'2025_stadium_club_v2',   sport:'baseball', year:2025, brand:'Topps',  name:'Stadium Club', label:'2025 Stadium Club' },
+];
+
+// State
+let _ivSport    = null;   // selected sport id
+let _ivSet      = null;   // selected IV_SETS entry
+let _ivData     = [];     // all rows for active set
+let _ivFiltered = [];     // after category + search filter
+let _ivCat      = 'all';
+let _ivSearch   = '';
+let _ivView     = 'list'; // 'list' | 'grid'
+let _ivCounts   = {};     // table → count cache
+let _ivInited   = false;
+
+// ── Entry Point ───────────────────────────────────────────────
+function ivInit(){
+  if(!_ivInited){
+    _ivInited = true;
+    _ivPrefetchCounts();
   }
-  await loadSetTable(_activeSetTable);
+  ivGoHome();
+  ivRenderSports();
 }
 
-async function loadSetTable(table){
-  _activeSetTable = table;
-  _catFilter = 'all';
-  _catSearch = '';
-  const searchEl = document.getElementById('setCatalogSearch');
-  if(searchEl) searchEl.value = '';
-  // Reset cat chips
-  document.querySelectorAll('[id^="catChip-"]').forEach(c=>c.classList.remove('active'));
-  const allChip = document.getElementById('catChip-all');
-  if(allChip) allChip.classList.add('active');
+function _ivPrefetchCounts(){
+  IV_SETS.forEach(s=>{
+    window._sb.from(s.table).select('*',{count:'exact',head:true}).then(res=>{
+      _ivCounts[s.table] = res.count || 0;
+      // Refresh tiles if sport already selected
+      const tile = document.getElementById('ivSetTile-'+s.table);
+      if(tile){
+        const ct = tile.querySelector('.iv-set-count');
+        if(ct) ct.textContent = (_ivCounts[s.table]||0).toLocaleString()+' cards';
+      }
+    });
+  });
+}
 
-  const listEl = document.getElementById('setCatalogList');
-  if(listEl) listEl.innerHTML = '<div class="set-loading">Loading cards...</div>';
+// ── Navigation ────────────────────────────────────────────────
+function ivGoHome(){
+  _ivSport = null; _ivSet = null;
+  _ivData = []; _ivFiltered = [];
+  _ivShowState('home');
+  _ivBreadcrumb(false, false);
+}
 
-  // Pull from Supabase — paginated 1000 at a time
-  let all = [];
-  let from = 0;
-  const PAGE = 1000;
+function ivGoSport(){
+  if(!_ivSport) return;
+  _ivSet = null; _ivData = []; _ivFiltered = [];
+  _ivShowState('sets');
+  _ivRenderSetBrowser();
+  _ivBreadcrumb(true, false);
+}
+
+function _ivShowState(state){
+  ['iv-home','iv-sets','iv-cards','iv-global-results'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.style.display = (id === 'iv-'+state) ? '' : 'none';
+  });
+  const bc = document.getElementById('ivBreadcrumb');
+  if(bc) bc.style.display = state === 'home' ? 'none' : 'flex';
+}
+
+function _ivBreadcrumb(showSport, showSet){
+  const sport = document.getElementById('ivCrumbSport');
+  const sep2  = document.querySelector('.iv-sep2');
+  const setEl = document.getElementById('ivCrumbSet');
+  if(sport){ sport.style.display = showSport ? '' : 'none'; }
+  if(sep2){  sep2.style.display  = showSet   ? '' : 'none'; }
+  if(setEl){ setEl.style.display = showSet   ? '' : 'none'; }
+  const sportDef = IV_SPORTS.find(s=>s.id===_ivSport);
+  if(sport && sportDef) sport.textContent = sportDef.emoji+' '+sportDef.label;
+  if(setEl && _ivSet)   setEl.textContent = _ivSet.label;
+}
+
+// ── Sport Tiles ───────────────────────────────────────────────
+function ivRenderSports(){
+  const g = document.getElementById('ivSportGrid');
+  if(!g) return;
+  g.innerHTML = IV_SPORTS.map(s=>{
+    const sets = IV_SETS.filter(x=>x.sport===s.id);
+    const totalCards = sets.reduce((sum,x)=>sum+(_ivCounts[x.table]||0),0);
+    const countStr = s.active
+      ? (totalCards ? totalCards.toLocaleString()+' cards' : sets.length+' sets')
+      : 'Coming soon';
+    return `<div class="iv-sport-tile${s.active?' active':'  inactive'}" onclick="${s.active?`ivSelectSport('${s.id}')`:''}" id="ivSportTile-${s.id}">
+      ${s.active ? '<div class="iv-sport-badge">LIVE</div>' : ''}
+      <div class="iv-sport-emoji">${s.emoji}</div>
+      <div class="iv-sport-name">${s.label}</div>
+      <div class="iv-sport-count">${countStr}</div>
+    </div>`;
+  }).join('');
+}
+
+function ivSelectSport(sportId){
+  _ivSport = sportId;
+  _ivShowState('sets');
+  _ivRenderSetBrowser();
+  _ivBreadcrumb(true, false);
+}
+
+// ── Set Browser ───────────────────────────────────────────────
+function _ivRenderSetBrowser(){
+  const sets = IV_SETS.filter(s=>s.sport===_ivSport);
+  const years  = [...new Set(sets.map(s=>s.year))].sort((a,b)=>b-a);
+  const brands = [...new Set(sets.map(s=>s.brand))].sort();
+
+  // Year pills
+  const yp = document.getElementById('ivYearPills');
+  if(yp) yp.innerHTML = `<div class="iv-pill active" onclick="ivYearFilter('all',this)">All</div>`
+    + years.map(y=>`<div class="iv-pill" onclick="ivYearFilter(${y},this)">${y}</div>`).join('');
+
+  // Brand pills
+  const bp = document.getElementById('ivBrandPills');
+  if(bp) bp.innerHTML = `<div class="iv-pill active" onclick="ivBrandFilter('all',this)">All</div>`
+    + brands.map(b=>`<div class="iv-pill" onclick="ivBrandFilter('${b}',this)">${b}</div>`).join('');
+
+  _ivRenderSetTiles(sets);
+}
+
+let _ivYearFilter = 'all', _ivBrandFilter = 'all';
+
+function ivYearFilter(y, el){
+  _ivYearFilter = y;
+  document.querySelectorAll('#ivYearPills .iv-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  _ivApplySetFilters();
+}
+
+function ivBrandFilter(b, el){
+  _ivBrandFilter = b;
+  document.querySelectorAll('#ivBrandPills .iv-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  _ivApplySetFilters();
+}
+
+function _ivApplySetFilters(){
+  let sets = IV_SETS.filter(s=>s.sport===_ivSport);
+  if(_ivYearFilter !== 'all')  sets = sets.filter(s=>s.year  === _ivYearFilter);
+  if(_ivBrandFilter !== 'all') sets = sets.filter(s=>s.brand === _ivBrandFilter);
+  _ivRenderSetTiles(sets);
+}
+
+function _ivRenderSetTiles(sets){
+  const g = document.getElementById('ivSetGrid');
+  if(!g) return;
+  if(!sets.length){
+    g.innerHTML = '<div class="iv-empty">No sets match this filter</div>'; return;
+  }
+  g.innerHTML = sets.map(s=>{
+    const count = _ivCounts[s.table];
+    const countStr = count != null ? count.toLocaleString()+' cards' : 'Loading...';
+    return `<div class="iv-set-tile" onclick="ivSelectSet('${s.table}')" id="ivSetTile-${s.table}">
+      <div class="iv-set-year">${s.year}</div>
+      <div class="iv-set-name">${s.name}</div>
+      <div class="iv-set-brand">${s.brand}</div>
+      <div class="iv-set-count" id="ivCount-${s.table}">${countStr}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Card List ─────────────────────────────────────────────────
+async function ivSelectSet(table){
+  const setDef = IV_SETS.find(s=>s.table===table);
+  if(!setDef) return;
+  _ivSet   = setDef;
+  _ivCat   = 'all';
+  _ivSearch = '';
+  _ivView  = 'list';
+
+  // Reset toolbar UI
+  const cs = document.getElementById('ivCardSearch'); if(cs) cs.value='';
+  document.querySelectorAll('#ivCatPills .chip').forEach((c,i)=>{c.classList.toggle('active',i===0);});
+  document.getElementById('ivBtnList')&&document.getElementById('ivBtnList').classList.add('active');
+  document.getElementById('ivBtnGrid')&&document.getElementById('ivBtnGrid').classList.remove('active');
+
+  _ivShowState('cards');
+  _ivBreadcrumb(true, true);
+
+  const listEl = document.getElementById('ivCardList');
+  if(listEl) listEl.innerHTML = '<div class="iv-loading">LOADING '+setDef.label.toUpperCase()+'...</div>';
+
+  // Paginated load
+  let all = [], from = 0, PAGE = 1000, err = null;
   while(true){
     const { data, error } = await window._sb
       .from(table)
-      .select('player,card_number,set_name,year,sport,team,category,insert_name,is_rookie')
-      .range(from, from + PAGE - 1)
-      .order('card_number', {ascending:true});
-    if(error || !data || !data.length) break;
+      .select('player,card_number,set_name,year,sport,team,category,insert_name,is_rookie,var_images')
+      .range(from, from+PAGE-1)
+      .order('card_number',{ascending:true});
+    if(error){ err=error; break; }
+    if(!data||!data.length) break;
     all = all.concat(data);
     if(data.length < PAGE) break;
     from += PAGE;
   }
 
-  _catalogData = all;
-  renderCatalogList();
-
-  const metaEl = document.getElementById('setCatalogMeta');
-  if(metaEl) metaEl.textContent = `${all.length.toLocaleString()} CARDS LOADED FROM SUPABASE · ${SET_TABLES[table]?.label || table}`;
-}
-
-function renderCatalogList(){
-  const listEl = document.getElementById('setCatalogList');
-  if(!listEl) return;
-
-  let rows = [..._catalogData];
-
-  // Category filter
-  if(_catFilter !== 'all'){
-    if(_catFilter === 'Rookie') rows = rows.filter(r => r.is_rookie === true || r.is_rookie === 'true' || r.is_rookie === 'True');
-    else rows = rows.filter(r => (r.category||'').toLowerCase() === _catFilter.toLowerCase());
+  if(err){
+    if(listEl) listEl.innerHTML = `<div class="iv-empty" style="color:var(--red)">Error: ${err.message}</div>`;
+    return;
   }
 
-  // Search
-  if(_catSearch){
-    const q = _catSearch.toLowerCase();
-    rows = rows.filter(r =>
+  _ivData = all;
+  _ivCounts[table] = all.length;
+  _ivApplyCardFilters();
+}
+
+function _ivApplyCardFilters(){
+  let rows = [..._ivData];
+  if(_ivCat !== 'all'){
+    if(_ivCat === 'Rookie') rows = rows.filter(r=>r.is_rookie===true||r.is_rookie==='true'||r.is_rookie==='True');
+    else rows = rows.filter(r=>(r.category||'').toLowerCase()===_ivCat.toLowerCase());
+  }
+  if(_ivSearch){
+    const q = _ivSearch.toLowerCase();
+    rows = rows.filter(r=>
       (r.player||'').toLowerCase().includes(q) ||
       (r.card_number||'').toLowerCase().includes(q) ||
       (r.insert_name||'').toLowerCase().includes(q) ||
-      (r.team||'').toLowerCase().includes(q) ||
-      (r.category||'').toLowerCase().includes(q)
+      (r.team||'').toLowerCase().includes(q)
     );
   }
+  _ivFiltered = rows;
+  _ivRenderCards();
+}
 
-  if(!rows.length){
-    listEl.innerHTML = '<div class="set-loading" style="opacity:.5">No cards match — try a different filter or search</div>';
-    return;
-  }
+function _ivRenderCards(){
+  const meta = document.getElementById('ivMeta');
+  if(meta) meta.textContent = `${_ivFiltered.length.toLocaleString()} of ${_ivData.length.toLocaleString()} cards · ${_ivSet?_ivSet.label:''}`;
 
-  // Header row
-  let html = `<div class="set-card-row hdr">
-    <div class="scr-hdr">#</div>
-    <div class="scr-hdr">Player</div>
-    <div class="scr-hdr">Insert / Set</div>
-    <div class="scr-hdr">Category</div>
-    <div class="scr-hdr" style="text-align:right">Action</div>
+  if(_ivView === 'list') _ivRenderChecklist();
+  else _ivRenderGrid();
+}
+
+function _ivRenderChecklist(){
+  const el = document.getElementById('ivCardList');
+  if(!el) return;
+  if(!_ivFiltered.length){ el.innerHTML='<div class="iv-empty">No cards match</div>'; return; }
+
+  const header = `<div class="iv-row" style="cursor:default;border-bottom:1px solid rgba(0,170,255,.15);padding-bottom:6px;margin-bottom:2px">
+    <div class="iv-row-num" style="color:var(--muted-text);font-size:10px;letter-spacing:1px">CARD #</div>
+    <div class="iv-row-player" style="font-size:10px;letter-spacing:1px;color:var(--muted-text)">PLAYER</div>
+    <div class="iv-row-team" style="font-size:10px;letter-spacing:1px;color:var(--muted-text)">TEAM</div>
+    <div class="iv-row-cat" style="font-size:10px;letter-spacing:1px;color:var(--muted-text)">CATEGORY</div>
+    <div style="font-size:10px;letter-spacing:1px;color:var(--muted-text);font-family:'Barlow Condensed',sans-serif">IMG</div>
   </div>`;
 
-  // Cap display at 500 for perf
-  const display = rows.slice(0, 500);
-  display.forEach(r => {
-    const catClass = (() => {
-      const c = (r.category||'').toLowerCase();
-      if(c === 'auto') return 'auto';
-      if(c === 'insert') return 'insert';
-      if(c === 'base') return 'base';
-      return 'base';
-    })();
-    const isRC = r.is_rookie === true || r.is_rookie === 'true' || r.is_rookie === 'True';
-    const catLabel = isRC ? `${r.category||'Base'} RC` : (r.category||'Base');
-    const insertName = r.insert_name || r.set_name || '—';
-    html += `<div class="set-card-row" onclick="openSetCardDetail(${JSON.stringify(r).replace(/"/g,'&quot;')})">
-      <div class="scr-num">${r.card_number||'—'}</div>
-      <div>
-        <div class="scr-player">${r.player||'Unknown'}</div>
-        <div class="scr-team">${r.team||''}</div>
-      </div>
-      <div class="scr-insert">${insertName}</div>
-      <div><span class="scr-cat ${catClass}">${catLabel}</span></div>
-      <div style="text-align:right">
-        <button class="btn btn-primary btn-sm" style="font-size:10px;padding:5px 10px"
-          onclick="event.stopPropagation();openVaultFromSet(${JSON.stringify(r).replace(/"/g,'&quot;')})">
-          + Vault
-        </button>
+  const rows = _ivFiltered.slice(0, 500).map(r=>{
+    const cat = (r.category||'Base').toLowerCase();
+    const catClass = cat.includes('auto') ? 'iv-cat-auto' : cat.includes('insert') ? 'iv-cat-insert' : r.is_rookie ? 'iv-cat-rookie' : 'iv-cat-base';
+    const catLabel = r.is_rookie && cat==='base' ? 'RC' : (r.category||'Base');
+    const hasImg = r.var_images && Object.keys(r.var_images).length > 0;
+    const sub = r.insert_name ? `<div class="iv-row-insert">${r.insert_name}</div>` : '';
+    return `<div class="iv-row" onclick="ivOpenCard(${JSON.stringify(r).replace(/"/g,'&quot;')})">
+      <div class="iv-row-num">${r.card_number||'—'}</div>
+      <div><div class="iv-row-player">${r.player||'—'}</div>${sub}</div>
+      <div class="iv-row-team">${r.team||'—'}</div>
+      <div class="iv-row-cat"><span class="iv-row-cat-badge ${catClass}">${catLabel}</span></div>
+      <div style="font-size:16px">${hasImg ? '🖼️' : '<span style="color:rgba(122,149,174,0.3)">—</span>'}</div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `<div class="iv-checklist">${header}${rows}</div>`
+    + (_ivFiltered.length > 500 ? `<div class="iv-meta" style="text-align:center;margin-top:10px">Showing 500 of ${_ivFiltered.length.toLocaleString()} — refine your search</div>` : '');
+}
+
+function _ivRenderGrid(){
+  const el = document.getElementById('ivCardList');
+  if(!el) return;
+  if(!_ivFiltered.length){ el.innerHTML='<div class="iv-empty">No cards match</div>'; return; }
+
+  const cards = _ivFiltered.slice(0,200).map(r=>{
+    const firstImg = r.var_images && Object.values(r.var_images)[0];
+    const imgHtml = firstImg && firstImg.front
+      ? `<img src="${firstImg.front}" style="width:100%;height:120px;object-fit:cover;display:block">`
+      : `<div class="iv-grid-img">⚾</div>`;
+    return `<div class="iv-grid-card" onclick="ivOpenCard(${JSON.stringify(r).replace(/"/g,'&quot;')})">
+      ${imgHtml}
+      <div class="iv-grid-info">
+        <div class="iv-grid-player">${r.player||'—'}</div>
+        <div class="iv-grid-num">#${r.card_number||'—'}</div>
+        <div class="iv-grid-cat">${r.insert_name||r.category||'Base'}</div>
       </div>
     </div>`;
-  });
+  }).join('');
 
-  if(rows.length > 500){
-    html += `<div class="set-loading" style="padding:14px;font-size:11px;opacity:.4">Showing 500 of ${rows.length.toLocaleString()} — refine your search to see more</div>`;
-  }
-
-  listEl.innerHTML = html;
+  el.innerHTML = `<div class="iv-grid">${cards}</div>`
+    + (_ivFiltered.length > 200 ? `<div class="iv-meta" style="text-align:center;margin-top:12px">Showing 200 of ${_ivFiltered.length.toLocaleString()} — refine your search</div>` : '');
 }
 
-function selectSet(table, el, label, sub){
-  document.querySelectorAll('.set-tile').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  loadSetTable(table);
-}
-
-function setCatFilter(cat, el){
-  _catFilter = cat;
-  document.querySelectorAll('[id^="catChip-"]').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
-  renderCatalogList();
-}
-
-function filterCatalog(q){
-  _catSearch = q;
-  renderCatalogList();
-}
-
-// Open a set card — builds a simple vault CTA modal since set rows aren't full CARDS objects
-function openSetCardDetail(row){
-  // Check if this row matches a known CARDS entry
-  const known = CARDS.find(c =>
+// ── Card click → Detail panel ─────────────────────────────────
+function ivOpenCard(row){
+  // Check if there's a known CARDS entry
+  const known = CARDS.find(c=>
     c._cardNumber === row.card_number ||
-    (c.player === row.player && String(c.year) === String(row.year || '').split('-')[0])
+    (c.player === row.player && String(c.year) === String((row.year||'').toString().slice(0,4)))
   );
-  if(known){
-    // Use the rich card detail viewer
-    openCardDetail(known.id);
-    return;
-  }
-  // Otherwise build an ad-hoc card object and open the viewer directly
+  if(known){ openCardDetail(known.id); return; }
+
+  // Build ad-hoc card object
   const card = {
     id: null,
     player:  row.player,
-    year:    parseInt(row.year) || new Date().getFullYear(),
-    brand:   (()=>{ const s=row.set_name||''; return s.includes('Bowman')?'Bowman':'Topps'; })(),
-    set:     row.insert_name || row.set_name,
+    year:    parseInt((row.year||'').toString().slice(0,4)) || 2026,
+    brand:   (()=>{ const s=row.set_name||''; return s.includes('Bowman')?'Bowman':s.includes('Panini')?'Panini':'Topps'; })(),
+    set:     row.insert_name || row.set_name || '',
     parallel: row.category + (row.insert_name ? ' — '+row.insert_name : ''),
     cardNum: row.card_number ? '#'+row.card_number : '',
-    run:     null,
-    auto:    (row.category||'').toLowerCase().includes('auto'),
-    rc:      !!row.is_rookie,
-    tags:    row.is_rookie ? ['rc'] : [],
-    price:   0,
-    isos:    0,
-    hasCatalogPic: !!(row.front_img),
-    _setTable:    _activeSetTable,
-    _cardNumber:  row.card_number,
-    _team:        row.team,
-    _category:    row.category,
-    _frontImg:    row.front_img  || null,
-    _backImg:     row.back_img   || null,
+    run:     null, auto: (row.category||'').toLowerCase().includes('auto'),
+    rc:      !!row.is_rookie, tags: row.is_rookie?['rc']:[],
+    price: 0, isos: 0,
+    hasCatalogPic: !!(row.var_images && Object.keys(row.var_images).length),
+    _setTable:   _ivSet ? _ivSet.table : null,
+    _cardNumber: row.card_number,
+    _team:       row.team,
+    _category:   row.category,
+    _varImages:  row.var_images || {},
     variations: [{
       label: row.insert_name || row.category || 'Base',
-      color: '#00AAFF', glow: 'rgba(0,170,255,0.4)',
-      run: null, isBase: true, lastSale: '—', isos: 0, pop: null, watching: null
+      color:'#00AAFF', glow:'rgba(0,170,255,0.4)',
+      run:null, isBase:true, lastSale:'—', isos:0, pop:null, watching:null
     }]
   };
+
   window._cdCard = card;
-  // Breadcrumb
   document.getElementById('cd-bc-sport').textContent = 'Baseball';
   document.getElementById('cd-bc-brand').textContent = card.brand;
   document.getElementById('cd-bc-year').textContent  = card.year;
   document.getElementById('cd-bc-set').textContent   = card.set || card.parallel;
   document.getElementById('cd-title').textContent    = `${card.year} ${card.brand} ${card.set||''} — ${card.player}`.toUpperCase();
   document.getElementById('cd-sub').textContent      = `Baseball · ${card.year} · ${card.brand}`;
-  document.getElementById('cd-num').textContent      = card.cardNum || '';
-  const pathMsg = document.getElementById('cd-path-msg');
-  if(pathMsg) pathMsg.innerHTML = card.hasCatalogPic
-    ? '<strong>This card has a catalog image.</strong> Confirm how you acquired it and the price you paid — no photo upload needed.'
+  document.getElementById('cd-num').textContent      = card.cardNum;
+  const pm = document.getElementById('cd-path-msg');
+  if(pm) pm.innerHTML = card.hasCatalogPic
+    ? '<strong>This card has a catalog image.</strong> Confirm how you acquired it and the price paid — no photo upload needed.'
     : '<strong>No catalog image yet.</strong> Upload front + back, then confirm acquisition details and price paid.';
-  // Reset viewer
-  _cdSetViewerImages(card._frontImg, card._backImg);
+
+  const uploadBtn = document.getElementById('cd-upload-btn');
+  if(uploadBtn){ uploadBtn.textContent='📷 Upload Image'; uploadBtn.style.display='inline-flex'; }
+
+  // Load images from var_images if present
+  const firstVar = card._varImages && Object.values(card._varImages)[0];
+  _cdSetViewerImages(firstVar?firstVar.front:null, firstVar?firstVar.back:null);
+  if(card.hasCatalogPic && uploadBtn) uploadBtn.textContent = 'Replace Image';
+
   _cdReset3D();
   _buildVariationPills(card);
   N('carddetail', null);
   _cdInitRotation();
-  // If images came in the row, show them immediately; otherwise try loading from DB
-  if(!card._frontImg){
-    _cdLoadCatalogImages(card);
-  } else {
-    const upBtn = document.getElementById('cd-upload-btn');
-    if(upBtn){ upBtn.textContent='Replace Image'; upBtn.style.display='inline-flex'; }
-  }
 }
 
-function openVaultFromSet(row){
-  // Construct a minimal card object compatible with openVaultModal
-  const card = {
-    id: null,
-    player: row.player,
-    year: row.year,
-    brand: (() => {
-      const s = row.set_name || '';
-      if(s.includes('Topps')) return 'Topps';
-      if(s.includes('Bowman')) return 'Bowman';
-      return 'Topps';
-    })(),
-    set: row.insert_name || row.set_name,
-    parallel: row.category + (row.insert_name ? ' — ' + row.insert_name : ''),
-    run: null,
-    price: null,
-    // Store set-specific data
-    _cardNumber: row.card_number,
-    _setTable: _activeSetTable,
-    _team: row.team,
-    _category: row.category,
-  };
-  openVaultModal(card);
+// ── Filters ───────────────────────────────────────────────────
+function ivCatFilter(cat, el){
+  _ivCat = cat;
+  document.querySelectorAll('#ivCatPills .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  _ivApplyCardFilters();
 }
+
+function ivFilterCards(q){
+  _ivSearch = q;
+  _ivApplyCardFilters();
+}
+
+function ivSetView(view, el){
+  _ivView = view;
+  document.querySelectorAll('.iv-view-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  _ivRenderCards();
+}
+
+// ── Global Search ─────────────────────────────────────────────
+let _ivGlobalTimer = null;
+function ivHandleGlobalSearch(q){
+  clearTimeout(_ivGlobalTimer);
+  if(!q.trim()){ _ivShowState('home'); return; }
+  _ivGlobalTimer = setTimeout(()=>_ivRunGlobalSearch(q), 350);
+}
+
+async function _ivRunGlobalSearch(q){
+  _ivShowState('global-results');
+  const bc = document.getElementById('ivBreadcrumb');
+  if(bc) bc.style.display='flex';
+  const el = document.getElementById('ivGlobalResultsList');
+  if(el) el.innerHTML='<div class="iv-loading">SEARCHING ALL SETS...</div>';
+
+  const activeSets = IV_SETS.filter(s=>IV_SPORTS.find(x=>x.id===s.sport&&x.active));
+  let all = [];
+  await Promise.all(activeSets.map(async s=>{
+    const { data } = await window._sb
+      .from(s.table)
+      .select('player,card_number,set_name,year,category,insert_name,team,is_rookie,var_images')
+      .or(`player.ilike.%${q}%,card_number.ilike.%${q}%,insert_name.ilike.%${q}%`)
+      .limit(50);
+    if(data) data.forEach(r=>all.push({...r, _setDef:s}));
+  }));
+
+  if(!el) return;
+  if(!all.length){ el.innerHTML='<div class="iv-empty">No results for "'+q+'"</div>'; return; }
+
+  el.innerHTML = all.slice(0,100).map(r=>{
+    const sport = IV_SPORTS.find(s=>s.id===r._setDef.sport);
+    const hasImg = r.var_images && Object.keys(r.var_images).length;
+    return `<div class="iv-result-row" onclick="ivOpenGlobalResult(${JSON.stringify({...r,_setTable:r._setDef.table}).replace(/"/g,'&quot;')})">
+      <span class="iv-result-sport">${sport?sport.emoji+' '+sport.label:'—'}</span>
+      <div>
+        <div class="iv-result-player">${r.player}</div>
+        <div class="iv-result-set">${r._setDef.label} · ${r.insert_name||r.category||'Base'}</div>
+      </div>
+      ${hasImg?'<span style="font-size:16px;margin-left:auto">🖼️</span>':''}
+      <div class="iv-result-num">#${r.card_number||'—'}</div>
+    </div>`;
+  }).join('')
+  + (all.length>100?`<div class="iv-meta" style="text-align:center;margin-top:10px">${all.length} results — narrow your search</div>`:'');
+}
+
+function ivOpenGlobalResult(row){
+  // Set active set context then open card
+  const setDef = IV_SETS.find(s=>s.table===row._setTable);
+  if(setDef){ _ivSet = setDef; _ivSport = setDef.sport; }
+  ivOpenCard(row);
+}
+
+// ── Back to Vault from Card Detail ────────────────────────────
+function backToVault(){
+  if(_cdSpinner){ clearInterval(_cdSpinner); _cdSpinner=null; _cdSpinning=false; }
+  N('library', document.querySelector('[onclick*="library"]'));
+  // Restore the state the user was in
+  if(_ivSet){ _ivShowState('cards'); _ivBreadcrumb(true,true); }
+  else if(_ivSport){ _ivShowState('sets'); _ivBreadcrumb(true,false); }
+  else { ivGoHome(); }
+}
+
+// ── Auto-render on panel open ─────────────────────────────────
+const _ivOrigRenderLib = window.renderLib;
+window.renderLib = function(){ /* replaced by ivInit */ };
 
 </script>
 </body>

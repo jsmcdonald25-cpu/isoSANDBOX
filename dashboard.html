@@ -122,39 +122,39 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .content::-webkit-scrollbar{width:5px}
 .content::-webkit-scrollbar-thumb{background:var(--deep-border);border-radius:3px}
 /* VAULT MODAL */
-.vault-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:10000;display:flex;align-items:center;justify-content:center;padding:12px;backdrop-filter:blur(4px)}
-.vault-modal{background:var(--deep2);border:1px solid rgba(0,170,255,0.25);border-radius:14px;width:100%;max-width:560px;max-height:96vh;overflow-y:auto;padding:16px 18px;position:relative}
+.vault-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:10000;display:flex;align-items:center;justify-content:center;padding:10px;backdrop-filter:blur(4px)}
+.vault-modal{background:var(--deep2);border:1px solid rgba(0,170,255,0.25);border-radius:12px;width:100%;max-width:540px;max-height:92vh;overflow-y:auto;padding:14px 16px;position:relative}
 .vault-modal::-webkit-scrollbar{width:3px}.vault-modal::-webkit-scrollbar-thumb{background:var(--deep-border);border-radius:2px}
-.vm-title{font-family:Bebas Neue,sans-serif;font-size:20px;letter-spacing:2px;color:var(--white);margin-bottom:2px}
-.vm-sub{font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-bottom:10px}
-.vm-card-info{background:rgba(0,170,255,0.06);border:1px solid var(--deep-border);border-radius:8px;padding:8px 12px;margin-bottom:10px}
-.vm-card-name{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;color:var(--white)}
-.vm-card-detail{font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-top:2px}
-.vm-section{margin-bottom:10px}
-.vm-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:5px;display:flex;align-items:center;gap:6px}
-.vm-label .req{color:var(--red);font-size:13px}
-.vm-upload-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.vm-upload-box{border:2px dashed rgba(0,170,255,0.25);border-radius:10px;padding:10px 8px;text-align:center;cursor:pointer;transition:all .2s;position:relative;background:rgba(0,170,255,0.03)}
+.vm-title{font-family:Bebas Neue,sans-serif;font-size:19px;letter-spacing:2px;color:var(--white);margin-bottom:1px}
+.vm-sub{font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-bottom:8px}
+.vm-card-info{background:rgba(0,170,255,0.06);border:1px solid var(--deep-border);border-radius:6px;padding:6px 10px;margin-bottom:8px}
+.vm-card-name{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--white)}
+.vm-card-detail{font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-top:1px}
+.vm-section{margin-bottom:8px}
+.vm-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.vm-label .req{color:var(--red);font-size:12px}
+.vm-upload-row{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.vm-upload-box{border:2px dashed rgba(0,170,255,0.25);border-radius:8px;padding:6px 8px;text-align:center;cursor:pointer;transition:all .2s;position:relative;background:rgba(0,170,255,0.03)}
 .vm-upload-box:hover,.vm-upload-box.has-file{border-color:var(--blue);background:rgba(0,170,255,0.08)}
-.vm-upload-box input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.vm-upload-icon{font-size:24px;margin-bottom:6px}
-.vm-upload-label{font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);letter-spacing:.5px}
+.vm-upload-box input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;z-index:2}
+.vm-upload-icon{font-size:18px;margin-bottom:2px}
+.vm-upload-label{font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);letter-spacing:.5px}
 .vm-upload-name{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--green);margin-top:4px;word-break:break-all}
-.vm-preview{width:100%;max-height:90px;object-fit:contain;border-radius:6px;margin-top:8px;display:none;border:1px solid var(--deep-border)}
+.vm-preview{width:100%;max-height:60px;object-fit:contain;border-radius:4px;margin-top:4px;display:none;border:1px solid var(--deep-border)}
 .vm-input{width:100%;background:rgba(0,0,0,0.25);border:1px solid var(--deep-border);border-radius:6px;padding:10px 13px;color:var(--white);font-family:Barlow Condensed,sans-serif;font-size:14px;outline:none;transition:border-color .2s;box-sizing:border-box}
 .vm-input:focus{border-color:var(--blue)}.vm-input::placeholder{color:var(--muted-text)}
 .vm-serial-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
 .vm-serial-of{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--muted-text);padding:10px 13px;background:rgba(0,0,0,0.15);border:1px solid var(--deep-border);border-radius:6px;white-space:nowrap}
-.vm-acq-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.vm-acq-btn{background:rgba(0,0,0,0.2);border:1px solid var(--deep-border);border-radius:8px;padding:8px 12px;cursor:pointer;text-align:center;transition:all .2s}
+.vm-acq-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.vm-acq-btn{background:rgba(0,0,0,0.2);border:1px solid var(--deep-border);border-radius:6px;padding:6px 10px;cursor:pointer;text-align:center;transition:all .2s}
 .vm-acq-btn:hover{border-color:rgba(0,170,255,0.4)}.vm-acq-btn.selected{border-color:var(--blue);background:rgba(0,170,255,0.12)}
-.vm-acq-icon{font-size:22px;margin-bottom:6px}
-.vm-acq-label{font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:600;color:var(--white)}
-.vm-acq-sub{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text);margin-top:2px}
-.vm-source-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-.vm-source-btn{background:rgba(0,0,0,0.2);border:1px solid var(--deep-border);border-radius:6px;padding:10px;cursor:pointer;text-align:center;transition:all .2s;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)}
+.vm-acq-icon{font-size:16px;margin-bottom:2px}
+.vm-acq-label{font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:600;color:var(--white)}
+.vm-acq-sub{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted-text);margin-top:1px}
+.vm-source-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+.vm-source-btn{background:rgba(0,0,0,0.2);border:1px solid var(--deep-border);border-radius:6px;padding:7px 8px;cursor:pointer;text-align:center;transition:all .2s;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text)}
 .vm-source-btn:hover{border-color:rgba(0,170,255,0.4);color:var(--white)}.vm-source-btn.selected{border-color:var(--blue);background:rgba(0,170,255,0.1);color:var(--white)}
-.vm-footer{display:flex;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--deep-border)}
+.vm-footer{display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--deep-border)}
 .vm-close{position:absolute;top:16px;right:16px;width:30px;height:30px;background:rgba(255,255,255,0.06);border:none;border-radius:50%;color:var(--muted-text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;line-height:1}
 .vm-close:hover{background:rgba(255,59,92,0.15);color:var(--red)}
 .vm-error{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--red);margin-top:6px;display:none}
@@ -392,7 +392,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .scr-hdr{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)}
 .set-loading{text-align:center;padding:40px;font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:1px;color:var(--muted-text)}
 /* VAULT MODAL PRICE */
-.vm-price-wrap{border:1px solid rgba(0,170,255,.25);border-radius:8px;padding:10px 12px;background:rgba(0,170,255,.04);margin-bottom:4px}
+.vm-price-wrap{border:1px solid rgba(0,170,255,.25);border-radius:6px;padding:8px 10px;background:rgba(0,170,255,.04);margin-bottom:4px}
 .vm-price-required{font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--blue);letter-spacing:1px;text-transform:uppercase;margin-top:6px;display:flex;align-items:center;gap:5px}
 /* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
    ISOVAULT CARD DETAIL
@@ -1587,7 +1587,7 @@ async function logOut(){
           <div class="vm-acq-sub">Bought from someone</div>
         </div>
       </div>
-      <div id="vmSourceSection" style="display:none">
+      <div id="vmSourceSection" style="display:none;position:relative;z-index:5">
         <div class="vm-label" style="margin-top:14px">Where did you purchase it? <span class="req">*</span></div>
         <div class="vm-source-grid">
           <div class="vm-source-btn" id="srcEbay" onclick="selectSource('ebay')">eBay</div>
@@ -1961,7 +1961,7 @@ function searchP(q){
   if(!merged.length){r.style.display='none';return;}
   r.innerHTML=merged.map(p=>{
     const cc=CARDS.filter(c=>c.player===p.name).length;
-    const meta=[p.team,p.pos,p.rookie?'RC '+p.rookie:''].filter(Boolean).join(' ┬╖ ');
+    const meta=[p.team,p.pos,p.rookie?'RC '+p.rookie:''].filter(Boolean).join(' Γö¼Γòû ');
     return`<div class="pr" onclick="pickP('${p.name.replace(/'/g,"\\'")}','${(p.team||'').replace(/'/g,"\\'")}','${p.pos||''}',${p.rookie||0})"><div><div class="pr-name">${p.name}</div><div class="pr-meta">${meta||''}</div></div><div class="pr-count">${cc} cards</div></div>`;
   }).join('');
   r.style.display='block';
@@ -4576,7 +4576,7 @@ async function flagUserCorrected(flagId, newPrice){
   }
 }
 
-// ╬ô├╢├ç╬ô├╢├ç My ISOs ╬ô├╢├ç╬ô├╢├ç live Supabase panel ╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç
+// Γò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├º My ISOs Γò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├º live Supabase panel Γò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├º
 let _myIsosData = [];
 let _myIsosFilter = 'all';
 
@@ -4662,7 +4662,7 @@ function _isoTimeAgo(dateStr){
   return mins+'m ago';
 }
 
-// ╬ô├╢├ç╬ô├╢├ç User Confirms Price is Correct ╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç╬ô├╢├ç
+// Γò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├º User Confirms Price is Correct Γò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├ºΓò¼├┤Γö£ΓòóΓö£├º
 async function flagUserConfirmed(flagId){
   try {
     await window._sb.from('price_flags')

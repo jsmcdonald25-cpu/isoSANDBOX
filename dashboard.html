@@ -706,9 +706,14 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     const pass  = document.getElementById('loginPassword').value;
     if(!email || !pass){ authErr('loginErr','Enter your email and password.'); return; }
     setBtnLoading('loginBtn', true, 'SIGN IN');
-    const { error } = await window._sb.auth.signInWithPassword({ email, password: pass });
-    setBtnLoading('loginBtn', false, 'SIGN IN');
-    if(error){ authErr('loginErr', error.message); return; }
+    try {
+      const { error } = await window._sb.auth.signInWithPassword({ email, password: pass });
+      if(error){ authErr('loginErr', error.message); }
+    } catch(e){
+      authErr('loginErr', 'Connection error — try again.');
+    } finally {
+      setBtnLoading('loginBtn', false, 'SIGN IN');
+    }
     // onAuthStateChange handles the rest
   };
 
@@ -725,23 +730,28 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     const name     = `${firstName} ${lastName}`;
     const initials = (firstName[0] + lastName[0]).toUpperCase();
     setBtnLoading('signupBtn', true, 'CREATE ACCOUNT');
-    const { data, error } = await window._sb.auth.signUp({ email, password: pass });
-    if(error){ setBtnLoading('signupBtn', false, 'CREATE ACCOUNT'); authErr('signupErr', error.message); return; }
-    if(data && data.user){
-      await window._sb.from('profiles').upsert({
-        id:         data.user.id,
-        full_name:  name,
-        first_name: firstName,
-        last_name:  lastName,
-        initials:   initials,
-        email:      email,
-        credits:    5,
-        tier:       'Alpha Member',
-        role:       'user',
-        created_at: new Date().toISOString()
-      }, { onConflict: 'id' });
+    try {
+      const { data, error } = await window._sb.auth.signUp({ email, password: pass });
+      if(error){ authErr('signupErr', error.message); return; }
+      if(data && data.user){
+        await window._sb.from('profiles').upsert({
+          id:         data.user.id,
+          full_name:  name,
+          first_name: firstName,
+          last_name:  lastName,
+          initials:   initials,
+          email:      email,
+          credits:    5,
+          tier:       'Alpha Member',
+          role:       'user',
+          created_at: new Date().toISOString()
+        }, { onConflict: 'id' });
+      }
+    } catch(e){
+      authErr('signupErr', 'Connection error — try again.');
+    } finally {
+      setBtnLoading('signupBtn', false, 'CREATE ACCOUNT');
     }
-    setBtnLoading('signupBtn', false, 'CREATE ACCOUNT');
     // onAuthStateChange handles the rest
   };
 
@@ -764,7 +774,7 @@ async function initUserProfile(user){
   window._authUser = user;
   let profile = null;
   try {
-    const { data } = await window._sb.from('profiles').select('*').eq('id', user.id).single();
+    const { data } = await window._sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
     profile = data;
   } catch(e){ /* profiles table may not exist yet — handled below */ }
 

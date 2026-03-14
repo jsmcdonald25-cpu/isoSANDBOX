@@ -1078,7 +1078,7 @@ async function logOut(){
           <div style="font-family:'Barlow',sans-serif;font-size:13px;color:var(--chrome);line-height:1.6">By posting this ISO you agree that 1 credit ($5) will be deducted. Matching sellers are notified anonymously. You will only see cards matching your exact ISO &#8212; no seller profiles, no other inventory.</div>
         </div>
         <div class="submit-bar">
-          <div class="credit-cost">Cost: <strong>1 ISO Credit</strong> &nbsp;<span style="font-size:12px;color:var(--muted-text)">11 remaining after post</span></div>
+          <div class="credit-cost">Cost: <strong>1 ISO Credit</strong> &nbsp;<span style="font-size:12px;color:var(--muted-text)" id="isoCreditsLeft"></span></div>
           <div style="display:flex;gap:10px"><button class="btn btn-ghost" onclick="gS(4)">&#8592; Back</button><button class="btn btn-primary" onclick="submitISO()">Post ISO &#8594;</button></div>
         </div>
       </div>
@@ -1923,11 +1923,23 @@ function selSport(el,s){
 function searchP(q){
   const r=document.getElementById('pResults');
   if(q.length<2){r.style.display='none';return;}
-  const m=PLAYERS.filter(p=>p.name.toLowerCase().includes(q.toLowerCase())).slice(0,7);
-  if(!m.length){r.style.display='none';return;}
-  r.innerHTML=m.map(p=>{
+  const ql=q.toLowerCase();
+  // Search PLAYERS first, then unique names from CARDS
+  const fromPlayers=PLAYERS.filter(p=>p.name.toLowerCase().includes(ql));
+  const seen=new Set(fromPlayers.map(p=>p.name));
+  const fromCards=[];
+  CARDS.forEach(c=>{
+    if(c.player&&c.player.toLowerCase().includes(ql)&&!seen.has(c.player)){
+      seen.add(c.player);
+      fromCards.push({name:c.player,team:c._team||'',pos:'',rookie:c.year||''});
+    }
+  });
+  const merged=[...fromPlayers,...fromCards].slice(0,10);
+  if(!merged.length){r.style.display='none';return;}
+  r.innerHTML=merged.map(p=>{
     const cc=CARDS.filter(c=>c.player===p.name).length;
-    return`<div class="pr" onclick="pickP('${p.name.replace(/'/g,"\\'")}','${p.team}','${p.pos}',${p.rookie})"><div><div class="pr-name">${p.name}</div><div class="pr-meta">${p.team} &#183; ${p.pos} &#183; RC ${p.rookie}</div></div><div class="pr-count">${cc} cards</div></div>`;
+    const meta=[p.team,p.pos,p.rookie?'RC '+p.rookie:''].filter(Boolean).join(' · ');
+    return`<div class="pr" onclick="pickP('${p.name.replace(/'/g,"\\'")}','${(p.team||'').replace(/'/g,"\\'")}','${p.pos||''}',${p.rookie||0})"><div><div class="pr-name">${p.name}</div><div class="pr-meta">${meta||''}</div></div><div class="pr-count">${cc} cards</div></div>`;
   }).join('');
   r.style.display='block';
 }
@@ -1975,11 +1987,22 @@ function updateSum(){
   document.getElementById('sumGrade').textContent=ISO.grade;
   const mn=document.getElementById('minP').value,mx=document.getElementById('maxP').value;
   document.getElementById('sumPrice').textContent=mn&&mx?`$${mn}&#8211;$${mx}`:mx?`Up to $${mx}`:mn?`Min $${mn}`:'&#8212;';
+  // Live credits
+  const credEl=document.getElementById('credits-value');
+  const cur=credEl?parseInt(credEl.textContent)||0:0;
+  const leftEl=document.getElementById('isoCreditsLeft');
+  if(leftEl) leftEl.textContent=cur>0?`${cur-1} remaining after post`:'No credits remaining';
 }
 async function submitISO(){
-  if(!ISO.player||!ISO.card){T('Select a player and card first.');return;}
+  if(!ISO.player){
+    document.getElementById('pSearch')?.focus();
+    T('⚠️ Select a player first — go back to Step 2.');return;
+  }
+  if(!ISO.card){
+    T('⚠️ Select a card first — go back to Step 3.');return;
+  }
   const user = window._authUser;
-  if(!user){T('You must be logged in to post an ISO.');return;}
+  if(!user){T('⚠️ You must be signed in to post an ISO.');return;}
 
   const btn = document.querySelector('[onclick="submitISO()"]');
   if(btn){btn.disabled=true;btn.textContent='POSTING...';}

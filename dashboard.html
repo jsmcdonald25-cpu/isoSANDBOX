@@ -2747,12 +2747,12 @@ async function submitVault(){
 
       document.getElementById('vmProgressBar').style.width='25%';
       const frontPath = `${uid}/${ts}_front.jpg`;
-      const { error: fe } = await window._sb.storage.from(BUCKET).upload(frontPath, vmFrontFile, { contentType: vmFrontFile.type || 'image/jpeg', upsert:true });
+      const { error: fe } = await window._sb.storage.from(BUCKET).upload(frontPath, vmFrontFile, { contentType: vmFrontFile.type || 'image/jpeg', upsert:true, cacheControl:'3600' });
       if(fe){ console.error('Front upload error:', fe); throw new Error('Front upload failed: ' + (fe.message || fe.error || JSON.stringify(fe))); }
 
       document.getElementById('vmProgressBar').style.width='55%';
       const backPath = `${uid}/${ts}_back.jpg`;
-      const { error: be } = await window._sb.storage.from(BUCKET).upload(backPath, vmBackFile, { contentType: vmBackFile.type || 'image/jpeg', upsert:true });
+      const { error: be } = await window._sb.storage.from(BUCKET).upload(backPath, vmBackFile, { contentType: vmBackFile.type || 'image/jpeg', upsert:true, cacheControl:'3600' });
       if(be){ console.error('Back upload error:', be); throw new Error('Back upload failed: ' + (be.message || be.error || JSON.stringify(be))); }
 
       frontURL = window._sb.storage.from(BUCKET).getPublicUrl(frontPath).data.publicUrl;

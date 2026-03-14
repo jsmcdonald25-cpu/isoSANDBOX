@@ -122,19 +122,19 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .content::-webkit-scrollbar{width:5px}
 .content::-webkit-scrollbar-thumb{background:var(--deep-border);border-radius:3px}
 /* VAULT MODAL */
-.vault-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
-.vault-modal{background:var(--deep2);border:1px solid rgba(0,170,255,0.25);border-radius:14px;width:100%;max-width:580px;max-height:90vh;overflow-y:auto;padding:28px;position:relative}
+.vault-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:10000;display:flex;align-items:center;justify-content:center;padding:12px;backdrop-filter:blur(4px)}
+.vault-modal{background:var(--deep2);border:1px solid rgba(0,170,255,0.25);border-radius:14px;width:100%;max-width:560px;max-height:94vh;overflow-y:auto;padding:18px 20px;position:relative}
 .vault-modal::-webkit-scrollbar{width:3px}.vault-modal::-webkit-scrollbar-thumb{background:var(--deep-border);border-radius:2px}
-.vm-title{font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:2px;color:var(--white);margin-bottom:4px}
-.vm-sub{font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:22px}
-.vm-card-info{background:rgba(0,170,255,0.06);border:1px solid var(--deep-border);border-radius:8px;padding:12px 14px;margin-bottom:22px}
-.vm-card-name{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:600;color:var(--white)}
+.vm-title{font-family:Bebas Neue,sans-serif;font-size:20px;letter-spacing:2px;color:var(--white);margin-bottom:2px}
+.vm-sub{font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-bottom:12px}
+.vm-card-info{background:rgba(0,170,255,0.06);border:1px solid var(--deep-border);border-radius:8px;padding:8px 12px;margin-bottom:12px}
+.vm-card-name{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;color:var(--white)}
 .vm-card-detail{font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-top:2px}
-.vm-section{margin-bottom:20px}
-.vm-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.vm-section{margin-bottom:12px}
+.vm-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:6px;display:flex;align-items:center;gap:6px}
 .vm-label .req{color:var(--red);font-size:13px}
-.vm-upload-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.vm-upload-box{border:2px dashed rgba(0,170,255,0.25);border-radius:10px;padding:20px 12px;text-align:center;cursor:pointer;transition:all .2s;position:relative;background:rgba(0,170,255,0.03)}
+.vm-upload-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vm-upload-box{border:2px dashed rgba(0,170,255,0.25);border-radius:10px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;position:relative;background:rgba(0,170,255,0.03)}
 .vm-upload-box:hover,.vm-upload-box.has-file{border-color:var(--blue);background:rgba(0,170,255,0.08)}
 .vm-upload-box input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
 .vm-upload-icon{font-size:24px;margin-bottom:6px}
@@ -145,8 +145,8 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .vm-input:focus{border-color:var(--blue)}.vm-input::placeholder{color:var(--muted-text)}
 .vm-serial-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
 .vm-serial-of{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--muted-text);padding:10px 13px;background:rgba(0,0,0,0.15);border:1px solid var(--deep-border);border-radius:6px;white-space:nowrap}
-.vm-acq-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.vm-acq-btn{background:rgba(0,0,0,0.2);border:1px solid var(--deep-border);border-radius:8px;padding:14px 12px;cursor:pointer;text-align:center;transition:all .2s}
+.vm-acq-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.vm-acq-btn{background:rgba(0,0,0,0.2);border:1px solid var(--deep-border);border-radius:8px;padding:10px 12px;cursor:pointer;text-align:center;transition:all .2s}
 .vm-acq-btn:hover{border-color:rgba(0,170,255,0.4)}.vm-acq-btn.selected{border-color:var(--blue);background:rgba(0,170,255,0.12)}
 .vm-acq-icon{font-size:22px;margin-bottom:6px}
 .vm-acq-label{font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:600;color:var(--white)}
@@ -154,7 +154,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .vm-source-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .vm-source-btn{background:rgba(0,0,0,0.2);border:1px solid var(--deep-border);border-radius:6px;padding:10px;cursor:pointer;text-align:center;transition:all .2s;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)}
 .vm-source-btn:hover{border-color:rgba(0,170,255,0.4);color:var(--white)}.vm-source-btn.selected{border-color:var(--blue);background:rgba(0,170,255,0.1);color:var(--white)}
-.vm-footer{display:flex;gap:10px;margin-top:24px;padding-top:18px;border-top:1px solid var(--deep-border)}
+.vm-footer{display:flex;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--deep-border)}
 .vm-close{position:absolute;top:16px;right:16px;width:30px;height:30px;background:rgba(255,255,255,0.06);border:none;border-radius:50%;color:var(--muted-text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;line-height:1}
 .vm-close:hover{background:rgba(255,59,92,0.15);color:var(--red)}
 .vm-error{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--red);margin-top:6px;display:none}
@@ -392,7 +392,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .scr-hdr{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)}
 .set-loading{text-align:center;padding:40px;font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:1px;color:var(--muted-text)}
 /* VAULT MODAL PRICE */
-.vm-price-wrap{border:1px solid rgba(0,170,255,.25);border-radius:8px;padding:14px;background:rgba(0,170,255,.04);margin-bottom:4px}
+.vm-price-wrap{border:1px solid rgba(0,170,255,.25);border-radius:8px;padding:10px 12px;background:rgba(0,170,255,.04);margin-bottom:4px}
 .vm-price-required{font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--blue);letter-spacing:1px;text-transform:uppercase;margin-top:6px;display:flex;align-items:center;gap:5px}
 /* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
    ISOVAULT CARD DETAIL
@@ -1117,7 +1117,6 @@ async function logOut(){
   <div class="panel" id="panel-myvault">
     <div class="section-header">
       <div class="section-title">MY VAULT</div>
-      <button class="btn btn-primary btn-sm" onclick="openVaultModal()">+ Add Card</button>
     </div>
     <div id="myVaultEmpty" style="text-align:center;padding:60px 20px;color:var(--muted-text)">
       <div style="font-size:48px;margin-bottom:16px">&#127183;</div>
@@ -1126,6 +1125,9 @@ async function logOut(){
       <button class="btn btn-primary" onclick="N('library',document.querySelector('[onclick*=library]'))">Browse ISOVault</button>
     </div>
     <div class="card-grid" id="myVaultGrid" style="display:none"></div>
+    <div style="margin-top:20px">
+      <button class="btn btn-primary" style="width:100%;padding:14px;font-size:15px;letter-spacing:1.5px" onclick="openVaultModal()">+ ADD CARD TO MY VAULT</button>
+    </div>
   </div>
 
   <!-- ISOVAULT SEARCH ENGINE -->
@@ -2569,13 +2571,13 @@ async function submitVault(){
 
       document.getElementById('vmProgressBar').style.width='25%';
       const frontPath = `${uid}/${ts}_front.jpg`;
-      const { error: fe } = await window._sb.storage.from(BUCKET).upload(frontPath, vmFrontFile, { contentType:'image/jpeg', upsert:true });
-      if(fe) throw fe;
+      const { error: fe } = await window._sb.storage.from(BUCKET).upload(frontPath, vmFrontFile, { contentType: vmFrontFile.type || 'image/jpeg', upsert:true });
+      if(fe) throw new Error('Front upload failed: ' + fe.message);
 
       document.getElementById('vmProgressBar').style.width='55%';
       const backPath = `${uid}/${ts}_back.jpg`;
-      const { error: be } = await window._sb.storage.from(BUCKET).upload(backPath, vmBackFile, { contentType:'image/jpeg', upsert:true });
-      if(be) throw be;
+      const { error: be } = await window._sb.storage.from(BUCKET).upload(backPath, vmBackFile, { contentType: vmBackFile.type || 'image/jpeg', upsert:true });
+      if(be) throw new Error('Back upload failed: ' + be.message);
 
       frontURL = window._sb.storage.from(BUCKET).getPublicUrl(frontPath).data.publicUrl;
       backURL  = window._sb.storage.from(BUCKET).getPublicUrl(backPath).data.publicUrl;
@@ -4516,7 +4518,7 @@ async function flagUserCorrected(flagId, newPrice){
   }
 }
 
-// ── My ISOs ── live Supabase panel ─────────────────────────────────────────
+// ΓöÇΓöÇ My ISOs ΓöÇΓöÇ live Supabase panel ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 let _myIsosData = [];
 let _myIsosFilter = 'all';
 
@@ -4602,7 +4604,7 @@ function _isoTimeAgo(dateStr){
   return mins+'m ago';
 }
 
-// ── User Confirms Price is Correct ─────────────────────────────────────────
+// ΓöÇΓöÇ User Confirms Price is Correct ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 async function flagUserConfirmed(flagId){
   try {
     await window._sb.from('price_flags')

@@ -745,20 +745,19 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     // onAuthStateChange handles the rest
   };
 
-  // ── Check session immediately on load ─────────────────────────
-  window._sb.auth.getSession().then(({ data: { session } }) => {
-    const gate = document.getElementById('gate');
-    if(!session){ if(gate) gate.style.display = 'flex'; }
-    else {
-      if(gate){ gate.style.display='none'; gate.style.pointerEvents='none'; }
-      try { initUserProfile(session.user); } catch(e){}
-    }
-  });
-
-  // ── Auth state listener — only reacts to explicit sign in/out ─
+  // ── Auth: single source of truth ──────────────────────────────
   window._sb.auth.onAuthStateChange(async (event, session) => {
     const gate = document.getElementById('gate');
-    if(event === 'SIGNED_IN' && session?.user){
+    if(event === 'INITIAL_SESSION'){
+      if(session?.user){
+        // Returning user — hide gate, load profile
+        if(gate){ gate.style.display='none'; gate.style.pointerEvents='none'; }
+        try { await initUserProfile(session.user); } catch(e){}
+      } else {
+        // No session at all — show gate
+        if(gate){ gate.style.display='flex'; gate.style.pointerEvents='auto'; }
+      }
+    } else if(event === 'SIGNED_IN'){
       if(gate){ gate.style.display='none'; gate.style.pointerEvents='none'; }
       try { await initUserProfile(session.user); } catch(e){}
     } else if(event === 'SIGNED_OUT'){

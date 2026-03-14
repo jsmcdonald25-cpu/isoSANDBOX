@@ -41,7 +41,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .sidebar-nav::-webkit-scrollbar-thumb{background:var(--deep-border);border-radius:2px}
 .nav-section-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);padding:12px 20px 4px}
 .nav-item{display:flex;align-items:center;gap:11px;padding:9px 20px;cursor:pointer;transition:background .15s;border-left:2px solid transparent}
-.nav-item:hover{background:rgba(0,170,255,.12);border-left-color:rgba(0,170,255,.4)}.nav-item:hover .nav-label{color:var(--chrome-lt)}.nav-item:hover .nav-icon{color:rgba(0,170,255,.7)}
+.nav-item:hover{background:rgba(0,170,255,.06)}
 .nav-item.active{background:rgba(0,170,255,.1);border-left-color:var(--blue)}
 .nav-item.active .nav-label{color:var(--white)}
 .nav-item.active .nav-icon{color:var(--blue)}
@@ -1087,24 +1087,23 @@ async function logOut(){
 
   <!-- MY ISOS -->
   <div class="panel" id="panel-myisos">
-    <div class="filter-row">
-      <div class="chip active" onclick="C(this)">All (3)</div><div class="chip" onclick="C(this)">Active</div><div class="chip" onclick="C(this)">Matched</div><div class="chip" onclick="C(this)">Completed</div>
+    <div class="filter-row" id="myIsosFilters" style="display:none">
+      <div class="chip active" onclick="filterMyISOs('all',this)">All</div>
+      <div class="chip" onclick="filterMyISOs('active',this)">Active</div>
+      <div class="chip" onclick="filterMyISOs('matched',this)">Matched</div>
+      <div class="chip" onclick="filterMyISOs('completed',this)">Completed</div>
     </div>
-    <div class="iso-list">
-      <div class="iso-item" style="flex-wrap:wrap;gap:9px">
-        <div class="iso-img">&#9918;</div>
-        <div class="iso-info"><div class="iso-player">Juan Soto RC Auto Gold /50</div><div class="iso-detail">2019 Bowman Chrome &#183; PSA 10 required &#183; Posted 2 days ago</div></div>
-        <div><div class="iso-price">$1,200</div><div class="iso-price-sub">MAX BID</div></div>
-        <span class="status-pill matched">SELLER MATCHED</span>
-        <div style="width:100%;padding-top:10px;border-top:1px solid var(--deep-border);display:flex;gap:10px;align-items:center">
-          <div style="font-family:'Barlow',sans-serif;font-size:13px;color:var(--chrome);flex:1">Verified seller responded with a <strong style="color:var(--blue)">PSA 10</strong> at $1,150. Review before 11:59 PM or offer expires.</div>
-          <button class="btn btn-primary btn-sm" onclick="T('Seller review &#8212; coming at launch')">Review Offer</button>
-        </div>
-      </div>
-      <div class="iso-item"><div class="iso-img">&#9918;</div><div class="iso-info"><div class="iso-player">Shohei Ohtani RC Auto Refractor /499</div><div class="iso-detail">2018 Topps Chrome &#183; PSA 9+ required &#183; Posted 6 days ago</div></div><div><div class="iso-price">$650</div><div class="iso-price-sub">MAX BID</div></div><span class="status-pill active">ACTIVE</span></div>
-      <div class="iso-item"><div class="iso-img">&#9918;</div><div class="iso-info"><div class="iso-player">Julio Rodriguez RC Gold /50</div><div class="iso-detail">2022 Topps Chrome &#183; Any grade &#183; Posted 4 days ago</div></div><div><div class="iso-price">$420</div><div class="iso-price-sub">MAX BID</div></div><span class="status-pill pending">PENDING</span></div>
-      <div class="iso-item" style="opacity:.5"><div class="iso-img">&#9918;</div><div class="iso-info"><div class="iso-player">Mike Trout 2011 Topps Update RC</div><div class="iso-detail">PSA 10 &#183; Completed 2 weeks ago</div></div><div><div class="iso-price">$890</div><div class="iso-price-sub">PAID</div></div><span class="status-pill" style="background:rgba(255,255,255,.05);color:var(--muted-text);border-color:var(--deep-border)">COMPLETED</span></div>
+    <div id="myIsosLoading" style="text-align:center;padding:60px 20px;color:var(--muted-text)">
+      <div style="font-size:28px;margin-bottom:12px">&#8987;</div>
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;letter-spacing:1px">Loading your ISOs&#8230;</div>
     </div>
+    <div id="myIsosEmpty" style="display:none;text-align:center;padding:60px 20px;color:var(--muted-text)">
+      <div style="font-size:40px;margin-bottom:12px">&#128269;</div>
+      <div style="font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--white);margin-bottom:8px">No ISOs posted yet</div>
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;margin-bottom:20px">Broadcast exactly what you want &#8212; matching sellers are notified instantly.</div>
+      <button class="btn btn-primary" onclick="N('post',document.querySelector('[onclick*=post]'))">Post Your First ISO</button>
+    </div>
+    <div class="iso-list" id="myIsosList" style="display:none"></div>
   </div>
 
   <!-- MARKET DATA -->
@@ -1892,6 +1891,7 @@ function N(id,el){
   if(m){document.getElementById('pgTitle').textContent=m.t;document.getElementById('pgSub').textContent=m.s;}
   if(id==='library')ivInit();
   if(id==='myvault')renderMyVault();
+  if(id==='myisos')renderMyISOs();
   if(id==='market')renderMkt();
   if(id==='post'){curStep=1;gS(1);}
   if(id==='overview')renderOvMkt();
@@ -2690,7 +2690,12 @@ function renderMyVault(){
       .eq('user_id', user.id)
       .order('created_at',{ascending:false})
       .then(({data, error})=>{
-        if(error || !data || !data.length){
+        if(error){
+          if(grid)  grid.style.display='none';
+          if(empty){ empty.style.display='block'; empty.innerHTML=`<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--red);padding:20px">Vault error: ${error.message}</div>`; }
+          return;
+        }
+        if(!data || !data.length){
           if(grid)  grid.style.display='none';
           if(empty) empty.style.display='block';
           return;
@@ -4511,7 +4516,93 @@ async function flagUserCorrected(flagId, newPrice){
   }
 }
 
-// &#9472;&#9472; User Confirms Price is Correct &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── My ISOs ── live Supabase panel ─────────────────────────────────────────
+let _myIsosData = [];
+let _myIsosFilter = 'all';
+
+async function renderMyISOs(){
+  const loading = document.getElementById('myIsosLoading');
+  const empty   = document.getElementById('myIsosEmpty');
+  const list    = document.getElementById('myIsosList');
+  const filters = document.getElementById('myIsosFilters');
+  if(loading) loading.style.display='block';
+  if(empty)   empty.style.display='none';
+  if(list)  { list.style.display='none'; list.innerHTML=''; }
+  if(filters) filters.style.display='none';
+  try {
+    const { data:{ user } } = await window._sb.auth.getUser();
+    if(!user){ if(loading) loading.style.display='none'; if(empty) empty.style.display='block'; return; }
+    const { data, error } = await window._sb
+      .from('isos').select('*').eq('user_id', user.id).order('created_at',{ascending:false});
+    if(loading) loading.style.display='none';
+    if(error){
+      if(list){ list.style.display='block'; list.innerHTML=`<div style="padding:20px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--red)">Error loading ISOs: ${error.message}</div>`; }
+      return;
+    }
+    if(!data || !data.length){ if(empty) empty.style.display='block'; return; }
+    _myIsosData = data;
+    const activeCount = data.filter(i=>i.status==='active'||i.status==='matched').length;
+    const badge = document.getElementById('navBadge-myisos');
+    if(badge){ badge.textContent=activeCount||''; badge.style.display=activeCount?'':'none'; }
+    if(filters) filters.style.display='flex';
+    _renderISOList();
+  } catch(e){
+    if(loading) loading.style.display='none';
+    if(list){ list.style.display='block'; list.innerHTML=`<div style="padding:20px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--red)">Failed to load ISOs: ${e.message}</div>`; }
+  }
+}
+
+function filterMyISOs(filter, el){
+  _myIsosFilter = filter;
+  document.querySelectorAll('#myIsosFilters .chip').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  _renderISOList();
+}
+
+function _renderISOList(){
+  const list = document.getElementById('myIsosList');
+  if(!list) return;
+  let rows = _myIsosData;
+  if(_myIsosFilter !== 'all') rows = rows.filter(i=>i.status===_myIsosFilter);
+  if(!rows.length){
+    list.style.display='block';
+    list.innerHTML='<div style="text-align:center;padding:40px 20px;font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text)">No ISOs matching this filter.</div>';
+    return;
+  }
+  list.style.display='block';
+  list.innerHTML = rows.map(iso=>{
+    const posted   = iso.created_at ? _isoTimeAgo(iso.created_at) : '';
+    const maxPrice = iso.max_price ? '$'+parseFloat(iso.max_price).toLocaleString() : '&#8212;';
+    const player   = iso.player || iso.card_name || 'Unknown Card';
+    const parallel = iso.parallel || '';
+    const grade    = iso.grade ? ' &#183; '+iso.grade : '';
+    const sport    = iso.sport || '';
+    const isExpired = iso.expires_at && new Date(iso.expires_at) < new Date();
+    const statusClass = iso.status==='matched'?'matched':iso.status==='completed'?'':'active';
+    const statusLabel = isExpired ? 'EXPIRED' : (iso.status||'active').toUpperCase();
+    const sportIcon = sport==='Baseball'?'&#9918;':sport==='Basketball'?'&#127936;':sport==='Football'?'&#127944;':'&#127944;';
+    return `
+    <div class="iso-item" style="flex-wrap:wrap;gap:9px;${iso.status==='completed'||isExpired?'opacity:.55':''}">
+      <div class="iso-img" style="background:rgba(0,170,255,0.06);display:flex;align-items:center;justify-content:center;font-size:22px">${sportIcon}</div>
+      <div class="iso-info">
+        <div class="iso-player">${player}</div>
+        <div class="iso-detail">${parallel}${grade}${posted?' &#183; Posted '+posted:''}</div>
+      </div>
+      <div><div class="iso-price">${maxPrice}</div><div class="iso-price-sub">MAX BID</div></div>
+      <span class="status-pill ${statusClass}">${statusLabel}</span>
+    </div>`;
+  }).join('');
+}
+
+function _isoTimeAgo(dateStr){
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins=Math.floor(diff/60000), hours=Math.floor(mins/60), days=Math.floor(hours/24);
+  if(days>0) return days+'d ago';
+  if(hours>0) return hours+'h ago';
+  return mins+'m ago';
+}
+
+// ── User Confirms Price is Correct ─────────────────────────────────────────
 async function flagUserConfirmed(flagId){
   try {
     await window._sb.from('price_flags')

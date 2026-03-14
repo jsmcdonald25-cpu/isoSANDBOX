@@ -283,6 +283,37 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .crt-name{font-family:Barlow Condensed,sans-serif;font-weight:700;font-size:14px;color:var(--white)}
 .crt-set{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted-text);margin-top:2px}
 .crt-price{font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--blue);margin-top:6px}
+/* Step 3 rebuild */
+.s3-layout{display:grid;grid-template-columns:240px 1fr;gap:16px;min-height:340px}
+.s3-set-list{display:flex;flex-direction:column;gap:4px;overflow-y:auto;max-height:360px;padding-right:4px}
+.s3-set-list::-webkit-scrollbar{width:3px}.s3-set-list::-webkit-scrollbar-thumb{background:var(--deep-border);border-radius:2px}
+.s3-set-row{padding:10px 12px;background:rgba(0,0,0,0.2);border:1px solid var(--deep-border);border-radius:8px;cursor:pointer;transition:all .15s;user-select:none}
+.s3-set-row:hover{background:rgba(0,170,255,.06);border-color:rgba(0,170,255,.3)}
+.s3-set-row.sel{background:rgba(0,170,255,.12);border-color:var(--blue)}
+.s3-set-year{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:2px}
+.s3-set-name{font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:1px;color:var(--white);line-height:1.1}
+.s3-set-brand{font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-top:1px}
+.s3-right{display:flex;flex-direction:column;gap:12px}
+.s3-card-stage{display:flex;justify-content:center;align-items:center;height:200px;perspective:800px}
+.s3-card-3d{width:130px;height:182px;position:relative;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.23,1,.32,1);cursor:default;border-radius:10px}
+.s3-card-stage:hover .s3-card-3d{transform:rotateY(12deg) rotateX(-4deg)}
+.s3-card-face{position:absolute;inset:0;border-radius:10px;background:linear-gradient(135deg,#0a1628 0%,#0d2040 40%,#091830 100%);border:1px solid rgba(0,170,255,0.4);box-shadow:0 8px 32px rgba(0,0,0,0.6),0 0 0 1px rgba(0,170,255,0.15),inset 0 1px 0 rgba(255,255,255,0.05);overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:12px 10px}
+.s3-card-face::before{content:'';position:absolute;top:-40px;left:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(0,170,255,0.12),transparent 70%);pointer-events:none}
+.s3-card-shimmer{position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(0,170,255,0.06) 50%,transparent 60%);border-radius:10px;animation:shimmer3d 3s ease-in-out infinite}
+@keyframes shimmer3d{0%,100%{opacity:0}50%{opacity:1}}
+.s3-card-player{font-family:Bebas Neue,sans-serif;font-size:15px;letter-spacing:1.5px;color:var(--white);line-height:1;position:relative;z-index:1}
+.s3-card-parallel{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);position:relative;z-index:1}
+.s3-card-price{font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--white);position:relative;z-index:1}
+.s3-card-isos{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(0,170,255,0.6);position:relative;z-index:1}
+.s3-card-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;width:130px;height:182px;border:2px dashed rgba(0,170,255,0.2);border-radius:10px;color:rgba(0,170,255,0.3);font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-align:center;gap:8px}
+.s3-variant-section{flex:1}
+.s3-variant-label{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:8px}
+.s3-variants{display:flex;flex-wrap:wrap;gap:6px}
+.s3-var-pill{padding:6px 12px;background:rgba(0,0,0,0.25);border:1px solid var(--deep-border);border-radius:20px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);cursor:pointer;transition:all .15s;user-select:none;white-space:nowrap}
+.s3-var-pill:hover{border-color:rgba(0,170,255,.4);color:var(--white)}
+.s3-var-pill.sel{background:rgba(0,170,255,.15);border-color:var(--blue);color:var(--white)}
+.s3-var-pill .pill-price{font-family:Bebas Neue,sans-serif;font-size:12px;color:var(--blue);margin-left:6px}
+.s3-empty-msg{font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);padding:20px;text-align:center}
 .grade-tiles{display:flex;gap:8px;flex-wrap:wrap}
 .gt{padding:8px 14px;border:1px solid var(--deep-border);border-radius:6px;font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:600;color:var(--muted-text);cursor:pointer;transition:all .15s;user-select:none}
 .gt:hover{border-color:var(--blue);color:var(--blue)}.gt.sel{background:rgba(0,170,255,.15);border-color:var(--blue);color:var(--blue)}
@@ -1033,10 +1064,43 @@ async function logOut(){
       </div>
       <!-- Step 3 -->
       <div class="sp" id="sp3">
-        <div class="sp-title">SELECT CARD</div>
-        <div class="sp-sub" id="s3sub">Choose the exact card from the catalog.</div>
-        <div class="card-res-grid" id="cardRes"></div>
-        <div style="display:flex;justify-content:space-between;margin-top:20px"><button class="btn btn-ghost" onclick="gS(2)">&#8592; Back</button><button class="btn btn-primary" id="s3next" disabled onclick="gS(4)">Next &#8212; Grade & Price &#8594;</button></div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px">
+          <div class="sp-title" style="margin-bottom:0">SELECT CARD</div>
+          <button class="btn btn-primary" id="s3next" disabled onclick="gS(4)" style="opacity:.5;transition:opacity .2s">Next &#8212; Grade &amp; Price &#8594;</button>
+        </div>
+        <div class="sp-sub" id="s3sub" style="margin-bottom:14px">Select a set on the left, then choose the exact variant.</div>
+        <div class="s3-layout">
+          <!-- Left: set list -->
+          <div class="s3-set-list" id="s3SetList">
+            <div class="s3-empty-msg">Search a player in Step 2 first.</div>
+          </div>
+          <!-- Right: 3D preview + variants -->
+          <div class="s3-right">
+            <div class="s3-card-stage" id="s3CardStage">
+              <div class="s3-card-empty" id="s3CardEmpty">
+                <div style="font-size:28px">&#9918;</div>
+                <div>Select a card</div>
+              </div>
+              <div class="s3-card-3d" id="s3Card3d" style="display:none">
+                <div class="s3-card-face">
+                  <div class="s3-card-shimmer"></div>
+                  <div>
+                    <div class="s3-card-player" id="s3CardPlayer"></div>
+                    <div class="s3-card-parallel" id="s3CardParallel"></div>
+                  </div>
+                  <div>
+                    <div class="s3-card-price" id="s3CardPrice"></div>
+                    <div class="s3-card-isos" id="s3CardIsos"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="s3-variant-section" id="s3VarSection" style="display:none">
+              <div class="s3-variant-label">Choose Variant</div>
+              <div class="s3-variants" id="s3Variants"></div>
+            </div>
+          </div>
+        </div>
       </div>
       <!-- Step 4 -->
       <div class="sp" id="sp4">
@@ -1976,25 +2040,105 @@ function pickP(name,team,pos,rookie){
   document.getElementById('s2next').disabled=false;
 }
 function renderCardRes(){
-  if(!ISO.player)return;
-  const cards=CARDS.filter(c=>c.player===ISO.player);
-  document.getElementById('s3sub').textContent=`${cards.length} cards found for ${ISO.player} in the GrailISO catalog.`;
-  document.getElementById('cardRes').innerHTML=cards.map(c=>{
-    const tags=[c.auto?'<span class="badge auto">AUTO</span>':'',c.rc?'<span class="badge rc">RC</span>':'',c.run?`<span class="badge num">/${c.run}</span>`:''].filter(Boolean).join('');
-    return`<div class="crt" onclick="pickCard(${c.id},this)">
-      <div class="crt-name">${c.year} ${c.brand} ${c.set}</div>
-      <div class="crt-set">${c.parallel}</div>
-      <div class="crt-price">$${c.price.toLocaleString()}</div>
-      <div style="margin-top:4px">${tags}</div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text);margin-top:4px">${c.isos} active ISOs</div>
+  if(!ISO.player) return;
+  const cards = CARDS.filter(c=>c.player===ISO.player);
+  // Group by unique set (year+brand+set)
+  const sets = [];
+  const seen = new Set();
+  cards.forEach(c=>{
+    const key = c.year+'|'+c.brand+'|'+c.set;
+    if(!seen.has(key)){ seen.add(key); sets.push({year:c.year,brand:c.brand,set:c.set,key}); }
+  });
+  const total = cards.length;
+  document.getElementById('s3sub').textContent = total+' card'+(total!==1?'s':'')+' found for '+ISO.player+'. Select a set, then choose the variant.';
+  const listEl = document.getElementById('s3SetList');
+  if(!sets.length){ listEl.innerHTML='<div class="s3-empty-msg">No cards found for this player in the catalog.</div>'; return; }
+  listEl.innerHTML = sets.map(s=>{
+    const varCount = cards.filter(c=>c.year===s.year&&c.brand===s.brand&&c.set===s.set).length;
+    return`<div class="s3-set-row" onclick="s3SelectSet('${s.key.replace(/'/g,"\'")}',this)">
+      <div class="s3-set-year">${s.year}</div>
+      <div class="s3-set-name">${s.set}</div>
+      <div class="s3-set-brand">${s.brand} &middot; ${varCount} variant${varCount!==1?'s':''}</div>
     </div>`;
   }).join('');
+  // Reset right side
+  s3ClearPreview();
 }
-function pickCard(id,el){
-  document.querySelectorAll('.crt').forEach(t=>t.classList.remove('sel'));
+
+function s3ClearPreview(){
+  document.getElementById('s3CardEmpty').style.display='flex';
+  document.getElementById('s3Card3d').style.display='none';
+  document.getElementById('s3VarSection').style.display='none';
+  document.getElementById('s3Variants').innerHTML='';
+  const btn = document.getElementById('s3next');
+  btn.disabled=true; btn.style.opacity='.5';
+  ISO.card=null;
+}
+
+function s3SelectSet(key, el){
+  document.querySelectorAll('.s3-set-row').forEach(r=>r.classList.remove('sel'));
   el.classList.add('sel');
+  const [year,brand,set] = key.split('|');
+  const variants = CARDS.filter(c=>c.year==year&&c.brand===brand&&c.set===set&&c.player===ISO.player);
+  // Show variants
+  const varEl = document.getElementById('s3VarSection');
+  const pillsEl = document.getElementById('s3Variants');
+  varEl.style.display='block';
+  pillsEl.innerHTML = variants.map(c=>{
+    const tags=[];
+    if(c.auto) tags.push('<span class="badge auto">AUTO</span>');
+    if(c.rc)   tags.push('<span class="badge rc">RC</span>');
+    if(c.run)  tags.push('<span class="badge num">/'+c.run+'</span>');
+    return`<div class="s3-var-pill" onclick="s3PickVariant(${c.id},this)">
+      ${c.parallel}${tags.length?' '+tags.join(''):''}
+      <span class="pill-price">$${c.price.toLocaleString()}</span>
+    </div>`;
+  }).join('');
+  // If only one variant, auto-select it
+  if(variants.length===1){
+    const pill = pillsEl.querySelector('.s3-var-pill');
+    if(pill) s3PickVariant(variants[0].id, pill);
+  } else {
+    s3ClearPreview();
+    // Keep set list selection
+    document.querySelectorAll('.s3-set-row').forEach(r=>r.classList.remove('sel'));
+    el.classList.add('sel');
+    document.getElementById('s3VarSection').style.display='block';
+    pillsEl.innerHTML = variants.map(c=>{
+      const tags=[];
+      if(c.auto) tags.push('<span class="badge auto">AUTO</span>');
+      if(c.rc)   tags.push('<span class="badge rc">RC</span>');
+      if(c.run)  tags.push('<span class="badge num">/'+c.run+'</span>');
+      return`<div class="s3-var-pill" onclick="s3PickVariant(${c.id},this)">
+        ${c.parallel}${tags.length?' '+tags.join(''):''}
+        <span class="pill-price">$${c.price.toLocaleString()}</span>
+      </div>`;
+    }).join('');
+  }
+}
+
+function s3PickVariant(id, el){
+  document.querySelectorAll('.s3-var-pill').forEach(p=>p.classList.remove('sel'));
+  el.classList.add('sel');
+  const card = CARDS.find(c=>c.id===id);
+  if(!card) return;
+  ISO.card = card;
+  // Show 3D card
+  document.getElementById('s3CardEmpty').style.display='none';
+  document.getElementById('s3Card3d').style.display='block';
+  document.getElementById('s3CardPlayer').textContent = card.player;
+  document.getElementById('s3CardParallel').textContent = card.year+' '+card.brand+' '+card.set+' · '+card.parallel;
+  document.getElementById('s3CardPrice').textContent = '$'+card.price.toLocaleString();
+  document.getElementById('s3CardIsos').textContent = card.isos+' active ISO'+(card.isos!==1?'s':'');
+  const btn = document.getElementById('s3next');
+  btn.disabled=false; btn.style.opacity='1';
+}
+
+function pickCard(id,el){
+  // Legacy - kept for compatibility
   ISO.card=CARDS.find(c=>c.id===id);
-  document.getElementById('s3next').disabled=false;
+  const btn=document.getElementById('s3next');
+  btn.disabled=false; btn.style.opacity='1';
 }
 function selGrade(el){
   document.querySelectorAll('.gt').forEach(t=>t.classList.remove('sel'));

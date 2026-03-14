@@ -1017,7 +1017,7 @@ async function logOut(){
       <div class="sp" id="sp2">
         <div class="sp-title">SEARCH PLAYER</div>
         <div class="sp-sub">Type a player name. Select from the catalog — no freeform, no bad data.</div>
-        <div class="fg"><label class="fl">Player Name</label><input class="fc" id="pSearch" type="text" placeholder="e.g. Shohei Ohtani, Aaron Judge, Paul Skenes..." oninput="searchP(this.value)" autocomplete="off"/></div>
+        <div class="fg"><label class="fl" for="pSearch">Player Name</label><input class="fc" id="pSearch" type="text" placeholder="e.g. Shohei Ohtani, Aaron Judge, Paul Skenes..." oninput="searchP(this.value)" autocomplete="off"/></div>
         <div class="player-results" id="pResults"></div>
         <div class="sel-player-box" id="selPBox">
           <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Selected Player</div>
@@ -1050,10 +1050,10 @@ async function logOut(){
           </div>
         </div>
         <div class="dgrid">
-          <div class="fg"><label class="fl">Min Price (USD)</label><input class="fc" type="number" id="minP" placeholder="$25 minimum" min="25"/></div>
-          <div class="fg"><label class="fl">Max Price (USD)</label><input class="fc" type="number" id="maxP" placeholder="Your max bid"/></div>
+          <div class="fg"><label class="fl" for="minP">Min Price (USD)</label><input class="fc" type="number" id="minP" placeholder="$25 minimum" min="25"/></div>
+          <div class="fg"><label class="fl" for="maxP">Max Price (USD)</label><input class="fc" type="number" id="maxP" placeholder="Your max bid"/></div>
         </div>
-        <div class="fg"><label class="fl">Additional Notes (optional)</label><textarea class="fc" id="notes" rows="3" style="resize:vertical" placeholder="Cert number, jersey number parallel, auto quality, specific condition details..."></textarea></div>
+        <div class="fg"><label class="fl" for="notes">Additional Notes (optional)</label><textarea class="fc" id="notes" rows="3" style="resize:vertical" placeholder="Cert number, jersey number parallel, auto quality, specific condition details..."></textarea></div>
         <div style="display:flex;justify-content:space-between;margin-top:20px"><button class="btn btn-ghost" onclick="gS(3)">← Back</button><button class="btn btn-primary" onclick="gS(5)">Next — Review ISO →</button></div>
       </div>
       <!-- Step 5 -->

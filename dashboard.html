@@ -622,6 +622,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     <div style="background:#112840;border:1px solid rgba(0,170,255,0.15);border-radius:12px;padding:28px 24px;">
       <!-- Login form -->
       <div id="formLogin">
+      <form onsubmit="authLogin();return false;" autocomplete="on">
         <input id="loginEmail" type="email" placeholder="Email address" autocomplete="email"
           style="width:100%;background:#0D1F33;border:1px solid rgba(0,170,255,0.2);border-radius:8px;padding:12px 16px;font-family:Barlow Condensed,sans-serif;font-size:16px;color:white;outline:none;margin-bottom:10px;transition:border-color .2s;display:block"
           onfocus="this.style.borderColor='#00AAFF'" onblur="this.style.borderColor='rgba(0,170,255,0.2)'"
@@ -631,15 +632,17 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
           onfocus="this.style.borderColor='#00AAFF'" onblur="this.style.borderColor='rgba(0,170,255,0.2)'"
           onkeydown="if(event.key==='Enter')authLogin()"/>
         <div id="loginErr" style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:#FF3B5C;letter-spacing:1px;min-height:18px;margin-bottom:10px;text-align:left"></div>
-        <button id="loginBtn" onclick="authLogin()"
+        <button id="loginBtn" type="submit"
           style="width:100%;background:#00AAFF;border:none;border-radius:8px;padding:13px;font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:2px;color:white;cursor:pointer;transition:all .2s"
           onmouseover="this.style.background='#33CCFF';this.style.boxShadow='0 0 20px rgba(0,170,255,0.4)'"
           onmouseout="this.style.background='#00AAFF';this.style.boxShadow='none'">
           SIGN IN
         </button>
+        </form>
       </div>
       <!-- Signup form -->
       <div id="formSignup" style="display:none">
+      <form onsubmit="authSignup();return false;" autocomplete="on">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
           <input id="signupFirstName" type="text" placeholder="First name" autocomplete="given-name"
             style="width:100%;background:#0D1F33;border:1px solid rgba(0,170,255,0.2);border-radius:8px;padding:12px 16px;font-family:Barlow Condensed,sans-serif;font-size:16px;color:white;outline:none;transition:border-color .2s"
@@ -659,12 +662,13 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
           onfocus="this.style.borderColor='#00AAFF'" onblur="this.style.borderColor='rgba(0,170,255,0.2)'"
           onkeydown="if(event.key==='Enter')authSignup()"/>
         <div id="signupErr" style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:#FF3B5C;letter-spacing:1px;min-height:18px;margin-bottom:10px;text-align:left"></div>
-        <button id="signupBtn" onclick="authSignup()"
+        <button id="signupBtn" type="submit"
           style="width:100%;background:#00AAFF;border:none;border-radius:8px;padding:13px;font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:2px;color:white;cursor:pointer;transition:all .2s"
           onmouseover="this.style.background='#33CCFF';this.style.boxShadow='0 0 20px rgba(0,170,255,0.4)'"
           onmouseout="this.style.background='#00AAFF';this.style.boxShadow='none'">
           CREATE ACCOUNT
         </button>
+        </form>
       </div>
     </div>
     <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:rgba(122,149,174,0.4);margin-top:20px;letter-spacing:1px">PRIVATE ALPHA · INVITE ONLY</div>
@@ -706,14 +710,9 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     const pass  = document.getElementById('loginPassword').value;
     if(!email || !pass){ authErr('loginErr','Enter your email and password.'); return; }
     setBtnLoading('loginBtn', true, 'SIGN IN');
-    try {
-      const { error } = await window._sb.auth.signInWithPassword({ email, password: pass });
-      if(error){ authErr('loginErr', error.message); }
-    } catch(e){
-      authErr('loginErr', 'Connection error — try again.');
-    } finally {
-      setBtnLoading('loginBtn', false, 'SIGN IN');
-    }
+    const { error } = await window._sb.auth.signInWithPassword({ email, password: pass });
+    setBtnLoading('loginBtn', false, 'SIGN IN');
+    if(error){ authErr('loginErr', error.message); return; }
     // onAuthStateChange handles the rest
   };
 
@@ -730,28 +729,23 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     const name     = `${firstName} ${lastName}`;
     const initials = (firstName[0] + lastName[0]).toUpperCase();
     setBtnLoading('signupBtn', true, 'CREATE ACCOUNT');
-    try {
-      const { data, error } = await window._sb.auth.signUp({ email, password: pass });
-      if(error){ authErr('signupErr', error.message); return; }
-      if(data && data.user){
-        await window._sb.from('profiles').upsert({
-          id:         data.user.id,
-          full_name:  name,
-          first_name: firstName,
-          last_name:  lastName,
-          initials:   initials,
-          email:      email,
-          credits:    5,
-          tier:       'Alpha Member',
-          role:       'user',
-          created_at: new Date().toISOString()
-        }, { onConflict: 'id' });
-      }
-    } catch(e){
-      authErr('signupErr', 'Connection error — try again.');
-    } finally {
-      setBtnLoading('signupBtn', false, 'CREATE ACCOUNT');
+    const { data, error } = await window._sb.auth.signUp({ email, password: pass });
+    if(error){ setBtnLoading('signupBtn', false, 'CREATE ACCOUNT'); authErr('signupErr', error.message); return; }
+    if(data && data.user){
+      await window._sb.from('profiles').upsert({
+        id:         data.user.id,
+        full_name:  name,
+        first_name: firstName,
+        last_name:  lastName,
+        initials:   initials,
+        email:      email,
+        credits:    5,
+        tier:       'Alpha Member',
+        role:       'user',
+        created_at: new Date().toISOString()
+      }, { onConflict: 'id' });
     }
+    setBtnLoading('signupBtn', false, 'CREATE ACCOUNT');
     // onAuthStateChange handles the rest
   };
 
@@ -774,7 +768,7 @@ async function initUserProfile(user){
   window._authUser = user;
   let profile = null;
   try {
-    const { data } = await window._sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
+    const { data } = await window._sb.from('profiles').select('*').eq('id', user.id).single();
     profile = data;
   } catch(e){ /* profiles table may not exist yet — handled below */ }
 

@@ -1,0 +1,206 @@
+2025 BOWMAN DRAFT BASEBALL MEGA BOX
+
+BASE
+CHROME PROSPECTS
+BDC-1 Eli Willits Washington Nationals®
+BDC-2 Xavier Neyens Houston Astros®
+BDC-3 Kade Anderson Seattle Mariners™
+BDC-4 Gage Wood Philadelphia Phillies®
+BDC-5 Max Belyeu Colorado Rockies™
+BDC-6 Aidan West Los Angeles Dodgers®
+BDC-7 Taitn Gray Tampa Bay Rays™
+BDC-8 JoJo Parker Toronto Blue Jays®
+BDC-10 Billy Carlson Chicago White Sox®
+BDC-12 Liam Doyle St. Louis Cardinals®
+BDC-14 J.D. Thompson Milwaukee Brewers™
+BDC-15 Gavin Fien Texas Rangers®
+BDC-16 Ike Irish Baltimore Orioles®
+BDC-17 Ethan Conrad Chicago Cubs®
+BDC-20 Steele Hall Cincinnati Reds®
+BDC-21 Josiah Hartshorn Chicago Cubs®
+BDC-22 Zach Root Los Angeles Dodgers®
+BDC-23 Riley Quick Minnesota Twins®
+BDC-25 Seth Hernandez Pittsburgh Pirates®
+BDC-29 Kyson Witherspoon Boston Red Sox®
+BDC-30 Jamie Arnold Athletics™
+BDC-37 Tyler Bremner Angels®
+BDC-38 Nate Snead Angels®
+BDC-40 Gavin Kilen San Francisco Giants®
+BDC-42 Jacob Morrison Milwaukee Brewers™
+BDC-43 George Lombard Jr. New York Yankees®
+BDC-44 Landon Harmon Washington Nationals®
+BDC-46 Trevor Cohen San Francisco Giants®
+BDC-48 Max Clark Detroit Tigers®
+BDC-49 Travis Bazzana Cleveland Guardians®
+BDC-50 Easton Carmichael Pittsburgh Pirates®
+BDC-51 AJ Russell Texas Rangers®
+BDC-53 Dominick Reid Chicago Cubs®
+BDC-54 Marcus Phillips Boston Red Sox®
+BDC-56 Antonio Jimenez New York Mets®
+BDC-58 Ty Harvey San Diego Padres™
+BDC-59 Kevin McGonigle Detroit Tigers®
+BDC-62 Justin Lamkin Kansas City Royals®
+BDC-63 Caden Bodine Baltimore Orioles®
+BDC-64 Brandon Compton Miami Marlins®
+BDC-65 Kaeden Kent New York Yankees®
+BDC-66 Mason Morris Cincinnati Reds®
+BDC-67 Ethan Frey Houston Astros®
+BDC-68 Max Williams Miami Marlins®
+BDC-70 Tate Southisene Atlanta Braves™
+BDC-71 Mitch Voit New York Mets®
+BDC-77 Ryan Mitchell St. Louis Cardinals®
+BDC-78 JB Middleton Colorado Rockies™
+BDC-80 Cade Obermueller Philadelphia Phillies®
+BDC-81 Briggs McKenzie Atlanta Braves™
+BDC-84 Kayson Cunningham Arizona Diamondbacks®
+BDC-85 JT Quinn Baltimore Orioles®
+BDC-87 Leo De Vries Athletics™
+BDC-89 Patrick Forbes Arizona Diamondbacks®
+BDC-90 Tanner Franklin St. Louis Cardinals®
+BDC-91 Cody Miller Atlanta Braves™
+BDC-92 Quentin Young Minnesota Twins®
+BDC-93 Landon Hodge Chicago White Sox®
+BDC-96 Charles Davalan Los Angeles Dodgers®
+BDC-97 Jake Cook Toronto Blue Jays®
+BDC-100 Nick Becker Seattle Mariners™
+BDC-101 Griffin Hugus Seattle Mariners™
+BDC-102 Konnor Griffin Pittsburgh Pirates®
+BDC-106 Matthew Fisher Philadelphia Phillies®
+BDC-108 Murf Gray Pittsburgh Pirates®
+BDC-109 Mason Neville Cincinnati Reds®
+BDC-114 Dean Moss Tampa Bay Rays™
+BDC-115 Elian Peña New York Mets®
+BDC-116 Anthony Eyanson Boston Red Sox®
+BDC-118 Michael Lombardi Kansas City Royals®
+BDC-119 Josh Owens Texas Rangers®
+BDC-129 Dean Curley Cleveland Guardians®
+BDC-134 Aaron Walton Cleveland Guardians®
+BDC-135 Devin Taylor Athletics™
+BDC-141 Ben Jacobs Detroit Tigers®
+BDC-142 Chase Shores Angels®
+BDC-144 Kyle Lodise Chicago White Sox®
+BDC-145 JJ Wetherholt St. Louis Cardinals®
+BDC-146 Dax Kilby New York Yankees®
+BDC-148 Ethan Hedges Colorado Rockies™
+BDC-150 Jack Gurevitch St. Louis Cardinals®
+BDC-151 Ethan Petry Washington Nationals®
+BDC-153 Johnny Slawinski Angels®
+BDC-156 Michael Oliveto Detroit Tigers®
+BDC-158 Landyn Vidourek Los Angeles Dodgers®
+BDC-162 Jordan Yost Detroit Tigers®
+BDC-166 Cooper Flemming Tampa Bay Rays™
+BDC-172 Malachi Witherspoon Detroit Tigers®
+BDC-176 Cameron Millar Kansas City Royals®
+BDC-178 Sean Gamble Kansas City Royals®
+BDC-181 Miguel Sime Jr. Washington Nationals®
+BDC-182 Josuar Gonzalez San Francisco Giants®
+BDC-185 Josh Hammond Kansas City Royals®
+BDC-186 Joseph Dzierwa Baltimore Orioles®
+BDC-190 Ryan Wideman San Diego Padres™
+BDC-192 Nolan Schubart Cleveland Guardians®
+BDC-193 Aaron Watson Cincinnati Reds®
+BDC-194 Brady Ebel Milwaukee Brewers™
+BDC-196 Jesús Made Milwaukee Brewers™
+BDC-200 Kane Kepley Chicago Cubs®
+INSERT
+MEGA BOX PRIZED PROSPECTS
+PP-1 Eli Willits Washington Nationals®
+PP-2 Kevin McGonigle Detroit Tigers®
+PP-3 George Lombard Jr. New York Yankees®
+PP-4 Liam Doyle St. Louis Cardinals®
+PP-6 Billy Carlson Chicago White Sox®
+PP-8 Ike Irish Baltimore Orioles®
+PP-9 JoJo Parker Toronto Blue Jays®
+PP-11 Jamie Arnold Athletics™
+PP-12 Dax Kilby New York Yankees®
+PP-13 Travis Bazzana Cleveland Guardians®
+PP-14 Gavin Kilen San Francisco Giants®
+PP-15 Kade Anderson Seattle Mariners™
+PP-16 Jesús Made Milwaukee Brewers™
+PP-17 Konnor Griffin Pittsburgh Pirates®
+PP-18 JJ Wetherholt St. Louis Cardinals®
+MEGA BOX BOWMAN IN ACTION
+BIA-1 Eli Willits Washington Nationals®
+BIA-2 Steele Hall Cincinnati Reds®
+BIA-3 Jamie Arnold Athletics™
+BIA-4 Charlie Condon Colorado Rockies™
+BIA-5 Jesús Made Milwaukee Brewers™
+BIA-6 Carson Benge New York Mets®
+BIA-7 Kyson Witherspoon Boston Red Sox®
+BIA-8 Kade Anderson Seattle Mariners™
+BIA-9 Josh Hammond Kansas City Royals®
+BIA-10 Kevin McGonigle Detroit Tigers®
+BIA-11 Zyhir Hope Los Angeles Dodgers®
+BIA-12 Tyler Bremner Angels®
+BIA-13 Gavin Kilen San Francisco Giants®
+BIA-14 Xavier Neyens Houston Astros®
+BIA-15 George Lombard Jr. New York Yankees®
+BIA-16 Gavin Fien Texas Rangers®
+BIA-17 Ike Irish Baltimore Orioles®
+BIA-18 Dax Kilby New York Yankees®
+BIA-19 Billy Carlson Chicago White Sox®
+BIA-20 Brady Ebel Milwaukee Brewers™
+BIA-21 Seth Hernandez Pittsburgh Pirates®
+BIA-22 Liam Doyle St. Louis Cardinals®
+BIA-23 JoJo Parker Toronto Blue Jays®
+BIA-25 JJ Wetherholt St. Louis Cardinals®
+BIA-28 Andrew Salas Miami Marlins®
+CHROME PROSPECTS IMAGE VARIATIONS
+BDC-1 Eli Willits Washington Nationals®
+BDC-3 Kade Anderson Seattle Mariners™
+BDC-8 JoJo Parker Toronto Blue Jays®
+BDC-10 Billy Carlson Chicago White Sox®
+BDC-12 Liam Doyle St. Louis Cardinals®
+BDC-25 Seth Hernandez Pittsburgh Pirates®
+BDC-29 Kyson Witherspoon Boston Red Sox®
+BDC-30 Jamie Arnold Athletics™
+BDC-37 Tyler Bremner Angels®
+BDC-71 Mitch Voit New York Mets®
+AUTOGRAPH
+BOWMAN PROSPECT MEGA AUTOGRAPHS
+BMA-BC Billy Carlson Chicago White Sox®
+BMA-BCO Brandon Compton Miami Marlins®
+BMA-BE Brady Ebel Milwaukee Brewers™
+BMA-BM Briggs McKenzie Atlanta Braves™
+BMA-CB Caden Bodine Baltimore Orioles®
+BMA-CD Charles Davalan Los Angeles Dodgers®
+BMA-DK Dax Kilby New York Yankees®
+BMA-DM Dean Moss Tampa Bay Rays™
+BMA-DT Devin Taylor Athletics™
+BMA-EP Ethan Petry Washington Nationals®
+BMA-EW Eli Willits Washington Nationals®
+BMA-GF Gavin Fien Texas Rangers®
+BMA-GK Gavin Kilen San Francisco Giants®
+BMA-GW Gage Wood Philadelphia Phillies®
+BMA-JA Jamie Arnold Athletics™
+BMA-JHA Josiah Hartshorn Chicago Cubs®
+BMA-JO Josh Owens Texas Rangers®
+BMA-JP JoJo Parker Toronto Blue Jays®
+BMA-KA Kade Anderson Seattle Mariners™
+BMA-KC Kayson Cunningham Arizona Diamondbacks®
+BMA-KW Kyson Witherspoon Boston Red Sox®
+BMA-LD Liam Doyle St. Louis Cardinals®
+BMA-MB Max Belyeu Colorado Rockies™
+BMA-MF Matthew Fisher Philadelphia Phillies®
+BMA-MP Marcus Phillips Boston Red Sox®
+BMA-MV Mitch Voit New York Mets®
+BMA-MW Max Williams Miami Marlins®
+BMA-MWI Malachi Witherspoon Detroit Tigers®
+BMA-PF Patrick Forbes Arizona Diamondbacks®
+BMA-QY Quentin Young Minnesota Twins®
+BMA-RM Ryan Mitchell St. Louis Cardinals®
+BMA-RQ Riley Quick Minnesota Twins®
+BMA-SH Seth Hernandez Pittsburgh Pirates®
+BMA-SHA Steele Hall Cincinnati Reds®
+BMA-TB Tyler Bremner Angels®
+BMA-TS Tate Southisene Atlanta Braves™
+BMA-XN Xavier Neyens Houston Astros®
+BMA-ZR Zach Root Los Angeles Dodgers®
+MEGA BOX IMAGE VARIATIONS AUTOGRAPHS
+CPA-BC Billy Carlson Chicago White Sox®
+CPA-EW Eli Willits Washington Nationals®
+CPA-JP JoJo Parker Toronto Blue Jays®
+CPA-KA Kade Anderson Seattle Mariners™
+CPA-KW Kyson Witherspoon Boston Red Sox®
+CPA-SH Seth Hernandez Pittsburgh Pirates®
+CPA-TB Tyler Bremner Angels®

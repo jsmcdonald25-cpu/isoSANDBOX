@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ISOVault — Card Detail</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0D1F33;
+    --blue: #00AAFF;
+    --carolina: #56A0D3;
+    --white: #FFFFFF;
+    --dim: rgba(255,255,255,0.55);
+    --panel: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.09);
+    --gold: #FFD600;
+    --red: #FF3B3B;
+    --green: #00E676;
+    --purple: #9C4FFF;
+    --teal: #00BCD4;
+    --orange: #FF6D00;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(13,31,51,0.95);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .back-btn {
+    background: none;
+    border: none;
+    color: var(--blue);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+  .back-btn:hover { opacity: 1; }
+  .breadcrumb {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--dim);
+    letter-spacing: 0.5px;
+  }
+  .breadcrumb span { color: var(--carolina); }
+
+  /* ── MAIN LAYOUT ── */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+  @media (max-width: 900px) {
+    .main { grid-template-columns: 1fr; }
+  }
+
+  /* ── LEFT: CARD VIEWER ── */
+  .card-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    padding-right: 40px;
+  }
+
+  .card-scene {
+    perspective: 900px;
+    width: 280px;
+    height: 390px;
+    cursor: grab;
+    user-select: none;
+  }
+  .card-scene:active { cursor: grabbing; }
+
+  .card-3d {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.08s ease-out;
+    border-radius: 14px;
+  }
+
+  .card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 14px;
+    backface-visibility: hidden;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.08);
+  }
+  .card-face.back {
+    transform: rotateY(180deg);
+  }
+
+  .card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Placeholder card art */
+  .card-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a2e45 0%, #0d1f33 40%, #1e3a5f 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-placeholder::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 120% 80% at 50% 30%, rgba(0,170,255,0.15) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 60% at 80% 80%, rgba(86,160,211,0.1) 0%, transparent 60%);
+  }
+  .card-placeholder-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--white);
+    letter-spacing: 2px;
+    text-align: center;
+    line-height: 1;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 0 30px rgba(0,170,255,0.5);
+  }
+  .card-placeholder-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    color: var(--blue);
+    letter-spacing: 3px;
+    margin-top: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .card-placeholder-set {
+    font-family: 'Barlow', sans-serif;
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 1px;
+    margin-top: 4px;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  /* Holographic shine overlay */
+  .card-shine {
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    background: radial-gradient(circle at var(--mx,50%) var(--my,50%),
+      rgba(255,255,255,0.18) 0%,
+      rgba(0,170,255,0.08) 30%,
+      transparent 65%);
+    mix-blend-mode: screen;
+  }
+  .card-scene:hover .card-shine { opacity: 1; }
+
+  /* Mojo shimmer for parallels */
+  .card-mojo-shimmer {
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    background: linear-gradient(
+      135deg,
+      transparent 20%,
+      rgba(255,255,255,0.04) 40%,
+      rgba(255,255,255,0.1) 50%,
+      rgba(255,255,255,0.04) 60%,
+      transparent 80%
+    );
+    animation: mojoShimmer 3s ease-in-out infinite;
+  }
+  @keyframes mojoShimmer {
+    0%, 100% { background-position: 200% 0; opacity: 0.3; }
+    50% { background-position: -200% 0; opacity: 0.6; }
+  }
+  .has-shimmer .card-mojo-shimmer { opacity: 0.4; }
+
+  /* Flip button */
+  .flip-btn {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--dim);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .flip-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+  /* ── VARIATION PILLS ── */
+  .variations-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .variations-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .var-pill {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+  }
+  .var-pill:hover { transform: translateY(-1px); filter: brightness(1.2); }
+  .var-pill.active { box-shadow: 0 0 12px currentColor; }
+
+  .var-pill.base    { color: #B0BEC5; border-color: rgba(176,190,197,0.35); background: rgba(176,190,197,0.06); }
+  .var-pill.base.active { background: rgba(176,190,197,0.18); border-color: #B0BEC5; }
+  .var-pill.purple  { color: #CE93D8; border-color: rgba(206,147,216,0.35); background: rgba(206,147,216,0.06); }
+  .var-pill.purple.active { background: rgba(206,147,216,0.18); border-color: #CE93D8; }
+  .var-pill.teal    { color: #80DEEA; border-color: rgba(128,222,234,0.35); background: rgba(128,222,234,0.06); }
+  .var-pill.teal.active { background: rgba(128,222,234,0.18); border-color: #80DEEA; }
+  .var-pill.blue    { color: #64B5F6; border-color: rgba(100,181,246,0.35); background: rgba(100,181,246,0.06); }
+  .var-pill.blue.active { background: rgba(100,181,246,0.18); border-color: #64B5F6; }
+  .var-pill.green   { color: #A5D6A7; border-color: rgba(165,214,167,0.35); background: rgba(165,214,167,0.06); }
+  .var-pill.green.active { background: rgba(165,214,167,0.18); border-color: #A5D6A7; }
+  .var-pill.members { color: #F48FB1; border-color: rgba(244,143,177,0.35); background: rgba(244,143,177,0.06); }
+  .var-pill.members.active { background: rgba(244,143,177,0.18); border-color: #F48FB1; }
+  .var-pill.gold    { color: #FFD54F; border-color: rgba(255,213,79,0.35); background: rgba(255,213,79,0.06); }
+  .var-pill.gold.active { background: rgba(255,213,79,0.18); border-color: #FFD54F; }
+  .var-pill.orange  { color: #FFAB40; border-color: rgba(255,171,64,0.35); background: rgba(255,171,64,0.06); }
+  .var-pill.orange.active { background: rgba(255,171,64,0.18); border-color: #FFAB40; }
+  .var-pill.black   { color: #90A4AE; border-color: rgba(144,164,174,0.35); background: rgba(144,164,174,0.06); }
+  .var-pill.black.active { background: rgba(144,164,174,0.18); border-color: #90A4AE; }
+  .var-pill.red     { color: #EF9A9A; border-color: rgba(239,154,154,0.35); background: rgba(239,154,154,0.06); }
+  .var-pill.red.active { background: rgba(239,154,154,0.18); border-color: #EF9A9A; }
+  .var-pill.superfractor { color: #FFD600; border-color: rgba(255,214,0,0.5); background: rgba(255,214,0,0.08);
+    background: linear-gradient(135deg, rgba(255,214,0,0.12), rgba(255,100,0,0.08), rgba(255,214,0,0.12));
+    animation: sfGlow 2s ease-in-out infinite alternate;
+  }
+  .var-pill.superfractor.active { box-shadow: 0 0 20px rgba(255,214,0,0.4); }
+  @keyframes sfGlow {
+    from { border-color: rgba(255,214,0,0.4); }
+    to { border-color: rgba(255,214,0,0.9); }
+  }
+
+  /* Print run badge */
+  .var-run {
+    font-size: 9px;
+    opacity: 0.7;
+    font-weight: 300;
+    margin-left: 2px;
+  }
+
+  /* ── RIGHT: CARD INFO ── */
+  .card-info {
+    padding-left: 40px;
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .card-identity h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 2px;
+    line-height: 1;
+    color: var(--white);
+  }
+  .card-identity h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--carolina);
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+  .card-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .meta-chip {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--dim);
+    text-transform: uppercase;
+  }
+  .meta-chip.highlight { color: var(--blue); border-color: rgba(0,170,255,0.3); background: rgba(0,170,255,0.06); }
+
+  /* Current variation display */
+  .variation-display {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+  }
+  .var-display-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .var-display-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 2px;
+    color: var(--white);
+  }
+  .var-display-run {
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px;
+    color: var(--dim);
+    margin-top: 2px;
+  }
+  .var-display-run span { color: var(--white); font-weight: 600; }
+
+  /* FOMO / market data */
+  .fomo-block {
+    background: rgba(0,170,255,0.04);
+    border: 1px solid rgba(0,170,255,0.15);
+    border-radius: 8px;
+    padding: 16px 20px;
+  }
+  .fomo-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--blue);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .fomo-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .fomo-stat {
+    display: flex;
+    flex-direction: column;
+  }
+  .fomo-stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--white);
+    letter-spacing: 1px;
+  }
+  .fomo-stat-key {
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 0.5px;
+  }
+  .fomo-divider { width: 1px; height: 30px; background: var(--border); }
+  .fomo-pulse {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--dim);
+  }
+  .pulse-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  /* Vault status */
+  .vault-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px;
+    color: var(--dim);
+  }
+  .vault-status.has-pic { border-color: rgba(0,230,118,0.2); background: rgba(0,230,118,0.04); }
+  .vault-status.no-pic { border-color: rgba(0,170,255,0.15); }
+  .status-icon { font-size: 16px; }
+
+  /* ADD TO VAULT BTN */
+  .add-vault-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--blue);
+    color: var(--bg);
+    border: none;
+    border-radius: 8px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .add-vault-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.4s;
+  }
+  .add-vault-btn:hover::before { left: 100%; }
+  .add-vault-btn:hover { background: #22BBFF; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,170,255,0.3); }
+  .add-vault-btn:active { transform: translateY(0); }
+
+  /* Already in vault state */
+  .in-vault-btn {
+    width: 100%;
+    padding: 16px;
+    background: rgba(0,230,118,0.08);
+    color: var(--green);
+    border: 1px solid rgba(0,230,118,0.3);
+    border-radius: 8px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: none;
+  }
+
+  /* ── MODAL OVERLAY ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5,12,20,0.92);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    padding: 16px;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: #0f2236;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(20px) scale(0.97);
+    transition: transform 0.25s;
+  }
+  .modal-overlay.open .modal { transform: translateY(0) scale(1); }
+
+  .modal-header {
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--white);
+    line-height: 1;
+  }
+  .modal-subtitle {
+    font-size: 12px;
+    color: var(--dim);
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--dim);
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    transition: color 0.2s;
+  }
+  .modal-close:hover { color: var(--white); }
+
+  .modal-body { padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; }
+
+  /* Upload zone */
+  .upload-section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .upload-section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 20px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .upload-zone:hover { border-color: var(--blue); background: rgba(0,170,255,0.04); }
+  .upload-zone.filled { border-color: var(--green); border-style: solid; background: rgba(0,230,118,0.04); }
+  .upload-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .upload-icon { font-size: 26px; }
+  .upload-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--dim);
+    text-transform: uppercase;
+  }
+  .upload-zone.filled .upload-label { color: var(--green); }
+  .upload-required {
+    font-size: 10px;
+    color: rgba(255,100,100,0.7);
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .upload-zone.filled .upload-required { display: none; }
+  .upload-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    display: none;
+  }
+  .upload-zone.filled .upload-preview { display: block; }
+  .upload-zone.filled .upload-icon,
+  .upload-zone.filled .upload-label,
+  .upload-zone.filled .upload-required { opacity: 0; }
+
+  /* Form fields */
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .form-label .req { color: rgba(255,100,100,0.8); margin-left: 3px; }
+
+  .form-input, .form-select {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 11px 14px;
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+    -webkit-appearance: none;
+  }
+  .form-input:focus, .form-select:focus { border-color: var(--blue); }
+  .form-input::placeholder { color: rgba(255,255,255,0.2); }
+  .form-select option { background: #0f2236; }
+
+  /* Price field */
+  .price-wrap {
+    position: relative;
+  }
+  .price-wrap .form-input { padding-left: 28px; }
+  .price-symbol {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--dim);
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+  }
+
+  /* Acquisition radio */
+  .acq-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .acq-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px;
+    color: var(--dim);
+  }
+  .acq-option:hover { border-color: var(--carolina); color: var(--white); }
+  .acq-option input { display: none; }
+  .acq-option.selected { border-color: var(--blue); color: var(--white); background: rgba(0,170,255,0.06); }
+  .acq-option .acq-icon { font-size: 16px; }
+
+  /* Sub-options */
+  .sub-options { display: none; }
+  .sub-options.visible { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  /* Gate notice */
+  .gate-notice {
+    background: rgba(0,170,255,0.06);
+    border: 1px solid rgba(0,170,255,0.15);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--carolina);
+    line-height: 1.5;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .gate-notice.no-pic-notice { display: flex; }
+  .gate-notice.has-pic-notice { display: none; }
+
+  /* Submit */
+  .modal-footer { padding: 0 28px 28px; }
+  .submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--blue);
+    color: var(--bg);
+    border: none;
+    border-radius: 8px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  .submit-btn.ready { opacity: 1; pointer-events: all; }
+  .submit-btn.ready:hover { background: #22BBFF; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,170,255,0.3); }
+
+  /* ── TOGGLE: DEMO CONTROLS ── */
+  .demo-bar {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(13,31,51,0.95);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 500;
+    backdrop-filter: blur(10px);
+  }
+  .demo-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .demo-toggle {
+    display: flex;
+    background: rgba(255,255,255,0.05);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .demo-toggle button {
+    background: none;
+    border: none;
+    color: var(--dim);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 20px;
+  }
+  .demo-toggle button.active { background: var(--blue); color: var(--bg); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <button class="back-btn">← Back</button>
+  <div class="breadcrumb">ISOVault / Baseball / Topps / 2026 / Series 1 / <span>Mojo</span></div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- LEFT: CARD STAGE -->
+  <div class="card-stage">
+    <div class="card-scene" id="cardScene">
+      <div class="card-3d" id="card3d">
+        <!-- FRONT -->
+        <div class="card-face front" id="cardFront">
+          <div class="card-placeholder" id="cardPlaceholder">
+            <div class="card-placeholder-name">ICHIRO<br>SUZUKI</div>
+            <div class="card-placeholder-num">#91C-25</div>
+            <div class="card-placeholder-set">2026 TOPPS SERIES 1</div>
+          </div>
+          <div class="card-shine" id="cardShine"></div>
+          <div class="card-mojo-shimmer" id="mojoShimmer"></div>
+        </div>
+        <!-- BACK -->
+        <div class="card-face back" id="cardBack">
+          <div class="card-placeholder">
+            <div class="card-placeholder-name" style="font-size:18px">CARD BACK</div>
+            <div class="card-placeholder-set">Stats · Biographic Info</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="flip-btn" id="flipBtn">↩ Flip Card</button>
+
+    <!-- VARIATION PILLS -->
+    <div class="variations-label">Select Parallel / Variation</div>
+    <div class="variations-grid" id="variationsGrid">
+      <div class="var-pill base active" data-var="base" data-name="Mojo Base" data-run="">Mojo Base</div>
+      <div class="var-pill purple" data-var="purple" data-name="Purple Mojo" data-run="/299">Purple Mojo <span class="var-run">/299</span></div>
+      <div class="var-pill teal" data-var="teal" data-name="Teal/Aqua Mojo" data-run="/199">Teal Mojo <span class="var-run">/199</span></div>
+      <div class="var-pill blue" data-var="blue" data-name="Blue Mojo" data-run="/150">Blue Mojo <span class="var-run">/150</span></div>
+      <div class="var-pill green" data-var="green" data-name="Green Mojo" data-run="/99">Green Mojo <span class="var-run">/99</span></div>
+      <div class="var-pill members" data-var="members" data-name="Members SSP" data-run="">Members SSP</div>
+      <div class="var-pill gold" data-var="gold" data-name="Gold Mojo" data-run="/50">Gold Mojo <span class="var-run">/50</span></div>
+      <div class="var-pill orange" data-var="orange" data-name="Orange Mojo" data-run="/25">Orange Mojo <span class="var-run">/25</span></div>
+      <div class="var-pill black" data-var="black" data-name="Black Mojo" data-run="/10">Black Mojo <span class="var-run">/10</span></div>
+      <div class="var-pill red" data-var="red" data-name="Red Mojo" data-run="/5">Red Mojo <span class="var-run">/5</span></div>
+      <div class="var-pill superfractor" data-var="superfractor" data-name="Superfractor Mojo" data-run="/1">⭐ Superfractor <span class="var-run">/1</span></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: INFO -->
+  <div class="card-info">
+    <div class="card-identity">
+      <h1>Ichiro Suzuki</h1>
+      <h2>2026 Topps Series 1 — Mojo Insert</h2>
+      <div class="card-meta-row">
+        <div class="meta-chip">Baseball</div>
+        <div class="meta-chip">Topps</div>
+        <div class="meta-chip">2026</div>
+        <div class="meta-chip highlight">#91C-25</div>
+        <div class="meta-chip">Seattle Mariners</div>
+      </div>
+    </div>
+
+    <!-- Current variation display -->
+    <div class="variation-display">
+      <div class="var-display-label">Currently Viewing</div>
+      <div class="var-display-name" id="dispName">Mojo Base</div>
+      <div class="var-display-run" id="dispRun">Base parallel — unlimited print run</div>
+    </div>
+
+    <!-- FOMO block -->
+    <div class="fomo-block">
+      <div class="fomo-label">🔥 Live Market Activity</div>
+      <div class="fomo-row">
+        <div class="fomo-stat">
+          <div class="fomo-stat-val" id="fomoWatching">12</div>
+          <div class="fomo-stat-key">Watching</div>
+        </div>
+        <div class="fomo-divider"></div>
+        <div class="fomo-stat">
+          <div class="fomo-stat-val" id="fomoISOs">4</div>
+          <div class="fomo-stat-key">Active ISOs</div>
+        </div>
+        <div class="fomo-divider"></div>
+        <div class="fomo-stat">
+          <div class="fomo-stat-val" id="fomoLast">$28</div>
+          <div class="fomo-stat-key">Last Sale</div>
+        </div>
+        <div class="fomo-divider"></div>
+        <div class="fomo-stat">
+          <div class="fomo-stat-val" id="fomoTop">$45</div>
+          <div class="fomo-stat-key">Top Offer</div>
+        </div>
+      </div>
+      <div class="fomo-pulse">
+        <div class="pulse-dot"></div>
+        <span id="fomoMsg">3 buyers posted ISOs in the last 2 hours</span>
+      </div>
+    </div>
+
+    <!-- Vault status notice -->
+    <div class="vault-status no-pic" id="vaultStatus">
+      <span class="status-icon">📷</span>
+      <span id="vaultStatusMsg">No catalog image for this variation yet — you'll need to upload front & back photos of your copy to add it to your vault.</span>
+    </div>
+
+    <!-- Add to vault -->
+    <button class="add-vault-btn" id="addVaultBtn" onclick="openModal()">
+      + Add to My Vault
+    </button>
+    <button class="in-vault-btn" id="inVaultBtn">
+      ✓ In Your Vault
+    </button>
+  </div>
+</div>
+
+<!-- ── MODAL ── -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalTitle">Add to My Vault</div>
+        <div class="modal-subtitle" id="modalSubtitle">Ichiro Suzuki — Mojo Base · #91C-25</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- PATH A: No pic — show upload zones -->
+      <div id="uploadSection">
+        <div class="gate-notice no-pic-notice" id="noPicNotice">
+          ℹ️ <span>No catalog image exists for this variation. Upload front & back photos of your card to proceed. Both are required.</span>
+        </div>
+
+        <div class="upload-section-title">Card Photos</div>
+        <div class="upload-grid">
+          <div class="upload-zone" id="frontZone" onclick="triggerUpload('frontInput')">
+            <input type="file" id="frontInput" accept="image/*" onchange="handleUpload(this,'frontZone','frontPreview')" onclick="event.stopPropagation()">
+            <img class="upload-preview" id="frontPreview" src="" alt="">
+            <div class="upload-icon">🃏</div>
+            <div class="upload-label">Front</div>
+            <div class="upload-required">Required</div>
+          </div>
+          <div class="upload-zone" id="backZone" onclick="triggerUpload('backInput')">
+            <input type="file" id="backInput" accept="image/*" onchange="handleUpload(this,'backZone','backPreview')" onclick="event.stopPropagation()">
+            <img class="upload-preview" id="backPreview" src="" alt="">
+            <div class="upload-icon">🔄</div>
+            <div class="upload-label">Back</div>
+            <div class="upload-required">Required</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PATH B: Has pic — skip upload -->
+      <div class="gate-notice has-pic-notice" id="hasPicNotice" style="display:none">
+        ✅ <span>Catalog image on file. No photo upload needed — just fill in your acquisition details below.</span>
+      </div>
+
+      <!-- ACQUISITION -->
+      <div>
+        <div class="upload-section-title">How You Got It</div>
+        <div class="acq-grid" id="acqGrid">
+          <label class="acq-option" onclick="selectAcq(this,'ripped')">
+            <input type="radio" name="acq" value="ripped">
+            <span class="acq-icon">📦</span> Ripped It
+          </label>
+          <label class="acq-option" onclick="selectAcq(this,'purchased')">
+            <input type="radio" name="acq" value="purchased">
+            <span class="acq-icon">🛒</span> Purchased
+          </label>
+          <label class="acq-option" onclick="selectAcq(this,'trade')">
+            <input type="radio" name="acq" value="trade">
+            <span class="acq-icon">🤝</span> Trade
+          </label>
+          <label class="acq-option" onclick="selectAcq(this,'gift')">
+            <input type="radio" name="acq" value="gift">
+            <span class="acq-icon">🎁</span> Gift
+          </label>
+        </div>
+
+        <!-- Purchase sub-options (show when "purchased") -->
+        <div class="sub-options" id="purchaseSource" style="margin-top:8px">
+          <label class="acq-option" onclick="selectSub(this,'ebay')"><span class="acq-icon">🔨</span> eBay</label>
+          <label class="acq-option" onclick="selectSub(this,'pwcc')"><span class="acq-icon">💼</span> PWCC</label>
+          <label class="acq-option" onclick="selectSub(this,'lcs')"><span class="acq-icon">🏪</span> LCS</label>
+          <label class="acq-option" onclick="selectSub(this,'other')"><span class="acq-icon">📋</span> Other</label>
+        </div>
+      </div>
+
+      <!-- PRICE PAID — Required -->
+      <div class="form-group">
+        <div class="form-label">Price Paid <span class="req">*</span></div>
+        <div class="price-wrap">
+          <span class="price-symbol">$</span>
+          <input type="number" class="form-input" id="pricePaid" placeholder="0.00" min="0" step="0.01" oninput="checkReady()">
+        </div>
+      </div>
+
+      <!-- SERIAL # (only for numbered parallels) -->
+      <div class="form-group" id="serialGroup" style="display:none">
+        <div class="form-label">Serial Number <span class="req">*</span></div>
+        <input type="number" class="form-input" id="serialInput" placeholder="e.g. 147" min="1" oninput="checkReady()">
+        <div style="font-size:11px; color:var(--dim); margin-top:3px" id="serialHint">Enter the number stamped on your card (1 – 299)</div>
+      </div>
+
+      <!-- DATE (optional) -->
+      <div class="form-group">
+        <div class="form-label">Date Acquired <span style="font-weight:300;text-transform:none;font-size:10px">(optional)</span></div>
+        <input type="date" class="form-input" id="dateAcq">
+      </div>
+
+      <!-- CONDITION -->
+      <div class="form-group">
+        <div class="form-label">Condition</div>
+        <select class="form-select" id="conditionSel">
+          <option value="">Select condition</option>
+          <option value="raw">Raw (ungraded)</option>
+          <option value="psa10">PSA 10</option>
+          <option value="psa9">PSA 9</option>
+          <option value="psa8">PSA 8</option>
+          <option value="bgs95">BGS 9.5</option>
+          <option value="bgs9">BGS 9</option>
+          <option value="sgc10">SGC 10</option>
+          <option value="sgc9.5">SGC 9.5</option>
+          <option value="cgc10">CGC 10</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="submit-btn" id="submitBtn" onclick="submitVault()">
+        Add to My Vault
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- DEMO BAR -->
+<div class="demo-bar">
+  <span class="demo-label">Demo Mode:</span>
+  <div class="demo-toggle">
+    <button class="active" id="btnNoPic" onclick="setMode('no-pic')">No Catalog Pic</button>
+    <button id="btnHasPic" onclick="setMode('has-pic')">Has Catalog Pic</button>
+  </div>
+</div>
+
+<script>
+// ── 3D CARD ROTATION ──
+const scene = document.getElementById('cardScene');
+const card = document.getElementById('card3d');
+const shine = document.getElementById('cardShine');
+let isFlipped = false;
+let animFrame;
+
+function lerp(a,b,t){ return a + (b-a)*t; }
+let curX=0, curY=0, tarX=0, tarY=0;
+
+scene.addEventListener('mousemove', e => {
+  const r = scene.getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width;
+  const y = (e.clientY - r.top) / r.height;
+  tarX = (x - 0.5) * 30;
+  tarY = (y - 0.5) * -22;
+  shine.style.setProperty('--mx', (x * 100) + '%');
+  shine.style.setProperty('--my', (y * 100) + '%');
+});
+
+scene.addEventListener('mouseleave', () => { tarX=0; tarY=0; });
+
+function tick(){
+  curX = lerp(curX, tarX, 0.1);
+  curY = lerp(curY, tarY, 0.1);
+  const base = isFlipped ? 'rotateY(180deg)' : '';
+  card.style.transform = `${base} rotateY(${curX}deg) rotateX(${curY}deg)`;
+  requestAnimationFrame(tick);
+}
+tick();
+
+// Touch support
+let touchStart = {};
+scene.addEventListener('touchstart', e => {
+  const t = e.touches[0];
+  touchStart = {x: t.clientX, y: t.clientY};
+});
+scene.addEventListener('touchmove', e => {
+  e.preventDefault();
+  const t = e.touches[0];
+  const r = scene.getBoundingClientRect();
+  const x = (t.clientX - r.left) / r.width;
+  const y = (t.clientY - r.top) / r.height;
+  tarX = (x - 0.5) * 28;
+  tarY = (y - 0.5) * -20;
+}, { passive: false });
+scene.addEventListener('touchend', () => { tarX=0; tarY=0; });
+
+// Flip
+document.getElementById('flipBtn').addEventListener('click', () => {
+  isFlipped = !isFlipped;
+  card.style.transition = 'transform 0.5s cubic-bezier(0.4,0,0.2,1)';
+  card.style.transform = isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)';
+  setTimeout(() => card.style.transition = '', 500);
+  document.getElementById('flipBtn').textContent = isFlipped ? '↩ Flip to Front' : '↩ Flip Card';
+});
+
+// ── VARIATION PILLS ──
+const varData = {
+  base:         { name:'Mojo Base', run:'', watching:12, isos:4, last:'$28', top:'$45', msg:'3 buyers posted ISOs in the last 2 hours', shimmer:false },
+  purple:       { name:'Purple Mojo', run:'Print run: /299', watching:7, isos:2, last:'$55', top:'$80', msg:'2 buyers waiting now', shimmer:true },
+  teal:         { name:'Teal/Aqua Mojo', run:'Print run: /199', watching:5, isos:1, last:'$75', top:'$110', msg:'Sold 3x in last 7 days', shimmer:true },
+  blue:         { name:'Blue Mojo', run:'Print run: /150', watching:8, isos:3, last:'$95', top:'$140', msg:'1 buyer posted ISO 4 min ago', shimmer:true },
+  green:        { name:'Green Mojo', run:'Print run: /99', watching:11, isos:4, last:'$140', top:'$190', msg:'4 buyers watching — moving fast', shimmer:true },
+  members:      { name:'Members SSP', run:'Short Print — limited', watching:6, isos:2, last:'$65', top:'$95', msg:'Hard to find — 2 buyers waiting', shimmer:true },
+  gold:         { name:'Gold Mojo', run:'Print run: /50', watching:14, isos:5, last:'$220', top:'$310', msg:'5 ISOs active — high demand', shimmer:true },
+  orange:       { name:'Orange Mojo', run:'Print run: /25', watching:9, isos:3, last:'$380', top:'$500', msg:'Only 25 exist. 3 buyers waiting', shimmer:true },
+  black:        { name:'Black Mojo', run:'Print run: /10', watching:16, isos:6, last:'$650', top:'$900', msg:'🔥 Extremely rare — 6 buyers active', shimmer:true },
+  red:          { name:'Red Mojo', run:'Print run: /5', watching:22, isos:8, last:'$1,400', top:'$2,100', msg:'🔥🔥 Only 5 exist — 8 buyers waiting', shimmer:true },
+  superfractor: { name:'Superfractor Mojo', run:'1 of 1 — The only one', watching:41, isos:0, last:'N/A', top:'Make Offer', msg:'⭐ 1/1 — The only one in existence', shimmer:true },
+};
+
+const serialLimits = { purple:299, teal:199, blue:150, green:99, gold:50, orange:25, black:10, red:5, superfractor:1 };
+
+let currentVar = 'base';
+let mode = 'no-pic'; // or 'has-pic'
+
+document.querySelectorAll('.var-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.var-pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    currentVar = pill.dataset.var;
+    const d = varData[currentVar];
+
+    // Update display
+    document.getElementById('dispName').textContent = d.name;
+    document.getElementById('dispRun').textContent = d.run || 'Base parallel — unlimited print run';
+    document.getElementById('fomoWatching').textContent = d.watching;
+    document.getElementById('fomoISOs').textContent = d.isos;
+    document.getElementById('fomoLast').textContent = d.last;
+    document.getElementById('fomoTop').textContent = d.top;
+    document.getElementById('fomoMsg').textContent = d.msg;
+
+    // Shimmer for parallels
+    document.getElementById('mojoShimmer').style.opacity = d.shimmer ? '0.5' : '0';
+
+    // Vault status update
+    updateVaultStatus();
+
+    // Reset modal serial
+    const sg = document.getElementById('serialGroup');
+    if (serialLimits[currentVar]) {
+      sg.style.display = '';
+      document.getElementById('serialHint').textContent = `Enter the number stamped on your card (1 – ${serialLimits[currentVar]})`;
+    } else {
+      sg.style.display = 'none';
+    }
+  });
+});
+
+function updateVaultStatus() {
+  const hasImg = mode === 'has-pic';
+  const vs = document.getElementById('vaultStatus');
+  const msg = document.getElementById('vaultStatusMsg');
+  const d = varData[currentVar];
+  if (hasImg) {
+    vs.className = 'vault-status has-pic';
+    msg.textContent = `Catalog image on file for ${d.name}. Just log your acquisition details to add to your vault.`;
+  } else {
+    vs.className = 'vault-status no-pic';
+    msg.textContent = `No catalog image for ${d.name} yet — upload front & back photos of your copy to add it to your vault.`;
+  }
+}
+
+// ── MODAL ──
+function openModal() {
+  const hasImg = mode === 'has-pic';
+  document.getElementById('modalSubtitle').textContent = `Ichiro Suzuki — ${varData[currentVar].name} · #91C-25`;
+  document.getElementById('uploadSection').style.display = hasImg ? 'none' : '';
+  document.getElementById('noPicNotice').style.display = hasImg ? 'none' : 'flex';
+  document.getElementById('hasPicNotice').style.display = hasImg ? 'flex' : 'none';
+
+  // Serial number visibility
+  const sg = document.getElementById('serialGroup');
+  sg.style.display = serialLimits[currentVar] ? '' : 'none';
+  if (serialLimits[currentVar]) {
+    document.getElementById('serialHint').textContent = `Enter the number stamped on your card (1 – ${serialLimits[currentVar]})`;
+  }
+
+  document.getElementById('modalOverlay').classList.add('open');
+  checkReady();
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+
+// Upload
+function triggerUpload(id) { document.getElementById(id).click(); }
+function handleUpload(input, zoneId, previewId) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById(previewId).src = e.target.result;
+    document.getElementById(zoneId).classList.add('filled');
+    checkReady();
+  };
+  reader.readAsDataURL(file);
+}
+
+// Acquisition
+let selectedAcq = null;
+function selectAcq(el, val) {
+  document.querySelectorAll('.acq-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedAcq = val;
+  document.getElementById('purchaseSource').className = 'sub-options' + (val === 'purchased' ? ' visible' : '');
+  checkReady();
+}
+
+let selectedSub = null;
+function selectSub(el, val) {
+  document.querySelectorAll('#purchaseSource .acq-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedSub = val;
+  checkReady();
+}
+
+function checkReady() {
+  const hasImg = mode === 'has-pic';
+  const frontFilled = hasImg || document.getElementById('frontZone').classList.contains('filled');
+  const backFilled = hasImg || document.getElementById('backZone').classList.contains('filled');
+  const price = parseFloat(document.getElementById('pricePaid').value);
+  const hasPrice = !isNaN(price) && price >= 0;
+  const hasAcq = !!selectedAcq;
+  const serialOk = !serialLimits[currentVar] || document.getElementById('serialInput').value;
+
+  const ready = frontFilled && backFilled && hasPrice && hasAcq && serialOk;
+  document.getElementById('submitBtn').classList.toggle('ready', ready);
+}
+
+function submitVault() {
+  // Success state
+  closeModal();
+  document.getElementById('addVaultBtn').style.display = 'none';
+  document.getElementById('inVaultBtn').style.display = '';
+  document.getElementById('vaultStatus').className = 'vault-status has-pic';
+  document.getElementById('vaultStatusMsg').textContent = `✓ Added to your vault — ${varData[currentVar].name}`;
+}
+
+// ── DEMO TOGGLE ──
+function setMode(m) {
+  mode = m;
+  document.getElementById('btnNoPic').classList.toggle('active', m === 'no-pic');
+  document.getElementById('btnHasPic').classList.toggle('active', m === 'has-pic');
+  updateVaultStatus();
+}
+</script>
+
+</body>
+</html>

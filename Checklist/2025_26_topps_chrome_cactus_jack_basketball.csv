@@ -1,0 +1,146 @@
+card_number,player_name,team
+1,Stephon Castle,San Antonio Spurs
+2,Victor Wembanyama,San Antonio Spurs
+3,Dejounte Murray,New Orleans Pelicans
+4,Ja Morant,Memphis Grizzlies
+5,Jaren Jackson Jr.,Memphis Grizzlies
+6,Amen Thompson,Houston Rockets
+7,Reed Sheppard,Houston Rockets
+8,Kyrie Irving,Dallas Mavericks
+9,Anthony Davis,Dallas Mavericks
+10,Domantas Sabonis,Sacramento Kings
+11,Zach LaVine,Sacramento Kings
+12,Devin Booker,Phoenix Suns
+13,Kevin Durant,Houston Rockets
+14,LeBron James,Los Angeles Lakers
+15,Luka Dončić,Los Angeles Lakers
+16,Kawhi Leonard,Los Angeles Clippers
+17,James Harden,Los Angeles Clippers
+18,Stephen Curry,Golden State Warriors
+19,Jimmy Butler III,Golden State Warriors
+20,Lauri Markkanen,Utah Jazz
+21,Isaiah Collier,Utah Jazz
+22,Toumani Camara,Portland Trail Blazers
+23,Scoot Henderson,Portland Trail Blazers
+24,Shai Gilgeous-Alexander,Oklahoma City Thunder
+25,Jalen Williams,Oklahoma City Thunder
+26,Anthony Edwards,Minnesota Timberwolves
+27,Naz Reid,Minnesota Timberwolves
+28,Nikola Jokić,Denver Nuggets
+29,Jamal Murray,Denver Nuggets
+30,Bilal Coulibaly,Washington Wizards
+31,Alex Sarr,Washington Wizards
+32,Paolo Banchero,Orlando Magic
+33,Franz Wagner,Orlando Magic
+34,Donovan Mitchell,Cleveland Cavaliers
+35,Darius Garland,Cleveland Cavaliers
+36,Evan Mobley,Cleveland Cavaliers
+37,Tyler Herro,Miami Heat
+38,Bam Adebayo,Miami Heat
+39,LaMelo Ball,Charlotte Hornets
+40,Brandon Miller,Charlotte Hornets
+41,Jalen Johnson,Atlanta Hawks
+42,Trae Young,Atlanta Hawks
+43,Giannis Antetokounmpo,Milwaukee Bucks
+44,Damian Lillard,Milwaukee Bucks
+45,Tyrese Haliburton,Indiana Pacers
+46,Andrew Nembhard,Indiana Pacers
+47,Cade Cunningham,Detroit Pistons
+48,Jaden Ivey,Detroit Pistons
+49,Coby White,Chicago Bulls
+50,Josh Giddey,Chicago Bulls
+51,Gradey Dick,Toronto Raptors
+52,Scottie Barnes,Toronto Raptors
+53,Tyrese Maxey,Philadelphia 76ers
+54,Joel Embiid,Philadelphia 76ers
+55,Jalen Brunson,New York Knicks
+56,OG Anunoby,New York Knicks
+57,Jayson Tatum,Boston Celtics
+58,Jaylen Brown,Boston Celtics
+59,Cam Thomas,Brooklyn Nets
+60,Derrick White,Boston Celtics
+61,Cooper Flagg,Dallas Mavericks
+62,Dylan Harper,San Antonio Spurs
+63,VJ Edgecombe,Philadelphia 76ers
+64,Kon Knueppel,Charlotte Hornets
+65,Ace Bailey,Utah Jazz
+66,Tre Johnson III,Washington Wizards
+67,Jeremiah Fears,New Orleans Pelicans
+68,Egor Dëmin,Brooklyn Nets
+69,Collin Murray-Boyles,Toronto Raptors
+70,Khaman Maluach,Phoenix Suns
+71,Cedric Coward,Memphis Grizzlies
+72,Noa Essengue,Chicago Bulls
+73,Derik Queen,New Orleans Pelicans
+74,Carter Bryant,San Antonio Spurs
+75,Thomas Sorber,Oklahoma City Thunder
+76,Yang Hansen,Portland Trail Blazers
+77,Joan Beringer,Minnesota Timberwolves
+78,Walter Clayton Jr.,Utah Jazz
+79,Nolan Traore,Brooklyn Nets
+80,Kasparas Jakučionis,Miami Heat
+81,Will Riley,Washington Wizards
+82,Drake Powell,Brooklyn Nets
+83,Asa Newell,Atlanta Hawks
+84,Nique Clifford,Sacramento Kings
+85,Jase Richardson,Orlando Magic
+86,Ben Saraf,Brooklyn Nets
+87,Danny Wolf,Brooklyn Nets
+88,Hugo González,Boston Celtics
+89,Liam McNeeley,Charlotte Hornets
+90,Yanic Konan-Niederhäuser,Los Angeles Clippers
+91,Micah Peavy,New Orleans Pelicans
+92,Koby Brea,Phoenix Suns
+93,Maxime Raynaud,Sacramento Kings
+94,Jamir Watkins,Washington Wizards
+95,Brooks Barnhizer,Oklahoma City Thunder
+96,Naji Marshall,Dallas Mavericks
+97,Ochai Agbaji,Toronto Raptors
+98,Jaden McDaniels,Minnesota Timberwolves
+99,GG Jackson II,Memphis Grizzlies
+100,Tyrese Proctor,Cleveland Cavaliers
+SS-1,LeBron James,Cleveland Cavaliers
+SS-2,Zach Lavine,Minnesota Timberwolves
+SS-3,Aaron Gordon,Orlando Magic
+SS-4,Allen Iverson,Philadelphia 76ers
+SS-5,Vince Carter,Toronto Raptors
+SS-6,Jaylen Brown,Boston Celtics
+SS-7,Larry Bird,Boston Celtics
+SS-8,Stephen Curry,Golden State Warriors
+SS-9,Dwight Howard,Orlando Magic
+SS-10,Dominique Wilkins,Atlanta Hawks
+SS-11,Donovan Mitchell,Cleveland Cavaliers
+SS-12,Damian Lillard,Milwaukee Bucks
+SS-13,Kevin Durant,Oklahoma City Thunder
+SS-14,Dwyane Wade,Miami Heat
+SS-15,Magic Johnson,Los Angeles Lakers
+SS-16,Victor Wembanyama,San Antonio Spurs
+SS-17,Devin Booker,Phoenix Suns
+SS-18,Shaquille O'Neal,Phoenix Suns
+SS-19,Giannis Antetokounmpo,Milwaukee Bucks
+SS-20,Kyrie Irving,Cleveland Cavaliers
+SS-21,Carmelo Anthony,Denver Nuggets
+SS-22,Jason Richardson,Golden State Warriors
+SS-23,Isiah Thomas,Detroit Pistons
+SS-24,Russell Westbrook,Oklahoma City Thunder
+SS-25,Jason Williams,Sacramento Kings
+ASGV-AB,Ace Bailey,Utah Jazz
+ASGV-AI,Allen Iverson,Philadelphia 76ers
+ASGV-BM,Brandon Miller,Charlotte Hornets
+ASGV-CF,Cooper Flagg,Dallas Mavericks
+ASGV-DH,Dylan Harper,San Antonio Spurs
+ASGV-GA,Giannis Antetokounmpo,Milwaukee Bucks
+ASGV-JB,Jalen Brunson,New York Knicks
+ASGV-JG,Jalen Green,Phoenix Suns
+ASGV-JT,Jayson Tatum,Boston Celtics
+ASGV-KD,Kevin Durant,Houston Rockets
+ASGV-KG,Kevin Garnett,Minnesota Timberwolves
+ASGV-KK,Kon Knueppel,Charlotte Hornets
+ASGV-KM,Khaman Maluach,Phoenix Suns
+ASGV-NJ,Nikola Jokić,Denver Nuggets
+ASGV-SC,Stephen Curry,Golden State Warriors
+ASGV-SGA,Shai Gilgeous-Alexander,Oklahoma City Thunder
+ASGV-TH,Tyrese Haliburton,Indiana Pacers
+ASGV-TM,Tracy McGrady,Orlando Magic
+ASGV-VC,Vince Carter,Toronto Raptors
+ASGV-VW,Victor Wembanyama,San Antonio Spurs

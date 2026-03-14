@@ -1,0 +1,671 @@
+card_number,player_name,team
+1,Jacob Wilson,Athletics
+2,Hyeseong Kim,Los Angeles Dodgers
+3,Dylan Crews,Washington Nationals
+4,Matt Olson,Atlanta Braves
+5,Yusei Kikuchi,Angels
+6,Manny Machado,San Diego Padres
+7,Bobby Witt Jr.,Kansas City Royals
+8,Fernando Tatis Jr.,San Diego Padres
+9,Logan Gilbert,Seattle Mariners
+10,Cade Horton,Chicago Cubs
+11,Mick Abel,Philadelphia Phillies
+12,Roki Sasaki,Los Angeles Dodgers
+13,Ronald Acuña Jr.,Atlanta Braves
+14,Willy Adames,San Francisco Giants
+15,Alex Bregman,Boston Red Sox
+16,Jackson Holliday,Baltimore Orioles
+17,Shohei Ohtani,Los Angeles Dodgers
+18,Chandler Simpson,Tampa Bay Rays
+19,Shota Imanaga,Chicago Cubs
+20,CJ Abrams,Washington Nationals
+21,José Ramírez,Cleveland Guardians
+22,Juan Soto,New York Mets
+23,Salvador Perez,Kansas City Royals
+24,Andrew McCutchen,Pittsburgh Pirates
+25,Trey Sweeney,Detroit Tigers
+26,Mookie Betts,Los Angeles Dodgers
+27,Mike Trout,Angels
+28,Chad Patrick,Milwaukee Brewers
+29,James Wood,Washington Nationals
+30,Paul Skenes,Pittsburgh Pirates
+31,Blake Snell,Los Angeles Dodgers
+32,Luisangel Acuña,New York Mets
+33,Freddie Freeman,Los Angeles Dodgers
+34,Jazz Chisholm Jr.,New York Yankees
+35,Randy Arozarena,Seattle Mariners
+36,Wyatt Langford,Texas Rangers
+37,Bryce Harper,Philadelphia Phillies
+38,Jackson Merrill,San Diego Padres
+39,Marcelo Mayer,Boston Red Sox
+40,Jackson Chourio,Milwaukee Brewers
+41,Dillon Dingler,Detroit Tigers
+42,Moisés Ballesteros,Chicago Cubs
+43,Yandy Díaz,Tampa Bay Rays
+44,Kevin Alcántara,Chicago Cubs
+45,Corey Seager,Texas Rangers
+46,Matt Shaw,Chicago Cubs
+47,Jacob deGrom,Texas Rangers
+48,Sandy Alcantara,Miami Marlins
+49,Matt Chapman,San Francisco Giants
+50,Jake Mangum,Tampa Bay Rays
+51,Ketel Marte,Arizona Diamondbacks
+52,Shane Smith,Chicago White Sox
+53,Walker Buehler,Boston Red Sox
+54,Carlos Correa,Minnesota Twins
+55,Zach Neto,Angels
+56,Bo Bichette,Toronto Blue Jays
+57,Kyle Tucker,Chicago Cubs
+58,Kristian Campbell,Boston Red Sox
+59,Francisco Lindor,New York Mets
+60,Seiya Suzuki,Chicago Cubs
+61,Luke Keaschall,Minnesota Twins
+62,Chase Dollander,Colorado Rockies
+63,Hayden Birdsong,San Francisco Giants
+64,Masyn Winn,St. Louis Cardinals
+65,Lawrence Butler,Athletics
+66,Julio Rodríguez,Seattle Mariners
+67,Noah Cameron,Kansas City Royals
+68,Angel Martínez,Cleveland Guardians
+69,Zac Veen,Colorado Rockies
+70,Christian Yelich,Milwaukee Brewers
+71,Chase Meidroth,Chicago White Sox
+72,Zack Wheeler,Philadelphia Phillies
+73,Sean Burke,Chicago White Sox
+74,Vladimir Guerrero Jr.,Toronto Blue Jays
+75,Drake Baldwin,Atlanta Braves
+76,Yoshinobu Yamamoto,Los Angeles Dodgers
+77,Cam Smith,Houston Astros
+78,Cody Bellinger,New York Yankees
+79,Will Warren,New York Yankees
+80,Junior Caminero,Tampa Bay Rays
+81,Yordan Alvarez,Houston Astros
+82,Trea Turner,Philadelphia Phillies
+83,Coby Mayo,Baltimore Orioles
+84,Spencer Schwellenbach,Atlanta Braves
+85,Corbin Carroll,Arizona Diamondbacks
+86,Tsung-Che Cheng,Pittsburgh Pirates
+87,Ezequiel Tovar,Colorado Rockies
+88,Edgar Quero,Chicago White Sox
+89,Elly De La Cruz,Cincinnati Reds
+90,Max Muncy,Athletics
+91,Agustín Ramírez,Miami Marlins
+92,Logan Henderson,Milwaukee Brewers
+93,Nick Kurtz,Athletics
+94,Corbin Burnes,Arizona Diamondbacks
+95,Tarik Skubal,Detroit Tigers
+96,Gunnar Henderson,Baltimore Orioles
+97,Royce Lewis,Minnesota Twins
+98,Kumar Rocker,Texas Rangers
+99,Aaron Judge,New York Yankees
+100,Dalton Rushing,Los Angeles Dodgers
+BCP-153,Josuar Gonzalez,San Francisco Giants
+BCP-154,Jac Caglianone,Kansas City Royals
+BCP-155,Elian Peña,New York Mets
+BCP-156,Andrew Salas,Miami Marlins
+BCP-157,Jakob Christian,San Francisco Giants
+BCP-158,Devin Fitz-Gerald,Texas Rangers
+BCP-159,Kendry Martínez,Seattle Mariners
+BCP-160,Jirvin Morillo,Cincinnati Reds
+BCP-161,Haritzon Castillo,Minnesota Twins
+BCP-162,Cristopher Polanco,Toronto Blue Jays
+BCP-163,Johan De Los Santos,Pittsburgh Pirates
+BCP-164,George Lombard Jr.,New York Yankees
+BCP-165,Spencer Giesting,Arizona Diamondbacks
+BCP-166,Cam Schlittler,New York Yankees
+BCP-167,Roman Anthony,Boston Red Sox
+BCP-168,Enry Torres,Cincinnati Reds
+BCP-169,Ethan Salas,San Diego Padres
+BCP-170,Shotaro Morii,Athletics
+BCP-171,Bubba Chandler,Pittsburgh Pirates
+BCP-172,John Gil,Atlanta Braves
+BCP-173,Deivid Coronil,San Diego Padres
+BCP-174,Liberts Aponte,Cincinnati Reds
+BCP-175,Raymer Medina,Tampa Bay Rays
+BCP-176,Cristopher Acosta,Milwaukee Brewers
+BCP-177,Noah Schultz,Chicago White Sox
+BCP-178,Gabriel Davalillo,Angels
+BCP-179,Will Taylor,Pittsburgh Pirates
+BCP-180,Bryce Eldridge,San Francisco Giants
+BCP-181,RJ Schreck,Toronto Blue Jays
+BCP-182,Kai Roberts,San Diego Padres
+BCP-183,Marco Dinges,Milwaukee Brewers
+BCP-184,Nate George,Baltimore Orioles
+BCP-185,Warren Calcaño,Kansas City Royals
+BCP-186,Elorky Rodriguez,Texas Rangers
+BCP-187,Ramcell Medina,Kansas City Royals
+BCP-188,Teilon Serrano,Minnesota Twins
+BCP-189,Stiven Marinez,New York Yankees
+BCP-190,Kenny Fenelon,Milwaukee Brewers
+BCP-191,Christopher Suero,New York Mets
+BCP-192,Nathan Church,St. Louis Cardinals
+BCP-193,Jose Anderson,Milwaukee Brewers
+BCP-194,Yorger Bautista,Seattle Mariners
+BCP-195,David Sandlin,Boston Red Sox
+BCP-196,Hiverson López,Cleveland Guardians
+BCP-197,Ayden Johnson,Athletics
+BCP-198,Alirio Ferrebus,Philadelphia Phillies
+BCP-199,Mani Cedeno,New York Yankees
+BCP-200,Rainiel Rodriguez,St. Louis Cardinals
+BCP-201,Anyelo Marquez,Angels
+BCP-202,Carlos Lagrange,New York Yankees
+BCP-203,Heins Brito,Cleveland Guardians
+BCP-204,Leo De Vries,San Diego Padres
+BCP-205,Kevin Defrank,Miami Marlins
+BCP-206,Bo Davidson,San Francisco Giants
+BCP-207,Juan Cabada,Chicago Cubs
+BCP-208,Jordan Sanchez,Baltimore Orioles
+BCP-209,Wilfri De La Cruz,Chicago Cubs
+BCP-210,Pedro Catuy,Arizona Diamondbacks
+BCP-211,Brayan Cortesia,Washington Nationals
+BCP-212,Caden Powell,Houston Astros
+BCP-213,Ronny Cruz,Chicago Cubs
+BCP-214,Diego Tornes,Atlanta Braves
+BCP-215,Justice Bigbie,Detroit Tigers
+BCP-216,Harold Rivas,Boston Red Sox
+BCP-217,Nestor Miranda,Detroit Tigers
+BCP-218,Luke Dickerson,Washington Nationals
+BCP-219,Alessander De La Cruz,Colorado Rockies
+BCP-220,Cristian Arguelles,Colorado Rockies
+BCP-221,Royelny Strop,St. Louis Cardinals
+BCP-222,Yahil Melendez,Chicago Cubs
+BCP-223,Jhoan De La Cruz,San Diego Padres
+BCP-224,Ching-Hsien Ko,Los Angeles Dodgers
+BCP-225,Warel Solano,Tampa Bay Rays
+BCP-226,Brett Bateman,Chicago Cubs
+BCP-227,Kevin Alvarez,Houston Astros
+BCP-228,Arjun Nimmala,Toronto Blue Jays
+BCP-229,Yulian Barreto,San Francisco Giants
+BCP-230,Juan Tomas,Chicago Cubs
+BCP-231,Juneiker Caceres,Cleveland Guardians
+BCP-232,Nieves Izaguirre,Philadelphia Phillies
+BCP-233,Jhonny Severino,Pittsburgh Pirates
+BCP-234,Carson Williams,Tampa Bay Rays
+BCP-235,Sadbiel Delzine,Boston Red Sox
+BCP-236,Yairo Padilla,St. Louis Cardinals
+BCP-237,Djean Macares,San Francisco Giants
+BCP-238,Robert Hipwell,San Francisco Giants
+BCP-239,Luis Peña,Milwaukee Brewers
+BCP-240,Maykel Coret,Tampa Bay Rays
+BCP-241,JJ Wetherholt,St. Louis Cardinals
+BCP-242,Moises Marchán,Kansas City Royals
+BCP-243,Bryce Boettcher,Houston Astros
+BCP-244,Zach Cole,Houston Astros
+BCP-245,Jesus Made,Milwaukee Brewers
+BCP-246,Kale Fountain,San Diego Padres
+BCP-247,Santiago Leon,Minnesota Twins
+BCP-248,Charlie Condon,Colorado Rockies
+BCP-249,Elian De La Cruz,Arizona Diamondbacks
+BCP-250,Cris Rodriguez,Detroit Tigers
+BCP-251,Tommy White,Athletics
+BCP-252,DJ Layton,Baltimore Orioles
+BA-1,Elian Peña,New York Mets
+BA-2,Matt Shaw,Chicago Cubs
+BA-3,JJ Wetherholt,St. Louis Cardinals
+BA-4,Coby Mayo,Baltimore Orioles
+BA-5,Aaron Judge,New York Yankees
+BA-6,Kristian Campbell,Boston Red Sox
+BA-7,Jackson Jobe,Detroit Tigers
+BA-8,Walker Jenkins,Minnesota Twins
+BA-9,Travis Bazzana,Cleveland Guardians
+BA-10,Dylan Crews,Washington Nationals
+BA-11,Jac Caglianone,Kansas City Royals
+BA-12,Konnor Griffin,Pittsburgh Pirates
+BA-13,Juan Soto,New York Mets
+BA-14,Roman Anthony,Boston Red Sox
+BA-15,Paul Skenes,Pittsburgh Pirates
+BA-16,Shohei Ohtani,Los Angeles Dodgers
+BA-17,James Wood,Washington Nationals
+BA-18,Elly De La Cruz,Cincinnati Reds
+BA-19,Bobby Witt Jr.,Kansas City Royals
+BA-20,Roki Sasaki,Los Angeles Dodgers
+BA-21,Mike Trout,Angels
+BA-22,Hyeseong Kim,Los Angeles Dodgers
+BA-23,Josuar Gonzalez,San Francisco Giants
+BA-24,Luisangel Acuña,New York Mets
+BA-25,Gunnar Henderson,Baltimore Orioles
+BGP-1,Mike Trout,Angels
+BGP-2,Christian Moore,Angels
+BGP-3,Nick Kurtz,Athletics
+BGP-4,Ronald Acuña Jr.,Atlanta Braves
+BGP-5,Samuel Basallo,Baltimore Orioles
+BGP-6,Coby Mayo,Baltimore Orioles
+BGP-7,Gunnar Henderson,Baltimore Orioles
+BGP-8,David Ortiz,Boston Red Sox
+BGP-9,Roman Anthony,Boston Red Sox
+BGP-10,Rafael Devers,Boston Red Sox
+BGP-11,Cam Smith,Houston Astros
+BGP-12,Shota Imanaga,Chicago Cubs
+BGP-13,Sammy Sosa,Chicago Cubs
+BGP-14,Chase Burns,Cincinnati Reds
+BGP-15,Colson Montgomery,Chicago White Sox
+BGP-16,Elly De La Cruz,Cincinnati Reds
+BGP-17,Kristian Campbell,Boston Red Sox
+BGP-18,Travis Bazzana,Cleveland Guardians
+BGP-19,Charlie Condon,Colorado Rockies
+BGP-20,Jackson Jobe,Detroit Tigers
+BGP-21,Matt Shaw,Chicago Cubs
+BGP-22,Jac Caglianone,Kansas City Royals
+BGP-23,Bobby Witt Jr.,Kansas City Royals
+BGP-24,Shohei Ohtani,Los Angeles Dodgers
+BGP-25,Jackson Chourio,Milwaukee Brewers
+BGP-26,Walker Jenkins,Minnesota Twins
+BGP-27,Luisangel Acuña,New York Mets
+BGP-28,Juan Soto,New York Mets
+BGP-29,Francisco Lindor,New York Mets
+BGP-30,Aaron Judge,New York Yankees
+BGP-31,Derek Jeter,New York Yankees
+BGP-32,Bryce Harper,Philadelphia Phillies
+BGP-33,Andrew Painter,Philadelphia Phillies
+BGP-34,Konnor Griffin,Pittsburgh Pirates
+BGP-35,Paul Skenes,Pittsburgh Pirates
+BGP-36,Leo De Vries,San Diego Padres
+BGP-37,Fernando Tatis Jr.,San Diego Padres
+BGP-38,Jackson Merrill,San Diego Padres
+BGP-39,Miguel Cabrera,Detroit Tigers
+BGP-40,Bryce Eldridge,San Francisco Giants
+BGP-41,Ichiro,Seattle Mariners
+BGP-42,Ken Griffey Jr.,Seattle Mariners
+BGP-43,Albert Pujols,St. Louis Cardinals
+BGP-44,JJ Wetherholt,St. Louis Cardinals
+BGP-45,Carson Williams,Tampa Bay Rays
+BGP-46,Corey Seager,Texas Rangers
+BGP-47,Vladimir Guerrero Jr.,Toronto Blue Jays
+BGP-48,Dylan Crews,Washington Nationals
+BGP-49,James Wood,Washington Nationals
+BGP-50,Roki Sasaki,Los Angeles Dodgers
+BWS-1,Roman Anthony,Boston Red Sox
+BWS-2,Bubba Chandler,Pittsburgh Pirates
+BWS-3,Slade Caldwell,Arizona Diamondbacks
+BWS-4,Braden Montgomery,Chicago White Sox
+BWS-5,Josuar Gonzalez,San Francisco Giants
+BWS-6,Zyhir Hope,Los Angeles Dodgers
+BWS-7,Elian Peña,New York Mets
+BWS-8,Konnor Griffin,Pittsburgh Pirates
+BWS-9,Bryce Rainer,Detroit Tigers
+BWS-10,Andrew Salas,Miami Marlins
+BWS-11,Matt Shaw,Chicago Cubs
+BWS-12,Drake Baldwin,Atlanta Braves
+BWS-13,Cam Smith,Houston Astros
+BWS-14,Marcelo Mayer,Boston Red Sox
+BWS-15,Kristian Campbell,Boston Red Sox
+BCP-254,Tony Pérez,Cincinnati Reds
+IT-1,Sebastian Walcott,Texas Rangers
+IT-2,JJ Wetherholt,St. Louis Cardinals
+IT-3,Kristian Campbell,Boston Red Sox
+IT-4,Jac Caglianone,Kansas City Royals
+IT-5,Roki Sasaki,Los Angeles Dodgers
+IT-6,Christian Moore,Angels
+IT-7,Charlie Condon,Colorado Rockies
+IT-8,Konnor Griffin,Pittsburgh Pirates
+IT-9,Cam Smith,Houston Astros
+IT-10,Marcelo Mayer,Boston Red Sox
+IT-11,Matt Shaw,Chicago Cubs
+IT-12,Max Clark,Detroit Tigers
+IT-13,Dylan Crews,Washington Nationals
+IT-14,Jesus Made,Milwaukee Brewers
+IT-15,James Wood,Washington Nationals
+IT-16,Nick Kurtz,Athletics
+IT-17,Leo De Vries,San Diego Padres
+IT-18,Luisangel Acuña,New York Mets
+IT-19,Roman Anthony,Boston Red Sox
+IT-20,Travis Bazzana,Cleveland Guardians
+MR-1,Bryce Eldridge,San Francisco Giants
+MR-2,Mike Trout,Angels
+MR-3,Jesus Made,Milwaukee Brewers
+MR-4,Aaron Judge,New York Yankees
+MR-5,James Wood,Washington Nationals
+MR-6,Walker Jenkins,Minnesota Twins
+MR-7,Nick Kurtz,Athletics
+MR-8,Charlie Condon,Colorado Rockies
+MR-9,Matt Shaw,Chicago Cubs
+MR-10,Dylan Crews,Washington Nationals
+MR-11,Bobby Witt Jr.,Kansas City Royals
+MR-12,Shohei Ohtani,Los Angeles Dodgers
+MR-13,Rafael Devers,San Francisco Giants
+MR-14,Bryce Harper,Philadelphia Phillies
+MR-15,Juan Soto,New York Mets
+MM-1,Arjun Nimmala,Toronto Blue Jays
+MM-2,Kristian Campbell,Boston Red Sox
+MM-3,Christian Moore,Angels
+MM-4,James Wood,Washington Nationals
+MM-5,Adael Amador,Colorado Rockies
+MM-6,Hyeseong Kim,Los Angeles Dodgers
+MM-7,Jacob Wilson,Athletics
+MM-8,Leo De Vries,San Diego Padres
+MM-9,Cooper Pratt,Milwaukee Brewers
+MM-10,Zac Veen,Colorado Rockies
+MM-11,Charlie Condon,Colorado Rockies
+MM-12,Samuel Basallo,Baltimore Orioles
+MM-13,Roman Anthony,Boston Red Sox
+MM-14,Franklin Arias,Boston Red Sox
+MM-15,Bryce Eldridge,San Francisco Giants
+MM-16,Jesus Made,Milwaukee Brewers
+MM-17,Andrew Salas,Miami Marlins
+MM-18,Max Clark,Detroit Tigers
+MM-19,Drake Baldwin,Atlanta Braves
+MM-20,George Lombard Jr.,New York Yankees
+MM-21,Kevin Alcántara,Chicago Cubs
+MM-22,Cam Smith,Houston Astros
+MM-23,Zyhir Hope,Los Angeles Dodgers
+MM-24,Jac Caglianone,Kansas City Royals
+MM-25,Nick Kurtz,Athletics
+MV-1,Roki Sasaki,Los Angeles Dodgers
+MV-2,Kyle Teel,Chicago White Sox
+MV-3,Matt Shaw,Chicago Cubs
+MV-4,Walker Jenkins,Minnesota Twins
+MV-5,Carson Williams,Tampa Bay Rays
+MV-6,JJ Wetherholt,St. Louis Cardinals
+MV-7,Kristian Campbell,Boston Red Sox
+MV-8,Roman Anthony,Boston Red Sox
+MV-9,Dylan Crews,Washington Nationals
+MV-10,Quinn Mathews,St. Louis Cardinals
+MV-11,Nick Kurtz,Athletics
+MV-12,Travis Bazzana,Cleveland Guardians
+MV-13,Coby Mayo,Baltimore Orioles
+MV-14,Dalton Rushing,Los Angeles Dodgers
+MV-15,Charlie Condon,Colorado Rockies
+AD-1,José Ramírez,Cleveland Guardians
+AD-2,Marcelo Mayer,Boston Red Sox
+AD-3,Jac Caglianone,Kansas City Royals
+AD-4,James Wood,Washington Nationals
+AD-5,Dylan Crews,Washington Nationals
+AD-6,Juan Soto,New York Mets
+AD-7,Fernando Tatis Jr.,San Diego Padres
+AD-8,Kristian Campbell,Boston Red Sox
+AD-9,Gunnar Henderson,Baltimore Orioles
+AD-10,Bryce Eldridge,San Francisco Giants
+AD-11,Wyatt Langford,Texas Rangers
+AD-12,Travis Bazzana,Cleveland Guardians
+AD-13,Walker Jenkins,Minnesota Twins
+AD-14,Ronald Acuña Jr.,Atlanta Braves
+AD-15,Mookie Betts,Los Angeles Dodgers
+AD-16,Charlie Condon,Colorado Rockies
+AD-17,Shohei Ohtani,Los Angeles Dodgers
+AD-18,Cam Smith,Houston Astros
+AD-19,Christian Moore,Angels
+AD-20,Max Clark,Detroit Tigers
+AD-21,Carson Williams,Tampa Bay Rays
+AD-22,Vladimir Guerrero Jr.,Toronto Blue Jays
+AD-23,Nick Kurtz,Athletics
+AD-24,JJ Wetherholt,St. Louis Cardinals
+AD-25,Bobby Witt Jr.,Kansas City Royals
+CPA-AC,Angel Cepeda,Chicago Cubs
+CPA-AD,Alessander De La Cruz,Colorado Rockies
+CPA-AF,Alirio Ferrebus,Philadelphia Phillies
+CPA-AG,Asbel Gonzalez,Kansas City Royals
+CPA-AJ,Ayden Johnson,Athletics
+CPA-AM,Anyelo Marquez,Angels
+CPA-ARO,Alejandro Rosario,Texas Rangers
+CPA-AS,Andrew Salas,Miami Marlins
+CPA-BB,Bryce Boettcher,Houston Astros
+CPA-BBA,Brett Bateman,Chicago Cubs
+CPA-BC,Brayan Cortesia,Washington Nationals
+CPA-BD,Bo Davidson,San Francisco Giants
+CPA-BP,Braylon Payne,Milwaukee Brewers
+CPA-BW,Blake Wolters,Kansas City Royals
+CPA-CAC,Cristopher Acosta,Milwaukee Brewers
+CPA-CAR,Cristian Arguelles,Colorado Rockies
+CPA-CCO,Corey Cousin,Kansas City Royals
+CPA-CHA,Chase Hampton,New York Yankees
+CPA-CK,Ching-Hsien Ko,Los Angeles Dodgers
+CPA-CL,Carlos Lagrange,New York Yankees
+CPA-CPO,Caden Powell,Houston Astros
+CPA-CR,Cris Rodriguez,Detroit Tigers
+CPA-CS,Cade Smith,New York Yankees
+CPA-CSC,Cam Schlittler,New York Yankees
+CPA-CSU,Christopher Suero,New York Mets
+CPA-CT,Carlos Tavares,Washington Nationals
+CPA-DF,Devin Fitz-Gerald,Texas Rangers
+CPA-DG,Darison Garcia,Kansas City Royals
+CPA-DL,DJ Layton,Baltimore Orioles
+CPA-DM,Djean Macares,San Francisco Giants
+CPA-DOR,David Ortiz Jr.,Texas Rangers
+CPA-DSA,David Sandlin,Boston Red Sox
+CPA-DT,Diego Tornes,Atlanta Braves
+CPA-ED,Elian De La Cruz,Arizona Diamondbacks
+CPA-EG,Elvin Garcia,Baltimore Orioles
+CPA-EMO,Emil Morales,Los Angeles Dodgers
+CPA-EP,Elian Peña,New York Mets
+CPA-EPE,Ethan Pecko,Houston Astros
+CPA-ER,Elorky Rodriguez,Texas Rangers
+CPA-ET,Enry Torres,Cincinnati Reds
+CPA-GD,Gabriel Davalillo,Angels
+CPA-HB,Heins Brito,Cleveland Guardians
+CPA-HBA,Henry Baez,San Diego Padres
+CPA-HC,Haritzon Castillo,Minnesota Twins
+CPA-HL,Hiverson López,Cleveland Guardians
+CPA-HR,Harold Rivas,Boston Red Sox
+CPA-HS,Hagen Smith,Chicago White Sox
+CPA-JA,Jose Anderson,Milwaukee Brewers
+CPA-JB,Justice Bigbie,Detroit Tigers
+CPA-JC,Juan Cabada,Chicago Cubs
+CPA-JCH,Jakob Christian,San Francisco Giants
+CPA-JD,Josuar Gonzalez,San Francisco Giants
+CPA-JDL,Jhoan De La Cruz,San Diego Padres
+CPA-JDLS,Johan De Los Santos,Pittsburgh Pirates
+CPA-JG,John Gil,Atlanta Braves
+CPA-JOS,Jordan Sanchez,Baltimore Orioles
+CPA-JS,Jhonny Severino,Pittsburgh Pirates
+CPA-JT,Juan Tomas,Chicago Cubs
+CPA-JUC,Juneiker Caceres,Cleveland Guardians
+CPA-KA,Kevin Alvarez,Houston Astros
+CPA-KD,Kevin Defrank,Miami Marlins
+CPA-KF,Kenny Fenelon,Milwaukee Brewers
+CPA-KFO,Kale Fountain,San Diego Padres
+CPA-KK,Kyle Karros,Colorado Rockies
+CPA-KR,Kai Roberts,San Diego Padres
+CPA-LA,Liberts Aponte,Cincinnati Reds
+CPA-LDI,Luke Dickerson,Washington Nationals
+CPA-MC,Maykel Coret,Tampa Bay Rays
+CPA-MCE,Mani Cedeno,New York Yankees
+CPA-MD,Marco Dinges,Milwaukee Brewers
+CPA-ME,Matthew Etzel,Tampa Bay Rays
+CPA-MG,Mavis Graves,Philadelphia Phillies
+CPA-MM,Moises Marchán,Kansas City Royals
+CPA-MU,Miguel Ullola,Houston Astros
+CPA-NCH,Nathan Church,St. Louis Cardinals
+CPA-NG,Nate George,Baltimore Orioles
+CPA-NI,Nieves Izaguirre,Philadelphia Phillies
+CPA-NL,Nick Lorusso,New York Mets
+CPA-NM,Nestor Miranda,Detroit Tigers
+CPA-NY,Natanael Yuten,Boston Red Sox
+CPA-PC,Pedro Catuy,Arizona Diamondbacks
+CPA-RA,Ramcell Medina,Kansas City Royals
+CPA-RCR,Ronny Cruz,Chicago Cubs
+CPA-RH,Robert Hipwell,San Francisco Giants
+CPA-RM,Raymer Medina,Tampa Bay Rays
+CPA-RR,Rainiel Rodriguez,St. Louis Cardinals
+CPA-RSC,RJ Schreck,Toronto Blue Jays
+CPA-SD,Sadbiel Delzine,Boston Red Sox
+CPA-SG,Spencer Giesting,Arizona Diamondbacks
+CPA-SH,Sammy Hernandez,St. Louis Cardinals
+CPA-SL,Santiago Leon,Minnesota Twins
+CPA-SM,Shotaro Morii,Athletics
+CPA-SM,Sabier Marte,New York Yankees
+CPA-SMA,Stiven Marinez,New York Yankees
+CPA-THA,Trevor Harrison,Tampa Bay Rays
+CPA-TS,Teilon Serrano,Minnesota Twins
+CPA-TWH,Tommy White,Athletics
+CPA-WC,Warren Calcaño,Kansas City Royals
+CPA-WD,Wilfri De La Cruz,Chicago Cubs
+CPA-WS,Warel Solano,Tampa Bay Rays
+CPA-WT,Will Taylor,Pittsburgh Pirates
+CPA-YB,Yorger Bautista,Seattle Mariners
+CPA-YL,Yu-Min Lin,Arizona Diamondbacks
+CPA-YM,Yahil Melendez,Chicago Cubs
+CPA-YP,Yairo Padilla,St. Louis Cardinals
+CPA-YU,Yulian Barreto,San Francisco Giants
+CPA-ZC,Zach Cole,Houston Astros
+CPA-ZD,Zander Darby,San Francisco Giants
+CRA-AM,Angel Martínez,Cleveland Guardians
+CRA-BL,Brooks Lee,Minnesota Twins
+CRA-BR,Ben Rice,New York Yankees
+CRA-CD,Chase Dollander,Colorado Rockies
+CRA-CH,Cade Horton,Chicago Cubs
+CRA-CM,Coby Mayo,Baltimore Orioles
+CRA-CN,Connor Norby,Miami Marlins
+CRA-CS,Chandler Simpson,Tampa Bay Rays
+CRA-CSM,Cam Smith,Houston Astros
+CRA-DB,Drake Baldwin,Atlanta Braves
+CRA-DC,Dylan Crews,Washington Nationals
+CRA-DD,Dillon Dingler,Detroit Tigers
+CRA-DR,Dalton Rushing,Los Angeles Dodgers
+CRA-DT,Drew Thorpe,Chicago White Sox
+CRA-EQ,Edgar Quero,Chicago White Sox
+CRA-HK,Hyeseong Kim,Los Angeles Dodgers
+CRA-HW,Hurston Waldrep,Atlanta Braves
+CRA-JN,Jhonkensy Noel,Cleveland Guardians
+CRA-JWI,Jacob Wilson,Athletics
+CRA-JWO,James Wood,Washington Nationals
+CRA-KC,Kristian Campbell,Boston Red Sox
+CRA-MB,Moises Ballesteros,Chicago Cubs
+CRA-MM,Marcelo Mayer,Boston Red Sox
+CRA-MS,Matt Shaw,Chicago Cubs
+CRA-NK,Nick Kurtz,Athletics
+CRA-RH,Rece Hinds,Cincinnati Reds
+CRA-RR,River Ryan,Los Angeles Dodgers
+CRA-RS,Roki Sasaki,Los Angeles Dodgers
+CRA-SA,Sam Aldegheri,Angels
+CRA-TL,Tyler Locklear,Seattle Mariners
+CRA-TOS,Thomas Saggese,St. Louis Cardinals
+CRA-TS,Trey Sweeney,Detroit Tigers
+CRA-WW,Will Wagner,Toronto Blue Jays
+CRA-ZD,Zach Dezenzo,Houston Astros
+BRA-TP,Tony Pérez,Cincinnati Reds
+PCS-AS,Andrew Salas,Miami Marlins
+PCS-CC,Charlie Condon,Colorado Rockies
+PCS-DT,Diego Tornes,Atlanta Braves
+PCS-EP,Elian Peña,New York Mets
+PCS-JC,Juan Cabada,Chicago Cubs
+PCS-JD,Josuar Gonzalez,San Francisco Giants
+PCS-JM,Jesus Made,Milwaukee Brewers
+PCS-JS,Juan Soto,New York Mets
+PCS-JW,JJ Wetherholt,St. Louis Cardinals
+PCS-KA,Kevin Alvarez,Houston Astros
+PCS-KM,Kevin McGonigle,Detroit Tigers
+PCS-KG,Konnor Griffin,Pittsburgh Pirates
+PCS-KT,Kyle Teel,Chicago White Sox
+PCS-LD,Leo De Vries,San Diego Padres
+PCS-MCE,Mani Cedeno,New York Yankees
+PCS-MCL,Max Clark,Detroit Tigers
+PCS-MT,Mike Trout,Angels
+PCS-PS,Paul Skenes,Pittsburgh Pirates
+PCS-RS,Roki Sasaki,Los Angeles Dodgers
+PCS-SM,Shotaro Morii,Athletics
+PCS-SMA,Stiven Marinez,New York Yankees
+PCS-SO,Shohei Ohtani,Los Angeles Dodgers
+PCS-YB,Yorger Bautista,Seattle Mariners
+PCS-YP,Yairo Padilla,St. Louis Cardinals
+MVA-CC,Charlie Condon,Colorado Rockies
+MVA-CM,Coby Mayo,Baltimore Orioles
+MVA-CW,Carson Williams,Tampa Bay Rays
+MVA-DR,Dalton Rushing,Los Angeles Dodgers
+MVA-JW,JJ Wetherholt,St. Louis Cardinals
+MVA-KT,Kyle Teel,Chicago White Sox
+MVA-MS,Matt Shaw,Chicago Cubs
+MVA-NK,Nick Kurtz,Athletics
+MVA-RA,Roman Anthony,Boston Red Sox
+MVA-RS,Roki Sasaki,Los Angeles Dodgers
+MVA-TB,Travis Bazzana,Cleveland Guardians
+MVA-WJ,Walker Jenkins,Minnesota Twins
+MMA-AA,Adael Amador,Colorado Rockies
+MMA-AN,Arjun Nimmala,Toronto Blue Jays
+MMA-BE,Bryce Eldridge,San Francisco Giants
+MMA-CC,Charlie Condon,Colorado Rockies
+MMA-CM,Christian Moore,Angels
+MMA-CP,Cooper Pratt,Milwaukee Brewers
+MMA-CS,Cam Smith,Houston Astros
+MMA-DB,Drake Baldwin,Atlanta Braves
+MMA-FA,Franklin Arias,Boston Red Sox
+MMA-GL,George Lombard Jr.,New York Yankees
+MMA-HK,Hyeseong Kim,Los Angeles Dodgers
+MMA-JC,Jac Caglianone,Kansas City Royals
+MMA-JM,Jesus Made,Milwaukee Brewers
+MMA-JW,James Wood,Washington Nationals
+MMA-JWI,Jacob Wilson,Athletics
+MMA-KA,Kevin Alcántara,Chicago Cubs
+MMA-LD,Leo De Vries,San Diego Padres
+MMA-NK,Nick Kurtz,Athletics
+MMA-RA,Roman Anthony,Boston Red Sox
+MMA-ZH,Zyhir Hope,Los Angeles Dodgers
+MMA-ZV,Zac Veen,Colorado Rockies
+AAV-BE,Bryce Eldridge,San Francisco Giants
+AAV-BW,Bobby Witt Jr.,Kansas City Royals
+AAV-CC,Charlie Condon,Colorado Rockies
+AAV-CM,Coby Mayo,Baltimore Orioles
+AAV-CMO,Christian Moore,Angels
+AAV-CS,Cam Smith,Houston Astros
+AAV-CW,Carson Williams,Tampa Bay Rays
+AAV-FT,Fernando Tatis Jr.,San Diego Padres
+AAV-GH,Gunnar Henderson,Baltimore Orioles
+AAV-JC,Jac Caglianone,Kansas City Royals
+AAV-JJW,JJ Wetherholt,St. Louis Cardinals
+AAV-JS,Juan Soto,New York Mets
+AAV-JW,James Wood,Washington Nationals
+AAV-MM,Marcelo Mayer,Boston Red Sox
+AAV-NK,Nick Kurtz,Athletics
+AAV-RA,Ronald Acuña Jr.,Atlanta Braves
+AAV-RAN,Roman Anthony,Boston Red Sox
+AAV-TB,Travis Bazzana,Cleveland Guardians
+AAV-VG,Vladimir Guerrero Jr.,Toronto Blue Jays
+AAV-WJ,Walker Jenkins,Minnesota Twins
+BAA-AJ,Aaron Judge,New York Yankees
+BAA-BW,Bobby Witt Jr.,Kansas City Royals
+BAA-CM,Coby Mayo,Baltimore Orioles
+BAA-ED,Elly De La Cruz,Cincinnati Reds
+BAA-EP,Elian Peña,New York Mets
+BAA-GH,Gunnar Henderson,Baltimore Orioles
+BAA-HK,Hyeseong Kim,Los Angeles Dodgers
+BAA-JC,Jac Caglianone,Kansas City Royals
+BAA-JG,Josuar Gonzalez,San Francisco Giants
+BAA-JS,Juan Soto,New York Mets
+BAA-JW,JJ Wetherholt,St. Louis Cardinals
+BAA-JWO,James Wood,Washington Nationals
+BAA-KG,Konnor Griffin,Pittsburgh Pirates
+BAA-LA,Luisangel Acuña,New York Mets
+BAA-MS,Matt Shaw,Chicago Cubs
+BAA-MT,Mike Trout,Angels
+BAA-PS,Paul Skenes,Pittsburgh Pirates
+BAA-RA,Roman Anthony,Boston Red Sox
+BAA-RS,Roki Sasaki,Los Angeles Dodgers
+BAA-TB,Travis Bazzana,Cleveland Guardians
+BAA-WJ,Walker Jenkins,Minnesota Twins
+CRA-JJU,Jace Jung,Detroit Tigers
+BCAR-AR,Adley Rutschman,Baltimore Orioles
+BCAR-BC,Bubba Chandler,Pittsburgh Pirates
+BCAR-BL,Brooks Lee,Minnesota Twins
+BCAR-BW,Bobby Witt Jr.,Kansas City Royals
+BCAR-CD,Chase Dollander,Colorado Rockies
+BCAR-CM,Coby Mayo,Baltimore Orioles
+BCAR-CMO,Colson Montgomery,Chicago White Sox
+BCAR-CP,Cooper Pratt,Milwaukee Brewers
+BCAR-CS,Cam Smith,Houston Astros
+BCAR-CW,Carson Williams,Tampa Bay Rays
+BCAR-DB,Drake Baldwin,Atlanta Braves
+BCAR-DC,Dylan Crews,Washington Nationals
+BCAR-DR,Dalton Rushing,Los Angeles Dodgers
+BCAR-ED,Elly De La Cruz,Cincinnati Reds
+BCAR-HK,Hyeseong Kim,Los Angeles Dodgers
+BCAR-JD,Jasson Domínguez,New York Yankees
+BCAR-JJU,Jace Jung,Detroit Tigers
+BCAR-JW,James Wood,Washington Nationals
+BCAR-JWI,Jacob Wilson,Athletics
+BCAR-KA,Kevin Alcántara,Chicago Cubs
+BCAR-KR,Kumar Rocker,Texas Rangers
+BCAR-KT,Kyle Teel,Chicago White Sox
+BCAR-LA,Luisangel Acuña,New York Mets
+BCAR-MC,Max Clark,Detroit Tigers
+BCAR-MM,Manny Machado,San Diego Padres
+BCAR-MS,Matt Shaw,Chicago Cubs
+BCAR-MT,Mike Trout,Angels
+BCAR-PA,Pete Alonso,New York Mets
+BCAR-PS,Paul Skenes,Pittsburgh Pirates
+BCAR-RA,Ronald Acuña Jr.,Atlanta Braves
+BCAR-RAN,Roman Anthony,Boston Red Sox
+BCAR-RS,Roki Sasaki,Los Angeles Dodgers
+BCAR-SI,Shota Imanaga,Chicago Cubs
+BCAR-VG,Vladimir Guerrero Jr.,Toronto Blue Jays
+BCAR-WJ,Walker Jenkins,Minnesota Twins
+BCAR-WL,Wyatt Langford,Texas Rangers
+BCAR-YY,Yoshinobu Yamamoto,Los Angeles Dodgers

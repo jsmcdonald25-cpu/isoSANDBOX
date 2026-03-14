@@ -1,0 +1,595 @@
+2024/25 Bowman University Best Basketball
+
+
+BASE CARDS
+1 Ace Bailey Rutgers
+2 Ahmad Nowell UConn®
+3 Aiden Sherrell Alabama®
+4 AJ Storr Kansas®
+5 Alex Karaban UConn®
+6 Allie Ziebell UConn®
+7 Aneesah Morrow LSU®
+8 Annor Boateng Missouri®
+9 Asa Newell Georgia®
+10 Audi Crooks Iowa State™
+11 Billy Richmond III Arkansas®
+12 Boogie Fland Arkansas®
+13 Braden Smith Purdue™
+14 Cam Scott South Carolina
+15 Clifford Omoruyi Alabama®
+16 Cooper Flagg Duke®
+17 Dame Sarr International
+18 Darren Harris Duke®
+19 Derik Queen Maryland™
+20 Derrion Reid Alabama®
+21 Donavan Freeman Syracuse®
+22 Dylan Harper Rutgers
+23 Emanuel Sharp Houston
+24 Flory Bidunga Kansas®
+25 Grant Nelson Alabama®
+26 Hannah Hidalgo Notre Dame®
+27 Isaiah Evans Duke®
+28 Jalil Bethea Miami™
+29 Jaloni Cambridge Ohio State®
+30 Jayden Nunn Baylor®
+31 John Bol Ole Miss®
+32 Jonas Aidoo Arkansas®
+33 Jordan Gainey Tennessee®
+34 Jordan Lee Texas
+35 Josh Hubbard Mississippi State®
+36 Joyce Edwards South Carolina
+37 Juju Watkins USC
+38 Justice Carlton Texas
+39 Kam Jones Marquette®
+40 Kanon Catchings BYU®
+41 Karter Knox Arkansas®
+42 Kate Koval Notre Dame®
+43 Kayleigh Heckel USC
+44 Kennedy Smith USC
+45 Keshon Gilbert Iowa State™
+46 Khaman Maluach Duke®
+47 Kiki Iriafen USC
+48 Kon Knueppel Duke®
+49 Labaron Philon Alabama®
+50 Langston Love Baylor®
+51 Latrell Wrightsell Alabama®
+52 Liam McNeeley UConn®
+53 Mackenly Randolph Louisville™
+54 Mark Sears Alabama®
+55 Meechie Johnson Ohio State®
+56 Mikayla Blakes Vanderbilt®
+57 Nolan Traore International
+58 Isaac McKneely Virginia™
+59 Patrick Ngongba Duke®
+60 PJ Haggerty Memphis™
+61 Raven Johnson South Carolina
+62 Robbie Avila Saint Louis
+63 Robert Wright III Baylor®
+64 Sarah Strong UConn®
+65 Sion James Duke®
+66 Sonia Citron Notre Dame®
+67 Syla Swords Michigan®
+68 Tamin Lipsey Iowa State™
+69 Trent Perry UCLA®
+70 Tyler Hendricks UCF
+71 Johni Broome Auburn®
+72 Aden Holloway Alabama®
+73 Freddie Dilione V Penn State®
+74 Dennis Evans Grand Canyon
+75 Fletcher Loyer Purdue™
+76 Garwey Dual Seton Hall™
+77 Jeremy Fears Michigan State®
+78 Miles Kelly Auburn®
+79 Scotty Middleton Seton Hall™
+80 TJ Bamba Oregon™
+81 Kylan Boswell Illinois™
+82 Xavier Booker Michigan State®
+83 Zaide Lowery Marquette®
+84 Tre Norman Marquette®
+85 Riley Kugel Mississippi State®
+86 Simeon Wilcher St. John's™
+87 Ryan Nembhard Gonzaga™
+88 Nick Boyd San Diego State
+89 Solomon Ball UConn®
+90 Steele Venters Gonzaga™
+91 Ashton Hardaway Saint Mary's
+92 Jackson Shelstad Oregon™
+93 Miro Little Utah®
+94 Jaden Akins Michigan State®
+95 Jamari McDowell Kansas®
+96 Prince Aligbe Seton Hall™
+97 Drake Powell UNC®
+98 RJ Jones TCU®
+99 DeShawn Harris-Smith Maryland™
+100 Diamond Johnson Norfolk State
+INSERT
+BEST BALLERS
+BB-1 Cooper Flagg Duke®
+BB-2 Ace Bailey Rutgers
+BB-3 Dylan Harper Rutgers
+BB-4 Jalil Bethea Miami™
+BB-5 Boogie Fland Arkansas®
+BB-6 Donavan Freeman Syracuse®
+BB-7 Asa Newell Georgia®
+BB-8 AJ Storr Kansas®
+BB-9 Braden Smith Purdue™
+BB-10 Emanuel Sharp Houston
+BB-11 Jayden Nunn Baylor®
+BB-12 Josh Hubbard Mississippi State®
+BB-13 Ahmad Nowell UConn®
+BB-14 Aiden Sherrell Alabama®
+BB-15 Billy Richmond III Arkansas®
+BB-16 Derik Queen Maryland™
+BB-17 Derrion Reid Alabama®
+BB-18 Dame Sarr International
+BB-19 Nolan Traore International
+BB-20 Kanon Catchings BYU®
+BB-21 Aneesah Morrow LSU®
+BB-22 Audi Crooks Iowa State™
+BB-23 Hannah Hidalgo Notre Dame®
+BB-24 Juju Watkins USC
+BB-25 Sarah Strong UConn®
+MAKING THE GRADE
+MG-1 Cooper Flagg Duke®
+MG-2 Ace Bailey Rutgers
+MG-3 Dylan Harper Rutgers
+MG-4 Kon Knueppel Duke®
+MG-5 Flory Bidunga Kansas®
+MG-6 Alex Karaban UConn®
+MG-7 Robbie Avila Saint Louis
+MG-8 Labaron Philon Alabama®
+MG-9 Clifford Omoruyi Alabama®
+MG-10 Jonas Aidoo Arkansas®
+MG-11 Karter Knox Arkansas®
+MG-12 Robert Wright III Baylor®
+MG-13 Darren Harris Duke®
+MG-14 Jalil Bethea Miami™
+MG-15 Mark Sears Alabama®
+MG-16 John Bol Ole Miss®
+MG-17 Drake Powell UNC
+MG-18 Derik Queen Maryland™
+MG-19 Donavan Freeman Syracuse®
+MG-20 Trent Perry UCLA®
+MG-21 JuJu Watkins USC
+MG-22 Sarah Strong UConn®
+MG-23 Mackenly Randolph Louisville™
+MG-24 Syla Swords Michigan®
+MG-25 Joyce Edwards South Carolina
+FIELD DAY
+FD-1 Cooper Flagg Duke®
+FD-2 Ace Bailey Rutgers
+FD-3 Dylan Harper Rutgers
+FD-4 Jalil Bethea Miami™
+FD-5 Boogie Fland Arkansas®
+FD-6 Donavan Freeman Syracuse®
+FD-7 Asa Newell Georgia®
+FD-8 Ahmad Nowell UConn®
+FD-9 Aiden Sherrell Alabama®
+FD-10 Dame Sarr International
+FD-11 Nolan Traore International
+FD-12 Derik Queen Maryland™
+FD-13 Liam McNeeley UConn®
+FD-14 Flory Bidunga Kansas®
+FD-15 Robbie Avila Saint Louis
+FD-16 Raven Johnson South Carolina
+FD-17 Sonia Citron Notre Dame®
+FD-18 Kennedy Smith USC
+FD-19 Jordan Lee Texas
+FD-20 Jaloni Cambridge Ohio State®
+BOWMAN MASTERPIECES
+BM-1 Cooper Flagg Duke®
+BM-2 Ace Bailey Rutgers
+BM-3 Dylan Harper Rutgers
+BM-4 Jalil Bethea Miami™
+BM-5 Boogie Fland Arkansas®
+BM-6 Donavan Freeman Syracuse®
+BM-7 Asa Newell Georgia®
+BM-8 Kon Knueppel Duke®
+BM-9 Derrion Reid Alabama®
+BM-10 Dame Sarr International
+BM-11 Nolan Traore International
+BM-12 Flory Bidunga Kansas®
+BM-13 Robert Wright III Baylor®
+BM-14 Drake Powell UNC
+BM-15 Derik Queen Maryland™
+BM-16 Juju Watkins USC
+BM-17 Aneesah Morrow LSU®
+BM-18 Sarah Strong UConn®
+BM-19 Audi Crooks Iowa State™
+BM-20 Hannah Hidalgo Notre Dame®
+BREAKING BARRIERS
+BB-1 Juju Watkins USC
+BB-2 Kennedy Smith USC
+BB-3 Sarah Strong UConn®
+BB-4 Joyce Edwards South Carolina
+BB-5 Kate Koval Notre Dame®
+BB-6 Sonia Citron Notre Dame®
+BB-7 Jaloni Cambridge Ohio State®
+BB-8 Kiki Iriafen USC
+BB-9 Aneesah Morrow LSU®
+BB-10 Syla Swords Michigan®
+LETS GO
+LG-1 Cooper Flagg Duke®
+LG-2 Ace Bailey Rutgers
+LG-3 Dylan Harper Rutgers
+LG-4 Juju Watkins USC
+LG-5 Nolan Traore International
+MIRROR IMAGE FUSION
+MIF-1 Boogie Fland Arkansas®
+MIF-1 Karter Knox Arkansas®
+MIF-2 Mark Sears Alabama®
+MIF-2 Grant Nelson Alabama®
+MIF-3 Robert Wright III Baylor®
+MIF-3 Langston Love Baylor®
+MIF-4 Liam McNeeley UConn®
+MIF-4 Ahmad Nowell UConn®
+MIF-5 Sarah Strong UConn®
+MIF-5 Allie Ziebell UConn®
+MIF-6 Kon Knueppel Duke®
+MIF-6 Cooper Flagg Duke®
+MIF-7 Flory Bidunga Kansas®
+MIF-7 AJ Storr Kansas®
+MIF-8 Ace Bailey Rutgers
+MIF-8 Cooper Flagg Duke®
+MIF-9 Juju Watkins USC
+MIF-9 Kiki Iriafen USC
+MIF-10 Kennedy Smith USC
+MIF-10 Kayleigh Heckel USC
+MIF-11 Dylan Harper Rutgers
+MIF-11 Ace Bailey Rutgers
+MIF-12 Hannah Hidalgo Notre Dame®
+MIF-12 Sonia Citron Notre Dame®
+MIF-13 Nolan Traore International
+MIF-13 Dame Sarr International
+MIF-14 DeShawn Harris-Smith Maryland™
+MIF-14 Derik Queen Maryland™
+MIF-15 Raven Johnson South Carolina
+MIF-15 Joyce Edwards South Carolina
+FLIGHT CLUB
+FC-1 Cooper Flagg Duke®
+FC-2 Ace Bailey Rutgers
+FC-3 Dylan Harper Rutgers
+FC-4 Jalil Bethea Miami™
+FC-5 Boogie Fland Arkansas®
+FC-6 Donavan Freeman Syracuse®
+FC-7 Asa Newell Georgia®
+FC-8 Derik Queen Maryland™
+FC-9 Derrion Reid Alabama®
+FC-10 Dame Sarr International
+FC-11 Nolan Traore International
+FC-12 Drake Powell UNC
+FC-13 Flory Bidunga Kansas®
+FC-14 Ahmad Nowell UConn®
+FC-15 Juju Watkins USC
+AUTOGRAPH
+BEST OF 2024 AUTOGRAPHS
+B24-AB Ace Bailey Rutgers
+B24-ABO Annor Boateng Missouri®
+B24-AC Audi Crooks Iowa State™
+B24-AH Aden Holloway Alabama®
+B24-AJS AJ Storr Kansas®
+B24-AK Alex Karaban UConn®
+B24-AM Aneesah Morrow LSU®
+B24-AN Ahmad Nowell UConn®
+B24-ANE Asa Newell Georgia®
+B24-AS Aiden Sherrell Alabama®
+B24-AZ Allie Ziebell UConn®
+B24-BF Boogie Fland Arkansas®
+B24-BR Billy Richmond III Arkansas®
+B24-BS Braden Smith Purdue™
+B24-CF Cooper Flagg Duke®
+B24-CO Clifford Omoruyi Alabama®
+B24-CS Cam Scott South Carolina
+B24-DE Dennis Evans Grand Canyon
+B24-DF Donavan Freeman Syracuse®
+B24-DH Darren Harris Duke®
+B24-DHA Dylan Harper Rutgers
+B24-DHS DeShawn Harris-Smith Maryland™
+B24-DJ Diamond Johnson Norfolk State
+B24-DQ Derik Queen Maryland™
+B24-DR Derrion Reid Alabama®
+B24-DRP Drake Powell UNC®
+B24-DS Dame Sarr International
+B24-ES Emanuel Sharp Houston
+B24-FB Flory Bidunga Kansas®
+B24-FD Freddie Dilione V Penn State®
+B24-FL Fletcher Loyer Purdue™
+B24-GD Garwey Dual Seton Hall™
+B24-GN Grant Nelson Alabama®
+B24-HH Hannah Hidalgo Notre Dame®
+B24-IE Isaiah Evans Duke®
+B24-IM Isaac McKneely Virginia™
+B24-JA Jonas Aidoo Arkansas®
+B24-JAK Jaden Akins Michigan State®
+B24-JB Jalil Bethea Miami™
+B24-JBO John Bol Ole Miss®
+B24-JBR Johni Broome Auburn®
+B24-JC Jaloni Cambridge Ohio State®
+B24-JCA Justice Carlton Texas
+B24-JE Joyce Edwards South Carolina
+B24-JF Jeremy Fears Michigan State®
+B24-JG Jordan Gainey Tennessee®
+B24-JH Josh Hubbard Mississippi State®
+B24-JL Jordan Lee Texas
+B24-JM Jamari McDowell Kansas®
+B24-JN Jayden Nunn Baylor®
+B24-JS Jackson Shelstad Oregon™
+B24-JW Juju Watkins USC
+B24-KBO Kylan Boswell Illinois™
+B24-KC Kanon Catchings BYU®
+B24-KG Keshon Gilbert Iowa State™
+B24-KH Kayleigh Heckel USC
+B24-KI Kiki Iriafen USC
+B24-KJ Kam Jones Marquette®
+B24-KK Karter Knox Arkansas®
+B24-KKN Kon Knueppel Duke®
+B24-KKO Kate Koval Notre Dame®
+B24-KM Khaman Maluach Duke®
+B24-KS Kennedy Smith USC
+B24-LL Langston Love Baylor®
+B24-LM Liam McNeeley UConn®
+B24-LP Labaron Philon Alabama®
+B24-LW Latrell Wrightsell Alabama®
+B24-MB Mikayla Blakes Vanderbilt®
+B24-MJ Meechie Johnson Ohio State®
+B24-MK Miles Kelly Auburn®
+B24-ML Miro Little Utah®
+B24-MR Mackenly Randolph Louisville™
+B24-MS Mark Sears Alabama®
+B24-NB Nick Boyd San Diego State
+B24-NT Nolan Traore International
+B24-PA Prince Aligbe Seton Hall™
+B24-PB Paige Bueckers UConn®
+B24-PH PJ Haggerty Memphis™
+B24-PN Patrick Ngongba Duke®
+B24-RA Robbie Avila Saint Louis
+B24-RJ Raven Johnson South Carolina
+B24-RJJ RJ Jones TCU®
+B24-RK Riley Kugel Mississippi State®
+B24-RN Ryan Nembhard Gonzaga™
+B24-RW Robert Wright III Baylor®
+B24-SBA Solomon Ball UConn®
+B24-SC Sonia Citron Notre Dame®
+B24-SJ Sion James Duke®
+B24-SM Scotty Middleton Seton Hall™
+B24-SS Sarah Strong UConn®
+B24-SSW Syla Swords Michigan®
+B24-SVE Steele Venters Gonzaga™
+B24-SW Simeon Wilcher St. John's™
+B24-TB TJ Bamba Oregon™
+B24-TC Ashton Hardaway Saint Mary's
+B24-TH Tyler Hendricks UCF
+B24-TL Tamin Lipsey Iowa State™
+B24-TP Trent Perry UCLA®
+B24-XB Xavier Booker Michigan State®
+B24-ZL Zaide Lowery Marquette®
+GREATNESS AWAITS AUTOGRAPHS
+GAA-AB Ace Bailey Rutgers
+GAA-AC Audi Crooks Iowa State™
+GAA-AM Aneesah Morrow LSU®
+GAA-AN Asa Newell Georgia®
+GAA-AS AJ Storr Kansas®
+GAA-BF Boogie Fland Arkansas®
+GAA-BS Braden Smith Purdue™
+GAA-CF Cooper Flagg Duke®
+GAA-DF Donavan Freeman Syracuse®
+GAA-DH Dylan Harper Rutgers
+GAA-ES Emanuel Sharp Houston
+GAA-HH Hannah Hidalgo Notre Dame®
+GAA-IE Isaiah Evans Duke®
+GAA-JB Jalil Bethea Miami™
+GAA-JC Jaloni Cambridge Ohio State®
+GAA-JE Joyce Edwards South Carolina
+GAA-JH Josh Hubbard Mississippi State®
+GAA-JN Jayden Nunn Baylor®
+GAA-JW Juju Watkins USC
+GAA-KK Kon Knueppel Duke®
+ISO SIGNATURES
+ISO-AB Ace Bailey Rutgers
+ISO-AN Asa Newell Georgia®
+ISO-BF Boogie Fland Arkansas®
+ISO-DF Donavan Freeman Syracuse®
+ISO-DH Dylan Harper Rutgers
+ISO-JB Jalil Bethea Miami™
+ISO-KG Keshon Gilbert Iowa State™
+ISO-KI Kiki Iriafen USC
+ISO-KJ Kam Jones Marquette®
+ISO-LL Langston Love Baylor®
+ISO-MJ Meechie Johnson Ohio State®
+ISO-PB Paige Bueckers UConn®
+ISO-PH PJ Haggerty Memphis™
+ISO-RA Robbie Avila Saint Louis
+ISO-RW Robert Wright III Baylor®
+ISO-SC Sonia Citron Notre Dame®
+ISO-SS Sarah Strong UConn®
+POSSESSION ARROW AUTOGRAPHS
+PAA-AB Ace Bailey Rutgers
+PAA-AC Audi Crooks Iowa State™
+PAA-AM Aneesah Morrow LSU®
+PAA-AN Asa Newell Georgia®
+PAA-BF Boogie Fland Arkansas®
+PAA-CF Cooper Flagg Duke®
+PAA-DF Donavan Freeman Syracuse®
+PAA-DH Dylan Harper Rutgers
+PAA-HH Hannah Hidalgo Notre Dame®
+PAA-IE Isaiah Evans Duke®
+PAA-JB Jalil Bethea Miami™
+PAA-JC Jaloni Cambridge Ohio State®
+PAA-JE Joyce Edwards South Carolina
+PAA-JW Juju Watkins USC
+PAA-KI Kiki Iriafen USC
+PAA-KJ Kam Jones Marquette®
+PAA-KK Kon Knueppel Duke®
+PAA-PB Paige Bueckers UConn®
+PAA-SS Sarah Strong UConn®
+PAA-TL Tamin Lipsey Iowa State™
+DUAL REFRACTOR AUTOGRAPHS
+DRA-AD Dylan Harper Rutgers
+DRA-AD Ace Bailey Rutgers
+DRA-BB Boogie Fland Arkansas®
+DRA-BB Billy Richmond III Arkansas®
+DRA-BK Karter Knox Arkansas®
+DRA-BK Boogie Fland Arkansas®
+DRA-BS Braden Smith Purdue®
+DRA-BS Fletcher Loyer Purdue®
+DRA-CA Ace Bailey Rutgers
+DRA-CA Cooper Flagg Duke®
+DRA-CD Dylan Harper Rutgers
+DRA-CD Cooper Flagg Duke®
+DRA-CK Kon Knueppel Duke®
+DRA-CK Cooper Flagg Duke®
+DRA-CKH Cooper Flagg Duke®
+DRA-CKH Khaman Maluach Duke®
+DRA-HS Hannah Hidalgo Notre Dame®
+DRA-HS Sonia Citron Notre Dame®
+DRA-JJ Jordan Lee Texas
+DRA-JJ Justice Carlton Texas
+DRA-JK Kiki Iriafen USC
+DRA-JK Juju Watkins USC
+DRA-JL Jayden Nunn Baylor®
+DRA-JL Langston Love Baylor®
+DRA-JR Raven Johnson South Carolina
+DRA-JR Joyce Edwards South Carolina
+DRA-KT Keshon Gilbert Iowa State™
+DRA-KT Tamin Lipsey Iowa State™
+DRA-KZ Zaide Lowery Marquette®
+DRA-KZ Kam Jones Marquette®
+DRA-MG Grant Nelson Alabama®
+DRA-MG Mark Sears Alabama®
+DRA-PS Sarah Strong UConn®
+DRA-PS Paige Bueckers UConn®
+DRA-RS Steele Venters Gonzaga™
+DRA-RS Ryan Nembhard Gonzaga™
+TRIPLE REFRACTOR AUTOGRAPHS
+TRA-AKT Audi Crooks Iowa State™
+TRA-AKT Tamin Lipsey Iowa State™
+TRA-AKT Keshon Gilbert Iowa State™
+TRA-BBK Karter Knox Arkansas®
+TRA-BBK Billy Richmond III Arkansas®
+TRA-BBK Boogie Fland Arkansas®
+TRA-CAD Cooper Flagg Duke®
+TRA-CAD Ace Bailey Rutgers
+TRA-CAD Dylan Harper Rutgers
+TRA-CKK Kon Knueppel Duke®
+TRA-CKK Khaman Maluach Duke®
+TRA-CKK Cooper Flagg Duke®
+TRA-HKS Kate Koval Notre Dame®
+TRA-HKS Hannah Hidalgo Notre Dame®
+TRA-HKS Sonia Citron Notre Dame®
+TRA-JKK Juju Watkins USC
+TRA-JKK Kiki Iriafen USC
+TRA-JKK Kennedy Smith USC
+TRA-JLR Robert Wright III Baylor®
+TRA-JLR Langston Love Baylor®
+TRA-JLR Jayden Nunn Baylor®
+TRA-KTZ Tre Norman Marquette®
+TRA-KTZ Kam Jones Marquette®
+TRA-KTZ Zaide Lowery Marquette®
+TRA-MGC Mark Sears Alabama®
+TRA-MGC Clifford Omoruyi Alabama®
+TRA-MGC Grant Nelson Alabama®
+TRA-PHJ Juju Watkins USC
+TRA-PHJ Paige Bueckers UConn®
+TRA-PHJ Hannah Hidalgo Notre Dame®
+AUTOGRAPH RELIC
+PROSPECT JUMBO RELIC AUTOGRAPHS
+PJRA-AB Ace Bailey Rutgers
+PJRA-AC Audi Crooks Iowa State™
+PJRA-AM Aneesah Morrow LSU®
+PJRA-AN Asa Newell Georgia®
+PJRA-ANO Ahmad Nowell UConn®
+PJRA-AS AJ Storr Kansas®
+PJRA-ASH Aiden Sherrell Alabama®
+PJRA-BF Boogie Fland Arkansas®
+PJRA-CF Cooper Flagg Duke®
+PJRA-CO Clifford Omoruyi Alabama®
+PJRA-DF Donavan Freeman Syracuse®
+PJRA-DH Dylan Harper Rutgers
+PJRA-DQ Derik Queen Maryland™
+PJRA-DR Derrion Reid Alabama®
+PJRA-ES Emanuel Sharp Houston
+PJRA-FB Flory Bidunga Kansas®
+PJRA-GN Grant Nelson Alabama®
+PJRA-HH Hannah Hidalgo Notre Dame®
+PJRA-IE Isaiah Evans Duke®
+PJRA-JB Jalil Bethea Miami™
+PJRA-JH Josh Hubbard Mississippi State®
+PJRA-JW Juju Watkins USC
+PJRA-KG Keshon Gilbert Iowa State™
+PJRA-KH Kayleigh Heckel USC
+PJRA-KI Kiki Iriafen USC
+PJRA-KJ Kam Jones Marquette®
+PJRA-KK Karter Knox Arkansas®
+PJRA-KKN Kon Knueppel Duke®
+PJRA-KM Khaman Maluach Duke®
+PJRA-KS Kennedy Smith USC
+PJRA-LL Langston Love Baylor®
+PJRA-LW Latrell Wrightsell Alabama®
+PJRA-MS Mark Sears Alabama®
+PJRA-PB Paige Bueckers UConn®
+PJRA-PN Patrick Ngongba Duke®
+PJRA-RA Robbie Avila Saint Louis
+PJRA-SC Sonia Citron Notre Dame®
+PJRA-SS Sarah Strong UConn®
+PJRA-TL Tamin Lipsey Iowa State™
+PROSPECT DUAL RELIC AUTOGRAPHS
+PDRA-AB Ace Bailey Rutgers
+PDRA-AC Audi Crooks Iowa State™
+PDRA-AM Aneesah Morrow LSU®
+PDRA-AN Asa Newell Georgia®
+PDRA-ANO Ahmad Nowell UConn®
+PDRA-AS AJ Storr Kansas®
+PDRA-ASH Aiden Sherrell Alabama®
+PDRA-BF Boogie Fland Arkansas®
+PDRA-CF Cooper Flagg Duke®
+PDRA-CO Clifford Omoruyi Alabama®
+PDRA-DF Donavan Freeman Syracuse®
+PDRA-DH Dylan Harper Rutgers
+PDRA-DQ Derik Queen Maryland™
+PDRA-DR Derrion Reid Alabama®
+PDRA-ES Emanuel Sharp Houston
+PDRA-FB Flory Bidunga Kansas®
+PDRA-GN Grant Nelson Alabama®
+PDRA-HH Hannah Hidalgo Notre Dame®
+PDRA-IE Isaiah Evans Duke®
+PDRA-JB Jalil Bethea Miami™
+PDRA-JH Josh Hubbard Mississippi State®
+PDRA-JW Juju Watkins USC
+PDRA-KG Keshon Gilbert Iowa State™
+PDRA-KH Kayleigh Heckel USC
+PDRA-KI Kiki Iriafen USC
+PDRA-KJ Kam Jones Marquette®
+PDRA-KK Karter Knox Arkansas®
+PDRA-KKN Kon Knueppel Duke®
+PDRA-KM Khaman Maluach Duke®
+PDRA-KS Kennedy Smith USC
+PDRA-LL Langston Love Baylor®
+PDRA-LW Latrell Wrightsell Alabama®
+PDRA-MS Mark Sears Alabama®
+PDRA-PB Paige Bueckers UConn®
+PDRA-PN Patrick Ngongba Duke®
+PDRA-RA Robbie Avila Saint Louis
+PDRA-SC Sonia Citron Notre Dame®
+PDRA-SS Sarah Strong UConn®
+PDRA-TL Tamin Lipsey Iowa State™
+LET IT RAIN RELIC AUTOGRAPHS
+LRRA-AB Ace Bailey Rutgers
+LRRA-AC Audi Crooks Iowa State™
+LRRA-AM Aneesah Morrow LSU®
+LRRA-AN Asa Newell Georgia®
+LRRA-AS Aiden Sherrell Alabama®
+LRRA-BF Boogie Fland Arkansas®
+LRRA-CF Cooper Flagg Duke®
+LRRA-DH Dylan Harper Rutgers
+LRRA-FB Flory Bidunga Kansas®
+LRRA-HH Hannah Hidalgo Notre Dame®
+LRRA-JB Jalil Bethea Miami™
+LRRA-JW Juju Watkins USC
+LRRA-KI Kiki Iriafen USC
+LRRA-KJ Kam Jones Marquette®
+LRRA-KK Karter Knox Arkansas®
+LRRA-KM Khaman Maluach Duke®
+LRRA-MS Mark Sears Alabama®
+LRRA-PB Paige Bueckers UConn®
+LRRA-SC Sonia Citron Notre Dame®
+LRRA-SS Sarah Strong UConn®

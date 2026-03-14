@@ -1,0 +1,607 @@
+2024 Bowman University Best Football
+
+BASE CARDS
+1 Dillon Gabriel Oregon™
+2 Brady Cook Missouri
+3 Drew Allar Penn State®
+4 Carson Beck Georgia®
+5 Deion Burks The University of Oklahoma®
+6 Jackson Arnold The University of Oklahoma®
+7 Antonio Williams Clemson®
+8 Cameron Ward Miami™
+9 Dane Key Kentucky®
+10 Brayden Fowler-Nicolosi Colorado State®
+11 CJ Daniels LSU®
+12 Evan Stewart Oregon™
+13 Luke Lachey Iowa™
+14 Jalon Daniels Kansas®
+15 Benjamin Morrison Notre Dame®
+16 Ricardo Hallman Wisconsin®
+17 Jaydn Ott University of California™
+18 KJ Bolden Georgia®
+19 Kaidon Salter Liberty
+20 Logan Diggs Ole Miss®
+21 Luther Burden III Missouri
+22 Mason Taylor LSU®
+23 Germie Bernard Alabama®
+24 Nate Johnson Vanderbilt®
+25 Nic Anderson The University of Oklahoma®
+26 Nick Singleton Penn State®
+27 Oscar Delp Georgia®
+28 Quinten Joyner USC
+29 Riley Leonard Notre Dame®
+30 Tetairoa McMillan Arizona®
+31 Deone Walker Kentucky®
+32 Trevor Etienne Georgia®
+33 Will Campbell LSU®
+34 Tyler Van Dyke Wisconsin®
+35 Will Johnson Michigan®
+36 Xavier Watts Notre Dame®
+37 Mykel Williams Georgia®
+38 Phil Mafah Clemson®
+39 Blake Shapen Mississippi State®
+40 Jayden Maiava USC
+41 Ollie Gordon II Oklahoma State®
+42 Omarion Hampton UNC®
+43 Mikey Keene Fresno State®
+44 Damien Martinez Miami™
+45 Harold Perkins Jr. LSU®
+46 Cobee Bryant Kansas®
+47 Carnell Tate Ohio State®
+48 Matthew Golden Texas
+49 Devin Neal Kansas®
+50 Malaki Starks Georgia®
+51 Davison Igbinosun Ohio State®
+52 Kyron Drones Virginia Tech™
+53 Montrell Johnson Jr. Florida™
+54 Donovan Edwards Michigan®
+55 DJ Uiagalelei Florida State®
+56 Deontae Lawson Alabama®
+57 Tez Johnson Oregon™
+58 DJ Giddens Kansas State®
+59 Nic Scourton Texas A&M®
+60 Will Sheppard Colorado™
+61 Ty Thompson Tulane®
+62 CJ Baxter Texas
+63 TJ Finley Western Kentucky®
+64 Garrett Greene WVU®
+65 Xavier Restrepo Miami™
+66 Jamal Haynes Georgia Tech®
+67 Eugene Wilson III Florida™
+68 Will Howard Ohio State®
+69 Jaxson Dart Ole Miss®
+70 Squirrel White Tennessee®
+71 Cam Rising Utah®
+72 Byrum Brown USF®
+73 Isaiah Bond Texas
+74 Quinshon Judkins Ohio State®
+75 Dillon Thieneman Purdue™
+76 Aidan Chiles Michigan State®
+77 Dominic Lovett Georgia®
+78 Thomas Castellanos Boston College®
+79 Noah Fifita Arizona®
+80 Jordan James Oregon™
+81 Raheim Sanders South Carolina
+82 Ryan Williams Alabama®
+83 Taylen Green Arkansas®
+84 Rocco Becht Iowa State™
+85 Ashton Jeanty Boise State
+86 Ethan Burke Texas
+87 Will Rogers Washington®
+88 DJ Lagway Florida™
+89 Trey Moore Texas
+90 Nico Iamaleava Tennessee®
+91 Rueben Bain Jr. Miami™
+92 Garrett Nussmeier LSU®
+93 Cade Klubnik Clemson®
+94 Tory Horton Colorado State®
+95 Kris Mitchell Notre Dame®
+96 Josh Hoover TCU®
+97 Emeka Egbuka Ohio State®
+98 Malachi Nelson Boise State
+99 Gavin Sawchuk The University of Oklahoma®
+100 James Pearce Jr. Tennessee®
+INSERT
+ELEMENTS OF THE GAME
+EG-1 Luther Burden III Missouri
+EG-2 Trevor Etienne Georgia®
+EG-3 Ollie Gordon II Oklahoma State®
+EG-4 Omarion Hampton UNC®
+EG-5 Tetairoa McMillan Arizona®
+EG-6 Brady Cook Missouri
+EG-7 Jackson Arnold The University of Oklahoma®
+EG-8 CJ Baxter Texas
+EG-9 Eugene Wilson III Florida™
+EG-10 Thomas Castellanos Boston College®
+EG-11 Noah Fifita Arizona®
+EG-12 Jordan James Oregon™
+EG-13 Nico Iamaleava Tennessee®
+EG-14 Cam Rising Utah®
+EG-15 Aidan Chiles Michigan State®
+EG-16 DJ Uiagalelei Florida State®
+EG-17 Garrett Nussmeier LSU®
+EG-18 Riley Leonard Notre Dame®
+EG-19 Malachi Nelson Boise State®
+EG-20 Nate Johnson Vanderbilt®
+GUNSLINGERS AND BANDITS DIE CUTS
+GB-1 Benjamin Morrison Notre Dame®
+GB-2 Harold Perkins Jr. LSU®
+GB-3 Davison Igbinosun Ohio State®
+GB-4 Dillon Thieneman Purdue™
+GB-5 Cobee Bryant Kansas®
+GB-6 KJ Bolden Georgia®
+GB-7 Ricardo Hallman Wisconsin®
+GB-8 Cam Rising Utah®
+GB-9 DJ Uiagalelei Florida State®
+GB-10 Riley Leonard Notre Dame®
+GB-11 Brady Cook Missouri
+GB-12 Jackson Arnold The University of Oklahoma®
+GB-13 Xavier Watts Notre Dame®
+GB-14 Thomas Castellanos Boston College®
+GB-15 Noah Fifita Arizona®
+GB-16 Nico Iamaleava Tennessee®
+GB-17 Kaidon Salter Liberty
+GB-18 Garrett Nussmeier LSU®
+GB-19 Malachi Nelson Boise State®
+GB-20 Nate Johnson Vanderbilt®
+FIELD DAY
+FD-1 Carson Beck Georgia®
+FD-2 Jaxson Dart Ole Miss®
+FD-3 Kaidon Salter Liberty
+FD-4 Jackson Arnold The University of Oklahoma®
+FD-5 Drew Allar Penn State®
+FD-6 Luther Burden III Missouri
+FD-7 Nico Iamaleava Tennessee®
+FD-8 Garrett Nussmeier LSU®
+FD-9 Cade Klubnik Clemson®
+FD-10 Thomas Castellanos Boston College®
+FD-11 Noah Fifita Arizona®
+FD-12 Will Howard Ohio State®
+FD-13 Riley Leonard Notre Dame®
+FD-14 Tetairoa McMillan Arizona®
+FD-15 Ollie Gordon II Oklahoma State®
+FD-16 Brady Cook Missouri
+FD-17 Damien Martinez Miami™
+FD-18 Cam Rising Utah®
+FD-19 Eugene Wilson III Florida™
+FD-20 CJ Baxter Texas
+BOWMAN MASTERPIECES
+BM-1 Luther Burden III Missouri
+BM-2 Trevor Etienne Georgia®
+BM-3 Ollie Gordon II Oklahoma State®
+BM-4 Omarion Hampton UNC®
+BM-5 Harold Perkins Jr. LSU®
+BM-6 Brady Cook Missouri
+BM-7 Jackson Arnold The University of Oklahoma®
+BM-8 CJ Baxter Texas
+BM-9 Eugene Wilson III Florida™
+BM-10 Thomas Castellanos Boston College®
+BM-11 Noah Fifita Arizona®
+BM-12 Nico Iamaleava Tennessee®
+BM-13 Garrett Nussmeier LSU®
+BM-14 Cade Klubnik Clemson®
+BM-15 Riley Leonard Notre Dame®
+BM-16 Gavin Sawchuk The University of Oklahoma®
+BM-17 Tetairoa McMillan Arizona®
+BM-18 Kaidon Salter Liberty
+BM-19 Tez Johnson Oregon™
+BM-20 Nic Anderson The University of Oklahoma®
+MAKING THE GRADE
+MG-1 Carson Beck Georgia®
+MG-2 Jaxson Dart Ole Miss®
+MG-3 Emeka Egbuka Ohio State®
+MG-4 Riley Leonard Notre Dame®
+MG-5 Trevor Etienne Georgia®
+MG-6 Drew Allar Penn State®
+MG-7 Nico Iamaleava Tennessee®
+MG-8 Garrett Nussmeier LSU®
+MG-9 Oscar Delp Georgia®
+MG-10 Rocco Becht Iowa State™
+MG-11 Ollie Gordon II Oklahoma State®
+MG-12 Tetairoa McMillan Arizona®
+MG-13 Brady Cook Missouri
+MG-14 DJ Lagway Florida™
+MG-15 Thomas Castellanos Boston College®
+MG-16 Kaidon Salter Liberty
+MG-17 Jackson Arnold The University of Oklahoma®
+MG-18 Harold Perkins Jr. LSU®
+MG-19 Xavier Watts Notre Dame®
+MG-20 Trey Moore Texas
+LETS GO
+LG-1 Brady Cook Missouri
+LG-2 Nico Iamaleava Tennessee®
+LG-3 Garrett Nussmeier LSU®
+LG-4 Noah Fifita Arizona®
+LG-5 Kaidon Salter Liberty
+SHOCK AND AWE
+SA-1 Carson Beck Georgia®
+SA-2 Nico Iamaleava Tennessee®
+SA-3 DJ Lagway Florida®
+SA-4 Dillon Gabriel Oregon™
+SA-5 Brady Cook Missouri
+SA-6 Drew Allar Penn State®
+SA-7 Aidan Chiles Michigan State®
+SA-8 Riley Leonard Notre Dame®
+SA-9 Tetairoa McMillan Arizona®
+SA-10 Ollie Gordon II Oklahoma State®
+SA-11 Omarion Hampton UNC®
+SA-12 Damien Martinez Miami™
+SA-13 Harold Perkins Jr. LSU®
+SA-14 DJ Uiagalelei Florida State®
+SA-15 Thomas Castellanos Boston College®
+SA-16 Noah Fifita Arizona®
+SA-17 Rocco Becht Iowa State™
+SA-18 Ashton Jeanty Boise State
+SA-19 Garrett Nussmeier LSU®
+SA-20 Cade Klubnik Clemson®
+SA-21 Emeka Egbuka Ohio State®
+SA-22 Jaxson Dart Ole Miss®
+SA-23 Quinshon Judkins Ohio State®
+SA-24 Luther Burden III Missouri
+SA-25 Kaidon Salter Liberty
+MIRROR IMAGE FUSION
+MIF-1 Brady Cook Missouri
+MIF-1 Luther Burden III Missouri
+MIF-2 Tetairoa McMillan Arizona®
+MIF-2 Noah Fifita Arizona®
+MIF-3 Emeka Egbuka Ohio State
+MIF-3 Will Howard Ohio State
+MIF-4 Dillon Gabriel Oregon™
+MIF-4 Tez Johnson Oregon™
+MIF-5 CJ Daniels LSU®
+MIF-5 Garrett Nussmeier LSU®
+MIF-6 Nic Anderson The University of Oklahoma®
+MIF-6 Jackson Arnold The University of Oklahoma®
+MIF-7 Squirrel White Tennessee®
+MIF-7 Nico Iamaleava Tennessee®
+MIF-8 Ethan Burke Texas
+MIF-8 Trey Moore Texas
+MIF-9 Jordan James Oregon™
+MIF-9 Tez Johnson Oregon™
+MIF-10 Ashton Jeanty Boise State
+MIF-10 Malachi Nelson Boise State
+MIF-11 Garrett Nussimeier LSU®
+MIF-11 Nico Iamaleava Tennessee®
+MIF-12 Ollie Gordon II Oklahoma State®
+MIF-12 Gavin Sawchuk The University of Oklahoma®
+MIF-13 Tetairoa McMillan Arizona®
+MIF-13 Luther Burden III Missouri
+MIF-14 KJ Bolden Georgia®
+MIF-14 Malaki Starks Georgia®
+MIF-15 Riley Leonard Notre Dame®
+MIF-15 Kris Mitchell Notre Dame®
+MIF-16 Jackson Arnold The University of Oklahoma®
+MIF-16 Drew Allar Penn State®
+MIF-17 Kaleb Johnson Iowa®
+MIF-17 Leshon Williams Iowa®
+MIF-18 Quinten Joyner USC
+MIF-18 Jo'Quavious Marks USC
+MIF-19 Eugene Wilson III Florida™
+MIF-19 DJ Lagway Florida™
+MIF-20 Cade Klubnik Clemson®
+MIF-20 Antonio Williams Clemson®
+AUTOGRAPH
+BEST OF 2024 AUTOGRAPHS
+BOA-AC Aidan Chiles Michigan State®
+BOA-AJ Ashton Jeanty Boise State
+BOA-AW Antonio Williams Clemson®
+BOA-BB Byrum Brown USF®
+BOA-BC Brady Cook Missouri
+BOA-BF Brayden Fowler-Nicolosi Colorado State®
+BOA-BM Benjamin Morrison Notre Dame®
+BOA-BS Blake Shapen Mississippi State®
+BOA-CB CJ Baxter Texas
+BOA-CBE Carson Beck Georgia®
+BOA-CBR Cobee Bryant Kansas®
+BOA-CJD CJ Daniels LSU®
+BOA-CK Cade Klubnik Clemson®
+BOA-CR Cam Rising Utah®
+BOA-CT Carnell Tate Ohio State®
+BOA-CWA Cameron Ward Miami™
+BOA-DA Drew Allar Penn State®
+BOA-DE Donovan Edwards Michigan®
+BOA-DG Dillon Gabriel Oregon™
+BOA-DGI DJ Giddens Kansas State®
+BOA-DI Davison Igbinosun Ohio State®
+BOA-DK Dane Key Kentucky®
+BOA-DL DJ Lagway Florida™
+BOA-DLA Deontae Lawson Alabama®
+BOA-DLO Dominic Lovett Georgia®
+BOA-DM Damien Martinez Miami™
+BOA-DN Devin Neal Kansas®
+BOA-DT Dillon Thieneman Purdue™
+BOA-DU DJ Uiagalelei Florida State®
+BOA-EB Ethan Burke Texas
+BOA-EE Emeka Egbuka Ohio State®
+BOA-EST Evan Stewart Oregon™
+BOA-EW Eugene Wilson III Florida™
+BOA-GB Germie Bernard Alabama®
+BOA-GG Garrett Greene WVU®
+BOA-GN Garrett Nussmeier LSU®
+BOA-GS Gavin Sawchuk The University of Oklahoma®
+BOA-HP Harold Perkins Jr. LSU®
+BOA-IB Isaiah Bond Texas
+BOA-JA Jackson Arnold The University of Oklahoma®
+BOA-JD Jaxson Dart Ole Miss®
+BOA-JDA Jalon Daniels Kansas®
+BOA-JH Josh Hoover TCU®
+BOA-JHA Jamal Haynes Georgia Tech®
+BOA-JJ Jordan James Oregon™
+BOA-JMA Jayden Maiava USC
+BOA-JO Jaydn Ott University of California™
+BOA-JP James Pearce Jr. Tennessee®
+BOA-KB KJ Bolden Georgia®
+BOA-KD Kyron Drones Virginia Tech™
+BOA-KM Kris Mitchell Notre Dame®
+BOA-KS Kaidon Salter Liberty
+BOA-LB Luther Burden III Missouri
+BOA-LD Logan Diggs Ole Miss®
+BOA-LL Luke Lachey Iowa™
+BOA-MG Matthew Golden Texas
+BOA-MJ Montrell Johnson Jr. Florida™
+BOA-MK Mikey Keene Fresno State®
+BOA-MN Malachi Nelson Boise State
+BOA-MS Malaki Starks Georgia®
+BOA-MT Mason Taylor LSU®
+BOA-MW Mykel Williams Georgia®
+BOA-NA Nic Anderson The University of Oklahoma®
+BOA-NF Noah Fifita Arizona®
+BOA-NI Nico Iamaleava Tennessee®
+BOA-NJ Nate Johnson Vanderbilt®
+BOA-NS Nic Scourton Texas A&M®
+BOA-NSI Nick Singleton Penn State®
+BOA-OD Oscar Delp Georgia®
+BOA-OH Omarion Hampton UNC®
+BOA-PM Phil Mafah Clemson®
+BOA-QJ Quinshon Judkins Ohio State®
+BOA-QJO Quinten Joyner USC
+BOA-RB Rueben Bain Jr. Miami™
+BOA-RBE Rocco Becht Iowa State™
+BOA-RH Ricardo Hallman Wisconsin®
+BOA-RL Riley Leonard Notre Dame®
+BOA-RS Raheim Sanders South Carolina
+BOA-RW Ryan Williams Alabama®
+BOA-SW Squirrel White Tennessee®
+BOA-TC Thomas Castellanos Boston College®
+BOA-TE Trevor Etienne Georgia®
+BOA-TF TJ Finley Western Kentucky®
+BOA-TG Taylen Green Arkansas®
+BOA-TH Tory Horton Colorado State®
+BOA-TJ Tez Johnson Oregon™
+BOA-TM Trey Moore Texas
+BOA-TMC Tetairoa McMillan Arizona®
+BOA-TT Ty Thompson Tulane®
+BOA-TV Tyler Van Dyke Wisconsin®
+BOA-WC Will Campbell LSU®
+BOA-WH Will Howard Ohio State®
+BOA-WJ Will Johnson Michigan®
+BOA-WR Will Rogers Washington®
+BOA-WS Will Sheppard Colorado™
+BOA-XR Xavier Restrepo Miami™
+BOA-XW Xavier Watts Notre Dame®
+ELEMENTS OF THE GAME AUTOGRAPH VARIATION
+ETG-AC Aidan Chiles Michigan State®
+ETG-BC Brady Cook Missouri
+ETG-CB CJ Baxter Texas
+ETG-CR Cam Rising Utah®
+ETG-DU DJ Uiagalelei Florida State®
+ETG-EW Eugene Wilson III Florida™
+ETG-GN Garrett Nussmeier LSU®
+ETG-JA Jackson Arnold The University of Oklahoma®
+ETG-JJ Jordan James Oregon™
+ETG-LB Luther Burden III Missouri
+ETG-MN Malachi Nelson Boise State®
+ETG-NF Noah Fifita Arizona®
+ETG-NI Nico IAMALEAVA Tennessee®
+ETG-NJ Nate Johnson Vanderbilt®
+ETG-OH Omarion Hampton UNC®
+ETG-RL Riley Leonard Notre Dame®
+ETG-TC Thomas Castellanos Boston College®
+ETG-TE Trevor Etienne Georgia®
+ETG-TM Tetairoa McMillan Arizona®
+GUNSLINGERS AND BANDITS DIE CUT AUTOGRAPH VARIATION
+GB-BC Brady Cook Missouri
+GB-BM Benjamin Morrison Notre Dame®
+GB-CB Cobee Bryant Kansas®
+GB-CR Cam Rising Utah®
+GB-DI Davison Igbinosun Ohio State®
+GB-DT Dillon Thieneman Purdue™
+GB-DU DJ Uiagalelei Florida State®
+GB-GN Garrett Nussmeier LSU®
+GB-HP Harold Perkins Jr. LSU®
+GB-JA Jackson Arnold The University of Oklahoma®
+GB-KB KJ Bolden Georgia®
+GB-KS Kaidon Salter Liberty
+GB-MN Malachi Nelson Boise State®
+GB-NF Noah Fifita Arizona®
+GB-NI Nico Iamaleava Tennessee®
+GB-NJ Nate Johnson Vanderbilt®
+GB-RH Ricardo Hallman Wisconsin®
+GB-RL Riley Leonard Notre Dame®
+GB-TC Thomas Castellanos Boston College®
+GB-XW Xavier Watts Notre Dame®
+BOWMAN MASTERPIECES AUTOGRAPH VARIATION
+BMA-BC Brady Cook Missouri
+BMA-CB CJ Baxter Texas
+BMA-CK Cade Klubnik Clemson®
+BMA-EW Eugene Wilson III Florida™
+BMA-GN Garrett Nussmeier LSU®
+BMA-GS Gavin Sawchuk The University of Oklahoma®
+BMA-HP Harold Perkins Jr. LSU®
+BMA-JA Jackson Arnold The University of Oklahoma®
+BMA-KS Kaidon Salter Liberty
+BMA-LB Luther Burden III Missouri
+BMA-NAN Nic Anderson The University of Oklahoma®
+BMA-NF Noah Fifita Arizona®
+BMA-NI Nico Iamaleava Tennessee®
+BMA-OH Omarion Hampton UNC®
+BMA-RL Riley Leonard Notre Dame®
+BMA-TC Thomas Castellanos Boston College®
+BMA-TE Trevor Etienne Georgia®
+BMA-TJO Tez Johnson Oregon™
+BMA-TM Tetairoa McMillan Arizona®
+DUAL AUTOGRAPHS
+DA-ARI Tetairoa McMillan Arizona®
+DA-ARI Noah Fifita Arizona®
+DA-BOI Ashton Jeanty Boise State
+DA-BOI Malachi Nelson Boise State
+DA-GEO Carson Beck Georgia®
+DA-GEO Trevor Etienne Georgia®
+DA-IOW Kaleb Johnson Iowa™
+DA-IOW Leshon Williams Iowa™
+DA-LIB Quinton Cooley Liberty
+DA-LIB Kaidon Salter Liberty
+DA-LSU CJ Daniels LSU®
+DA-LSU Garrett Nussmeier LSU®
+DA-MIS Brady Cook Missouri
+DA-MIS Luther Burden III Missouri
+DA-ND Riley Leonard Notre Dame®
+DA-ND Kris Mitchell Notre Dame®
+DA-OHI Will Howard Ohio State®
+DA-OHI Emeka Egbuka Ohio State®
+DA-OLE Logan Diggs Ole Miss®
+DA-OLE Jaxson Dart Ole Miss®
+DA-ORE Dillon Gabriel Oregon™
+DA-ORE Tez Johnson Oregon™
+DA-OU Jackson Arnold The University of Oklahoma®
+DA-OU Nic Anderson The University of Oklahoma®
+DA-PSU Nick Singleton Penn State®
+DA-PSU Drew Allar Penn State®
+DA-TEN Squirrel White Tennessee®
+DA-TEN Nico Iamaleava Tennessee®
+DA-TEX Trey Moore Texas
+DA-TEX Ethan Burke Texas
+DA-USC Jo'Quavious Marks USC
+DA-USC Quinten Joyner USC
+DA-UTA Cam Rising Utah®
+DA-UTA Dorian Singer Utah®
+DA-VT Kyron Drones Virginia Tech™
+DA-VT Bhayshul Tuten Virginia Tech™
+DA-WVU Garrett Greene WVU®
+DA-WVU CJ Donaldson Jr. WVU®
+TRIPLE AUTOGRAPHS
+TA-ALA Austin Mack Alabama®
+TA-ALA Germie Bernard Alabama®
+TA-ALA Ryan Williams Alabama®
+TA-CLE Phil Mafah Clemson®
+TA-CLE Cade Klubnik Clemson®
+TA-CLE Antonio Williams Clemson®
+TA-FLO DJ Lagway Florida™
+TA-FLO Montrell Johnson Jr. Florida™
+TA-FLO Eugene Wilson III Florida™
+TA-GEO Dominic Lovett Georgia®
+TA-GEO Trevor Etienne Georgia®
+TA-GEO Carson Beck Georgia®
+TA-INT Ricardo Hallman Wisconsin™
+TA-INT Dillon Thieneman Purdue®
+TA-INT Xavier Watts Notre Dame®
+TA-IST Jaylin Noel Iowa State
+TA-IST Rocco Becht Iowa State
+TA-IST Jayden Higgins Iowa State
+TA-KU Jalon Daniels Kansas®
+TA-KU Devin Neal Kansas®
+TA-KU Lawrence Arnold Kansas®
+TA-LSU Garrett Nussmeier LSU®
+TA-LSU CJ Daniels LSU®
+TA-LSU Will Campbell LSU®
+TA-MIA Jacolby George Miami™
+TA-MIA Xavier Restrepo Miami™
+TA-MIA Cameron Ward Miami™
+TA-ND Kris Mitchell Notre Dame®
+TA-ND Jeremiyah Love Notre Dame®
+TA-ND Riley Leonard Notre Dame®
+TA-OHI Quinshon Judkins Ohio State®
+TA-OHI Emeka Egbuka Ohio State®
+TA-OHI Will Howard Ohio State®
+TA-ORE Tez Johnson Oregon™
+TA-ORE Jordan James Oregon™
+TA-ORE Dillon Gabriel Oregon™
+TA-OU Jackson Arnold The University of Oklahoma®
+TA-OU Gavin Sawchuk The University of Oklahoma®
+TA-OU Nic Anderson The University of Oklahoma®
+TA-QB1 Nico Iamaleava Tennessee®
+TA-QB1 Noah Fifita Arizona®
+TA-QB1 DJ Uiagalelei Florida State®
+TA-TEN Dylan Sampson Tennessee®
+TA-TEN Nico Iamaleava Tennessee®
+TA-TEN Squirrel White Tennessee®
+TA-TEX Andrew Mukuba Texas
+TA-TEX Ethan Burke Texas
+TA-TEX Trey Moore Texas
+TA-UGA Mykel Williams Georgia®
+TA-UGA Daylen Everette Georgia®
+TA-UGA Malaki Starks Georgia®
+TA-UT Matthew Golden Texas
+TA-UT Silas Bolden Texas
+TA-UT CJ Baxter Texas
+TA-WR1 Tetairoa McMillan Arizona®
+TA-WR1 Emeka Egbuka Ohio State®
+TA-WR1 Luther Burden III Missouri
+AUTOGRAPH RELIC
+PROSPECT JUMBO RELIC AUTOGRAPHS
+PJA-AC Aidan Chiles Michigan State®
+PJA-AJ Ashton Jeanty Boise State
+PJA-AO Alex Orji Michigan®
+PJA-BC Brady Cook Missouri
+PJA-CB CJ Baxter Texas
+PJA-CBE Carson Beck Georgia®
+PJA-CH Conner Harrell UNC®
+PJA-CK Cade Klubnik Clemson®
+PJA-CR Cam Rising Utah®
+PJA-CT Carnell Tate Ohio State®
+PJA-DA Drew Allar Penn State®
+PJA-DI Davison Igbinosun Ohio State®
+PJA-DT Dillon Thieneman Purdue™
+PJA-DU DJ Uiagalelei Florida State®
+PJA-EB Ethan Burke Texas
+PJA-EE Emeka Egbuka Ohio State®
+PJA-ES Eric Singleton Jr. Georgia Tech®
+PJA-EW Eugene Wilson III Florida™
+PJA-GG Garrett Greene WVU®
+PJA-GN Garrett Nussmeier LSU®
+PJA-GS Gavin Sawchuk The University of Oklahoma®
+PJA-HP Harold Perkins Jr. LSU®
+PJA-JA Jackson Arnold The University of Oklahoma®
+PJA-JD Jaxson Dart Ole Miss®
+PJA-JH Jamal Haynes Georgia Tech®
+PJA-JHO Josh Hoover TCU®
+PJA-JJ Jordan James Oregon™
+PJA-JP James Pearce Jr. Tennessee®
+PJA-KD Kyron Drones Virginia Tech™
+PJA-KM Kris Mitchell Notre Dame®
+PJA-KS Kaidon Salter Liberty
+PJA-LB Luther Burden III Missouri
+PJA-LL Luke Lachey Iowa™
+PJA-ME Mitchell Evans Notre Dame®
+PJA-MN Malachi Nelson Boise State
+PJA-MT Mason Taylor LSU®
+PJA-NA Nic Anderson The University of Oklahoma®
+PJA-NF Noah Fifita Arizona®
+PJA-NJ Nate Johnson Vanderbilt®
+PJA-OH Omarion Hampton UNC®
+PJA-RB Rocco Becht Iowa State™
+PJA-RL Riley Leonard Notre Dame®
+PJA-TC Thomas Castellanos Boston College®
+PJA-TE Trevor Etienne Georgia®
+PJA-TH Tory Horton Colorado State®
+PJA-TJ Tez Johnson Oregon™
+PJA-TT Ty Thompson Tulane®
+PJA-WC Will Campbell LSU®
+PJA-XW Xavier Watts Notre Dame®
+PACKAGING
+PACKAGING
+Carson Beck Georgia®
+Garrett Nussmeier LSU®
+SELL SHEET
+SELL SHEET
+Garrett Nussmeier LSU®
+Will Howard Ohio State
+Emeka Egbuka Ohio State
+Quinshon Judkins Ohio State
+Kaidon Salter Liberty
+Jaxson Dart Ole Miss®
+Brady Cook Missouri
+Noah Fifita Arizona®
+Carson Beck Georgia®
+Jackson Arnold The University of Oklahoma®
+Nico Iamaleava Tennessee®

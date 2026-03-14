@@ -1,0 +1,1542 @@
+player,card_number,set_name,year,sport,team,category,insert_name,is_rookie
+Aaron Judge,1,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Base,,False
+Trea Turner,1,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Base,,False
+Kyle Schwarber,2,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Base,,False
+Cal Raleigh,2,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Base,,False
+Kyle Schwarber,3,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Base,,False
+Cal Raleigh,3,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Base,,False
+Oneil Cruz,4,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Base,,False
+José Caballero,4,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Base,,False
+Freddy Peralta,5,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Base,,False
+Max Fried,5,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Base,,False
+Logan Webb,6,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Base,,False
+Garrett Crochet,6,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Base,,False
+Paul Skenes,7,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Base,,False
+Tarik Skubal,7,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Base,,False
+Robert Suarez,8,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Base,,False
+Carlos Estevéz,8,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Base,,False
+Cal Raleigh,231,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Base,,False
+Pete Alonso,232,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Base,,False
+Elly De La Cruz,233,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Base,,False
+Riley Greene,234,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Base,,False
+Toronto Blue Jays,276,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Base,,False
+Los Angeles Dodgers,277,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,False
+Los Angeles Dodgers,311,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,False
+Toronto Blue Jays,312,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Base,,False
+Los Angeles Dodgers,313,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,False
+Miguel Cabrera,333,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Base,,False
+Carlos Beltrán,334,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Base,,False
+Derek Jeter,335,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Base,,False
+Mike Piazza,336,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Base,,False
+Ichiro,337,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Base,,False
+Philip Abner,372,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Base,,True
+Eduarniel Núñez,372,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Base,,True
+Didier Fuentes,372,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Base,,True
+Jonathan Pintaro,372,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Base,,True
+Nathan Church,373,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Base,,True
+Troy Johnston,373,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Base,,True
+Jacob Melton,373,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Base,,True
+Carlos Cortes,373,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Base,,True
+Cam Devanney,374,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Base,,True
+Chad Stevens,374,2026 Topps Heritage Baseball,2026,Baseball,Angels,Base,,True
+Brice Matthews,374,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Base,,True
+Ryan Ritter,374,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Base,,True
+Zachary Maxwell,375,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Base,,True
+Dylan Smith,375,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Base,,True
+Paul Gervase,375,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,True
+Jack Perkins,375,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Base,,True
+Will Banfield,376,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Base,,True
+C.J. Stubbs,376,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Base,,True
+Jimmy Crooks,376,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Base,,True
+Rafael Flores,376,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Base,,True
+Cody Freeman,377,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Base,,True
+Otto Kemp,377,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Base,,True
+Jeremiah Jackson,377,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Base,,True
+Bob Seymour,377,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Base,,True
+Andry Lara,378,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Base,,True
+Wikelman González,378,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Base,,True
+Juan Burgos,378,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Base,,True
+Jacob Palisch,378,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Base,,True
+George Valera,379,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Base,,True
+Will Robertson,379,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Base,,True
+Colby Thomas,379,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Base,,True
+Tristin English,379,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Base,,True
+Dugan Darnell,387,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Base,,True
+Nick Raquet,387,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Base,,True
+Troy Melton,387,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Base,,True
+Jack Little,387,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,True
+Justin Dean,388,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,True
+Tristan Peters,388,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Base,,True
+Kenedy Corona,388,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Base,,True
+Drew Gilbert,388,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Base,,True
+Alan Rangel,389,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Base,,True
+Elvis Alvarado,389,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Base,,True
+Carson Seymour,389,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Base,,True
+Joe Rock,389,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Base,,True
+Denzer Guzman,390,2026 Topps Heritage Baseball,2026,Baseball,Angels,Base,,True
+Maximo Acosta,390,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Base,,True
+Alex Freeland,390,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,True
+Colson Montgomery,390,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Base,,True
+Taylor Rashi,391,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Base,,True
+Shinnosuke Ogasawara,391,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Base,,True
+Luinder Avila,391,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Base,,True
+PJ Poulin,391,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Base,,True
+Zach Cole,392,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Base,,True
+Jakob Marsee,392,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Base,,True
+Yanquiel Fernández,392,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Base,,True
+Petey Halpin,392,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Base,,True
+Mitch Farris,393,2026 Topps Heritage Baseball,2026,Baseball,Angels,Base,,True
+Andrew Alvarez,393,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Base,,True
+Joel Peguero,393,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Base,,True
+Kyle Backhus,393,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Base,,True
+Jack Winkler,394,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Base,,True
+Warming Bernabel,394,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Base,,True
+Kyle Karros,394,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Base,,True
+César Prieto,394,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Base,,True
+Josh Hader,9,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Base,,False
+Aaron Judge,10,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Base,,False
+Jose Altuve,11,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Base,,False
+Mookie Betts,12,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,False
+Agustín Ramírez,13,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Base,,False
+Jhoan Duran,14,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Base,,False
+Jarren Duran,15,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Base,,False
+Kyle Bradish,16,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Base,,False
+Jacob Wilson,17,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Base,,False
+Eury Pérez,18,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Base,,False
+Brett Baty,19,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Base,,False
+Jonathan Aranda,20,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Base,,False
+Ernie Clement,21,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Base,,False
+Kris Bryant,22,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Base,,False
+Garrett Crochet,23,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Base,,False
+Luis Castillo,24,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Base,,False
+Yordan Alvarez,25,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Base,,False
+Jaden Hill,26,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Base,,False
+Casey Schmitt,27,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Base,,False
+Nico Hoerner,28,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Base,,False
+Eugenio Suárez,29,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Base,,False
+Connor Norby,30,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Base,,False
+Andrew Abbott,31,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Base,,False
+Andre Granillo,32,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Base,,True
+Paul Skenes,33,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Base,,False
+Ryan Pepiot,34,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Base,,False
+Yoán Moncada,35,2026 Topps Heritage Baseball,2026,Baseball,Angels,Base,,False
+Edwin Díaz,36,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,False
+Jorge Soler,37,2026 Topps Heritage Baseball,2026,Baseball,Angels,Base,,False
+Taj Bradley,38,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Base,,False
+Roki Sasaki,39,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,False
+Nathan Eovaldi,40,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Base,,False
+Spencer Strider,41,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Base,,False
+Jo Adell,42,2026 Topps Heritage Baseball,2026,Baseball,Angels,Base,,False
+Luis García Jr.,43,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Base,,False
+Austin Martin,44,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Base,,False
+Michael A. Taylor,45,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Base,,False
+Vladimir Guerrero Jr.,46,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Base,,False
+Yandy Díaz,47,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Base,,False
+Dylan Beavers,48,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Base,,True
+Coby Mayo,49,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Base,,False
+Robert Hassell III,50,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Base,,False
+Jurickson Profar,51,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Base,,False
+José Ramírez,52,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Base,,False
+Hunter Greene,53,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Base,,False
+Jeff McNeil,54,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Base,,False
+Ronald Acuña Jr.,55,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Base,,False
+José Berríos,56,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Base,,False
+Patrick Bailey,57,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Base,,False
+Chandler Simpson,58,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Base,,False
+Harry Ford,59,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Base,,True
+Brooks Lee,60,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Base,,False
+Miguel Vargas,61,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Base,,False
+Rafael Devers,62,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Base,,False
+Mike Yastrzemski,63,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Base,,False
+Mitch Keller,64,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Base,,False
+Mason Miller,65,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Base,,False
+Darell Hernaiz,66,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Base,,False
+Luis Morales,67,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Base,,True
+Cade Cavalli,68,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Base,,False
+Cam Smith,69,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Base,,False
+Elly De La Cruz,70,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Base,,True
+Reese Olson,71,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Base,,False
+Bryce Harper,72,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Base,,False
+Dillon Dingler,73,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Base,,False
+Tanner Bibee,74,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Base,,True
+Dane Myers,75,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Base,,False
+Sandy Alcantara,76,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Base,,False
+Mark Vientos,77,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Base,,False
+Noah Cameron,78,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Base,,False
+Carson Whisenhunt,79,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Base,,True
+Austin Hays,80,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Base,,False
+Alec Bohm,81,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Base,,False
+Logan Webb,82,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Base,,False
+Bradley Blalock,83,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Base,,False
+Maikel Garcia,84,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Base,,False
+Royce Lewis,85,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Base,,False
+Roman Anthony,86,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Base,,True
+Slade Cecconi,87,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Base,,False
+Owen Caissie,88,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Base,,True
+Ramón Laureano,89,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Base,,False
+Mike Tauchman,90,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Base,,False
+Chase Dollander,91,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Base,,False
+Kyle Freeland,92,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Base,,False
+Teoscar Hernández,93,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,False
+Lawrence Butler,94,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Base,,False
+Brendan Donovan,95,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Base,,False
+Mike Burrows,96,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Base,,False
+Dansby Swanson,97,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Base,,False
+Jacob deGrom,98,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Base,,False
+Bryan Woo,99,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Base,,False
+Noelvi Marte,100,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Base,,False
+Tyler Soderstrom,101,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Base,,False
+Isaac Collins,102,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Base,,False
+Brent Rooker,103,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Base,,False
+Jasson Domínguez,104,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Base,,False
+Max Muncy,105,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Base,,False
+Spencer Torkelson,106,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Base,,False
+Javier Báez,107,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Base,,False
+George Springer,108,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Base,,False
+Caleb Durbin,109,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Base,,False
+Cristopher Sánchez,110,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Base,,False
+Robbie Ray,111,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Base,,False
+Jhostynxon Garcia,112,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Base,,True
+Cole Ragans,113,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Base,,False
+Matt Chapman,114,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Base,,False
+Jack Dreyer,115,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,False
+Luke Keaschall,116,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Base,,False
+Nolan Schanuel,117,2026 Topps Heritage Baseball,2026,Baseball,Angels,Base,,False
+Brandon Sproat,118,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Base,,True
+Brandon Nimmo,119,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Base,,False
+Yu Darvish,120,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Base,,False
+Caden Dana,121,2026 Topps Heritage Baseball,2026,Baseball,Angels,Base,,False
+Bo Bichette,122,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Base,,False
+Luis Gil,123,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Base,,False
+Daylen Lile,124,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Base,,False
+Ha-Seong Kim,125,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Base,,False
+Brandon Pfaadt,126,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Base,,False
+Gavin Sheets,127,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Base,,False
+Anthony Seigler,128,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Base,,True
+Josh Naylor,129,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Base,,False
+Max Fried,130,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Base,,False
+Ryan Mountcastle,131,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Base,,False
+Luisangel Acuña,132,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Base,,False
+Kyle Manzardo,133,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Base,,False
+Braxton Ashcraft,134,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Base,,False
+Jorge Polanco,135,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Base,,False
+Jac Caglianone,136,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Base,,True
+Jonah Tong,137,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Base,,True
+Tyler Stephenson,138,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Base,,False
+Steven Kwan,139,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Base,,False
+Victor Robles,140,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Base,,False
+Jared Jones,141,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Base,,False
+Cole Young,142,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Base,,True
+Manny Machado,143,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Base,,False
+Jacob Misiorowski,144,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Base,,True
+Hurston Waldrep,145,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Base,,False
+Francisco Lindor,146,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Base,,False
+Jordan Beck,147,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Base,,False
+Bradgley Rodríguez,148,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Base,,True
+Luis Rengifo,149,2026 Topps Heritage Baseball,2026,Baseball,Angels,Base,,False
+Nolan McLean,150,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Base,,True
+Ke'Bryan Hayes,151,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Base,,False
+Riley Greene,152,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Base,,False
+Brady House,153,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Base,,True
+Carlos Correa,154,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Base,,False
+Cole Wilcox,155,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Base,,True
+Willson Contreras,156,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Base,,False
+Kevin Alcántara,157,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Base,,False
+Max Muncy,158,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,False
+Kyle Schwarber,159,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Base,,False
+Bobby Witt Jr.,160,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Base,,False
+Carson Williams,161,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Base,,True
+Sonny Gray,162,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Base,,False
+Mike Trout,163,2026 Topps Heritage Baseball,2026,Baseball,Angels,Base,,False
+Jackson Jobe,164,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Base,,False
+Alec Burleson,165,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Base,,False
+Luis Robert Jr.,166,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Base,,False
+Yusei Kikuchi,167,2026 Topps Heritage Baseball,2026,Baseball,Angels,Base,,False
+Jesús Luzardo,168,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Base,,False
+Edward Cabrera,169,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Base,,False
+Hunter Brown,170,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Base,,False
+Jung Hoo Lee,171,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Base,,False
+Jordan Lawlar,172,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Base,,False
+Bryan Reynolds,173,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Base,,False
+Robert Suarez,174,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Base,,False
+Samuel Basallo,175,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Base,,True
+Jesús Sánchez,176,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Base,,False
+Angel Martínez,177,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Base,,False
+Emmet Sheehan,178,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,False
+Ezequiel Tovar,179,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Base,,False
+Adley Rutschman,180,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Base,,False
+Ian Seymour,181,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Base,,True
+Kyle Teel,182,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Base,,True
+Trea Turner,183,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Base,,False
+Jordan Westburg,184,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Base,,False
+Ronel Blanco,185,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Base,,False
+Zack Gelof,186,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Base,,False
+Kyle Tucker,187,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Base,,False
+Zach Neto,188,2026 Topps Heritage Baseball,2026,Baseball,Angels,Base,,False
+Ben Rice,189,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Base,,False
+Clayton Kershaw,190,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,False
+Josh Jung,191,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Base,,False
+Seth Lugo,192,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Base,,False
+Matt Strahm,193,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Base,,False
+Matt Olson,194,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Base,,False
+Sal Frelick,195,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Base,,False
+Jazz Chisholm Jr.,196,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Base,,False
+Jhonkensy Noel,197,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Base,,False
+Lars Nootbaar,198,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Base,,False
+Carter Jensen,199,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Base,,True
+Simeon Woods Richardson,200,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Base,,False
+Keibert Ruiz,201,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Base,,False
+Shota Imanaga,202,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Base,,False
+Trey Sweeney,203,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Base,,False
+Jack Flaherty,204,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Base,,True
+Christian Montes De Oca,205,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Base,,True
+Luis Severino,206,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Base,,False
+David Bednar,207,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Base,,False
+Parker Meadows,208,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Base,,False
+Drake Baldwin,209,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Base,,False
+Shane Bieber,210,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Base,,False
+Andrew Hoffman,211,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Base,,True
+Chase Burns,212,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Base,,True
+Starling Marte,213,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Base,,False
+William Contreras,214,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Base,,False
+Ryan O'Hearn,215,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Base,,False
+Geraldo Perdomo,216,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Base,,False
+Christian Walker,217,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Base,,False
+Jackson Holliday,218,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Base,,False
+Yainer Diaz,219,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Base,,False
+Ketel Marte,220,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Base,,False
+Sal Stewart,221,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Base,,True
+Cam Schlittler,222,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Base,,True
+Daulton Varsho,223,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Base,,False
+Davis Schneider,224,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Base,,False
+Dominic Smith,225,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Base,,False
+Ryan Jeffers,226,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Base,,False
+Jake Mangum,227,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Base,,False
+Connelly Early,228,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Base,,True
+Kenley Jansen,229,2026 Topps Heritage Baseball,2026,Baseball,Angels,Base,,False
+Thomas Saggese,230,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Base,,False
+Andy Pages,235,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,False
+JJ Bleday,236,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Base,,False
+Trevor Rogers,237,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Base,,False
+Corbin Burnes,238,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Base,,False
+Edgar Quero,239,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Base,,False
+Julio Rodríguez,240,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Base,,False
+Seiya Suzuki,241,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Base,,False
+Parker Messick,242,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Base,,True
+Gleyber Torres,243,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Base,,False
+Evan Carter,244,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Base,,False
+Trey Yesavage,245,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Base,,True
+Dalton Rushing,246,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,False
+Moisés Ballesteros,247,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Base,,False
+Carlos Narváez,248,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Base,,False
+Christian Moore,249,2026 Topps Heritage Baseball,2026,Baseball,Angels,Base,,True
+Giancarlo Stanton,250,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Base,,False
+Joey Cantillo,251,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Base,,False
+Matt McLain,252,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Base,,False
+Byron Buxton,253,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Base,,False
+Zac Gallen,254,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Base,,False
+Joe Ryan,255,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Base,,False
+Bo Naylor,256,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Base,,False
+Victor Mesa Jr.,257,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Base,,False
+Taylor Ward,258,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Base,,False
+Miguel Andujar,259,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Base,,False
+Dylan Cease,260,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Base,,False
+Pete Crow-Armstrong,261,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Base,,False
+Adam Frazier,262,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Base,,False
+Justin Martinez,263,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Base,,False
+Ozzie Albies,264,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Base,,False
+Bubba Chandler,265,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Base,,True
+Spencer Horwitz,266,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Base,,False
+Jorge Mateo,267,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Base,,False
+Hyeseong Kim,268,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,False
+Cal Raleigh,269,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Base,,False
+Andrew McCutchen,270,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Base,,False
+Austin Riley,271,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Base,,False
+Jackson Chourio,272,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Base,,False
+Sean Murphy,273,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Base,,False
+Brooks Baldwin,274,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Base,,False
+Nick Kurtz,275,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Base,,False
+Chris Sale,278,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Base,,False
+Jacob Young,279,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Base,,False
+Trevor Larnach,280,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Base,,False
+Tarik Skubal,281,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Base,,False
+Will Smith,282,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,False
+Jeremy Peña,283,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Base,,False
+Cedric Mullins,284,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Base,,False
+Lane Thomas,285,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Base,,False
+Randy Arozarena,286,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Base,,False
+Gunnar Henderson,287,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Base,,False
+Eduardo Rodriguez,288,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Base,,False
+J.P. Crawford,289,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Base,,False
+Shohei Ohtani,290,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,False
+Freddy Peralta,291,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Base,,False
+Mick Abel,292,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Base,,False
+Luis Arraez,293,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Base,,False
+MacKenzie Gore,294,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Base,,False
+James Wood,295,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Base,,False
+TJ Friedl,296,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Base,,False
+Anthony Volpe,297,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Base,,False
+Chase Meidroth,298,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Base,,False
+Matt Shaw,299,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Base,,False
+Orion Kerkering,300,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Base,,False
+Josh Smith,301,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Base,,False
+Corey Seager,302,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Base,,False
+Curtis Mead,303,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Base,,False
+Jack Leiter,304,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Base,,False
+Michael Busch,305,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Base,,False
+Juan Soto,306,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Base,,False
+Ryan Weathers,307,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Base,,False
+Oneil Cruz,308,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Base,,False
+Andrew Vaughn,309,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Base,,False
+Bryce Eldridge,310,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Base,,True
+Carlos Estévez,314,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Base,,False
+Robinson Piña,315,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Base,,True
+Merrill Kelly,316,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Base,,False
+Kodai Senga,317,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Base,,False
+Victor Scott II,318,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Base,,False
+Matt Wallner,319,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Base,,False
+Salvador Perez,320,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Base,,False
+Kody Clemens,321,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Base,,False
+Fernando Tatis Jr.,322,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Base,,False
+Heriberto Hernández,323,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Base,,True
+Denzel Clarke,324,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Base,,False
+Brice Turang,325,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Base,,False
+Carson Kelly,326,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Base,,False
+Willy Adames,327,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Base,,False
+José Caballero,328,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Base,,False
+Grant Taylor,329,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Base,,True
+Cristian Javier,330,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Base,,False
+Rhys Hoskins,331,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Base,,False
+Christian Yelich,332,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Base,,False
+Colton Cowser,338,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Base,,False
+Lenyn Sosa,339,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Base,,False
+Wyatt Langford,340,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Base,,False
+Alejandro Kirk,341,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Base,,False
+Michael Harris II,342,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Base,,False
+Kerry Carpenter,343,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Base,,False
+David Hamilton,344,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Base,,False
+Otto Lopez,345,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Base,,False
+Hunter Goodman,346,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Base,,False
+Danny Jansen,347,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Base,,False
+Shane Baz,348,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Base,,False
+CJ Abrams,349,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Base,,False
+Freddie Freeman,350,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,False
+Jackson Merrill,351,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Base,,False
+Gavin Lux,352,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Base,,False
+Shane Smith,353,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Base,,False
+Joey Loperfido,354,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Base,,False
+Brenton Doyle,355,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Base,,False
+Marcelo Mayer,356,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Base,,False
+Harrison Bader,357,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Base,,False
+Masyn Winn,358,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Base,,False
+Aroldis Chapman,359,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Base,,True
+Owen Caissie,360,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Base,,True
+Gabriel Moreno,361,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Base,,False
+Wilyer Abreu,362,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Base,,False
+Nick Castellanos,363,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Base,,False
+C.J. Kayfus,364,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Base,,True
+Kyle Isbel,365,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Base,,False
+Marcus Semien,366,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Base,,False
+Kristian Campbell,367,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Base,,False
+Brayan Rocchio,368,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Base,,False
+Brandon Lowe,369,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Base,,False
+Addison Barger,370,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Base,,False
+Yoshinobu Yamamoto,371,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Base,,False
+Junior Caminero,380,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Base,,False
+Ryan McMahon,381,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Base,,False
+Bryson Stott,382,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Base,,False
+Corbin Carroll,383,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Base,,False
+Adolis García,384,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Base,,False
+Carlos Rodón,385,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Base,,False
+Payton Tolle,386,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Base,,True
+Kyle Stowers,395,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Base,,False
+Cade Horton,396,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Base,,False
+Ceddanne Rafaela,397,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Base,,False
+Zach McKinstry,398,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Base,,False
+Jordan Walker,399,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Base,,False
+Mickey Moniak,400,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Base,,False
+Josh Hader,9,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,Chrome Variation,False
+Aaron Judge,10,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Chrome Variation,False
+Jose Altuve,11,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,Chrome Variation,False
+Mookie Betts,12,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Chrome Variation,False
+Agustín Ramírez,13,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Insert,Chrome Variation,False
+Jhoan Duran,14,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Chrome Variation,False
+Jarren Duran,15,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,Chrome Variation,False
+Kyle Bradish,16,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Chrome Variation,False
+Jacob Wilson,17,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,Chrome Variation,False
+Eury Pérez,18,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Insert,Chrome Variation,False
+Brett Baty,19,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Chrome Variation,False
+Jonathan Aranda,20,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Chrome Variation,False
+Ernie Clement,21,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,Chrome Variation,False
+Kris Bryant,22,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Insert,Chrome Variation,False
+Garrett Crochet,23,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,Chrome Variation,False
+Luis Castillo,24,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Chrome Variation,False
+Yordan Alvarez,25,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,Chrome Variation,False
+Jaden Hill,26,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Insert,Chrome Variation,False
+Casey Schmitt,27,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,Chrome Variation,False
+Nico Hoerner,28,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Chrome Variation,False
+Eugenio Suárez,29,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Chrome Variation,False
+Connor Norby,30,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Insert,Chrome Variation,False
+Andrew Abbott,31,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Chrome Variation,False
+Andre Granillo,32,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Insert,Chrome Variation,True
+Paul Skenes,33,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,Chrome Variation,False
+Ryan Pepiot,34,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Chrome Variation,False
+Yoán Moncada,35,2026 Topps Heritage Baseball,2026,Baseball,Angels,Insert,Chrome Variation,False
+Edwin Díaz,36,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Chrome Variation,False
+Jorge Soler,37,2026 Topps Heritage Baseball,2026,Baseball,Angels,Insert,Chrome Variation,False
+Taj Bradley,38,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Insert,Chrome Variation,False
+Roki Sasaki,39,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Chrome Variation,False
+Nathan Eovaldi,40,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Insert,Chrome Variation,False
+Spencer Strider,41,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Insert,Chrome Variation,False
+Jo Adell,42,2026 Topps Heritage Baseball,2026,Baseball,Angels,Insert,Chrome Variation,False
+Luis García Jr.,43,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,Chrome Variation,False
+Austin Martin,44,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Insert,Chrome Variation,False
+Michael A. Taylor,45,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Insert,Chrome Variation,False
+Vladimir Guerrero Jr.,46,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,Chrome Variation,False
+Yandy Díaz,47,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Chrome Variation,False
+Dylan Beavers,48,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Chrome Variation,True
+Coby Mayo,49,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Chrome Variation,False
+Robert Hassell III,50,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,Chrome Variation,False
+Jurickson Profar,51,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Insert,Chrome Variation,False
+José Ramírez,52,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Insert,Chrome Variation,False
+Hunter Greene,53,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Chrome Variation,False
+Jeff McNeil,54,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Chrome Variation,False
+Ronald Acuña Jr.,55,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Insert,Chrome Variation,False
+José Berríos,56,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,Chrome Variation,False
+Patrick Bailey,57,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,Chrome Variation,False
+Chandler Simpson,58,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Chrome Variation,False
+Harry Ford,59,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Chrome Variation,True
+Brooks Lee,60,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Insert,Chrome Variation,False
+Miguel Vargas,61,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Insert,Chrome Variation,False
+Rafael Devers,62,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,Chrome Variation,False
+Mike Yastrzemski,63,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Chrome Variation,False
+Mitch Keller,64,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,Chrome Variation,False
+Mason Miller,65,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,Chrome Variation,False
+Darell Hernaiz,66,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,Chrome Variation,False
+Luis Morales,67,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,Chrome Variation,True
+Cade Cavalli,68,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,Chrome Variation,False
+Cam Smith,69,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,Chrome Variation,False
+Elly De La Cruz,70,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Chrome Variation,True
+Reese Olson,71,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,Chrome Variation,False
+Bryce Harper,72,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Chrome Variation,False
+Dillon Dingler,73,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,Chrome Variation,False
+Tanner Bibee,74,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Insert,Chrome Variation,True
+Dane Myers,75,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Insert,Chrome Variation,False
+Sandy Alcantara,76,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Insert,Chrome Variation,False
+Mark Vientos,77,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Chrome Variation,False
+Noah Cameron,78,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Chrome Variation,False
+Carson Whisenhunt,79,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,Chrome Variation,True
+Austin Hays,80,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Chrome Variation,False
+Alec Bohm,81,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Chrome Variation,False
+Logan Webb,82,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,Chrome Variation,False
+Bradley Blalock,83,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Insert,Chrome Variation,False
+Maikel Garcia,84,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Chrome Variation,False
+Royce Lewis,85,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Insert,Chrome Variation,False
+Roman Anthony,86,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,Chrome Variation,True
+Slade Cecconi,87,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Insert,Chrome Variation,False
+Owen Caissie,88,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Chrome Variation,True
+Ramón Laureano,89,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,Chrome Variation,False
+Mike Tauchman,90,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Insert,Chrome Variation,False
+Chase Dollander,91,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Insert,Chrome Variation,False
+Kyle Freeland,92,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Insert,Chrome Variation,False
+Teoscar Hernández,93,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Chrome Variation,False
+Lawrence Butler,94,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,Chrome Variation,False
+Brendan Donovan,95,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Insert,Chrome Variation,False
+Mike Burrows,96,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,Chrome Variation,False
+Dansby Swanson,97,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Chrome Variation,False
+Jacob deGrom,98,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Insert,Chrome Variation,False
+Bryan Woo,99,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Chrome Variation,False
+Noelvi Marte,100,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Chrome Variation,False
+Tyler Soderstrom,101,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,Chrome Variation,False
+Isaac Collins,102,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Insert,Chrome Variation,False
+Brent Rooker,103,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,Chrome Variation,False
+Jasson Domínguez,104,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Chrome Variation,False
+Max Muncy,105,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,Chrome Variation,False
+Spencer Torkelson,106,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,Chrome Variation,False
+Javier Báez,107,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,Chrome Variation,False
+George Springer,108,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,Chrome Variation,False
+Caleb Durbin,109,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Insert,Chrome Variation,False
+Cristopher Sánchez,110,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Chrome Variation,False
+Robbie Ray,111,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,Chrome Variation,False
+Jhostynxon Garcia,112,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,Chrome Variation,True
+Cole Ragans,113,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Chrome Variation,False
+Matt Chapman,114,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,Chrome Variation,False
+Jack Dreyer,115,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Chrome Variation,False
+Luke Keaschall,116,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Insert,Chrome Variation,False
+Nolan Schanuel,117,2026 Topps Heritage Baseball,2026,Baseball,Angels,Insert,Chrome Variation,False
+Brandon Sproat,118,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Chrome Variation,True
+Brandon Nimmo,119,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Insert,Chrome Variation,False
+Yu Darvish,120,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,Chrome Variation,False
+Caden Dana,121,2026 Topps Heritage Baseball,2026,Baseball,Angels,Insert,Chrome Variation,False
+Bo Bichette,122,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,Chrome Variation,False
+Luis Gil,123,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Chrome Variation,False
+Daylen Lile,124,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,Chrome Variation,False
+Ha-Seong Kim,125,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Insert,Chrome Variation,False
+Brandon Pfaadt,126,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,Chrome Variation,False
+Gavin Sheets,127,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,Chrome Variation,False
+Anthony Seigler,128,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Insert,Chrome Variation,True
+Josh Naylor,129,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Chrome Variation,False
+Max Fried,130,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Chrome Variation,False
+Ryan Mountcastle,131,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Chrome Variation,False
+Luisangel Acuña,132,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Chrome Variation,False
+Kyle Manzardo,133,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Insert,Chrome Variation,False
+Braxton Ashcraft,134,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,Chrome Variation,False
+Jorge Polanco,135,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Chrome Variation,False
+Jac Caglianone,136,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Chrome Variation,True
+Jonah Tong,137,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Chrome Variation,True
+Tyler Stephenson,138,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Chrome Variation,False
+Steven Kwan,139,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Insert,Chrome Variation,False
+Victor Robles,140,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Chrome Variation,False
+Jared Jones,141,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,Chrome Variation,False
+Cole Young,142,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Chrome Variation,True
+Manny Machado,143,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,Chrome Variation,False
+Jacob Misiorowski,144,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Insert,Chrome Variation,True
+Hurston Waldrep,145,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Insert,Chrome Variation,False
+Francisco Lindor,146,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Chrome Variation,False
+Jordan Beck,147,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Insert,Chrome Variation,False
+Bradgley Rodríguez,148,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,Chrome Variation,True
+Luis Rengifo,149,2026 Topps Heritage Baseball,2026,Baseball,Angels,Insert,Chrome Variation,False
+Nolan McLean,150,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Chrome Variation,True
+Ke'Bryan Hayes,151,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Chrome Variation,False
+Riley Greene,152,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,Chrome Variation,False
+Brady House,153,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,Chrome Variation,True
+Carlos Correa,154,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,Chrome Variation,False
+Cole Wilcox,155,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Chrome Variation,True
+Willson Contreras,156,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Insert,Chrome Variation,False
+Kevin Alcántara,157,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Chrome Variation,False
+Max Muncy,158,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Chrome Variation,False
+Kyle Schwarber,159,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Chrome Variation,False
+Bobby Witt Jr.,160,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Chrome Variation,False
+Carson Williams,161,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Chrome Variation,True
+Sonny Gray,162,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,Chrome Variation,False
+Mike Trout,163,2026 Topps Heritage Baseball,2026,Baseball,Angels,Insert,Chrome Variation,False
+Jackson Jobe,164,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,Chrome Variation,False
+Alec Burleson,165,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Insert,Chrome Variation,False
+Luis Robert Jr.,166,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Insert,Chrome Variation,False
+Yusei Kikuchi,167,2026 Topps Heritage Baseball,2026,Baseball,Angels,Insert,Chrome Variation,False
+Jesús Luzardo,168,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Chrome Variation,False
+Edward Cabrera,169,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Insert,Chrome Variation,False
+Hunter Brown,170,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,Chrome Variation,False
+Jung Hoo Lee,171,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,Chrome Variation,False
+Jordan Lawlar,172,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,Chrome Variation,False
+Bryan Reynolds,173,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,Chrome Variation,False
+Robert Suarez,174,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,Chrome Variation,False
+Samuel Basallo,175,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Chrome Variation,True
+Jesús Sánchez,176,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,Chrome Variation,False
+Angel Martínez,177,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Insert,Chrome Variation,False
+Emmet Sheehan,178,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Chrome Variation,False
+Ezequiel Tovar,179,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Insert,Chrome Variation,False
+Adley Rutschman,180,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Chrome Variation,False
+Ian Seymour,181,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Chrome Variation,True
+Kyle Teel,182,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Insert,Chrome Variation,True
+Trea Turner,183,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Chrome Variation,False
+Jordan Westburg,184,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Chrome Variation,False
+Ronel Blanco,185,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,Chrome Variation,False
+Zack Gelof,186,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,Chrome Variation,False
+Kyle Tucker,187,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Chrome Variation,False
+Zach Neto,188,2026 Topps Heritage Baseball,2026,Baseball,Angels,Insert,Chrome Variation,False
+Ben Rice,189,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Chrome Variation,False
+Clayton Kershaw,190,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Chrome Variation,False
+Josh Jung,191,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Insert,Chrome Variation,False
+Seth Lugo,192,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Chrome Variation,False
+Matt Strahm,193,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Chrome Variation,False
+Matt Olson,194,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Insert,Chrome Variation,False
+Sal Frelick,195,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Insert,Chrome Variation,False
+Jazz Chisholm Jr.,196,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Chrome Variation,False
+Jhonkensy Noel,197,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Insert,Chrome Variation,False
+Lars Nootbaar,198,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Insert,Chrome Variation,False
+Carter Jensen,199,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Chrome Variation,True
+Simeon Woods Richardson,200,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Insert,Chrome Variation,False
+Keibert Ruiz,201,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,Chrome Variation,False
+Shota Imanaga,202,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Chrome Variation,False
+Trey Sweeney,203,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,Chrome Variation,False
+Jack Flaherty,204,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,Chrome Variation,True
+Christian Montes De Oca,205,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,Chrome Variation,True
+Luis Severino,206,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,Chrome Variation,False
+David Bednar,207,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Chrome Variation,False
+Parker Meadows,208,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,Chrome Variation,False
+Drake Baldwin,209,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Insert,Chrome Variation,False
+Shane Bieber,210,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,Chrome Variation,False
+Andrew Hoffman,211,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,Chrome Variation,True
+Chase Burns,212,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Chrome Variation,True
+Starling Marte,213,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Chrome Variation,False
+William Contreras,214,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Insert,Chrome Variation,False
+Ryan O'Hearn,215,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,Chrome Variation,False
+Geraldo Perdomo,216,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,Chrome Variation,False
+Christian Walker,217,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,Chrome Variation,False
+Jackson Holliday,218,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Chrome Variation,False
+Yainer Diaz,219,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,Chrome Variation,False
+Ketel Marte,220,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,Chrome Variation,False
+Sal Stewart,221,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Chrome Variation,True
+Cam Schlittler,222,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Chrome Variation,True
+Daulton Varsho,223,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,Chrome Variation,False
+Davis Schneider,224,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,Chrome Variation,False
+Dominic Smith,225,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,Chrome Variation,False
+Ryan Jeffers,226,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Insert,Chrome Variation,False
+Jake Mangum,227,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Chrome Variation,False
+Connelly Early,228,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,Chrome Variation,True
+Kenley Jansen,229,2026 Topps Heritage Baseball,2026,Baseball,Angels,Insert,Chrome Variation,False
+Thomas Saggese,230,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Insert,Chrome Variation,False
+Andy Pages,235,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Chrome Variation,False
+JJ Bleday,236,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,Chrome Variation,False
+Trevor Rogers,237,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Chrome Variation,False
+Corbin Burnes,238,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,Chrome Variation,False
+Edgar Quero,239,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Insert,Chrome Variation,False
+Julio Rodríguez,240,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Chrome Variation,False
+Seiya Suzuki,241,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Chrome Variation,False
+Parker Messick,242,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Insert,Chrome Variation,True
+Gleyber Torres,243,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,Chrome Variation,False
+Evan Carter,244,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Insert,Chrome Variation,False
+Trey Yesavage,245,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,Chrome Variation,True
+Dalton Rushing,246,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Chrome Variation,False
+Moisés Ballesteros,247,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Chrome Variation,False
+Carlos Narváez,248,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,Chrome Variation,False
+Christian Moore,249,2026 Topps Heritage Baseball,2026,Baseball,Angels,Insert,Chrome Variation,True
+Giancarlo Stanton,250,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Chrome Variation,False
+Joey Cantillo,251,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Insert,Chrome Variation,False
+Matt McLain,252,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Chrome Variation,False
+Byron Buxton,253,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Insert,Chrome Variation,False
+Zac Gallen,254,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,Chrome Variation,False
+Joe Ryan,255,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Insert,Chrome Variation,False
+Bo Naylor,256,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Insert,Chrome Variation,False
+Victor MESA JR.,257,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Insert,Chrome Variation,False
+Taylor Ward,258,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Chrome Variation,False
+Miguel Andujar,259,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Chrome Variation,False
+Dylan Cease,260,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,Chrome Variation,False
+Pete Crow-Armstrong,261,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Chrome Variation,False
+Adam Frazier,262,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Chrome Variation,False
+Justin Martinez,263,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,Chrome Variation,False
+Ozzie Albies,264,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Insert,Chrome Variation,False
+Bubba Chandler,265,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,Chrome Variation,True
+Spencer Horwitz,266,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,Chrome Variation,False
+Jorge Mateo,267,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Chrome Variation,False
+Hyeseong Kim,268,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Chrome Variation,False
+Cal Raleigh,269,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Chrome Variation,False
+Andrew McCutchen,270,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,Chrome Variation,False
+Austin Riley,271,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Insert,Chrome Variation,False
+Jackson Chourio,272,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Insert,Chrome Variation,False
+Sean Murphy,273,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Insert,Chrome Variation,False
+Brooks Baldwin,274,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Insert,Chrome Variation,False
+Nick Kurtz,275,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,Chrome Variation,False
+Chris Sale,278,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Insert,Chrome Variation,False
+Jacob Young,279,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,Chrome Variation,False
+Trevor Larnach,280,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Insert,Chrome Variation,False
+Tarik Skubal,281,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,Chrome Variation,False
+Will Smith,282,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Chrome Variation,False
+Jeremy Peña,283,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,Chrome Variation,False
+Cedric Mullins,284,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Chrome Variation,False
+Lane Thomas,285,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Insert,Chrome Variation,False
+Randy Arozarena,286,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Chrome Variation,False
+Gunnar Henderson,287,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Chrome Variation,False
+Eduardo Rodriguez,288,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,Chrome Variation,False
+J.P. Crawford,289,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Chrome Variation,False
+Shohei Ohtani,290,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Chrome Variation,False
+Freddy Peralta,291,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Insert,Chrome Variation,False
+Mick Abel,292,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Insert,Chrome Variation,False
+Luis Arraez,293,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,Chrome Variation,False
+MacKenzie Gore,294,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,Chrome Variation,False
+James Wood,295,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,Chrome Variation,False
+TJ Friedl,296,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Chrome Variation,False
+Anthony Volpe,297,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Chrome Variation,False
+Chase Meidroth,298,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Insert,Chrome Variation,False
+Matt Shaw,299,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Chrome Variation,False
+Orion Kerkering,300,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Chrome Variation,False
+Josh Smith,301,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Insert,Chrome Variation,False
+Corey Seager,302,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Insert,Chrome Variation,False
+Curtis Mead,303,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Insert,Chrome Variation,False
+Jack Leiter,304,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Insert,Chrome Variation,False
+Michael Busch,305,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Chrome Variation,False
+Juan Soto,306,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Chrome Variation,False
+Ryan Weathers,307,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Insert,Chrome Variation,False
+Oneil Cruz,308,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,Chrome Variation,False
+Andrew Vaughn,309,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Insert,Chrome Variation,False
+Bryce Eldridge,310,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,Chrome Variation,True
+Carlos Estévez,314,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Chrome Variation,False
+Robinson Piña,315,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,Chrome Variation,True
+Merrill Kelly,316,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Insert,Chrome Variation,False
+Kodai Senga,317,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Chrome Variation,False
+Victor Scott II,318,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Insert,Chrome Variation,False
+Matt Wallner,319,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Insert,Chrome Variation,False
+Salvador Perez,320,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Chrome Variation,False
+Kody Clemens,321,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Insert,Chrome Variation,False
+Fernando Tatis Jr.,322,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,Chrome Variation,False
+Heriberto Hernández,323,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Insert,Chrome Variation,True
+Denzel Clarke,324,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,Chrome Variation,False
+Brice Turang,325,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Insert,Chrome Variation,False
+Carson Kelly,326,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Chrome Variation,False
+Willy Adames,327,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,Chrome Variation,False
+José Caballero,328,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Chrome Variation,False
+Grant Taylor,329,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Insert,Chrome Variation,True
+Cristian Javier,330,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,Chrome Variation,False
+Rhys Hoskins,331,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Insert,Chrome Variation,False
+Christian Yelich,332,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Insert,Chrome Variation,False
+Colton Cowser,338,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Chrome Variation,False
+Lenyn Sosa,339,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Insert,Chrome Variation,False
+Wyatt Langford,340,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Insert,Chrome Variation,False
+Alejandro Kirk,341,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,Chrome Variation,False
+Michael Harris II,342,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Insert,Chrome Variation,False
+Kerry Carpenter,343,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,Chrome Variation,False
+David Hamilton,344,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,Chrome Variation,False
+Otto Lopez,345,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Insert,Chrome Variation,False
+Hunter Goodman,346,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Insert,Chrome Variation,False
+Danny Jansen,347,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Insert,Chrome Variation,False
+Shane Baz,348,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Chrome Variation,False
+CJ Abrams,349,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,Chrome Variation,False
+Freddie Freeman,350,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Chrome Variation,False
+Jackson Merrill,351,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,Chrome Variation,False
+Gavin Lux,352,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Chrome Variation,False
+Shane Smith,353,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Insert,Chrome Variation,False
+Joey Loperfido,354,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,Chrome Variation,False
+Brenton Doyle,355,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Insert,Chrome Variation,False
+Marcelo Mayer,356,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,Chrome Variation,False
+Harrison Bader,357,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Chrome Variation,False
+Masyn Winn,358,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Insert,Chrome Variation,False
+Aroldis Chapman,359,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,Chrome Variation,True
+Owen Caissie,360,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Chrome Variation,True
+Gabriel Moreno,361,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,Chrome Variation,False
+Wilyer Abreu,362,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,Chrome Variation,False
+Nick Castellanos,363,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Chrome Variation,False
+C.J. Kayfus,364,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Insert,Chrome Variation,True
+Kyle Isbel,365,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Chrome Variation,False
+Marcus Semien,366,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Insert,Chrome Variation,False
+Kristian Campbell,367,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,Chrome Variation,False
+Brayan Rocchio,368,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Insert,Chrome Variation,False
+Brandon Lowe,369,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Chrome Variation,False
+Addison Barger,370,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,Chrome Variation,False
+Yoshinobu Yamamoto,371,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Chrome Variation,False
+Junior Caminero,380,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Chrome Variation,False
+Ryan McMahon,381,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Chrome Variation,False
+Bryson Stott,382,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Chrome Variation,False
+Corbin Carroll,383,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,Chrome Variation,False
+Adolis García,384,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Insert,Chrome Variation,False
+Carlos Rodón,385,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Chrome Variation,False
+Payton Tolle,386,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,Chrome Variation,True
+Kyle Stowers,395,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Insert,Chrome Variation,False
+Cade Horton,396,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Chrome Variation,False
+Ceddanne Rafaela,397,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,Chrome Variation,False
+Zach McKinstry,398,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,Chrome Variation,False
+Jordan Walker,399,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Insert,Chrome Variation,False
+Mickey Moniak,400,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Insert,Chrome Variation,False
+Aaron Judge,1,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,League Leaders Chrome Variation,False
+Trea Turner,1,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,League Leaders Chrome Variation,False
+Kyle Schwarber,2,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,League Leaders Chrome Variation,False
+Cal Raleigh,2,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,League Leaders Chrome Variation,False
+Kyle Schwarber,3,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,League Leaders Chrome Variation,False
+Cal Raleigh,3,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,League Leaders Chrome Variation,False
+Oneil Cruz,4,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,League Leaders Chrome Variation,False
+José Caballero,4,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,League Leaders Chrome Variation,False
+Freddy Peralta,5,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Insert,League Leaders Chrome Variation,False
+Max Fried,5,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,League Leaders Chrome Variation,False
+Logan Webb,6,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,League Leaders Chrome Variation,False
+Garrett Crochet,6,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,League Leaders Chrome Variation,False
+Paul Skenes,7,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,League Leaders Chrome Variation,False
+Tarik Skubal,7,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,League Leaders Chrome Variation,False
+Robert Suarez,8,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,League Leaders Chrome Variation,False
+Carlos Estévez,8,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,League Leaders Chrome Variation,False
+Cal Raleigh,231,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Record Breakers Chrome Variation,False
+Pete Alonso,232,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Record Breakers Chrome Variation,False
+Elly De La Cruz,233,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Record Breakers Chrome Variation,False
+Riley Greene,234,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,Record Breakers Chrome Variation,False
+Toronto Blue Jays,276,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,AL Champions Chrome Variation,False
+Los Angeles Dodgers,277,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,NL Champions Chrome Variation,False
+Los Angeles Dodgers,311,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,World Series Highlights Chrome Variation,False
+Toronto Blue Jays,312,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,World Series Highlights Chrome Variation,False
+Los Angeles Dodgers,313,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,World Series Highlights Chrome Variation,False
+Miguel Cabrera,333,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,Turn Back the Clock Chrome Variation,False
+Carlos Beltrán,334,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Turn Back the Clock Chrome Variation,False
+Derek Jeter,335,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Turn Back the Clock Chrome Variation,False
+Mike Piazza,336,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,Turn Back the Clock Chrome Variation,False
+Ichiro,337,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Turn Back the Clock Chrome Variation,False
+Philip Abner,372,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,Quad Rookies Chrome Variation,True
+Eduarniel Núñez,372,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,Quad Rookies Chrome Variation,True
+Didier Fuentes,372,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Insert,Quad Rookies Chrome Variation,True
+Jonathan Pintaro,372,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Quad Rookies Chrome Variation,True
+Nathan Church,373,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Insert,Quad Rookies Chrome Variation,True
+Troy Johnston,373,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Insert,Quad Rookies Chrome Variation,True
+Jacob Melton,373,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,Quad Rookies Chrome Variation,True
+Carlos Cortes,373,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,Quad Rookies Chrome Variation,True
+Cam Devanney,374,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,Quad Rookies Chrome Variation,True
+Chad Stevens,374,2026 Topps Heritage Baseball,2026,Baseball,Angels,Insert,Quad Rookies Chrome Variation,True
+Brice Matthews,374,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,Quad Rookies Chrome Variation,True
+Ryan Ritter,374,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Insert,Quad Rookies Chrome Variation,True
+Zachary Maxwell,375,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Quad Rookies Chrome Variation,True
+Dylan Smith,375,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,Quad Rookies Chrome Variation,True
+Paul Gervase,375,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Quad Rookies Chrome Variation,True
+Jack Perkins,375,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,Quad Rookies Chrome Variation,True
+Will Banfield,376,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Quad Rookies Chrome Variation,True
+C.J. Stubbs,376,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,Quad Rookies Chrome Variation,True
+Jimmy Crooks,376,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Insert,Quad Rookies Chrome Variation,True
+Rafael Flores,376,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,Quad Rookies Chrome Variation,True
+Cody Freeman,377,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Insert,Quad Rookies Chrome Variation,True
+Otto Kemp,377,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Quad Rookies Chrome Variation,True
+Jeremiah Jackson,377,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Quad Rookies Chrome Variation,True
+Bob Seymour,377,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Quad Rookies Chrome Variation,True
+Andry Lara,378,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,Quad Rookies Chrome Variation,True
+Wikelman González,378,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Insert,Quad Rookies Chrome Variation,True
+Juan Burgos,378,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,Quad Rookies Chrome Variation,True
+Jacob Palisch,378,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Insert,Quad Rookies Chrome Variation,True
+George Valera,379,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Insert,Quad Rookies Chrome Variation,True
+Will Robertson,379,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,Quad Rookies Chrome Variation,True
+Colby Thomas,379,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,Quad Rookies Chrome Variation,True
+Tristin English,379,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,Quad Rookies Chrome Variation,True
+Dugan Darnell,387,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Insert,Quad Rookies Chrome Variation,True
+Nick Raquet,387,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Insert,Quad Rookies Chrome Variation,True
+Troy Melton,387,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,Quad Rookies Chrome Variation,True
+Jack Little,387,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Quad Rookies Chrome Variation,True
+Justin Dean,388,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Quad Rookies Chrome Variation,True
+Tristan Peters,388,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Quad Rookies Chrome Variation,True
+Kenedy Corona,388,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,Quad Rookies Chrome Variation,True
+Drew Gilbert,388,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,Quad Rookies Chrome Variation,True
+Alan Rangel,389,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Quad Rookies Chrome Variation,True
+Elvis Alvarado,389,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,Quad Rookies Chrome Variation,True
+Carson Seymour,389,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,Quad Rookies Chrome Variation,True
+Joe Rock,389,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Quad Rookies Chrome Variation,True
+Denzer Guzman,390,2026 Topps Heritage Baseball,2026,Baseball,Angels,Insert,Quad Rookies Chrome Variation,True
+Maximo Acosta,390,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Insert,Quad Rookies Chrome Variation,True
+Alex Freeland,390,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Quad Rookies Chrome Variation,True
+Colson Montgomery,390,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Insert,Quad Rookies Chrome Variation,True
+Taylor Rashi,391,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,Quad Rookies Chrome Variation,True
+Shinnosuke Ogasawara,391,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,Quad Rookies Chrome Variation,True
+Luinder Avila,391,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Quad Rookies Chrome Variation,True
+PJ Poulin,391,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,Quad Rookies Chrome Variation,True
+Zach Cole,392,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,Quad Rookies Chrome Variation,True
+Jakob Marsee,392,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Insert,Quad Rookies Chrome Variation,True
+Yanquiel Fernández,392,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Insert,Quad Rookies Chrome Variation,True
+Petey Halpin,392,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Insert,Quad Rookies Chrome Variation,True
+Mitch Farris,393,2026 Topps Heritage Baseball,2026,Baseball,Angels,Insert,Quad Rookies Chrome Variation,True
+Andrew Alvarez,393,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,Quad Rookies Chrome Variation,True
+Joel Peguero,393,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,Quad Rookies Chrome Variation,True
+Kyle Backhus,393,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,Quad Rookies Chrome Variation,True
+Jack Winkler,394,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Insert,Quad Rookies Chrome Variation,True
+Warming Bernabel,394,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Insert,Quad Rookies Chrome Variation,True
+Kyle Karros,394,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Insert,Quad Rookies Chrome Variation,True
+César Prieto,394,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Insert,Quad Rookies Chrome Variation,True
+Aaron Judge,10,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,All-Star Logo Variation,False
+Jacob Wilson,17,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,All-Star Logo Variation,False
+Paul Skenes,33,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,All-Star Logo Variation,False
+Vladimir Guerrero Jr.,46,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,All-Star Logo Variation,False
+Ronald Acuña Jr.,55,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Insert,All-Star Logo Variation,False
+Javier Báez,107,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,All-Star Logo Variation,False
+Manny Machado,143,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,All-Star Logo Variation,False
+Francisco Lindor,146,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,All-Star Logo Variation,False
+Riley Greene,152,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,All-Star Logo Variation,False
+Kyle Tucker,187,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,All-Star Logo Variation,False
+Ryan O'Hearn,215,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,All-Star Logo Variation,False
+Ketel Marte,220,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,All-Star Logo Variation,False
+Gleyber Torres,243,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,All-Star Logo Variation,False
+Pete Crow-Armstrong,261,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,All-Star Logo Variation,False
+Cal Raleigh,269,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,All-Star Logo Variation,False
+Tarik Skubal,281,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,All-Star Logo Variation,False
+Will Smith,282,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,All-Star Logo Variation,False
+Shohei Ohtani,290,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,All-Star Logo Variation,False
+Freddie Freeman,350,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,All-Star Logo Variation,False
+Junior Caminero,380,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,All-Star Logo Variation,False
+Aaron Judge,10,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Image Variation,False
+Jose Altuve,11,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,Image Variation,False
+Mookie Betts,12,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Image Variation,False
+Eury Pérez,18,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Insert,Image Variation,False
+Paul Skenes,33,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,Image Variation,False
+Vladimir Guerrero Jr.,46,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,Image Variation,False
+José Ramírez,52,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Insert,Image Variation,False
+Ronald Acuña Jr.,55,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Insert,Image Variation,False
+Rafael Devers,62,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,Image Variation,False
+Elly De La Cruz,70,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Image Variation,False
+Bryce Harper,72,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Image Variation,False
+Roman Anthony,86,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,Image Variation,True
+Jac Caglianone,136,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Image Variation,True
+Jonah Tong,137,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Image Variation,True
+Manny Machado,143,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,Image Variation,False
+Jacob Misiorowski,144,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Insert,Image Variation,True
+Francisco Lindor,146,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Image Variation,False
+Nolan McLean,150,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Image Variation,True
+Kyle Schwarber,159,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Image Variation,False
+Bobby Witt Jr.,160,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Image Variation,False
+Mike Trout,163,2026 Topps Heritage Baseball,2026,Baseball,Angels,Insert,Image Variation,False
+Samuel Basallo,175,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Image Variation,True
+Kyle Teel,182,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Insert,Image Variation,True
+Clayton Kershaw,190,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Image Variation,False
+Chase Burns,212,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Image Variation,True
+Julio Rodríguez,240,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Image Variation,False
+Giancarlo Stanton,250,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Image Variation,False
+Byron Buxton,253,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Insert,Image Variation,False
+Pete Crow-Armstrong,261,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Image Variation,False
+Bubba Chandler,265,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,Image Variation,True
+Andrew McCutchen,270,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,Image Variation,False
+Jackson Chourio,272,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Insert,Image Variation,False
+Nick Kurtz,275,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,Image Variation,False
+Tarik Skubal,281,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,Image Variation,False
+Randy Arozarena,286,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Image Variation,False
+Gunnar Henderson,287,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Image Variation,False
+Shohei Ohtani,290,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Image Variation,False
+James Wood,295,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,Image Variation,False
+Corey Seager,302,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Insert,Image Variation,False
+Juan Soto,306,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Image Variation,False
+Fernando Tatis Jr.,322,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,Image Variation,False
+Christian Yelich,332,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Insert,Image Variation,False
+Wyatt Langford,340,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Insert,Image Variation,False
+CJ Abrams,349,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,Image Variation,False
+Freddie Freeman,350,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Image Variation,False
+Masyn Winn,358,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Insert,Image Variation,False
+Yoshinobu Yamamoto,371,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Image Variation,False
+Junior Caminero,380,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Image Variation,False
+Corbin Carroll,383,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,Image Variation,False
+Cade Horton,396,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Image Variation,False
+Agustín Ramírez,13,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Insert,Alternate Banner Variation,False
+Yordan Alvarez,25,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,Alternate Banner Variation,False
+Roki Sasaki,39,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Alternate Banner Variation,False
+Hunter Greene,53,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Alternate Banner Variation,False
+Mason Miller,65,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,Alternate Banner Variation,False
+Jacob DeGrom,98,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Insert,Alternate Banner Variation,False
+George Springer,108,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,Alternate Banner Variation,False
+Luke Keaschall,116,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Insert,Alternate Banner Variation,False
+Max Fried,130,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Alternate Banner Variation,False
+Riley Greene,152,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,Alternate Banner Variation,False
+Brady House,153,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,Alternate Banner Variation,True
+Carson Williams,161,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Alternate Banner Variation,True
+Jung Hoo Lee,171,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,Alternate Banner Variation,False
+Trea Turner,183,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Alternate Banner Variation,False
+Drake Baldwin,209,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Insert,Alternate Banner Variation,False
+Jackson Holliday,218,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Alternate Banner Variation,False
+Cal Raleigh,269,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Alternate Banner Variation,False
+Freddy Peralta,291,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Insert,Alternate Banner Variation,False
+Oneil Cruz,308,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,Alternate Banner Variation,False
+Cade Horton,396,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Alternate Banner Variation,False
+Roman Anthony,86,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,Nickname Variation,True
+Josh Naylor,129,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Nickname Variation,False
+Jac Caglianone,136,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Nickname Variation,True
+Jonah Tong,137,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Nickname Variation,True
+Kyle Schwarber,159,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Nickname Variation,False
+Bobby Witt Jr.,160,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Nickname Variation,False
+Jesús Luzardo,168,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Nickname Variation,False
+Pete Crow-Armstrong,261,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Nickname Variation,False
+Cal Raleigh,269,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Nickname Variation,False
+Junior Caminero,380,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Nickname Variation,False
+Jonathan Aranda,20,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Throwback Jerseys Variation,False
+Chandler Simpson,58,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Throwback Jerseys Variation,False
+Bryce Harper,72,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Throwback Jerseys Variation,False
+Nolan Schanuel,117,2026 Topps Heritage Baseball,2026,Baseball,Angels,Insert,Throwback Jerseys Variation,False
+Kyle Schwarber,159,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Throwback Jerseys Variation,False
+Mike Trout,163,2026 Topps Heritage Baseball,2026,Baseball,Angels,Insert,Throwback Jerseys Variation,False
+Jesús Luzardo,168,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Throwback Jerseys Variation,False
+Trea Turner,183,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Throwback Jerseys Variation,False
+Zach Neto,188,2026 Topps Heritage Baseball,2026,Baseball,Angels,Insert,Throwback Jerseys Variation,False
+Junior Caminero,380,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Throwback Jerseys Variation,False
+Agustín Ramírez,13,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Insert,Black and White Image Variation,False
+Nico Hoerner,28,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Black and White Image Variation,False
+Eugenio Suárez,29,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Black and White Image Variation,False
+Andrew Abbott,31,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Black and White Image Variation,False
+Edwin Díaz,36,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Black and White Image Variation,False
+Harry Ford,59,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Black and White Image Variation,True
+Brooks Lee,60,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Insert,Black and White Image Variation,False
+Dillon Dingler,73,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,Black and White Image Variation,False
+Alec Bohm,81,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Black and White Image Variation,False
+Logan Webb,82,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,Black and White Image Variation,False
+Chase Dollander,91,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Insert,Black and White Image Variation,False
+Jacob DeGrom,98,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Insert,Black and White Image Variation,False
+Noelvi Marte,100,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Black and White Image Variation,False
+Brent Rooker,103,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,Black and White Image Variation,False
+Jhostynxon Garcia,112,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,Black and White Image Variation,True
+Daylen Lile,124,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,Black and White Image Variation,False
+Kyle Manzardo,133,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Insert,Black and White Image Variation,False
+Steven Kwan,139,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Insert,Black and White Image Variation,False
+Carlos Correa,154,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,Black and White Image Variation,False
+Hunter Brown,170,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,Black and White Image Variation,False
+Jordan Lawlar,172,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,Black and White Image Variation,False
+Bryan Reynolds,173,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,Black and White Image Variation,False
+Robert Suarez,174,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,Black and White Image Variation,False
+Emmet Sheehan,178,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Black and White Image Variation,False
+Adley Rutschman,180,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Black and White Image Variation,False
+Matt Olson,194,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Insert,Black and White Image Variation,False
+Jazz Chisholm Jr.,196,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Black and White Image Variation,False
+Shane Bieber,210,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,Black and White Image Variation,False
+Seiya Suzuki,241,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Black and White Image Variation,False
+Taylor Ward,258,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Black and White Image Variation,False
+Josh Smith,301,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Insert,Black and White Image Variation,False
+Bryce Eldridge,310,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,Black and White Image Variation,True
+Carlos Estévez,314,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Black and White Image Variation,False
+Victor Scott II,318,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Insert,Black and White Image Variation,False
+Salvador Perez,320,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Black and White Image Variation,False
+Heriberto Hernández,323,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Insert,Black and White Image Variation,True
+Brice Turang,325,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Insert,Black and White Image Variation,False
+Lenyn Sosa,339,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Insert,Black and White Image Variation,False
+Aroldis Chapman,359,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,Black and White Image Variation,False
+Brandon Lowe,369,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Black and White Image Variation,False
+Aaron Judge,RA-AJ,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Ready and Action,False
+Bubba Chandler,RA-BC,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,Ready and Action,True
+Bryce Harper,RA-BH,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Ready and Action,False
+Bobby Witt Jr.,RA-BW,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Ready and Action,False
+Carl Yastrzemski,RA-CY,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,Ready and Action,False
+Dave Parker,RA-DP,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,Ready and Action,False
+Elly De La Cruz,RA-ED,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Ready and Action,False
+Francisco Lindor,RA-FL,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Ready and Action,False
+George Brett,RA-GB,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Ready and Action,False
+George Foster,RA-GF,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Ready and Action,False
+Gunnar Henderson,RA-GH,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Ready and Action,False
+Johnny Bench,RA-JB,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,Ready and Action,False
+Kyle Teel,RA-KT,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Insert,Ready and Action,True
+Manny Machado,RA-MM,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,Ready and Action,False
+Mike Schmidt,RA-MS,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Ready and Action,False
+Mike Trout,RA-MT,2026 Topps Heritage Baseball,2026,Baseball,Angels,Insert,Ready and Action,False
+Nolan McLean,RA-NM,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Ready and Action,True
+Nolan Ryan,RA-NR,2026 Topps Heritage Baseball,2026,Baseball,California Angels,Insert,Ready and Action,False
+Owen Caissie,RA-OC,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Ready and Action,True
+Pete Crow-Armstrong,RA-PC,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,Ready and Action,False
+Rod Carew,RA-RC,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Insert,Ready and Action,False
+Reggie Jackson,RA-RJ,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Ready and Action,False
+Samuel Basallo,RA-SB,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,Ready and Action,True
+Shohei Ohtani,RA-SO,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Ready and Action,False
+Willie McCovey,RA-WM,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,Ready and Action,False
+Bo Bichette,TE-BB,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Insert,The Enterprise,False
+Byron Buxton,TE-BBU,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Insert,The Enterprise,False
+Brady House,TE-BH,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,The Enterprise,True
+Chase Burns,TE-CB,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Insert,The Enterprise,True
+C.J. Kayfus,TE-CK,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Insert,The Enterprise,True
+Colson Montgomery,TE-CM,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Insert,The Enterprise,True
+Christian Moore,TE-CMO,2026 Topps Heritage Baseball,2026,Baseball,Angels,Insert,The Enterprise,True
+Eury Pérez,TE-EP,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Insert,The Enterprise,False
+Ezequiel Tovar,TE-ET,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Insert,The Enterprise,False
+Francisco Lindor,TE-FL,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,The Enterprise,False
+Junior Caminero,TE-JC,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,The Enterprise,False
+Jac Caglianone,TE-JCA,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,The Enterprise,True
+Jazz Chisholm Jr.,TE-JCJ,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,The Enterprise,False
+Jackson Holliday,TE-JH,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Insert,The Enterprise,False
+Jackson Merrill,TE-JM,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Insert,The Enterprise,False
+Jacob Misiorowski,TE-JMI,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Insert,The Enterprise,True
+Julio Rodríguez,TE-JR,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,The Enterprise,False
+Jacob Wilson,TE-JW,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,The Enterprise,False
+Ketel Marte,TE-KM,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Insert,The Enterprise,False
+Mookie Betts,TE-MB,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,The Enterprise,False
+Matt Chapman,TE-MC,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Insert,The Enterprise,False
+Masyn Winn,TE-MW,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Insert,The Enterprise,False
+Pete Crow-Armstrong,TE-PC,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Insert,The Enterprise,False
+Paul Skenes,TE-PS,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Insert,The Enterprise,False
+Roman Anthony,TE-RA,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,The Enterprise,True
+Ronald Acuña Jr.,TE-RAJ,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Insert,The Enterprise,False
+Riley Greene,TE-RG,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Insert,The Enterprise,False
+Trea Turner,TE-TT,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,The Enterprise,False
+Wyatt Langford,TE-WL,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Insert,The Enterprise,False
+Yordan Alvarez,TE-YA,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Insert,The Enterprise,False
+Aaron Judge,RP-AJ,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Insert,Raw Power,False
+Cal Raleigh,RP-CR,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Insert,Raw Power,False
+Jac Caglianone,RP-JC,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Insert,Raw Power,True
+Junior Caminero,RP-JCA,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Insert,Raw Power,False
+James Wood,RP-JW,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Insert,Raw Power,False
+Kyle Schwarber,RP-KS,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Insert,Raw Power,False
+Nick Kurtz,RP-NK,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Insert,Raw Power,False
+Pete Alonso,RP-PA,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Insert,Raw Power,False
+Roman Anthony,RP-RA,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Insert,Raw Power,True
+Shohei Ohtani,RP-SO,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Insert,Raw Power,False
+Andre Dawson,77RO-AD,2026 Topps Heritage Baseball,2026,Baseball,Montréal Expos,Auto,Real One Autograph,False
+Dale Murphy,77RO-DM,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Auto,Real One Autograph,False
+Fred Lynn,77RO-FL,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Auto,Real One Autograph,False
+George Brett,77RO-GB,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Auto,Real One Autograph,False
+George Foster,77RO-GF,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Auto,Real One Autograph,False
+Johnny Bench,77RO-JB,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Auto,Real One Autograph,False
+Jim Palmer,77RO-JP,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Auto,Real One Autograph,False
+Jim Rice,77RO-JR,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Auto,Real One Autograph,False
+Mike Schmidt,77RO-MS,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Auto,Real One Autograph,False
+Rollie Fingers,77RO-RF,2026 Topps Heritage Baseball,2026,Baseball,Oakland Athletics,Auto,Real One Autograph,False
+Reggie Jackson,77RO-RJ,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Auto,Real One Autograph,False
+Steve Carlton,77RO-SC,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Auto,Real One Autograph,False
+Willie Randolph,77RO-WR,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Auto,Real One Autograph,False
+Addison Barger,ROA-AB,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Auto,Real One Autograph,False
+Alex Freeland,ROA-AF,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Auto,Real One Autograph,True
+Aaron Judge,ROA-AJ,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Auto,Real One Autograph,False
+Andrew McCutchen,ROA-AMC,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Auto,Real One Autograph,False
+Agustín Ramírez,ROA-AR,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Auto,Real One Autograph,False
+Anthony Volpe,ROA-AV,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Auto,Real One Autograph,False
+Bert Blyleven,ROA-BB,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Auto,Real One Autograph,False
+Byron Buxton,ROA-BBU,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Auto,Real One Autograph,False
+Bubba Chandler,ROA-BC,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Auto,Real One Autograph,True
+Brendan Donovan,ROA-BD,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Auto,Real One Autograph,False
+Bryce Eldridge,ROA-BE,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Auto,Real One Autograph,True
+Brice Matthews,ROA-BM,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Auto,Real One Autograph,True
+Ben Rice,ROA-BR,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Auto,Real One Autograph,False
+Brent Rooker,ROA-BRO,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Auto,Real One Autograph,False
+Bryson Stott,ROA-BST,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Auto,Real One Autograph,False
+Brice Turang,ROA-BT,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Auto,Real One Autograph,False
+Chase Burns,ROA-CBU,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Auto,Real One Autograph,True
+Connelly Early,ROA-CE,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Auto,Real One Autograph,True
+Carlton Fisk,ROA-CF,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Auto,Real One Autograph,False
+Carter Jensen,ROA-CJ,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Auto,Real One Autograph,True
+C.J. Kayfus,ROA-CJK,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Auto,Real One Autograph,True
+Chase Meidroth,ROA-CME,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Auto,Real One Autograph,False
+Christian Moore,ROA-CMO,2026 Topps Heritage Baseball,2026,Baseball,Angels,Auto,Real One Autograph,True
+Colson Montgomery,ROA-CMON,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Auto,Real One Autograph,True
+Chandler Simpson,ROA-CS,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Auto,Real One Autograph,False
+Cam Schlittler,ROA-CSC,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Auto,Real One Autograph,True
+Colby Thomas,ROA-CT,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Auto,Real One Autograph,True
+Carson Williams,ROA-CW,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Auto,Real One Autograph,True
+Carson Whisenhunt,ROA-CWH,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Auto,Real One Autograph,True
+Drake Baldwin,ROA-DBA,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Auto,Real One Autograph,False
+Didier Fuentes,ROA-DF,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Auto,Real One Autograph,True
+Drew Gilbert,ROA-DG,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Auto,Real One Autograph,True
+Dave Winfield,ROA-DW,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Auto,Real One Autograph,False
+Edgar Quero,ROA-EQ,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Auto,Real One Autograph,False
+Fergie Jenkins,ROA-FJ,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Auto,Real One Autograph,False
+Fernando Tatis Jr.,ROA-FTJ,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Auto,Real One Autograph,False
+Garrett Crochet,ROA-GC,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Auto,Real One Autograph,False
+Gunnar Henderson,ROA-GH,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Auto,Real One Autograph,False
+Grant Taylor,ROA-GT,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Auto,Real One Autograph,True
+George Valera,ROA-GV,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Auto,Real One Autograph,True
+Harry Ford,ROA-HF,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Auto,Real One Autograph,True
+Heriberto Hernández,ROA-HH,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Auto,Real One Autograph,True
+Hyeseong Kim,ROA-HK,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Auto,Real One Autograph,False
+Ian Seymour,ROA-IS,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Auto,Real One Autograph,True
+Jose Altuve,ROA-JA,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Auto,Real One Autograph,False
+Junior Caminero,ROA-JCA,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Auto,Real One Autograph,False
+Jac Caglianone,ROA-JCAG,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Auto,Real One Autograph,True
+Jazz Chisholm Jr.,ROA-JCJ,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Auto,Real One Autograph,False
+Jackson Holliday,ROA-JH,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Auto,Real One Autograph,False
+Jhostynxon Garcia,ROA-JHG,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Auto,Real One Autograph,True
+Jim Kaat,ROA-JK,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Auto,Real One Autograph,False
+Jacob Misiorowski,ROA-JM,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Auto,Real One Autograph,True
+Jakob Marsee,ROA-JMA,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Auto,Real One Autograph,True
+Jacob Melton,ROA-JME,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Auto,Real One Autograph,True
+Jack Perkins,ROA-JP,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Auto,Real One Autograph,True
+Jonah Tong,ROA-JTO,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Auto,Real One Autograph,True
+J.T. Realmuto,ROA-JTR,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Auto,Real One Autograph,False
+Jacob Wilson,ROA-JWI,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Auto,Real One Autograph,False
+Kerry Carpenter,ROA-KC,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Auto,Real One Autograph,False
+Kristian Campbell,ROA-KCA,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Auto,Real One Autograph,False
+Ken Griffey,ROA-KGS,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Auto,Real One Autograph,False
+Kyle Karros,ROA-KK,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Auto,Real One Autograph,True
+Kyle Teel,ROA-KT,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Auto,Real One Autograph,True
+Lou Piniella,ROA-LP,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Auto,Real One Autograph,False
+Maximo Acosta,ROA-MA,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Auto,Real One Autograph,True
+Michael Harris II,ROA-MH,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Auto,Real One Autograph,False
+Mason Miller,ROA-MM,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Auto,Real One Autograph,False
+Matt Shaw,ROA-MSH,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Auto,Real One Autograph,False
+Mike Trout,ROA-MT,2026 Topps Heritage Baseball,2026,Baseball,Angels,Auto,Real One Autograph,False
+Nico Hoerner,ROA-NH,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Auto,Real One Autograph,False
+Nick Kurtz,ROA-NK,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Auto,Real One Autograph,False
+Noelvi Marte,ROA-NM,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Auto,Real One Autograph,False
+Nolan McLean,ROA-NMC,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Auto,Real One Autograph,True
+Owen Caissie,ROA-OC,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Auto,Real One Autograph,True
+Otto Kemp,ROA-OK,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Auto,Real One Autograph,True
+Paul Skenes,ROA-PS,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Auto,Real One Autograph,False
+Payton Tolle,ROA-PT,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Auto,Real One Autograph,True
+Roman Anthony,ROA-RAN,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Auto,Real One Autograph,True
+Rod Carew,ROA-RC,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Auto,Real One Autograph,False
+Rawly Eastwick,ROA-RE,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Auto,Real One Autograph,False
+Ron Guidry,ROA-RG,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Auto,Real One Autograph,False
+Rich Gossage,ROA-RGO,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Auto,Real One Autograph,False
+Robert Hassell III,ROA-RH,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Auto,Real One Autograph,False
+Royce Lewis,ROA-RL,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Auto,Real One Autograph,False
+Ryan Ritter,ROA-RR,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Auto,Real One Autograph,True
+Roki Sasaki,ROA-RS,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Auto,Real One Autograph,False
+Robin Yount,ROA-RY,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Auto,Real One Autograph,False
+Samuel Basallo,ROA-SBA,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Auto,Real One Autograph,True
+Sal Frelick,ROA-SF,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Auto,Real One Autograph,False
+Steve Garvey,ROA-SG,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Auto,Real One Autograph,False
+Steven Kwan,ROA-SK,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Auto,Real One Autograph,False
+Shohei Ohtani,ROA-SO,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Auto,Real One Autograph,False
+Sal Stewart,ROA-SST,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Auto,Real One Autograph,True
+Troy Johnston,ROA-TJ,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Auto,Real One Autograph,True
+Tony Perez,ROA-TP,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Auto,Real One Autograph,False
+Vladimir Guerrero Jr.,ROA-VGJ,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Auto,Real One Autograph,False
+Warming Bernabel,ROA-WB,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Auto,Real One Autograph,True
+Will Smith,ROA-WS,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Auto,Real One Autograph,False
+Yanquiel Fernández,ROA-YF,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Auto,Real One Autograph,True
+Yoshinobu Yamamoto,ROA-YY,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Auto,Real One Autograph,False
+Jac Caglianone,RODA-BC,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Auto,Real One Dual Autograph,True
+George Brett,RODA-BC,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Auto,Real One Dual Autograph,True
+George Foster,RODA-CF,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Auto,Real One Dual Autograph,False
+Rod Carew,RODA-CF,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Auto,Real One Dual Autograph,False
+Roman Anthony,RODA-LA,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Auto,Real One Dual Autograph,True
+Fred Lynn,RODA-LA,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Auto,Real One Dual Autograph,True
+Paul Skenes,RODA-RS,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Auto,Real One Dual Autograph,False
+Nolan Ryan,RODA-RS,2026 Topps Heritage Baseball,2026,Baseball,California Angels,Auto,Real One Dual Autograph,False
+Jac Caglianone,ROQA-BWCW,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Auto,Real One Quad Autograph,True
+Frank White,ROQA-BWCW,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Auto,Real One Quad Autograph,True
+George Brett,ROQA-BWCW,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Auto,Real One Quad Autograph,True
+Bobby Witt Jr.,ROQA-BWCW,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Auto,Real One Quad Autograph,True
+Fred Lynn,ROQA-FYRL,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Auto,Real One Quad Autograph,False
+Jim Rice,ROQA-FYRL,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Auto,Real One Quad Autograph,False
+Carl Yastrzemski,ROQA-FYRL,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Auto,Real One Quad Autograph,False
+Carlton Fisk,ROQA-FYRL,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Auto,Real One Quad Autograph,False
+Jacob Misiorowski,ROQA-YYCM,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Auto,Real One Quad Autograph,True
+Jackson Chourio,ROQA-YYCM,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Auto,Real One Quad Autograph,True
+Christian Yelich,ROQA-YYCM,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Auto,Real One Quad Autograph,True
+Robin Yount,ROQA-YYCM,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Auto,Real One Quad Autograph,True
+Al Woods,EA-AW,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Auto,Expansion Autograph,False
+Dave Lemanczyk,EA-DL,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Auto,Expansion Autograph,False
+Doug Rader,EA-DR,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Auto,Expansion Autograph,False
+Glenn Abbott,EA-GA,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Auto,Expansion Autograph,False
+Gary Wheelock,EA-GW,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Auto,Expansion Autograph,False
+Otto Vélez,EA-OV,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Auto,Expansion Autograph,False
+Roy Howell,EA-RH,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Auto,Expansion Autograph,False
+Steve Braun,EA-SB,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Auto,Expansion Autograph,False
+Albert Pujols,TBA-AP,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Auto,Turn Back the Clock Autograph,False
+Barry Bonds,TBA-BB,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Auto,Turn Back the Clock Autograph,False
+Derek Jeter,TBA-DJ,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Auto,Turn Back the Clock Autograph,False
+Félix Hernández,TBA-FH,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Auto,Turn Back the Clock Autograph,False
+Ichiro,TBA-I,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Auto,Turn Back the Clock Autograph,False
+Mike Piazza,TBA-MP,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Auto,Turn Back the Clock Autograph,False
+Shohei Ohtani,TBA-SO,2026 Topps Heritage Baseball,2026,Baseball,Angels,Auto,Turn Back the Clock Autograph,False
+Bubba Chandler,ROAC-BC,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Auto,Chrome Autograph Variation,True
+Bryce Eldridge,ROAC-BE,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Auto,Chrome Autograph Variation,True
+Chase Burns,ROAC-CB,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Auto,Chrome Autograph Variation,True
+Colson Montgomery,ROAC-CMO,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Auto,Chrome Autograph Variation,True
+Fernando Tatis Jr.,ROAC-FTJ,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Auto,Chrome Autograph Variation,False
+Jac Caglianone,ROAC-JCA,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Auto,Chrome Autograph Variation,True
+Jacob Misiorowski,ROAC-JM,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Auto,Chrome Autograph Variation,True
+Mike Trout,ROAC-MT,2026 Topps Heritage Baseball,2026,Baseball,Angels,Auto,Chrome Autograph Variation,False
+Nick Kurtz,ROAC-NK,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Auto,Chrome Autograph Variation,False
+Nolan McLean,ROAC-NM,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Auto,Chrome Autograph Variation,True
+Paul Skenes,ROAC-PS,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Auto,Chrome Autograph Variation,False
+Roman Anthony,ROAC-RA,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Auto,Chrome Autograph Variation,True
+Shohei Ohtani,ROAC-SO,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Auto,Chrome Autograph Variation,False
+Byron Buxton,CCAR-BB,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Auto,Clubhouse Collection Auto Relic,False
+Cade Horton,CCAR-CH,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Auto,Clubhouse Collection Auto Relic,False
+CJ Abrams,CCAR-CJA,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Auto,Clubhouse Collection Auto Relic,False
+Christian Yelich,CCAR-CY,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Auto,Clubhouse Collection Auto Relic,False
+Fernando Tatis Jr.,CCAR-FTJ,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Auto,Clubhouse Collection Auto Relic,False
+George Brett,CCAR-GB,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Auto,Clubhouse Collection Auto Relic,False
+Gunnar Henderson,CCAR-GH,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Auto,Clubhouse Collection Auto Relic,False
+Jose Altuve,CCAR-JA,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Auto,Clubhouse Collection Auto Relic,False
+Johnny Bench,CCAR-JB,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Auto,Clubhouse Collection Auto Relic,False
+Jac Caglianone,CCAR-JCA,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Auto,Clubhouse Collection Auto Relic,True
+Jazz Chisholm Jr.,CCAR-JCJ,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Auto,Clubhouse Collection Auto Relic,False
+Jacob Wilson,CCAR-JW,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Auto,Clubhouse Collection Auto Relic,False
+Kyle Teel,CCAR-KTE,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Auto,Clubhouse Collection Auto Relic,True
+Mike Schmidt,CCAR-MS,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Auto,Clubhouse Collection Auto Relic,False
+Mike Trout,CCAR-MT,2026 Topps Heritage Baseball,2026,Baseball,Angels,Auto,Clubhouse Collection Auto Relic,False
+Nolan Arenado,CCAR-NA,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Auto,Clubhouse Collection Auto Relic,False
+Paul Skenes,CCAR-PS,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Auto,Clubhouse Collection Auto Relic,False
+Rod Carew,CCAR-RC,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Auto,Clubhouse Collection Auto Relic,False
+Reggie Jackson,CCAR-RJ,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Auto,Clubhouse Collection Auto Relic,False
+Roki Sasaki,CCAR-RS,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Auto,Clubhouse Collection Auto Relic,False
+Steve Carlton,CCAR-SC,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Auto,Clubhouse Collection Auto Relic,False
+Trea Turner,CCAR-TT,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Auto,Clubhouse Collection Auto Relic,False
+Vladimir Guerrero Jr.,CCAR-VGJ,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Auto,Clubhouse Collection Auto Relic,False
+Aaron Judge,CCDR-JJ,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Auto,Clubhouse Collection Dual Auto Relic,False
+Reggie Jackson,CCDR-JJ,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Auto,Clubhouse Collection Dual Auto Relic,False
+Jackson Chourio,CCDR-YC,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Auto,Clubhouse Collection Dual Auto Relic,False
+Robin Yount,CCDR-YC,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Auto,Clubhouse Collection Dual Auto Relic,False
+Carl Yastrzemski,FAR-CY,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Auto,Flashback Autograph Relic,False
+George Brett,FAR-GB,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Auto,Flashback Autograph Relic,False
+Mike Schmidt,FAR-MS,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Auto,Flashback Autograph Relic,False
+Reggie Jackson,FAR-RJ,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Auto,Flashback Autograph Relic,False
+Robin Yount,FAR-RY,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Auto,Flashback Autograph Relic,False
+Steve Carlton,FAR-SC,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Auto,Flashback Autograph Relic,False
+Carlton Fisk,TMA-CF,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Auto,There Once Was a Man Auto Relic,False
+George Brett,TMA-GB,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Auto,There Once Was a Man Auto Relic,False
+Mike Schmidt,TMA-MS,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Auto,There Once Was a Man Auto Relic,False
+Reggie Jackson,TMA-RJ,2026 Topps Heritage Baseball,2026,Baseball,Oakland Athletics,Auto,There Once Was a Man Auto Relic,False
+Robin Yount,TMA-RY,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Auto,There Once Was a Man Auto Relic,False
+Steve Carlton,TMA-SC,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Auto,There Once Was a Man Auto Relic,False
+Andrew Abbott,CCR-AA,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Relic,Clubhouse Collection Relic,False
+Alex Bregman,CCR-AB,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Relic,Clubhouse Collection Relic,False
+Adolis García,CCR-AG,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Relic,Clubhouse Collection Relic,False
+Aaron Judge,CCR-AJ,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Relic,Clubhouse Collection Relic,False
+Andrew McCutchen,CCR-AM,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Relic,Clubhouse Collection Relic,False
+Agustín Ramírez,CCR-AR,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Relic,Clubhouse Collection Relic,False
+Austin Riley,CCR-ARI,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Relic,Clubhouse Collection Relic,False
+Adley Rutschman,CCR-ARU,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Relic,Clubhouse Collection Relic,False
+Bo Bichette,CCR-BB,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Relic,Clubhouse Collection Relic,False
+Byron Buxton,CCR-BBU,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Relic,Clubhouse Collection Relic,False
+Bryce Harper,CCR-BH,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Relic,Clubhouse Collection Relic,False
+Brooks Lee,CCR-BL,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Relic,Clubhouse Collection Relic,False
+Brandon Lowe,CCR-BLO,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Relic,Clubhouse Collection Relic,False
+Brandon Nimmo,CCR-BN,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Relic,Clubhouse Collection Relic,False
+Ben Rice,CCR-BR,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Relic,Clubhouse Collection Relic,False
+Bryan Woo,CCR-BW,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Relic,Clubhouse Collection Relic,False
+Bobby Witt Jr.,CCR-BWI,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Relic,Clubhouse Collection Relic,False
+CJ Abrams,CCR-CA,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Relic,Clubhouse Collection Relic,False
+Cody Bellinger,CCR-CB,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Relic,Clubhouse Collection Relic,False
+Carlos Correa,CCR-CC,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Relic,Clubhouse Collection Relic,False
+Corbin Carroll,CCR-CCA,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Relic,Clubhouse Collection Relic,False
+Cade Horton,CCR-CH,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Relic,Clubhouse Collection Relic,False
+Colson Montgomery,CCR-CM,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Relic,Clubhouse Collection Relic,True
+Cal Raleigh,CCR-CR,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Relic,Clubhouse Collection Relic,False
+Corey Seager,CCR-CSE,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Relic,Clubhouse Collection Relic,False
+Christian Yelich,CCR-CY,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Relic,Clubhouse Collection Relic,False
+Drake Baldwin,CCR-DB,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Relic,Clubhouse Collection Relic,False
+Dylan Crews,CCR-DC,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Relic,Clubhouse Collection Relic,False
+Dylan Cease,CCR-DCE,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Relic,Clubhouse Collection Relic,False
+Eury Pérez,CCR-EP,2026 Topps Heritage Baseball,2026,Baseball,Miami Marlins,Relic,Clubhouse Collection Relic,False
+Ezequiel Tovar,CCR-ET,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Relic,Clubhouse Collection Relic,False
+Freddie Freeman,CCR-FF,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Relic,Clubhouse Collection Relic,False
+Francisco Lindor,CCR-FL,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Relic,Clubhouse Collection Relic,False
+Fernando Tatis Jr.,CCR-FT,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Relic,Clubhouse Collection Relic,False
+Garrett Crochet,CCR-GC,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Relic,Clubhouse Collection Relic,False
+Gunnar Henderson,CCR-GH,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Relic,Clubhouse Collection Relic,False
+George Springer,CCR-GS,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Relic,Clubhouse Collection Relic,False
+Hunter Goodman,CCR-HG,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Relic,Clubhouse Collection Relic,False
+Jose Altuve,CCR-JA,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Relic,Clubhouse Collection Relic,False
+Jordan Beck,CCR-JB,2026 Topps Heritage Baseball,2026,Baseball,Colorado Rockies,Relic,Clubhouse Collection Relic,False
+Junior Caminero,CCR-JC,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Relic,Clubhouse Collection Relic,False
+Jac Caglianone,CCR-JCA,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Relic,Clubhouse Collection Relic,True
+Jackson Chourio,CCR-JCH,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Relic,Clubhouse Collection Relic,False
+Jazz Chisholm Jr.,CCR-JCJ,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Relic,Clubhouse Collection Relic,False
+Jarren Duran,CCR-JD,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Relic,Clubhouse Collection Relic,False
+Jackson Holliday,CCR-JH,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Relic,Clubhouse Collection Relic,False
+Jung Hoo Lee,CCR-JL,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Relic,Clubhouse Collection Relic,False
+Jordan Lawlar,CCR-JLA,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Relic,Clubhouse Collection Relic,False
+Jeff McNeil,CCR-JM,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Relic,Clubhouse Collection Relic,False
+Jackson Merrill,CCR-JME,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Relic,Clubhouse Collection Relic,False
+Jeremy Peña,CCR-JP,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Relic,Clubhouse Collection Relic,False
+Julio Rodríguez,CCR-JR,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Relic,Clubhouse Collection Relic,False
+José Ramírez,CCR-JRA,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Relic,Clubhouse Collection Relic,False
+J.T. Realmuto,CCR-JRE,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Relic,Clubhouse Collection Relic,False
+Juan Soto,CCR-JS,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Relic,Clubhouse Collection Relic,False
+James Wood,CCR-JW,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Relic,Clubhouse Collection Relic,False
+Jacob Wilson,CCR-JWI,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Relic,Clubhouse Collection Relic,False
+Ketel Marte,CCR-KM,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Relic,Clubhouse Collection Relic,False
+Kyle Schwarber,CCR-KS,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Relic,Clubhouse Collection Relic,False
+Luis Arraez,CCR-LA,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Relic,Clubhouse Collection Relic,False
+Lawrence Butler,CCR-LB,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Relic,Clubhouse Collection Relic,False
+Luis Robert Jr.,CCR-LR,2026 Topps Heritage Baseball,2026,Baseball,Chicago White Sox,Relic,Clubhouse Collection Relic,False
+Mookie Betts,CCR-MB,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Relic,Clubhouse Collection Relic,False
+Matt Chapman,CCR-MC,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Relic,Clubhouse Collection Relic,False
+Manny Machado,CCR-MM,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Relic,Clubhouse Collection Relic,False
+Matt Olson,CCR-MO,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Relic,Clubhouse Collection Relic,False
+Marcus Semien,CCR-MS,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Relic,Clubhouse Collection Relic,False
+Matt Shaw,CCR-MSH,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Relic,Clubhouse Collection Relic,False
+Mike Trout,CCR-MT,2026 Topps Heritage Baseball,2026,Baseball,Angels,Relic,Clubhouse Collection Relic,False
+Masyn Winn,CCR-MW,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Relic,Clubhouse Collection Relic,False
+Nolan Arenado,CCR-NA,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Relic,Clubhouse Collection Relic,False
+Nick Castellanos,CCR-NC,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Relic,Clubhouse Collection Relic,False
+Nathan Eovaldi,CCR-NE,2026 Topps Heritage Baseball,2026,Baseball,Texas Rangers,Relic,Clubhouse Collection Relic,False
+Nick Kurtz,CCR-NK,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Relic,Clubhouse Collection Relic,False
+Ozzie Albies,CCR-OA,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Relic,Clubhouse Collection Relic,False
+Oneil Cruz,CCR-OC,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Relic,Clubhouse Collection Relic,False
+Pete Alonso,CCR-PA,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Relic,Clubhouse Collection Relic,False
+Pete Crow-Armstrong,CCR-PC,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Relic,Clubhouse Collection Relic,False
+Paul Goldschmidt,CCR-PG,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Relic,Clubhouse Collection Relic,False
+Pablo López,CCR-PL,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Relic,Clubhouse Collection Relic,False
+Paul Skenes,CCR-PS,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Relic,Clubhouse Collection Relic,False
+Ronald Acuña Jr.,CCR-RA,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Relic,Clubhouse Collection Relic,False
+Randy Arozarena,CCR-RAR,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Relic,Clubhouse Collection Relic,False
+Riley Greene,CCR-RG,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Relic,Clubhouse Collection Relic,False
+Royce Lewis,CCR-RL,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Relic,Clubhouse Collection Relic,False
+Sal Frelick,CCR-SF,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Relic,Clubhouse Collection Relic,False
+Salvador Perez,CCR-SP,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Relic,Clubhouse Collection Relic,False
+Seiya Suzuki,CCR-SS,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Relic,Clubhouse Collection Relic,False
+Spencer Torkelson,CCR-ST,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Relic,Clubhouse Collection Relic,False
+Tarik Skubal,CCR-TS,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Relic,Clubhouse Collection Relic,False
+Tyler Soderstrom,CCR-TSO,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Relic,Clubhouse Collection Relic,False
+Trea Turner,CCR-TT,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Relic,Clubhouse Collection Relic,False
+Vladimir Guerrero Jr.,CCR-VG,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Relic,Clubhouse Collection Relic,False
+Willy Adames,CCR-WA,2026 Topps Heritage Baseball,2026,Baseball,San Francisco Giants,Relic,Clubhouse Collection Relic,False
+William Contreras,CCR-WC,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Relic,Clubhouse Collection Relic,False
+Will Smith,CCR-WS,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Relic,Clubhouse Collection Relic,False
+Yordan Alvarez,CCR-YA,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Relic,Clubhouse Collection Relic,False
+Zach Neto,CCR-ZN,2026 Topps Heritage Baseball,2026,Baseball,Angels,Relic,Clubhouse Collection Relic,False
+Aaron Judge,ROR-AJ,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Relic,Real One Relic,False
+Andrew McCutchen,ROR-AM,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Relic,Real One Relic,False
+Bo Bichette,ROR-BB,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Relic,Real One Relic,False
+Byron Buxton,ROR-BBU,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Relic,Real One Relic,False
+Bryce Harper,ROR-BH,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Relic,Real One Relic,False
+Bryson Stott,ROR-BS,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Relic,Real One Relic,False
+Bobby Witt Jr.,ROR-BW,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Relic,Real One Relic,False
+Corbin Carroll,ROR-CC,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Relic,Real One Relic,False
+Clayton Kershaw,ROR-CK,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Relic,Real One Relic,False
+Cal Raleigh,ROR-CR,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Relic,Real One Relic,False
+Chris Sale,ROR-CS,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Relic,Real One Relic,False
+Drake Baldwin,ROR-DB,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Relic,Real One Relic,False
+Francisco Lindor,ROR-FL,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Relic,Real One Relic,False
+Fernando Tatis Jr.,ROR-FT,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Relic,Real One Relic,False
+Garrett Crochet,ROR-GC,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Relic,Real One Relic,False
+Hunter Greene,ROR-HG,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Relic,Real One Relic,False
+Ian Happ,ROR-IH,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Relic,Real One Relic,False
+Jose Altuve,ROR-JA,2026 Topps Heritage Baseball,2026,Baseball,Houston Astros,Relic,Real One Relic,False
+Junior Caminero,ROR-JC,2026 Topps Heritage Baseball,2026,Baseball,Tampa Bay Rays,Relic,Real One Relic,False
+Jackson Chourio,ROR-JCH,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Relic,Real One Relic,False
+Jazz Chisholm Jr.,ROR-JCJ,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Relic,Real One Relic,False
+Jackson Holliday,ROR-JH,2026 Topps Heritage Baseball,2026,Baseball,Baltimore Orioles,Relic,Real One Relic,False
+Jackson Merrill,ROR-JM,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Relic,Real One Relic,False
+José Ramírez,ROR-JR,2026 Topps Heritage Baseball,2026,Baseball,Cleveland Guardians,Relic,Real One Relic,False
+Julio Rodríguez,ROR-JRO,2026 Topps Heritage Baseball,2026,Baseball,Seattle Mariners,Relic,Real One Relic,False
+Juan Soto,ROR-JS,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Relic,Real One Relic,False
+James Wood,ROR-JW,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Relic,Real One Relic,False
+Jacob Wilson,ROR-JWI,2026 Topps Heritage Baseball,2026,Baseball,Athletics,Relic,Real One Relic,False
+Ketel Marte,ROR-KM,2026 Topps Heritage Baseball,2026,Baseball,Arizona Diamondbacks,Relic,Real One Relic,False
+Luis Arraez,ROR-LA,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Relic,Real One Relic,False
+Luke Keaschall,ROR-LK,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Relic,Real One Relic,False
+Mookie Betts,ROR-MB,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Relic,Real One Relic,False
+Max Fried,ROR-MF,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Relic,Real One Relic,False
+Matt Olson,ROR-MO,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Relic,Real One Relic,False
+Matt Shaw,ROR-MS,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Relic,Real One Relic,False
+Mike Trout,ROR-MT,2026 Topps Heritage Baseball,2026,Baseball,Angels,Relic,Real One Relic,False
+Masyn Winn,ROR-MW,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Relic,Real One Relic,False
+Nolan Arenado,ROR-NA,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Relic,Real One Relic,False
+Ozzie Albies,ROR-OA,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Relic,Real One Relic,False
+Oneil Cruz,ROR-OC,2026 Topps Heritage Baseball,2026,Baseball,Pittsburgh Pirates,Relic,Real One Relic,False
+Pete Alonso,ROR-PA,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Relic,Real One Relic,False
+Pete Crow-Armstrong,ROR-PC,2026 Topps Heritage Baseball,2026,Baseball,Chicago Cubs,Relic,Real One Relic,False
+Ronald Acuña Jr.,ROR-RA,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Relic,Real One Relic,False
+Royce Lewis,ROR-RL,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Relic,Real One Relic,False
+Tarik Skubal,ROR-TS,2026 Topps Heritage Baseball,2026,Baseball,Detroit Tigers,Relic,Real One Relic,False
+Trea Turner,ROR-TT,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Relic,Real One Relic,False
+Vladimir Guerrero Jr.,ROR-VG,2026 Topps Heritage Baseball,2026,Baseball,Toronto Blue Jays,Relic,Real One Relic,False
+Will Smith,ROR-WS,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Relic,Real One Relic,False
+Yoshinobu Yamamoto,ROR-YY,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Relic,Real One Relic,False
+Zach Neto,ROR-ZN,2026 Topps Heritage Baseball,2026,Baseball,Angels,Relic,Real One Relic,False
+Andre Dawson,FBR-AD,2026 Topps Heritage Baseball,2026,Baseball,Montréal Expos,Relic,Flashback Relic,False
+Carl Yastrzemski,FBR-CY,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Relic,Flashback Relic,False
+Dave Winfield,FBR-DW,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Relic,Flashback Relic,False
+George Brett,FBR-GB,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Relic,Flashback Relic,False
+George Foster,FBR-GF,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Relic,Flashback Relic,False
+Jim Rice,FBR-JR,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Relic,Flashback Relic,False
+Ken Griffey,FBR-KG,2026 Topps Heritage Baseball,2026,Baseball,Cincinnati Reds,Relic,Flashback Relic,False
+Keith Hernandez,FBR-KH,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Relic,Flashback Relic,False
+Mike Schmidt,FBR-MS,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Relic,Flashback Relic,False
+Rod Carew,FBR-RC,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Relic,Flashback Relic,False
+Reggie Jackson,FBR-RJ,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Relic,Flashback Relic,False
+Robin Yount,FBR-RY,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Relic,Flashback Relic,False
+Steve Carlton,FBR-SC,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Relic,Flashback Relic,False
+Steve Garvey,FBR-SG,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Relic,Flashback Relic,False
+Tony Perez,FBR-TP,2026 Topps Heritage Baseball,2026,Baseball,Montréal Expos,Relic,Flashback Relic,False
+Ted Simmons,FBR-TS,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Relic,Flashback Relic,False
+George Brett,CCDR-BW,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Relic,Clubhouse Collection Dual Relic,False
+Bobby Witt Jr.,CCDR-BW,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Relic,Clubhouse Collection Dual Relic,False
+Rod Carew,CCDR-CB,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Relic,Clubhouse Collection Dual Relic,False
+Byron Buxton,CCDR-CB,2026 Topps Heritage Baseball,2026,Baseball,Minnesota Twins,Relic,Clubhouse Collection Dual Relic,False
+Zack Wheeler,CCDR-CW,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Relic,Clubhouse Collection Dual Relic,False
+Steve Carlton,CCDR-CW,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Relic,Clubhouse Collection Dual Relic,False
+Andre Dawson,CCDR-DW,2026 Topps Heritage Baseball,2026,Baseball,Montréal Expos,Relic,Clubhouse Collection Dual Relic,False
+James Wood,CCDR-DW,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Relic,Clubhouse Collection Dual Relic,False
+Steve Garvey,CCDR-GS,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Relic,Clubhouse Collection Dual Relic,False
+Will Smith,CCDR-GS,2026 Topps Heritage Baseball,2026,Baseball,Los Angeles Dodgers,Relic,Clubhouse Collection Dual Relic,False
+Keith Hernandez,CCDR-HA,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Relic,Clubhouse Collection Dual Relic,False
+Nolan Arenado,CCDR-HA,2026 Topps Heritage Baseball,2026,Baseball,St. Louis Cardinals,Relic,Clubhouse Collection Dual Relic,False
+Aaron Judge,CCDR-JJ,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Relic,Clubhouse Collection Dual Relic,False
+Reggie Jackson,CCDR-JJ,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Relic,Clubhouse Collection Dual Relic,False
+Roman Anthony,CCDR-LA,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Relic,Clubhouse Collection Dual Relic,False
+Fred Lynn,CCDR-LA,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Relic,Clubhouse Collection Dual Relic,False
+Dale Murphy,CCDR-MO,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Relic,Clubhouse Collection Dual Relic,False
+Matt Olson,CCDR-MO,2026 Topps Heritage Baseball,2026,Baseball,Atlanta Braves,Relic,Clubhouse Collection Dual Relic,False
+Ceddanne Rafaela,CCDR-RR,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Relic,Clubhouse Collection Dual Relic,False
+Jim Rice,CCDR-RR,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Relic,Clubhouse Collection Dual Relic,False
+Mike Schmidt,CCDR-SH,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Relic,Clubhouse Collection Dual Relic,False
+Bryce Harper,CCDR-SH,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Relic,Clubhouse Collection Dual Relic,False
+Joe Torre,CCDR-TA,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Relic,Clubhouse Collection Dual Relic,False
+Pete Alonso,CCDR-TA,2026 Topps Heritage Baseball,2026,Baseball,New York Mets,Relic,Clubhouse Collection Dual Relic,False
+Dave Winfield,CCDR-WT,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Relic,Clubhouse Collection Dual Relic,False
+Fernando Tatis Jr.,CCDR-WT,2026 Topps Heritage Baseball,2026,Baseball,San Diego Padres,Relic,Clubhouse Collection Dual Relic,False
+Alex Bregman,CCDR-YB,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Relic,Clubhouse Collection Dual Relic,False
+Carl Yastrzemski,CCDR-YB,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Relic,Clubhouse Collection Dual Relic,False
+Robin Yount,CCDR-YY,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Relic,Clubhouse Collection Dual Relic,False
+Christian Yelich,CCDR-YY,2026 Topps Heritage Baseball,2026,Baseball,Milwaukee Brewers,Relic,Clubhouse Collection Dual Relic,False
+George Brett,CCQR-BWPC,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Relic,Clubhouse Collection Quad Relic,False
+Salvador Perez,CCQR-BWPC,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Relic,Clubhouse Collection Quad Relic,False
+Jac Caglianone,CCQR-BWPC,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Relic,Clubhouse Collection Quad Relic,False
+Bobby Witt Jr.,CCQR-BWPC,2026 Topps Heritage Baseball,2026,Baseball,Kansas City Royals,Relic,Clubhouse Collection Quad Relic,False
+Andre Dawson,CCQR-DWCH,2026 Topps Heritage Baseball,2026,Baseball,Montréal Expos,Relic,Clubhouse Collection Quad Relic,False
+Dylan Crews,CCQR-DWCH,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Relic,Clubhouse Collection Quad Relic,False
+James Wood,CCQR-DWCH,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Relic,Clubhouse Collection Quad Relic,False
+Brady House,CCQR-DWCH,2026 Topps Heritage Baseball,2026,Baseball,Washington Nationals,Relic,Clubhouse Collection Quad Relic,False
+Giancarlo Stanton,CCQR-JJSB,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Relic,Clubhouse Collection Quad Relic,False
+Cody Bellinger,CCQR-JJSB,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Relic,Clubhouse Collection Quad Relic,False
+Aaron Judge,CCQR-JJSB,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Relic,Clubhouse Collection Quad Relic,False
+Reggie Jackson,CCQR-JJSB,2026 Topps Heritage Baseball,2026,Baseball,New York Yankees,Relic,Clubhouse Collection Quad Relic,False
+Marcelo Mayer,CCQR-RLAM,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Relic,Clubhouse Collection Quad Relic,False
+Jim Rice,CCQR-RLAM,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Relic,Clubhouse Collection Quad Relic,False
+Fred Lynn,CCQR-RLAM,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Relic,Clubhouse Collection Quad Relic,False
+Roman Anthony,CCQR-RLAM,2026 Topps Heritage Baseball,2026,Baseball,Boston Red Sox,Relic,Clubhouse Collection Quad Relic,False
+Bryce Harper,CCQR-SHCW,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Relic,Clubhouse Collection Quad Relic,False
+Mike Schmidt,CCQR-SHCW,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Relic,Clubhouse Collection Quad Relic,False
+Steve Carlton,CCQR-SHCW,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Relic,Clubhouse Collection Quad Relic,False
+Zack Wheeler,CCQR-SHCW,2026 Topps Heritage Baseball,2026,Baseball,Philadelphia Phillies,Relic,Clubhouse Collection Quad Relic,False

@@ -1,0 +1,292 @@
+2025 Bowman Chrome Baseball Sapphire  
+
+BASE CARDS
+1 Jacob Wilson Athletics™ Rookie
+2 Hyeseong Kim Los Angeles Dodgers® Rookie
+3 Dylan Crews Washington Nationals® Rookie
+4 Matt Olson Atlanta Braves™
+5 Yusei Kikuchi Angels®
+6 Manny Machado San Diego Padres™
+7 Bobby Witt Jr. Kansas City Royals®
+8 Fernando Tatis Jr. San Diego Padres™
+9 Logan Gilbert Seattle Mariners™
+10 Cade Horton Chicago Cubs® Rookie
+11 Mick Abel Philadelphia Phillies® Rookie
+12 Roki Sasaki Los Angeles Dodgers® Rookie
+13 Ronald Acuña Jr. Atlanta Braves™
+14 Willy Adames San Francisco Giants®
+15 Alex Bregman Boston Red Sox®
+16 Jackson Holliday Baltimore Orioles®
+17 Shohei Ohtani Los Angeles Dodgers®
+18 Chandler Simpson Tampa Bay Rays™ Rookie
+19 Shota Imanaga Chicago Cubs®
+20 CJ Abrams Washington Nationals®
+21 José Ramírez Cleveland Guardians®
+22 Juan Soto New York Mets®
+23 Salvador Perez Kansas City Royals®
+24 Andrew McCutchen Pittsburgh Pirates®
+25 Trey Sweeney Detroit Tigers® Rookie
+26 Mookie Betts Los Angeles Dodgers®
+27 Mike Trout Angels®
+28 Chad Patrick Milwaukee Brewers™ Rookie
+29 James Wood Washington Nationals® Rookie
+30 Paul Skenes Pittsburgh Pirates®
+31 Blake Snell Los Angeles Dodgers®
+32 Luisangel Acuña New York Mets® Rookie
+33 Freddie Freeman Los Angeles Dodgers®
+34 Jazz Chisholm Jr. New York Yankees®
+35 Randy Arozarena Seattle Mariners™
+36 Wyatt Langford Texas Rangers®
+37 Bryce Harper Philadelphia Phillies®
+38 Jackson Merrill San Diego Padres™
+39 Marcelo Mayer Boston Red Sox® Rookie
+40 Jackson Chourio Milwaukee Brewers™
+41 Dillon Dingler Detroit Tigers® Rookie
+42 Moisés Ballesteros Chicago Cubs® Rookie
+43 Yandy Díaz Tampa Bay Rays™
+44 Kevin Alcántara Chicago Cubs® Rookie
+45 Corey Seager Texas Rangers®
+46 Matt Shaw Chicago Cubs® Rookie
+47 Jacob deGrom Texas Rangers®
+48 Sandy Alcantara Miami Marlins®
+49 Matt Chapman San Francisco Giants®
+50 Jake Mangum Tampa Bay Rays™ Rookie
+51 Ketel Marte Arizona Diamondbacks®
+52 Shane Smith Chicago White Sox® Rookie
+53 Walker Buehler Boston Red Sox®
+54 Carlos Correa Minnesota Twins®
+55 Zach Neto Angels®
+56 Bo Bichette Toronto Blue Jays®
+57 Kyle Tucker Chicago Cubs®
+58 Kristian Campbell Boston Red Sox® Rookie
+59 Francisco Lindor New York Mets®
+60 Seiya Suzuki Chicago Cubs®
+61 Luke Keaschall Minnesota Twins® Rookie
+62 Chase Dollander Colorado Rockies™ Rookie
+63 Hayden Birdsong San Francisco Giants® Rookie
+64 Masyn Winn St. Louis Cardinals®
+65 Lawrence Butler Athletics™
+66 Julio Rodríguez Seattle Mariners™
+67 Noah Cameron Kansas City Royals® Rookie
+68 Angel Martínez Cleveland Guardians® Rookie
+69 Zac Veen Colorado Rockies™ Rookie
+70 Christian Yelich Milwaukee Brewers™
+71 Chase Meidroth Chicago White Sox® Rookie
+72 Zack Wheeler Philadelphia Phillies®
+73 Sean Burke Chicago White Sox® Rookie
+74 Vladimir Guerrero Jr. Toronto Blue Jays®
+75 Drake Baldwin Atlanta Braves™ Rookie
+76 Yoshinobu Yamamoto Los Angeles Dodgers®
+77 Cam Smith Houston Astros® Rookie
+78 Cody Bellinger New York Yankees®
+79 Will Warren New York Yankees® Rookie
+80 Junior Caminero Tampa Bay Rays™
+81 Yordan Alvarez Houston Astros®
+82 Trea Turner Philadelphia Phillies®
+83 Coby Mayo Baltimore Orioles® Rookie
+84 Spencer Schwellenbach Atlanta Braves™ Rookie
+85 Corbin Carroll Arizona Diamondbacks®
+86 Tsung-Che Cheng Pittsburgh Pirates® Rookie
+87 Ezequiel Tovar Colorado Rockies™
+88 Edgar Quero Chicago White Sox® Rookie
+89 Elly De La Cruz Cincinnati Reds®
+90 Max Muncy Athletics™ Rookie
+91 Agustín Ramírez Miami Marlins® Rookie
+92 Logan Henderson Milwaukee Brewers™ Rookie
+93 Nick Kurtz Athletics™ Rookie
+94 Corbin Burnes Arizona Diamondbacks®
+95 Tarik Skubal Detroit Tigers®
+96 Gunnar Henderson Baltimore Orioles®
+97 Royce Lewis Minnesota Twins®
+98 Kumar Rocker Texas Rangers® Rookie
+99 Aaron Judge New York Yankees®
+100 Dalton Rushing Los Angeles Dodgers® Rookie
+BOWMAN CHROME PROSPECTS
+BCP-153 Josuar Gonzalez San Francisco Giants®
+BCP-154 Jac Caglianone Kansas City Royals®
+BCP-155 Elian Peña New York Mets®
+BCP-156 Andrew Salas Miami Marlins®
+BCP-157 Jakob Christian San Francisco Giants®
+BCP-158 Devin Fitz-Gerald Texas Rangers®
+BCP-159 Kendry Martínez Seattle Mariners™
+BCP-160 Jirvin Morillo Cincinnati Reds®
+BCP-161 Haritzon Castillo Minnesota Twins®
+BCP-162 Cristopher Polanco Toronto Blue Jays®
+BCP-163 Johan De Los Santos Pittsburgh Pirates®
+BCP-164 George Lombard Jr. New York Yankees®
+BCP-165 Spencer Giesting Arizona Diamondbacks®
+BCP-166 Cam Schlittler New York Yankees®
+BCP-167 Roman Anthony Boston Red Sox®
+BCP-168 Enry Torres Cincinnati Reds®
+BCP-169 Ethan Salas San Diego Padres™
+BCP-170 Shotaro Morii Athletics™
+BCP-171 Bubba Chandler Pittsburgh Pirates®
+BCP-172 John Gil Atlanta Braves™
+BCP-173 Deivid Coronil San Diego Padres™
+BCP-174 Liberts Aponte Cincinnati Reds®
+BCP-175 Raymer Medina Tampa Bay Rays™
+BCP-176 Cristopher Acosta Milwaukee Brewers™
+BCP-177 Noah Schultz Chicago White Sox®
+BCP-178 Gabriel Davalillo Angels®
+BCP-179 Will Taylor Pittsburgh Pirates®
+BCP-180 Bryce Eldridge San Francisco Giants®
+BCP-181 RJ Schreck Toronto Blue Jays®
+BCP-182 Kai Roberts San Diego Padres™
+BCP-183 Marco Dinges Milwaukee Brewers™
+BCP-184 Nate George Baltimore Orioles®
+BCP-185 Warren Calcaño Kansas City Royals®
+BCP-186 Elorky Rodriguez Texas Rangers®
+BCP-187 Ramcell Medina Kansas City Royals®
+BCP-188 Teilon Serrano Minnesota Twins®
+BCP-189 Stiven Marinez New York Yankees®
+BCP-190 Kenny Fenelon Milwaukee Brewers™
+BCP-191 Christopher Suero New York Mets®
+BCP-192 Nathan Church St. Louis Cardinals®
+BCP-193 Jose Anderson Milwaukee Brewers™
+BCP-194 Yorger Bautista Seattle Mariners™
+BCP-195 David Sandlin Boston Red Sox®
+BCP-196 Hiverson López Cleveland Guardians®
+BCP-197 Ayden Johnson Athletics™
+BCP-198 Alirio Ferrebus Philadelphia Phillies®
+BCP-199 Mani Cedeno New York Yankees®
+BCP-200 Rainiel Rodriguez St. Louis Cardinals®
+BCP-201 Anyelo Marquez Angels®
+BCP-202 Carlos Lagrange New York Yankees®
+BCP-203 Heins Brito Cleveland Guardians®
+BCP-204 Leo De Vries San Diego Padres™
+BCP-205 Kevin Defrank Miami Marlins®
+BCP-206 Bo Davidson San Francisco Giants®
+BCP-207 Juan Cabada Chicago Cubs®
+BCP-208 Jordan Sanchez Baltimore Orioles®
+BCP-209 Wilfri De La Cruz Chicago Cubs®
+BCP-210 Pedro Catuy Arizona Diamondbacks®
+BCP-211 Brayan Cortesia Washington Nationals®
+BCP-212 Caden Powell Houston Astros®
+BCP-213 Ronny Cruz Chicago Cubs®
+BCP-214 Diego Tornes Atlanta Braves™
+BCP-215 Justice Bigbie Detroit Tigers®
+BCP-216 Harold Rivas Boston Red Sox®
+BCP-217 Nestor Miranda Detroit Tigers®
+BCP-218 Luke Dickerson Washington Nationals®
+BCP-219 Alessander De La Cruz Colorado Rockies™
+BCP-220 Cristian Arguelles Colorado Rockies™
+BCP-221 Royelny Strop St. Louis Cardinals®
+BCP-222 Yahil Melendez Chicago Cubs®
+BCP-223 Jhoan De La Cruz San Diego Padres™
+BCP-224 Ching-Hsien Ko Los Angeles Dodgers®
+BCP-225 Warel Solano Tampa Bay Rays™
+BCP-226 Brett Bateman Chicago Cubs®
+BCP-227 Kevin Alvarez Houston Astros®
+BCP-228 Arjun Nimmala Toronto Blue Jays®
+BCP-229 Yulian Barreto San Francisco Giants®
+BCP-230 Juan Tomas Chicago Cubs®
+BCP-231 Juneiker Caceres Cleveland Guardians®
+BCP-232 Nieves Izaguirre Philadelphia Phillies®
+BCP-233 Jhonny Severino Pittsburgh Pirates®
+BCP-234 Carson Williams Tampa Bay Rays™
+BCP-235 Sadbiel Delzine Boston Red Sox®
+BCP-236 Yairo Padilla St. Louis Cardinals®
+BCP-237 Djean Macares San Francisco Giants®
+BCP-238 Robert Hipwell San Francisco Giants®
+BCP-239 Luis Peña Milwaukee Brewers™
+BCP-240 Maykel Coret Tampa Bay Rays™
+BCP-241 JJ Wetherholt St. Louis Cardinals®
+BCP-242 Moises Marchán Kansas City Royals®
+BCP-243 Bryce Boettcher Houston Astros®
+BCP-244 Zach Cole Houston Astros®
+BCP-245 Jesus Made Milwaukee Brewers™
+BCP-246 Kale Fountain San Diego Padres™
+BCP-247 Santiago Leon Minnesota Twins®
+BCP-248 Charlie Condon Colorado Rockies™
+BCP-249 Elian De La Cruz Arizona Diamondbacks®
+BCP-250 Cris Rodriguez Detroit Tigers®
+BCP-251 Tommy White Athletics™
+BCP-252 DJ Layton Baltimore Orioles®
+BASE CARDS IMAGE VARIATIONS
+1 Jacob Wilson Athletics™ Rookie
+2 Hyeseong Kim Los Angeles Dodgers® Rookie
+3 Dylan Crews Washington Nationals® Rookie
+12 Roki Sasaki Los Angeles Dodgers® Rookie
+29 James Wood Washington Nationals® Rookie
+32 Luisangel Acuña New York Mets® Rookie
+39 Marcelo Mayer Boston Red Sox® Rookie
+46 Matt Shaw Chicago Cubs® Rookie
+58 Kristian Campbell Boston Red Sox® Rookie
+62 Chase Dollander Colorado Rockies™ Rookie
+77 Cam Smith Houston Astros® Rookie
+BCP-153 Josuar Gonzalez San Francisco Giants®
+BCP-154 Jac Caglianone Kansas City Royals®
+BCP-155 Elian Peña New York Mets®
+BCP-156 Andrew Salas Miami Marlins®
+BCP-167 Roman Anthony Boston Red Sox®
+BCP-170 Shotaro Morii Athletics™
+BCP-214 Diego Tornes Atlanta Braves™
+BCP-245 Jesus Made Milwaukee Brewers™
+BCP-251 Tommy White Athletics™
+SAPPHIRE SELECTIONS
+SS-1 Marcelo Mayer Boston Red Sox® Rookie
+SS-2 Jackson Chourio Milwaukee Brewers™
+SS-3 Clayton Kershaw Los Angeles Dodgers®
+SS-4 Juan Soto New York Mets®
+SS-5 Josuar Gonzalez San Francisco Giants®
+SS-6 Diego Tornes Atlanta Braves™
+SS-7 Andrew Salas Miami Marlins®
+SS-8 Roki Sasaki Los Angeles Dodgers® Rookie
+SS-9 Yorger Bautista Seattle Mariners™
+SS-10 Julio Rodríguez Seattle Mariners™
+SS-11 Jesus Made Milwaukee Brewers™
+SS-12 Elly De La Cruz Cincinnati Reds®
+SS-13 Kristian Campbell Boston Red Sox® Rookie
+SS-14 Matt Shaw Chicago Cubs® Rookie
+SS-15 Elian Peña New York Mets®
+SS-16 Kevin Alvarez Houston Astros®
+SS-17 Cris Rodriguez Detroit Tigers®
+SS-18 Konnor Griffin Pittsburgh Pirates®
+SS-19 Shotaro Morii Athletics™
+SS-20 Yairo Padilla St. Louis Cardinals®
+AUTOGRAPH
+BOWMAN SAPPHIRE CHROME PROSPECT AUTOGRAPHS
+CPSA-AF Alirio Ferrebus Philadelphia Phillies®
+CPSA-AJ Ayden Johnson Athletics™
+CPSA-AS Andrew Salas Miami Marlins®
+CPSA-BC Brayan Cortesia Washington Nationals®
+CPSA-CK Ching-Hsien Ko Los Angeles Dodgers®
+CPSA-CR Cris Rodriguez Detroit Tigers®
+CPSA-CS Cam Schlittler New York Yankees®
+CPSA-DF Devin Fitz-Gerald Texas Rangers®
+CPSA-DT Diego Tornes Atlanta Braves™
+CPSA-EP Elian Peña New York Mets®
+CPSA-ER Elorky Rodriguez Texas Rangers®
+CPSA-GD Gabriel Davalillo Angels®
+CPSA-JA Jose Anderson Milwaukee Brewers™
+CPSA-JC Juan Cabada Chicago Cubs®
+CPSA-JCA Juneiker Caceres Cleveland Guardians®
+CPSA-JD Jhoan De La Cruz San Diego Padres™
+CPSA-JDL Johan De Los Santos Pittsburgh Pirates®
+CPSA-JG Josuar Gonzalez San Francisco Giants®
+CPSA-JS Jhonny Severino Pittsburgh Pirates®
+CPSA-JT Juan Tomas Chicago Cubs®
+CPSA-KA Kevin Alvarez Houston Astros®
+CPSA-KFO Kale Fountain San Diego Padres™
+CPSA-MC Maykel Coret Tampa Bay Rays™
+CPSA-MCE Mani Cedeno New York Yankees®
+CPSA-RR Rainiel Rodriguez St. Louis Cardinals®
+CPSA-SM Shotaro Morii Athletics™
+CPSA-SMA Stiven Marinez New York Yankees®
+CPSA-WD Wilfri De La Cruz Chicago Cubs®
+CPSA-YB Yorger Bautista Seattle Mariners™
+CPSA-YP Yairo Padilla St. Louis Cardinals®
+SAPPHIRE SELECTIONS AUTOGRAPHS
+SSA-AS Andrew Salas Miami Marlins®
+SSA-CR Cris Rodriguez Detroit Tigers®
+SSA-DT Diego Tornes Atlanta Braves™
+SSA-EP Elian Peña New York Mets®
+SSA-JC Jackson Chourio Milwaukee Brewers™
+SSA-JG Josuar Gonzalez San Francisco Giants®
+SSA-JM Jesus Made Milwaukee Brewers™
+SSA-KA Kevin Alvarez Houston Astros®
+SSA-MM Marcelo Mayer Boston Red Sox® Rookie
+SSA-RS Roki Sasaki Los Angeles Dodgers® Rookie
+SSA-SM Shotaro Morii Athletics™
+SSA-YB Yorger Bautista Seattle Mariners™
+SSA-YP Yairo Padilla St. Louis Cardinals®

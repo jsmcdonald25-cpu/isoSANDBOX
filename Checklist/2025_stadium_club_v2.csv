@@ -1,0 +1,650 @@
+player,card_number,set_name,year,sport,team,category,insert_name,is_rookie
+Frank Thomas,1,2025 Topps Stadium Club,2025,Baseball,Chicago White Sox,Base,,false
+Joey Votto,2,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Base,,false
+Michael Busch,3,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Base,,false
+Ronald Acuña Jr.,4,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Base,,false
+Matt Olson,5,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Base,,false
+Bobby Witt Jr.,6,2025 Topps Stadium Club,2025,Baseball,Kansas City Royals,Base,,false
+Rafael Devers,7,2025 Topps Stadium Club,2025,Baseball,San Francisco Giants,Base,,false
+Tomoyuki Sugano,8,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Base,,true
+Nick Kurtz,9,2025 Topps Stadium Club,2025,Baseball,Athletics,Base,,true
+Alex Bregman,10,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Base,,false
+José Ramírez,11,2025 Topps Stadium Club,2025,Baseball,Cleveland Guardians,Base,,false
+Shane Bieber,12,2025 Topps Stadium Club,2025,Baseball,Toronto Blue Jays,Base,,false
+Logan Henderson,13,2025 Topps Stadium Club,2025,Baseball,Milwaukee Brewers,Base,,true
+Brent Rooker,14,2025 Topps Stadium Club,2025,Baseball,Athletics,Base,,false
+Mark McGwire,15,2025 Topps Stadium Club,2025,Baseball,St. Louis Cardinals,Base,,false
+Elly De La Cruz,16,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Base,,false
+Moisés Ballesteros,17,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Base,,true
+Garrett Crochet,18,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Base,,false
+Cal Ripken Jr.,19,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Base,,false
+Nomar Garciaparra,20,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Base,,false
+Josh Naylor,21,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Base,,false
+Luis Gonzalez,22,2025 Topps Stadium Club,2025,Baseball,Arizona Diamondbacks,Base,,false
+Brenton Doyle,23,2025 Topps Stadium Club,2025,Baseball,Colorado Rockies,Base,,false
+Cade Horton,24,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Base,,true
+Chase Meidroth,25,2025 Topps Stadium Club,2025,Baseball,Chicago White Sox,Base,,true
+Yainer Diaz,26,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Base,,false
+Barry Larkin,27,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Base,,false
+Max Muncy,28,2025 Topps Stadium Club,2025,Baseball,Athletics,Base,,true
+Christian Walker,29,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Base,,false
+Salvador Perez,30,2025 Topps Stadium Club,2025,Baseball,Kansas City Royals,Base,,false
+Denzel Clarke,31,2025 Topps Stadium Club,2025,Baseball,Athletics,Base,,true
+Mike Trout,32,2025 Topps Stadium Club,2025,Baseball,Angels,Base,,false
+Jacob Wilson,33,2025 Topps Stadium Club,2025,Baseball,Athletics,Base,,true
+Kristian Campbell,34,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Base,,true
+Cole Ragans,35,2025 Topps Stadium Club,2025,Baseball,Kansas City Royals,Base,,false
+Larry Walker,36,2025 Topps Stadium Club,2025,Baseball,Colorado Rockies,Base,,false
+Zach Neto,37,2025 Topps Stadium Club,2025,Baseball,Angels,Base,,false
+Gleyber Torres,38,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Base,,false
+Matt McLain,39,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Base,,false
+Ozzie Albies,40,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Base,,false
+Adael Amador,41,2025 Topps Stadium Club,2025,Baseball,Colorado Rockies,Base,,true
+Chase Dollander,42,2025 Topps Stadium Club,2025,Baseball,Colorado Rockies,Base,,true
+Andrew Benintendi,43,2025 Topps Stadium Club,2025,Baseball,Chicago White Sox,Base,,false
+Jon Berti,44,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Base,,false
+Adley Rutschman,45,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Base,,false
+Sammy Sosa,46,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Base,,false
+Jace Jung,47,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Base,,true
+Shota Imanaga,48,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Base,,false
+Luis Severino,49,2025 Topps Stadium Club,2025,Baseball,Athletics,Base,,false
+Jackson Jobe,50,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Base,,true
+Ketel Marte,51,2025 Topps Stadium Club,2025,Baseball,Arizona Diamondbacks,Base,,false
+Logan Evans,52,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Base,,true
+Paul Konerko,53,2025 Topps Stadium Club,2025,Baseball,Chicago White Sox,Base,,false
+Caden Dana,54,2025 Topps Stadium Club,2025,Baseball,Angels,Base,,true
+Miguel Cabrera,55,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Base,,false
+Steven Kwan,56,2025 Topps Stadium Club,2025,Baseball,Cleveland Guardians,Base,,false
+Luke Keaschall,57,2025 Topps Stadium Club,2025,Baseball,Minnesota Twins,Base,,true
+Shohei Ohtani,58,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Base,,false
+Chase Petty,59,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Base,,true
+Cam Smith,60,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Base,,true
+Drake Baldwin,61,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Base,,true
+Coby Mayo,62,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Base,,true
+Seiya Suzuki,63,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Base,,false
+Justyn-Henry Malloy,64,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Base,,true
+Matt Shaw,65,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Base,,true
+Edgar Quero,66,2025 Topps Stadium Club,2025,Baseball,Chicago White Sox,Base,,true
+Tarik Skubal,67,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Base,,false
+Ezequiel Tovar,68,2025 Topps Stadium Club,2025,Baseball,Colorado Rockies,Base,,false
+David Ortiz,69,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Base,,false
+Clayton Kershaw,70,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Base,,false
+Greg Maddux,71,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Base,,false
+Austin Riley,72,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Base,,false
+Jackson Holliday,73,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Base,,false
+Marcelo Mayer,74,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Base,,true
+Yordan Alvarez,75,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Base,,false
+Riley Greene,76,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Base,,false
+Kyle Tucker,77,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Base,,false
+Lawrence Butler,78,2025 Topps Stadium Club,2025,Baseball,Athletics,Base,,false
+Nolan Ryan,79,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Base,,false
+Zac Gallen,80,2025 Topps Stadium Club,2025,Baseball,Arizona Diamondbacks,Base,,false
+Michael Harris II,81,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Base,,false
+Kyle Manzardo,82,2025 Topps Stadium Club,2025,Baseball,Cleveland Guardians,Base,,false
+Corbin Carroll,83,2025 Topps Stadium Club,2025,Baseball,Arizona Diamondbacks,Base,,false
+Chipper Jones,84,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Base,,false
+Pedro Martinez,85,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Base,,false
+Pete Crow-Armstrong,86,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Base,,false
+Luis Robert Jr.,87,2025 Topps Stadium Club,2025,Baseball,Chicago White Sox,Base,,false
+Nolan Schanuel,88,2025 Topps Stadium Club,2025,Baseball,Angels,Base,,false
+Craig Biggio,89,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Base,,false
+Spencer Strider,90,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Base,,false
+Kevin Alcántara,91,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Base,,true
+Hunter Greene,92,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Base,,false
+Spencer Schwellenbach,93,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Base,,false
+Jordan Westburg,94,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Base,,false
+Rhett Lowder,95,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Base,,true
+Gunnar Henderson,96,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Base,,false
+Jose Altuve,97,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Base,,false
+Grayson Rodriguez,98,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Base,,false
+George Brett,99,2025 Topps Stadium Club,2025,Baseball,Kansas City Royals,Base,,false
+Corbin Burnes,100,2025 Topps Stadium Club,2025,Baseball,Arizona Diamondbacks,Base,,false
+Ryan Zimmerman,101,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Base,,false
+Dylan Crews,102,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Base,,true
+Chandler Simpson,103,2025 Topps Stadium Club,2025,Baseball,Tampa Bay Rays,Base,,true
+Giancarlo Stanton,104,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Base,,false
+Paul Skenes,105,2025 Topps Stadium Club,2025,Baseball,Pittsburgh Pirates,Base,,false
+Adolis García,106,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Base,,false
+Xavier Edwards,107,2025 Topps Stadium Club,2025,Baseball,Miami Marlins,Base,,false
+Agustín Ramírez,108,2025 Topps Stadium Club,2025,Baseball,Miami Marlins,Base,,true
+Jackson Merrill,109,2025 Topps Stadium Club,2025,Baseball,San Diego Padres,Base,,false
+Evan Longoria,110,2025 Topps Stadium Club,2025,Baseball,Tampa Bay Rays,Base,,false
+Cody Bellinger,111,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Base,,false
+Willy Adames,112,2025 Topps Stadium Club,2025,Baseball,San Francisco Giants,Base,,false
+Royce Lewis,113,2025 Topps Stadium Club,2025,Baseball,Minnesota Twins,Base,,false
+Zack Wheeler,114,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Base,,false
+Luisangel Acuña,115,2025 Topps Stadium Club,2025,Baseball,New York Mets,Base,,true
+Corey Seager,116,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Base,,false
+Dylan Cease,117,2025 Topps Stadium Club,2025,Baseball,San Diego Padres,Base,,false
+Jung Hoo Lee,118,2025 Topps Stadium Club,2025,Baseball,San Francisco Giants,Base,,false
+Albert Pujols,119,2025 Topps Stadium Club,2025,Baseball,St. Louis Cardinals,Base,,false
+Sandy Alcantara,120,2025 Topps Stadium Club,2025,Baseball,Miami Marlins,Base,,false
+Max Fried,121,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Base,,false
+Yu Darvish,122,2025 Topps Stadium Club,2025,Baseball,San Diego Padres,Base,,false
+Francisco Alvarez,123,2025 Topps Stadium Club,2025,Baseball,New York Mets,Base,,false
+Bo Bichette,124,2025 Topps Stadium Club,2025,Baseball,Toronto Blue Jays,Base,,false
+Will Smith,125,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Base,,false
+Bryce Harper,126,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Base,,false
+Nolan Arenado,127,2025 Topps Stadium Club,2025,Baseball,St. Louis Cardinals,Base,,false
+Michael King,128,2025 Topps Stadium Club,2025,Baseball,San Diego Padres,Base,,false
+Mark Vientos,129,2025 Topps Stadium Club,2025,Baseball,New York Mets,Base,,false
+Alex Rodriguez,130,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Base,,false
+Eury Pérez,131,2025 Topps Stadium Club,2025,Baseball,Miami Marlins,Base,,false
+Trea Turner,132,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Base,,false
+Buster Posey,133,2025 Topps Stadium Club,2025,Baseball,San Francisco Giants,Base,,false
+George Kirby,134,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Base,,false
+Ken Griffey Jr.,135,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Base,,false
+Max Scherzer,136,2025 Topps Stadium Club,2025,Baseball,Toronto Blue Jays,Base,,false
+Marcus Semien,137,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Base,,false
+Jackson Chourio,138,2025 Topps Stadium Club,2025,Baseball,Milwaukee Brewers,Base,,false
+Aaron Judge,139,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Base,,false
+Gerrit Cole,140,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Base,,false
+Brooks Lee,141,2025 Topps Stadium Club,2025,Baseball,Minnesota Twins,Base,,true
+Caleb Durbin,142,2025 Topps Stadium Club,2025,Baseball,Milwaukee Brewers,Base,,true
+Anthony Santander,143,2025 Topps Stadium Club,2025,Baseball,Toronto Blue Jays,Base,,false
+Kodai Senga,144,2025 Topps Stadium Club,2025,Baseball,New York Mets,Base,,false
+Aaron Nola,145,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Base,,false
+Junior Caminero,146,2025 Topps Stadium Club,2025,Baseball,Tampa Bay Rays,Base,,false
+Luis Castillo,147,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Base,,false
+Ryan Howard,148,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Base,,false
+Connor Norby,149,2025 Topps Stadium Club,2025,Baseball,Miami Marlins,Base,,true
+William Contreras,150,2025 Topps Stadium Club,2025,Baseball,Milwaukee Brewers,Base,,false
+Shane McClanahan,151,2025 Topps Stadium Club,2025,Baseball,Tampa Bay Rays,Base,,false
+Juan Soto,152,2025 Topps Stadium Club,2025,Baseball,New York Mets,Base,,false
+Byron Buxton,153,2025 Topps Stadium Club,2025,Baseball,Minnesota Twins,Base,,false
+Dalton Rushing,154,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Base,,true
+Pete Alonso,155,2025 Topps Stadium Club,2025,Baseball,New York Mets,Base,,false
+Mike Piazza,156,2025 Topps Stadium Club,2025,Baseball,New York Mets,Base,,false
+Thomas Saggese,157,2025 Topps Stadium Club,2025,Baseball,St. Louis Cardinals,Base,,true
+Logan Gilbert,158,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Base,,false
+Mick Abel,159,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Base,,true
+Mookie Betts,160,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Base,,false
+Prince Fielder,161,2025 Topps Stadium Club,2025,Baseball,Milwaukee Brewers,Base,,false
+Justin Verlander,162,2025 Topps Stadium Club,2025,Baseball,San Francisco Giants,Base,,false
+Ben Williamson,163,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Base,,true
+Jazz Chisholm Jr.,164,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Base,,false
+Sonny Gray,165,2025 Topps Stadium Club,2025,Baseball,St. Louis Cardinals,Base,,false
+Andrew McCutchen,166,2025 Topps Stadium Club,2025,Baseball,Pittsburgh Pirates,Base,,false
+Matt Chapman,167,2025 Topps Stadium Club,2025,Baseball,San Francisco Giants,Base,,false
+Freddie Freeman,168,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Base,,false
+Oneil Cruz,169,2025 Topps Stadium Club,2025,Baseball,Pittsburgh Pirates,Base,,false
+Randy Arozarena,170,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Base,,false
+Christian Yelich,171,2025 Topps Stadium Club,2025,Baseball,Milwaukee Brewers,Base,,false
+Derek Jeter,172,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Base,,false
+Chase Utley,173,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Base,,false
+Vladimir Guerrero Jr.,174,2025 Topps Stadium Club,2025,Baseball,Toronto Blue Jays,Base,,false
+James Wood,175,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Base,,true
+Jimmy Rollins,176,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Base,,false
+Joe Mauer,177,2025 Topps Stadium Club,2025,Baseball,Minnesota Twins,Base,,false
+Mackenzie Gore,178,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Base,,false
+Kumar Rocker,179,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Base,,true
+Manny Machado,180,2025 Topps Stadium Club,2025,Baseball,San Diego Padres,Base,,false
+Francisco Lindor,181,2025 Topps Stadium Club,2025,Baseball,New York Mets,Base,,false
+Ichiro,182,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Base,,false
+Masyn Winn,183,2025 Topps Stadium Club,2025,Baseball,St. Louis Cardinals,Base,,false
+Yoshinobu Yamamoto,184,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Base,,false
+Julio Rodríguez,185,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Base,,false
+David Festa,186,2025 Topps Stadium Club,2025,Baseball,Minnesota Twins,Base,,true
+Roki Sasaki,187,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Base,,true
+CJ Abrams,188,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Base,,false
+Wyatt Langford,189,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Base,,false
+Braxton Ashcraft,190,2025 Topps Stadium Club,2025,Baseball,Pittsburgh Pirates,Base,,true
+Fernando Tatis Jr.,191,2025 Topps Stadium Club,2025,Baseball,San Diego Padres,Base,,false
+Trevor Hoffman,192,2025 Topps Stadium Club,2025,Baseball,San Diego Padres,Base,,false
+Brice Turang,193,2025 Topps Stadium Club,2025,Baseball,Milwaukee Brewers,Base,,false
+Jacob DeGrom,194,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Base,,false
+Honus Wagner,195,2025 Topps Stadium Club,2025,Baseball,Pittsburgh Pirates,Base,,false
+Ben Rice,196,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Base,,true
+Bryan Woo,197,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Base,,false
+Luis Arraez,198,2025 Topps Stadium Club,2025,Baseball,San Diego Padres,Base,,false
+Johan Santana,199,2025 Topps Stadium Club,2025,Baseball,Minnesota Twins,Base,,false
+Hyeseong Kim,200,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Base,,true
+Roki Sasaki,BT-1,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Insert,Beam Team,true
+James Wood,BT-2,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Insert,Beam Team,true
+Dylan Crews,BT-3,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Insert,Beam Team,true
+Jacob Wilson,BT-4,2025 Topps Stadium Club,2025,Baseball,Athletics,Insert,Beam Team,true
+Marcelo Mayer,BT-5,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Insert,Beam Team,true
+Kristian Campbell,BT-6,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Insert,Beam Team,true
+Nick Kurtz,BT-7,2025 Topps Stadium Club,2025,Baseball,Athletics,Insert,Beam Team,true
+Brooks Lee,BT-8,2025 Topps Stadium Club,2025,Baseball,Minnesota Twins,Insert,Beam Team,true
+Jackson Jobe,BT-9,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Insert,Beam Team,true
+Gunnar Henderson,BT-10,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Insert,Beam Team,false
+Jackson Chourio,BT-11,2025 Topps Stadium Club,2025,Baseball,Milwaukee Brewers,Insert,Beam Team,false
+Elly De La Cruz,BT-12,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Insert,Beam Team,false
+Bryce Harper,BT-13,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Insert,Beam Team,false
+Mike Trout,BT-14,2025 Topps Stadium Club,2025,Baseball,Angels,Insert,Beam Team,false
+Julio Rodríguez,BT-15,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Insert,Beam Team,false
+Aaron Judge,BT-16,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Insert,Beam Team,false
+Mookie Betts,BT-17,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Insert,Beam Team,false
+Bobby Witt Jr.,BT-18,2025 Topps Stadium Club,2025,Baseball,Kansas City Royals,Insert,Beam Team,false
+Shohei Ohtani,BT-19,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Insert,Beam Team,false
+Francisco Lindor,BT-20,2025 Topps Stadium Club,2025,Baseball,New York Mets,Insert,Beam Team,false
+Julio Rodríguez,SS-1,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Insert,Savage Sluggers,false
+Wyatt Langford,SS-2,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Insert,Savage Sluggers,false
+Cal Ripken Jr.,SS-3,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Insert,Savage Sluggers,false
+Fred McGriff,SS-4,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Insert,Savage Sluggers,false
+Sammy Sosa,SS-5,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Insert,Savage Sluggers,false
+Bobby Witt Jr.,SS-6,2025 Topps Stadium Club,2025,Baseball,Kansas City Royals,Insert,Savage Sluggers,false
+Shohei Ohtani,SS-7,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Insert,Savage Sluggers,false
+Juan Soto,SS-8,2025 Topps Stadium Club,2025,Baseball,New York Mets,Insert,Savage Sluggers,false
+Alex Rodriguez,SS-9,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Insert,Savage Sluggers,false
+Albert Pujols,SS-10,2025 Topps Stadium Club,2025,Baseball,St. Louis Cardinals,Insert,Savage Sluggers,false
+Reggie Jackson,SS-11,2025 Topps Stadium Club,2025,Baseball,Oakland Athletics,Insert,Savage Sluggers,false
+David Ortiz,SS-12,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Insert,Savage Sluggers,false
+Mike Trout,SS-13,2025 Topps Stadium Club,2025,Baseball,Angels,Insert,Savage Sluggers,false
+Pete Alonso,SS-14,2025 Topps Stadium Club,2025,Baseball,New York Mets,Insert,Savage Sluggers,false
+Kristian Campbell,SS-15,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Insert,Savage Sluggers,true
+Vladimir Guerrero Sr.,SS-16,2025 Topps Stadium Club,2025,Baseball,Angels,Insert,Savage Sluggers,false
+Manny Machado,SS-17,2025 Topps Stadium Club,2025,Baseball,San Diego Padres,Insert,Savage Sluggers,false
+Cal Raleigh,SS-18,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Insert,Savage Sluggers,false
+Aaron Judge,SS-19,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Insert,Savage Sluggers,false
+James Wood,SS-20,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Insert,Savage Sluggers,true
+Nick Kurtz,SS-21,2025 Topps Stadium Club,2025,Baseball,Athletics,Insert,Savage Sluggers,true
+Coby Mayo,SS-22,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Insert,Savage Sluggers,true
+Cam Smith,SS-23,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Insert,Savage Sluggers,true
+Ken Griffey Jr.,SS-24,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Insert,Savage Sluggers,false
+Yordan Alvarez,SS-25,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Insert,Savage Sluggers,false
+Roger Clemens,C-1,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Insert,Concentration,false
+Randy Johnson,C-2,2025 Topps Stadium Club,2025,Baseball,Arizona Diamondbacks,Insert,Concentration,false
+Greg Maddux,C-3,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Insert,Concentration,false
+Tarik Skubal,C-4,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Insert,Concentration,false
+Chris Sale,C-5,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Insert,Concentration,false
+Paul Skenes,C-6,2025 Topps Stadium Club,2025,Baseball,Pittsburgh Pirates,Insert,Concentration,false
+Roki Sasaki,C-7,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Insert,Concentration,true
+Nolan Ryan,C-8,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Insert,Concentration,false
+Cade Horton,C-9,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Insert,Concentration,true
+Jackson Jobe,C-10,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Insert,Concentration,true
+Pedro Martinez,C-11,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Insert,Concentration,false
+Yoshinobu Yamamoto,C-12,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Insert,Concentration,false
+Clayton Kershaw,C-13,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Insert,Concentration,false
+Zack Wheeler,C-14,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Insert,Concentration,false
+Shota Imanaga,C-15,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Insert,Concentration,false
+Hunter Greene,C-16,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Insert,Concentration,false
+Corbin Burnes,C-17,2025 Topps Stadium Club,2025,Baseball,Arizona Diamondbacks,Insert,Concentration,false
+Justin Verlander,C-18,2025 Topps Stadium Club,2025,Baseball,San Francisco Giants,Insert,Concentration,false
+Max Scherzer,C-19,2025 Topps Stadium Club,2025,Baseball,Toronto Blue Jays,Insert,Concentration,false
+Félix Hernández,C-20,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Insert,Concentration,false
+Johan Santana,C-21,2025 Topps Stadium Club,2025,Baseball,Minnesota Twins,Insert,Concentration,false
+Spencer Schwellenbach,C-22,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Insert,Concentration,true
+Rhett Lowder,C-23,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Insert,Concentration,true
+Kumar Rocker,C-24,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Insert,Concentration,true
+Eury Pérez,C-25,2025 Topps Stadium Club,2025,Baseball,Miami Marlins,Insert,Concentration,false
+James Wood,YK-1,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Insert,Yours for the Taking,true
+Dylan Crews,YK-2,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Insert,Yours for the Taking,true
+Matt Shaw,YK-3,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Insert,Yours for the Taking,true
+Kristian Campbell,YK-4,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Insert,Yours for the Taking,true
+Cam Smith,YK-5,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Insert,Yours for the Taking,true
+Jacob Wilson,YK-6,2025 Topps Stadium Club,2025,Baseball,Athletics,Insert,Yours for the Taking,true
+Coby Mayo,YK-7,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Insert,Yours for the Taking,true
+Luisangel Acuña,YK-8,2025 Topps Stadium Club,2025,Baseball,New York Mets,Insert,Yours for the Taking,true
+Brooks Lee,YK-9,2025 Topps Stadium Club,2025,Baseball,Minnesota Twins,Insert,Yours for the Taking,true
+Roki Sasaki,YK-10,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Insert,Yours for the Taking,true
+Jackson Jobe,YK-11,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Insert,Yours for the Taking,true
+Jackson Holliday,YK-12,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Insert,Yours for the Taking,false
+Jackson Chourio,YK-13,2025 Topps Stadium Club,2025,Baseball,Milwaukee Brewers,Insert,Yours for the Taking,false
+Jackson Merrill,YK-14,2025 Topps Stadium Club,2025,Baseball,San Diego Padres,Insert,Yours for the Taking,false
+Junior Caminero,YK-15,2025 Topps Stadium Club,2025,Baseball,Tampa Bay Rays,Insert,Yours for the Taking,false
+Bobby Witt Jr.,YK-16,2025 Topps Stadium Club,2025,Baseball,Kansas City Royals,Insert,Yours for the Taking,false
+Gunnar Henderson,YK-17,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Insert,Yours for the Taking,false
+Corbin Carroll,YK-18,2025 Topps Stadium Club,2025,Baseball,Arizona Diamondbacks,Insert,Yours for the Taking,false
+Vladimir Guerrero Jr.,YK-19,2025 Topps Stadium Club,2025,Baseball,Toronto Blue Jays,Insert,Yours for the Taking,false
+Elly De La Cruz,YK-20,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Insert,Yours for the Taking,false
+Yordan Alvarez,YK-21,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Insert,Yours for the Taking,false
+Julio Rodríguez,YK-22,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Insert,Yours for the Taking,false
+Wyatt Langford,YK-23,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Insert,Yours for the Taking,false
+Juan Soto,YK-24,2025 Topps Stadium Club,2025,Baseball,New York Mets,Insert,Yours for the Taking,false
+Fernando Tatis Jr.,YK-25,2025 Topps Stadium Club,2025,Baseball,San Diego Padres,Insert,Yours for the Taking,false
+Bobby Witt Jr.,ICE-1,2025 Topps Stadium Club,2025,Baseball,Kansas City Royals,Insert,In Case of Emergency,false
+Dalton Rushing,ICE-2,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Insert,In Case of Emergency,true
+Jackson Chourio,ICE-3,2025 Topps Stadium Club,2025,Baseball,Milwaukee Brewers,Insert,In Case of Emergency,false
+Jackson Merrill,ICE-4,2025 Topps Stadium Club,2025,Baseball,San Diego Padres,Insert,In Case of Emergency,false
+Jose Altuve,ICE-5,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Insert,In Case of Emergency,false
+Albert Pujols,ICE-6,2025 Topps Stadium Club,2025,Baseball,St. Louis Cardinals,Insert,In Case of Emergency,false
+Derek Jeter,ICE-7,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Insert,In Case of Emergency,false
+Ichiro,ICE-8,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Insert,In Case of Emergency,false
+Fernando Tatis Jr.,ICE-9,2025 Topps Stadium Club,2025,Baseball,San Diego Padres,Insert,In Case of Emergency,false
+Mike Schmidt,ICE-10,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Insert,In Case of Emergency,false
+James Wood,ICE-11,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Insert,In Case of Emergency,true
+Dylan Crews,ICE-12,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Insert,In Case of Emergency,true
+Jacob Wilson,ICE-13,2025 Topps Stadium Club,2025,Baseball,Athletics,Insert,In Case of Emergency,true
+Julio Rodríguez,ICE-14,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Insert,In Case of Emergency,false
+Joey Votto,ICE-15,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Insert,In Case of Emergency,false
+Frank Thomas,ICE-16,2025 Topps Stadium Club,2025,Baseball,Chicago White Sox,Insert,In Case of Emergency,false
+Wade Boggs,ICE-17,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Insert,In Case of Emergency,false
+Hyeseong Kim,ICE-18,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Insert,In Case of Emergency,true
+Coby Mayo,ICE-19,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Insert,In Case of Emergency,true
+Brooks Lee,ICE-20,2025 Topps Stadium Club,2025,Baseball,Minnesota Twins,Insert,In Case of Emergency,true
+Kyle Tucker,ICE-21,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Insert,In Case of Emergency,false
+Matt Shaw,ICE-22,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Insert,In Case of Emergency,true
+Kristian Campbell,ICE-23,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Insert,In Case of Emergency,true
+Cam Smith,ICE-24,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Insert,In Case of Emergency,true
+Mike Trout,ICE-25,2025 Topps Stadium Club,2025,Baseball,Angels,Insert,In Case of Emergency,false
+Aaron Schunk,SCBA-AS,2025 Topps Stadium Club,2025,Baseball,Colorado Rockies,Auto,Base Auto Variation,true
+Adam Mazur,SCBA-AMA,2025 Topps Stadium Club,2025,Baseball,Miami Marlins,Auto,Base Auto Variation,true
+Adrian Del Castillo,SCBA-AD,2025 Topps Stadium Club,2025,Baseball,Arizona Diamondbacks,Auto,Base Auto Variation,true
+Alec Burleson,SCBA-AB,2025 Topps Stadium Club,2025,Baseball,St. Louis Cardinals,Auto,Base Auto Variation,false
+Alex Gordon,SCBA-AGO,2025 Topps Stadium Club,2025,Baseball,Kansas City Royals,Auto,Base Auto Variation,false
+Andrés Chaparro,SCBA-AC,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Auto,Base Auto Variation,true
+Andrés Giménez,SCBA-AG,2025 Topps Stadium Club,2025,Baseball,Toronto Blue Jays,Auto,Base Auto Variation,false
+Andrew Walters,SCBA-AW,2025 Topps Stadium Club,2025,Baseball,Cleveland Guardians,Auto,Base Auto Variation,true
+Angel Chivilli,SCBA-ACH,2025 Topps Stadium Club,2025,Baseball,Colorado Rockies,Auto,Base Auto Variation,true
+Angel Martínez,SCBA-AM,2025 Topps Stadium Club,2025,Baseball,Cleveland Guardians,Auto,Base Auto Variation,true
+Anthony Volpe,SCBA-AV,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Auto,Base Auto Variation,false
+Bartolo Colon,SCBA-BCO,2025 Topps Stadium Club,2025,Baseball,New York Mets,Auto,Base Auto Variation,false
+Ben Casparius,SCBA-BCA,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,Base Auto Variation,true
+Ben Rice,SCBA-BR,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Auto,Base Auto Variation,true
+Bert Blyleven,SCBA-BBL,2025 Topps Stadium Club,2025,Baseball,Minnesota Twins,Auto,Base Auto Variation,false
+Billy Cook,SCBA-BC,2025 Topps Stadium Club,2025,Baseball,Pittsburgh Pirates,Auto,Base Auto Variation,true
+Blake Dunn,SCBA-BD,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Auto,Base Auto Variation,true
+Brady Basso,SCBA-BBA,2025 Topps Stadium Club,2025,Baseball,Athletics,Auto,Base Auto Variation,true
+Brandon Crawford,SCBA-BCR,2025 Topps Stadium Club,2025,Baseball,San Francisco Giants,Auto,Base Auto Variation,false
+Brandon Lockridge,SCBA-BLO,2025 Topps Stadium Club,2025,Baseball,San Diego Padres,Auto,Base Auto Variation,true
+Brandon Webb,SCBA-BWE,2025 Topps Stadium Club,2025,Baseball,Arizona Diamondbacks,Auto,Base Auto Variation,false
+Brant Hurter,SCBA-BH,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Auto,Base Auto Variation,true
+Brian Roberts,SCBA-BRO,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Auto,Base Auto Variation,false
+Brooks Baldwin,SCBA-BB,2025 Topps Stadium Club,2025,Baseball,Chicago White Sox,Auto,Base Auto Variation,true
+Brooks Lee,SCBA-BL,2025 Topps Stadium Club,2025,Baseball,Minnesota Twins,Auto,Base Auto Variation,true
+Cade Povich,SCBA-CP,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Auto,Base Auto Variation,true
+Caden Dana,SCBA-CD,2025 Topps Stadium Club,2025,Baseball,Angels,Auto,Base Auto Variation,true
+Cal Raleigh,SCBA-CRA,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Auto,Base Auto Variation,false
+Carlos Rodriguez,SCBA-CR,2025 Topps Stadium Club,2025,Baseball,Milwaukee Brewers,Auto,Base Auto Variation,true
+Cedric Mullins,SCBA-CMU,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Auto,Base Auto Variation,false
+Chandler Simpson,SCBA-CSI,2025 Topps Stadium Club,2025,Baseball,Tampa Bay Rays,Auto,Base Auto Variation,true
+Chayce McDermott,SCBA-CMD,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Auto,Base Auto Variation,true
+Coby Mayo,SCBA-CM,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Auto,Base Auto Variation,true
+Colton Cowser,SCBA-CCO,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Auto,Base Auto Variation,false
+Connor Norby,SCBA-CN,2025 Topps Stadium Club,2025,Baseball,Miami Marlins,Auto,Base Auto Variation,true
+Cristian Mena,SCBA-CME,2025 Topps Stadium Club,2025,Baseball,Arizona Diamondbacks,Auto,Base Auto Variation,true
+Daniel Schneemann,SCBA-DS,2025 Topps Stadium Club,2025,Baseball,Cleveland Guardians,Auto,Base Auto Variation,true
+Darren Baker,SCBA-DB,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Auto,Base Auto Variation,true
+DaShawn Keirsey,SCBA-DK,2025 Topps Stadium Club,2025,Baseball,Minnesota Twins,Auto,Base Auto Variation,true
+David Festa,SCBA-DF,2025 Topps Stadium Club,2025,Baseball,Minnesota Twins,Auto,Base Auto Variation,true
+Dennis Eckersley,SCBA-DE,2025 Topps Stadium Club,2025,Baseball,Athletics,Auto,Base Auto Variation,false
+Dillon Dingler,SCBA-DD,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Auto,Base Auto Variation,true
+DJ Herz,SCBA-DHE,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Auto,Base Auto Variation,true
+Doc Gooden,SCBA-DG,2025 Topps Stadium Club,2025,Baseball,New York Mets,Auto,Base Auto Variation,false
+Drake Baldwin,SCBA-DBA,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Auto,Base Auto Variation,true
+Drew Thorpe,SCBA-DT,2025 Topps Stadium Club,2025,Baseball,Chicago White Sox,Auto,Base Auto Variation,true
+Dustin Harris,SCBA-DH,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Auto,Base Auto Variation,true
+Dylan Crews,SCBA-DC,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Auto,Base Auto Variation,true
+Edgar Martinez,SCBA-EM,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Auto,Base Auto Variation,false
+Edgar Quero,SCBA-EQ,2025 Topps Stadium Club,2025,Baseball,Chicago White Sox,Auto,Base Auto Variation,true
+Edgardo Henriquez,SCBA-EH,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,Base Auto Variation,true
+Eric Davis,SCBA-ED,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Auto,Base Auto Variation,false
+Eric Gagne,SCBA-EG,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,Base Auto Variation,false
+Ezequiel Tovar,SCBA-ET,2025 Topps Stadium Club,2025,Baseball,Colorado Rockies,Auto,Base Auto Variation,false
+Freddy Peralta,SCBA-FP,2025 Topps Stadium Club,2025,Baseball,Milwaukee Brewers,Auto,Base Auto Variation,false
+Garrett Crochet,SCBA-GCR,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Auto,Base Auto Variation,false
+Gary Sheffield,SCBA-GSH,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Auto,Base Auto Variation,false
+George Foster,SCBA-GF,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Auto,Base Auto Variation,false
+George Kirby,SCBA-GK,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Auto,Base Auto Variation,false
+George Springer,SCBA-GS,2025 Topps Stadium Club,2025,Baseball,Toronto Blue Jays,Auto,Base Auto Variation,false
+Grant Holmes,SCBA-GH,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Auto,Base Auto Variation,true
+Greg Jones,SCBA-GJ,2025 Topps Stadium Club,2025,Baseball,Chicago White Sox,Auto,Base Auto Variation,true
+Grant McCray,SCBA-GM,2025 Topps Stadium Club,2025,Baseball,San Francisco Giants,Auto,Base Auto Variation,true
+Griffin Conine,SCBA-GC,2025 Topps Stadium Club,2025,Baseball,Miami Marlins,Auto,Base Auto Variation,true
+Hayden Birdsong,SCBA-HB,2025 Topps Stadium Club,2025,Baseball,San Francisco Giants,Auto,Base Auto Variation,true
+Hunter Feduccia,SCBA-HF,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,Base Auto Variation,true
+Hurston Waldrep,SCBA-HW,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Auto,Base Auto Variation,true
+Hyeseong Kim,SCBA-HK,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,Base Auto Variation,true
+Ian Happ,SCBA-IH,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Auto,Base Auto Variation,false
+Isaac Collins,SCBA-IC,2025 Topps Stadium Club,2025,Baseball,Milwaukee Brewers,Auto,Base Auto Variation,true
+Jace Jung,SCBA-JJ,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Auto,Base Auto Variation,true
+Jack Kochanowicz,SCBA-JK,2025 Topps Stadium Club,2025,Baseball,Angels,Auto,Base Auto Variation,true
+Jackson Jobe,SCBA-JJO,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Auto,Base Auto Variation,true
+Jacob Wilson,SCBA-JWI,2025 Topps Stadium Club,2025,Baseball,Athletics,Auto,Base Auto Variation,true
+Jacob Young,SCBA-JY,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Auto,Base Auto Variation,false
+Jake Bloss,SCBA-JB,2025 Topps Stadium Club,2025,Baseball,Toronto Blue Jays,Auto,Base Auto Variation,true
+Jake Eder,SCBA-JE,2025 Topps Stadium Club,2025,Baseball,Angels,Auto,Base Auto Variation,true
+James Wood,SCBA-JW,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Auto,Base Auto Variation,true
+Javier Sanoja,SCBA-JS,2025 Topps Stadium Club,2025,Baseball,Miami Marlins,Auto,Base Auto Variation,true
+Jay Buhner,SCBA-JBU,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Auto,Base Auto Variation,false
+Jayson Werth,SCBA-JWE,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Auto,Base Auto Variation,false
+Jesús Luzardo,SCBA-JLU,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Auto,Base Auto Variation,false
+Jhonkensy Noel,SCBA-JN,2025 Topps Stadium Club,2025,Baseball,Cleveland Guardians,Auto,Base Auto Variation,true
+Jim Edmonds,SCBA-JED,2025 Topps Stadium Club,2025,Baseball,St. Louis Cardinals,Auto,Base Auto Variation,false
+Jim Palmer,SCBA-JPA,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Auto,Base Auto Variation,false
+Joey Cantillo,SCBA-JC,2025 Topps Stadium Club,2025,Baseball,Cleveland Guardians,Auto,Base Auto Variation,true
+John Kruk,SCBA-JKR,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Auto,Base Auto Variation,false
+Jorge Posada,SCBA-JP,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Auto,Base Auto Variation,false
+José Reyes,SCBA-JR,2025 Topps Stadium Club,2025,Baseball,New York Mets,Auto,Base Auto Variation,false
+Juan Gonzalez,SCBA-JGO,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Auto,Base Auto Variation,false
+Keider Montero,SCBA-KM,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Auto,Base Auto Variation,true
+Ken Griffey Sr.,SCBA-KG,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Auto,Base Auto Variation,false
+Kerry Carpenter,SCBA-KC,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Auto,Base Auto Variation,false
+Kevin Alcántara,SCBA-KA,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Auto,Base Auto Variation,true
+Ky Bush,SCBA-KB,2025 Topps Stadium Club,2025,Baseball,Chicago White Sox,Auto,Base Auto Variation,true
+Kyle Manzardo,SCBA-KMA,2025 Topps Stadium Club,2025,Baseball,Cleveland Guardians,Auto,Base Auto Variation,false
+Logan Henderson,SCBA-LH,2025 Topps Stadium Club,2025,Baseball,Milwaukee Brewers,Auto,Base Auto Variation,true
+Luis Gil,SCBA-LG,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Auto,Base Auto Variation,false
+Luis Gonzalez,SCBA-LGO,2025 Topps Stadium Club,2025,Baseball,Arizona Diamondbacks,Auto,Base Auto Variation,false
+Luis Peralta,SCBA-LP,2025 Topps Stadium Club,2025,Baseball,Colorado Rockies,Auto,Base Auto Variation,true
+Luisangel Acuña,SCBA-LA,2025 Topps Stadium Club,2025,Baseball,New York Mets,Auto,Base Auto Variation,true
+Marcelo Mayer,SCBA-MMA,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Auto,Base Auto Variation,true
+Marcus Semien,SCBA-MS,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Auto,Base Auto Variation,false
+Mark Teixeira,SCBA-MT,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Auto,Base Auto Variation,false
+Mason Montgomery,SCBA-MMO,2025 Topps Stadium Club,2025,Baseball,Tampa Bay Rays,Auto,Base Auto Variation,true
+Michael McGreevy,SCBA-MM,2025 Topps Stadium Club,2025,Baseball,St. Louis Cardinals,Auto,Base Auto Variation,true
+Michael Young,SCBA-MY,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Auto,Base Auto Variation,false
+Nacho Alvarez Jr.,SCBA-NA,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Auto,Base Auto Variation,true
+Nathan Eovaldi,SCBA-NE,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Auto,Base Auto Variation,false
+Nick Gonzales,SCBA-NGO,2025 Topps Stadium Club,2025,Baseball,Pittsburgh Pirates,Auto,Base Auto Variation,false
+Nick Sogard,SCBA-NSO,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Auto,Base Auto Variation,true
+Nick Yorke,SCBA-NY,2025 Topps Stadium Club,2025,Baseball,Pittsburgh Pirates,Auto,Base Auto Variation,true
+Nico Hoerner,SCBA-NH,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Auto,Base Auto Variation,false
+Niko Kavadas,SCBA-NK,2025 Topps Stadium Club,2025,Baseball,Angels,Auto,Base Auto Variation,true
+Nolan Schanuel,SCBA-NS,2025 Topps Stadium Club,2025,Baseball,Angels,Auto,Base Auto Variation,false
+Orelvis Martinez,SCBA-OM,2025 Topps Stadium Club,2025,Baseball,Toronto Blue Jays,Auto,Base Auto Variation,true
+Ozzie Albies,SCBA-OA,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Auto,Base Auto Variation,false
+Ozzie Smith,SCBA-OS,2025 Topps Stadium Club,2025,Baseball,St. Louis Cardinals,Auto,Base Auto Variation,false
+Paul Konerko,SCBA-PK,2025 Topps Stadium Club,2025,Baseball,Chicago White Sox,Auto,Base Auto Variation,false
+Pedro León,SCBA-PL,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Auto,Base Auto Variation,true
+R.A. Dickey,SCBA-RD,2025 Topps Stadium Club,2025,Baseball,New York Mets,Auto,Base Auto Variation,false
+Rafael Furcal,SCBA-RFU,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Auto,Base Auto Variation,false
+Rhett Lowder,SCBA-RL,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Auto,Base Auto Variation,true
+Richard Fitts,SCBA-RF,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Auto,Base Auto Variation,true
+River Ryan,SCBA-RR,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,Base Auto Variation,true
+Roki Sasaki,SCBA-RS,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,Base Auto Variation,true
+Ron Guidry,SCBA-RG,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Auto,Base Auto Variation,false
+Ryan Bliss,SCBA-RB,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Auto,Base Auto Variation,true
+Ryan Howard,SCBA-RHW,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Auto,Base Auto Variation,false
+Ryan Zimmerman,SCBA-RZ,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Auto,Base Auto Variation,false
+Sal Frelick,SCBA-SF,2025 Topps Stadium Club,2025,Baseball,Milwaukee Brewers,Auto,Base Auto Variation,false
+Sam Aldegheri,SCBA-SA,2025 Topps Stadium Club,2025,Baseball,Angels,Auto,Base Auto Variation,true
+Sean Burke,SCBA-SBU,2025 Topps Stadium Club,2025,Baseball,Chicago White Sox,Auto,Base Auto Variation,true
+Seth Johnson,SCBA-SJ,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Auto,Base Auto Variation,true
+Seth Lugo,SCBA-SL,2025 Topps Stadium Club,2025,Baseball,Kansas City Royals,Auto,Base Auto Variation,false
+Shane McClanahan,SCBA-SM,2025 Topps Stadium Club,2025,Baseball,Tampa Bay Rays,Auto,Base Auto Variation,false
+Shawn Green,SCBA-SG,2025 Topps Stadium Club,2025,Baseball,Toronto Blue Jays,Auto,Base Auto Variation,false
+Shay Whitcomb,SCBA-SW,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Auto,Base Auto Variation,true
+Spencer Schwellenbach,SCBA-SS,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Auto,Base Auto Variation,true
+Spencer Steer,SCBA-SST,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Auto,Base Auto Variation,false
+Steven Kwan,SCBA-SK,2025 Topps Stadium Club,2025,Baseball,Cleveland Guardians,Auto,Base Auto Variation,false
+Thomas Harrington,SCBA-THA,2025 Topps Stadium Club,2025,Baseball,Pittsburgh Pirates,Auto,Base Auto Variation,true
+Thomas Saggese,SCBA-TS,2025 Topps Stadium Club,2025,Baseball,St. Louis Cardinals,Auto,Base Auto Variation,true
+Tom Glavine,SCBA-TGE,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Auto,Base Auto Variation,false
+Tommy Edman,SCBA-TE,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,Base Auto Variation,false
+Torii Hunter,SCBA-THU,2025 Topps Stadium Club,2025,Baseball,Minnesota Twins,Auto,Base Auto Variation,false
+Trevor Hoffman,SCBA-TH,2025 Topps Stadium Club,2025,Baseball,San Diego Padres,Auto,Base Auto Variation,false
+Trey Sweeney,SCBA-TSW,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Auto,Base Auto Variation,true
+Ty Madden,SCBA-TM,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Auto,Base Auto Variation,true
+Tyler Gentry,SCBA-TG,2025 Topps Stadium Club,2025,Baseball,Kansas City Royals,Auto,Base Auto Variation,true
+Tyler Locklear,SCBA-TL,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Auto,Base Auto Variation,true
+Tyler Phillips,SCBA-TP,2025 Topps Stadium Club,2025,Baseball,Miami Marlins,Auto,Base Auto Variation,true
+Valente Bellozo,SCBA-VB,2025 Topps Stadium Club,2025,Baseball,Miami Marlins,Auto,Base Auto Variation,true
+Vernon Wells,SCBA-VW,2025 Topps Stadium Club,2025,Baseball,Toronto Blue Jays,Auto,Base Auto Variation,false
+Victor Martinez,SCBA-VM,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Auto,Base Auto Variation,false
+Will Clark,SCBA-WCL,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Auto,Base Auto Variation,false
+Will Wagner,SCBA-WW,2025 Topps Stadium Club,2025,Baseball,Toronto Blue Jays,Auto,Base Auto Variation,true
+Will Warren,SCBA-WWA,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Auto,Base Auto Variation,true
+Yainer Diaz,SCBA-YDI,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Auto,Base Auto Variation,false
+Yilber Diaz,SCBA-YD,2025 Topps Stadium Club,2025,Baseball,Arizona Diamondbacks,Auto,Base Auto Variation,true
+Zach Dezenzo,SCBA-ZD,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Auto,Base Auto Variation,true
+Aaron Judge,SCCA-AJ,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Auto,Chrome Base Auto,false
+Andrew McCutchen,SCCA-AM,2025 Topps Stadium Club,2025,Baseball,Pittsburgh Pirates,Auto,Chrome Base Auto,false
+Albert Pujols,SCCA-AP,2025 Topps Stadium Club,2025,Baseball,St. Louis Cardinals,Auto,Chrome Base Auto,false
+Agustín Ramírez,SCCA-ARA,2025 Topps Stadium Club,2025,Baseball,Miami Marlins,Auto,Chrome Base Auto,true
+Adley Rutschman,SCCA-ARU,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Auto,Chrome Base Auto,false
+Barry Bonds,SCCA-BB,2025 Topps Stadium Club,2025,Baseball,San Francisco Giants,Auto,Chrome Base Auto,false
+Brooks Lee,SCCA-BL,2025 Topps Stadium Club,2025,Baseball,Minnesota Twins,Auto,Chrome Base Auto,true
+Barry Larkin,SCCA-BLA,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Auto,Chrome Base Auto,false
+Ben Rice,SCCA-BR,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Auto,Chrome Base Auto,true
+Bobby Witt Jr.,SCCA-BW,2025 Topps Stadium Club,2025,Baseball,Kansas City Royals,Auto,Chrome Base Auto,false
+Caden Dana,SCCA-CD,2025 Topps Stadium Club,2025,Baseball,Angels,Auto,Chrome Base Auto,true
+Chase Dollander,SCCA-CDO,2025 Topps Stadium Club,2025,Baseball,Colorado Rockies,Auto,Chrome Base Auto,true
+Cade Horton,SCCA-CH,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Auto,Chrome Base Auto,true
+Clayton Kershaw,SCCA-CK,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,Chrome Base Auto,false
+Coby Mayo,SCCA-CM,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Auto,Chrome Base Auto,true
+Connor Norby,SCCA-CN,2025 Topps Stadium Club,2025,Baseball,Miami Marlins,Auto,Chrome Base Auto,true
+Cade Povich,SCCA-CP,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Auto,Chrome Base Auto,true
+Cam Smith,SCCA-CSM,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Auto,Chrome Base Auto,true
+Chase Utley,SCCA-CU,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Auto,Chrome Base Auto,false
+Dylan Crews,SCCA-DC,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Auto,Chrome Base Auto,true
+Derek Jeter,SCCA-DJ,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Auto,Chrome Base Auto,false
+Dalton Rushing,SCCA-DR,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,Chrome Base Auto,true
+Darryl Strawberry,SCCA-DS,2025 Topps Stadium Club,2025,Baseball,New York Mets,Auto,Chrome Base Auto,false
+Elly De La Cruz,SCCA-ED,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Auto,Chrome Base Auto,false
+Félix Hernández,SCCA-FH,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Auto,Chrome Base Auto,false
+Francisco Lindor,SCCA-FL,2025 Topps Stadium Club,2025,Baseball,New York Mets,Auto,Chrome Base Auto,false
+Fernando Tatis Jr.,SCCA-FT,2025 Topps Stadium Club,2025,Baseball,San Diego Padres,Auto,Chrome Base Auto,false
+George Brett,SCCA-GB,2025 Topps Stadium Club,2025,Baseball,Kansas City Royals,Auto,Chrome Base Auto,false
+Grant Holmes,SCCA-GHO,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Auto,Chrome Base Auto,true
+Hyeseong Kim,SCCA-HK,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,Chrome Base Auto,true
+Ichiro,SCCA-I,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Auto,Chrome Base Auto,false
+Ivan Rodriguez,SCCA-IR,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Auto,Chrome Base Auto,false
+Johnny Bench,SCCA-JB,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Auto,Chrome Base Auto,false
+Jackson Chourio,SCCA-JC,2025 Topps Stadium Club,2025,Baseball,Milwaukee Brewers,Auto,Chrome Base Auto,false
+Jasson Domínguez,SCCA-JD,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Auto,Chrome Base Auto,false
+Jace Jung,SCCA-JJ,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Auto,Chrome Base Auto,true
+Jackson Jobe,SCCA-JJO,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Auto,Chrome Base Auto,true
+Jhonkensy Noel,SCCA-JN,2025 Topps Stadium Club,2025,Baseball,Cleveland Guardians,Auto,Chrome Base Auto,true
+Julio Rodríguez,SCCA-JR,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Auto,Chrome Base Auto,false
+Jimmy Rollins,SCCA-JRO,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Auto,Chrome Base Auto,false
+Juan Soto,SCCA-JS,2025 Topps Stadium Club,2025,Baseball,New York Mets,Auto,Chrome Base Auto,false
+Johan Santana,SCCA-JSA,2025 Topps Stadium Club,2025,Baseball,Minnesota Twins,Auto,Chrome Base Auto,false
+James Wood,SCCA-JW,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Auto,Chrome Base Auto,true
+Jacob Wilson,SCCA-JWI,2025 Topps Stadium Club,2025,Baseball,Athletics,Auto,Chrome Base Auto,true
+Kevin Alcántara,SCCA-KA,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Auto,Chrome Base Auto,true
+Kristian Campbell,SCCA-KC,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Auto,Chrome Base Auto,true
+Kumar Rocker,SCCA-KR,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Auto,Chrome Base Auto,true
+Luke Keaschall,SCCA-LK,2025 Topps Stadium Club,2025,Baseball,Minnesota Twins,Auto,Chrome Base Auto,true
+Mick Abel,SCCA-MA,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Auto,Chrome Base Auto,true
+Mark McGwire,SCCA-MMC,2025 Topps Stadium Club,2025,Baseball,St. Louis Cardinals,Auto,Chrome Base Auto,false
+Matt Shaw,SCCA-MS,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Auto,Chrome Base Auto,true
+Mike Trout,SCCA-MT,2025 Topps Stadium Club,2025,Baseball,Angels,Auto,Chrome Base Auto,false
+Nolan Arenado,SCCA-NA,2025 Topps Stadium Club,2025,Baseball,St. Louis Cardinals,Auto,Chrome Base Auto,false
+Nick Kurtz,SCCA-NK,2025 Topps Stadium Club,2025,Baseball,Athletics,Auto,Chrome Base Auto,true
+Orel Hershiser,SCCA-OH,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,Chrome Base Auto,false
+Paul Skenes,SCCA-PS,2025 Topps Stadium Club,2025,Baseball,Pittsburgh Pirates,Auto,Chrome Base Auto,false
+Ronald Acuña Jr.,SCCA-RA,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Auto,Chrome Base Auto,false
+Roger Clemens,SCCA-RC,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Auto,Chrome Base Auto,false
+Robert Hassell III,SCCA-RHA,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Auto,Chrome Base Auto,true
+Randy Johnson,SCCA-RJ,2025 Topps Stadium Club,2025,Baseball,Arizona Diamondbacks,Auto,Chrome Base Auto,false
+Rhett Lowder,SCCA-RL,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Auto,Chrome Base Auto,true
+Roki Sasaki,SCCA-RS,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,Chrome Base Auto,true
+Steven Kwan,SCCA-SK,2025 Topps Stadium Club,2025,Baseball,Cleveland Guardians,Auto,Chrome Base Auto,false
+Shohei Ohtani,SCCA-SO,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,Chrome Base Auto,false
+Spencer Schwellenbach,SCCA-SS,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Auto,Chrome Base Auto,true
+Shay Whitcomb,SCCA-SW,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Auto,Chrome Base Auto,true
+Tyler Locklear,SCCA-TL,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Auto,Chrome Base Auto,true
+Thomas Saggese,SCCA-TS,2025 Topps Stadium Club,2025,Baseball,St. Louis Cardinals,Auto,Chrome Base Auto,true
+Trey Sweeney,SCCA-TSW,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Auto,Chrome Base Auto,true
+Vladimir Guerrero Jr.,SCCA-VG,2025 Topps Stadium Club,2025,Baseball,Toronto Blue Jays,Auto,Chrome Base Auto,false
+Wade Boggs,SCCA-WB,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Auto,Chrome Base Auto,false
+Wyatt Langford,SCCA-WL,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Auto,Chrome Base Auto,false
+Zac Veen,SCCA-ZV,2025 Topps Stadium Club,2025,Baseball,Colorado Rockies,Auto,Chrome Base Auto,true
+Albert Pujols,SS-AP,2025 Topps Stadium Club,2025,Baseball,St. Louis Cardinals,Auto,Savage Sluggers Auto,false
+Alex Rodriguez,SS-AR,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Auto,Savage Sluggers Auto,false
+Bobby Witt Jr.,SS-BW,2025 Topps Stadium Club,2025,Baseball,Kansas City Royals,Auto,Savage Sluggers Auto,false
+Cal Ripken Jr.,SS-CR,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Auto,Savage Sluggers Auto,false
+David Ortiz,SS-DO,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Auto,Savage Sluggers Auto,false
+Fred McGriff,SS-FM,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Auto,Savage Sluggers Auto,false
+Julio Rodríguez,SS-JR,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Auto,Savage Sluggers Auto,false
+Juan Soto,SS-JS,2025 Topps Stadium Club,2025,Baseball,New York Mets,Auto,Savage Sluggers Auto,false
+Kristian Campbell,SS-KC,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Auto,Savage Sluggers Auto,true
+Manny Machado,SS-MM,2025 Topps Stadium Club,2025,Baseball,San Diego Padres,Auto,Savage Sluggers Auto,false
+Mike Trout,SS-MT,2025 Topps Stadium Club,2025,Baseball,Angels,Auto,Savage Sluggers Auto,false
+Nick Kurtz,SS-NK,2025 Topps Stadium Club,2025,Baseball,Athletics,Auto,Savage Sluggers Auto,true
+Pete Alonso,SS-PA,2025 Topps Stadium Club,2025,Baseball,New York Mets,Auto,Savage Sluggers Auto,false
+Reggie Jackson,SS-RJ,2025 Topps Stadium Club,2025,Baseball,Oakland Athletics,Auto,Savage Sluggers Auto,false
+Shohei Ohtani,SS-SO,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,Savage Sluggers Auto,false
+Sammy Sosa,SS-SS,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Auto,Savage Sluggers Auto,false
+Vladimir Guerrero,SS-VG,2025 Topps Stadium Club,2025,Baseball,Angels,Auto,Savage Sluggers Auto,false
+Wyatt Langford,SS-WL,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Auto,Savage Sluggers Auto,false
+Albert Pujols,ICOEA-AP,2025 Topps Stadium Club,2025,Baseball,St. Louis Cardinals,Auto,ICE Auto,false
+Bobby Witt Jr.,ICOEA-BW,2025 Topps Stadium Club,2025,Baseball,Kansas City Royals,Auto,ICE Auto,false
+Dylan Crews,ICOEA-DC,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Auto,ICE Auto,true
+Derek Jeter,ICOEA-DJ,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Auto,ICE Auto,false
+Dalton Rushing,ICOEA-DR,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,ICE Auto,true
+Fernando Tatis Jr.,ICOEA-FT,2025 Topps Stadium Club,2025,Baseball,San Diego Padres,Auto,ICE Auto,false
+Frank Thomas,ICOEA-FTH,2025 Topps Stadium Club,2025,Baseball,Chicago White Sox,Auto,ICE Auto,false
+Hyeseong Kim,ICOEA-HK,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,ICE Auto,true
+Ichiro,ICOEA-I,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Auto,ICE Auto,false
+Jose Altuve,ICOEA-JA,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Auto,ICE Auto,false
+Jackson Chourio,ICOEA-JC,2025 Topps Stadium Club,2025,Baseball,Milwaukee Brewers,Auto,ICE Auto,false
+Julio Rodríguez,ICOEA-JR,2025 Topps Stadium Club,2025,Baseball,Seattle Mariners,Auto,ICE Auto,false
+Joey Votto,ICOEA-JV,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Auto,ICE Auto,false
+James Wood,ICOEA-JW,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Auto,ICE Auto,true
+Jacob Wilson,ICOEA-JWI,2025 Topps Stadium Club,2025,Baseball,Athletics,Auto,ICE Auto,true
+Mike Schmidt,ICOEA-MS,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Auto,ICE Auto,false
+Wade Boggs,ICOEA-WB,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Auto,ICE Auto,false
+George Brett,DA-BW,2025 Topps Stadium Club,2025,Baseball,Kansas City Royals,Auto,Dual Autograph,false
+Bobby Witt Jr.,DA-BW,2025 Topps Stadium Club,2025,Baseball,Kansas City Royals,Auto,Dual Autograph,false
+Steve Carlton,DA-CN,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Auto,Dual Autograph,false
+Aaron Nola,DA-CN,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Auto,Dual Autograph,false
+Jackson Holliday,DA-HH,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Auto,Dual Autograph,false
+Gunnar Henderson,DA-HH,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Auto,Dual Autograph,false
+Chipper Jones,DA-JA,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Auto,Dual Autograph,false
+Ronald Acuña Jr.,DA-JA,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Auto,Dual Autograph,false
+Evan Longoria,DA-LC,2025 Topps Stadium Club,2025,Baseball,Tampa Bay Rays,Auto,Dual Autograph,false
+Junior Caminero,DA-LC,2025 Topps Stadium Club,2025,Baseball,Tampa Bay Rays,Auto,Dual Autograph,false
+Barry Larkin,DA-LD,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Auto,Dual Autograph,false
+Elly De La Cruz,DA-LD,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Auto,Dual Autograph,false
+Alex Rodriguez,DA-RS,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Auto,Dual Autograph,false
+Corey Seager,DA-RS,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Auto,Dual Autograph,false
+Dylan Crews,DA-WC,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Auto,Dual Autograph,true
+James Wood,DA-WC,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Auto,Dual Autograph,true
+Nick Kurtz,DA-WK,2025 Topps Stadium Club,2025,Baseball,Athletics,Auto,Dual Autograph,true
+Jacob Wilson,DA-WK,2025 Topps Stadium Club,2025,Baseball,Athletics,Auto,Dual Autograph,true
+Barry Bonds,GYA-BB,2025 Topps Stadium Club,2025,Baseball,San Francisco Giants,Auto,Goin Yard Auto,false
+Frank Thomas,GYA-FT,2025 Topps Stadium Club,2025,Baseball,Chicago White Sox,Auto,Goin Yard Auto,false
+Gunnar Henderson,GYA-GH,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Auto,Goin Yard Auto,false
+Gary Sheffield,GYA-GS,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,Goin Yard Auto,false
+José Ramírez,GYA-JR,2025 Topps Stadium Club,2025,Baseball,Cleveland Guardians,Auto,Goin Yard Auto,false
+Juan Soto,GYA-JS,2025 Topps Stadium Club,2025,Baseball,New York Mets,Auto,Goin Yard Auto,false
+Kristian Campbell,GYA-KC,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Auto,Goin Yard Auto,true
+Kyle Schwarber,GYA-KS,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Auto,Goin Yard Auto,false
+Manny Machado,GYA-MM,2025 Topps Stadium Club,2025,Baseball,San Diego Padres,Auto,Goin Yard Auto,false
+Mark McGwire,GYA-MMC,2025 Topps Stadium Club,2025,Baseball,St. Louis Cardinals,Auto,Goin Yard Auto,false
+Pete Alonso,GYA-PA,2025 Topps Stadium Club,2025,Baseball,New York Mets,Auto,Goin Yard Auto,false
+Ronald Acuña Jr.,GYA-RA,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Auto,Goin Yard Auto,false
+Ryan Howard,GYA-RH,2025 Topps Stadium Club,2025,Baseball,Philadelphia Phillies,Auto,Goin Yard Auto,false
+Shohei Ohtani,GYA-SO,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,Goin Yard Auto,false
+Sammy Sosa,GYA-SS,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Auto,Goin Yard Auto,false
+Vladimir Guerrero Jr.,GYA-VG,2025 Topps Stadium Club,2025,Baseball,Toronto Blue Jays,Auto,Goin Yard Auto,false
+Adrian Beltré,AA-AB,2025 Topps Stadium Club,2025,Baseball,Texas Rangers,Auto,Abstract Auto,false
+Buster Posey,AA-BP,2025 Topps Stadium Club,2025,Baseball,San Francisco Giants,Auto,Abstract Auto,false
+Chipper Jones,AA-CJ,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Auto,Abstract Auto,false
+Christian Yelich,AA-CY,2025 Topps Stadium Club,2025,Baseball,Milwaukee Brewers,Auto,Abstract Auto,false
+Dylan Crews,AA-DC,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Auto,Abstract Auto,true
+Eddie Murray,AA-EM,2025 Topps Stadium Club,2025,Baseball,Baltimore Orioles,Auto,Abstract Auto,false
+Jasson Domínguez,AA-JD,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Auto,Abstract Auto,false
+Joey Votto,AA-JV,2025 Topps Stadium Club,2025,Baseball,Cincinnati Reds,Auto,Abstract Auto,false
+James Wood,AA-JW,2025 Topps Stadium Club,2025,Baseball,Washington Nationals,Auto,Abstract Auto,true
+Luisangel Acuña,AA-LA,2025 Topps Stadium Club,2025,Baseball,New York Mets,Auto,Abstract Auto,true
+Marcelo Mayer,AA-MM,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Auto,Abstract Auto,true
+Mike Piazza,AA-MP,2025 Topps Stadium Club,2025,Baseball,New York Mets,Auto,Abstract Auto,false
+Matt Shaw,AA-MS,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Auto,Abstract Auto,true
+Reggie Jackson,AA-RJ,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Auto,Abstract Auto,false
+Chase Dollander,TVA-CD,2025 Topps Stadium Club,2025,Baseball,Colorado Rockies,Auto,Concentration Auto,true
+Cade Horton,TVA-CH,2025 Topps Stadium Club,2025,Baseball,Chicago Cubs,Auto,Concentration Auto,true
+Chris Sale,TVA-CS,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Auto,Concentration Auto,false
+Greg Maddux,TVA-GM,2025 Topps Stadium Club,2025,Baseball,Atlanta Braves,Auto,Concentration Auto,false
+Nolan Ryan,TVA-NR,2025 Topps Stadium Club,2025,Baseball,Houston Astros,Auto,Concentration Auto,false
+Pedro Martinez,TVA-PM,2025 Topps Stadium Club,2025,Baseball,Boston Red Sox,Auto,Concentration Auto,false
+Paul Skenes,TVA-PS,2025 Topps Stadium Club,2025,Baseball,Pittsburgh Pirates,Auto,Concentration Auto,false
+Roger Clemens,TVA-RC,2025 Topps Stadium Club,2025,Baseball,New York Yankees,Auto,Concentration Auto,false
+Randy Johnson,TVA-RJ,2025 Topps Stadium Club,2025,Baseball,Arizona Diamondbacks,Auto,Concentration Auto,false
+Roki Sasaki,TVA-RS,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,Concentration Auto,true
+Tarik Skubal,TVA-TS,2025 Topps Stadium Club,2025,Baseball,Detroit Tigers,Auto,Concentration Auto,false
+Yoshinobu Yamamoto,TVA-YY,2025 Topps Stadium Club,2025,Baseball,Los Angeles Dodgers,Auto,Concentration Auto,false

@@ -3,7 +3,6 @@
 # Site: isosandbox.com
 # Repo: jsmcdonald25-cpu/isoSANDBOX
 # ============================================================
-
 [build]
   publish = "/"
 
@@ -14,7 +13,7 @@
   to = "/dashboard.html"
   status = 302
 
-# Clean URLs (optional — lets you use /catalog instead of /card-catalog.html)
+# Clean URLs
 [[redirects]]
   from = "/catalog"
   to = "/card-catalog.html"
@@ -30,14 +29,7 @@
   to = "/auth.html"
   status = 302
 
-# Catch-all — any unknown route goes to dashboard
-[[redirects]]
-  from = "/*"
-  to = "/dashboard.html"
-  status = 302
-
 # ── HEADERS ────────────────────────────────────────────────
-# Security headers on all pages
 [[headers]]
   for = "/*"
   [headers.values]
@@ -46,13 +38,11 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
-# Cache HTML — short (always fresh)
 [[headers]]
   for = "/*.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# Cache assets — long
 [[headers]]
   for = "/*.js"
   [headers.values]

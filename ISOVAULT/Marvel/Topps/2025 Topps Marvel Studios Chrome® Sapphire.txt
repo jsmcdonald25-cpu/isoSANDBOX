@@ -1,0 +1,455 @@
+2025 Topps Marvel Studios Chrome Sapphire
+
+Card Number Name Secondary Name Property Phase Debut
+BASE 1 Iron Man Tony Stark Iron Man Phase One 2 Happy Hogan Iron Man Phase One 3 Iron Monger Obadiah Stane Iron Man Phase One 4 Dr. Ho Yinsen Iron Man Phase One 5 Pepper Potts Iron Man 2 Phase One 6 Justin Hammer Iron Man 2 Phase One 7 Black Widow Natasha Romanoff Iron Man 2 Phase One 8 Whiplash Ivan Vanko Iron Man 2 Phase One 9 Nick Fury Iron Man 2 Phase One
+10 Thor Thor Phase One
+11 Odin Thor Phase One
+12 Heimdall Thor Phase One
+13 Frigga Thor Phase One
+14 Erik Selvig Thor Phase One
+15 Dr. Jane Foster Thor Phase One
+16 Darcy Lewis Thor Phase One
+17 Laufey Thor Phase One
+18 Lady Sif Thor Phase One
+19 Loki Thor Phase One
+20 Captain America Steve Rogers Captain America: The First Avenger Phase One
+21 Howard Stark Captain America: The First Avenger Phase One
+22 Red Skull Johann Schmidt Captain America: The First Avenger Phase One
+23 Dr. Abraham Erskine Captain America: The First Avenger Phase One
+24 Agent Peggy Carter Captain America: The First Avenger Phase One
+25 Dr. Arnim Zola Captain America: The First Avenger Phase One
+26 Bucky Barnes Captain America: The First Avenger Phase One
+27 Hulk Bruce Banner Marvel's The Avengers Phase One
+28 Hawkeye Clint Barton Marvel's The Avengers Phase One
+29 Agent Phil Coulson Marvel's The Avengers Phase One
+30 Agent Maria Hill Marvel's The Avengers Phase One
+31 Iron Patriot James Rhodes Iron Man 3 Phase Two
+32 "The Mandarin" Trevor Slattery Iron Man 3 Phase Two
+33 Aldrich Killian Iron Man 3 Phase Two
+34 Ellen Brandt Iron Man 3 Phase Two
+35 Eric Savin Iron Man 3 Phase Two
+36 Dr. Maya Hansen Iron Man 3 Phase Two
+37 Malekith Thor: The Dark World Phase Two
+38 Winter Soldier Bucky Barnes Captain America: The Winter Soldier Phase Two
+39 Agent 13 Sharon Carter Captain America: The Winter Soldier Phase Two
+40 Brock Rumlow Captain America: The Winter Soldier Phase Two
+41 Falcon Sam Wilson Captain America: The Winter Soldier Phase Two
+42 Star-Lord Peter Quill Guardians of the Galaxy Vol. 1 Phase Two
+43 Rocket Guardians of the Galaxy Vol. 1 Phase Two
+44 Drax Guardians of the Galaxy Vol. 1 Phase Two
+45 Nebula Guardians of the Galaxy Vol. 1 Phase Two
+46 Ronan Guardians of the Galaxy Vol. 1 Phase Two
+47 Yondu Udonta Guardians of the Galaxy Vol. 1 Phase Two
+48 Gamora Guardians of the Galaxy Vol. 1 Phase Two
+49 The Collector Guardians of the Galaxy Vol. 1 Phase Two
+50 Groot Guardians of the Galaxy Vol. 1 Phase Two
+51 Nova Prime Guardians of the Galaxy Vol. 1 Phase Two
+52 Wanda Maximoff Avengers: Age of Ultron Phase Two
+53 Pietro Maximoff Avengers: Age of Ultron Phase Two
+54 Ultron Avengers: Age of Ultron Phase Two
+55 Vision Avengers: Age of Ultron Phase Two
+56 Baron Strucker Avengers: Age of Ultron Phase Two
+57 Ant-Man Scott Lang Ant-Man Phase Two
+58 Dr. Hank Pym Ant-Man Phase Two
+59 Hope Van Dyne Ant-Man Phase Two
+60 Yellow Jacket Darren Cross Ant-Man Phase Two
+61 Spider-Man Peter Parker Captain America: Civil War Phase Three
+62 Helmut Zemo Captain America: Civil War Phase Three
+63 King T'Chaka Captain America: Civil War Phase Three
+64 War Machine James Rhodes Captain America: Civil War Phase Three
+65 Doctor Strange Dr. Stephen Strange Doctor Strange Phase Three
+66 Dr. Christine Palmer Doctor Strange Phase Three
+67 Wong Doctor Strange Phase Three
+68 The Ancient One Doctor Strange Phase Three
+69 Karl Mordo Doctor Strange Phase Three
+70 Kaecilius Doctor Strange Phase Three
+71 Ego Guardians of the Galaxy Vol. 2 Phase Three
+72 Mantis Guardians of the Galaxy Vol. 2 Phase Three
+73 Baby Groot Guardians of the Galaxy Vol. 2 Phase Three
+74 Valkyrie Thor: Ragnarok Phase Three
+75 Grandmaster Thor: Ragnarok Phase Three
+76 Hela Thor: Ragnarok Phase Three
+77 Korg Thor: Ragnarok Phase Three
+78 Miek Thor: Ragnarok Phase Three
+79 Black Panther T'Challa Black Panther Phase Three
+80 Shuri Black Panther Phase Three
+81 Nakia Black Panther Phase Three
+82 Okoye Black Panther Phase Three
+83 M'Baku Black Panther Phase Three
+84 Ulysses Klaue Black Panther Phase Three
+85 Erik Killmonger N'Jadaka Black Panther Phase Three
+86 Queen Ramonda Black Panther Phase Three
+87 Cull Obsidian Avengers: Infinity War Phase Three
+88 Ebony Maw Avengers: Infinity War Phase Three
+89 Proxima Midnight Avengers: Infinity War Phase Three
+90 Corvus Glaive Avengers: Infinity War Phase Three
+91 The Wasp Hope Van Dyne Ant-Man and the Wasp Phase Three
+92 Janet Van Dyne Ant-Man and the Wasp Phase Three
+93 Maggie Lang Ant-Man and the Wasp Phase Three
+94 Jimmy Woo Ant-Man and the Wasp Phase Three
+95 Dr. Bill Foster Ant-Man and the Wasp Phase Three
+96 Captain Marvel Carol Danvers Captain Marvel Phase Three
+97 Yon-Rogg Captain Marvel Phase Three
+98 Talos Captain Marvel Phase Three
+99 Dr. Wendy Lawson Captain Marvel Phase Three
+100 Thanos Avengers: Endgame Phase Three
+101 Pietro Maximoff Ralph Bohner WandaVision Phase Four
+102 Karli Morgenthau The Falcon and The Winter Soldier Phase Four
+103 Mobius Loki Phase Four
+104 Sylvie Loki Phase Four
+105 Classic Loki Loki Phase Four
+106 Ravonna Renslayer Loki Phase Four
+107 B-15 Loki Phase Four
+108 Melina Vostokoff Black Widow Phase Four
+109 Dreykov Black Widow Phase Four
+110 Shang-Chi Shang-Chi and the Legend of the Ten RingsPhase Four
+111 Katy Chen Shang-Chi and the Legend of the Ten RingsPhase Four
+112 Wenwu Shang-Chi and the Legend of the Ten RingsPhase Four
+113 Ying Nan Shang-Chi and the Legend of the Ten RingsPhase Four
+114 Xialing Shang-Chi and the Legend of the Ten RingsPhase Four
+115 Li Shang-Chi and the Legend of the Ten RingsPhase Four
+116 Razor Fist Shang-Chi and the Legend of the Ten RingsPhase Four
+117 Sersi Eternals Phase Four
+118 Ikaris Eternals Phase Four
+119 Ajak Eternals Phase Four
+120 Kingo Eternals Phase Four
+121 Sprite Eternals Phase Four
+122 Phastos Eternals Phase Four
+123 Makkari Eternals Phase Four
+124 Druig Eternals Phase Four
+125 Gilgamesh Eternals Phase Four
+126 Dane Whitman Eternals Phase Four
+127 Arishem Eternals Phase Four
+128 Kate Bishop Hawkeye Phase Four
+129 Moon Knight Marc Spector Moon Knight Phase Four
+130 Khonshu Moon Knight Phase Four
+131 America Chavez Doctor Strange in the Multiverse of Phase Four
+132 Clea Doctor Strange in the Multiverse of Phase Four
+133 Captain Marvel Maria Rambeau Doctor Strange in the Multiverse of Phase Four
+134 Thor Thor: Love and Thunder Phase Four
+135 The Mighty Thor Dr. Jane Foster Thor: Love and Thunder Phase Four
+136 Ms. Marvel Kamala Khan Ms. Marvel Phase Four
+137 She-Hulk Jennifer Walters She-Hulk: Attorney at Law Phase Four
+138 Jack Russell Werewolf by Night Phase Four
+139 Elsa Bloodstone Werewolf by Night Phase Four
+140 Black Panther Shuri Black Panther: Wakanda Forever Phase Four
+141 K'uk'ulkan Namor Black Panther: Wakanda Forever Phase Four
+142 Ironheart Riri Williams Black Panther: Wakanda Forever Phase Four
+143 Namora Black Panther: Wakanda Forever Phase Four
+144 Attuma Black Panther: Wakanda Forever Phase Four
+145 Aneka Black Panther: Wakanda Forever Phase Four
+146 Cassie Lang Ant-Man and the Wasp: Quantumania Phase Five
+147 M.O.D.O.K. Darren Cross Ant-Man and the Wasp: Quantumania Phase Five
+148 The High Evolutionary Guardians of the Galaxy Vol. 3 Phase Five
+149 Adam Warlock Guardians of the Galaxy Vol. 3 Phase Five
+150 Cosmo Guardians of the Galaxy Vol. 3 Phase Five
+151 Recorder Vim Guardians of the Galaxy Vol. 3 Phase Five
+152 Recorder Theel Guardians of the Galaxy Vol. 3 Phase Five
+153 Gravik Secret Invasion Phase Five
+154 Pagon Secret Invasion Phase Five
+155 O.B. Loki Phase Four
+156 Monica Rambeau The Marvels Phase Five
+157 Dar-Benn The Marvels Phase Five
+158 Emperor Dro'ge The Marvels Phase Five
+159 Prince Yan The Marvels Phase Five
+160 Echo Maya Lopez Echo Phase Five
+161 Death Rio Vidal Agatha All Along Phase Five DEBUT
+162 Agatha Harkness Agatha All Along Phase Five
+163 Lilia Calderu Agatha All Along Phase Five DEBUT
+164 Alice Wu-Gulliver Agatha All Along Phase Five DEBUT
+165 Wiccan Billy Maximoff Agatha All Along Phase Five DEBUT
+166 Jennifer Kale Agatha All Along Phase Five DEBUT
+167 Captain America Sam Wilson Captain America: Brave New World Phase Five
+168 Falcon Joaquín Torres Captain America: Brave New World Phase Five
+169 Ruth Bat-Seraph Captain America: Brave New World Phase Five DEBUT
+170 Isaiah Bradley Captain America: Brave New World Phase Five
+171 Red Hulk President Thaddeus Ross Captain America: Brave New World Phase Five DEBUT
+172 Sidewinder Seth Voelker Captain America: Brave New World Phase Five DEBUT
+173 The Leader Samuel Sterns Captain America: Brave New World Phase Five
+174 Leila Taylor Captain America: Brave New World Phase Five DEBUT
+175 Daredevil Matt Murdock Daredevil: Born Again Phase Five
+176 Frank Castle Daredevil: Born Again Phase Five DEBUT
+177 Daniel Blake Daredevil: Born Again Phase Five DEBUT
+178 Kingpin Wilson Fisk Daredevil: Born Again Phase Five
+179 Vanessa Fisk Daredevil: Born Again Phase Five DEBUT
+180 Karen Page Daredevil: Born Again Phase Five DEBUT
+181 Foggy Nelson Daredevil: Born Again Phase Five DEBUT
+182 Yelena Belova Thunderbolts* Phase Five
+183 Bob Thunderbolts* Phase Five DEBUT
+184 John F. Walker Thunderbolts* Phase Five
+185 Taskmaster Antonia Dreykov Thunderbolts* Phase Five
+186 Ghost Ava Starr Thunderbolts* Phase Five
+187 Red Guardian Alexei Shostakov Thunderbolts* Phase Five
+188 Congressman Gary Thunderbolts* Phase Five DEBUT
+189 Sentry Bob Reynolds Thunderbolts* Phase Five DEBUT
+190 Valentina Allegra de Fontaine Thunderbolts* Phase Five
+191 Mel Thunderbolts* Phase Five DEBUT
+192 The Void Bob Reynolds Thunderbolts* Phase Five DEBUT
+193 Mephisto Ironheart Phase Five DEBUT
+194 Mister Fantastic Reed Richards Fantastic Four: First Steps Phase Six DEBUT
+195 Invisible Woman Sue Storm Fantastic Four: First Steps Phase Six DEBUT
+196 Human Torch Johnny Storm Fantastic Four: First Steps Phase Six DEBUT
+197 The Thing Ben Grimm Fantastic Four: First Steps Phase Six DEBUT
+198 Silver Surfer Shalla-Bal Fantastic Four: First Steps Phase Six DEBUT
+199 H.E.R.B.I.E. Fantastic Four: First Steps Phase Six DEBUT
+200 Galactus Fantastic Four: First Steps Phase Six DEBUT
+Card Number Subject Property
+SAPPHIRE SELECTIONS
+SS-1 Iron Man Iron Man
+SS-2 Black Widow Iron Man 2
+SS-3 Thor Thor
+SS-4 Captain America Captain America: The First Avenger
+SS-5 Hulk Marvel's The Avengers
+SS-6 Groot Guardians of the Galaxy Vol. 1
+SS-7 Spider-Man Captain America: Civil War
+SS-8 Black Panther Black Panther
+SS-9 Red Hulk Captain America: Brave New World
+SS-10 Yelena Belova Thunderbolts*
+Artist Name
+SKETCH CARDS
+A jhay
+Adam Braun
+Al Stefano
+Alex Mines
+Allen Geneta
+Allenser
+Andrew Fernandes
+Andy Tiu
+Antni Ellison
+Ariel Aguire
+Ariel Mamani
+ArtJay
+Ash
+Bella Rachlin
+Bete Rodrigues
+BLANCAS
+Brent Ragland
+Carmen SantaFerrara Jr
+Charlie Cody
+Chenduz
+Chris Foreman
+Chris Meeks
+Cisco Rivera
+Court
+DAF
+Dan Lawler
+Daniel M Chavez
+Daniel Riveron
+Danny
+Darrin Pepe
+Dexter Wee
+DMN
+Dove McHargue
+DRE
+Duke
+DYJ
+Dylan Riley
+Elson Jr .Art
+Elvin A Hernandez
+Emrah Cildir
+Eric Lehtonen
+Ernest Romero
+Fabio Ramacci
+Frank A. Kadar
+Franklim Teixeira
+Fresia
+Gabriel Tardivo
+Gary Shipman
+George Vega
+Gerry Garcia Jr
+Getatom
+Gilbert Perez Art
+Greg Treize
+Hector Barros
+Hugh Vogt
+Ian M Sateikis
+Isiah Xavier Bradley
+Jason Christner
+Jason Crosby
+Jason Queen
+Jason Rodriguez
+Jason Saldajeno
+Jason Sobol
+Jay Peteranetz
+Jeffrey C. Benitez
+Jessica Hickman
+Jezreel L Rojales
+Jim Dickson
+Jim Kyle
+Jim O'Riley
+Joe Rubinstein
+Jojo Hilario
+Joseph Grotesque
+Jude Gallagher
+Kenny Calderon
+Lee Lightfoot
+LENO
+Leon Braojos
+Loc Nguyen
+Louis Womble
+Lucas
+Marcia Dye
+Marco Carrillo
+Marcus D. Newsome
+Marlo Agunos
+Marlo Martos
+Matt Stewart
+Matthew Lopez
+Michael Mastermaker
+Mike Stephens
+mkf15
+NerP
+Nick Gribbon
+Niño John Benitez
+Noval Hernawan
+Patricio Carrasco
+Peejay Catacutan
+Rae Klock
+Rafael Dante
+Rebeca Louro
+Rich Hennemann
+Rob Demers
+Rodel Martin
+Rustico Limosinero
+Ryan Finley
+Scribbling Joe
+Sherwin Santiago
+SpitfirePirate
+Stephane Leonardi
+Steve Alce
+Sturdy
+Takkun
+Tim Shinn
+TOMA
+Veronica Louro
+Vicente Moavero
+Will Pleydon
+ジェイソン (Jason)
+Card Number First Name Last Name Character Name Property Debut
+SINGLE AUTOGRAPHS
+AA-ATJ Aaron Taylor-Johnson Pietro Maximoff Avengers: Age of Ultron
+AA-AB Angela Bassett Queen Ramonda Black Panther
+AA-AH Anthony Hopkins Odin Thor: The Dark World
+AA-AM Anthony Mackie Captain America Captain America: Brave New World
+AA-BK Barry Keoghan Druig Eternals
+AA-BDT Benicio del Toro The Collector Guardians of the Galaxy
+AA-BC Bradley Cooper Rocket Guardians of the Galaxy Vol. 3
+AA-BL Brie Larson Captain Marvel Captain Marvel
+AA-CB Cate Blanchett Hela Thor: Ragnarok
+AA-CC Charlie Cox Daredevil Daredevil: Born Again
+AA-CT Charlize Theron Clea Doctor Strange in the Multiverse of Madness
+AA-CE Chris Evans Captain America Marvel's The Avengers
+AA-DR Danny Ramirez Falcon Captain America: Brave New World
+AA-DT Dominique Thorne Ironheart Black Panther: Wakanda Forever
+AA-DC Don Cheadle Iron Patriot Iron Man 3
+AA-EBM Ebon Moss-Bachrach The Thing Fantastic Four: First Steps
+AA-EO Elizabeth Olsen The Scarlet Witch Doctor Strange in the Multiverse of Madness DEBUT
+AA-EC Emilia Clarke G'iah Secret Invasion
+AA-FMA F. Murray Abraham Khonshu Moon Knight
+AA-FW Forest Whitaker Zuri Black Panther
+AA-GC Glenn Close Nova Prime Guardians of the Galaxy
+AA-GP Gwyneth Paltrow Pepper Potts Iron Man
+AA-HS Hailee Steinfeld Kate Bishop Hawkeye
+AA-HF Harrison Ford Red Hulk Captain America: Brave New World DEBUT
+AA-HA Hayley Atwell Agent Peggy Carter Captain America: The First Avenger
+AA-HC Henry Cavill The Cavillrine Deadpool & Wolverine
+AA-HJ Hugh Jackman Wolverine Deadpool & Wolverine
+AA-JR Jeremy Renner Hawkeye Marvel's The Avengers
+AA-JBL Jon Bernthal Frank Castle Daredevil: Born Again DEBUT
+AA-JQ Joseph Quinn Human Torch Fantastic Four: First Steps DEBUT
+AA-JB Josh Brolin Thanos Avengers: Infinity War
+AA-JL Jude Law Yon-Rogg Captain Marvel
+AA-JLD Julia Louis-Dreyfus Valentina Allegra de Fontaine Thunderbolts*
+AA-KH Kathryn Hahn Agatha Harkness Agatha All Along
+AA-LP Lee Pace Ronan Guardians of the Galaxy
+AA-LW Letitia Wright Black Panther Black Panther: Wakanda Forever
+AA-MG Michael Gandolfini Daniel Blake Daredevil: Born Again DEBUT
+AA-MBJ Michael B. Jordan Erik Killmonger Black Panther
+AA-NP Natalie Portman The Mighty Thor Thor: Love and Thunder
+AA-NF Nathan Fillion Master Karja Guardians of the Galaxy Vol. 3
+AA-OI Oscar Isaac Moon Knight Moon Knight
+AA-OW Owen Wilson Mobius Loki
+AA-PL Patti Lupone Lilia Calderu Agatha All Along DEBUT
+AA-PR Paul Rudd Ant-Man Ant-Man
+AA-PB Paul Bettany Vision Avengers: Age of Ultron
+AA-PP Pedro Pascal Mister Fantastic Fantastic Four: First Steps DEBUT
+AA-RI Ralph Ineson Galactus Fantastic Four: First Steps DEBUT
+AA-RP Randall Park Jimmy Woo Ant-Man and the Wasp
+AA-RR Ryan Reynolds Deadpool Deadpool & Wolverine
+AA-SR Sam Rockwell Justin Hammer Iron Man 2
+AA-SLJ Samuel L. Jackson Nick Fury Secret Invasion
+AA-SS Sebastian Stan Winter Soldier Captain America: The Winter Soldier
+AA-SL Simu Liu Shang-Chi Shang-Chi and the Legend of the Ten Rings
+AA-SDM Sophia Di Martino Sylvie Loki
+AA-SSD Stellan Skarsgård Dr. Erik Selvig Thor
+AA-TW Taika Waititi Korg Thor: Ragnarok
+AA-TM Tatiana Maslany She-Hulk She-Hulk: Attorney at Law
+AA-TT Tessa Thompson Valkyrie Thor: Love and Thunder
+AA-TS Tilda Swinton The Ancient One Doctor Strange
+AA-TH Tom Hiddleston Loki Loki
+AA-VK Vanessa Kirby Invisible Woman Fantastic Four: First Steps DEBUT
+AA-VDO Vincent D'Onofrio Wilson Fisk Daredevil: Born Again
+AA-WP Will Poulter Adam Warlock Guardians of the Galaxy Vol. 3
+DUAL AUTOGRAPHS
+DA-BO Paul Bettany Vision Captain America: Civil War
+DA-BO Elizabeth Olsen Wanda Maximoff Captain America: Civil War
+DA-CB Charlie Cox Daredevil Daredevil: Born Again
+DA-CB Jon Bernthal Frank Castle Daredevil: Born Again
+DA-CBL Charlie Cox Daredevil Daredevil: Born Again
+DA-CBL Wilson Bethel Bullseye Daredevil: Born Again
+DA-CDN Charlie Cox Daredevil Daredevil: Born Again
+DA-CDN Hunter Doohan Muse Daredevil: Born Again
+DA-CDO Charlie Cox Daredevil Daredevil: Born Again
+DA-CDO Vincent D'Onofrio Mayor Wilson Fisk Daredevil: Born Again
+DA-EA Chris Evans Captain America Captain America: The First Avenger
+DA-EA Hayley Atwell Peggy Carter Captain America: The First Avenger
+DA-EM Chris Evans Captain America Captain America: Civil War
+DA-EM Anthony Mackie Falcon Captain America: Civil War
+DA-ES Chris Evans Captain America Captain America: The Winter Soldier
+DA-ES Sebastian Stan Winter Soldier Captain America: The Winter Soldier
+DA-HOH Anthony Hopkins Odin Thor
+DA-HOH Tom Hiddleston Loki Thor
+DA-JK Hugh Jackman Wolverine Deadpool & Wolverine
+DA-JK Dafne Keen X-23 Deadpool & Wolverine
+DA-JR Hugh Jackman Wolverine Deadpool & Wolverine
+DA-JR Ryan Reynolds Deadpool Deadpool & Wolverine
+DA-LDP Julia Louis-Dreyfus Valentina Allegra de Fontaine Thunderbolts*
+DA-LDP Lewis Pullman Sentry Thunderbolts*
+DA-LV Brie Larson Captain Marvel The Marvels
+DA-LV Iman Vellani Ms. Marvel The Marvels
+DA-MR Anthony Mackie Captain America Captain America: Brave New World
+DA-MR Danny Ramirez Falcon Captain America: Brave New World
+DA-OT Elizabeth Olsen Wanda Maximoff Avengers: Age of Ultron
+DA-OT Aaron Taylor-Johnson Pietro Maximoff Avengers: Age of Ultron
+DA-PI Pedro Pascal Mister Fantastic Fantastic Four: First Steps
+DA-PI Ralph Ineson Galactus Fantastic Four: First Steps
+DA-PK Pedro Pascal Mister Fantastic Fantastic Four: First Steps
+DA-PK Vanessa Kirby Invisible Woman Fantastic Four: First Steps
+DA-QI Joseph Quinn Human Torch Fantastic Four: First Steps
+DA-QI Ralph Ineson Galactus Fantastic Four: First Steps
+DA-RL Paul Rudd Ant-Man Ant-Man & The Wasp
+DA-RL Evangeline Lilly The Wasp Ant-Man & The Wasp
+DA-RS Jeremy Renner Hawkeye Hawkeye
+DA-RS Hailee Steinfeld Kate Bishop Hawkeye
+TRIO AUTOGRAPHS
+TA-CBB Charlie Cox Daredevil Daredevil: Born Again
+TA-CBB Jon Bernthal Frank Castle Daredevil: Born Again
+TA-CBB Wilson Bethel Bullseye Daredevil: Born Again
+TA-CDB Charlie Cox Daredevil Daredevil: Born Again
+TA-CDB Vincent D'Onofrio Mayor Wilson Fisk Daredevil: Born Again
+TA-CDB Jon Bernthal Frank Castle Daredevil: Born Again
+TA-JGS Samuel L. Jackson Nick Fury Marvel's The Avengers
+TA-JGS Clark Gregg Phil Coulson Marvel's The Avengers
+TA-JGS Cobie Smulders Maria Hill Marvel's The Avengers
+TA-LPR Julia Louis-Dreyfus Valentina Allegra de Fontaine Thunderbolts*
+TA-LPR Lewis Pullman Sentry Thunderbolts*
+TA-LPR Wyatt Russell John F. Walker Thunderbolts*
+TA-LPV Brie Larson Captain Marvel The Marvels
+TA-LPV Teyonah Parris Monica Rambeau The Marvels
+TA-LPV Iman Vellani Ms. Marvel The Marvels
+TA-OTB Elizabeth Olsen Wanda Maxmioff Avengers: Age of Ultron
+TA-OTB Aaron Taylor-Johnson Pietro Maximoff Avengers: Age of Ultron
+TA-OTB Paul Bettany Vision Avengers: Age of Ultron
+TA-PIK Pedro Pascal Mister Fantastic Fantastic Four: First Steps
+TA-PIK Ralph Ineson Galactus Fantastic Four: First Steps
+TA-PIK Vanessa Kirby Invisible Woman Fantastic Four: First Steps

@@ -1,0 +1,493 @@
+card_number,player_name,team
+1,Ace Bailey,Rutgers
+2,Ahmad Nowell,UConn
+3,Aiden Sherrell,Alabama
+4,AJ Storr,Kansas
+5,Allie Ziebell,UConn
+6,Aneesah Morrow,LSU
+7,Annor Boateng,Missouri
+8,Asa Newell,Georgia
+9,Audi Crooks,Iowa State
+10,Billy Richmond III,Arkansas
+11,Boogie Fland,Arkansas
+12,Braden Smith,Purdue
+13,Cam Scott,South Carolina
+14,Clifford Omoruyi,Alabama
+15,Robert Wright III,Baylor
+16,Cooper Flagg,Duke
+18,Darren Harris,Duke
+19,Derik Queen,Maryland
+20,Derrion Reid,Alabama
+21,Donavan Freeman,Syracuse
+22,Dylan Harper,Rutgers
+23,Emanuel Sharp,Houston
+24,Flory Bidunga,Kansas
+25,Grant Nelson,Alabama
+26,Hannah Hidalgo,Notre Dame
+27,Isaiah Evans,Duke
+29,Jaloni Cambridge,Ohio State
+30,Jayden Nunn,Baylor
+32,Jonas Aidoo,Arkansas
+33,Jordan Gainey,Tennessee
+34,Jordan Lee,Texas
+36,Joyce Edwards,South Carolina
+37,Juju Watkins,USC
+38,Justice Carlton,Texas
+39,Kam Jones,Marquette
+40,Kanon Catchings,BYU
+41,Karter Knox,Arkansas
+42,Kate Koval,Notre Dame
+43,Kayleigh Heckel,USC
+44,Kennedy Smith,USC
+45,Keshon Gilbert,Iowa State
+46,Khaman Maluach,Duke
+47,Kiki Iriafen,USC
+48,Kon Knueppel,Duke
+49,Labaron Philon,Alabama
+50,Langston Love,Baylor
+51,Latrell Wrightsell,Alabama
+52,Liam McNeeley,UConn
+53,Mackenly Randolph,Louisville
+54,Meechie Johnson,Ohio State
+55,Mikayla Blakes,Vanderbilt
+57,Aden Holloway,Alabama
+58,Patrick Ngongba,Duke
+59,PJ Haggerty,Memphis
+60,Raven Johnson,South Carolina
+62,Sarah Strong,UConn
+63,Sion James,Duke
+64,Sonia Citron,Notre Dame
+65,Syla Swords,Michigan
+66,Tamin Lipsey,Iowa State
+67,Trent Perry,UCLA
+71,Simeon Wilcher,St. John
+72,Ryan Nembhard,Gonzaga
+74,TJ Bamba,Oregon
+75,Jeremy Fears,Michigan State
+76,Miles Kelly,Auburn
+77,Jackson Shelstad,Oregon
+78,Kylan Boswell,Illinois
+79,Miro Little,Utah
+80,Jaden Akins,Michigan State
+81,Jamari McDowell,Kansas
+82,Prince Aligbe,Seton Hall
+83,Xavier Booker,Michigan State
+84,RJ Jones,TCU
+85,DeShawn Harris-Smith,Maryland
+87,Solomon Ball,UConn
+88,Tre Norman,Marquette
+90,Zaide Lowery,Marquette
+91,Isaac McKneely,Virginia
+92,Steele Venters,Gonzaga
+94,Scotty Middleton,Seton Hall
+95,Layden Blocker,DePaul
+96,Freddie Dilione V,Penn State
+97,Fletcher Loyer,Purdue
+98,Johni Broome,Auburn
+99,Mark Sears,Alabama
+100,Alex Karaban,UConn
+CI-1,Cooper Flagg,Duke
+CI-2,Ace Bailey,Rutgers
+CI-3,Dylan Harper,Rutgers
+CI-5,Kon Knueppel,Duke
+CI-6,Boogie Fland,Arkansas
+CI-7,Donavan Freeman,Syracuse
+CI-8,Asa Newell,Georgia
+CI-9,Isaiah Evans,Duke
+CI-10,Derrion Reid,Alabama
+CI-11,Liam McNeeley,UConn
+CI-12,Derik Queen,Maryland
+CI-13,Flory Bidunga,Kansas
+CI-14,Karter Knox,Arkansas
+CI-16,Juju Watkins,USC
+CI-17,Audi Crooks,Iowa State
+CI-18,Labaron Philon,Alabama
+CI-19,Sonia Citron,Notre Dame
+CI-20,Aneesah Morrow,LSU
+A-1,Cooper Flagg,Duke
+A-2,Ace Bailey,Rutgers
+A-3,Dylan Harper,Rutgers
+A-5,Kon Knueppel,Duke
+A-6,Boogie Fland,Arkansas
+A-8,Juju Watkins,USC
+A-9,Aneesah Morrow,LSU
+A-10,Sarah Strong,UConn
+SS-1,Cooper Flagg,Duke
+SS-2,Ace Bailey,Rutgers
+SS-3,Dylan Harper,Rutgers
+SS-4,Derrion Reid,Alabama
+SS-5,Aiden Sherrell,Alabama
+SS-6,Boogie Fland,Arkansas
+SS-7,Karter Knox,Arkansas
+SS-8,Khaman Maluach,Duke
+SS-9,Kon Knueppel,Duke
+SS-11,Liam McNeeley,UConn
+SS-12,Alex Karaban,UConn
+SS-13,Donavan Freeman,Syracuse
+SS-17,Derik Queen,Maryland
+SS-18,Asa Newell,Georgia
+SS-20,Jaloni Cambridge,Ohio State
+SS-21,Joyce Edwards,South Carolina
+SS-22,Syla Swords,Michigan
+SS-23,Kennedy Smith,USC
+SS-24,Kate Koval,Notre Dame
+SS-25,Sarah Strong,UConn
+FL-1,Cooper Flagg,Duke
+FL-2,Ace Bailey,Rutgers
+FL-3,Dylan Harper,Rutgers
+FL-4,Derrion Reid,Alabama
+FL-5,Boogie Fland,Arkansas
+FL-6,Kon Knueppel,Duke
+FL-7,Flory Bidunga,Kansas
+FL-9,Ahmad Nowell,UConn
+FL-10,Liam McNeeley,UConn
+FL-13,Karter Knox,Arkansas
+FL-14,Khaman Maluach,Duke
+FL-15,Kanon Catchings,BYU
+FL-16,Donavan Freeman,Syracuse
+FL-17,Trent Perry,UCLA
+FL-18,RJ Jones,TCU
+FL-19,AJ Storr,Kansas
+FL-20,Grant Nelson,Alabama
+FL-21,Syla Swords,Michigan
+FL-22,Hannah Hidalgo,Notre Dame
+FL-23,Raven Johnson,South Carolina
+FL-24,Sarah Strong,UConn
+FL-25,Kennedy Smith,USC
+F-1,Boogie Fland,Arkansas
+F-2,Dylan Harper,Rutgers
+F-3,Robert Wright III,Baylor
+F-4,Trent Perry,UCLA
+F-5,Labaron Philon,Alabama
+F-6,Ahmad Nowell,UConn
+F-8,Kon Knueppel,Duke
+F-9,Karter Knox,Arkansas
+F-10,Cooper Flagg,Duke
+F-11,Ace Bailey,Rutgers
+F-12,Liam McNeeley,UConn
+F-13,Isaiah Evans,Duke
+F-14,Kanon Catchings,BYU
+F-16,Sonia Citron,Notre Dame
+F-17,Mark Sears,Alabama
+F-18,Juju Watkins,USC
+F-19,Hannah Hidalgo,Notre Dame
+F-20,Kiki Iriafen,USC
+CRP-1,Ace Bailey,Rutgers
+CRP-2,Ahmad Nowell,UConn
+CRP-3,Asa Newell,Georgia
+CRP-4,Boogie Fland,Arkansas
+CRP-5,Cooper Flagg,Duke
+CRP-6,Derik Queen,Maryland
+CRP-7,Derrion Reid,Alabama
+CRP-8,Donavan Freeman,Syracuse
+CRP-9,Dylan Harper,Rutgers
+CRP-10,Flory Bidunga,Kansas
+CRP-12,Karter Knox,Arkansas
+CRP-13,Kon Knueppel,Duke
+CRP-14,Liam McNeeley,UConn
+CRP-16,Khaman Maluach,Duke
+CRP-19,Kanon Catchings,BYU
+CRP-20,Audi Crooks,Iowa State
+CRP-21,Hannah Hidalgo,Notre Dame
+CRP-22,Joyce Edwards,South Carolina
+CRP-23,Juju Watkins,USC
+CRP-24,Labaron Philon,Alabama
+CRP-25,Aneesah Morrow,LSU
+PR-1,Ace Bailey,Rutgers
+PR-2,Ahmad Nowell,UConn
+PR-3,Asa Newell,Georgia
+PR-4,Boogie Fland,Arkansas
+PR-5,Clifford Omoruyi,Alabama
+PR-6,Cooper Flagg,Duke
+PR-7,Derrion Reid,Alabama
+PR-8,Dylan Harper,Rutgers
+PR-9,Flory Bidunga,Kansas
+PR-12,Khaman Maluach,Duke
+PR-13,Liam McNeeley,UConn
+PR-14,Derik Queen,Maryland
+PR-15,Alex Karaban,UConn
+PR-16,Isaiah Evans,Duke
+PR-17,Robert Wright III,Baylor
+PR-18,Kanon Catchings,BYU
+PR-19,Donavan Freeman,Syracuse
+PR-20,Sarah Strong,UConn
+PR-21,Labaron Philon,Alabama
+PR-22,Juju Watkins,USC
+PR-23,Joyce Edwards,South Carolina
+PR-24,Aneesah Morrow,LSU
+PR-25,Sonia Citron,Notre Dame
+WP-1,Donavan Freeman,Syracuse
+WP-2,Derik Queen,Maryland
+WP-3,Asa Newell,Georgia
+WP-4,Flory Bidunga,Kansas
+WP-5,Aiden Sherrell,Alabama
+WP-6,Patrick Ngongba,Duke
+WP-7,Cooper Flagg,Duke
+WP-8,Ace Bailey,Rutgers
+WP-9,Dylan Harper,Rutgers
+WP-10,Liam McNeeley,UConn
+WP-12,Khaman Maluach,Duke
+WP-13,Kon Knueppel,Duke
+WP-14,Boogie Fland,Arkansas
+WP-16,Aneesah Morrow,LSU
+WP-17,Audi Crooks,Iowa State
+WP-18,Juju Watkins,USC
+WP-19,Labaron Philon,Alabama
+WP-20,Sonia Citron,Notre Dame
+WP-23,Billy Richmond III,Arkansas
+WP-25,Sarah Strong,UConn
+BP-1,Ace Bailey,Rutgers
+BP-2,Ahmad Nowell,UConn
+BP-3,Cooper Flagg,Duke
+BP-5,Derrion Reid,Alabama
+BP-6,Dylan Harper,Rutgers
+BP-7,Derik Queen,Maryland
+BP-8,Flory Bidunga,Kansas
+BP-9,Isaiah Evans,Duke
+BP-11,Karter Knox,Arkansas
+BP-12,Aiden Sherrell,Alabama
+BP-13,Asa Newell,Georgia
+BP-14,Boogie Fland,Arkansas
+BP-15,Donavan Freeman,Syracuse
+BP-16,Sarah Strong,UConn
+BP-17,Jaloni Cambridge,Ohio State
+BP-18,Joyce Edwards,South Carolina
+BP-19,Syla Swords,Michigan
+BP-20,Kate Koval,Notre Dame
+BP-21,Kennedy Smith,USC
+BP-22,Allie Ziebell,UConn
+BP-23,Mikayla Blakes,Vanderbilt
+BP-24,Jordan Lee,Texas
+BP-25,Kayleigh Heckel,USC
+AS-1,Ace Bailey,Rutgers
+AS-2,Cooper Flagg,Duke
+AS-3,Dylan Harper,Rutgers
+AS-4,Derrion Reid,Alabama
+AS-5,Donavan Freeman,Syracuse
+AS-6,Derik Queen,Maryland
+AS-7,Isaiah Evans,Duke
+AS-9,Juju Watkins,USC
+AS-10,Sarah Strong,UConn
+PE-1,Ace Bailey,Rutgers
+PE-2,Cooper Flagg,Duke
+PE-3,Dylan Harper,Rutgers
+PE-4,Kon Knueppel,Duke
+PE-5,Labaron Philon,Alabama
+PE-6,Kanon Catchings,BYU
+PE-7,Karter Knox,Arkansas
+PE-9,Kiki Iriafen,USC
+PE-10,Audi Crooks,Iowa State
+TT-1,Ace Bailey,Rutgers
+TT-2,Cooper Flagg,Duke
+TT-3,Dylan Harper,Rutgers
+TT-4,Khaman Maluach,Duke
+TT-6,Derrion Reid,Alabama
+TT-7,Boogie Fland,Arkansas
+TT-8,Sarah Strong,UConn
+TT-9,Sonia Citron,Notre Dame
+TT-10,Joyce Edwards,South Carolina
+BKA-AB,Ace Bailey,Rutgers
+BKA-AN,Asa Newell,Georgia
+BKA-AS,Aiden Sherrell,Alabama
+BKA-AST,AJ Storr,Kansas
+BKA-BF,Boogie Fland,Arkansas
+BKA-BR,Billy Richmond III,Arkansas
+BKA-BS,Braden Smith,Purdue
+BKA-CF,Cooper Flagg,Duke
+BKA-DF,Donavan Freeman,Syracuse
+BKA-DH,Dylan Harper,Rutgers
+BKA-FB,Flory Bidunga,Kansas
+BKA-IE,Isaiah Evans,Duke
+BKA-JC,Jaloni Cambridge,Ohio State
+BKA-JE,Joyce Edwards,South Carolina
+BKA-JW,Juju Watkins,USC
+BKA-KK,Kon Knueppel,Duke
+BKA-KKN,Karter Knox,Arkansas
+BKA-LL,Langston Love,Baylor
+BKA-PB,Hannah Hidalgo,Notre Dame
+BKA-PJ,PJ Haggerty,Memphis
+BKA-SS,Sarah Strong,UConn
+BKA-TL,Tamin Lipsey,Iowa State
+CVA-AB,Ace Bailey,Rutgers
+CVA-AN,Asa Newell,Georgia
+CVA-AS,AJ Storr,Kansas
+CVA-ASH,Aiden Sherrell,Alabama
+CVA-BF,Boogie Fland,Arkansas
+CVA-CF,Cooper Flagg,Duke
+CVA-DF,Donavan Freeman,Syracuse
+CVA-DH,Dylan Harper,Rutgers
+CVA-DQ,Derik Queen,Maryland
+CVA-DR,Derrion Reid,Alabama
+CVA-FB,Flory Bidunga,Kansas
+CVA-IE,Isaiah Evans,Duke
+CVA-JC,Jaloni Cambridge,Ohio State
+CVA-JE,Joyce Edwards,South Carolina
+CVA-JG,Jordan Gainey,Tennessee
+CVA-JJ,Juju Watkins,USC
+CVA-KJ,Kam Jones,Marquette
+CVA-KK,Kon Knueppel,Duke
+CVA-LL,Langston Love,Baylor
+CVA-MJ,Meechie Johnson,Ohio State
+CVA-PH,PJ Haggerty,Memphis
+CVA-SC,Sonia Citron,Notre Dame
+CVA-SS,Sarah Strong,UConn
+ETA-AB,Ace Bailey,Rutgers
+ETA-AN,Asa Newell,Georgia
+ETA-ANO,Ahmad Nowell,UConn
+ETA-AS,Aiden Sherrell,Alabama
+ETA-AST,AJ Storr,Kansas
+ETA-BF,Boogie Fland,Arkansas
+ETA-BR,Billy Richmond III,Arkansas
+ETA-BS,Braden Smith,Purdue
+ETA-CF,Cooper Flagg,Duke
+ETA-DF,Donavan Freeman,Syracuse
+ETA-DH,Dylan Harper,Rutgers
+ETA-ES,Emanuel Sharp,Houston
+ETA-FB,Flory Bidunga,Kansas
+ETA-IE,Isaiah Evans,Duke
+ETA-JC,Jaloni Cambridge,Ohio State
+ETA-JE,Joyce Edwards,South Carolina
+ETA-JG,Jordan Gainey,Tennessee
+ETA-JW,Juju Watkins,USC
+ETA-KK,Kon Knueppel,Duke
+ETA-KKN,Karter Knox,Arkansas
+ETA-LL,Langston Love,Baylor
+ETA-SS,Sarah Strong,UConn
+ETA-TL,Tamin Lipsey,Iowa State
+CAA-AB,Ace Bailey,Rutgers
+CAA-AC,Audi Crooks,Iowa State
+CAA-AN,Asa Newell University of,Georgia
+CAA-ANO,Ahmad Nowell University of,Connecticut
+CAA-AS,Aiden Sherrell The University of,Alabama
+CAA-AST,AJ Storr The University of,Kansas
+CAA-BF,Boogie Fland University of,Arkansas
+CAA-BR,Billy Richmond III University of,Arkansas
+CAA-BS,Braden Smith,Purdue
+CAA-CF,Cooper Flagg,Duke
+CAA-DF,Donavan Freeman,Syracuse
+CAA-DH,Dylan Harper,Rutgers
+CAA-ES,Emanuel Sharp University of,Houston
+CAA-FB,Flory Bidunga The University of,Kansas
+CAA-HH,Hannah Hidalgo,Notre Dame
+CAA-IE,Isaiah Evans,Duke
+CAA-JC,Jaloni Cambridge,Ohio State
+CAA-JE,Joyce Edwards University of,South Carolina
+CAA-JG,Jordan Gainey University of,Tennessee
+CAA-JN,Jayden Nunn,Baylor
+CAA-JW,Juju Watkins University of Southern,California
+CAA-KG,Keshon Gilbert,Iowa State
+CAA-KI,Kiki Iriafen University of Southern,California
+CAA-KK,Kon Knueppel,Duke
+CAA-KKN,Karter Knox University of,Arkansas
+CAA-LL,Langston Love,Baylor
+CAA-SS,Sarah Strong University of,Connecticut
+CAA-TL,Tamin Lipsey,Iowa State
+CLA-AB,Ace Bailey,Rutgers
+CLA-AC,Audi Crooks,Iowa State
+CLA-AM,Aneesah Morrow,LSU
+CLA-AN,Asa Newell,Georgia
+CLA-ANO,Ahmad Nowell,UConn
+CLA-BF,Boogie Fland,Arkansas
+CLA-BS,Braden Smith,Purdue
+CLA-CF,Cooper Flagg,Duke
+CLA-DF,Donavan Freeman,Syracuse
+CLA-DH,Dylan Harper,Rutgers
+CLA-DQ,Derik Queen,Maryland
+CLA-DR,Derrion Reid,Alabama
+CLA-ES,Emanuel Sharp,Houston
+CLA-HH,Hannah Hidalgo,Notre Dame
+CLA-IE,Isaiah Evans,Duke
+CLA-JG,Jordan Gainey,Tennessee
+CLA-JN,Jayden Nunn,Baylor
+CLA-JW,Juju Watkins,USC
+CLA-KG,Keshon Gilbert,Iowa State
+CLA-KIR,Kiki Iriafen,USC
+CLA-KJ,Kam Jones,Marquette
+CLA-KK,Kon Knueppel,Duke
+CLA-KR,Karter Knox,Arkansas
+CLA-MJ,Meechie Johnson,Ohio State
+CLA-PH,PJ Haggerty,Memphis
+CLA-SC,Sonia Citron,Notre Dame
+CLA-TL,Tamin Lipsey,Iowa State
+CDS-AB,Ace Bailey,Rutgers
+CDS-AC,Audi Crooks,Iowa State
+CDS-AH,Ahmad Nowell,UConn
+CDS-AM,Aneesah Morrow,LSU
+CDS-AN,Asa Newell,Georgia
+CDS-AS,AJ Storr,Kansas
+CDS-BF,Boogie Fland,Arkansas
+CDS-BR,Billy Richmond III,Arkansas
+CDS-BS,Braden Smith,Purdue
+CDS-CF,Cooper Flagg,Duke
+CDS-DF,Donavan Freeman,Syracuse
+CDS-DH,Dylan Harper,Rutgers
+CDS-DQ,Derik Queen,Maryland
+CDS-DR,Derrion Reid,Alabama
+CDS-ES,Emanuel Sharp,Houston
+CDS-HH,Hannah Hidalgo,Notre Dame
+CDS-IE,Isaiah Evans,Duke
+CDS-JG,Jordan Gainey,Tennessee
+CDS-JN,Jayden Nunn,Baylor
+CDS-KG,Keshon Gilbert,Iowa State
+CDS-KI,Kiki Iriafen,USC
+CDS-KJ,Kam Jones,Marquette
+CDS-KK,Kon Knueppel,Duke
+CDS-LL,Langston Love,Baylor
+CDS-MJ,Meechie Johnson,Ohio State
+CDS-PH,PJ Haggerty,Memphis
+CDS-SC,Sonia Citron,Notre Dame
+CDS-TL,Tamin Lipsey,Iowa State
+FFA-AB,Ace Bailey,Rutgers
+FFA-AN,Ahmad Nowell,UConn
+FFA-CF,Cooper Flagg,Duke
+FFA-DH,Dylan Harper,Rutgers
+FFA-DR,Derrion Reid,Alabama
+FFA-FB,Flory Bidunga,Kansas
+FFA-IE,Isaiah Evans,Duke
+FFA-JW,Juju Watkins,USC
+FFA-KK,Karter Knox,Arkansas
+SSA-AB,Ace Bailey,Rutgers
+SSA-AM,Aneesah Morrow,LSU
+SSA-AN,Asa Newell,Georgia
+SSA-AST,AJ Storr,Kansas
+SSA-BF,Boogie Fland,Arkansas
+SSA-BR,Billy Richmond III,Arkansas
+SSA-BS,Braden Smith,Purdue
+SSA-CF,Cooper Flagg,Duke
+SSA-DF,Donavan Freeman,Syracuse
+SSA-DH,Dylan Harper,Rutgers
+SSA-FB,Flory Bidunga,Kansas
+SSA-HH,Hannah Hidalgo,Notre Dame
+SSA-IE,Isaiah Evans,Duke
+SSA-JC,Jaloni Cambridge,Ohio State
+SSA-JE,Joyce Edwards,South Carolina
+SSA-JW,Juju Watkins,USC
+SSA-KK,Kon Knueppel,Duke
+SSA-KKN,Karter Knox,Arkansas
+SSA-LL,Langston Love,Baylor
+SSA-MJ,Meechie Johnson,Ohio State
+SSA-SS,Sarah Strong,UConn
+SSA-TL,Tamin Lipsey,Iowa State
+FEA-AB,Ace Bailey,Rutgers
+FEA-AC,Audi Crooks,Iowa State
+FEA-AM,Aneesah Morrow,LSU
+FEA-AN,Asa Newell,Georgia
+FEA-ANO,Ahmad Nowell,UConn
+FEA-BF,Boogie Fland,Arkansas
+FEA-CF,Cooper Flagg,Duke
+FEA-DF,Donavan Freeman,Syracuse
+FEA-DH,Dylan Harper,Rutgers
+FEA-DQ,Derik Queen,Maryland
+FEA-DR,Derrion Reid,Alabama
+FEA-HH,Hannah Hidalgo,Notre Dame
+FEA-IE,Isaiah Evans,Duke
+FEA-JJ,Juju Watkins,USC
+FEA-JN,Jayden Nunn,Baylor
+FEA-KG,Keshon Gilbert,Iowa State
+FEA-KI,Kiki Iriafen,USC
+FEA-KJ,Kam Jones,Marquette
+FEA-KK,Kon Knueppel,Duke
+FEA-MJ,Meechie Johnson,Ohio State
+FEA-PB,Sarah Strong,UConn
+FEA-PH,PJ Haggerty,Memphis
+FEA-SC,Sonia Citron,Notre Dame

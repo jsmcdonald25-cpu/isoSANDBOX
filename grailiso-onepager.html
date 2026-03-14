@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GrailISO — The Future of Card Grading</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0D1F33;
+    --grail: #FFFFFF;
+    --iso: #00AAFF;
+    --iso-dim: rgba(0,170,255,0.12);
+    --iso-mid: rgba(0,170,255,0.35);
+    --red: #FF3B5C;
+    --green: #00E887;
+    --gold: #FFD700;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--grail);
+    font-family: 'Barlow Condensed', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+  .page { max-width: 1100px; margin: 0 auto; padding: 60px 40px; position: relative; z-index: 1; }
+
+  /* HEADER */
+  header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 70px; border-bottom: 1px solid var(--iso-mid); padding-bottom: 40px; animation: fadeDown 0.8s ease both; }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 72px; line-height: 1; letter-spacing: 2px; }
+  .logo .grail { color: var(--grail); }
+  .logo .iso   { color: var(--iso); }
+  .tagline { font-size: 14px; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; color: var(--iso); margin-top: 6px; }
+  .header-right { text-align: right; padding-top: 8px; }
+  .header-right .label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--iso); opacity: 0.7; }
+  .header-right .version { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--grail); opacity: 0.3; margin-top: 4px; }
+
+  /* HERO */
+  .hero { margin-bottom: 70px; animation: fadeUp 0.9s ease 0.1s both; }
+  .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(48px, 7vw, 88px); line-height: 0.95; letter-spacing: 1px; }
+  .hero h1 em { font-style: normal; color: var(--iso); }
+  .hero p { margin-top: 24px; font-size: 18px; font-weight: 300; line-height: 1.6; max-width: 620px; color: rgba(255,255,255,0.7); }
+
+  /* SECTION LABEL */
+  .section-label { font-size: 11px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase; color: var(--iso); margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--iso-mid); }
+
+  /* GRADING DISPLAY */
+  .grading-section { margin-bottom: 64px; animation: fadeUp 0.9s ease 0.2s both; }
+  .grade-display { background: linear-gradient(135deg, rgba(0,170,255,0.08) 0%, rgba(13,31,51,0) 60%); border: 1px solid var(--iso-mid); border-radius: 4px; padding: 40px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; position: relative; overflow: hidden; }
+  .grade-display::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--iso), transparent); }
+  .grade-col h3 { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 3px; color: var(--iso); margin-bottom: 16px; opacity: 0.8; }
+  .grade-number { font-family: 'Bebas Neue', sans-serif; font-size: 80px; line-height: 1; color: var(--grail); letter-spacing: -2px; }
+  .grade-number span { font-size: 24px; color: var(--iso); opacity: 0.6; }
+  .sub-scores { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .sub-score-row { display: flex; justify-content: space-between; font-size: 13px; }
+  .sub-score-row .lbl { color: rgba(255,255,255,0.5); }
+  .sub-score-row .val { color: var(--grail); font-weight: 600; }
+  .bar { height: 2px; background: rgba(255,255,255,0.08); border-radius: 2px; margin-top: 4px; position: relative; }
+  .bar-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--iso); border-radius: 2px; }
+  .era-badge { display: inline-block; background: var(--iso-dim); border: 1px solid var(--iso-mid); color: var(--iso); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; padding: 4px 10px; border-radius: 2px; margin-bottom: 12px; }
+  .era-number { font-family: 'Bebas Neue', sans-serif; font-size: 72px; line-height: 1; color: var(--gold); }
+  .era-note { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 8px; line-height: 1.5; }
+  .risk-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .dot.low  { background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .risk-val { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--green); }
+  .risk-conf { font-size: 13px; color: rgba(255,255,255,0.4); margin-bottom: 14px; }
+  .ev { font-size: 12px; color: rgba(255,255,255,0.35); padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+  /* ISODNA */
+  .isodna-section { margin-bottom: 64px; animation: fadeUp 0.9s ease 0.3s both; }
+  .isodna-block { background: linear-gradient(135deg, rgba(0,170,255,0.06), transparent); border: 1px solid var(--iso-mid); border-radius: 4px; padding: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; position: relative; overflow: hidden; }
+  .isodna-block::after { content: 'ISODNA'; position: absolute; right: -20px; top: 50%; transform: translateY(-50%) rotate(90deg); font-family: 'Bebas Neue', sans-serif; font-size: 120px; color: var(--iso); opacity: 0.04; pointer-events: none; }
+  .isodna-title { font-family: 'Bebas Neue', sans-serif; font-size: 52px; line-height: 1; letter-spacing: 2px; margin-bottom: 16px; }
+  .isodna-title span { color: var(--iso); }
+  .isodna-desc { font-size: 15px; font-weight: 300; line-height: 1.7; color: rgba(255,255,255,0.6); margin-bottom: 24px; }
+  .istat { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+  .istat .num { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--iso); line-height: 1; }
+  .istat .unit { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+  .match-grid { display: flex; flex-direction: column; gap: 12px; justify-content: center; }
+  .match-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(0,0,0,0.2); border-left: 2px solid var(--iso); font-size: 13px; }
+  .match-row .attr { color: rgba(255,255,255,0.5); }
+  .match-row .ok { color: var(--green); font-weight: 600; font-size: 12px; letter-spacing: 1px; }
+  .conf-bar { margin-top: 16px; padding: 16px; background: rgba(0,232,135,0.06); border: 1px solid rgba(0,232,135,0.2); display: flex; justify-content: space-between; align-items: center; }
+  .conf-bar .lbl { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+  .conf-bar .pct { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--green); }
+
+  /* FEATURES */
+  .features-section { margin-bottom: 64px; animation: fadeUp 0.9s ease 0.35s both; }
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .fc { background: rgba(0,170,255,0.04); border: 1px solid rgba(0,170,255,0.15); padding: 28px 28px 32px; position: relative; transition: background 0.3s; }
+  .fc:hover { background: rgba(0,170,255,0.08); }
+  .fc::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, var(--iso), transparent); opacity: 0; transition: opacity 0.3s; }
+  .fc:hover::before { opacity: 1; }
+  .fc-icon { font-size: 28px; margin-bottom: 14px; display: block; }
+  .fc-name { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; color: var(--grail); margin-bottom: 10px; }
+  .fc-name span { color: var(--iso); }
+  .fc-desc { font-size: 13px; font-weight: 300; line-height: 1.6; color: rgba(255,255,255,0.55); }
+
+  /* EXPERIENCE */
+  .experience-section { margin-bottom: 64px; animation: fadeUp 0.9s ease 0.4s both; }
+  .experience-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+  .ec { padding: 40px; border: 1px solid rgba(0,170,255,0.15); position: relative; overflow: hidden; }
+  .ec.slab { background: linear-gradient(135deg, rgba(0,170,255,0.08), transparent); }
+  .ec.unbox { background: linear-gradient(135deg, rgba(255,215,0,0.04), transparent); border-color: rgba(255,215,0,0.2); }
+  .ec::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+  .ec.slab::before  { background: linear-gradient(90deg, var(--iso), transparent); }
+  .ec.unbox::before { background: linear-gradient(90deg, var(--gold), transparent); }
+  .ec-eye { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 16px; }
+  .ec.slab .ec-eye  { color: var(--iso); }
+  .ec.unbox .ec-eye { color: var(--gold); }
+  .ec-title { font-family: 'Bebas Neue', sans-serif; font-size: 40px; line-height: 1; letter-spacing: 1px; margin-bottom: 16px; }
+  .ec-desc { font-size: 14px; font-weight: 300; line-height: 1.7; color: rgba(255,255,255,0.55); margin-bottom: 24px; }
+  .slab-tiers { display: flex; flex-direction: column; gap: 10px; }
+  .st { display: flex; align-items: center; gap: 12px; font-size: 13px; }
+  .tdot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .tdot.blue  { background: var(--iso);  box-shadow: 0 0 10px var(--iso); }
+  .tdot.white { background: #fff;        box-shadow: 0 0 10px #fff; }
+  .tdot.gold  { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+  .st .lbl { color: rgba(255,255,255,0.5); }
+  .st .val { color: var(--grail); font-weight: 500; }
+  .unbox-quote { background: rgba(0,0,0,0.3); border-left: 3px solid var(--gold); padding: 20px 24px; margin-bottom: 16px; }
+  .unbox-quote p { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; line-height: 1.3; }
+  .unbox-quote p span { color: var(--gold); }
+  .unbox-note { font-size: 12px; color: rgba(255,255,255,0.3); letter-spacing: 0.5px; line-height: 1.6; }
+
+  /* PASSPORT */
+  .passport-section { margin-bottom: 64px; animation: fadeUp 0.9s ease 0.45s both; }
+  .passport-block { border: 1px solid rgba(255,255,255,0.1); padding: 40px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px; }
+  .passport-title { font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 2px; line-height: 1; margin-bottom: 16px; }
+  .passport-title span { color: var(--iso); }
+  .passport-desc { font-size: 14px; font-weight: 300; line-height: 1.7; color: rgba(255,255,255,0.55); margin-bottom: 28px; }
+  .pfields { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+  .pf { background: rgba(255,255,255,0.03); padding: 14px 16px; border-left: 2px solid transparent; transition: border-color 0.2s; }
+  .pf:hover { border-left-color: var(--iso); }
+  .pf .lbl { color: rgba(255,255,255,0.3); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+  .pf .val { color: var(--grail); font-size: 13px; }
+  .hash-block { display: flex; flex-direction: column; justify-content: center; }
+  .hash-label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--iso); margin-bottom: 12px; }
+  .hash-value { font-size: 13px; color: rgba(255,255,255,0.3); letter-spacing: 2px; word-break: break-all; line-height: 1.8; background: rgba(0,0,0,0.3); padding: 20px; border: 1px solid rgba(0,170,255,0.1); }
+  .hash-value strong { color: var(--iso); font-weight: 400; }
+  .qr-note { margin-top: 20px; font-size: 12px; color: rgba(255,255,255,0.3); line-height: 1.6; }
+
+  /* ALPHA BANNER */
+  .alpha-banner { border: 1px solid var(--iso-mid); padding: 32px 40px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 64px; background: linear-gradient(135deg, rgba(0,170,255,0.06), transparent); animation: fadeUp 0.9s ease 0.5s both; position: relative; overflow: hidden; }
+  .alpha-banner::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--iso), transparent); }
+  .alpha-eye { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--iso); margin-bottom: 8px; }
+  .alpha-banner h2 { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 1px; }
+  .alpha-right { text-align: right; }
+  .alpha-count { font-family: 'Bebas Neue', sans-serif; font-size: 72px; line-height: 1; color: var(--iso); }
+  .alpha-count-lbl { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+
+  /* FOOTER */
+  footer { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 32px; display: flex; justify-content: space-between; align-items: center; animation: fadeUp 0.9s ease 0.6s both; }
+  .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; }
+  .footer-logo span { color: var(--iso); }
+  .footer-tag { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.2); }
+  .footer-right { text-align: right; font-size: 12px; color: rgba(255,255,255,0.2); letter-spacing: 1px; line-height: 1.8; }
+
+  .glow-line { height: 1px; background: linear-gradient(90deg, transparent, var(--iso), transparent); margin: 64px 0; opacity: 0.3; }
+
+  @keyframes fadeDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeUp   { from { opacity:0; transform:translateY(24px);  } to { opacity:1; transform:translateY(0); } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div>
+      <div class="logo"><span class="grail">GRAIL</span><span class="iso">ISO</span></div>
+      <div class="tagline">The Future of Card Grading &amp; Collection</div>
+    </div>
+    <div class="header-right">
+      <div class="label">Private Alpha</div>
+      <div class="version">V1.0</div>
+    </div>
+  </header>
+
+  <div class="hero">
+    <h1>GRADING HAS NEVER<br>BEEN THIS <em>PRECISE.</em></h1>
+    <p>GrailISO combines semiconductor-grade imaging, AI-powered population analytics, and a provenance system that follows your card forever. Every grade is measured, documented, and evidence-backed — nothing hidden behind a single number.</p>
+  </div>
+
+  <div class="grading-section">
+    <div class="section-label">The Grading System</div>
+    <div class="grade-display">
+
+      <div class="grade-col">
+        <h3>Condition Grade</h3>
+        <div class="grade-number">847<span>/1000</span></div>
+        <div class="sub-scores">
+          <div class="sub-score-row"><span class="lbl">Surface</span><span class="val">830</span></div>
+          <div class="bar"><div class="bar-fill" style="width:83%"></div></div>
+          <div class="sub-score-row"><span class="lbl">Edges</span><span class="val">855</span></div>
+          <div class="bar"><div class="bar-fill" style="width:85.5%"></div></div>
+          <div class="sub-score-row"><span class="lbl">Corners</span><span class="val">862</span></div>
+          <div class="bar"><div class="bar-fill" style="width:86.2%"></div></div>
+          <div class="sub-score-row"><span class="lbl">Centering</span><span class="val">841</span></div>
+          <div class="bar"><div class="bar-fill" style="width:84.1%"></div></div>
+        </div>
+      </div>
+
+      <div class="grade-col">
+        <h3>Era Standard</h3>
+        <div class="era-badge">Vintage · 1979 &amp; Earlier</div>
+        <div class="era-number">923</div>
+        <div class="era-note">Measured against documented manufacturing tolerances of the era. Universal grade always shown alongside. Human verification required on every vintage card.</div>
+      </div>
+
+      <div class="grade-col">
+        <h3>Alteration Risk</h3>
+        <div class="risk-row"><div class="dot low"></div><div class="risk-val">LOW</div></div>
+        <div class="risk-conf">Confidence: 91%</div>
+        <div class="ev">✓ Edge dimensions within population range</div>
+        <div class="ev">✓ Surface gloss matches factory profile</div>
+        <div class="ev">✓ No corner compression detected</div>
+        <div class="ev">✓ ISODNA match confirmed</div>
+        <br>
+        <div style="font-size:11px;color:rgba(255,255,255,0.25);line-height:1.6">GrailISO never says "Card Altered."<br>We report evidence and confidence — always.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="isodna-section">
+    <div class="section-label">ISODNA — Population Composite Matching</div>
+    <div class="isodna-block">
+      <div>
+        <div class="isodna-title">ISO<span>DNA</span></div>
+        <div class="isodna-desc">As GrailISO scans thousands of the same card, the system builds a master composite of what that card looks like in its most pristine factory state. Every new submission is compared against that composite — detecting alterations that humans simply cannot measure.</div>
+        <div class="istat"><span class="num">4,847</span><span class="unit">Population Scans</span></div>
+        <div class="istat"><span class="num">200</span><span class="unit">Composite Sample</span></div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.3);margin-top:16px;line-height:1.7">The moat isn't the technology.<br>The moat is the data — and it grows with every scan.</div>
+      </div>
+      <div>
+        <div class="match-grid">
+          <div class="match-row"><span class="attr">Border Width</span><span class="ok">✓ WITHIN RANGE</span></div>
+          <div class="match-row"><span class="attr">Cut Angle</span><span class="ok">✓ WITHIN RANGE</span></div>
+          <div class="match-row"><span class="attr">Surface Gloss</span><span class="ok">✓ CONFIRMED</span></div>
+          <div class="match-row"><span class="attr">Edge Fiber Pattern</span><span class="ok">✓ FACTORY SIGNATURE</span></div>
+          <div class="match-row"><span class="attr">Print Registration</span><span class="ok">✓ WITHIN RANGE</span></div>
+        </div>
+        <div class="conf-bar"><span class="lbl">Match Confidence</span><span class="pct">98.2%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="features-section">
+    <div class="section-label">Platform Features</div>
+    <div class="features-grid">
+      <div class="fc"><span class="fc-icon">🏛️</span><div class="fc-name">ISO<span>Vault</span></div><div class="fc-desc">The world's most complete sports card search engine. Sport → Year → Brand → Set → Checklist → Card Detail. Your collection, fully cataloged and valued.</div></div>
+      <div class="fc"><span class="fc-icon">📋</span><div class="fc-name">Card <span>Passport</span></div><div class="fc-desc">Every card scanned receives a permanent provenance record — physical measurements, condition scores, ISODNA results, and full ownership history. Forever.</div></div>
+      <div class="fc"><span class="fc-icon">🔍</span><div class="fc-name">ISO <span>Matching</span></div><div class="fc-desc">Post what you're searching for. Get matched with sellers who have it. A marketplace built around the hunt — not just the transaction.</div></div>
+      <div class="fc"><span class="fc-icon">📊</span><div class="fc-name">Market <span>Value Engine</span></div><div class="fc-desc">Live market pricing pulled from real sales data. Every card in your vault tracked against market value. Anomalous prices flagged automatically.</div></div>
+      <div class="fc"><span class="fc-icon">🧬</span><div class="fc-name">Raw <span>Scan Report</span></div><div class="fc-desc">Full physical data capture without a grade. All ISODNA results, measurements, and alteration risk data — provenance without the grade.</div></div>
+      <div class="fc"><span class="fc-icon">⚡</span><div class="fc-name">FOMO <span>Engine</span></div><div class="fc-desc">Real-time market signals based on actual data only. No fake timers. No fabricated urgency. When GrailISO says something is moving — it's moving.</div></div>
+    </div>
+  </div>
+
+  <div class="glow-line"></div>
+
+  <div class="experience-section">
+    <div class="section-label">The GrailISO Experience</div>
+    <div class="experience-grid">
+      <div class="ec slab">
+        <div class="ec-eye">Crystal Slab Program</div>
+        <div class="ec-title">THE SLAB IS PART OF THE PRODUCT</div>
+        <div class="ec-desc">Every graded card returns in a custom crystal blue slab — thicker than industry standard, color-matched to the GrailISO identity. Every slab in the world is a walking advertisement.</div>
+        <div class="slab-tiers">
+          <div class="st"><div class="tdot blue"></div><span class="lbl">Standard Grade →</span><span class="val">Crystal Blue</span></div>
+          <div class="st"><div class="tdot white"></div><span class="lbl">950+ Grade →</span><span class="val">Crystal White / Platinum</span></div>
+          <div class="st"><div class="tdot gold"></div><span class="lbl">1/1 &amp; SuperFractor →</span><span class="val">Unique Treatment</span></div>
+        </div>
+      </div>
+      <div class="ec unbox">
+        <div class="ec-eye">The Unboxing Experience</div>
+        <div class="ec-title">EVERY DELIVERY IS A PACK RIP</div>
+        <div class="ec-desc">Every graded card ships inside a custom sealed pack — crystal blue, same material language as the slab. The wrapper is personalized with the collector's name.</div>
+        <div class="unbox-quote"><p><span>[FIRST NAME],</span><br>YOU HAVE FOUND YOUR GRAIL.</p></div>
+        <div class="unbox-note">Every customer will film themselves opening it. The personalization makes it impossible not to share. GrailISO turns every order into organic content.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="passport-section">
+    <div class="section-label">Card Passport — Full Provenance</div>
+    <div class="passport-block">
+      <div>
+        <div class="passport-title">EVERY CARD.<br>A <span>PERMANENT</span><br>RECORD.</div>
+        <div class="passport-desc">The GrailISO Card Passport follows the card forever. If the same card is submitted again years later, GrailISO compares the new scan to the original passport and detects if anything changed. Provenance no other grading company offers.</div>
+        <div class="pfields">
+          <div class="pf"><div class="lbl">Set / Year</div><div class="val">2014 Bowman Chrome</div></div>
+          <div class="pf"><div class="lbl">Card Number</div><div class="val">BCP-1</div></div>
+          <div class="pf"><div class="lbl">Centering</div><div class="val">52/48 · 51/49 T/B</div></div>
+          <div class="pf"><div class="lbl">Dimensions</div><div class="val">88.9 × 63.5mm</div></div>
+          <div class="pf"><div class="lbl">Scan Date</div><div class="val">2026-03-13</div></div>
+          <div class="pf"><div class="lbl">Grader ID</div><div class="val">GI-004</div></div>
+          <div class="pf"><div class="lbl">ISODNA Pop</div><div class="val">4,847 scans</div></div>
+          <div class="pf"><div class="lbl">Condition Grade</div><div class="val">847 / 1000</div></div>
+        </div>
+      </div>
+      <div class="hash-block">
+        <div class="hash-label">GrailISO Card Hash</div>
+        <div class="hash-value"><strong>GI</strong>·2014·BCH·BCP1·<br><strong>4F8A2C91</strong>·D3E7·<br><strong>4B2F·8A1C</strong>·9D3E·<br><strong>7F2B·1C8A</strong>·3D9E·<br>F4A2·<strong>C8D1·E3F7</strong></div>
+        <div class="qr-note">A unique fingerprint generated from scan data. QR code etched into the slab base — scan it to instantly access the full Card Passport, ISODNA results, and ownership history.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alpha-banner">
+    <div>
+      <div class="alpha-eye">Private Alpha — Invite Only</div>
+      <h2>NOW ACCEPTING TRUSTED COLLECTORS</h2>
+    </div>
+    <div class="alpha-right">
+      <div class="alpha-count">25</div>
+      <div class="alpha-count-lbl">Spots Available</div>
+    </div>
+  </div>
+
+  <footer>
+    <div>
+      <div class="footer-logo">GRAIL<span>ISO</span></div>
+      <div class="footer-tag">The Future of Card Grading</div>
+    </div>
+    <div class="footer-right">
+      Confidential — Private Alpha Distribution Only<br>
+      © 2026 GrailISO · All Rights Reserved
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

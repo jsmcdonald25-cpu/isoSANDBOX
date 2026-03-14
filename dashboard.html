@@ -3864,9 +3864,10 @@ async function ivSelectSet(table){
       .select('player,card_number,set_name,year,sport,team,category,insert_name,is_rookie,var_images')
       .range(from, from+PAGE-1)
       .order('card_number',{ascending:true});
-    if(error){ err=error; break; }
-    if(!data||!data.length) break;
+    if(error){ err=error; console.error('ivSelectSet error:', error); break; }
+    if(!data||!data.length){ console.log('ivSelectSet: no data returned, from='+from); break; }
     all = all.concat(data);
+    console.log('ivSelectSet: loaded '+data.length+' rows, total='+all.length);
     if(data.length < PAGE) break;
     from += PAGE;
   }
@@ -3893,7 +3894,7 @@ function _ivApplyCardFilters(){
     const q = _ivSearch.toLowerCase();
     rows = rows.filter(r=>
       (r.player||'').toLowerCase().includes(q) ||
-      (r.card_number||'').toLowerCase().includes(q) ||
+      String(r.card_number||'').toLowerCase().includes(q) ||
       (r.insert_name||'').toLowerCase().includes(q) ||
       (r.team||'').toLowerCase().includes(q)
     );

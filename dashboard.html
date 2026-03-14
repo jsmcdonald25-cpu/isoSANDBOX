@@ -283,9 +283,8 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .crt-name{font-family:Barlow Condensed,sans-serif;font-weight:700;font-size:14px;color:var(--white)}
 .crt-set{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted-text);margin-top:2px}
 .crt-price{font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--blue);margin-top:6px}
-/* ── Step 3 layout ── */
-.s3-layout{display:grid;grid-template-columns:220px 1fr;gap:14px;min-height:320px}
-.s3-set-list{display:flex;flex-direction:column;gap:4px;overflow-y:auto;max-height:340px;padding-right:4px}
+.s3-layout{display:grid;grid-template-columns:220px 1fr;gap:14px;min-height:300px}
+.s3-set-list{display:flex;flex-direction:column;gap:4px;overflow-y:auto;max-height:320px;padding-right:4px}
 .s3-set-list::-webkit-scrollbar{width:3px}.s3-set-list::-webkit-scrollbar-thumb{background:var(--deep-border);border-radius:2px}
 .s3-set-row{padding:9px 12px;background:rgba(0,0,0,0.2);border:1px solid var(--deep-border);border-radius:8px;cursor:pointer;transition:all .15s;user-select:none}
 .s3-set-row:hover{background:rgba(0,170,255,.06);border-color:rgba(0,170,255,.3)}
@@ -295,9 +294,9 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .s3-set-brand{font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);margin-top:1px}
 .s3-right{display:flex;flex-direction:column;gap:10px}
 .s3-card-stage{display:flex;justify-content:center;align-items:center;height:190px;perspective:800px}
-.s3-card-3d{width:126px;height:176px;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.23,1,.32,1);cursor:default;border-radius:10px}
+.s3-card-3d{width:126px;height:176px;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.23,1,.32,1);cursor:default}
 .s3-card-stage:hover .s3-card-3d{transform:rotateY(14deg) rotateX(-5deg)}
-.s3-card-face{position:absolute;inset:0;border-radius:10px;background:linear-gradient(135deg,#0a1628 0%,#0d2040 45%,#091830 100%);border:1px solid rgba(0,170,255,0.4);box-shadow:0 8px 32px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.05);overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:12px 10px}
+.s3-card-face{position:absolute;inset:0;border-radius:10px;background:linear-gradient(135deg,#0a1628 0%,#0d2040 45%,#091830 100%);border:1px solid rgba(0,170,255,0.4);box-shadow:0 8px 32px rgba(0,0,0,0.6);overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:12px 10px}
 .s3-card-face::before{content:'';position:absolute;top:-40px;left:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(0,170,255,0.12),transparent 70%);pointer-events:none}
 .s3-card-shimmer{position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(0,170,255,0.07) 50%,transparent 60%);animation:s3shim 3s ease-in-out infinite}
 @keyframes s3shim{0%,100%{opacity:0}50%{opacity:1}}
@@ -308,7 +307,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .s3-var-pill:hover{border-color:rgba(0,170,255,.4);color:var(--white)}
 .s3-var-pill.sel{background:rgba(0,170,255,.15);border-color:var(--blue);color:var(--white)}
 .s3-pill-price{font-family:Bebas Neue,sans-serif;font-size:12px;color:var(--blue);margin-left:5px}
-.s3-loading{font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);padding:16px;text-align:center;letter-spacing:.5px}
+.s3-msg{font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);padding:14px;text-align:center;letter-spacing:.5px}
 .grade-tiles{display:flex;gap:8px;flex-wrap:wrap}
 .gt{padding:8px 14px;border:1px solid var(--deep-border);border-radius:6px;font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:600;color:var(--muted-text);cursor:pointer;transition:all .15s;user-select:none}
 .gt:hover{border-color:var(--blue);color:var(--blue)}.gt.sel{background:rgba(0,170,255,.15);border-color:var(--blue);color:var(--blue)}
@@ -1066,7 +1065,7 @@ async function logOut(){
         <div class="sp-sub" id="s3sub" style="margin-bottom:12px">Select a set on the left, then pick the exact variant.</div>
         <div class="s3-layout">
           <div class="s3-set-list" id="s3SetList">
-            <div class="s3-loading">Search a player in Step 2 first.</div>
+            <div class="s3-msg">Search a player in Step 2 first.</div>
           </div>
           <div class="s3-right">
             <div class="s3-card-stage">
@@ -1078,12 +1077,12 @@ async function logOut(){
                 <div class="s3-card-face">
                   <div class="s3-card-shimmer"></div>
                   <div style="position:relative;z-index:1">
-                    <div style="font-family:Bebas Neue,sans-serif;font-size:14px;letter-spacing:1.5px;color:var(--white);line-height:1" id="s3CPlayer"></div>
-                    <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);margin-top:3px;line-height:1.3" id="s3CSet"></div>
+                    <div style="font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--white);line-height:1" id="s3CPlayer"></div>
+                    <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);margin-top:3px;line-height:1.3" id="s3CSet"></div>
                   </div>
                   <div style="position:relative;z-index:1">
-                    <div style="font-family:Bebas Neue,sans-serif;font-size:11px;letter-spacing:1px;color:rgba(255,255,255,0.5);text-transform:uppercase" id="s3CParallel"></div>
-                    <div style="font-family:Bebas Neue,sans-serif;font-size:24px;color:var(--white);line-height:1" id="s3CPrice"></div>
+                    <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:.5px;color:rgba(255,255,255,0.5)" id="s3CParallel"></div>
+                    <div style="font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--white);line-height:1" id="s3CPrice"></div>
                     <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(0,170,255,0.5)" id="s3CIsos"></div>
                   </div>
                 </div>
@@ -2033,152 +2032,92 @@ function pickP(name,team,pos,rookie){
   document.getElementById('selPMeta').textContent=`${team} &#183; ${pos} &#183; Rookie ${rookie}`;
   document.getElementById('s2next').disabled=false;
 }
-// ── Step 3: card catalog for Post ISO ───────────────────────────────────────
-let _s3Cards = []; // active card list — from CARDS array or Supabase
-
+let _s3Cards=[];
 async function renderCardRes(){
-  if(!ISO.player) return;
-  const listEl  = document.getElementById('s3SetList');
-  const subEl   = document.getElementById('s3sub');
+  if(!ISO.player)return;
+  const listEl=document.getElementById('s3SetList');
+  const subEl=document.getElementById('s3sub');
   s3ResetPreview();
-
-  // Check hardcoded CARDS array first
-  let cards = CARDS.filter(c=>c.player===ISO.player);
-
-  // If none found locally, query Supabase catalog tables
+  let cards=CARDS.filter(c=>c.player===ISO.player);
   if(!cards.length){
-    listEl.innerHTML = '<div class="s3-loading">Loading catalog&#8230;</div>';
-    try {
-      const results = [];
+    listEl.innerHTML='<div class="s3-msg">Loading catalog…</div>';
+    try{
+      const results=[];
       for(const s of IV_SETS){
-        const { data } = await window._sb.from(s.table)
-          .select('player,card_number,parallel,year,brand,front_img,price_market,auto,rc,serial_total,isos_count')
-          .ilike('player', ISO.player)
-          .limit(200);
-        if(data) data.forEach((r,i)=>{
-          results.push({
-            id:          s.table+'_'+i,
-            player:      r.player,
-            year:        r.year || parseInt(s.year),
-            brand:       r.brand || s.brand,
-            set:         s.name,
-            parallel:    r.parallel || 'Base',
-            run:         r.serial_total || null,
-            auto:        r.auto || false,
-            rc:          r.rc || false,
-            price:       parseFloat(r.price_market)||0,
-            isos:        r.isos_count || 0,
-            _cardNumber: r.card_number,
-            _setTable:   s.table,
-          });
-        });
+        const {data}=await window._sb.from(s.table).select('player,card_number,parallel,year,brand,front_img,price_market,auto,rc,serial_total').ilike('player',ISO.player).limit(300);
+        if(data) data.forEach((r,i)=>results.push({
+          id:s.table+'_'+i,player:r.player,
+          year:r.year||s.year,brand:r.brand||s.brand,set:s.name,
+          parallel:r.parallel||'Base',run:r.serial_total||null,
+          auto:!!r.auto,rc:!!r.rc,price:parseFloat(r.price_market)||0,isos:0,
+          _cardNumber:r.card_number,_setTable:s.table
+        }));
       }
-      cards = results;
-    } catch(e){
-      listEl.innerHTML = '<div class="s3-loading" style="color:var(--red)">Error loading catalog: '+e.message+'</div>';
+      cards=results;
+    }catch(e){
+      listEl.innerHTML='<div class="s3-msg" style="color:var(--red)">Error: '+e.message+'</div>';
       return;
     }
   }
-
-  _s3Cards = cards;
-
-  if(!cards.length){
-    listEl.innerHTML = '<div class="s3-loading">No cards found for '+ISO.player+' in the catalog.</div>';
-    subEl.textContent = 'No cards found for '+ISO.player+'.';
-    return;
-  }
-
-  // Group by unique set
-  const sets = [];
-  const seen = new Set();
-  cards.forEach(c=>{
-    const key = c.year+'|'+c.brand+'|'+c.set;
-    if(!seen.has(key)){ seen.add(key); sets.push({year:c.year,brand:c.brand,set:c.set,key}); }
-  });
-
-  subEl.textContent = cards.length+' card'+(cards.length!==1?'s':'')+' found for '+ISO.player+'. Select a set, then pick the variant.';
-  listEl.innerHTML = sets.map(s=>{
-    const vc = cards.filter(c=>c.year==s.year&&c.brand===s.brand&&c.set===s.set).length;
-    return '<div class="s3-set-row" onclick="s3SelectSet(''+s.key.replace(/'/g,"\'")+'''+',this)">'
+  _s3Cards=cards;
+  if(!cards.length){listEl.innerHTML='<div class="s3-msg">No cards found for '+ISO.player+'.</div>';return;}
+  const sets=[],seen=new Set();
+  cards.forEach(c=>{const k=c.year+'|'+c.brand+'|'+c.set;if(!seen.has(k)){seen.add(k);sets.push({year:c.year,brand:c.brand,set:c.set,key:k});}});
+  subEl.textContent=cards.length+' card'+(cards.length!==1?'s':'')+' found. Select a set then pick the variant.';
+  listEl.innerHTML=sets.map(s=>{
+    const vc=cards.filter(c=>String(c.year)===String(s.year)&&c.brand===s.brand&&c.set===s.set).length;
+    return'<div class="s3-set-row" onclick="s3SelectSet(this,'+JSON.stringify(s.key)+')">'
       +'<div class="s3-set-year">'+s.year+'</div>'
       +'<div class="s3-set-name">'+s.set+'</div>'
       +'<div class="s3-set-brand">'+s.brand+' &middot; '+vc+' variant'+(vc!==1?'s':'')+'</div>'
       +'</div>';
   }).join('');
-
-  // Auto-select if only one set
-  if(sets.length===1){
-    const row = listEl.querySelector('.s3-set-row');
-    if(row) s3SelectSet(sets[0].key, row);
-  }
+  if(sets.length===1){const r=listEl.querySelector('.s3-set-row');if(r)s3SelectSet(r,sets[0].key);}
 }
-
 function s3ResetPreview(){
-  document.getElementById('s3CardEmpty').style.display='flex';
-  document.getElementById('s3Card3d').style.display='none';
-  document.getElementById('s3VarSection').style.display='none';
-  document.getElementById('s3Variants').innerHTML='';
-  const btn=document.getElementById('s3next');
-  btn.disabled=true; btn.style.opacity='.4';
+  const e=document.getElementById('s3CardEmpty'),c=document.getElementById('s3Card3d');
+  if(e)e.style.display='flex';if(c)c.style.display='none';
+  const v=document.getElementById('s3VarSection');if(v)v.style.display='none';
+  const p=document.getElementById('s3Variants');if(p)p.innerHTML='';
+  const b=document.getElementById('s3next');if(b){b.disabled=true;b.style.opacity='.4';}
   ISO.card=null;
 }
-
-function s3SelectSet(key, el){
+function s3SelectSet(el,key){
   document.querySelectorAll('.s3-set-row').forEach(r=>r.classList.remove('sel'));
   el.classList.add('sel');
-  const parts = key.split('|');
-  const year=parts[0], brand=parts[1], set=parts[2];
-  const variants = _s3Cards.filter(c=>String(c.year)===String(year)&&c.brand===brand&&c.set===set);
-  // Reset card preview but keep set highlighted
-  document.getElementById('s3CardEmpty').style.display='flex';
-  document.getElementById('s3Card3d').style.display='none';
-  ISO.card=null;
-  const btn=document.getElementById('s3next');
-  btn.disabled=true; btn.style.opacity='.4';
-  // Render variant pills
-  const varSec=document.getElementById('s3VarSection');
-  const pillsEl=document.getElementById('s3Variants');
-  varSec.style.display='block';
-  pillsEl.innerHTML = variants.map((c,i)=>{
-    const tags=[];
-    if(c.auto) tags.push('<span class="badge auto">AUTO</span>');
-    if(c.rc)   tags.push('<span class="badge rc">RC</span>');
-    if(c.run)  tags.push('<span class="badge num">/'+c.run+'</span>');
-    const priceStr = c.price>0 ? '<span class="s3-pill-price">$'+c.price.toLocaleString()+'</span>' : '';
-    return '<div class="s3-var-pill" onclick="s3PickVariant(''+String(c.id).replace(/'/g,"\'")+''"+',this)">'
-      +c.parallel+(tags.length?' '+tags.join(''):'')+priceStr+'</div>';
+  s3ResetPreview();
+  el.classList.add('sel');
+  const parts=key.split('|'),year=parts[0],brand=parts[1],set=parts[2];
+  const variants=_s3Cards.filter(c=>String(c.year)===String(year)&&c.brand===brand&&c.set===set);
+  const vs=document.getElementById('s3VarSection'),pEl=document.getElementById('s3Variants');
+  vs.style.display='block';
+  pEl.innerHTML=variants.map((c,i)=>{
+    const tags=[c.auto?'<span class="badge auto">AUTO</span>':'',c.rc?'<span class="badge rc">RC</span>':'',c.run?'<span class="badge num">/'+c.run+'</span>':''].filter(Boolean).join('');
+    const pr=c.price>0?'<span class="s3-pill-price">$'+c.price.toLocaleString()+'</span>':'';
+    return'<div class="s3-var-pill" onclick="s3PickVariant(this,'+i+','+JSON.stringify(key)+')">'+c.parallel+(tags?' '+tags:'')+pr+'</div>';
   }).join('');
-  // Auto-select if only one variant
-  if(variants.length===1){
-    const pill=pillsEl.querySelector('.s3-var-pill');
-    if(pill) s3PickVariant(String(variants[0].id), pill);
-  }
+  if(variants.length===1){const p=pEl.querySelector('.s3-var-pill');if(p)s3PickVariant(p,0,key);}
 }
-
-function s3PickVariant(id, el){
+function s3PickVariant(el,idx,key){
   document.querySelectorAll('.s3-var-pill').forEach(p=>p.classList.remove('sel'));
   el.classList.add('sel');
-  const card = _s3Cards.find(c=>String(c.id)===String(id));
-  if(!card) return;
-  ISO.card = card;
-  // Show 3D card
+  const parts=key.split('|'),year=parts[0],brand=parts[1],set=parts[2];
+  const variants=_s3Cards.filter(c=>String(c.year)===String(year)&&c.brand===brand&&c.set===set);
+  const card=variants[idx];
+  if(!card)return;
+  ISO.card=card;
   document.getElementById('s3CardEmpty').style.display='none';
-  const card3d=document.getElementById('s3Card3d');
-  card3d.style.display='block';
-  document.getElementById('s3CPlayer').textContent  = card.player;
-  document.getElementById('s3CSet').textContent     = card.year+' '+card.brand+' '+card.set;
-  document.getElementById('s3CParallel').textContent = card.parallel;
-  document.getElementById('s3CPrice').textContent   = card.price>0?'$'+card.price.toLocaleString():'';
-  document.getElementById('s3CIsos').textContent    = card.isos?card.isos+' active ISO'+(card.isos!==1?'s':''):'';
-  const btn=document.getElementById('s3next');
-  btn.disabled=false; btn.style.opacity='1';
+  document.getElementById('s3Card3d').style.display='block';
+  document.getElementById('s3CPlayer').textContent=card.player;
+  document.getElementById('s3CSet').textContent=card.year+' '+card.brand+' '+card.set;
+  document.getElementById('s3CParallel').textContent=card.parallel;
+  document.getElementById('s3CPrice').textContent=card.price>0?'$'+card.price.toLocaleString():'';
+  document.getElementById('s3CIsos').textContent=card.isos?card.isos+' active ISO'+(card.isos!==1?'s':''):'';
+  const b=document.getElementById('s3next');b.disabled=false;b.style.opacity='1';
 }
-
 function pickCard(id,el){
-  // Legacy fallback
   ISO.card=CARDS.find(c=>c.id===id)||_s3Cards.find(c=>c.id===id);
-  const btn=document.getElementById('s3next');
-  if(btn){btn.disabled=false;btn.style.opacity='1';}
+  const b=document.getElementById('s3next');if(b){b.disabled=false;b.style.opacity='1';}
 }
 function selGrade(el){
   document.querySelectorAll('.gt').forEach(t=>t.classList.remove('sel'));

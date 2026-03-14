@@ -752,10 +752,8 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     }
     const gate = document.getElementById('gate');
     if(session && session.user){
-      // Hide gate immediately — never block on profile load
       if(gate){ gate.style.display='none'; gate.style.pointerEvents='none'; }
-      // Load profile in background — errors here never affect gate
-      try { await initUserProfile(session.user); } catch(e){ console.warn('Profile load failed:', e); }
+      try { await initUserProfile(session.user); } catch(e){}
     } else {
       if(gate){ gate.style.display='flex'; gate.style.pointerEvents='auto'; }
       window._ownerMode = false;

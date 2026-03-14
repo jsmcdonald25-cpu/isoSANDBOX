@@ -1969,11 +1969,59 @@ function updateSum(){
   const mn=document.getElementById('minP').value,mx=document.getElementById('maxP').value;
   document.getElementById('sumPrice').textContent=mn&&mx?`$${mn}–$${mx}`:mx?`Up to $${mx}`:mn?`Min $${mn}`:'—';
 }
-function submitISO(){
+async function submitISO(){
   if(!ISO.player||!ISO.card){T('Select a player and card first.');return;}
-  T(`ISO posted — ${ISO.player} · ${ISO.card.parallel} · 1 credit used`);
-  ISO={sport:'Baseball',player:null,card:null,grade:'PSA 10'};
-  setTimeout(()=>N('myisos',document.querySelector('[onclick*=myisos]')),1200);
+  const user = window._authUser;
+  if(!user){T('You must be logged in to post an ISO.');return;}
+
+  const btn = document.querySelector('[onclick="submitISO()"]');
+  if(btn){btn.disabled=true;btn.textContent='POSTING...';}
+
+  try {
+    // Deduct 1 credit
+    const { data: profile } = await window._sb.from('profiles').select('credits').eq('id',user.id).maybeSingle();
+    const currentCredits = profile ? (parseInt(profile.credits)||0) : 0;
+    if(currentCredits < 1){
+      T('Not enough credits — you need at least 1 to post an ISO.');
+      if(btn){btn.disabled=false;btn.textContent='POST ISO →';}
+      return;
+    }
+    await window._sb.from('profiles').update({ credits: currentCredits - 1 }).eq('id', user.id);
+
+    // Write ISO record
+    const mn = document.getElementById('minP')?.value||null;
+    const mx = document.getElementById('maxP')?.value||null;
+    const notes = document.getElementById('notes')?.value||null;
+    await window._sb.from('isos').insert({
+      user_id:    user.id,
+      sport:      ISO.sport,
+      player:     ISO.player,
+      card_id:    ISO.card.id,
+      card_name:  `${ISO.card.year} ${ISO.card.brand} ${ISO.card.set}`,
+      parallel:   ISO.card.parallel,
+      grade:      ISO.grade,
+      min_price:  mn ? parseFloat(mn) : null,
+      max_price:  mx ? parseFloat(mx) : null,
+      notes:      notes,
+      status:     'active',
+      created_at: new Date().toISOString()
+    });
+
+    // Update credit display
+    const credEl = document.getElementById('credits-value');
+    const credSub = document.getElementById('credits-sub');
+    if(credEl) credEl.textContent = currentCredits - 1;
+    if(credSub) credSub.textContent = `$5 per post · ${currentCredits - 1} left`;
+
+    T(`ISO posted — ${ISO.player} · ${ISO.card.parallel} · 1 credit used`);
+    ISO={sport:'Baseball',player:null,card:null,grade:'PSA 10'};
+    setTimeout(()=>N('myisos',document.querySelector('[onclick*=myisos]')),1200);
+
+  } catch(e){
+    T('Failed to post ISO — ' + (e.message||'try again'));
+  } finally {
+    if(btn){btn.disabled=false;btn.textContent='POST ISO →';}
+  }
 }
 
 // ═══════════════════════════════════════
@@ -2789,7 +2837,11 @@ async function initScoresBar(){
   async function loadScores(){
     showFallback('LOADING...');
     try {
-      const results = await Promise.allSettled(SPORTS.map(s=>fetch(s.url).then(r=>r.json()).then(d=>({sport:s.label,data:d}))));
+      const fetchWithTimeout = (url) => Promise.race([
+        fetch(url).then(r=>r.json()),
+        new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),6000))
+      ]);
+      const results = await Promise.allSettled(SPORTS.map(s=>fetchWithTimeout(s.url).then(d=>({sport:s.label,data:d}))));
       let allEvents=[];
       results.forEach(r=>{ if(r.status==='fulfilled'){ const {sport,data}=r.value; (data.events||[]).forEach(ev=>{ const comp=ev.competitions?.[0]; if(!comp)return; allEvents.push({sport,home:comp.competitors?.find(c=>c.homeAway==='home'),away:comp.competitors?.find(c=>c.homeAway==='away'),status:ev.status?.type?.state}); }); } });
       if(!allEvents.length){ showFallback('No games today'); return; }
@@ -2799,7 +2851,11 @@ async function initScoresBar(){
   async function loadSchedule(){
     showFallback('LOADING...');
     try {
-      const results = await Promise.allSettled(SPORTS.map(s=>fetch(s.url+'?limit=10').then(r=>r.json()).then(d=>({sport:s.label,data:d}))));
+      const fetchWithTimeout = (url) => Promise.race([
+        fetch(url).then(r=>r.json()),
+        new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),6000))
+      ]);
+      const results = await Promise.allSettled(SPORTS.map(s=>fetchWithTimeout(s.url+'?limit=10').then(d=>({sport:s.label,data:d}))));
       let allEvents=[];
       results.forEach(r=>{ if(r.status==='fulfilled'){ const {sport,data}=r.value; (data.events||[]).forEach(ev=>{ const comp=ev.competitions?.[0]; if(!comp)return; const date=ev.date?new Date(ev.date):null; allEvents.push({sport,home:comp.competitors?.find(c=>c.homeAway==='home'),away:comp.competitors?.find(c=>c.homeAway==='away'),status:ev.status?.type?.state,date}); }); } });
       if(!allEvents.length){ showFallback('No upcoming games'); return; }

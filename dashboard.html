@@ -1232,7 +1232,7 @@ async function logOut(){
       <div class="iv-card-toolbar">
         <div class="iv-card-search-wrap">
           <div class="s-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-          <input type="text" id="ivCardSearch" placeholder="Search player or card #..." onkeydown="if(event.key==='Enter')ivFilterCards(this.value)" autocomplete="off"/>
+          <input type="text" id="ivCardSearch" placeholder="Search player or card #..." oninput="clearTimeout(this._t);this._t=setTimeout(()=>ivFilterCards(this.value),350)" autocomplete="off"/>
         </div>
         <div class="iv-pill-row" id="ivCatPills" style="gap:6px">
           <div class="chip active" onclick="ivCatFilter('all',this)">All</div>
@@ -2915,7 +2915,8 @@ function renderMyVault(){
               <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--${glClass})">${gainLoss>=0?'+':''}\$${Math.abs(gainLoss).toLocaleString()} <span style="font-size:14px;opacity:.7">(${gainLoss>=0?'+':''}${gainPct}%)</span></div></div>
           </div>`;
 
-        const cardsHtml = data.map(c=>{
+        _myVaultData = data;
+        const cardsHtml = data.map((c, idx)=>{
           const paid  = parseFloat(c.price_paid)||0;
           const est   = parseFloat(c.estimated_value)||0;
           const gl    = est - paid;
@@ -2924,7 +2925,7 @@ function renderMyVault(){
           const acqDate = c.date_acquired ? new Date(c.date_acquired).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : null;
           const imgSrc = c.front_image_url;
           return `
-          <div class="card-thumb" style="position:relative">
+          <div class="card-thumb" style="position:relative;cursor:pointer" onclick="vaultOpenCard(${idx})"
             <div class="ct-img" style="height:110px;background:rgba(0,170,255,0.06);overflow:hidden;padding:0;position:relative">
               ${imgSrc
                 ? `<img src="${imgSrc}" style="width:100%;height:100%;object-fit:cover" loading="lazy">`
@@ -2958,6 +2959,26 @@ function renderMyVault(){
 
         grid.innerHTML = summaryHtml + cardsHtml;
     });
+}
+
+function vaultOpenCard(idx){
+  const c = _myVaultData[idx];
+  if(!c) return;
+  // Navigate to ISOVault tab first
+  showSection('isovault');
+  // Build a row compatible with ivOpenCard
+  const row = {
+    player:     c.player,
+    year:       c.year,
+    set_name:   c.set_name || c.parallel || '',
+    card_number: c.card_number || '',
+    insert_name: c.variation || c.parallel || '',
+    team:       c.team || '',
+    _setTable:  null,
+    var_images: null,
+    variations: null
+  };
+  ivOpenCard(row);
 }
 
 // &#9472;&#9472; BUILD STAMP &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
@@ -3095,7 +3116,7 @@ async function openCardDetail(cardId){
   document.getElementById('cd-bc-set').textContent   = c.set;
 
   // Title block
-  document.getElementById('cd-title').textContent = `${c.year} ${c.brand} ${c.set} &#8212; ${c.player}`.toUpperCase();
+  document.getElementById('cd-title').innerHTML = `${c.year} ${c.brand} ${c.set} &#8212; ${c.player}`.toUpperCase();
   document.getElementById('cd-sub').textContent   = `Baseball &#183; ${c.year} &#183; ${c.brand} &#183; ${c.set}`;
   document.getElementById('cd-num').textContent   = c.cardNum || '';
 
@@ -3109,7 +3130,7 @@ async function openCardDetail(cardId){
 
   // Show upload button immediately &#8212; hide/update after async image check
   const uploadBtn = document.getElementById('cd-upload-btn');
-  if(uploadBtn){ uploadBtn.textContent='&#128247; Upload Image'; uploadBtn.style.display='inline-flex'; }
+  if(uploadBtn){ uploadBtn.innerHTML='&#128247; Upload Image'; uploadBtn.style.display='inline-flex'; }
 
   // Reset viewer to placeholder state
   _cdSetViewerImages(null, null);
@@ -3218,7 +3239,7 @@ function _cdShowUploadBtn(show){
   const btn = document.getElementById('cd-upload-btn');
   if(!btn) return;
   if(show){
-    btn.textContent = '&#128247; Upload Image';
+    btn.innerHTML = '&#128247; Upload Image';
     btn.style.display = 'inline-flex';
   } else {
     // Leave visible as "Replace Image" &#8212; set in caller
@@ -3388,7 +3409,7 @@ function cdSelectVar(idx, skipShimmer){
     const ph = document.getElementById('cd-placeholder-front');
     if(ph) ph.style.background = `linear-gradient(135deg,#112840,${v.color}55,#1a3a5c)`;
     const uploadBtn = document.getElementById('cd-upload-btn');
-    if(uploadBtn) uploadBtn.textContent = '&#128247; Upload Image';
+    if(uploadBtn) uploadBtn.innerHTML = '&#128247; Upload Image';
     const statusEl = document.getElementById('cd-img-status');
     if(statusEl && !skipShimmer){
       statusEl.style.display='block';
@@ -4063,7 +4084,7 @@ function ivOpenCard(row){
   document.getElementById('cd-bc-brand').textContent = card.brand;
   document.getElementById('cd-bc-year').textContent  = card.year;
   document.getElementById('cd-bc-set').textContent   = card.set || card.parallel;
-  document.getElementById('cd-title').textContent    = `${card.year} ${card.brand} ${card.set||''} &#8212; ${card.player}`.toUpperCase();
+  document.getElementById('cd-title').innerHTML    = `${card.year} ${card.brand} ${card.set||''} &#8212; ${card.player}`.toUpperCase();
   document.getElementById('cd-sub').textContent      = `Baseball &#183; ${card.year} &#183; ${card.brand}`;
   document.getElementById('cd-num').textContent      = card.cardNum;
   const pm = document.getElementById('cd-path-msg');
@@ -4072,7 +4093,7 @@ function ivOpenCard(row){
     : '<strong>No catalog image yet.</strong> Upload front + back, then confirm acquisition details and price paid.';
 
   const uploadBtn = document.getElementById('cd-upload-btn');
-  if(uploadBtn){ uploadBtn.textContent='&#128247; Upload Image'; uploadBtn.style.display='inline-flex'; }
+  if(uploadBtn){ uploadBtn.innerHTML='&#128247; Upload Image'; uploadBtn.style.display='inline-flex'; }
 
   // Load images from var_images if present
   const firstVar = card._varImages && Object.values(card._varImages)[0];
@@ -4717,6 +4738,7 @@ async function flagUserCorrected(flagId, newPrice){
 }
 
 //  My ISOs  live Supabase panel 
+let _myVaultData = [];
 let _myIsosData = [];
 let _myIsosFilter = 'all';
 

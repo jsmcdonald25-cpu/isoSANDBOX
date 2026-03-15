@@ -11,7 +11,7 @@ window._sb = window.supabase.createClient(
   'https://jyfaegmnzkarlcximxjo.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA'
 );
-// ── REST helpers (data only — auth stays on SDK) ─────────────────────────────
+// ── REST helpers ─────────────────────────────────────────────
 const _SURL='https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1';
 const _SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
 function _sbH(){return{apikey:_SKEY,Authorization:'Bearer '+(window._userAccessToken||_SKEY)};}
@@ -31,7 +31,7 @@ async function _rPatch(table,qs,body){
   const r=await fetch(`${_SURL}/${table}?${qs}`,{method:'PATCH',headers:{..._sbH(),'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(body)});
   if(!r.ok)throw new Error(`PATCH ${table} HTTP ${r.status}`);
 }
-// ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
 
 </script>
 <style>
@@ -821,8 +821,8 @@ async function initUserProfile(user){
   window._authUser = user;
   let profile = null;
   try {
-    const _rows = await _rGet('profiles','select=*&id=eq.'+user.id+'&limit=1');
-    profile = (_rows&&_rows[0])||null;
+    const _pr = await _rGet('profiles','select=*&id=eq.'+user.id+'&limit=1');
+    profile = (_pr&&_pr[0])||null;
   } catch(e){ /* profiles table may not exist yet — handled below */ }
 
   const name     = profile?.full_name || profile?.name || user.email.split('@')[0];
@@ -1293,7 +1293,7 @@ async function logOut(){
       <span class="cd-crumb-sep">&#8250;</span>
       <span class="cd-crumb" id="cd-bc-year">2026</span>
       <span class="cd-crumb-sep">&#8250;</span>
-      <span class="cd-crumb active" id="cd-bc-set">Series 1 Mojo</span>
+      <span class="cd-crumb active" id="cd-bc-set">Series 1</span>
     </div>
     <div class="cd-layout">
       <!-- LEFT: 3D Card Viewer -->
@@ -1868,7 +1868,7 @@ const CARDS=[
   {id:47,player:'Hank Aaron',year:1954,brand:'Topps',set:'Base Set',parallel:'Base RC',run:null,auto:false,rc:true,tags:['vintage','rc'],price:12000,isos:2},
   {id:48,player:'Francisco Lindor',year:2015,brand:'Bowman',set:'Chrome',parallel:'Gold RC /50',run:50,auto:false,rc:true,tags:['rc','numbered'],price:340,isos:5},
   {
-    id:49, player:'Ichiro Suzuki', year:2026, brand:'Topps', set:'Series 1 Mojo',
+    id:49, player:'Ichiro Suzuki', year:2026, brand:'Topps', set:'Series 1',
     parallel:'Base Mojo', run:null, auto:false, rc:false,
     tags:['insert'], price:45, isos:7,
     cardNum:'#91C-25', hasCatalogPic:true,
@@ -2184,8 +2184,8 @@ async function submitISO(){
 
   try {
     // Deduct 1 credit
-    const _profRows = await _rGet('profiles','select=credits&id=eq.'+user.id+'&limit=1');
-    const currentCredits = (_profRows&&_profRows[0]) ? (parseInt(_profRows[0].credits)||0) : 0;
+    const _cr = await _rGet('profiles','select=credits&id=eq.'+user.id+'&limit=1');
+    const currentCredits = (_cr&&_cr[0]) ? (parseInt(_cr[0].credits)||0) : 0;
     if(currentCredits < 1){
       T('Not enough credits — you need at least 1 to post an ISO.');
       if(btn){btn.disabled=false;btn.textContent='POST ISO →';}
@@ -2228,7 +2228,7 @@ async function submitISO(){
     if(isoErr2){isoErr2.textContent='Failed to post ISO: '+msg;isoErr2.style.display='block';}
     T('Failed to post ISO - ' + msg);
   } finally {
-    if(btn){btn.disabled=false;btn.textContent='POST ISO &#8594;';}
+    if(btn){btn.disabled=false;btn.textContent='POST ISO →';}
   }
 }
 
@@ -2908,7 +2908,7 @@ function openVaultCard(idx){
     _setTable: null,
     _cardNumber: c.card_number || null,
     _team: c.team || null,
-    _varImages: c.front_image_url ? {[c.variation||'Base']: {front:c.front_image_url, back:c.back_image_url||null}} : {},
+    _varImages: c.front_image_url ? {[c.variation||c.parallel||'Base']: {front:c.front_image_url, back:c.back_image_url||null}} : {},
     variations: [{
       label: c.variation || c.parallel || 'Base',
       color:'#00AAFF', glow:'rgba(0,170,255,0.4)',
@@ -3244,8 +3244,8 @@ async function _cdLoadCatalogImages(c){
   if(statusEl){ statusEl.style.display='block'; statusEl.textContent='Loading images...'; statusEl.style.color='var(--muted-text)'; }
 
   try {
-    const _imgRows = await _rGet(table,'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
-    const data = (_imgRows&&_imgRows[0]) ? _imgRows[0] : null;
+    const _ci = await _rGet(table,'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
+    const data = (_ci&&_ci[0]) ? _ci[0] : null;
 
     if(!data || !data.var_images || !Object.keys(data.var_images).length){
       if(statusEl){ statusEl.textContent='No catalog images yet'; statusEl.style.color='rgba(122,149,174,0.5)';
@@ -3662,13 +3662,13 @@ async function submitCatalogUpload(){
     bar.style.width='75%';
 
     // Fetch existing var_images so we can merge (not overwrite other variations)
-    const _existRows = await _rGet(table,'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1').catch(()=>[]);
-    const varImages = (_existRows[0]&&_existRows[0].var_images) ? _existRows[0].var_images : {};
+    const _ev = await _rGet(table,'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1').catch(()=>[]);
+    const varImages = (_ev[0]&&_ev[0].var_images) ? _ev[0].var_images : {};
     varImages[varLabel] = { front: frontURL, back: backURL };
 
     bar.style.width='85%';
 
-    // Write merged var_images back via REST
+    // Write merged var_images back
     await _rPatch(table,'card_number=eq.'+encodeURIComponent(cardNum),{ var_images: varImages });
 
     bar.style.width='100%';
@@ -4723,13 +4723,11 @@ async function flagUserCorrected(flagId, newPrice){
     if(flag.vault_id){
       await _rPatch('vault','id=eq.'+flag.vault_id,{ price_paid: newPrice });
     }
-    // Close flag as user-corrected
     await _rPatch('price_flags','id=eq.'+flagId,{ status:'user_corrected', user_corrected_price: newPrice, resolved_at: new Date().toISOString() });
 
-    // Auto-credit 1 ISO to user for self-correcting
     if(flag.user_id){
-      const _profR = await _rGet('profiles','select=credits&id=eq.'+flag.user_id+'&limit=1');
-      const current = (_profR&&_profR[0]) ? (parseInt(_profR[0].credits)||0) : 0;
+      const _cp = await _rGet('profiles','select=credits&id=eq.'+flag.user_id+'&limit=1');
+      const current = (_cp&&_cp[0]) ? (parseInt(_cp[0].credits)||0) : 0;
       await _rPatch('profiles','id=eq.'+flag.user_id,{ credits: current + 1 });
       await _rPost('credit_events',{
         user_id:     flag.user_id,

@@ -11,6 +11,13 @@ window._sb = window.supabase.createClient(
   'https://jyfaegmnzkarlcximxjo.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA'
 );
+// ── REST Data Layer (all DB reads/writes go through these) ───
+const _SURL='https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1';
+const _SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+function _sbH(){return{apikey:_SKEY,Authorization:'Bearer '+(window._userAccessToken||_SKEY)};}
+async function _rGet(table,qs){const r=await fetch(`${_SURL}/${table}${qs?'?'+qs:''}`,{headers:_sbH()});if(!r.ok)throw new Error(await r.text());return r.json();}
+async function _rPost(table,body,prefer='return=minimal'){const r=await fetch(`${_SURL}/${table}`,{method:'POST',headers:{..._sbH(),'Content-Type':'application/json',Prefer:prefer},body:JSON.stringify(body)});if(!r.ok)throw new Error(await r.text());return r.status===204?null:r.json().catch(()=>null);}
+async function _rPatch(table,qs,body){const r=await fetch(`${_SURL}/${table}?${qs}`,{method:'PATCH',headers:{..._sbH(),'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(body)});if(!r.ok)throw new Error(await r.text());}
 </script>
 <style>
 :root{--blue:#00AAFF;--blue-bright:#33CCFF;--blue-deep:#0055AA;--blue-glow:rgba(0,170,255,0.35);--white:#FFFFFF;--chrome-lt:#E2E8F0;--chrome:#B0BEC5;--muted-text:#7A95AE;--deep1:#0D1F33;--deep2:#112840;--deep3:#143050;--deep-border:rgba(0,170,255,0.15);--green:#00E887;--red:#FF3B5C;--sidebar-w:240px}
@@ -429,7 +436,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-back-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(0,170,255,0.08);border:1px solid var(--deep-border);border-radius:6px;padding:6px 12px;font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);cursor:pointer;transition:all .2s;margin-bottom:18px}
 .cd-back-btn:hover{background:rgba(0,170,255,0.15);border-color:var(--blue)}
 .cd-layout{display:grid;grid-template-columns:300px 1fr;gap:32px;align-items:start}
-.cd-viewer-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;overflow:visible;z-index:1}
+.cd-viewer-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;overflow:visible;z-index:1;background:#0D1F33}
 .cd-scene-wrap{position:relative;width:280px;height:392px;margin:0 auto;overflow:visible}
 .cd-shadow{position:absolute;inset:0;border-radius:10px;pointer-events:none;z-index:0;transition:box-shadow .4s}
 .cd-scene{position:absolute;inset:0;perspective:1200px;cursor:grab;user-select:none;z-index:1}
@@ -772,7 +779,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     const { data, error } = await window._sb.auth.signUp({ email, password: pass });
     if(error){ setBtnLoading('signupBtn', false, 'CREATE ACCOUNT'); authErr('signupErr', error.message); return; }
     if(data && data.user){
-      await window._sb.from('profiles').upsert({
+      await _rPost('profiles',{
         id:         data.user.id,
         full_name:  name,
         first_name: firstName,
@@ -783,7 +790,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
         tier:       'Alpha Member',
         role:       'user',
         created_at: new Date().toISOString()
-      }, { onConflict: 'id' });
+      },'resolution=merge-duplicates,return=minimal');
     }
     setBtnLoading('signupBtn', false, 'CREATE ACCOUNT');
     // onAuthStateChange handles the rest
@@ -818,7 +825,8 @@ async function initUserProfile(user){
   window._authUser = user;
   let profile = null;
   try {
-    const { data } = await window._sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
+    const _pRows = await _rGet('profiles',`select=*&id=eq.${user.id}&limit=1`);
+    const data = _pRows?.[0]||null;
     profile = data;
   } catch(e){ /* profiles table may not exist yet — handled below */ }
 
@@ -1582,7 +1590,7 @@ async function logOut(){
         <div class="acct-grid">
           <div class="af"><div class="af-label">First Name</div><div class="af-val" id="acct-first">Jason</div></div>
           <div class="af"><div class="af-label">Last Name</div><div class="af-val" id="acct-last">McDonald</div></div>
-          <div class="af" style="grid-column:1/-1"><div class="af-label">Email</div><div class="af-val" id="acct-email">support@grailiso.com</div></div>
+          <div class="af" style="grid-column:1/-1"><div class="af-label">Email</div><div class="af-val" id="acct-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f3808683839c8187b39481929a9f9a809cdd909c9e">[email&#160;protected]</a></div></div>
           <div class="af" style="grid-column:1/-1"><div class="af-label">Role</div><div class="af-val" id="acct-role">Collector / Buyer</div></div>
         </div>
         <div style="margin-top:14px"><button class="btn btn-ghost" onclick="T('Edit profile &#8212; coming soon')">Edit Profile</button></div>
@@ -1802,7 +1810,7 @@ async function logOut(){
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ═══════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════
@@ -2037,7 +2045,7 @@ async function loadISOPlayers(){
     const tables = IV_SETS.map(s=>s.table);
     const seen = new Set(PLAYERS.map(p=>p.name));
     for(const tbl of tables){
-      const { data } = await window._sb.from(tbl).select('player,team').limit(1000);
+      const data = await _rGet(tbl,'select=player,team&limit=1000');
       if(data) data.forEach(r=>{
         if(r.player && !seen.has(r.player)){
           seen.add(r.player);
@@ -4934,14 +4942,4 @@ function toggleTheme(){
   const root = document.documentElement;
   const btn = document.getElementById('themeToggle');
   const isLight = root.getAttribute('data-theme') === 'light';
-  if(isLight){
-    root.removeAttribute('data-theme');
-    if(btn) btn.innerHTML = '&#9790; DARK';
-  } else {
-    root.setAttribute('data-theme','light');
-    if(btn) btn.innerHTML = '&#9788; LIGHT';
-  }
-}
-</script>
-</body>
-</html>
+ 

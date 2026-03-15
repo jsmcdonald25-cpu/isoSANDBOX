@@ -2946,7 +2946,12 @@ async function _patchVaultThumbnails(rows){
     const cardNum=(c.card_number||'').replace('#','');
     if(!table||!cardNum) continue;
     try{
-      const r2=await _rGet(table,'select=var_images,front_img&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
+      // Try by card_number first, fall back to player name
+      let r2=await _rGet(table,'select=var_images,front_img&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
+      if(!r2||!r2[0]){
+        // Fallback: look up by player name
+        r2=await _rGet(table,'select=var_images,front_img&player=eq.'+encodeURIComponent(c.player)+'&limit=1');
+      }
       if(!r2||!r2[0]) continue;
       const rd=r2[0];
       let url=rd.front_img||null;

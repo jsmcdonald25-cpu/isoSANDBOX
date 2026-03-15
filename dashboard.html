@@ -3173,13 +3173,10 @@ async function _cdLoadCatalogImages(c){
   if(statusEl){ statusEl.style.display='block'; statusEl.textContent='Loading images...'; statusEl.style.color='var(--muted-text)'; }
 
   try {
-    const { data, error } = await window._sb
-      .from(table)
-      .select('var_images')
-      .eq('card_number', cardNum)
-      .maybeSingle();
+    const _ciRows = await _rGet(table,'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
+    const data = _ciRows && _ciRows[0] ? _ciRows[0] : null;
 
-    if(error || !data || !data.var_images || !Object.keys(data.var_images).length){
+    if(!data || !data.var_images || !Object.keys(data.var_images).length){
       if(statusEl){ statusEl.textContent='No catalog images yet'; statusEl.style.color='rgba(122,149,174,0.5)';
         setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
       return;
@@ -3596,19 +3593,15 @@ async function submitCatalogUpload(){
     bar.style.width='75%';
 
     // Fetch existing var_images so we can merge (not overwrite other variations)
-    const { data: existing } = await window._sb
-      .from(table).select('var_images').eq('card_number', cardNum).maybeSingle();
-    const varImages = (existing && existing.var_images) ? existing.var_images : {};
+    const _exRows = await _rGet(table,'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
+    const _exData = _exRows && _exRows[0] ? _exRows[0] : null;
+    const varImages = (_exData && _exData.var_images) ? _exData.var_images : {};
     varImages[varLabel] = { front: frontURL, back: backURL };
 
     bar.style.width='85%';
 
     // Write merged var_images back
-    const { error:ue } = await window._sb
-      .from(table)
-      .update({ var_images: varImages })
-      .eq('card_number', cardNum);
-    if(ue) throw ue;
+    await _rPatch(table,'card_number=eq.'+encodeURIComponent(cardNum),{ var_images: varImages });
 
     bar.style.width='100%';
     btn.textContent='✓ SAVED!';

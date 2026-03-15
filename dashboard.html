@@ -1698,69 +1698,68 @@ async function logOut(){
 <div class="vault-modal-overlay" id="sellModalOverlay" style="display:none" onclick="void(0)">
   <div class="vault-modal" style="max-width:420px">
     <button class="vm-close" onclick="closeSellModal()">&#215;</button>
-    <div class="vm-title">SOLD / REMOVE</div>
-
+    <div class="vm-title" id="sellModalTitle">CARD SOLD</div>
 
     <!-- Card summary -->
-    <div class="vm-card-info" style="display:block;margin-bottom:16px">
+    <div class="vm-card-info" style="display:block;margin-bottom:20px">
       <div class="vm-card-name" id="sellCardName"></div>
       <div class="vm-card-detail" id="sellCardDetail"></div>
     </div>
 
-    <!-- What happened -->
-    <div class="vm-section">
-      <div class="vm-label">What happened? <span class="req">*</span></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap" id="sellOutcomeRow">
-        <button class="sell-type-btn active" id="sellTypeSold" onclick="setSellType('sold')">&#128176; SOLD</button>
-        <button class="sell-type-btn" id="sellTypeRemoved" onclick="setSellType('removed')">&#128465; REMOVE FROM VAULT</button>
-      </div>
-    </div>
-
-    <!-- Sold-only fields -->
+    <!-- SOLD fields -->
     <div id="sellSoldFields">
-      <!-- Venue -->
       <div class="vm-section">
-        <div class="vm-label">Sold Where? <span class="req">*</span></div>
-        <select class="vm-input" id="sellVenue">
-          <option value="">Select venue...</option>
-          <option value="lcs">LCS (Local Card Shop)</option>
-          <option value="ebay">eBay</option>
-          <option value="facebook_group">Facebook / Card Group</option>
-          <option value="individual">Individual Seller (Private Sale)</option>
-        </select>
-        <div class="vm-error" id="sellVenueError">Please select where it was sold.</div>
-      </div>
-
-      <!-- Sale price -->
-      <div class="vm-section">
-        <div class="vm-label">Sale Price <span class="req">*</span></div>
-        <div style="position:relative">
-          <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted-text);font-family:Barlow Condensed,sans-serif;font-size:14px">$</span>
-          <input class="vm-input" type="number" id="sellPrice" min="0" step="0.01" placeholder="0.00" style="padding-left:24px">
+        <div class="vm-label">How did you sell this card? <span class="req">*</span></div>
+        <div class="vm-source-grid">
+          <div class="vm-source-btn" id="sellSrcEbay" onclick="selectSellSource('ebay')">eBay</div>
+          <div class="vm-source-btn" id="sellSrcFacebook" onclick="selectSellSource('facebook_group')">Facebook / Card Group</div>
+          <div class="vm-source-btn" id="sellSrcLcs" onclick="selectSellSource('lcs')">Local Card Shop</div>
+          <div class="vm-source-btn" id="sellSrcIndividual" onclick="selectSellSource('individual')">Individual Seller</div>
         </div>
-        <div class="vm-error" id="sellPriceError">Please enter the sale price.</div>
+        <div class="vm-error" id="sellVenueError">Please select how you sold it.</div>
       </div>
 
-      <!-- Sale date -->
       <div class="vm-section">
-        <div class="vm-label">Sale Date <span class="req">*</span></div>
-        <input class="vm-input" type="date" id="sellDate">
-        <div class="vm-error" id="sellDateError">Please enter the sale date.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div>
+            <div class="vm-label" style="margin-bottom:5px;font-size:10px">Sale Price (USD) <span class="req">*</span></div>
+            <div style="position:relative">
+              <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted-text);font-family:Barlow Condensed,sans-serif;font-size:14px">$</span>
+              <input class="vm-input" type="number" id="sellPrice" min="0" step="0.01" placeholder="0.00" style="padding-left:24px;font-size:18px;font-family:Bebas Neue,sans-serif;letter-spacing:1px;color:var(--blue)">
+            </div>
+            <div class="vm-error" id="sellPriceError">Sale price is required.</div>
+          </div>
+          <div>
+            <div class="vm-label" style="margin-bottom:5px;font-size:10px">Date Sold <span class="req">*</span></div>
+            <input class="vm-input" type="date" id="sellDate" style="color-scheme:dark">
+            <div class="vm-error" id="sellDateError">Sale date is required.</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Remove reason (shown when type = removed) -->
-    <div class="vm-section" id="sellRemoveSection" style="display:none">
-      <div class="vm-label">Reason <span style="color:var(--muted-text);font-size:10px">(optional)</span></div>
-      <select class="vm-input" id="sellRemoveReason">
-        <option value="">Select reason...</option>
-        <option value="duplicate">Duplicate entry</option>
-        <option value="data_error">Wrong card / data error</option>
-        <option value="traded">Traded</option>
-        <option value="gifted">Gifted</option>
-        <option value="lost">Lost / damaged</option>
-        <option value="other">Other</option>
-      </select>
+    <!-- REMOVE fields -->
+    <div id="sellRemoveSection" style="display:none">
+      <div class="vm-section">
+        <div class="vm-label">Reason for removal <span class="req">*</span></div>
+        <select class="vm-input" id="sellRemoveReason" onchange="handleRemoveReasonChange(this.value)">
+          <option value="">Select reason...</option>
+          <option value="duplicate">Duplicate entry</option>
+          <option value="data_error">Wrong card / data error</option>
+          <option value="traded">Traded</option>
+          <option value="gifted">Gifted</option>
+          <option value="lost">Lost / damaged</option>
+          <option value="other">Other</option>
+        </select>
+        <div class="vm-error" id="sellReasonError">Please select a reason.</div>
+      </div>
+      <div id="sellOtherSection" style="display:none">
+        <div class="vm-section">
+          <div class="vm-label" style="margin-bottom:5px;font-size:10px">Please explain <span class="req">*</span></div>
+          <input class="vm-input" type="text" id="sellOtherText" placeholder="Describe why you're removing this card...">
+          <div class="vm-error" id="sellOtherError">Please explain the reason.</div>
+        </div>
+      </div>
     </div>
 
     <div class="vm-error" id="sellSubmitError" style="text-align:center;margin-top:8px"></div>
@@ -1768,6 +1767,27 @@ async function logOut(){
     <div style="display:flex;gap:10px;margin-top:20px">
       <button class="btn btn-ghost" style="flex:1" onclick="closeSellModal()">Cancel</button>
       <button class="btn btn-primary" style="flex:2;background:var(--red);border-color:var(--red)" id="sellSubmitBtn" onclick="submitSell()">CONFIRM</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE WARNING MODAL -->
+<div class="vault-modal-overlay" id="deleteWarnOverlay" style="display:none" onclick="void(0)">
+  <div class="vault-modal" style="max-width:400px;border-color:rgba(255,59,92,0.5)">
+    <div style="text-align:center;padding:8px 0 16px">
+      <div style="font-size:36px;margin-bottom:8px">&#9888;&#65039;</div>
+      <div style="font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:3px;color:var(--red);margin-bottom:12px">&#9608;&#9608; WARNING &#9608;&#9608;</div>
+      <div style="font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--white);margin-bottom:8px">YOU ARE ABOUT TO DELETE</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--blue);margin-bottom:4px" id="deleteWarnCardName"></div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted-text);margin-bottom:20px" id="deleteWarnCardDetail"></div>
+      <div style="background:repeating-linear-gradient(45deg,rgba(255,59,92,0.08),rgba(255,59,92,0.08) 10px,rgba(255,200,0,0.06) 10px,rgba(255,200,0,0.06) 20px);border:1px solid rgba(255,59,92,0.3);border-radius:8px;padding:14px;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--chrome);line-height:1.6;margin-bottom:20px">
+        This card will be <strong style="color:var(--red)">permanently deleted</strong> from My Vault.<br>
+        <strong>This cannot be undone.</strong>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" style="flex:1" onclick="cancelDelete()">GO BACK</button>
+      <button class="btn btn-primary" style="flex:2;background:var(--red);border-color:var(--red)" id="deleteConfirmBtn" onclick="confirmDelete()">YES, DELETE IT</button>
     </div>
   </div>
 </div>
@@ -2727,145 +2747,191 @@ function closeVaultModal(){
 // ═══ SELL / REMOVE MODAL ═══════════════════════════════════════════════════
 
 let _sellVaultIdx = null;
+let _sellType = 'sold';
+let _sellVenueSelected = null;
 
-function openSellModal(idx){
+function openSellModal(idx, type){
   const row = window._vaultData && window._vaultData[idx];
   if(!row) return;
   _sellVaultIdx = idx;
+  _sellType = type || 'sold';
+  _sellVenueSelected = null;
 
-  // Populate card summary
-  document.getElementById('sellCardName').textContent = row.player || 'Unknown';
-  const yr   = row.year   || '';
-  const br   = row.brand  || '';
-  const sn   = row.set_name || row.parallel || '';
-  const cn   = row.card_number ? ' · #' + row.card_number : '';
-  document.getElementById('sellCardDetail').textContent = [yr, br, sn].filter(Boolean).join(' · ') + cn;
+  document.getElementById('sellModalTitle').textContent = _sellType === 'sold' ? 'CARD SOLD' : 'REMOVE FROM MY VAULT';
 
-  // Reset form
-  setSellType('sold');
-  document.getElementById('sellVenue').value   = '';
-  document.getElementById('sellPrice').value   = '';
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('sellDate').value    = today;
+  const playerName = row.player || 'Unknown';
+  const yr  = row.year     || '';
+  const br  = row.brand    || '';
+  const sn  = row.set_name || row.parallel || '';
+  const cn  = row.card_number ? ' · #' + row.card_number : '';
+  document.getElementById('sellCardName').textContent    = playerName;
+  document.getElementById('sellCardDetail').textContent  = [yr, br, sn].filter(Boolean).join(' · ') + cn;
+
+  document.getElementById('sellSoldFields').style.display    = _sellType === 'sold'    ? 'block' : 'none';
+  document.getElementById('sellRemoveSection').style.display = _sellType === 'removed' ? 'block' : 'none';
+
+  // Reset sold fields
+  document.querySelectorAll('.vm-source-btn[id^=sellSrc]').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('sellPrice').value = '';
+  document.getElementById('sellDate').value  = new Date().toISOString().split('T')[0];
+
+  // Reset remove fields
   document.getElementById('sellRemoveReason').value = '';
-  ['sellVenueError','sellPriceError','sellDateError','sellSubmitError'].forEach(id=>{
-    document.getElementById(id).style.display='none';
+  document.getElementById('sellOtherSection').style.display = 'none';
+  document.getElementById('sellOtherText').value = '';
+
+  ['sellVenueError','sellPriceError','sellDateError','sellReasonError','sellOtherError','sellSubmitError'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.style.display='none';
   });
-  document.getElementById('sellSubmitBtn').disabled  = false;
+
+  document.getElementById('sellSubmitBtn').disabled    = false;
   document.getElementById('sellSubmitBtn').textContent = 'CONFIRM';
 
-  document.getElementById('sellModalOverlay').style.display='flex';
-  document.body.style.overflow='hidden';
+  document.getElementById('sellModalOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function selectSellSource(src){
+  _sellVenueSelected = src;
+  document.querySelectorAll('.vm-source-btn[id^=sellSrc]').forEach(b=>b.classList.remove('selected'));
+  const map = { ebay:'sellSrcEbay', facebook_group:'sellSrcFacebook', lcs:'sellSrcLcs', individual:'sellSrcIndividual' };
+  const el = document.getElementById(map[src]);
+  if(el) el.classList.add('selected');
+  document.getElementById('sellVenueError').style.display = 'none';
+}
+
+function handleRemoveReasonChange(val){
+  document.getElementById('sellOtherSection').style.display = val === 'other' ? 'block' : 'none';
+  document.getElementById('sellReasonError').style.display = 'none';
 }
 
 function closeSellModal(){
-  document.getElementById('sellModalOverlay').style.display='none';
-  document.body.style.overflow='';
+  document.getElementById('sellModalOverlay').style.display = 'none';
+  document.body.style.overflow = '';
   _sellVaultIdx = null;
 }
 
-function setSellType(type){
-  const isSold = type === 'sold';
-  document.getElementById('sellTypeSold').classList.toggle('active', isSold);
-  document.getElementById('sellTypeRemoved').classList.toggle('active', !isSold);
-  document.getElementById('sellSoldFields').style.display      = isSold ? 'block' : 'none';
-  document.getElementById('sellRemoveSection').style.display   = isSold ? 'none'  : 'block';
-  document.getElementById('sellSubmitBtn').style.background    = isSold ? 'var(--red)' : 'rgba(255,59,92,0.6)';
-  document.getElementById('sellSubmitBtn').style.borderColor   = isSold ? 'var(--red)' : 'rgba(255,59,92,0.4)';
-}
-
-function _sellIsSold(){
-  return document.getElementById('sellTypeSold').classList.contains('active');
+function cancelDelete(){
+  document.getElementById('deleteWarnOverlay').style.display = 'none';
+  document.getElementById('sellModalOverlay').style.display = 'flex';
 }
 
 async function submitSell(){
   const row = window._vaultData && window._vaultData[_sellVaultIdx];
   if(!row) return;
 
-  const isSold = _sellIsSold();
+  const isSold = _sellType === 'sold';
   let valid = true;
 
   if(isSold){
-    // Validate venue
-    if(!document.getElementById('sellVenue').value){
-      document.getElementById('sellVenueError').style.display='block';
+    if(!_sellVenueSelected){
+      document.getElementById('sellVenueError').style.display = 'block';
       valid = false;
     } else {
-      document.getElementById('sellVenueError').style.display='none';
+      document.getElementById('sellVenueError').style.display = 'none';
     }
-    // Validate price
     const priceVal = parseFloat(document.getElementById('sellPrice').value);
     if(!document.getElementById('sellPrice').value || isNaN(priceVal) || priceVal < 0){
-      document.getElementById('sellPriceError').style.display='block';
+      document.getElementById('sellPriceError').style.display = 'block';
       valid = false;
     } else {
-      document.getElementById('sellPriceError').style.display='none';
+      document.getElementById('sellPriceError').style.display = 'none';
     }
-    // Validate date
     if(!document.getElementById('sellDate').value){
-      document.getElementById('sellDateError').style.display='block';
+      document.getElementById('sellDateError').style.display = 'block';
       valid = false;
     } else {
-      document.getElementById('sellDateError').style.display='none';
+      document.getElementById('sellDateError').style.display = 'none';
+    }
+  } else {
+    const reason = document.getElementById('sellRemoveReason').value;
+    if(!reason){
+      document.getElementById('sellReasonError').style.display = 'block';
+      valid = false;
+    } else {
+      document.getElementById('sellReasonError').style.display = 'none';
+    }
+    if(reason === 'other' && !document.getElementById('sellOtherText').value.trim()){
+      document.getElementById('sellOtherError').style.display = 'block';
+      valid = false;
+    } else {
+      document.getElementById('sellOtherError').style.display = 'none';
     }
   }
 
   if(!valid) return;
 
+  if(!isSold){
+    // Show police tape warning before deleting
+    const playerName = row.player || 'Unknown';
+    const yr  = row.year     || '';
+    const br  = row.brand    || '';
+    const sn  = row.set_name || row.parallel || '';
+    const cn  = row.card_number ? ' · #' + row.card_number : '';
+    document.getElementById('deleteWarnCardName').textContent   = playerName;
+    document.getElementById('deleteWarnCardDetail').textContent = [yr, br, sn].filter(Boolean).join(' · ') + cn;
+    document.getElementById('sellModalOverlay').style.display   = 'none';
+    document.getElementById('deleteWarnOverlay').style.display  = 'flex';
+    document.getElementById('deleteConfirmBtn').disabled        = false;
+    document.getElementById('deleteConfirmBtn').textContent     = 'YES, DELETE IT';
+    return;
+  }
+
+  // SOLD path — patch then navigate
   const btn = document.getElementById('sellSubmitBtn');
   btn.disabled = true;
   btn.textContent = 'SAVING...';
 
   try {
-    const venueLabels = {
-      lcs:            'LCS',
-      ebay:           'eBay',
-      facebook_group: 'Facebook / Card Group',
-      individual:     'Individual Seller'
-    };
-
-    let patch;
-    if(isSold){
-      const soldPrice  = parseFloat(document.getElementById('sellPrice').value);
-      const soldVenue  = document.getElementById('sellVenue').value;
-      const soldDate   = document.getElementById('sellDate').value;
-      patch = {
-        status:       'sold',
-        sold_price:   soldPrice,
-        sold_venue:   soldVenue,
-        sold_date:    soldDate
-      };
-    } else {
-      const reason = document.getElementById('sellRemoveReason').value || null;
-      patch = {
-        status:         'removed',
-        remove_reason:  reason
-      };
-    }
-
-    await _rPatch('vault', 'id=eq.' + row.id, patch);
-
-    // Remove from local vaultData so it disappears from grid immediately
+    const venueLabels = { lcs:'Local Card Shop', ebay:'eBay', facebook_group:'Facebook / Card Group', individual:'Individual Seller' };
+    const soldPrice = parseFloat(document.getElementById('sellPrice').value);
+    const soldDate  = document.getElementById('sellDate').value;
+    await _rPatch('vault', 'id=eq.' + row.id, {
+      status:     'sold',
+      sold_price: soldPrice,
+      sold_venue: _sellVenueSelected,
+      sold_date:  soldDate
+    });
     if(window._vaultData) window._vaultData.splice(_sellVaultIdx, 1);
-
+    const playerName = row.player || 'Card';
     closeSellModal();
-
-    if(isSold){
-      const venue  = venueLabels[document.getElementById('sellVenue').value] || document.getElementById('sellVenue').value;
-      const price  = parseFloat(document.getElementById('sellPrice').value);
-      T(`${row.player || 'Card'} sold on ${venue} for $${price.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})} \u2014 vault updated`);
-    } else {
-      T(`${row.player || 'Card'} removed from vault`);
-    }
-
-    // Reload vault to reflect updated data
-    N('vault', null);
-
+    T(`${playerName} sold via ${venueLabels[_sellVenueSelected]||_sellVenueSelected} for $${soldPrice.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})} \u2014 vault updated`);
+    N('myvault', null);
   } catch(e){
     btn.disabled = false;
     btn.textContent = 'CONFIRM';
     document.getElementById('sellSubmitError').textContent = e.message || 'Failed \u2014 try again';
     document.getElementById('sellSubmitError').style.display = 'block';
+  }
+}
+
+async function confirmDelete(){
+  const row = window._vaultData && window._vaultData[_sellVaultIdx];
+  if(!row) return;
+
+  const btn = document.getElementById('deleteConfirmBtn');
+  btn.disabled = true;
+  btn.textContent = 'DELETING...';
+
+  try {
+    // Hard DELETE from vault table
+    const r = await fetch(_SURL+'/vault?id=eq.'+row.id, {
+      method:'DELETE',
+      headers: _sbH()
+    });
+    if(!r.ok) throw new Error('Delete failed: ' + r.status);
+
+    if(window._vaultData) window._vaultData.splice(_sellVaultIdx, 1);
+    document.getElementById('deleteWarnOverlay').style.display = 'none';
+    document.body.style.overflow = '';
+    _sellVaultIdx = null;
+    T(`${row.player || 'Card'} permanently deleted from My Vault`);
+    N('myvault', null);
+  } catch(e){
+    btn.disabled = false;
+    btn.textContent = 'YES, DELETE IT';
+    alert('Delete failed: ' + (e.message || 'try again'));
   }
 }
 
@@ -3190,7 +3256,7 @@ function renderMyVault(){
   }
   const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
   const userToken = window._userAccessToken || ANON_KEY;
-  fetch(`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault?select=*&user_id=eq.${user.id}&status=neq.sold&order=created_at.desc`, {
+  fetch(`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault?select=*&user_id=eq.${user.id}&status=neq.sold&status=neq.removed&order=created_at.desc`, {
     headers: { 'apikey': ANON_KEY, 'Authorization': 'Bearer ' + userToken }
   }).then(r=>r.json()).then(data=>{
     if(!Array.isArray(data)){
@@ -3264,7 +3330,8 @@ function renderMyVault(){
                 </div>`:''}
                 ${acqDate?`<div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted-text);margin-top:4px">${acqDate}</div>`:''}
               </div>
-              <button class="vault-sell-btn" onclick="event.stopPropagation();openSellModal(${vIdx})" title="Mark as sold or remove">SOLD / REMOVE</button>
+              <button class="vault-sell-btn" onclick="event.stopPropagation();openSellModal(${vIdx},'sold')" title="Mark as sold">&#128176; SOLD</button>
+              <button class="vault-sell-btn" style="margin-top:6px;background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.1);color:var(--muted-text)" onclick="event.stopPropagation();openSellModal(${vIdx},'removed')" title="Remove from My Vault">&#128465; REMOVE FROM MY VAULT</button>
             </div>
           </div>`;
         }).join('');

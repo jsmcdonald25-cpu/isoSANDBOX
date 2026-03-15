@@ -2740,8 +2740,21 @@ async function submitVault(){
       btn.textContent = 'SAVING...';
       document.getElementById('vmProgressBar').style.width='60%';
       if(vmCard._setTable && vmCard._cardNumber){
-        const catRes = await fetch(`${SB_REST}/rest/v1/${vmCard._setTable}?select=front_img,back_img&card_number=eq.${encodeURIComponent(vmCard._cardNumber)}&player=eq.${encodeURIComponent(vmCard.player)}&limit=1`, { headers: sbHeaders });
-        if(catRes.ok){ const catRows = await catRes.json(); if(catRows[0]){ frontURL=catRows[0].front_img; backURL=catRows[0].back_img; } }
+        const catRes = await fetch(`${SB_REST}/rest/v1/${vmCard._setTable}?select=front_img,back_img,var_images&card_number=eq.${encodeURIComponent(vmCard._cardNumber)}&player=eq.${encodeURIComponent(vmCard.player)}&limit=1`, { headers: sbHeaders });
+        if(catRes.ok){
+          const catRows = await catRes.json();
+          if(catRows[0]){
+            frontURL = catRows[0].front_img || null;
+            backURL  = catRows[0].back_img  || null;
+            // Catalog images may be stored in var_images JSON instead of front_img/back_img
+            if(!frontURL && catRows[0].var_images){
+              const activeVar = (window._cdVars||[])[window._cdActiveVar||0];
+              const varKey = activeVar ? activeVar.label : Object.keys(catRows[0].var_images)[0];
+              const vi = varKey ? catRows[0].var_images[varKey] : null;
+              if(vi){ frontURL = vi.front||null; backURL = vi.back||null; }
+            }
+          }
+        }
       }
       document.getElementById('vmProgressBar').style.width='80%';
     } else {

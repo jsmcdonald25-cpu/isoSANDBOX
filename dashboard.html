@@ -2934,6 +2934,44 @@ function openVaultCard(idx){
     _cdLoadCatalogImages(card);
   }
 }
+async function _patchVaultThumbnails(rows){
+  for(let i=0;i<rows.length;i++){
+    const c=rows[i];
+    if(c.front_image_url) continue;
+    const known=CARDS.find(x=>x&&(
+      x._cardNumber===(c.card_number||'').replace('#','')||
+      (x.player===c.player&&String(x.year)===String((c.year||'').toString().slice(0,4)))
+    ));
+    const table=known?known._setTable:null;
+    const cardNum=(c.card_number||'').replace('#','');
+    if(!table||!cardNum) continue;
+    try{
+      const r2=await _rGet(table,'select=var_images,front_img&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
+      if(!r2||!r2[0]) continue;
+      const rd=r2[0];
+      let url=rd.front_img||null;
+      if(!url&&rd.var_images){
+        const k=Object.keys(rd.var_images)[0];
+        const vi=k?rd.var_images[k]:null;
+        if(vi) url=vi.front||null;
+      }
+      if(!url) continue;
+      const thumb=document.querySelector('.card-thumb[data-vaultidx="'+i+'"]');
+      if(!thumb) continue;
+      const box=thumb.querySelector('.ct-img');
+      if(!box) continue;
+      const badge=box.querySelector('div');
+      const img=document.createElement('img');
+      img.src=url;
+      img.style.cssText='width:100%;height:100%;object-fit:contain;background:#071828';
+      img.loading='lazy';
+      box.innerHTML='';
+      box.appendChild(img);
+      if(badge) box.appendChild(badge);
+      if(window._vaultData&&window._vaultData[i]) window._vaultData[i].front_image_url=url;
+    }catch(e){}
+  }
+}
 function renderMyVault(){
   const grid  = document.getElementById('myVaultGrid');
   const empty = document.getElementById('myVaultEmpty');
@@ -3024,6 +3062,7 @@ function renderMyVault(){
         }).join('');
 
         grid.innerHTML = summaryHtml + cardsHtml;
+        _patchVaultThumbnails(data);
     });
 }
 

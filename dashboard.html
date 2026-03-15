@@ -697,7 +697,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 </div>
 <script>
 (function(){
-  // &#9472;&#9472; Tab switcher &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+  // ── Tab switcher ──────────────────────────────────────────────
   window.switchAuthTab = function(tab){
     const isLogin = tab === 'login';
     document.getElementById('formLogin').style.display  = isLogin ? 'block' : 'none';
@@ -708,7 +708,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     document.getElementById('tabSignup').style.color      = isLogin ? '#7A95AE' : 'white';
   };
 
-  // &#9472;&#9472; Show auth error &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+  // ── Show auth error ────────────────────────────────────────────
   function authErr(elId, msg){
     const el = document.getElementById(elId);
     if(!el) return;
@@ -716,7 +716,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     setTimeout(()=>{ el.textContent=''; }, 4000);
   }
 
-  // &#9472;&#9472; Set button loading state &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+  // ── Set button loading state ──────────────────────────────────
   function setBtnLoading(btnId, loading, label){
     const btn = document.getElementById(btnId);
     if(!btn) return;
@@ -725,7 +725,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     btn.style.opacity = loading ? '.6' : '1';
   }
 
-  // &#9472;&#9472; Login &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+  // ── Login ──────────────────────────────────────────────────────
   window.authLogin = async function(){
     const email = document.getElementById('loginEmail').value.trim();
     const pass  = document.getElementById('loginPassword').value;
@@ -737,7 +737,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     // onAuthStateChange handles the rest
   };
 
-  // &#9472;&#9472; Signup &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+  // ── Signup ─────────────────────────────────────────────────────
   window.authSignup = async function(){
     const firstName = document.getElementById('signupFirstName').value.trim();
     const lastName  = document.getElementById('signupLastName').value.trim();
@@ -770,17 +770,17 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     // onAuthStateChange handles the rest
   };
 
-  // &#9472;&#9472; Auth: single source of truth &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+  // ── Auth: single source of truth ──────────────────────────────
   window._sb.auth.onAuthStateChange(async (event, session) => {
     if(session?.access_token) window._userAccessToken = session.access_token;
     const gate = document.getElementById('gate');
     if(event === 'INITIAL_SESSION'){
       if(session?.user){
-        // Returning user &#8212; hide gate, load profile
+        // Returning user — hide gate, load profile
         if(gate){ gate.style.display='none'; gate.style.pointerEvents='none'; }
         try { await initUserProfile(session.user); } catch(e){}
       } else {
-        // No session at all &#8212; show gate
+        // No session at all — show gate
         if(gate){ gate.style.display='flex'; gate.style.pointerEvents='auto'; }
       }
     } else if(event === 'SIGNED_IN'){
@@ -794,14 +794,14 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
   });
 })();
 
-// &#9472;&#9472; Load + render user profile &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Load + render user profile ─────────────────────────────────
 async function initUserProfile(user){
   window._authUser = user;
   let profile = null;
   try {
     const { data } = await window._sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
     profile = data;
-  } catch(e){ /* profiles table may not exist yet &#8212; handled below */ }
+  } catch(e){ /* profiles table may not exist yet — handled below */ }
 
   const name     = profile?.full_name || profile?.name || user.email.split('@')[0];
   const initials = profile?.initials  || name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
@@ -809,7 +809,7 @@ async function initUserProfile(user){
   const tier     = profile?.tier || 'Alpha Member';
   const role     = profile?.role || 'user';
 
-  // Owner mode &#8212; role flag in profiles table
+  // Owner mode — role flag in profiles table
   window._ownerMode = (role === 'owner');
 
   // Populate sidebar
@@ -822,7 +822,7 @@ async function initUserProfile(user){
   if(nameEl)   nameEl.textContent   = name;
   if(tierEl)   tierEl.textContent   = tier;
   if(credEl)   credEl.textContent   = credits;
-  if(credSub)  credSub.textContent  = `$5 per post &#183; ${credits} left`;
+  if(credSub)  credSub.textContent  = `$5 per post · ${credits} left`;
 
   // Owner badge on avatar
   if(window._ownerMode && avatarEl){
@@ -831,7 +831,7 @@ async function initUserProfile(user){
   }
 }
 
-// &#9472;&#9472; Log out &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Log out ────────────────────────────────────────────────────
 async function logOut(){
   await window._sb.auth.signOut();
   window._ownerMode = false;
@@ -969,7 +969,7 @@ async function logOut(){
         ];
         var all=[...cards,...cards];
         var html=all.map(function(c){
-          return '<span class="ct-item"><span class="ct-name">'+c.n+'</span><span class="ct-sep"> &#183; </span><span>'+c.g+'</span><span class="ct-sep"> &#183; </span><span class="ct-price">'+c.p+'</span><span class="ct-chg '+c.d+'"> '+c.c+'</span><span class="ct-sep" style="margin-left:8px">&#11045;</span></span>';
+          return '<span class="ct-item"><span class="ct-name">'+c.n+'</span><span class="ct-sep"> · </span><span>'+c.g+'</span><span class="ct-sep"> · </span><span class="ct-price">'+c.p+'</span><span class="ct-chg '+c.d+'"> '+c.c+'</span><span class="ct-sep" style="margin-left:8px">&#11045;</span></span>';
         }).join('');
         document.getElementById('cardTickerInner').innerHTML=html;
       })();
@@ -1766,9 +1766,9 @@ async function logOut(){
 </div>
 
 <script>
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════
 // DATA
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════
 const PLAYERS=[
   {name:'Mike Trout',team:'Angels',pos:'OF',rookie:2011},
   {name:'Shohei Ohtani',team:'Dodgers',pos:'DH/SP',rookie:2018},
@@ -1871,40 +1871,40 @@ const CARDS=[
     variations:[
       {label:'Base',                color:'#00AAFF', glow:'rgba(0,170,255,0.45)',  run:null, isBase:true,  lastSale:'$8',     isos:3,  watching:4},
       {label:'Red Foil',            color:'#FF3B5C', glow:'rgba(255,59,92,0.5)',   run:null, isBase:false, lastSale:'$3',     isos:1,  watching:2},
-      {label:'Sepia',               color:'#A0785A', glow:'rgba(160,120,90,0.45)', run:null, isBase:false, lastSale:'&#8212;',      isos:0,  watching:1},
-      {label:'Black & White',       color:'#CCCCCC', glow:'rgba(200,200,200,0.4)', run:null, isBase:false, lastSale:'&#8212;',      isos:0,  watching:1},
-      {label:'Bronze',              color:'#CD7F32', glow:'rgba(205,127,50,0.5)',  run:null, isBase:false, lastSale:'&#8212;',      isos:0,  watching:0},
-      {label:'Light Blue',          color:'#87CEEB', glow:'rgba(135,206,235,0.4)', run:null, isBase:false, lastSale:'&#8212;',      isos:0,  watching:0},
-      {label:'Lime Green',          color:'#32CD32', glow:'rgba(50,205,50,0.4)',   run:null, isBase:false, lastSale:'&#8212;',      isos:0,  watching:0},
-      {label:'Pink',                color:'#FF69B4', glow:'rgba(255,105,180,0.4)', run:null, isBase:false, lastSale:'&#8212;',      isos:0,  watching:0},
-      {label:'Member Only',         color:'#FFD700', glow:'rgba(255,215,0,0.45)',  run:null, isBase:false, lastSale:'&#8212;',      isos:0,  watching:0},
-      {label:"Photographer's Proof",color:'#B8860B', glow:'rgba(184,134,11,0.45)',run:null, isBase:false, lastSale:'&#8212;',      isos:0,  watching:0},
-      {label:'Green Foil /199',     color:'#00C851', glow:'rgba(0,200,81,0.45)',   run:199,  isBase:false, lastSale:'&#8212;',      isos:0,  watching:1},
-      {label:'Turquoise Foil /99',  color:'#00CED1', glow:'rgba(0,206,209,0.45)', run:99,   isBase:false, lastSale:'&#8212;',      isos:0,  watching:1},
-      {label:'Purple Foil /75',     color:'#9B59B6', glow:'rgba(155,89,182,0.45)',run:75,   isBase:false, lastSale:'&#8212;',      isos:0,  watching:1},
-      {label:'Gold Foil /50',       color:'#FFC83C', glow:'rgba(255,200,60,0.5)', run:50,   isBase:false, lastSale:'&#8212;',      isos:0,  watching:2},
-      {label:'Rainbow Foil /25',    color:'#FF6B6B', glow:'rgba(255,107,107,0.5)',run:25,   isBase:false, lastSale:'&#8212;',      isos:0,  watching:2},
-      {label:'First Day Issue /10', color:'#FF8C00', glow:'rgba(255,140,0,0.5)',  run:10,   isBase:false, lastSale:'&#8212;',      isos:0,  watching:3},
-      {label:'Gold Rainbow Foil 1/1',color:'#FFD700',glow:'rgba(255,215,0,0.7)', run:1, superfractor:true,isBase:false,lastSale:'&#8212;',isos:0,watching:5},
-      {label:'SuperFractor 1/1',    color:'#FFD700', glow:'rgba(255,215,0,0.7)',  run:1, superfractor:true,isBase:false,lastSale:'&#8212;',isos:0,watching:8},
+      {label:'Sepia',               color:'#A0785A', glow:'rgba(160,120,90,0.45)', run:null, isBase:false, lastSale:'—',      isos:0,  watching:1},
+      {label:'Black & White',       color:'#CCCCCC', glow:'rgba(200,200,200,0.4)', run:null, isBase:false, lastSale:'—',      isos:0,  watching:1},
+      {label:'Bronze',              color:'#CD7F32', glow:'rgba(205,127,50,0.5)',  run:null, isBase:false, lastSale:'—',      isos:0,  watching:0},
+      {label:'Light Blue',          color:'#87CEEB', glow:'rgba(135,206,235,0.4)', run:null, isBase:false, lastSale:'—',      isos:0,  watching:0},
+      {label:'Lime Green',          color:'#32CD32', glow:'rgba(50,205,50,0.4)',   run:null, isBase:false, lastSale:'—',      isos:0,  watching:0},
+      {label:'Pink',                color:'#FF69B4', glow:'rgba(255,105,180,0.4)', run:null, isBase:false, lastSale:'—',      isos:0,  watching:0},
+      {label:'Member Only',         color:'#FFD700', glow:'rgba(255,215,0,0.45)',  run:null, isBase:false, lastSale:'—',      isos:0,  watching:0},
+      {label:"Photographer's Proof",color:'#B8860B', glow:'rgba(184,134,11,0.45)',run:null, isBase:false, lastSale:'—',      isos:0,  watching:0},
+      {label:'Green Foil /199',     color:'#00C851', glow:'rgba(0,200,81,0.45)',   run:199,  isBase:false, lastSale:'—',      isos:0,  watching:1},
+      {label:'Turquoise Foil /99',  color:'#00CED1', glow:'rgba(0,206,209,0.45)', run:99,   isBase:false, lastSale:'—',      isos:0,  watching:1},
+      {label:'Purple Foil /75',     color:'#9B59B6', glow:'rgba(155,89,182,0.45)',run:75,   isBase:false, lastSale:'—',      isos:0,  watching:1},
+      {label:'Gold Foil /50',       color:'#FFC83C', glow:'rgba(255,200,60,0.5)', run:50,   isBase:false, lastSale:'—',      isos:0,  watching:2},
+      {label:'Rainbow Foil /25',    color:'#FF6B6B', glow:'rgba(255,107,107,0.5)',run:25,   isBase:false, lastSale:'—',      isos:0,  watching:2},
+      {label:'First Day Issue /10', color:'#FF8C00', glow:'rgba(255,140,0,0.5)',  run:10,   isBase:false, lastSale:'—',      isos:0,  watching:3},
+      {label:'Gold Rainbow Foil 1/1',color:'#FFD700',glow:'rgba(255,215,0,0.7)', run:1, superfractor:true,isBase:false,lastSale:'—',isos:0,watching:5},
+      {label:'SuperFractor 1/1',    color:'#FFD700', glow:'rgba(255,215,0,0.7)',  run:1, superfractor:true,isBase:false,lastSale:'—',isos:0,watching:8},
     ]
   },
 ];
 
 const MKT=[
-  {player:'Shohei Ohtani',card:'2018 Topps Chrome &#183; RC Auto /499',last:640,bid:620,ask:680,isos:22,chg:+9.6,pop:1140},
-  {player:'Paul Skenes',card:'2024 Topps Chrome &#183; RC Auto /499',last:280,bid:265,ask:300,isos:31,chg:+22.4,pop:642},
-  {player:'Juan Soto',card:'2019 Bowman Chrome &#183; Gold Auto /50',last:1180,bid:1100,ask:1250,isos:12,chg:+12.4,pop:214},
-  {player:'Jackson Holliday',card:'2024 Bowman Chrome &#183; Gold RC Auto /50',last:1100,bid:980,ask:1200,isos:22,chg:+18.2,pop:188},
-  {player:'Gunnar Henderson',card:'2023 Topps Chrome &#183; RC Auto /499',last:320,bid:295,ask:345,isos:18,chg:+15.8,pop:820},
-  {player:'Aaron Judge',card:'2017 Topps Chrome &#183; RC Auto /499',last:1100,bid:1050,ask:1180,isos:14,chg:+7.2,pop:988},
-  {player:'Ronald Acu&#241;a Jr.',card:'2018 Bowman Chrome &#183; Silver Wave Auto /25',last:2400,bid:2200,ask:2600,isos:6,chg:+5.3,pop:88},
-  {player:'Fernando Tatis Jr.',card:'2019 Bowman Chrome &#183; Gold RC Auto /50',last:1600,bid:1500,ask:1750,isos:10,chg:+3.8,pop:198},
-  {player:'Bobby Witt Jr.',card:'2022 Bowman Chrome &#183; Gold RC Auto /50',last:1400,bid:1300,ask:1500,isos:8,chg:+6.1,pop:204},
-  {player:'Julio Rodriguez',card:'2022 Topps Chrome &#183; Gold /50 RC',last:410,bid:390,ask:440,isos:9,chg:-2.1,pop:287},
-  {player:'Elly De La Cruz',card:'2023 Topps Chrome &#183; RC Auto /499',last:210,bid:195,ask:230,isos:20,chg:+11.2,pop:710},
-  {player:'Mike Trout',card:'2011 Topps Update &#183; Base RC',last:850,bid:800,ask:920,isos:14,chg:+1.4,pop:2100},
-  {player:'Mickey Mantle',card:'1952 Topps &#183; Base Set',last:85000,bid:75000,ask:95000,isos:2,chg:+4.2,pop:18},
+  {player:'Shohei Ohtani',card:'2018 Topps Chrome · RC Auto /499',last:640,bid:620,ask:680,isos:22,chg:+9.6,pop:1140},
+  {player:'Paul Skenes',card:'2024 Topps Chrome · RC Auto /499',last:280,bid:265,ask:300,isos:31,chg:+22.4,pop:642},
+  {player:'Juan Soto',card:'2019 Bowman Chrome · Gold Auto /50',last:1180,bid:1100,ask:1250,isos:12,chg:+12.4,pop:214},
+  {player:'Jackson Holliday',card:'2024 Bowman Chrome · Gold RC Auto /50',last:1100,bid:980,ask:1200,isos:22,chg:+18.2,pop:188},
+  {player:'Gunnar Henderson',card:'2023 Topps Chrome · RC Auto /499',last:320,bid:295,ask:345,isos:18,chg:+15.8,pop:820},
+  {player:'Aaron Judge',card:'2017 Topps Chrome · RC Auto /499',last:1100,bid:1050,ask:1180,isos:14,chg:+7.2,pop:988},
+  {player:'Ronald Acu&#241;a Jr.',card:'2018 Bowman Chrome · Silver Wave Auto /25',last:2400,bid:2200,ask:2600,isos:6,chg:+5.3,pop:88},
+  {player:'Fernando Tatis Jr.',card:'2019 Bowman Chrome · Gold RC Auto /50',last:1600,bid:1500,ask:1750,isos:10,chg:+3.8,pop:198},
+  {player:'Bobby Witt Jr.',card:'2022 Bowman Chrome · Gold RC Auto /50',last:1400,bid:1300,ask:1500,isos:8,chg:+6.1,pop:204},
+  {player:'Julio Rodriguez',card:'2022 Topps Chrome · Gold /50 RC',last:410,bid:390,ask:440,isos:9,chg:-2.1,pop:287},
+  {player:'Elly De La Cruz',card:'2023 Topps Chrome · RC Auto /499',last:210,bid:195,ask:230,isos:20,chg:+11.2,pop:710},
+  {player:'Mike Trout',card:'2011 Topps Update · Base RC',last:850,bid:800,ask:920,isos:14,chg:+1.4,pop:2100},
+  {player:'Mickey Mantle',card:'1952 Topps · Base Set',last:85000,bid:75000,ask:95000,isos:2,chg:+4.2,pop:18},
 ];
 
 const TICKER=[
@@ -1920,27 +1920,27 @@ const TICKER=[
   {n:'1952 Mantle Base',v:'$85,000',c:'+4.2%',d:'up'},
 ];
 
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════
 // STATE
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════
 let ISO={sport:'Baseball',player:null,card:null,grade:'PSA 10'};
 let curStep=1;
 let libFilter='all';
 
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════
 // NAVIGATION
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════
 const PM={
   overview:{t:'OVERVIEW',s:'Welcome back, Jason'},
   post:{t:'POST ISO',s:'Broadcast exactly what you want'},
-  myisos:{t:'MY ISOs',s:'3 active &#183; 1 completed'},
-  market:{t:'MARKET DATA',s:'Live bid &#183; ask &#183; last sale &#8212; Baseball'},
+  myisos:{t:'MY ISOs',s:'3 active · 1 completed'},
+  market:{t:'MARKET DATA',s:'Live bid · ask · last sale — Baseball'},
   library:{t:'ISOVAULT',s:'The world\'s most complete sports card search engine'},
-  'admin-price':{t:'PRICE FLAG REVIEW',s:'Admin &#183; Auto-flagged submissions &#177;40% deviation'},  myvault:{t:'MY VAULT',s:'Your personal card library'},
+  'admin-price':{t:'PRICE FLAG REVIEW',s:'Admin · Auto-flagged submissions &#177;40% deviation'},  myvault:{t:'MY VAULT',s:'Your personal card library'},
   notifs:{t:'NOTIFICATIONS',s:'2 unread'},
   account:{t:'ACCOUNT',s:'Verified buyer'},
-  isoticker:{t:'ISOTICKER',s:'Your collection &#8212; value since purchase'},
-  leaderboard:{t:'LEADERBOARD',s:'Top buyers &#183; sellers &#183; most wanted cards'},
+  isoticker:{t:'ISOTICKER',s:'Your collection — value since purchase'},
+  leaderboard:{t:'LEADERBOARD',s:'Top buyers · sellers · most wanted cards'},
   carddetail:{t:'ISOVAULT',s:'Card detail'},
 };
 function N(id,el){
@@ -1959,9 +1959,9 @@ function N(id,el){
   if(id==='isoticker')initISOTicker();
 }
 
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════
 // POST ISO STEPS
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════
 function gS(n){
   curStep=n;
   document.querySelectorAll('.sp').forEach(p=>p.classList.remove('active'));
@@ -1969,7 +1969,7 @@ function gS(n){
   for(let i=1;i<=5;i++){
     const sc=document.getElementById('sc'+i);
     const st=document.getElementById('st'+i);
-    if(i<n){sc.className='step-circle done';sc.textContent='&#10003;';st.className='step-text';}
+    if(i<n){sc.className='step-circle done';sc.textContent='✓';st.className='step-text';}
     else if(i===n){sc.className='step-circle now';sc.textContent=i;st.className='step-text now';}
     else{sc.className='step-circle soon';sc.textContent=i;st.className='step-text';}
     if(i<5){const sl=document.getElementById('sl'+i);if(sl)sl.className=i<n?'step-line done':'step-line';}
@@ -2030,7 +2030,7 @@ function pickP(name,team,pos,rookie){
   document.getElementById('pResults').style.display='none';
   const b=document.getElementById('selPBox');b.style.display='block';
   document.getElementById('selPName').textContent=name;
-  document.getElementById('selPMeta').textContent=`${team} &#183; ${pos} &#183; Rookie ${rookie}`;
+  document.getElementById('selPMeta').textContent=`${team} · ${pos} · Rookie ${rookie}`;
   document.getElementById('s2next').disabled=false;
 }
 let _s3Cards=[];
@@ -2125,15 +2125,15 @@ function selGrade(el){
   el.classList.add('sel');ISO.grade=el.textContent;
 }
 function updateSum(){
-  document.getElementById('sumSport').textContent=ISO.sport||'&#8212;';
-  document.getElementById('sumPlayer').textContent=ISO.player||'&#8212;';
+  document.getElementById('sumSport').textContent=ISO.sport||'—';
+  document.getElementById('sumPlayer').textContent=ISO.player||'—';
   if(ISO.card){
     document.getElementById('sumCard').textContent=ISO.card.parallel;
     document.getElementById('sumSet').textContent=`${ISO.card.year} ${ISO.card.brand} ${ISO.card.set}`;
   }
   document.getElementById('sumGrade').textContent=ISO.grade;
   const mn=document.getElementById('minP').value,mx=document.getElementById('maxP').value;
-  document.getElementById('sumPrice').textContent=mn&&mx?`$${mn}&#8211;$${mx}`:mx?`Up to $${mx}`:mn?`Min $${mn}`:'&#8212;';
+  document.getElementById('sumPrice').textContent=mn&&mx?`$${mn}–$${mx}`:mx?`Up to $${mx}`:mn?`Min $${mn}`:'—';
   // Live credits
   const credEl=document.getElementById('credits-value');
   const cur=credEl?parseInt(credEl.textContent)||0:0;
@@ -2165,8 +2165,8 @@ async function submitISO(){
     const { data: profile } = await window._sb.from('profiles').select('credits').eq('id',user.id).maybeSingle();
     const currentCredits = profile ? (parseInt(profile.credits)||0) : 0;
     if(currentCredits < 1){
-      T('Not enough credits &#8212; you need at least 1 to post an ISO.');
-      if(btn){btn.disabled=false;btn.textContent='POST ISO &#8594;';}
+      T('Not enough credits — you need at least 1 to post an ISO.');
+      if(btn){btn.disabled=false;btn.textContent='POST ISO →';}
       return;
     }
     await window._sb.from('profiles').update({ credits: currentCredits - 1 }).eq('id', user.id);
@@ -2194,9 +2194,9 @@ async function submitISO(){
     const credEl = document.getElementById('credits-value');
     const credSub = document.getElementById('credits-sub');
     if(credEl) credEl.textContent = currentCredits - 1;
-    if(credSub) credSub.textContent = `$5 per post &#183; ${currentCredits - 1} left`;
+    if(credSub) credSub.textContent = `$5 per post · ${currentCredits - 1} left`;
 
-    T(`ISO posted &#8212; ${ISO.player} &#183; ${ISO.card.parallel} &#183; 1 credit used`);
+    T(`ISO posted — ${ISO.player} · ${ISO.card.parallel} · 1 credit used`);
     ISO={sport:'Baseball',player:null,card:null,grade:'PSA 10'};
     setTimeout(()=>N('myisos',document.querySelector('[onclick*=myisos]')),1200);
 
@@ -2206,13 +2206,13 @@ async function submitISO(){
     if(isoErr2){isoErr2.textContent='Failed to post ISO: '+msg;isoErr2.style.display='block';}
     T('Failed to post ISO - ' + msg);
   } finally {
-    if(btn){btn.disabled=false;btn.textContent='POST ISO &#8594;';}
+    if(btn){btn.disabled=false;btn.textContent='POST ISO →';}
   }
 }
 
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════
 // MARKET
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════
 function renderMkt(){
   document.getElementById('mktTable').innerHTML=
     `<thead><tr><th>Card</th><th>Last Sale</th><th>Bid</th><th>Ask</th><th>Active ISOs</th><th>7d Change</th><th>PSA 10 Pop</th></tr></thead><tbody>`+
@@ -2229,9 +2229,9 @@ function renderOvMkt(){
     `</tbody>`;
 }
 
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════
 // LIBRARY
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════
 function renderLib(filt,search){
   const f=filt||libFilter;
   const s=(search!==undefined?search:(document.getElementById('libSearch')?document.getElementById('libSearch').value:'')).toLowerCase();
@@ -2245,7 +2245,7 @@ function renderLib(filt,search){
       <div class="ct-img" style="font-size:32px;background:${c.hasCatalogPic?'linear-gradient(135deg,#112840,#00AAFF33)':''}">&#9918;</div>
       <div class="ct-info">
         <div class="ct-player">${c.player}</div>
-        <div class="ct-set">${c.year} ${c.brand} &#183; ${c.parallel}</div>
+        <div class="ct-set">${c.year} ${c.brand} · ${c.parallel}</div>
         <div class="ct-price">$${c.price.toLocaleString()}</div>
         <div>${b}</div>
         <div class="ct-iso">${c.isos} active ISOs</div>
@@ -2269,16 +2269,16 @@ function libType(type,el){
   renderLib(type);
 }
 
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════
 // UTILS
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════
 function C(el){el.closest('.filter-row').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');}
 let _tt;
 function T(msg){const t=document.getElementById('toast');document.getElementById('toastText').textContent=msg;t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),3000);}
 
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════
 // ISOTICKER
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════
 const COLL=[
   {id:'c1',player:'Mike Trout',card:'2011 Topps Update RC',grade:'PSA 10',paid:750,current:920,buyDate:'2024-09-15',color:'#00E887',source:'ISO'},
   {id:'c2',player:'Shohei Ohtani',card:'2018 Topps Chrome RC Auto /499',grade:'PSA 9',paid:420,current:640,buyDate:'2025-01-10',color:'#00AAFF',source:'ISO'},
@@ -2351,7 +2351,7 @@ function renderITCards(){
       <div class="it-swatch" style="background:${c.color};box-shadow:0 0 6px ${c.color}55"></div>
       <div class="it-card-info">
         <div class="it-card-name">${c.player}${c.pending?' <span style="font-size:10px;color:var(--muted-text)">(IN TRANSIT)</span>':''}</div>
-        <div class="it-card-meta">${c.card} &#183; ${c.grade} &#183; ${c.source==='ISO'?'via ISO':'Manual upload'}</div>
+        <div class="it-card-meta">${c.card} · ${c.grade} · ${c.source==='ISO'?'via ISO':'Manual upload'}</div>
       </div>
       <div style="text-align:right;flex-shrink:0">
         <div class="it-card-current">$${c.current.toLocaleString()}</div>
@@ -2392,8 +2392,8 @@ function updateITHeader(){
   const clEl=document.getElementById('itChartLabel');
   if(clEl){
     if(itSelected.size===0)clEl.textContent='SELECT CARDS TO VIEW';
-    else if(itSelected.size===1){const c=COLL.find(x=>itSelected.has(x.id));clEl.textContent=c?c.player.toUpperCase()+' &#8212; VALUE SINCE PURCHASE':'';}
-    else clEl.textContent='COLLECTION &#8212; AGGREGATE + INDIVIDUAL OVERLAY';
+    else if(itSelected.size===1){const c=COLL.find(x=>itSelected.has(x.id));clEl.textContent=c?c.player.toUpperCase()+' — VALUE SINCE PURCHASE':'';}
+    else clEl.textContent='COLLECTION — AGGREGATE + INDIVIDUAL OVERLAY';
   }
 }
 
@@ -2524,14 +2524,14 @@ function initChartHover(){
 function initISOTicker(){renderITCards();drawChart();initChartHover();updateITHeader();}
 window.addEventListener('resize',()=>{if(document.getElementById('panel-isoticker')&&document.getElementById('panel-isoticker').classList.contains('active'))drawChart();});
 
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════
 // INIT
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════
 renderMkt();renderOvMkt(); // ISOVault inits on nav click via ivInit()
 
 
 
-// &#9472;&#9472; MY VAULT &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── MY VAULT ─────────────────────────────────────────────────
 let vmCard = null;
 let vmAcq = null;
 let vmSource = null;
@@ -2571,8 +2571,8 @@ function openVaultModal(card){
   // Populate card info if provided
   if(card){
     document.getElementById('vmCardInfo').style.display='block';
-    document.getElementById('vmCardName').textContent=card.player;
-    document.getElementById('vmCardDetail').textContent=`${card.year||''} ${card.brand||''} &#183; ${card.set||''} &#183; ${card.parallel||''}`.trim().replace(/^&#183;\s*/,'');
+    document.getElementById('vmCardName').innerHTML=card.player;
+    document.getElementById('vmCardDetail').innerHTML=`${card.year||''} ${card.brand||''} · ${card.set||''} · ${card.parallel||''}`.trim().replace(/^·\s*/,'');
     document.getElementById('vmSub').textContent=`Adding to vault: ${card.player}`;
 
     // Populate variation selector
@@ -2591,14 +2591,14 @@ function openVaultModal(card){
       varSel.innerHTML = '<option value="Base">Base</option>';
     }
 
-    // &#9472;&#9472; DUAL PATH &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+    // ── DUAL PATH ──────────────────────────────────────────
     if(card.hasCatalogPic){
-      // Path 2: catalog image exists &#8212; no upload needed
+      // Path 2: catalog image exists — no upload needed
       document.getElementById('vmPhotoSection').style.display='none';
       document.getElementById('vmCatalogPicNotice').style.display='block';
       vmFrontFile=null; vmBackFile=null; // skip upload validation
     } else {
-      // Path 1: no catalog image &#8212; user must upload
+      // Path 1: no catalog image — user must upload
       document.getElementById('vmPhotoSection').style.display='block';
       document.getElementById('vmCatalogPicNotice').style.display='none';
     }
@@ -2687,7 +2687,7 @@ async function submitVault(){
 
   // Validate
   let valid = true;
-  // Photo validation &#8212; only required when no catalog pic
+  // Photo validation — only required when no catalog pic
   if(!hasCatalogPic && (!vmFrontFile || !vmBackFile)){
     document.getElementById('photoError').style.display='block'; valid=false;
   }
@@ -2707,7 +2707,7 @@ async function submitVault(){
   }
   if(!vmAcq){ document.getElementById('acqError').style.display='block'; valid=false; }
   if(vmAcq==='purchased' && !vmSource){ document.getElementById('acqError').textContent='Please select where you purchased it.'; document.getElementById('acqError').style.display='block'; valid=false; }
-  // Price paid &#8212; MANDATORY
+  // Price paid — MANDATORY
   const pricePaid = parseFloat(document.getElementById('vmPricePaid').value);
   if(!document.getElementById('vmPricePaid').value || isNaN(pricePaid) || pricePaid < 0){
     document.getElementById('priceError').style.display='block'; valid=false;
@@ -2721,7 +2721,7 @@ async function submitVault(){
 
   try {
     const user = window._authUser;
-    if(!user) throw new Error('Not authenticated &#8212; please sign in');
+    if(!user) throw new Error('Not authenticated — please sign in');
 
     const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
     const SB_REST = 'https://jyfaegmnzkarlcximxjo.supabase.co';
@@ -2810,7 +2810,7 @@ async function submitVault(){
     const vaultRows = await vaultRes.json();
     const vaultRow = Array.isArray(vaultRows) ? vaultRows[0] : vaultRows;
 
-    // &#9472;&#9472; PRICE ANOMALY CHECK (&#177;40%) &#8212; silent, no user notice &#9472;
+    // ── PRICE ANOMALY CHECK (&#177;40%) — silent, no user notice ─
     if(vmAcq === 'purchased' && pricePaid > 0 && vmCard){
       btn.textContent = 'CHECKING MARKET...';
       try {
@@ -2833,7 +2833,7 @@ async function submitVault(){
                 vault_id:       vaultRow.id,
                 user_id:        user.id,
                 card_number:    cardNum,
-                card_name:      `${vmCard.year||''} ${vmCard.brand||''} ${vmCard.set||''} &#8212; ${vmCard.player||''}`.trim(),
+                card_name:      `${vmCard.year||''} ${vmCard.brand||''} ${vmCard.set||''} — ${vmCard.player||''}`.trim(),
                 set_table:      vmCard._setTable || null,
                 variation:      variation,
                 price_submitted: pricePaid,
@@ -2850,14 +2850,14 @@ async function submitVault(){
     }
 
     document.getElementById('vmProgressBar').style.width='100%';
-    btn.textContent = '&#10003; ADDED!';
+    btn.textContent = '✓ ADDED!';
     btn.style.background = 'var(--green)';
 
     setTimeout(()=>{
       closeVaultModal();
       btn.style.background = '';
       renderMyVault();
-      T(`${vmCard?.player||'Card'} added to vault &#183; $${pricePaid.toFixed(2)} paid`);
+      T(`${vmCard?.player||'Card'} added to vault · $${pricePaid.toFixed(2)} paid`);
     }, 1100);
 
   } catch(err){
@@ -2936,7 +2936,7 @@ function renderMyVault(){
             </div>
             <div class="ct-info" style="padding-bottom:12px">
               <div class="ct-player">${c.player||'Unknown'}</div>
-              <div class="ct-set">${c.year||''} ${c.brand||''} &#183; ${c.set_name||c.parallel||''}</div>
+              <div class="ct-set">${c.year||''} ${c.brand||''} · ${c.set_name||c.parallel||''}</div>
               ${c.card_number?`<div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(0,170,255,0.6);margin-top:2px;letter-spacing:.5px">${c.card_number}</div>`:''}
               ${c.serial_number?`<div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--blue);margin-top:2px">#${c.serial_number}/${c.serial_total||'?'}</div>`:''}
               <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--deep-border)">
@@ -2981,7 +2981,7 @@ function vaultOpenCard(idx){
   ivOpenCard(row);
 }
 
-// &#9472;&#9472; BUILD STAMP &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── BUILD STAMP ───────────────────────────────────────────────
 (function(){
   const el = document.getElementById('buildStamp');
   if(!el) return;
@@ -2993,7 +2993,7 @@ function vaultOpenCard(idx){
   el.title = `Session started: ${now.toLocaleString()}`;
 })();
 
-// &#9472;&#9472; CARD TICKER &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── CARD TICKER ──────────────────────────────────────────────
 function initCardTicker(){
   const demoCards = [
     {name:'Juan Soto RC Auto Gold /50', grade:'PSA 10', price:'$1,200', chg:'+12.4%', dir:'up'},
@@ -3007,13 +3007,13 @@ function initCardTicker(){
   if(!inner) return;
   let items = '';
   [...demoCards, ...demoCards].forEach(c => {
-    items += `<span class="ct-item"><span class="ct-name">${c.name}</span><span class="ct-sep">&#183;</span><span>${c.grade}</span><span class="ct-sep">&#183;</span><span class="ct-price">${c.price}</span><span class="ct-chg ${c.dir}">${c.chg}</span><span class="ct-sep" style="margin-left:8px">&#11045;</span></span>`;
+    items += `<span class="ct-item"><span class="ct-name">${c.name}</span><span class="ct-sep">·</span><span>${c.grade}</span><span class="ct-sep">·</span><span class="ct-price">${c.price}</span><span class="ct-chg ${c.dir}">${c.chg}</span><span class="ct-sep" style="margin-left:8px">&#11045;</span></span>`;
   });
   inner.innerHTML = items;
   inner.style.animation = 'cardTick 32s linear infinite';
 }
 
-// &#9472;&#9472; SCORES BAR &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── SCORES BAR ────────────────────────────────────────────────
 async function initScoresBar(){
   const ticker = document.getElementById('scoresTicker');
   const dateEl = document.getElementById('scoresDate');
@@ -3090,8 +3090,8 @@ async function initScoresBar(){
   setInterval(()=>{ if(scoresMode) loadScores(); }, 90000);
 }
 
-// ISOVAULT CARD DETAIL &#8212; Full Engine
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ISOVAULT CARD DETAIL — Full Engine
+// ═══════════════════════════════════════
 window._cdCard = null;
 window._cdVars = [];
 window._cdActiveVar = 0;
@@ -3104,7 +3104,7 @@ let _cdCatalogFrontBlob=null, _cdCatalogBackBlob=null;
 async function openCardDetail(cardId){
   const c = CARDS.find(x=>x && x.id===cardId);
   if(!c) return;
-  // _cdDbCardNum may have been set by ivOpenCard (ISOVault path) &#8212; preserve it.
+  // _cdDbCardNum may have been set by ivOpenCard (ISOVault path) — preserve it.
   // If opening directly (not from ISOVault), clear so fallback uses card's own number.
   if(!window._cdDbCardNum) window._cdDbCardNum = null;
   window._cdCard = c;
@@ -3116,19 +3116,19 @@ async function openCardDetail(cardId){
   document.getElementById('cd-bc-set').textContent   = c.set;
 
   // Title block
-  document.getElementById('cd-title').innerHTML = `${c.year} ${c.brand} ${c.set} &#8212; ${c.player}`.toUpperCase();
-  document.getElementById('cd-sub').textContent   = `Baseball &#183; ${c.year} &#183; ${c.brand} &#183; ${c.set}`;
+  document.getElementById('cd-title').innerHTML = `${c.year} ${c.brand} ${c.set} — ${c.player}`.toUpperCase();
+  document.getElementById('cd-sub').textContent   = `Baseball · ${c.year} · ${c.brand} · ${c.set}`;
   document.getElementById('cd-num').textContent   = c.cardNum || '';
 
   // Vault CTA path message
   const pathMsg = document.getElementById('cd-path-msg');
   if(c.hasCatalogPic){
-    pathMsg.innerHTML = '<strong>This card has a catalog image.</strong> Confirm how you acquired it and the price you paid &#8212; no photo upload needed.';
+    pathMsg.innerHTML = '<strong>This card has a catalog image.</strong> Confirm how you acquired it and the price you paid — no photo upload needed.';
   } else {
     pathMsg.innerHTML = '<strong>No catalog image yet.</strong> Upload front + back, then confirm acquisition details and price paid.';
   }
 
-  // Show upload button immediately &#8212; hide/update after async image check
+  // Show upload button immediately — hide/update after async image check
   const uploadBtn = document.getElementById('cd-upload-btn');
   if(uploadBtn){ uploadBtn.innerHTML='&#128247; Upload Image'; uploadBtn.style.display='inline-flex'; }
 
@@ -3145,7 +3145,7 @@ async function openCardDetail(cardId){
   N('carddetail', null);
   _cdInitRotation();
 
-  // Now fetch catalog images from Supabase (async &#8212; loads in behind the scene)
+  // Now fetch catalog images from Supabase (async — loads in behind the scene)
   await _cdLoadCatalogImages(c);
 }
 
@@ -3166,7 +3166,7 @@ async function _cdLoadCatalogImages(c){
     return;
   }
 
-  // Fast path &#8212; var_images already loaded from ISOVault row, no Supabase query needed
+  // Fast path — var_images already loaded from ISOVault row, no Supabase query needed
   const preloaded = window._cdPreloadVarImages;
   window._cdPreloadVarImages = null;
   if(preloaded && Object.keys(preloaded).length){
@@ -3176,7 +3176,7 @@ async function _cdLoadCatalogImages(c){
     const imgs = varKey ? preloaded[varKey] : null;
     if(imgs && (imgs.front || imgs.back)){
       _cdSetViewerImages(imgs.front || null, imgs.back || null);
-      if(statusEl){ statusEl.textContent='&#10003; Images loaded'; statusEl.style.color='var(--green)';
+      if(statusEl){ statusEl.textContent='✓ Images loaded'; statusEl.style.color='var(--green)';
         setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
       if(uploadBtn) uploadBtn.textContent='Replace Image';
     } else {
@@ -3188,7 +3188,7 @@ async function _cdLoadCatalogImages(c){
     return;
   }
 
-  // Slow path &#8212; fetch from Supabase
+  // Slow path — fetch from Supabase
   if(statusEl){ statusEl.style.display='block'; statusEl.textContent='Loading images...'; statusEl.style.color='var(--muted-text)'; }
 
   try {
@@ -3212,7 +3212,7 @@ async function _cdLoadCatalogImages(c){
 
     if(imgs && (imgs.front || imgs.back)){
       _cdSetViewerImages(imgs.front || null, imgs.back || null);
-      if(statusEl){ statusEl.textContent='&#10003; Images loaded'; statusEl.style.color='var(--green)';
+      if(statusEl){ statusEl.textContent='✓ Images loaded'; statusEl.style.color='var(--green)';
         setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
       if(uploadBtn) uploadBtn.textContent='Replace Image';
     } else {
@@ -3242,11 +3242,11 @@ function _cdShowUploadBtn(show){
     btn.innerHTML = '&#128247; Upload Image';
     btn.style.display = 'inline-flex';
   } else {
-    // Leave visible as "Replace Image" &#8212; set in caller
+    // Leave visible as "Replace Image" — set in caller
   }
 }
 
-// &#9472;&#9472; Viewer orientation engine &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Viewer orientation engine ─────────────────────────────────
 // Portrait card: 280 &#215; 392  (ratio ~0.714)
 // Landscape card: 392 &#215; 280 (ratio ~1.4)
 const _CD_PORT = {w:280, h:392};
@@ -3267,7 +3267,7 @@ function _cdApplyOrientation(landscape){
   }
 }
 
-// &#9472;&#9472; Bulletproof orientation probe &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Bulletproof orientation probe ───────────────────────────
 // Handles cached images (complete+naturalWidth), load race, and errors.
 // Calls callback(landscape:boolean) exactly once.
 function _cdProbeOrientation(url, callback){
@@ -3311,7 +3311,7 @@ function _cdSetViewerImages(frontUrl, backUrl){
   }
 
   // Step 2: probe orientation from front image, fallback to back, fallback portrait
-  // Then APPLY orientation first, THEN set src &#8212; eliminates all race conditions.
+  // Then APPLY orientation first, THEN set src — eliminates all race conditions.
   const probeUrl = frontUrl || backUrl;
   if(probeUrl){
     _cdProbeOrientation(probeUrl, function(landscape){
@@ -3321,12 +3321,12 @@ function _cdSetViewerImages(frontUrl, backUrl){
       if(backUrl  && imgBack)  imgBack.src  = backUrl;
     });
   } else {
-    // No images at all &#8212; portrait default
+    // No images at all — portrait default
     _cdApplyOrientation(false);
   }
 }
 
-// &#9472;&#9472; Variation Pills &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Variation Pills ─────────────────────────────────────────
 function _buildVariationPills(c){
   const pillsEl = document.getElementById('cd-pills');
   if(!pillsEl) return;
@@ -3386,11 +3386,11 @@ function cdSelectVar(idx, skipShimmer){
     ph.style.background = `linear-gradient(135deg,#112840,${v.color}55,#1a3a5c)`;
   }
 
-  // Market block &#8212; label only, data loaded by _cdLoadLiveMarket
+  // Market block — label only, data loaded by _cdLoadLiveMarket
   const mktVar  = document.getElementById('cd-mkt-var-name');
   const watching = document.getElementById('cd-watching-ct');
   if(mktVar)   mktVar.textContent   = v.label;
-  if(watching) watching.textContent = v.watching!=null ? v.watching : '&#8212;';
+  if(watching) watching.textContent = v.watching!=null ? v.watching : '—';
 
   // Shimmer on non-base parallels
   if(!skipShimmer && !v.isBase) _cdShimmer();
@@ -3403,7 +3403,7 @@ function cdSelectVar(idx, skipShimmer){
     const uploadBtn = document.getElementById('cd-upload-btn');
     if(uploadBtn) uploadBtn.textContent = 'Replace Image';
   } else {
-    // No image for this variation &#8212; show placeholder and upload button
+    // No image for this variation — show placeholder and upload button
     _cdSetViewerImages(null, null);
     // Tint placeholder with variation color
     const ph = document.getElementById('cd-placeholder-front');
@@ -3436,19 +3436,19 @@ function _cdShimmer(){
   setTimeout(()=>{ shimEl.style.display='none'; }, 1300);
 }
 
-// &#9472;&#9472; 3D Rotation Engine &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── 3D Rotation Engine ──────────────────────────────────────
 function _cdApplyTransform(){
   const card = document.getElementById('cd-card');
   if(!card) return;
   card.style.transform = `rotateY(${_cdRotY+(_cdFlipped?180:0)}deg) rotateX(${_cdRotX}deg)`;
   const lbl = document.getElementById('cd-side-label');
-  if(lbl) lbl.textContent = _cdFlipped ? 'BACK &#183; Drag to rotate' : 'FRONT &#183; Drag to rotate';
+  if(lbl) lbl.textContent = _cdFlipped ? 'BACK · Drag to rotate' : 'FRONT · Drag to rotate';
 }
 
 function _cdReset3D(){
   _cdRotX=0; _cdRotY=0; _cdFlipped=false;
-  // Do NOT pre-apply orientation here &#8212; _cdSetViewerImages probes and applies it
-  // after the image loads, preventing a landscape&#8594;portrait flash on card open.
+  // Do NOT pre-apply orientation here — _cdSetViewerImages probes and applies it
+  // after the image loads, preventing a landscape→portrait flash on card open.
   if(_cdSpinner){ clearInterval(_cdSpinner); _cdSpinner=null; _cdSpinning=false; }
   const sb = document.getElementById('cd-spin-btn');
   if(sb) sb.textContent = 'Auto Spin';
@@ -3517,7 +3517,7 @@ function cdToggleSpin(){
 function cdReset(){ _cdReset3D(); }
 // backToVault defined below in ISOVault engine
 
-// &#9472;&#9472; Catalog Image Upload &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Catalog Image Upload ────────────────────────────────────
 function openCatalogUpload(){
   _cdCatalogFrontBlob=null; _cdCatalogBackBlob=null;
   ['cdFrontBox','cdBackBox'].forEach(id=>document.getElementById(id).classList.remove('has-file'));
@@ -3533,7 +3533,7 @@ function openCatalogUpload(){
   const activeVar = (window._cdVars||[])[window._cdActiveVar||0];
   const varLabel = activeVar ? activeVar.label : 'Base';
   if(c) document.getElementById('cdUploadSub').textContent=
-    `${c.player} &#183; ${c.year} ${c.brand} ${c.set} &#183; ${c.cardNum||''} &#183; ${varLabel}`;
+    `${c.player} · ${c.year} ${c.brand} ${c.set} · ${c.cardNum||''} · ${varLabel}`;
   document.getElementById('cdUploadOverlay').style.display='flex';
   document.body.style.overflow='hidden';
 }
@@ -3576,7 +3576,7 @@ async function submitCatalogUpload(){
   }
   const c=window._cdCard; if(!c) return;
   const table=c._setTable||_cdGuessTable(c);
-  // Use actual DB card_number &#8212; _cdDbCardNum set by ISOVault row click, falls back to card's own number
+  // Use actual DB card_number — _cdDbCardNum set by ISOVault row click, falls back to card's own number
   const cardNum = window._cdDbCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber||null));
   if(!table||!cardNum){ T('Cannot identify set table for this card.'); return; }
 
@@ -3592,7 +3592,7 @@ async function submitCatalogUpload(){
   bar.style.width='15%';
 
   try {
-    // Deterministic path &#8212; no timestamp &#8212; so upsert:true actually replaces on re-upload
+    // Deterministic path — no timestamp — so upsert:true actually replaces on re-upload
     const slug=`catalog/${table}/${cardNum.replace(/[^a-zA-Z0-9-]/g,'_')}/${varSlug}`;
 
     // Upload front
@@ -3628,7 +3628,7 @@ async function submitCatalogUpload(){
     if(ue) throw ue;
 
     bar.style.width='100%';
-    btn.textContent='&#10003; SAVED!';
+    btn.textContent='✓ SAVED!';
 
     // Cache locally and load live into viewer
     if(!window._cdCard._varImages) window._cdCard._varImages = {};
@@ -3636,7 +3636,7 @@ async function submitCatalogUpload(){
     _cdSetViewerImages(frontURL, backURL);
 
     const statusEl=document.getElementById('cd-img-status');
-    if(statusEl){ statusEl.style.display='block'; statusEl.textContent=`&#10003; ${varLabel} image live`; statusEl.style.color='var(--green)';
+    if(statusEl){ statusEl.style.display='block'; statusEl.textContent=`✓ ${varLabel} image live`; statusEl.style.color='var(--green)';
       setTimeout(()=>statusEl.style.display='none', 3000); }
 
     const upBtn=document.getElementById('cd-upload-btn');
@@ -3646,21 +3646,21 @@ async function submitCatalogUpload(){
     const pathMsg=document.getElementById('cd-path-msg');
     if(pathMsg) pathMsg.innerHTML='<strong>Catalog image saved.</strong> Confirm acquisition details and price paid to add to your vault.';
 
-    setTimeout(()=>{ closeCatalogUpload(); T(`${varLabel} image saved &#183; ${c.player} ${c.cardNum||''}`); }, 900);
+    setTimeout(()=>{ closeCatalogUpload(); T(`${varLabel} image saved · ${c.player} ${c.cardNum||''}`); }, 900);
 
   } catch(err){
     btn.disabled=false; btn.textContent='SAVE TO CATALOG';
     bar.style.width='0';
-    document.getElementById('cdUploadError').textContent=err.message||'Upload failed &#8212; try again.';
+    document.getElementById('cdUploadError').textContent=err.message||'Upload failed — try again.';
     document.getElementById('cdUploadError').style.display='block';
   }
 }
 
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
-// ISOVAULT &#8212; The World's Greatest Sports Card Search Engine
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════════════════════════════
+// ISOVAULT — The World's Greatest Sports Card Search Engine
+// ═══════════════════════════════════════════════════════════════
 
-// &#9472;&#9472; Sport + Set Registry &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Sport + Set Registry ─────────────────────────────────────
 const IV_SPORTS = [
   { id:'baseball',  label:'Baseball',     emoji:'&#9918;', active:true  },
   { id:'basketball',label:'Basketball',   emoji:'&#127936;', active:false },
@@ -3698,10 +3698,10 @@ let _ivCat      = 'all';
 window._ivRowCache = {}; // keyed by index for safe onclick
 let _ivSearch   = '';
 let _ivView     = 'list'; // 'list' | 'grid'
-let _ivCounts   = {};     // table &#8594; count cache
+let _ivCounts   = {};     // table → count cache
 let _ivInited   = false;
 
-// &#9472;&#9472; Entry Point &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Entry Point ───────────────────────────────────────────────
 function ivInit(){
   if(!_ivInited){
     _ivInited = true;
@@ -3735,7 +3735,7 @@ function _ivPrefetchCounts(){
   });
 }
 
-// &#9472;&#9472; Navigation &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Navigation ────────────────────────────────────────────────
 function ivGoHome(){
   _ivSport = null; _ivSet = null;
   _ivData = []; _ivFiltered = [];
@@ -3772,7 +3772,7 @@ function _ivBreadcrumb(showSport, showSet){
   if(setEl && _ivSet)   setEl.textContent = _ivSet.label;
 }
 
-// &#9472;&#9472; Sport Tiles &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Sport Tiles ───────────────────────────────────────────────
 function ivRenderSports(){
   const g = document.getElementById('ivSportGrid');
   if(!g) return;
@@ -3807,7 +3807,7 @@ function ivSelectSport(sportId){
   _ivBreadcrumb(true, false);
 }
 
-// &#9472;&#9472; Set Browser &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Set Browser ───────────────────────────────────────────────
 function _ivRenderSetBrowser(){
   const sets = IV_SETS.filter(s=>s.sport===_ivSport);
   const years  = [...new Set(sets.map(s=>s.year))].sort((a,b)=>b-a);
@@ -3872,7 +3872,7 @@ function _ivRenderSetTiles(sets){
   });
 }
 
-// &#9472;&#9472; Card List &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Card List ─────────────────────────────────────────────────
 async function ivSelectSet(table){
   const setDef = IV_SETS.find(s=>s.table===table);
   if(!setDef) return;
@@ -3916,7 +3916,7 @@ async function ivSelectSet(table){
 
   _ivData = all;
   _ivCounts[table] = all.length;
-  // Load market prices for this set in background &#8212; populates price column
+  // Load market prices for this set in background — populates price column
   _ivApplyCardFilters();
   _ivLoadMarketPrices(table).then(()=>_ivRenderCards());
 }
@@ -3942,7 +3942,7 @@ function _ivApplyCardFilters(){
 
 function _ivRenderCards(){
   const meta = document.getElementById('ivMeta');
-  if(meta) meta.textContent = `${_ivFiltered.length.toLocaleString()} of ${_ivData.length.toLocaleString()} cards &#183; ${_ivSet?_ivSet.label:''}`;
+  if(meta) meta.textContent = `${_ivFiltered.length.toLocaleString()} of ${_ivData.length.toLocaleString()} cards · ${_ivSet?_ivSet.label:''}`;
 
   if(_ivView === 'list') _ivRenderChecklist();
   else _ivRenderGrid();
@@ -3974,19 +3974,19 @@ function _ivRenderChecklist(){
     const mktPrice = window._ivMarketCache && window._ivMarketCache[cardKey];
     const priceHtml = mktPrice
       ? `<div class="iv-row-price">$${Number(mktPrice).toFixed(2)}</div>`
-      : `<div class="iv-row-price no-data">&#8212;</div>`;
+      : `<div class="iv-row-price no-data">—</div>`;
     return `<div class="iv-row" style="grid-template-columns:60px 1fr 120px 80px 80px 60px;cursor:pointer" data-rowidx="${idx}">
-      <div class="iv-row-num">${r.card_number||'&#8212;'}</div>
-      <div><div class="iv-row-player">${r.player||'&#8212;'}</div>${sub}</div>
-      <div class="iv-row-team">${r.team||'&#8212;'}</div>
+      <div class="iv-row-num">${r.card_number||'—'}</div>
+      <div><div class="iv-row-player">${r.player||'—'}</div>${sub}</div>
+      <div class="iv-row-team">${r.team||'—'}</div>
       <div class="iv-row-cat"><span class="iv-row-cat-badge ${catClass}">${catLabel}</span></div>
       ${priceHtml}
-      <div style="font-size:16px">${hasImg ? '&#128444;&#65039;' : '<span style="color:rgba(122,149,174,0.3)">&#8212;</span>'}</div>
+      <div style="font-size:16px">${hasImg ? '&#128444;&#65039;' : '<span style="color:rgba(122,149,174,0.3)">—</span>'}</div>
     </div>`;
   }).join('');
 
   el.innerHTML = `<div class="iv-checklist">${header}${rows}</div>`
-    + (_ivFiltered.length > 500 ? `<div class="iv-meta" style="text-align:center;margin-top:10px">Showing 500 of ${_ivFiltered.length.toLocaleString()} &#8212; refine your search</div>` : '');
+    + (_ivFiltered.length > 500 ? `<div class="iv-meta" style="text-align:center;margin-top:10px">Showing 500 of ${_ivFiltered.length.toLocaleString()} — refine your search</div>` : '');
   el.onclick = function(e){
     try {
       var row = e.target.closest('[data-rowidx]');
@@ -4014,15 +4014,15 @@ function _ivRenderGrid(){
     return `<div class="iv-grid-card" style="cursor:pointer" data-rowidx="${idx}">
       ${imgHtml}
       <div class="iv-grid-info">
-        <div class="iv-grid-player">${r.player||'&#8212;'}</div>
-        <div class="iv-grid-num">#${r.card_number||'&#8212;'}</div>
+        <div class="iv-grid-player">${r.player||'—'}</div>
+        <div class="iv-grid-num">#${r.card_number||'—'}</div>
         <div class="iv-grid-cat">${r.insert_name||r.category||'Base'}</div>
       </div>
     </div>`;
   }).join('');
 
   el.innerHTML = `<div class="iv-grid">${cards}</div>`
-    + (_ivFiltered.length > 200 ? `<div class="iv-meta" style="text-align:center;margin-top:12px">Showing 200 of ${_ivFiltered.length.toLocaleString()} &#8212; refine your search</div>` : '');
+    + (_ivFiltered.length > 200 ? `<div class="iv-meta" style="text-align:center;margin-top:12px">Showing 200 of ${_ivFiltered.length.toLocaleString()} — refine your search</div>` : '');
   el.onclick = function(e){
     try {
       var row = e.target.closest('[data-rowidx]');
@@ -4036,7 +4036,7 @@ function _ivRenderGrid(){
   };
 }
 
-// &#9472;&#9472; Card click &#8594; Detail panel &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Card click → Detail panel ─────────────────────────────────
 function ivOpenCard(row){
   try {
   // Check if there's a known CARDS entry
@@ -4059,7 +4059,7 @@ function ivOpenCard(row){
     year:    parseInt((row.year||'').toString().slice(0,4)) || 2026,
     brand:   (()=>{ const s=row.set_name||''; return s.includes('Bowman')?'Bowman':s.includes('Panini')?'Panini':'Topps'; })(),
     set:     row.insert_name || (_ivSet ? _ivSet.name : '') || row.set_name || '',
-    parallel: row.category + (row.insert_name ? ' &#8212; '+row.insert_name : ''),
+    parallel: row.category + (row.insert_name ? ' — '+row.insert_name : ''),
     cardNum: row.card_number ? '#'+row.card_number : '',
     run:     null, auto: (row.category||'').toLowerCase().includes('auto'),
     rc:      !!row.is_rookie, tags: row.is_rookie?['rc']:[],
@@ -4073,7 +4073,7 @@ function ivOpenCard(row){
     variations: [{
       label: row.insert_name || row.category || 'Base',
       color:'#00AAFF', glow:'rgba(0,170,255,0.4)',
-      run:null, isBase:true, lastSale:'&#8212;', isos:0, pop:null, watching:null
+      run:null, isBase:true, lastSale:'—', isos:0, pop:null, watching:null
     }]
   };
 
@@ -4084,12 +4084,12 @@ function ivOpenCard(row){
   document.getElementById('cd-bc-brand').textContent = card.brand;
   document.getElementById('cd-bc-year').textContent  = card.year;
   document.getElementById('cd-bc-set').textContent   = card.set || card.parallel;
-  document.getElementById('cd-title').innerHTML    = `${card.year} ${card.brand} ${card.set||''} &#8212; ${card.player}`.toUpperCase();
-  document.getElementById('cd-sub').textContent      = `Baseball &#183; ${card.year} &#183; ${card.brand}`;
+  document.getElementById('cd-title').innerHTML    = `${card.year} ${card.brand} ${card.set||''} — ${card.player}`.toUpperCase();
+  document.getElementById('cd-sub').textContent      = `Baseball · ${card.year} · ${card.brand}`;
   document.getElementById('cd-num').textContent      = card.cardNum;
   const pm = document.getElementById('cd-path-msg');
   if(pm) pm.innerHTML = card.hasCatalogPic
-    ? '<strong>This card has a catalog image.</strong> Confirm how you acquired it and the price paid &#8212; no photo upload needed.'
+    ? '<strong>This card has a catalog image.</strong> Confirm how you acquired it and the price paid — no photo upload needed.'
     : '<strong>No catalog image yet.</strong> Upload front + back, then confirm acquisition details and price paid.';
 
   const uploadBtn = document.getElementById('cd-upload-btn');
@@ -4109,7 +4109,7 @@ function ivOpenCard(row){
   }
 }
 
-// &#9472;&#9472; Filters &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Filters ───────────────────────────────────────────────────
 function ivCatFilter(cat, el){
   _ivCat = cat;
   document.querySelectorAll('#ivCatPills .chip').forEach(c=>c.classList.remove('active'));
@@ -4129,7 +4129,7 @@ function ivSetView(view, el){
   _ivRenderCards();
 }
 
-// &#9472;&#9472; Global Search &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Global Search ─────────────────────────────────────────────
 let _ivGlobalTimer = null;
 function ivHandleGlobalSearch(q){
   clearTimeout(_ivGlobalTimer);
@@ -4162,16 +4162,16 @@ async function _ivRunGlobalSearch(q){
     const sport = IV_SPORTS.find(s=>s.id===r._setDef.sport);
     const hasImg = r.var_images && Object.keys(r.var_images).length;
     return `<div class="iv-result-row" onclick="ivOpenGlobalResult(${JSON.stringify({...r,_setTable:r._setDef.table}).replace(/"/g,'&quot;')})">
-      <span class="iv-result-sport">${sport?sport.emoji+' '+sport.label:'&#8212;'}</span>
+      <span class="iv-result-sport">${sport?sport.emoji+' '+sport.label:'—'}</span>
       <div>
         <div class="iv-result-player">${r.player}</div>
-        <div class="iv-result-set">${r._setDef.label} &#183; ${r.insert_name||r.category||'Base'}</div>
+        <div class="iv-result-set">${r._setDef.label} · ${r.insert_name||r.category||'Base'}</div>
       </div>
       ${hasImg?'<span style="font-size:16px;margin-left:auto">&#128444;&#65039;</span>':''}
-      <div class="iv-result-num">#${r.card_number||'&#8212;'}</div>
+      <div class="iv-result-num">#${r.card_number||'—'}</div>
     </div>`;
   }).join('')
-  + (all.length>100?`<div class="iv-meta" style="text-align:center;margin-top:10px">${all.length} results &#8212; narrow your search</div>`:'');
+  + (all.length>100?`<div class="iv-meta" style="text-align:center;margin-top:10px">${all.length} results — narrow your search</div>`:'');
 }
 
 function ivOpenGlobalResult(row){
@@ -4181,7 +4181,7 @@ function ivOpenGlobalResult(row){
   ivOpenCard(row);
 }
 
-// &#9472;&#9472; Community Panel &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Community Panel ──────────────────────────────────────────
 function openCommunityPanel(){
   document.getElementById('communityPanel').classList.add('open');
   document.getElementById('communityBackdrop').classList.add('open');
@@ -4191,8 +4191,8 @@ function closeCommunityPanel(){
   document.getElementById('communityBackdrop').classList.remove('open');
 }
 
-// &#9472;&#9472; ISOVault Market Price Cache (per set load) &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
-window._ivMarketCache = {}; // card_number &#8594; avg price paid
+// ── ISOVault Market Price Cache (per set load) ───────────────
+window._ivMarketCache = {}; // card_number → avg price paid
 
 async function _ivLoadMarketPrices(table){
   window._ivMarketCache = {};
@@ -4206,7 +4206,7 @@ async function _ivLoadMarketPrices(table){
       .not('price_paid','is',null)
       .not('market_excluded','is',true);
     if(error || !data) return;
-    // Group by card_number &#8594; compute avg per base variation (first entry = base)
+    // Group by card_number → compute avg per base variation (first entry = base)
     const map = {};
     data.forEach(r=>{
       const k = (r.card_number||'').toString();
@@ -4220,15 +4220,15 @@ async function _ivLoadMarketPrices(table){
   } catch(e){ console.warn('Market cache error:', e); }
 }
 
-// &#9472;&#9472; Error Report Modal &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Error Report Modal ────────────────────────────────────────
 function openErrorReport(){
   const card = window._cdCard;
   const varIdx = window._cdActiveVarIdx || 0;
   const vars = window._cdVars || [];
   const varLabel = vars[varIdx] ? vars[varIdx].label : (card ? (card.parallel||'Base') : 'Base');
   const cardName = card
-    ? `${card.year} ${card.brand} ${card.set||''} &#8212; ${card.player} ${card.cardNum||''}`.trim()
-    : '&#8212;';
+    ? `${card.year} ${card.brand} ${card.set||''} — ${card.player} ${card.cardNum||''}`.trim()
+    : '—';
 
   document.getElementById('errCardName').textContent   = cardName;
   document.getElementById('errVariation').textContent  = varLabel;
@@ -4277,15 +4277,15 @@ async function submitErrorReport(){
     });
     document.getElementById('errProgressBar').style.width = '100%';
     if(error) throw error;
-    btn.textContent = '&#10003; REPORT SUBMITTED';
+    btn.textContent = '✓ REPORT SUBMITTED';
     btn.style.background = 'var(--green)';
     setTimeout(()=>{
       closeErrorReport();
       btn.style.background = '';
-      T('Report submitted &#8212; we review manually within 48 hours. If valid, +5 credits awarded.');
+      T('Report submitted — we review manually within 48 hours. If valid, +5 credits awarded.');
     }, 1200);
   } catch(e){
-    document.getElementById('errSubmitError').textContent = 'Submission failed &#8212; please try again.';
+    document.getElementById('errSubmitError').textContent = 'Submission failed — please try again.';
     document.getElementById('errSubmitError').style.display = 'block';
     btn.disabled = false;
     btn.textContent = 'SUBMIT REPORT';
@@ -4293,7 +4293,7 @@ async function submitErrorReport(){
   }
 }
 
-// &#9472;&#9472; Live Market Data Engine &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Live Market Data Engine ──────────────────────────────────
 async function _cdLoadLiveMarket(card, variationLabel){
   // Reset display
   document.getElementById('cd-mkt-avg').textContent   = '...';
@@ -4316,20 +4316,20 @@ async function _cdLoadLiveMarket(card, variationLabel){
       .limit(50);
 
     if(error || !data || !data.length){
-      document.getElementById('cd-mkt-avg').textContent   = '&#8212;';
-      document.getElementById('cd-mkt-range').textContent = '&#8212;';
+      document.getElementById('cd-mkt-avg').textContent   = '—';
+      document.getElementById('cd-mkt-range').textContent = '—';
       document.getElementById('cd-mkt-count').textContent = '0';
       return;
     }
 
-    // Calc stats &#8212; only from purchased submissions (not ripped packs for market price)
+    // Calc stats — only from purchased submissions (not ripped packs for market price)
     const purchased = data.filter(r => r.acquisition_type === 'purchased' && r.price_paid > 0);
     const allPrices = data.filter(r => r.price_paid > 0);
     const prices = (purchased.length ? purchased : allPrices).map(r => r.price_paid);
 
     if(!prices.length){
-      document.getElementById('cd-mkt-avg').textContent   = '&#8212;';
-      document.getElementById('cd-mkt-range').textContent = '&#8212;';
+      document.getElementById('cd-mkt-avg').textContent   = '—';
+      document.getElementById('cd-mkt-range').textContent = '—';
       document.getElementById('cd-mkt-count').textContent = data.length;
       return;
     }
@@ -4339,15 +4339,15 @@ async function _cdLoadLiveMarket(card, variationLabel){
     const high = Math.max(...prices);
 
     document.getElementById('cd-mkt-avg').textContent   = '$' + avg.toFixed(2);
-    document.getElementById('cd-mkt-range').textContent = '$' + low.toFixed(2) + ' &#8211; $' + high.toFixed(2);
+    document.getElementById('cd-mkt-range').textContent = '$' + low.toFixed(2) + ' – $' + high.toFixed(2);
     document.getElementById('cd-mkt-count').textContent = data.length;
 
     // Show recent submissions (last 5)
     const recent = data.slice(0,5);
     if(recent.length){
       const rows = recent.map(r=>{
-        const price = r.price_paid ? '$'+Number(r.price_paid).toFixed(2) : '&#8212;';
-        const date  = r.date_acquired ? new Date(r.date_acquired).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'}) : '&#8212;';
+        const price = r.price_paid ? '$'+Number(r.price_paid).toFixed(2) : '—';
+        const date  = r.date_acquired ? new Date(r.date_acquired).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'}) : '—';
         const acq   = r.acquisition_type === 'ripped' ? '&#128230; Ripped' : '&#128176; Purchased';
         return `<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(0,170,255,0.07);font-family:Barlow Condensed,sans-serif;font-size:12px"><span style="color:rgba(122,149,174,0.7)">${acq}</span><span style="color:var(--white);font-weight:700">${price}</span><span style="color:rgba(122,149,174,0.5)">${date}</span></div>`;
       }).join('');
@@ -4359,16 +4359,16 @@ async function _cdLoadLiveMarket(card, variationLabel){
   }
 }
 
-// &#9472;&#9472; Back to Vault from Card Detail &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Back to Vault from Card Detail ────────────────────────────
 function backToVault(){
   if(_cdSpinner){ clearInterval(_cdSpinner); _cdSpinner=null; _cdSpinning=false; }
-  // Always land on Overview &#8212; never leave the app
+  // Always land on Overview — never leave the app
   N('overview', document.querySelector('[onclick*="overview"]'));
 }
 
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════════════════════════════
 // SIDEBAR NAV REORDER ENGINE
-// &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+// ═══════════════════════════════════════════════════════════════
 
 // Fire ticker + scores on load
 if(document.readyState === 'loading'){
@@ -4377,7 +4377,7 @@ if(document.readyState === 'loading'){
   initCardTicker(); initScoresBar();
 }
 
-// &#9472;&#9472; Nav Reorder Toggle &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Nav Reorder Toggle ──────────────────────────────────────
 let _navReorderMode = false;
 function toggleNavReorder(){
   _navReorderMode = !_navReorderMode;
@@ -4421,9 +4421,9 @@ function _navDrop(e){
 }
 function _navDragEnd(){ this.style.opacity='1'; document.querySelectorAll('.drag-over').forEach(el=>el.classList.remove('drag-over')); _navDragSrc=null; }
 
-// N() is the original function &#8212; no override needed
+// N() is the original function — no override needed
 
-// &#9472;&#9472; Trap browser back button &#8212; never leave the app &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Trap browser back button — never leave the app ────────────
 history.pushState(null, '', window.location.href);
 window.addEventListener('popstate', function(){
   history.pushState(null, '', window.location.href);
@@ -4432,7 +4432,7 @@ window.addEventListener('popstate', function(){
 
 // ivInit() handles ISOVault rendering on N('library',...)
 
-// &#9472;&#9472; ADMIN: Price Flag Review &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── ADMIN: Price Flag Review ──────────────────────────────────
 
 let _flagData   = [];   // all loaded flags
 let _flagFilter = 'all'; // current filter
@@ -4455,7 +4455,7 @@ async function loadPriceFlags(){
     _renderFlagStats();
     _renderFlagList();
   } catch(e){
-    list.innerHTML = '<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:rgba(255,59,92,0.7);padding:30px;text-align:center">Failed to load flags &#8212; ' + (e.message||'unknown error') + '</div>';
+    list.innerHTML = '<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:rgba(255,59,92,0.7);padding:30px;text-align:center">Failed to load flags — ' + (e.message||'unknown error') + '</div>';
   }
 }
 
@@ -4470,7 +4470,7 @@ function _renderFlagStats(){
   const resolved = _flagData.filter(f=>RESOLVED_ST.includes(f.status)).length;
   const avgDev   = _flagData.length
     ? (_flagData.reduce((a,f)=>a+(parseFloat(f.deviation_pct)||0),0)/_flagData.length).toFixed(1)
-    : '&#8212;';
+    : '—';
 
   stats.innerHTML =
     '<div class="flag-stat-card"><div class="flag-stat-val" style="color:var(--white)">' + pending + '</div><div class="flag-stat-label">PENDING REVIEW</div></div>' +
@@ -4509,14 +4509,14 @@ function _renderFlagList(){
     const submitted = parseFloat(f.price_submitted||0).toFixed(2);
     const avg       = parseFloat(f.market_avg||0).toFixed(2);
     const dev       = parseFloat(f.deviation_pct||0).toFixed(1);
-    const flagDate  = f.flagged_at ? new Date(f.flagged_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit',hour:'2-digit',minute:'2-digit'}) : '&#8212;';
+    const flagDate  = f.flagged_at ? new Date(f.flagged_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit',hour:'2-digit',minute:'2-digit'}) : '—';
 
     // Status label
     const statusLabels = {
       admin_fixed:          '&#128295; Admin fixed',
-      user_confirmed:       '&#10003; User confirmed correct',
-      user_corrected:       '&#9999;&#65039; User self-corrected &#183; +1 ISO credited',
-      awaiting_confirmation:'&#128231; Email sent &#8212; awaiting reply',
+      user_confirmed:       '✓ User confirmed correct',
+      user_corrected:       '&#9999;&#65039; User self-corrected · +1 ISO credited',
+      awaiting_confirmation:'&#128231; Email sent — awaiting reply',
     };
     const resolvedLabel = statusLabels[st] || '';
 
@@ -4550,13 +4550,13 @@ function _renderFlagList(){
           </div>
         </div>`;
     } else if(isAwaiting){
-      // Email sent &#8212; waiting on user. Admin can manually mark outcome.
+      // Email sent — waiting on user. Admin can manually mark outcome.
       actions = `
         <div style="width:100%">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:#FFC83C;margin-bottom:10px">&#128231; Confirmation email sent &#8212; mark outcome when user responds:</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:#FFC83C;margin-bottom:10px">&#128231; Confirmation email sent — mark outcome when user responds:</div>
           <div style="display:flex;gap:8px">
             <button class="btn btn-ghost btn-sm" style="flex:1;font-size:12px;border-color:rgba(0,232,135,0.3);color:var(--green)"
-              onclick="flagUserConfirmed('${f.id}')">&#10003; They Confirmed Correct</button>
+              onclick="flagUserConfirmed('${f.id}')">✓ They Confirmed Correct</button>
             <div style="display:flex;flex-direction:column;gap:6px;flex:1">
               <input type="number" id="flag-fixinput-${f.id}" min="0" step="0.01" placeholder="Corrected price"
                 style="background:rgba(0,0,0,0.3);border:1px solid rgba(0,170,255,0.25);border-radius:6px;padding:7px 10px;color:var(--white);font-family:Barlow Condensed,sans-serif;font-size:14px;outline:none;width:100%;box-sizing:border-box">
@@ -4573,7 +4573,7 @@ function _renderFlagList(){
       <div class="flag-card-header">
         <div class="flag-card-meta">
           <div class="flag-card-name">${f.card_name||'Unknown Card'}</div>
-          <div class="flag-card-var">Variation: ${f.variation||'Base'} &#183; #${f.card_number||'&#8212;'} &#183; ${flagDate}</div>
+          <div class="flag-card-var">Variation: ${f.variation||'Base'} · #${f.card_number||'—'} · ${flagDate}</div>
         </div>
         <div class="flag-badge ${dir}">${dir==='HIGH'?'&#128314;':'&#128315;'} ${dir} ${dev}%</div>
       </div>
@@ -4606,7 +4606,7 @@ function flagFilter(type, el){
 // Update _flagFilter logic inside _renderFlagList
 const _FLAG_RESOLVED_STATUSES = ['admin_fixed','user_confirmed','user_corrected'];
 
-// &#9472;&#9472; Fix Price inline &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Fix Price inline ─────────────────────────────────────────
 function flagShowFixPrice(flagId){
   const el = document.getElementById('flag-fixrow-' + flagId);
   if(el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
@@ -4632,7 +4632,7 @@ async function flagApplyFix(flagId){
         .eq('id', flag.vault_id);
       if(ve) throw ve;
     }
-    // Close the flag &#8212; admin fixed it directly
+    // Close the flag — admin fixed it directly
     const { error: fe } = await window._sb.from('price_flags')
       .update({ status:'admin_fixed', admin_corrected_price: newPrice, resolved_at: new Date().toISOString() })
       .eq('id', flagId);
@@ -4642,14 +4642,14 @@ async function flagApplyFix(flagId){
     if(f){ f.status='admin_fixed'; f.admin_corrected_price=newPrice; }
     _renderFlagStats();
     _renderFlagList();
-    T(`Price corrected to $${newPrice.toFixed(2)} &#8212; flag closed`);
+    T(`Price corrected to $${newPrice.toFixed(2)} — flag closed`);
   } catch(e){
     if(card){ card.style.opacity='1'; card.style.pointerEvents=''; }
-    T('Fix failed &#8212; ' + (e.message||'try again'));
+    T('Fix failed — ' + (e.message||'try again'));
   }
 }
 
-// &#9472;&#9472; Send Confirmation Email to User &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Send Confirmation Email to User ──────────────────────────
 async function flagSendEmail(flagId){
   const flag = _flagData.find(f=>f.id===flagId);
   if(!flag) return;
@@ -4681,14 +4681,14 @@ async function flagSendEmail(flagId){
     if(f) f.status = 'awaiting_confirmation';
     _renderFlagStats();
     _renderFlagList();
-    T('Confirmation email queued &#8212; awaiting user response');
+    T('Confirmation email queued — awaiting user response');
   } catch(e){
     if(card){ card.style.opacity='1'; card.style.pointerEvents=''; }
-    T('Failed &#8212; ' + (e.message||'try again'));
+    T('Failed — ' + (e.message||'try again'));
   }
 }
 
-// &#9472;&#9472; User Self-Corrects (called when user responds + corrects) &#9472;
+// ── User Self-Corrects (called when user responds + corrects) ─
 async function flagUserCorrected(flagId, newPrice){
   const flag = _flagData.find(f=>f.id===flagId);
   if(!flag) return;
@@ -4722,7 +4722,7 @@ async function flagUserCorrected(flagId, newPrice){
         user_id:     flag.user_id,
         amount:      1,
         reason:      'price_correction',
-        note:        `Self-corrected price on ${flag.card_name} &#8212; ${flag.variation}`,
+        note:        `Self-corrected price on ${flag.card_name} — ${flag.variation}`,
         created_at:  new Date().toISOString(),
       });
     }
@@ -4731,9 +4731,9 @@ async function flagUserCorrected(flagId, newPrice){
     if(f){ f.status='user_corrected'; f.user_corrected_price=newPrice; }
     _renderFlagStats();
     _renderFlagList();
-    T('User correction recorded &#183; +1 ISO credit awarded automatically');
+    T('User correction recorded · +1 ISO credit awarded automatically');
   } catch(e){
-    T('Failed &#8212; ' + (e.message||'try again'));
+    T('Failed — ' + (e.message||'try again'));
   }
 }
 
@@ -4794,10 +4794,10 @@ function _renderISOList(){
   list.style.display='block';
   list.innerHTML = rows.map(iso=>{
     const posted   = iso.created_at ? _isoTimeAgo(iso.created_at) : '';
-    const maxPrice = iso.max_price ? '$'+parseFloat(iso.max_price).toLocaleString() : '&#8212;';
+    const maxPrice = iso.max_price ? '$'+parseFloat(iso.max_price).toLocaleString() : '—';
     const player   = iso.player || iso.card_name || 'Unknown Card';
     const parallel = iso.parallel || '';
-    const grade    = iso.grade ? ' &#183; '+iso.grade : '';
+    const grade    = iso.grade ? ' · '+iso.grade : '';
     const sport    = iso.sport || '';
     const isExpired = iso.expires_at && new Date(iso.expires_at) < new Date();
     const statusClass = iso.status==='matched'?'matched':iso.status==='completed'?'':'active';
@@ -4808,7 +4808,7 @@ function _renderISOList(){
       <div class="iso-img" style="background:rgba(0,170,255,0.06);display:flex;align-items:center;justify-content:center;font-size:22px">${sportIcon}</div>
       <div class="iso-info">
         <div class="iso-player">${player}</div>
-        <div class="iso-detail">${parallel}${grade}${posted?' &#183; Posted '+posted:''}</div>
+        <div class="iso-detail">${parallel}${grade}${posted?' · Posted '+posted:''}</div>
       </div>
       <div><div class="iso-price">${maxPrice}</div><div class="iso-price-sub">MAX BID</div></div>
       <span class="status-pill ${statusClass}">${statusLabel}</span>
@@ -4834,9 +4834,9 @@ async function flagUserConfirmed(flagId){
     if(f) f.status = 'user_confirmed';
     _renderFlagStats();
     _renderFlagList();
-    T('Price confirmed by user &#8212; no change, flag closed');
+    T('Price confirmed by user — no change, flag closed');
   } catch(e){
-    T('Failed &#8212; ' + (e.message||'try again'));
+    T('Failed — ' + (e.message||'try again'));
   }
 }
 

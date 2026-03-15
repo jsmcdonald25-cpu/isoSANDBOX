@@ -3675,7 +3675,7 @@ function _cdSetViewerImages(frontUrl, backUrl){
   const imgBack  = document.getElementById('cd-img-back');
   const phBack   = document.getElementById('cd-placeholder-back');
 
-  // Step 1: show/hide placeholders immediately
+  // Show/hide placeholders immediately
   if(frontUrl && imgFront){
     imgFront.style.display = 'block';
     if(phFront) phFront.style.display = 'none';
@@ -3691,18 +3691,39 @@ function _cdSetViewerImages(frontUrl, backUrl){
     if(phBack)  phBack.style.display = 'flex';
   }
 
-  // Step 2: probe orientation from front image, fallback to back, fallback portrait
-  // Then APPLY orientation first, THEN set src — eliminates all race conditions.
-  const probeUrl = frontUrl || backUrl;
-  if(probeUrl){
-    _cdProbeOrientation(probeUrl, function(landscape){
-      _cdApplyOrientation(landscape);
-      // Set src after orientation is locked in
-      if(frontUrl && imgFront) imgFront.src = frontUrl;
-      if(backUrl  && imgBack)  imgBack.src  = backUrl;
+  // Probe front and back orientations independently
+  window._cdFrontLandscape = false;
+  window._cdBackLandscape  = false;
+
+  function applyCurrentFace(){
+    const landscape = _cdFlipped ? window._cdBackLandscape : window._cdFrontLandscape;
+    _cdApplyOrientation(landscape);
+  }
+
+  let frontDone = !frontUrl;
+  let backDone  = !backUrl;
+
+  function checkBothDone(){
+    if(frontDone && backDone) applyCurrentFace();
+  }
+
+  if(frontUrl){
+    _cdProbeOrientation(frontUrl, function(landscape){
+      window._cdFrontLandscape = landscape;
+      if(imgFront) imgFront.src = frontUrl;
+      frontDone = true;
+      checkBothDone();
     });
-  } else {
-    // No images at all — portrait default
+  }
+  if(backUrl){
+    _cdProbeOrientation(backUrl, function(landscape){
+      window._cdBackLandscape = landscape;
+      if(imgBack) imgBack.src = backUrl;
+      backDone = true;
+      checkBothDone();
+    });
+  }
+  if(!frontUrl && !backUrl){
     _cdApplyOrientation(false);
   }
 }
@@ -3883,7 +3904,10 @@ function _cdInitRotation(){
 }
 
 function cdFlip(){
-  _cdFlipped=!_cdFlipped; _cdRotX=0; _cdRotY=0; _cdApplyTransform();
+  _cdFlipped=!_cdFlipped; _cdRotX=0; _cdRotY=0;
+  const landscape = _cdFlipped ? (window._cdBackLandscape||false) : (window._cdFrontLandscape||false);
+  _cdApplyOrientation(landscape);
+  _cdApplyTransform();
 }
 function cdToggleSpin(){
   if(_cdSpinning){

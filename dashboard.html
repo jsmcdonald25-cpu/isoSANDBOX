@@ -2748,12 +2748,15 @@ async function submitVault(){
 
       const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
       const SB_URL = 'https://jyfaegmnzkarlcximxjo.supabase.co';
+      const { data: { session: uploadSession } } = await window._sb.auth.getSession();
+      if(!uploadSession) throw new Error('Not signed in — please log in again.');
+      const userToken = uploadSession.access_token;
 
       async function storageUpload(path, file){
         const res = await fetch(`${SB_URL}/storage/v1/object/${BUCKET}/${path}`, {
           method: 'POST',
           headers: {
-            'Authorization': 'Bearer ' + ANON_KEY,
+            'Authorization': 'Bearer ' + userToken,
             'apikey': ANON_KEY,
             'Content-Type': file.type || 'image/jpeg',
             'x-upsert': 'true',

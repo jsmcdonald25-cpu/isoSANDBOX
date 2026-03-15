@@ -2012,7 +2012,7 @@ function searchP(q){
   CARDS.forEach(c=>{
     if(c.player&&c.player.toLowerCase().includes(ql)&&!seen.has(c.player)){
       seen.add(c.player);
-      fromCards.push({name:c.player,team:c._team||'',pos:'',rookie:c.year||''});
+      fromCards.push({name:c.player,team:c._team||'',pos:'',rookie:c.rc?c.year:0});
     }
   });
   const merged=[...fromPlayers,...fromCards].slice(0,10);
@@ -2043,10 +2043,16 @@ async function renderCardRes(){
   if(!cards.length){
     listEl.innerHTML='<div class="s3-msg">Loading catalog</div>';
     try{
+      const ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+      const SB_REST='https://jyfaegmnzkarlcximxjo.supabase.co';
       const results=[];
       for(const s of IV_SETS){
-        const {data}=await window._sb.from(s.table).select('player,card_number,parallel,year,brand,front_img,price_market,auto,rc,serial_total').ilike('player',ISO.player).limit(300);
-        if(data) data.forEach((r,i)=>results.push({
+        const enc=encodeURIComponent('%'+ISO.player+'%');
+        const url=SB_REST+'/rest/v1/'+s.table+'?select=player,card_number,parallel,year,brand,front_img,price_market,auto,rc,serial_total&player=ilike.'+enc+'&limit=300';
+        const resp=await fetch(url,{headers:{'apikey':ANON_KEY,'Authorization':'Bearer '+ANON_KEY}});
+        if(!resp.ok) continue;
+        const data=await resp.json();
+        if(Array.isArray(data)) data.forEach((r,i)=>results.push({
           id:s.table+'_'+i,player:r.player,
           year:r.year||s.year,brand:r.brand||s.brand,set:s.name,
           parallel:r.parallel||'Base',run:r.serial_total||null,

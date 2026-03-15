@@ -1546,7 +1546,7 @@ async function logOut(){
         <div class="acct-grid">
           <div class="af"><div class="af-label">First Name</div><div class="af-val" id="acct-first">Jason</div></div>
           <div class="af"><div class="af-label">Last Name</div><div class="af-val" id="acct-last">McDonald</div></div>
-          <div class="af" style="grid-column:1/-1"><div class="af-label">Email</div><div class="af-val" id="acct-email">support@grailiso.com</div></div>
+          <div class="af" style="grid-column:1/-1"><div class="af-label">Email</div><div class="af-val" id="acct-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3b484e4b4b54494f7b5c495a525752485415585456">[email&#160;protected]</a></div></div>
           <div class="af" style="grid-column:1/-1"><div class="af-label">Role</div><div class="af-val" id="acct-role">Collector / Buyer</div></div>
         </div>
         <div style="margin-top:14px"><button class="btn btn-ghost" onclick="T('Edit profile &#8212; coming soon')">Edit Profile</button></div>
@@ -1766,7 +1766,7 @@ async function logOut(){
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
 // DATA
 // &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
@@ -2061,7 +2061,7 @@ async function renderCardRes(){
     try{
       const results=[];
       for(const s of IV_SETS){
-        const data=await _rGet(s.table,'select=player,card_number,parallel,year,brand,front_img,price_market,auto,rc,serial_total&player=ilike.*'+encodeURIComponent(ISO.player).limit(300);
+        const data=await _rGet(s.table,'select=player,card_number,parallel,year,brand,front_img,price_market,auto,rc,serial_total&player=ilike.*'+encodeURIComponent(ISO.player)+'&limit=300');
         if(data) data.forEach((r,i)=>results.push({
           id:s.table+'_'+i,player:r.player,
           year:r.year||s.year,brand:r.brand||s.brand,set:s.name,
@@ -4873,12 +4873,6 @@ async function flagUserConfirmed(flagId){
   }
 }
 
-async function flagAction(flagId, action){
-  // Legacy approve path (kept for any edge cases)
-  const card = document.getElementById('flag-' + flagId);
-  if(card){ card.style.opacity='.5'; card.style.point
-  }
-}
 </script>
 </body>
 </html>

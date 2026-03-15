@@ -2870,6 +2870,57 @@ async function submitVault(){
   }
 }
 
+function openVaultCard(idx){
+  const row = window._vaultData && window._vaultData[idx];
+  if(!row) return;
+  // Try to find matching CARDS entry
+  const known = CARDS.find(c=>c && (
+    c._cardNumber === (row.card_number||'').replace('#','') ||
+    (c.player === row.player && String(c.year) === String((row.year||'').toString().slice(0,4)))
+  ));
+  window._cdDbCardNum = row.card_number || null;
+  window._cdPreloadVarImages = row.var_images || null;
+  if(known){
+    openCardDetail(known.id);
+  } else {
+    // Build ad-hoc card object
+    const card = {
+      id:null, player:row.player, year:parseInt((row.year||'').toString().slice(0,4))||2026,
+      brand:(()=>{const s=row.set_name||'';return s.includes('Bowman')?'Bowman':s.includes('Panini')?'Panini':'Topps';})(),
+      set:row.set_name||row.parallel||'', parallel:row.parallel||row.category||'Base',
+      cardNum:row.card_number?'#'+row.card_number:'',
+      run:null, auto:false, rc:!!row.is_rookie, tags:row.is_rookie?['rc']:[],
+      price:parseFloat(row.estimated_value)||0, isos:0,
+      hasCatalogPic:!!(row.var_images&&Object.keys(row.var_images).length),
+      _setTable:null, _cardNumber:row.card_number,
+      _varImages:row.var_images||{},
+      variations:[{label:row.parallel||row.category||'Base',color:'#00AAFF',glow:'rgba(0,170,255,0.4)',run:null,isBase:true,lastSale:'—',isos:0,pop:null,watching:null}]
+    };
+    window._cdCard = card;
+    document.getElementById('cd-bc-sport').textContent='Baseball';
+    document.getElementById('cd-bc-brand').textContent=card.brand;
+    document.getElementById('cd-bc-year').textContent=card.year;
+    document.getElementById('cd-bc-set').textContent=card.set||card.parallel;
+    document.getElementById('cd-title').textContent=`${card.year} ${card.brand} ${card.set||''} — ${card.player}`.toUpperCase();
+    document.getElementById('cd-sub').textContent=`Baseball · ${card.year} · ${card.brand}`;
+    document.getElementById('cd-num').textContent=card.cardNum;
+    const pathMsg=document.getElementById('cd-path-msg');
+    if(pathMsg) pathMsg.innerHTML=card.hasCatalogPic?'<strong>This card has a catalog image.</strong> Confirm acquisition and price paid.':'<strong>No catalog image yet.</strong> Upload front + back, confirm acquisition and price paid.';
+    // Load images from vault row directly
+    const fi=row.front_image_url||null;
+    const bi=row.back_image_url||null;
+    _cdSetViewerImages(fi,bi);
+    if(card.hasCatalogPic){
+      const uploadBtn=document.getElementById('cd-upload-btn');
+      if(uploadBtn) uploadBtn.textContent='Replace Image';
+    }
+    _cdReset3D();
+    _buildVariationPills(card);
+    N('carddetail',null);
+    _cdInitRotation();
+    _cdLoadCatalogImages(card);
+  }
+}
 function renderMyVault(){
   const grid  = document.getElementById('myVaultGrid');
   const empty = document.getElementById('myVaultEmpty');
@@ -2917,7 +2968,8 @@ function renderMyVault(){
               <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--${glClass})">${gainLoss>=0?'+':''}\$${Math.abs(gainLoss).toLocaleString()} <span style="font-size:14px;opacity:.7">(${gainLoss>=0?'+':''}${gainPct}%)</span></div></div>
           </div>`;
 
-        const cardsHtml = data.map(c=>{
+        window._vaultData = data;
+        const cardsHtml = data.map((c,vIdx)=>{
           const paid  = parseFloat(c.price_paid)||0;
           const est   = parseFloat(c.estimated_value)||0;
           const gl    = est - paid;
@@ -2926,11 +2978,11 @@ function renderMyVault(){
           const acqDate = c.date_acquired ? new Date(c.date_acquired).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : null;
           const imgSrc = c.front_image_url;
           return `
-          <div class="card-thumb" style="position:relative">
+          <div class="card-thumb" style="position:relative" data-vaultidx="${vIdx}" onclick="openVaultCard(parseInt(this.dataset.vaultidx))">
             <div class="ct-img" style="height:110px;background:rgba(0,170,255,0.06);overflow:hidden;padding:0;position:relative">
               ${imgSrc
-                ? `<img src="${imgSrc}" style="width:100%;height:100%;object-fit:cover" loading="lazy">`
-                : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:30px;color:rgba(0,170,255,0.3)">⚾</div>`}
+                ? `<img src="${imgSrc}" style="width:100%;height:100%;object-fit:contain;background:#071828" loading="lazy">`
+                : `<div style="width:100%;height:100%;background:#071828;display:flex;align-items:center;justify-content:center"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 392" style="width:60%;height:90%;opacity:0.4"><rect x="6" y="6" width="268" height="380" rx="14" fill="#071828" stroke="#00AAFF" stroke-width="1.5" stroke-opacity="0.4"/><rect x="14" y="14" width="252" height="50" rx="8" fill="#0d2240" stroke="#00AAFF" stroke-width="0.5" stroke-opacity="0.3"/><text x="140" y="47" font-family="Bebas Neue,sans-serif" font-size="20" fill="#FFFFFF" text-anchor="middle" letter-spacing="4">GRAILISO</text><rect x="22" y="76" width="236" height="240" rx="6" fill="#050e1a" stroke="#00AAFF" stroke-width="0.5" stroke-opacity="0.2"/><circle cx="140" cy="196" r="56" fill="none" stroke="#00AAFF" stroke-width="0.8" stroke-opacity="0.18"/><text x="140" y="348" font-family="Bebas Neue,sans-serif" font-size="9" fill="#00AAFF" text-anchor="middle" letter-spacing="4" opacity="0.5">NO IMAGE</text></svg></div>`}
               <div style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.6);border-radius:4px;padding:2px 6px;font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:${c.acquisition_type==='ripped'?'var(--green)':'var(--blue)'}">
                 ${c.acquisition_type==='ripped'?'&#128230; Ripped':'&#128176; Purchased'}
               </div>

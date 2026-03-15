@@ -2811,7 +2811,7 @@ async function submitVault(){
       date_acquired:     dateVal || null,
       estimated_value:   vmCard ? vmCard.price : null,
       has_catalog_pic:   hasCatalogPic || false,
-      card_number:       vmCard ? (vmCard.cardNum || vmCard._cardNumber || null) : null,
+      card_number:       vmCard ? ((vmCard._cardNumber || (vmCard.cardNum||"").replace(/^#/,"")) || null) : null,
       team:              vmCard ? (vmCard._team || null) : null,
       variation:         document.getElementById('vmVariationSelect').value || (vmCard ? (vmCard.parallel || 'Base') : 'Base'),
     };
@@ -2891,7 +2891,7 @@ function openVaultCard(idx){
     c._cardNumber === (row.card_number||'').replace('#','') ||
     (c.player === row.player && String(c.year) === String((row.year||'').toString().slice(0,4)))
   ));
-  window._cdDbCardNum = row.card_number || null;
+  window._cdDbCardNum = (row.card_number||null) ? (row.card_number).replace(/^#/,"") : null;
   window._cdPreloadVarImages = row.var_images || null;
   if(known){
     openCardDetail(known.id);
@@ -3074,7 +3074,7 @@ function renderMyVault(){
   const pad = n => String(n).padStart(2,'0');
   const dateStr = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}`;
   const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
-  el.textContent = `[SYS] GrailISO_v1.1.7 :: BUILD ${dateStr} ${timeStr} :: STABLE`;
+  el.textContent = `[SYS] GrailISO_v1.2.0 :: BUILD ${dateStr} ${timeStr} :: STABLE`;
   el.title = `Session started: ${now.toLocaleString()}`;
 })();
 
@@ -3245,7 +3245,7 @@ async function _cdLoadCatalogImages(c){
   }
 
   // _cdDbCardNum = actual DB card_number from ISOVault row (may differ from card's _cardNumber)
-  const cardNum = window._cdDbCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber || null));
+  const cardNum = window._cdDbCardNum ? window._cdDbCardNum.replace(/^#/,"") : (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber || null));
   if(!cardNum){
     if(statusEl){ statusEl.style.display='block'; statusEl.textContent='No card number'; statusEl.style.color='rgba(122,149,174,0.5)'; }
     return;
@@ -3661,7 +3661,7 @@ async function submitCatalogUpload(){
   const c=window._cdCard; if(!c) return;
   const table=c._setTable||_cdGuessTable(c);
   // Use actual DB card_number — _cdDbCardNum set by ISOVault row click, falls back to card's own number
-  const cardNum = window._cdDbCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber||null));
+  const cardNum = window._cdDbCardNum ? window._cdDbCardNum.replace(/^#/,"") : (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber||null));
   if(!table||!cardNum){ T('Cannot identify set table for this card.'); return; }
 
   // Which variation are we uploading?

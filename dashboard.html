@@ -1546,7 +1546,7 @@ async function logOut(){
         <div class="acct-grid">
           <div class="af"><div class="af-label">First Name</div><div class="af-val" id="acct-first">Jason</div></div>
           <div class="af"><div class="af-label">Last Name</div><div class="af-val" id="acct-last">McDonald</div></div>
-          <div class="af" style="grid-column:1/-1"><div class="af-label">Email</div><div class="af-val" id="acct-email">support@grailiso.com</div></div>
+          <div class="af" style="grid-column:1/-1"><div class="af-label">Email</div><div class="af-val" id="acct-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2a595f5a5a45585e6a4d584b434643594504494547">[email&#160;protected]</a></div></div>
           <div class="af" style="grid-column:1/-1"><div class="af-label">Role</div><div class="af-val" id="acct-role">Collector / Buyer</div></div>
         </div>
         <div style="margin-top:14px"><button class="btn btn-ghost" onclick="T('Edit profile &#8212; coming soon')">Edit Profile</button></div>
@@ -1766,7 +1766,7 @@ async function logOut(){
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
 // DATA
 // &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
@@ -1860,6 +1860,21 @@ const CARDS=[
       {label:'Black /10',     color:'#888888', glow:'rgba(160,160,160,0.4)', run:10,   isBase:false,lastSale:'$490',  isos:1,  pop:5,   watching:6},
       {label:'Platinum /5',   color:'#C8E6FF', glow:'rgba(200,230,255,0.5)', run:5,    isBase:false,lastSale:'$820',  isos:0,  pop:2,   watching:3},
       {label:'Superfractor 1/1',color:'#FFD700',glow:'rgba(255,215,0,0.7)', run:1, superfractor:true,isBase:false,lastSale:'$4,200',isos:0,pop:1,watching:19},
+    ]
+  },
+  {
+    id:51, player:'Ichiro Suzuki', year:2026, brand:'Topps', set:'Series 1',
+    parallel:'1991 Topps Baseball', run:null, auto:false, rc:false,
+    tags:['insert'], price:35, isos:0,
+    cardNum:'#T91-33', hasCatalogPic:true,
+    _setTable:'2026_series1_baseball', _cardNumber:'T91-33',
+    variations:[
+      {label:'Base',        color:'#00AAFF', glow:'rgba(0,170,255,0.45)',  run:null, isBase:true, lastSale:'$35',  isos:0, pop:null, watching:0},
+      {label:'Blue /150',   color:'#4488FF', glow:'rgba(68,136,255,0.45)', run:150,  isBase:false,lastSale:'$65',  isos:0, pop:null, watching:0},
+      {label:'Gold /50',    color:'#FFC83C', glow:'rgba(255,200,60,0.5)',  run:50,   isBase:false,lastSale:'$150', isos:0, pop:null, watching:0},
+      {label:'Red /25',     color:'#FF4444', glow:'rgba(255,68,68,0.5)',   run:25,   isBase:false,lastSale:'$220', isos:0, pop:null, watching:0},
+      {label:'Black /10',   color:'#888888', glow:'rgba(160,160,160,0.4)', run:10,   isBase:false,lastSale:'$380', isos:0, pop:null, watching:0},
+      {label:'Platinum /5', color:'#C8E6FF', glow:'rgba(200,230,255,0.5)', run:5,    isBase:false,lastSale:'$640', isos:0, pop:null, watching:0},
     ]
   },
   {
@@ -3282,7 +3297,13 @@ async function _cdLoadCatalogImages(c){
   if(statusEl){ statusEl.style.display='block'; statusEl.textContent='Loading images...'; statusEl.style.color='var(--muted-text)'; }
 
   try {
-    const _ciRows = await _rGet(table,'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
+    // Query by card_number first; fall back to player name if no match
+    let _ciRows = await _rGet(table,'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
+    if(!_ciRows || !_ciRows[0]){
+      // Fallback: look up by player name
+      const playerQ = (c.player||'').trim();
+      if(playerQ) _ciRows = await _rGet(table,'select=var_images&player=eq.'+encodeURIComponent(playerQ)+'&limit=1');
+    }
     const data = _ciRows && _ciRows[0] ? _ciRows[0] : null;
 
     if(!data || !data.var_images || !Object.keys(data.var_images).length){
@@ -4893,12 +4914,4 @@ async function flagUserConfirmed(flagId){
   }
 }
 
-async function flagAction(flagId, action){
-  // Legacy approve path (kept for any edge cases)
-  const card = document.getElementById('flag-' + flagId);
-  if(card){ card.style.opacity='.5'; card.style.point
-  }
-}
-</script>
-</body>
-</html>
+async f

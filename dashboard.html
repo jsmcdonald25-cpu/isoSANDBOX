@@ -948,7 +948,7 @@ async function logOut(){
       </div>
     </div>
   </nav>
-  <div class="sidebar-footer"><div class="build-stamp" id="buildStamp">[SYS] GrailISO_v1.2.0 :: BUILD 20260315 10:30 :: STABLE</div></div>
+  <div class="sidebar-footer"><div class="build-stamp" id="buildStamp">[SYS] GrailISO_v1.1.7 :: BUILD 20260313 09:00 :: STABLE</div></div>
 </aside>
 
 <!-- MAIN -->
@@ -1546,7 +1546,7 @@ async function logOut(){
         <div class="acct-grid">
           <div class="af"><div class="af-label">First Name</div><div class="af-val" id="acct-first">Jason</div></div>
           <div class="af"><div class="af-label">Last Name</div><div class="af-val" id="acct-last">McDonald</div></div>
-          <div class="af" style="grid-column:1/-1"><div class="af-label">Email</div><div class="af-val" id="acct-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2a595f5a5a45585e6a4d584b434643594504494547">[email&#160;protected]</a></div></div>
+          <div class="af" style="grid-column:1/-1"><div class="af-label">Email</div><div class="af-val" id="acct-email">support@grailiso.com</div></div>
           <div class="af" style="grid-column:1/-1"><div class="af-label">Role</div><div class="af-val" id="acct-role">Collector / Buyer</div></div>
         </div>
         <div style="margin-top:14px"><button class="btn btn-ghost" onclick="T('Edit profile &#8212; coming soon')">Edit Profile</button></div>
@@ -1766,7 +1766,7 @@ async function logOut(){
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
 // DATA
 // &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
@@ -1860,6 +1860,21 @@ const CARDS=[
       {label:'Black /10',     color:'#888888', glow:'rgba(160,160,160,0.4)', run:10,   isBase:false,lastSale:'$490',  isos:1,  pop:5,   watching:6},
       {label:'Platinum /5',   color:'#C8E6FF', glow:'rgba(200,230,255,0.5)', run:5,    isBase:false,lastSale:'$820',  isos:0,  pop:2,   watching:3},
       {label:'Superfractor 1/1',color:'#FFD700',glow:'rgba(255,215,0,0.7)', run:1, superfractor:true,isBase:false,lastSale:'$4,200',isos:0,pop:1,watching:19},
+    ]
+  },
+  {
+    id:51, player:'Ichiro Suzuki', year:2026, brand:'Topps', set:'Series 1',
+    parallel:'1991 Topps Baseball', run:null, auto:false, rc:false,
+    tags:['insert'], price:35, isos:0,
+    cardNum:'#T91-33', hasCatalogPic:true,
+    _setTable:'2026_series1_baseball', _cardNumber:'T91-33',
+    variations:[
+      {label:'Base',        color:'#00AAFF', glow:'rgba(0,170,255,0.45)',  run:null, isBase:true, lastSale:'$35',  isos:0, pop:null, watching:0},
+      {label:'Blue /150',   color:'#4488FF', glow:'rgba(68,136,255,0.45)', run:150,  isBase:false,lastSale:'$65',  isos:0, pop:null, watching:0},
+      {label:'Gold /50',    color:'#FFC83C', glow:'rgba(255,200,60,0.5)',  run:50,   isBase:false,lastSale:'$150', isos:0, pop:null, watching:0},
+      {label:'Red /25',     color:'#FF4444', glow:'rgba(255,68,68,0.5)',   run:25,   isBase:false,lastSale:'$220', isos:0, pop:null, watching:0},
+      {label:'Black /10',   color:'#888888', glow:'rgba(160,160,160,0.4)', run:10,   isBase:false,lastSale:'$380', isos:0, pop:null, watching:0},
+      {label:'Platinum /5', color:'#C8E6FF', glow:'rgba(200,230,255,0.5)', run:5,    isBase:false,lastSale:'$640', isos:0, pop:null, watching:0},
     ]
   },
   {
@@ -2046,7 +2061,7 @@ async function renderCardRes(){
     try{
       const results=[];
       for(const s of IV_SETS){
-        const data=await _rGet(s.table,'select=player,card_number,parallel,year,brand,front_img,price_market,auto,rc,serial_total&player=ilike.*'+encodeURIComponent(ISO.player)+'*&limit=300');
+        const data=await _rGet(s.table,'select=player,card_number,parallel,year,brand,front_img,price_market,auto,rc,serial_total&player=ilike.*'+encodeURIComponent(ISO.player).limit(300);
         if(data) data.forEach((r,i)=>results.push({
           id:s.table+'_'+i,player:r.player,
           year:r.year||s.year,brand:r.brand||s.brand,set:s.name,
@@ -2244,7 +2259,7 @@ function renderLib(filt,search){
   g.innerHTML=cards.map(c=>{
     const b=[c.auto?'<span class="badge auto">AUTO</span>':'',c.rc?'<span class="badge rc">RC</span>':'',c.run?`<span class="badge num">/${c.run}</span>`:'',c.tags.includes('vintage')?'<span class="badge vtg">VTG</span>':'',c.hasCatalogPic?'<span class="badge" style="background:rgba(0,232,135,0.15);color:var(--green);border:1px solid rgba(0,232,135,0.3)">IMG</span>':''].filter(Boolean).join('');
     return`<div class="card-thumb" onclick="openCardDetail(${c.id})" style="cursor:pointer;transition:border-color .2s" onmouseover="this.style.borderColor='rgba(0,170,255,0.4)'" onmouseout="this.style.borderColor=''">
-      <div class="ct-img" style="font-size:32px;background:${c.hasCatalogPic?'linear-gradient(135deg,#112840,#00AAFF33)':''}">⚾</div>
+      <div class="ct-img" style="font-size:32px;background:${c.hasCatalogPic?'linear-gradient(135deg,#112840,#00AAFF33)':''}">&#9918;</div>
       <div class="ct-info">
         <div class="ct-player">${c.player}</div>
         <div class="ct-set">${c.year} ${c.brand} · ${c.parallel}</div>
@@ -2741,20 +2756,7 @@ async function submitVault(){
       document.getElementById('vmProgressBar').style.width='60%';
       if(vmCard._setTable && vmCard._cardNumber){
         const catRes = await fetch(`${SB_REST}/rest/v1/${vmCard._setTable}?select=front_img,back_img,var_images&card_number=eq.${encodeURIComponent(vmCard._cardNumber)}&player=eq.${encodeURIComponent(vmCard.player)}&limit=1`, { headers: sbHeaders });
-        if(catRes.ok){
-          const catRows = await catRes.json();
-          if(catRows[0]){
-            frontURL = catRows[0].front_img || null;
-            backURL  = catRows[0].back_img  || null;
-            // Catalog images may be stored in var_images JSON instead of front_img/back_img
-            if(!frontURL && catRows[0].var_images){
-              const activeVar = (window._cdVars||[])[window._cdActiveVar||0];
-              const varKey = activeVar ? activeVar.label : Object.keys(catRows[0].var_images)[0];
-              const vi = varKey ? catRows[0].var_images[varKey] : null;
-              if(vi){ frontURL = vi.front||null; backURL = vi.back||null; }
-            }
-          }
-        }
+        if(catRes.ok){ const catRows = await catRes.json(); if(catRows[0]){ frontURL=catRows[0].front_img; backURL=catRows[0].back_img; } }
       }
       document.getElementById('vmProgressBar').style.width='80%';
     } else {
@@ -2811,7 +2813,7 @@ async function submitVault(){
       date_acquired:     dateVal || null,
       estimated_value:   vmCard ? vmCard.price : null,
       has_catalog_pic:   hasCatalogPic || false,
-      card_number:       vmCard ? ((vmCard._cardNumber || (vmCard.cardNum||"").replace(/^#/,"")) || null) : null,
+      card_number:       vmCard ? (vmCard._cardNumber||(vmCard.cardNum||"").replace(/^#/,"")||null) : null,
       team:              vmCard ? (vmCard._team || null) : null,
       variation:         document.getElementById('vmVariationSelect').value || (vmCard ? (vmCard.parallel || 'Base') : 'Base'),
     };
@@ -2884,96 +2886,71 @@ async function submitVault(){
 }
 
 function openVaultCard(idx){
-  const row = window._vaultData && window._vaultData[idx];
-  if(!row) return;
-  // Try to find matching CARDS entry
-  const known = CARDS.find(c=>c && (
-    c._cardNumber === (row.card_number||'').replace('#','') ||
-    (c.player === row.player && String(c.year) === String((row.year||'').toString().slice(0,4)))
+  const row=window._vaultData&&window._vaultData[idx];
+  if(!row)return;
+  const known=CARDS.find(c=>c&&(
+    c._cardNumber===(row.card_number||'').replace(/^#/,'')||
+    (c.player===row.player&&String(c.year)===String((row.year||'').toString().slice(0,4)))
   ));
-  window._cdDbCardNum = (row.card_number||null) ? (row.card_number).replace(/^#/,"") : null;
-  window._cdPreloadVarImages = row.var_images || null;
-  if(known){
-    openCardDetail(known.id);
-  } else {
-    // Build ad-hoc card object
-    const card = {
-      id:null, player:row.player, year:parseInt((row.year||'').toString().slice(0,4))||2026,
-      brand:(()=>{const s=row.set_name||'';return s.includes('Bowman')?'Bowman':s.includes('Panini')?'Panini':'Topps';})(),
-      set:row.set_name||row.parallel||'', parallel:row.parallel||row.category||'Base',
-      cardNum:row.card_number?'#'+row.card_number:'',
-      run:null, auto:false, rc:!!row.is_rookie, tags:row.is_rookie?['rc']:[],
-      price:parseFloat(row.estimated_value)||0, isos:0,
-      hasCatalogPic:!!(row.var_images&&Object.keys(row.var_images).length),
-      _setTable:null, _cardNumber:row.card_number,
-      _varImages:row.var_images||{},
-      variations:[{label:row.parallel||row.category||'Base',color:'#00AAFF',glow:'rgba(0,170,255,0.4)',run:null,isBase:true,lastSale:'—',isos:0,pop:null,watching:null}]
-    };
-    window._cdCard = card;
-    document.getElementById('cd-bc-sport').textContent='Baseball';
-    document.getElementById('cd-bc-brand').textContent=card.brand;
-    document.getElementById('cd-bc-year').textContent=card.year;
-    document.getElementById('cd-bc-set').textContent=card.set||card.parallel;
-    document.getElementById('cd-title').textContent=`${card.year} ${card.brand} ${card.set||''} — ${card.player}`.toUpperCase();
-    document.getElementById('cd-sub').textContent=`Baseball · ${card.year} · ${card.brand}`;
-    document.getElementById('cd-num').textContent=card.cardNum;
-    const pathMsg=document.getElementById('cd-path-msg');
-    if(pathMsg) pathMsg.innerHTML=card.hasCatalogPic?'<strong>This card has a catalog image.</strong> Confirm acquisition and price paid.':'<strong>No catalog image yet.</strong> Upload front + back, confirm acquisition and price paid.';
-    // Load images from vault row directly
-    const fi=row.front_image_url||null;
-    const bi=row.back_image_url||null;
-    _cdSetViewerImages(fi,bi);
-    if(card.hasCatalogPic){
-      const uploadBtn=document.getElementById('cd-upload-btn');
-      if(uploadBtn) uploadBtn.textContent='Replace Image';
-    }
-    _cdReset3D();
-    _buildVariationPills(card);
-    N('carddetail',null);
-    _cdInitRotation();
-    _cdLoadCatalogImages(card);
-  }
+  window._cdDbCardNum=(row.card_number||'').replace(/^#/,'')||null;
+  window._cdPreloadVarImages=row.var_images||null;
+  if(known){openCardDetail(known.id);return;}
+  const card={
+    id:null,player:row.player,
+    year:parseInt((row.year||'').toString().slice(0,4))||2026,
+    brand:(()=>{const s=row.set_name||'';return s.includes('Bowman')?'Bowman':s.includes('Panini')?'Panini':'Topps';})(),
+    set:row.set_name||row.parallel||'',parallel:row.parallel||row.category||'Base',
+    cardNum:row.card_number?'#'+row.card_number:'',
+    run:null,auto:false,rc:!!row.is_rookie,tags:row.is_rookie?['rc']:[],
+    price:parseFloat(row.estimated_value)||0,isos:0,
+    hasCatalogPic:!!(row.var_images&&Object.keys(row.var_images).length),
+    _setTable:null,_cardNumber:(row.card_number||'').replace(/^#/,''),
+    _varImages:row.var_images||{},
+    variations:[{label:row.parallel||row.category||'Base',color:'#00AAFF',glow:'rgba(0,170,255,0.4)',run:null,isBase:true,lastSale:'—',isos:0,pop:null,watching:null}]
+  };
+  window._cdCard=card;
+  document.getElementById('cd-bc-sport').textContent='Baseball';
+  document.getElementById('cd-bc-brand').textContent=card.brand;
+  document.getElementById('cd-bc-year').textContent=card.year;
+  document.getElementById('cd-bc-set').textContent=card.set||card.parallel;
+  document.getElementById('cd-title').textContent=`${card.year} ${card.brand} ${card.set||''} — ${card.player}`.toUpperCase();
+  document.getElementById('cd-sub').textContent=`Baseball · ${card.year} · ${card.brand}`;
+  document.getElementById('cd-num').textContent=card.cardNum;
+  const pm=document.getElementById('cd-path-msg');
+  if(pm)pm.innerHTML=card.hasCatalogPic?'<strong>This card has a catalog image.</strong> Confirm acquisition and price paid.':'<strong>No catalog image yet.</strong> Upload front + back, confirm acquisition and price paid.';
+  _cdSetViewerImages(row.front_image_url||null,row.back_image_url||null);
+  const ub=document.getElementById('cd-upload-btn');
+  if(ub){ub.style.display='inline-flex';ub.textContent=card.hasCatalogPic?'Replace Image':'📷 Upload Image';}
+  _cdReset3D();_buildVariationPills(card);N('carddetail',null);_cdInitRotation();
+  _cdLoadCatalogImages(card);
 }
 async function _patchVaultThumbnails(rows){
   for(let i=0;i<rows.length;i++){
     const c=rows[i];
-    if(c.front_image_url) continue;
+    if(c.front_image_url)continue;
     const known=CARDS.find(x=>x&&(
-      x._cardNumber===(c.card_number||'').replace('#','')||
+      x._cardNumber===(c.card_number||'').replace(/^#/,'')||
       (x.player===c.player&&String(x.year)===String((c.year||'').toString().slice(0,4)))
     ));
     const table=known?known._setTable:null;
-    const cardNum=(c.card_number||'').replace('#','');
-    if(!table||!cardNum) continue;
+    const cardNum=(c.card_number||'').replace(/^#/,'');
+    if(!table)continue;
     try{
-      // Try by card_number first, fall back to player name
-      let r2=await _rGet(table,'select=var_images,front_img&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
-      if(!r2||!r2[0]){
-        // Fallback: look up by player name
-        r2=await _rGet(table,'select=var_images,front_img&player=eq.'+encodeURIComponent(c.player)+'&limit=1');
-      }
-      if(!r2||!r2[0]) continue;
+      let r2=cardNum?await _rGet(table,'select=var_images,front_img&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1'):null;
+      if(!r2||!r2[0])r2=await _rGet(table,'select=var_images,front_img&player=eq.'+encodeURIComponent(c.player||'')+'&limit=1');
+      if(!r2||!r2[0])continue;
       const rd=r2[0];
       let url=rd.front_img||null;
-      if(!url&&rd.var_images){
-        const k=Object.keys(rd.var_images)[0];
-        const vi=k?rd.var_images[k]:null;
-        if(vi) url=vi.front||null;
-      }
-      if(!url) continue;
+      if(!url&&rd.var_images){const k=Object.keys(rd.var_images)[0];if(k)url=(rd.var_images[k]||{}).front||null;}
+      if(!url)continue;
       const thumb=document.querySelector('.card-thumb[data-vaultidx="'+i+'"]');
-      if(!thumb) continue;
-      const box=thumb.querySelector('.ct-img');
-      if(!box) continue;
+      if(!thumb)continue;
+      const box=thumb.querySelector('.ct-img');if(!box)continue;
       const badge=box.querySelector('div');
       const img=document.createElement('img');
-      img.src=url;
-      img.style.cssText='width:100%;height:100%;object-fit:contain;background:#071828';
-      img.loading='lazy';
-      box.innerHTML='';
-      box.appendChild(img);
-      if(badge) box.appendChild(badge);
-      if(window._vaultData&&window._vaultData[i]) window._vaultData[i].front_image_url=url;
+      img.src=url;img.style.cssText='width:100%;height:100%;object-fit:contain;background:#071828';img.loading='lazy';
+      box.innerHTML='';box.appendChild(img);if(badge)box.appendChild(badge);
+      if(window._vaultData&&window._vaultData[i])window._vaultData[i].front_image_url=url;
     }catch(e){}
   }
 }
@@ -3038,7 +3015,7 @@ function renderMyVault(){
             <div class="ct-img" style="height:110px;background:rgba(0,170,255,0.06);overflow:hidden;padding:0;position:relative">
               ${imgSrc
                 ? `<img src="${imgSrc}" style="width:100%;height:100%;object-fit:contain;background:#071828" loading="lazy">`
-                : `<div style="width:100%;height:100%;background:#071828;display:flex;align-items:center;justify-content:center"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 392" style="width:60%;height:90%;opacity:0.4"><rect x="6" y="6" width="268" height="380" rx="14" fill="#071828" stroke="#00AAFF" stroke-width="1.5" stroke-opacity="0.4"/><rect x="14" y="14" width="252" height="50" rx="8" fill="#0d2240" stroke="#00AAFF" stroke-width="0.5" stroke-opacity="0.3"/><text x="140" y="47" font-family="Bebas Neue,sans-serif" font-size="20" fill="#FFFFFF" text-anchor="middle" letter-spacing="4">GRAILISO</text><rect x="22" y="76" width="236" height="240" rx="6" fill="#050e1a" stroke="#00AAFF" stroke-width="0.5" stroke-opacity="0.2"/><circle cx="140" cy="196" r="56" fill="none" stroke="#00AAFF" stroke-width="0.8" stroke-opacity="0.18"/><text x="140" y="348" font-family="Bebas Neue,sans-serif" font-size="9" fill="#00AAFF" text-anchor="middle" letter-spacing="4" opacity="0.5">NO IMAGE</text></svg></div>`}
+                : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:30px;color:rgba(0,170,255,0.3)">&#9918;</div>`}
               <div style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.6);border-radius:4px;padding:2px 6px;font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:${c.acquisition_type==='ripped'?'var(--green)':'var(--blue)'}">
                 ${c.acquisition_type==='ripped'?'&#128230; Ripped':'&#128176; Purchased'}
               </div>
@@ -3250,7 +3227,7 @@ async function _cdLoadCatalogImages(c){
   }
 
   // _cdDbCardNum = actual DB card_number from ISOVault row (may differ from card's _cardNumber)
-  const cardNum = window._cdDbCardNum ? window._cdDbCardNum.replace(/^#/,"") : (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber || null));
+  const cardNum = window._cdDbCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber || null));
   if(!cardNum){
     if(statusEl){ statusEl.style.display='block'; statusEl.textContent='No card number'; statusEl.style.color='rgba(122,149,174,0.5)'; }
     return;
@@ -3282,14 +3259,12 @@ async function _cdLoadCatalogImages(c){
   if(statusEl){ statusEl.style.display='block'; statusEl.textContent='Loading images...'; statusEl.style.color='var(--muted-text)'; }
 
   try {
-    // Query by card_number first; fall back to player name if no match
     let _ciRows = await _rGet(table,'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
-    if(!_ciRows || !_ciRows[0]){
-      // Fallback: look up by player name
-      const playerQ = (c.player||'').trim();
-      if(playerQ) _ciRows = await _rGet(table,'select=var_images&player=eq.'+encodeURIComponent(playerQ)+'&limit=1');
+    if(!_ciRows||!_ciRows[0]){
+      const pq=(c.player||'').trim();
+      if(pq) _ciRows=await _rGet(table,'select=var_images&player=eq.'+encodeURIComponent(pq)+'&limit=1');
     }
-    const data = _ciRows && _ciRows[0] ? _ciRows[0] : null;
+    const data = _ciRows&&_ciRows[0]?_ciRows[0]:null;
 
     if(!data || !data.var_images || !Object.keys(data.var_images).length){
       if(statusEl){ statusEl.textContent='No catalog images yet'; statusEl.style.color='rgba(122,149,174,0.5)';
@@ -3340,8 +3315,8 @@ function _cdShowUploadBtn(show){
 }
 
 // &#9472;&#9472; Viewer orientation engine &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
-// Portrait card: 280 × 392  (ratio ~0.714)
-// Landscape card: 392 × 280 (ratio ~1.4)
+// Portrait card: 280 &#215; 392  (ratio ~0.714)
+// Landscape card: 392 &#215; 280 (ratio ~1.4)
 const _CD_PORT = {w:280, h:392};
 const _CD_LAND = {w:392, h:280};
 
@@ -3672,7 +3647,7 @@ async function submitCatalogUpload(){
   const c=window._cdCard; if(!c) return;
   const table=c._setTable||_cdGuessTable(c);
   // Use actual DB card_number — _cdDbCardNum set by ISOVault row click, falls back to card's own number
-  const cardNum = window._cdDbCardNum ? window._cdDbCardNum.replace(/^#/,"") : (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber||null));
+  const cardNum = window._cdDbCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber||null));
   if(!table||!cardNum){ T('Cannot identify set table for this card.'); return; }
 
   // Which variation are we uploading?
@@ -3708,9 +3683,8 @@ async function submitCatalogUpload(){
     bar.style.width='75%';
 
     // Fetch existing var_images so we can merge (not overwrite other variations)
-    const _exRows = await _rGet(table,'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
-    const _exData = _exRows && _exRows[0] ? _exRows[0] : null;
-    const varImages = (_exData && _exData.var_images) ? _exData.var_images : {};
+    const _exRows=await _rGet(table,'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
+    const varImages=((_exRows&&_exRows[0]&&_exRows[0].var_images)?_exRows[0].var_images:{});
     varImages[varLabel] = { front: frontURL, back: backURL };
 
     bar.style.width='85%';
@@ -3753,7 +3727,7 @@ async function submitCatalogUpload(){
 
 // &#9472;&#9472; Sport + Set Registry &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 const IV_SPORTS = [
-  { id:'baseball',  label:'Baseball',     emoji:'⚾', active:true  },
+  { id:'baseball',  label:'Baseball',     emoji:'&#9918;', active:true  },
   { id:'basketball',label:'Basketball',   emoji:'&#127936;', active:false },
   { id:'football',  label:'Football',     emoji:'&#127944;', active:false },
   { id:'hockey',    label:'Hockey',       emoji:'&#127954;', active:false },
@@ -4101,7 +4075,7 @@ function _ivRenderGrid(){
     const firstImg = r.var_images && Object.values(r.var_images)[0];
     const imgHtml = firstImg && firstImg.front
       ? `<img src="${firstImg.front}" style="width:100%;height:120px;object-fit:cover;display:block">`
-      : `<div class="iv-grid-img">⚾</div>`;
+      : `<div class="iv-grid-img">&#9918;</div>`;
     return `<div class="iv-grid-card" style="cursor:pointer" data-rowidx="${idx}">
       ${imgHtml}
       <div class="iv-grid-info">
@@ -4863,7 +4837,7 @@ function _renderISOList(){
     const isExpired = iso.expires_at && new Date(iso.expires_at) < new Date();
     const statusClass = iso.status==='matched'?'matched':iso.status==='completed'?'':'active';
     const statusLabel = isExpired ? 'EXPIRED' : (iso.status||'active').toUpperCase();
-    const sportIcon = sport==='Baseball'?'⚾':sport==='Basketball'?'&#127936;':sport==='Football'?'&#127944;':'&#127944;';
+    const sportIcon = sport==='Baseball'?'&#9918;':sport==='Basketball'?'&#127936;':sport==='Football'?'&#127944;':'&#127944;';
     return `
     <div class="iso-item" style="flex-wrap:wrap;gap:9px;${iso.status==='completed'||isExpired?'opacity:.55':''}">
       <div class="iso-img" style="background:rgba(0,170,255,0.06);display:flex;align-items:center;justify-content:center;font-size:22px">${sportIcon}</div>
@@ -4899,4 +4873,12 @@ async function flagUserConfirmed(flagId){
   }
 }
 
-async f
+async function flagAction(flagId, action){
+  // Legacy approve path (kept for any edge cases)
+  const card = document.getElementById('flag-' + flagId);
+  if(card){ card.style.opacity='.5'; card.style.point
+  }
+}
+</script>
+</body>
+</html>

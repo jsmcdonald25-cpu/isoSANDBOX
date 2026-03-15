@@ -1271,10 +1271,10 @@ async function logOut(){
   <div class="panel" id="panel-carddetail">
     <div class="cd-back-btn" onclick="backToVault()">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-      Back to ISOVault
+      <span id="cd-back-label">Back to ISOVault</span>
     </div>
     <div class="cd-breadcrumb">
-      <span class="cd-crumb" onclick="backToVault()">ISOVault</span>
+      <span class="cd-crumb" id="cd-bc-home" onclick="backToVault()">ISOVault</span>
       <span class="cd-crumb-sep">&#8250;</span>
       <span class="cd-crumb" id="cd-bc-sport">Baseball</span>
       <span class="cd-crumb-sep">&#8250;</span>
@@ -1354,7 +1354,17 @@ async function logOut(){
         </div>
         <div class="cd-vault-cta">
           <div class="cd-vault-path-msg" id="cd-path-msg"></div>
-          <button class="btn btn-primary" style="width:100%;font-size:14px;padding:12px" onclick="openVaultModal(window._cdCard)">+ Add This Variation to My Vault</button>
+          <!-- Normal ISOVault CTA -->
+          <div id="cd-cta-isovault">
+            <button class="btn btn-primary" style="width:100%;font-size:14px;padding:12px" onclick="openVaultModal(window._cdCard)">+ Add This Variation to My Vault</button>
+          </div>
+          <!-- My Vault CTA — shown when entered from My Vault -->
+          <div id="cd-cta-myvault" style="display:none">
+            <div style="display:flex;gap:10px">
+              <button class="btn btn-primary" style="flex:1;font-size:13px;padding:11px;letter-spacing:1px" onclick="openSellModal(window._cdMyVaultIdx,'sold')">&#128176; SOLD</button>
+              <button class="btn btn-ghost" style="flex:1;font-size:13px;padding:11px;letter-spacing:1px;border-color:rgba(255,59,92,0.3);color:rgba(255,59,92,0.7)" onclick="openSellModal(window._cdMyVaultIdx,'removed')">&#128465; REMOVE</button>
+            </div>
+          </div>
           <div class="cd-report-btn" onclick="openErrorReport()">
             <div class="cd-report-btn-icon">&#128681;</div>
             <div class="cd-report-btn-text">
@@ -3179,13 +3189,19 @@ async function submitVault(){
 function openVaultCard(idx){
   const row=window._vaultData&&window._vaultData[idx];
   if(!row)return;
+  window._cdFromMyVault = true;
+  window._cdMyVaultIdx  = idx;
   const known=CARDS.find(c=>c&&(
     c._cardNumber===(row.card_number||'').replace(/^#/,'')||
     (c.player===row.player&&String(c.year)===String((row.year||'').toString().slice(0,4)))
   ));
   window._cdDbCardNum=(row.card_number||'').replace(/^#/,'')||null;
   window._cdPreloadVarImages=row.var_images||null;
-  if(known){openCardDetail(known.id);return;}
+  if(known){
+    openCardDetail(known.id);
+    _cdSetMyVaultContext(true);
+    return;
+  }
   const card={
     id:null,player:row.player,
     year:parseInt((row.year||'').toString().slice(0,4))||2026,
@@ -3208,12 +3224,13 @@ function openVaultCard(idx){
   document.getElementById('cd-sub').textContent=`Baseball · ${card.year} · ${card.brand}`;
   document.getElementById('cd-num').textContent=card.cardNum;
   const pm=document.getElementById('cd-path-msg');
-  if(pm)pm.innerHTML=card.hasCatalogPic?'<strong>This card has a catalog image.</strong> Confirm acquisition and price paid.':'<strong>No catalog image yet.</strong> Upload front + back, confirm acquisition and price paid.';
+  if(pm)pm.innerHTML='';
   _cdSetViewerImages(row.front_image_url||null,row.back_image_url||null);
   const ub=document.getElementById('cd-upload-btn');
-  if(ub){ub.style.display='inline-flex';ub.textContent=card.hasCatalogPic?'Replace Image':'📷 Upload Image';}
+  if(ub){ub.style.display='none';}
   _cdReset3D();_buildVariationPills(card);N('carddetail',null);_cdInitRotation();
   _cdLoadCatalogImages(card);
+  _cdSetMyVaultContext(true);
 }
 async function _patchVaultThumbnails(rows){
   for(let i=0;i<rows.length;i++){
@@ -3330,8 +3347,7 @@ function renderMyVault(){
                 </div>`:''}
                 ${acqDate?`<div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted-text);margin-top:4px">${acqDate}</div>`:''}
               </div>
-              <button class="vault-sell-btn" onclick="event.stopPropagation();openSellModal(${vIdx},'sold')" title="Mark as sold">&#128176; SOLD</button>
-              <button class="vault-sell-btn" style="margin-top:6px;background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.1);color:var(--muted-text)" onclick="event.stopPropagation();openSellModal(${vIdx},'removed')" title="Remove from My Vault">&#128465; REMOVE FROM MY VAULT</button>
+              
             </div>
           </div>`;
         }).join('');
@@ -3464,6 +3480,8 @@ let _cdCatalogFrontBlob=null, _cdCatalogBackBlob=null;
 async function openCardDetail(cardId){
   const c = CARDS.find(x=>x && x.id===cardId);
   if(!c) return;
+  // If not entering from My Vault, reset the context flag
+  if(!window._cdFromMyVault){ window._cdFromMyVault = false; _cdSetMyVaultContext(false); }
   // _cdDbCardNum may have been set by ivOpenCard (ISOVault path) — preserve it.
   // If opening directly (not from ISOVault), clear so fallback uses card's own number.
   if(!window._cdDbCardNum) window._cdDbCardNum = null;
@@ -4714,10 +4732,28 @@ async function _cdLoadLiveMarket(card, variationLabel){
 }
 
 // &#9472;&#9472; Back to Vault from Card Detail &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+function _cdSetMyVaultContext(fromMyVault){
+  window._cdFromMyVault = !!fromMyVault;
+  const backLabel = document.getElementById('cd-back-label');
+  const bcHome    = document.getElementById('cd-bc-home');
+  const ctaIso    = document.getElementById('cd-cta-isovault');
+  const ctaMv     = document.getElementById('cd-cta-myvault');
+  const pathMsg   = document.getElementById('cd-path-msg');
+  if(backLabel) backLabel.textContent = fromMyVault ? 'Back to My Vault' : 'Back to ISOVault';
+  if(bcHome)    bcHome.textContent    = fromMyVault ? 'My Vault'         : 'ISOVault';
+  if(ctaIso)    ctaIso.style.display  = fromMyVault ? 'none'             : 'block';
+  if(ctaMv)     ctaMv.style.display   = fromMyVault ? 'block'            : 'none';
+  if(pathMsg&&fromMyVault) pathMsg.innerHTML = '';
+}
+
 function backToVault(){
   if(_cdSpinner){ clearInterval(_cdSpinner); _cdSpinner=null; _cdSpinning=false; }
-  // Always land on Overview — never leave the app
-  N('overview', document.querySelector('[onclick*="overview"]'));
+  if(window._cdFromMyVault){
+    window._cdFromMyVault = false;
+    N('myvault', document.querySelector('[onclick*="myvault"]'));
+  } else {
+    N('library', document.querySelector('[onclick*="library"]'));
+  }
 }
 
 // &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;

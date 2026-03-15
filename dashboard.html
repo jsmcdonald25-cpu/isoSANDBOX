@@ -2720,8 +2720,13 @@ async function submitVault(){
   document.getElementById('vmProgressBar').style.width='10%';
 
   try {
-    const { data:{ user } } = await window._sb.auth.getUser();
+    const user = window._authUser;
     if(!user) throw new Error('Not authenticated &#8212; please sign in');
+
+    const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+    const SB_REST = 'https://jyfaegmnzkarlcximxjo.supabase.co';
+    const userToken = window._userAccessToken || ANON_KEY;
+    const sbHeaders = { 'apikey': ANON_KEY, 'Authorization': 'Bearer ' + userToken };
 
     const ts = Date.now();
     const uid = user.id.substring(0,8);
@@ -2729,31 +2734,20 @@ async function submitVault(){
     let backURL = null;
 
     if(hasCatalogPic){
-      // Path 2: catalog image &#8212; no upload, just pull from set table if available
+      // Path 2: catalog image — no upload, direct REST fetch from set table
       btn.textContent = 'SAVING...';
       document.getElementById('vmProgressBar').style.width='60%';
-      // Try to fetch front_img/back_img from the set table
       if(vmCard._setTable && vmCard._cardNumber){
-        const { data: setRow } = await window._sb
-          .from(vmCard._setTable)
-          .select('front_img,back_img')
-          .eq('card_number', vmCard._cardNumber)
-          .eq('player', vmCard.player)
-          .maybeSingle();
-        if(setRow){ frontURL = setRow.front_img; backURL = setRow.back_img; }
+        const catRes = await fetch(`${SB_REST}/rest/v1/${vmCard._setTable}?select=front_img,back_img&card_number=eq.${encodeURIComponent(vmCard._cardNumber)}&player=eq.${encodeURIComponent(vmCard.player)}&limit=1`, { headers: sbHeaders });
+        if(catRes.ok){ const catRows = await catRes.json(); if(catRows[0]){ frontURL=catRows[0].front_img; backURL=catRows[0].back_img; } }
       }
       document.getElementById('vmProgressBar').style.width='80%';
     } else {
       // Path 1: user uploads front + back — direct REST (SDK v2 hangs on storage)
       btn.textContent = 'UPLOADING...';
 
-      const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
-      const SB_URL = 'https://jyfaegmnzkarlcximxjo.supabase.co';
-      const userToken = window._userAccessToken;
-      if(!userToken) throw new Error('Not signed in — please log in again.');
-
       async function storageUpload(path, file){
-        const res = await fetch(`${SB_URL}/storage/v1/object/${BUCKET}/${path}`, {
+        const res = await fetch(`${SB_REST}/storage/v1/object/${BUCKET}/${path}`, {
           method: 'POST',
           headers: {
             'Authorization': 'Bearer ' + userToken,
@@ -2807,8 +2801,14 @@ async function submitVault(){
       variation:         document.getElementById('vmVariationSelect').value || (vmCard ? (vmCard.parallel || 'Base') : 'Base'),
     };
 
-    const { data: vaultRow, error: ve } = await window._sb.from('vault').insert(row).select().single();
-    if(ve) throw ve;
+    const vaultRes = await fetch(`${SB_REST}/rest/v1/vault`, {
+      method: 'POST',
+      headers: { ...sbHeaders, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
+      body: JSON.stringify(row)
+    });
+    if(!vaultRes.ok){ const ve = await vaultRes.json().catch(()=>({message:vaultRes.statusText})); throw new Error(ve.message||ve.error||`Insert failed: ${vaultRes.status}`); }
+    const vaultRows = await vaultRes.json();
+    const vaultRow = Array.isArray(vaultRows) ? vaultRows[0] : vaultRows;
 
     // &#9472;&#9472; PRICE ANOMALY CHECK (&#177;40%) &#8212; silent, no user notice &#9472;
     if(vmAcq === 'purchased' && pricePaid > 0 && vmCard){
@@ -2817,14 +2817,8 @@ async function submitVault(){
         const cardNum = vmCard._cardNumber || vmCard.cardNum || null;
         const variation = row.variation || 'Base';
         // Fetch all previous purchased submissions for this card+variation
-        const { data: prevPrices } = await window._sb
-          .from('vault')
-          .select('price_paid, id')
-          .eq('card_number', cardNum)
-          .eq('variation', variation)
-          .eq('acquisition_type', 'purchased')
-          .not('price_paid', 'is', null)
-          .neq('id', vaultRow.id); // exclude the one we just inserted
+        const priceRes = await fetch(`${SB_REST}/rest/v1/vault?select=price_paid,id&card_number=eq.${encodeURIComponent(cardNum||'')}&variation=eq.${encodeURIComponent(variation)}&acquisition_type=eq.purchased&price_paid=not.is.null&id=neq.${vaultRow.id}`, { headers: sbHeaders });
+        const prevPrices = priceRes.ok ? await priceRes.json() : [];
 
         if(prevPrices && prevPrices.length >= 2){
           const vals = prevPrices.map(r => parseFloat(r.price_paid)).filter(v => v > 0);
@@ -2835,7 +2829,7 @@ async function submitVault(){
                 const direction = pricePaid > avg ? 'HIGH' : 'LOW';
               const pct = (deviation * 100).toFixed(1);
               // Insert price flag for admin review
-              await window._sb.from('price_flags').insert({
+              await fetch(`${SB_REST}/rest/v1/price_flags`, { method:'POST', headers:{...sbHeaders,'Content-Type':'application/json'}, body: JSON.stringify({
                 vault_id:       vaultRow.id,
                 user_id:        user.id,
                 card_number:    cardNum,
@@ -2848,7 +2842,7 @@ async function submitVault(){
                 direction:      direction,
                 status:         'pending',
                 flagged_at:     new Date().toISOString(),
-              });
+              })});
             }
           }
         }
@@ -2877,19 +2871,19 @@ async function submitVault(){
 function renderMyVault(){
   const grid  = document.getElementById('myVaultGrid');
   const empty = document.getElementById('myVaultEmpty');
-
-  window._sb.auth.getUser().then(({data:{user}})=>{
-    if(!user){
-      if(grid)  grid.style.display='none';
-      if(empty) empty.style.display='block';
-      return;
-    }
-    window._sb
-      .from('vault')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at',{ascending:false})
-      .then(({data, error})=>{
+  const user = window._authUser;
+  if(!user){
+    if(grid)  grid.style.display='none';
+    if(empty) empty.style.display='block';
+    return;
+  }
+  const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+  const userToken = window._userAccessToken || ANON_KEY;
+  fetch(`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault?select=*&user_id=eq.${user.id}&order=created_at.desc`, {
+    headers: { 'apikey': ANON_KEY, 'Authorization': 'Bearer ' + userToken }
+  }).then(r=>r.json()).then(data=>{
+    const error = data?.code ? data : null;
+    if(error){
         if(error){
           if(grid)  grid.style.display='none';
           if(empty){ empty.style.display='block'; empty.innerHTML=`<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--red);padding:20px">Vault error: ${error.message}</div>`; }

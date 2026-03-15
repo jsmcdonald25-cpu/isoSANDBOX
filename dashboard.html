@@ -2018,7 +2018,7 @@ function searchP(q){
   if(!merged.length){r.style.display='none';return;}
   r.innerHTML=merged.map(p=>{
     const cc=CARDS.filter(c=>c.player===p.name).length;
-    const meta=[p.team,p.pos,p.rookie?'RC '+p.rookie:''].filter(Boolean).join(' ╬ô├▓┬╝Γö£Γöñ╬ô├╢┬ú╬ô├▓├│╬ô├╢┬╝╬ô├▓┬Ñ╬ô├▓┬╝Γö£Γöñ╬ô├╢┬ú╬ô├╗├┤╬ô├╢┬ú╬ô├▓├╣ ');
+    const meta=[p.team,p.pos,p.rookie?'RC '+p.rookie:''].filter(Boolean).join(' &middot; ');
     return`<div class="pr" onclick="pickP('${p.name.replace(/'/g,"\\'")}','${(p.team||'').replace(/'/g,"\\'")}','${p.pos||''}',${p.rookie||0})"><div><div class="pr-name">${p.name}</div><div class="pr-meta">${meta||''}</div></div><div class="pr-count">${cc} cards</div></div>`;
   }).join('');
   r.style.display='block';
@@ -2678,6 +2678,7 @@ function selectSource(src){
   ['srcEbay','srcFacebook','srcLocal','srcIndividual'].forEach(id=>document.getElementById(id).classList.remove('selected'));
   const map = {ebay:'srcEbay',facebook:'srcFacebook',local_store:'srcLocal',individual:'srcIndividual'};
   if(map[src]) document.getElementById(map[src]).classList.add('selected');
+  document.getElementById('acqError').style.display='none';
 }
 
 async function submitVault(){

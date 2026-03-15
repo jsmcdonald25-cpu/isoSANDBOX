@@ -2745,16 +2745,15 @@ async function submitVault(){
       // Path 1: user uploads front + back — direct REST (SDK v2 hangs on storage)
       btn.textContent = 'UPLOADING...';
 
-      const { data: { session } } = await window._sb.auth.getSession();
-      if(!session) throw new Error('No active session — please sign in again.');
-      const accessToken = session.access_token;
+      const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
       const SB_URL = 'https://jyfaegmnzkarlcximxjo.supabase.co';
 
       async function storageUpload(path, file){
         const res = await fetch(`${SB_URL}/storage/v1/object/${BUCKET}/${path}`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${accessToken}`,
+            'Authorization': 'Bearer ' + ANON_KEY,
+            'apikey': ANON_KEY,
             'Content-Type': file.type || 'image/jpeg',
             'x-upsert': 'true',
             'cache-control': '3600',
@@ -2783,7 +2782,7 @@ async function submitVault(){
     const dateVal = document.getElementById('vmDateAcquired').value;
     const row = {
       user_id:           user.id,
-      card_id:           vmCard ? vmCard.id : null,
+      ...(vmCard && vmCard.id ? { card_id: vmCard.id } : {}),
       player:            vmCard ? vmCard.player : 'Unknown',
       year:              vmCard ? vmCard.year : null,
       brand:             vmCard ? vmCard.brand : null,

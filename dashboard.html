@@ -772,6 +772,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 
   // &#9472;&#9472; Auth: single source of truth &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
   window._sb.auth.onAuthStateChange(async (event, session) => {
+    if(session?.access_token) window._userAccessToken = session.access_token;
     const gate = document.getElementById('gate');
     if(event === 'INITIAL_SESSION'){
       if(session?.user){
@@ -2748,9 +2749,8 @@ async function submitVault(){
 
       const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
       const SB_URL = 'https://jyfaegmnzkarlcximxjo.supabase.co';
-      const { data: { session: uploadSession } } = await window._sb.auth.getSession();
-      if(!uploadSession) throw new Error('Not signed in — please log in again.');
-      const userToken = uploadSession.access_token;
+      const userToken = window._userAccessToken;
+      if(!userToken) throw new Error('Not signed in — please log in again.');
 
       async function storageUpload(path, file){
         const res = await fetch(`${SB_URL}/storage/v1/object/${BUCKET}/${path}`, {

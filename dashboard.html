@@ -2392,7 +2392,7 @@ function isoSelectSport(sportDef){
   if(tile) tile.classList.add('active');
   // Set sport label on Step 2 and clear previous search
   const lbl = document.getElementById('sp2SportLabel');
-  if(lbl) lbl.textContent = (sportDef.emoji+' '+sportDef.label).toUpperCase();
+  if(lbl) lbl.innerHTML = sportDef.emoji + ' ' + sportDef.label.toUpperCase();
   const inp = document.getElementById('pSearch');
   if(inp){ inp.value=''; }
   const res = document.getElementById('pResults');

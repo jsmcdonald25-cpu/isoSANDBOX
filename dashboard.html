@@ -1133,6 +1133,11 @@ async function logOut(){
             <div id="s3VarSection" style="display:none">
               <div class="s3-var-label">Choose Variant</div>
               <div class="s3-variants" id="s3Variants"></div>
+              <div style="margin-top:10px">
+                <button class="btn btn-ghost btn-sm" id="s3ViewISOBtn" style="display:none;width:100%;justify-content:center" onclick="s3ViewInISOVault()">
+                  &#128269; View Full Card in ISOVault
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -2582,9 +2587,15 @@ function s3SelectSet(el,key){
   pEl.innerHTML=variants.map((c,i)=>{
     const tags=[c.auto?'<span class="badge auto">AUTO</span>':'',c.rc?'<span class="badge rc">RC</span>':'',c.run?'<span class="badge num">/'+c.run+'</span>':''].filter(Boolean).join('');
     const pr=c.price>0?'<span class="s3-pill-price">$'+c.price.toLocaleString()+'</span>':'';
-    return'<div class="s3-var-pill" onclick="s3PickVariant(this,'+i+','+JSON.stringify(key)+')">'+c.parallel+(tags?' '+tags:'')+pr+'</div>';
+    const label = c._cardNumber ? '#'+c._cardNumber : (c.parallel||'Base');
+    return'<div class="s3-var-pill" onclick="s3PickVariant(this,'+i+','+JSON.stringify(key)+')">'+label+(tags?' '+tags:'')+pr+'</div>';
   }).join('');
-  if(variants.length===1){const p=pEl.querySelector('.s3-var-pill');if(p)s3PickVariant(p,0,key);}
+  // Show ISOVault button if we have a card number to look up
+  const viewBtn = document.getElementById('s3ViewISOBtn');
+  if(viewBtn) viewBtn.style.display = variants[0]&&variants[0]._cardNumber ? 'flex' : 'none';
+  // Store current set key for ISOVault lookup
+  window._s3CurrentKey = key;
+  // Never auto-select — always require explicit user pick
 }
 function s3PickVariant(el,idx,key){
   document.querySelectorAll('.s3-var-pill').forEach(p=>p.classList.remove('sel'));
@@ -2598,11 +2609,39 @@ function s3PickVariant(el,idx,key){
   document.getElementById('s3Card3d').style.display='block';
   document.getElementById('s3CPlayer').textContent=card.player;
   document.getElementById('s3CSet').textContent=card.year+' '+card.brand+' '+card.set;
-  document.getElementById('s3CParallel').textContent=card.parallel;
-  document.getElementById('s3CPrice').textContent=card.price>0?'$'+card.price.toLocaleString():'';
-  document.getElementById('s3CIsos').textContent=card.isos?card.isos+' active ISO'+(card.isos!==1?'s':''):'';
+  document.getElementById('s3CParallel').textContent=card._cardNumber ? '#'+card._cardNumber : (card.parallel||'Base');
+  document.getElementById('s3CPrice').textContent='';
+  document.getElementById('s3CIsos').textContent='Tap again to continue or view in ISOVault';
   // Auto-advance to Grade & Price
-  setTimeout(()=>gS(4), 400);
+  setTimeout(()=>gS(4), 500);
+}
+
+function s3ViewInISOVault(){
+  // Take user to ISOVault card detail for this card
+  if(!window._s3CurrentKey) return;
+  const parts = window._s3CurrentKey.split('|');
+  const year=parts[0], brand=parts[1], set=parts[2];
+  const variants = _s3Cards.filter(c=>String(c.year)===String(year)&&c.brand===brand&&c.set===set);
+  const card = variants[0];
+  if(!card) return;
+  // Find the matching set definition
+  const setDef = IV_SETS.find(s=>s.table===card._setTable);
+  if(setDef){ _ivSet=setDef; _ivSport=setDef.sport; }
+  // Build a row object matching what ivOpenCard expects
+  const row = {
+    player:      card.player,
+    card_number: card._cardNumber,
+    year:        card.year,
+    category:    'Base',
+    insert_name: null,
+    team:        null,
+    is_rookie:   false,
+    var_images:  {},
+    _setTable:   card._setTable
+  };
+  // Navigate to ISOVault then open card
+  N('library', document.querySelector('[onclick*=library]'));
+  setTimeout(()=>ivOpenCard(row), 200);
 }
 function pickCard(id,el){
   ISO.card=CARDS.find(c=>c.id===id)||_s3Cards.find(c=>c.id===id);

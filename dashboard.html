@@ -2428,7 +2428,7 @@ async function renderCardRes(){
 
     for(const s of setsToSearch){
       // Only request columns that exist on every set table — no front_img, no price_market
-      const data=await _rGet(s.table,'select=player,card_number,parallel,year,serial_total,auto,rc&player=ilike.*'+encodeURIComponent(ISO.player)+'*&limit=300');
+      const data=await _rGet(s.table,'select=player,card_number,parallel,year,serial_total&player=ilike.*'+encodeURIComponent(ISO.player)+'*&limit=300');
       if(data) data.forEach((r,i)=>results.push({
         id:s.table+'_'+i,
         player:r.player,
@@ -2437,8 +2437,8 @@ async function renderCardRes(){
         set:s.name,
         parallel:r.parallel||'Base',
         run:r.serial_total||null,
-        auto:!!r.auto,
-        rc:!!r.rc,
+        auto:false,
+        rc:false,
         price:0,
         isos:0,
         _cardNumber:r.card_number,
@@ -3702,7 +3702,7 @@ function renderMyVault(){
   const pad = n => String(n).padStart(2,'0');
   const dateStr = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}`;
   const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
-  el.textContent = `[SYS] GrailISO_v1.2.0 :: BUILD ${dateStr} ${timeStr} :: STABLE`;
+  el.textContent = `[SYS] GrailISO_v1.2.1 :: BUILD ${dateStr} ${timeStr} :: STABLE`;
   el.title = `Session started: ${now.toLocaleString()}`;
 })();
 

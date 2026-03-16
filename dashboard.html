@@ -1064,7 +1064,6 @@ async function logOut(){
         <div class="sp-title">SELECT SPORT</div>
         <div class="sp-sub">Choose the sport for your ISO. Active sports are live — others coming soon.</div>
         <div class="iv-sport-grid" id="isoSportGrid" style="margin-bottom:20px"></div>
-        <div style="display:flex;justify-content:flex-end"><button class="btn btn-primary" id="sp1next" disabled onclick="gS(2)">Next &#8212; Search Player &#8594;</button></div>
       </div>
       <!-- Step 2 -->
       <div class="sp" id="sp2">
@@ -1087,13 +1086,15 @@ async function logOut(){
           <div id="selPName" style="font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--white);letter-spacing:1px"></div>
           <div id="selPMeta" style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)"></div>
         </div>
-        <div style="display:flex;justify-content:space-between;margin-top:20px"><button class="btn btn-ghost" onclick="gS(1)">&#8592; Back</button><button class="btn btn-primary" id="s2next" disabled onclick="gS(3)">Next &#8212; Select Card &#8594;</button></div>
+        <div style="margin-top:10px"><button class="btn btn-ghost btn-sm" onclick="gS(1)">&#8592; Back to Sport</button></div>
       </div>
       <!-- Step 3 -->
       <div class="sp" id="sp3">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-          <div class="sp-title" style="margin-bottom:0">SELECT CARD</div>
-          <button class="btn btn-primary" id="s3next" disabled onclick="gS(4)" style="opacity:.4;transition:opacity .2s">Next &#8212; Grade &amp; Price &#8594;</button>
+          <div style="display:flex;align-items:center;gap:12px">
+            <button class="btn btn-ghost btn-sm" onclick="gS(2)">&#8592; Back</button>
+            <div class="sp-title" style="margin-bottom:0">SELECT CARD</div>
+          </div>
         </div>
         <div class="sp-sub" id="s3sub" style="margin-bottom:12px">Select a set on the left, then pick the exact variant.</div>
         <div class="s3-layout">
@@ -2319,15 +2320,14 @@ function isoRenderSportGrid(){
 }
 
 function isoSelectSport(sportDef){
-  ISO.sport = sportDef.label;
+  ISO.sport   = sportDef.label;
   ISO.sportId = sportDef.id;
-  // Highlight selected
+  // Highlight selected tile
   document.querySelectorAll('#isoSportGrid .iv-sport-tile').forEach(t=>t.classList.remove('active'));
   const tile = document.getElementById('isoSportTile-'+sportDef.id);
   if(tile) tile.classList.add('active');
-  // Enable next button
-  const btn = document.getElementById('sp1next');
-  if(btn) btn.disabled = false;
+  // Auto-advance to player search
+  gS(2);
 }
 
 function selSport(el,s){
@@ -2402,7 +2402,8 @@ function pickP(name,team,pos,rookie){
   const b=document.getElementById('selPBox');b.style.display='block';
   document.getElementById('selPName').textContent=name;
   document.getElementById('selPMeta').textContent=team ? team : '';
-  document.getElementById('s2next').disabled=false;
+  // Auto-advance to card selection
+  gS(3);
 }
 
 // Legacy stub — kept so nothing breaks
@@ -2414,41 +2415,66 @@ async function renderCardRes(){
   const listEl=document.getElementById('s3SetList');
   const subEl=document.getElementById('s3sub');
   s3ResetPreview();
-  let cards=CARDS.filter(c=>c.player===ISO.player);
-  if(!cards.length){
-    listEl.innerHTML='<div class="s3-msg">Loading catalogΓò¼├┤Γö£ΓûôΓö¼Γò¥╬ô├╢┬ú╬ô├╢├▒Γò¼├┤Γö£ΓòóΓö¼├║╬ô├╢┬úΓö¼ΓòæΓò¼├┤Γö£ΓòóΓö¼Γò¥╬ô├╢┬╝Γö¼Γò¥</div>';
-    try{
-      const results=[];
-      for(const s of IV_SETS){
-        const data=await _rGet(s.table,'select=player,card_number,parallel,year,brand,front_img,price_market,auto,rc,serial_total&player=ilike.*'+encodeURIComponent(ISO.player)+'&limit=300');
-        if(data) data.forEach((r,i)=>results.push({
-          id:s.table+'_'+i,player:r.player,
-          year:r.year||s.year,brand:r.brand||s.brand,set:s.name,
-          parallel:r.parallel||'Base',run:r.serial_total||null,
-          auto:!!r.auto,rc:!!r.rc,price:parseFloat(r.price_market)||0,isos:0,
-          _cardNumber:r.card_number,_setTable:s.table
-        }));
-      }
-      cards=results;
-    }catch(e){
-      listEl.innerHTML='<div class="s3-msg" style="color:var(--red)">Error: '+e.message+'</div>';
+
+  listEl.innerHTML='<div class="s3-msg">Searching catalog...</div>';
+
+  try{
+    const results=[];
+    // Scope to selected sport only — fall back to all non-pokemon sets if no sport set
+    const sportId = ISO.sportId || null;
+    const setsToSearch = sportId
+      ? IV_SETS.filter(s=>s.sport===sportId && !s.pokemonCols)
+      : IV_SETS.filter(s=>!s.pokemonCols);
+
+    for(const s of setsToSearch){
+      // Only request columns that exist on every set table — no front_img, no price_market
+      const data=await _rGet(s.table,'select=player,card_number,parallel,year,serial_total,auto,rc&player=ilike.*'+encodeURIComponent(ISO.player)+'*&limit=300');
+      if(data) data.forEach((r,i)=>results.push({
+        id:s.table+'_'+i,
+        player:r.player,
+        year:r.year||s.year,
+        brand:s.brand,
+        set:s.name,
+        parallel:r.parallel||'Base',
+        run:r.serial_total||null,
+        auto:!!r.auto,
+        rc:!!r.rc,
+        price:0,
+        isos:0,
+        _cardNumber:r.card_number,
+        _setTable:s.table
+      }));
+    }
+
+    _s3Cards=results;
+    if(!results.length){
+      listEl.innerHTML='<div class="s3-msg">No cards found for '+ISO.player+' — try a different spelling.</div>';
       return;
     }
+
+    const sets=[],seen=new Set();
+    results.forEach(c=>{
+      const k=c.year+'|'+c.brand+'|'+c.set;
+      if(!seen.has(k)){seen.add(k);sets.push({year:c.year,brand:c.brand,set:c.set,key:k});}
+    });
+    // Sort newest first
+    sets.sort((a,b)=>b.year-a.year);
+
+    subEl.textContent=results.length+' card'+(results.length!==1?'s':'')+' found across '+sets.length+' set'+(sets.length!==1?'s':'')+'. Select a set then pick the variant.';
+    listEl.innerHTML=sets.map(s=>{
+      const vc=results.filter(c=>String(c.year)===String(s.year)&&c.brand===s.brand&&c.set===s.set).length;
+      return'<div class="s3-set-row" onclick="s3SelectSet(this,'+JSON.stringify(s.key)+')">'
+        +'<div class="s3-set-year">'+s.year+'</div>'
+        +'<div class="s3-set-name">'+s.set+'</div>'
+        +'<div class="s3-set-brand">'+s.brand+' &middot; '+vc+' variant'+(vc!==1?'s':'')+'</div>'
+        +'</div>';
+    }).join('');
+    // Auto-select if only one set
+    if(sets.length===1){const r=listEl.querySelector('.s3-set-row');if(r)s3SelectSet(r,sets[0].key);}
+
+  }catch(e){
+    listEl.innerHTML='<div class="s3-msg" style="color:var(--red)">Error: '+e.message+'</div>';
   }
-  _s3Cards=cards;
-  if(!cards.length){listEl.innerHTML='<div class="s3-msg">No cards found for '+ISO.player+'.</div>';return;}
-  const sets=[],seen=new Set();
-  cards.forEach(c=>{const k=c.year+'|'+c.brand+'|'+c.set;if(!seen.has(k)){seen.add(k);sets.push({year:c.year,brand:c.brand,set:c.set,key:k});}});
-  subEl.textContent=cards.length+' card'+(cards.length!==1?'s':'')+' found. Select a set then pick the variant.';
-  listEl.innerHTML=sets.map(s=>{
-    const vc=cards.filter(c=>String(c.year)===String(s.year)&&c.brand===s.brand&&c.set===s.set).length;
-    return'<div class="s3-set-row" onclick="s3SelectSet(this,'+JSON.stringify(s.key)+')">'
-      +'<div class="s3-set-year">'+s.year+'</div>'
-      +'<div class="s3-set-name">'+s.set+'</div>'
-      +'<div class="s3-set-brand">'+s.brand+' &middot; '+vc+' variant'+(vc!==1?'s':'')+'</div>'
-      +'</div>';
-  }).join('');
-  if(sets.length===1){const r=listEl.querySelector('.s3-set-row');if(r)s3SelectSet(r,sets[0].key);}
 }
 function s3ResetPreview(){
   const e=document.getElementById('s3CardEmpty'),c=document.getElementById('s3Card3d');
@@ -2489,7 +2515,8 @@ function s3PickVariant(el,idx,key){
   document.getElementById('s3CParallel').textContent=card.parallel;
   document.getElementById('s3CPrice').textContent=card.price>0?'$'+card.price.toLocaleString():'';
   document.getElementById('s3CIsos').textContent=card.isos?card.isos+' active ISO'+(card.isos!==1?'s':''):'';
-  const b=document.getElementById('s3next');b.disabled=false;b.style.opacity='1';
+  // Auto-advance to Grade & Price
+  setTimeout(()=>gS(4), 400);
 }
 function pickCard(id,el){
   ISO.card=CARDS.find(c=>c.id===id)||_s3Cards.find(c=>c.id===id);

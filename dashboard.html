@@ -3557,6 +3557,11 @@ async function _cdLoadCatalogImages(c){
       if(statusEl){ statusEl.textContent='✓ Images loaded'; statusEl.style.color='var(--green)';
         setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
       if(uploadBtn) uploadBtn.textContent='Replace Image';
+      // Update hasCatalogPic so vault modal shows correct path
+      c.hasCatalogPic = true;
+      if(window._cdCard) window._cdCard.hasCatalogPic = true;
+      const _pm1 = document.getElementById('cd-path-msg');
+      if(_pm1) _pm1.innerHTML = '<strong>This card has a catalog image.</strong> Confirm how you acquired it and the price you paid — no photo upload needed.';
     } else {
       const hasAny = Object.keys(preloaded).length > 0;
       if(statusEl){ statusEl.textContent = hasAny ? 'No image for this variation' : 'No catalog images yet';
@@ -3594,6 +3599,11 @@ async function _cdLoadCatalogImages(c){
       if(statusEl){ statusEl.textContent='✓ Images loaded'; statusEl.style.color='var(--green)';
         setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
       if(uploadBtn) uploadBtn.textContent='Replace Image';
+      // Update hasCatalogPic so vault modal shows correct path
+      c.hasCatalogPic = true;
+      if(window._cdCard) window._cdCard.hasCatalogPic = true;
+      const _pm2 = document.getElementById('cd-path-msg');
+      if(_pm2) _pm2.innerHTML = '<strong>This card has a catalog image.</strong> Confirm how you acquired it and the price you paid — no photo upload needed.';
     } else {
       const hasAny = Object.keys(data.var_images).length > 0;
       if(statusEl){ statusEl.textContent = hasAny ? 'No image for this variation' : 'No catalog images yet';

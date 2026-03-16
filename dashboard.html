@@ -1067,26 +1067,28 @@ async function logOut(){
       </div>
       <!-- Step 2 -->
       <div class="sp" id="sp2">
-        <div class="sp-title">SEARCH PLAYER</div>
-        <div class="sp-sub">Type a player name — results pull live from the catalog. Select from the list — no freeform.</div>
-        <div style="position:relative">
-          <div style="display:flex;align-items:center;gap:10px;background:var(--deep2);border:1px solid rgba(0,170,255,0.3);border-radius:10px;padding:0 10px 0 14px;transition:border-color .2s" id="isoPlayerWrap">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--muted-text);flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" id="pSearch" placeholder="e.g. Ichiro, Griffey, Paul Skenes..." autocomplete="off"
-              style="flex:1;background:none;border:none;outline:none;font-family:Barlow Condensed,sans-serif;font-size:16px;color:var(--white);padding:13px 8px;letter-spacing:.3px"
+        <div style="text-align:center;padding:24px 0 20px">
+          <div style="font-family:Bebas Neue,sans-serif;font-size:32px;letter-spacing:4px;color:var(--white);margin-bottom:4px" id="sp2SportLabel">BASEBALL</div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);letter-spacing:1px">Type a name — select from results — no freeform</div>
+        </div>
+        <div style="max-width:480px;margin:0 auto;position:relative">
+          <div style="display:flex;align-items:center;gap:10px;background:var(--deep2);border:1px solid rgba(0,170,255,0.3);border-radius:12px;padding:0 10px 0 16px;transition:border-color .2s;box-shadow:0 4px 24px rgba(0,0,0,0.3)" id="isoPlayerWrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--muted-text);flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="pSearch" placeholder="e.g. Ichiro, Griffey, Skenes..." autocomplete="off"
+              style="flex:1;background:none;border:none;outline:none;font-family:Barlow Condensed,sans-serif;font-size:17px;color:var(--white);padding:15px 8px;letter-spacing:.3px"
               oninput="isoSearchPlayer(this.value)"
               onkeydown="if(event.key==='Escape'){this.value='';document.getElementById('pResults').style.display='none';}"
-              onfocus="document.getElementById('isoPlayerWrap').style.borderColor='var(--blue)'"
-              onblur="setTimeout(()=>document.getElementById('isoPlayerWrap').style.borderColor='rgba(0,170,255,0.3)',150)"/>
+              onfocus="document.getElementById('isoPlayerWrap').style.borderColor='var(--blue);document.getElementById(isoPlayerWrap).style.boxShadow=0 0 0 3px rgba(0,170,255,0.15)'"
+              onblur="setTimeout(()=>{document.getElementById('isoPlayerWrap').style.borderColor='rgba(0,170,255,0.3)';document.getElementById('isoPlayerWrap').style.boxShadow='0 4px 24px rgba(0,0,0,0.3)'},150)"/>
           </div>
           <div class="player-results" id="pResults" style="position:absolute;width:100%;z-index:50;margin-top:4px;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.4)"></div>
         </div>
-        <div class="sel-player-box" id="selPBox" style="margin-top:14px">
+        <div class="sel-player-box" id="selPBox" style="max-width:480px;margin:14px auto 0;display:none">
           <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Selected Player</div>
           <div id="selPName" style="font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--white);letter-spacing:1px"></div>
           <div id="selPMeta" style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)"></div>
         </div>
-        <div style="margin-top:10px"><button class="btn btn-ghost btn-sm" onclick="gS(1)">&#8592; Back to Sport</button></div>
+        <div style="text-align:center;margin-top:20px"><button class="btn btn-ghost btn-sm" onclick="gS(1)">&#8592; Back to Sport</button></div>
       </div>
       <!-- Step 3 -->
       <div class="sp" id="sp3">
@@ -2326,8 +2328,20 @@ function isoSelectSport(sportDef){
   document.querySelectorAll('#isoSportGrid .iv-sport-tile').forEach(t=>t.classList.remove('active'));
   const tile = document.getElementById('isoSportTile-'+sportDef.id);
   if(tile) tile.classList.add('active');
+  // Set sport label on Step 2 and clear previous search
+  const lbl = document.getElementById('sp2SportLabel');
+  if(lbl) lbl.textContent = (sportDef.emoji+' '+sportDef.label).toUpperCase();
+  const inp = document.getElementById('pSearch');
+  if(inp){ inp.value=''; }
+  const res = document.getElementById('pResults');
+  if(res) res.style.display='none';
+  const box = document.getElementById('selPBox');
+  if(box) box.style.display='none';
+  ISO.player = null;
   // Auto-advance to player search
   gS(2);
+  // Focus search box after transition
+  setTimeout(()=>{ const i=document.getElementById('pSearch'); if(i) i.focus(); }, 150);
 }
 
 function selSport(el,s){
@@ -2428,17 +2442,18 @@ async function renderCardRes(){
 
     for(const s of setsToSearch){
       // Only request columns that exist on every set table — no front_img, no price_market
-      const data=await _rGet(s.table,'select=player,card_number,parallel,year,serial_total&player=ilike.*'+encodeURIComponent(ISO.player)+'*&limit=300');
+      // Only use columns proven to exist on every baseball set table
+      const data=await _rGet(s.table,'select=player,card_number,set_name,year,category,insert_name,is_rookie&player=ilike.*'+encodeURIComponent(ISO.player)+'*&limit=300');
       if(data) data.forEach((r,i)=>results.push({
         id:s.table+'_'+i,
         player:r.player,
         year:r.year||s.year,
         brand:s.brand,
         set:s.name,
-        parallel:r.parallel||'Base',
-        run:r.serial_total||null,
-        auto:false,
-        rc:false,
+        parallel:r.insert_name||r.category||'Base',
+        run:null,
+        auto:(r.category||'').toLowerCase().includes('auto'),
+        rc:!!r.is_rookie,
         price:0,
         isos:0,
         _cardNumber:r.card_number,

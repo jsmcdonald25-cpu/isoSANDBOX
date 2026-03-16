@@ -4087,6 +4087,7 @@ const IV_SETS = [
   { table:'2025_bowman_baseball_sapphire',            sport:'baseball',    year:2025, brand:'Bowman', name:'Sapphire',             label:'2025 Bowman Sapphire Baseball'     },
   { table:'2024_25_bowman_university_chrome_basketball', sport:'basketball', year:2025, brand:'Bowman', name:'University Chrome',  label:'2024-25 Bowman University Chrome'  },
   { table:'2025_26_topps_chrome_cactus_jack_basketball', sport:'basketball', year:2025, brand:'Topps',  name:'Chrome Cactus Jack', label:'2025-26 Topps Chrome Cactus Jack'  },
+  { table:'card-images', sport:'baseball', year:2025, brand:'Topps', name:'Stadium Club', label:'2025 Topps Stadium Club Baseball', noVarImages:true },
 ];
 
 // State
@@ -4102,13 +4103,56 @@ let _ivCounts   = {};     // table → count cache
 let _ivInited   = false;
 
 // &#9472;&#9472; Entry Point &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
-function ivInit(){
+async function ivInit(){
   if(!_ivInited){
     _ivInited = true;
     _ivPrefetchCounts();
+    _ivLoadCatalogCards();
   }
   ivGoHome();
   ivRenderSports();
+}
+
+// Fetch card-images catalog and merge new entries into CARDS array
+let _catalogLoaded = false;
+async function _ivLoadCatalogCards(){
+  if(_catalogLoaded) return;
+  _catalogLoaded = true;
+  try {
+    const rows = await _rGet('card-images','select=*&order=player.asc&limit=1000');
+    if(!rows || !rows.length) return;
+    let nextId = Math.max(...CARDS.filter(c=>c&&c.id).map(c=>c.id)) + 1;
+    rows.forEach(r => {
+      // Skip if already represented in CARDS by card_number or player+year+set
+      const exists = CARDS.find(c =>
+        c && (
+          (c._cardNumber && c._cardNumber === r.card_number) ||
+          (c.player === r.player && String(c.year) === String((r.year||'').toString().slice(0,4)) && c.set === r.set_name)
+        )
+      );
+      if(!exists){
+        CARDS.push({
+          id: nextId++,
+          player:    r.player || '',
+          year:      parseInt((r.year||'').toString().slice(0,4)) || 2025,
+          brand:     (r.set_name||'').toLowerCase().includes('bowman') ? 'Bowman' : 'Topps',
+          set:       r.set_name || '',
+          parallel:  r.category || 'Base',
+          run:       null,
+          auto:      false,
+          rc:        !!(r.is_rookie === true || r.is_rookie === 'true' || r.is_rookie === 'True'),
+          tags:      (r.is_rookie) ? ['rc'] : [],
+          price:     0,
+          isos:      0,
+          cardNum:   r.card_number ? '#'+r.card_number : '',
+          hasCatalogPic: false,
+          _setTable: 'card-images',
+          _cardNumber: r.card_number,
+          _team:     r.team || '',
+        });
+      }
+    });
+  } catch(e){ console.warn('_ivLoadCatalogCards:', e); }
 }
 
 function _ivPrefetchCounts(){
@@ -4294,11 +4338,14 @@ async function ivSelectSet(table){
   if(listEl) listEl.innerHTML = '<div class="iv-loading">LOADING '+setDef.label.toUpperCase()+'...</div>';
 
   // Paginated load
+  const _selectCols = setDef.noVarImages
+    ? 'player,card_number,set_name,year,sport,team,category,insert_name,is_rookie'
+    : 'player,card_number,set_name,year,sport,team,category,insert_name,is_rookie,var_images';
   let all = [], from = 0, PAGE = 1000, err = null;
   while(true){
     const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
     const url = 'https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/'+table
-      +'?select=player,card_number,set_name,year,sport,team,category,insert_name,is_rookie,var_images'
+      +'?select='+_selectCols
       +'&order=card_number.asc&limit='+PAGE+'&offset='+from;
     const resp = await fetch(url,{headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}});
     if(!resp.ok){ err={message:'HTTP '+resp.status}; break; }

@@ -553,7 +553,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .iv-hero{text-align:center;padding:32px 0 28px}
 .iv-hero-title{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:6px;color:var(--white);line-height:1;background:linear-gradient(135deg,#fff 40%,#00AAFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .iv-hero-sub{font-family:Barlow Condensed,sans-serif;font-size:15px;color:var(--muted-text);letter-spacing:1px;margin-top:6px;margin-bottom:22px}
-.iv-global-wrap{position:relative;max-width:600px;margin:0 auto;display:flex;align-items:center;background:var(--deep2);border:1px solid rgba(0,170,255,0.3);border-radius:10px;padding:0 14px;transition:border-color .2s}
+.iv-global-wrap{position:relative;max-width:600px;margin:0 auto;display:flex;align-items:center;gap:10px;background:var(--deep2);border:1px solid rgba(0,170,255,0.3);border-radius:10px;padding:0 10px 0 14px;transition:border-color .2s}
 .iv-global-wrap:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,170,255,0.1)}
 .iv-global-wrap input{flex:1;background:none;border:none;outline:none;font-family:'Barlow Condensed',sans-serif;font-size:16px;color:var(--white);padding:13px 8px;letter-spacing:.3px}
 .iv-global-wrap input::placeholder{color:var(--muted-text)}
@@ -594,7 +594,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .iv-set-count{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--blue);margin-top:8px;font-weight:700}
 /* Card toolbar */
 .iv-card-toolbar{display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
-.iv-card-search-wrap{flex:1;min-width:200px;display:flex;align-items:center;background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;padding:0 12px;transition:border-color .2s}
+.iv-card-search-wrap{flex:1;min-width:200px;display:flex;align-items:center;gap:8px;background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;padding:0 12px;transition:border-color .2s}
 .iv-card-search-wrap:focus-within{border-color:var(--blue)}
 .iv-card-search-wrap input{flex:1;background:none;border:none;outline:none;font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--white);padding:9px 8px}
 .iv-card-search-wrap input::placeholder{color:var(--muted-text)}
@@ -1002,7 +1002,7 @@ async function logOut(){
       </script>
     </div>
     <div class="topbar-actions" style="flex-shrink:0;margin-left:18px">
-      <button class="btn btn-ghost" onclick="N('library',document.querySelector('[onclick*=library]'))">Search Cards</button>
+      <button class="btn btn-ghost" onclick="N('library',document.querySelector('[onclick*=library]'))">&#128269; ISOVault</button>
       <button class="btn btn-primary" onclick="N('post',document.querySelector('[onclick*=post]'))">+ Post ISO</button>
       <div class="notif-bell" onclick="N('notifs',document.querySelector('[onclick*=notifs]'))"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><div class="notif-dot"></div></div>
     </div>
@@ -1231,15 +1231,37 @@ async function logOut(){
         <div class="iv-hero-title">ISOVAULT</div>
         <div class="iv-hero-sub">The world's most complete sports card search engine</div>
         <div class="iv-global-wrap">
-          <div class="s-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-          <input type="text" id="ivGlobalSearch" placeholder="Search any player, card number, or set across all sports..." oninput="ivHandleGlobalSearch(this.value)" autocomplete="off"/>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--muted-text);flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="ivGlobalSearch" placeholder="Search sets by name, year, or brand..." autocomplete="off"
+            oninput="ivSearchSets(this.value)"
+            onkeydown="if(event.key==='Escape'){this.value='';ivSearchSets('');}"/>
+          <button id="ivClearSearchBtn" onclick="ivClearSetSearch()" style="display:none;background:rgba(255,59,92,0.15);border:1px solid rgba(255,59,92,0.3);border-radius:7px;padding:6px 14px;font-family:Bebas Neue,sans-serif;font-size:12px;letter-spacing:1.5px;color:var(--red);cursor:pointer;flex-shrink:0">&#10005; CLEAR</button>
         </div>
+        <div id="ivSearchHint" style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:rgba(0,170,255,0.35);letter-spacing:1px;text-align:center;margin-top:8px">SEARCH SETS · SELECT A SET · THEN SEARCH PLAYERS INSIDE</div>
       </div>
       <div class="iv-section-label">SELECT A SPORT</div>
       <div class="iv-sport-grid" id="ivSportGrid"></div>
     </div>
     <!-- STATE 2: SET BROWSER -->
     <div id="iv-sets" style="display:none">
+      <!-- Player search — scoped to selected sport -->
+      <div style="margin-bottom:18px">
+        <div style="display:flex;align-items:center;gap:10px;background:var(--deep2);border:1px solid rgba(0,170,255,0.3);border-radius:10px;padding:0 10px 0 14px;transition:border-color .2s" id="ivPlayerSearchWrap">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--muted-text);flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="ivPlayerSearchInput" placeholder="Search for a player across all sets in this sport..." autocomplete="off"
+            style="flex:1;background:none;border:none;outline:none;font-family:Barlow Condensed,sans-serif;font-size:15px;color:var(--white);padding:12px 8px;letter-spacing:.3px"
+            oninput="ivPlayerSearchType(this.value)"
+            onkeydown="if(event.key==='Escape'){this.value='';ivPlayerSearchClear();}"
+            onfocus="document.getElementById('ivPlayerSearchWrap').style.borderColor='var(--blue)'"
+            onblur="document.getElementById('ivPlayerSearchWrap').style.borderColor='rgba(0,170,255,0.3)'"/>
+          <button id="ivPlayerSearchBtn" onclick="ivPlayerSearchGo(document.getElementById('ivPlayerSearchInput').value)"
+            style="background:var(--blue);border:none;border-radius:7px;padding:7px 16px;font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:1.5px;color:white;cursor:pointer;flex-shrink:0;transition:background .15s"
+            onmouseover="this.style.background='var(--blue-bright)'" onmouseout="this.style.background='var(--blue)'">SEARCH</button>
+          <button id="ivPlayerClearBtn" onclick="ivPlayerSearchClear()" style="display:none;background:rgba(255,59,92,0.15);border:1px solid rgba(255,59,92,0.3);border-radius:7px;padding:6px 14px;font-family:Bebas Neue,sans-serif;font-size:12px;letter-spacing:1.5px;color:var(--red);cursor:pointer;flex-shrink:0">&#10005;</button>
+        </div>
+        <!-- Autocomplete dropdown -->
+        <div id="ivPlayerDropdown" style="display:none;background:var(--deep2);border:1px solid rgba(0,170,255,0.2);border-radius:0 0 10px 10px;border-top:none;overflow:hidden;max-height:220px;overflow-y:auto;margin-top:-2px"></div>
+      </div>
       <div class="iv-filter-row">
         <div class="iv-filter-group">
           <div class="iv-filter-label">YEAR</div>
@@ -1257,7 +1279,7 @@ async function logOut(){
     <div id="iv-cards" style="display:none">
       <div class="iv-card-toolbar">
         <div class="iv-card-search-wrap">
-          <div class="s-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--muted-text);flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input type="text" id="ivCardSearch" placeholder="Search player or card #..." oninput="ivFilterCards(this.value)" autocomplete="off"/>
         </div>
         <div class="iv-pill-row" id="ivCatPills" style="gap:6px">
@@ -1275,10 +1297,24 @@ async function logOut(){
       <div class="iv-meta" id="ivMeta"></div>
       <div id="ivCardList"></div>
     </div>
-    <!-- GLOBAL SEARCH RESULTS -->
+    <!-- GLOBAL SEARCH RESULTS (set search) -->
     <div id="iv-global-results" style="display:none">
-      <div class="iv-section-label">SEARCH RESULTS</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div class="iv-section-label" id="ivSearchResultsLabel">SETS MATCHING ""</div>
+        <button onclick="ivClearSetSearch()" style="background:none;border:none;font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:1px;color:var(--muted-text);cursor:pointer;padding:4px 8px;transition:color .15s" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted-text)'">&#10005; Clear search</button>
+      </div>
       <div id="ivGlobalResultsList"></div>
+    </div>
+    <!-- PLAYER SEARCH RESULTS (cross-set within sport) -->
+    <div id="iv-player-results" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+        <div>
+          <div class="iv-section-label" id="ivPlayerResultsLabel">CARDS FOR ""</div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-top:3px" id="ivPlayerResultsSub"></div>
+        </div>
+        <button onclick="ivPlayerSearchClear()" style="background:rgba(255,59,92,0.1);border:1px solid rgba(255,59,92,0.25);border-radius:6px;font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:1px;color:var(--red);cursor:pointer;padding:6px 14px">&#10005; New Search</button>
+      </div>
+      <div id="ivPlayerResultsList"></div>
     </div>
   </div>
 
@@ -4439,13 +4475,19 @@ function ivGoHome(){
 function ivGoSport(){
   if(!_ivSport) return;
   _ivSet = null; _ivData = []; _ivFiltered = [];
+  // Clear player search
+  const inp = document.getElementById('ivPlayerSearchInput');
+  if(inp) inp.value='';
+  document.getElementById('ivPlayerDropdown').style.display='none';
+  const clearBtn = document.getElementById('ivPlayerClearBtn');
+  if(clearBtn) clearBtn.style.display='none';
   _ivShowState('sets');
   _ivRenderSetBrowser();
   _ivBreadcrumb(true, false);
 }
 
 function _ivShowState(state){
-  ['iv-home','iv-sets','iv-cards','iv-global-results'].forEach(id=>{
+  ['iv-home','iv-sets','iv-cards','iv-global-results','iv-player-results'].forEach(id=>{
     const el = document.getElementById(id);
     if(el) el.style.display = (id === 'iv-'+state) ? '' : 'none';
   });
@@ -4757,11 +4799,22 @@ function _ivRenderGrid(){
 // &#9472;&#9472; Card click → Detail panel &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 function ivOpenCard(row){
   try {
-  // Check if there's a known CARDS entry
-  const known = CARDS.find(c=>
-    c && (c._cardNumber === row.card_number ||
-    (c.player === row.player && String(c.year) === String((row.year||'').toString().slice(0,4))))
-  );
+  // Check if there's a known CARDS entry — must match set table if active set is known
+  const activeTable = _ivSet ? _ivSet.table : null;
+  const known = CARDS.find(c=>{
+    if(!c) return false;
+    // Card number match is precise — only allow if set table also agrees
+    if(c._cardNumber === row.card_number){
+      if(activeTable && c._setTable && c._setTable !== activeTable) return false;
+      return true;
+    }
+    // Player+year match — ONLY use if set table matches, otherwise fall through to ad-hoc build
+    if(c.player === row.player && String(c.year) === String((row.year||'').toString().slice(0,4))){
+      if(activeTable && c._setTable && c._setTable !== activeTable) return false;
+      return true;
+    }
+    return false;
+  });
   if(known){
     // Store actual DB card_number for the whole card detail session
     window._cdDbCardNum = row.card_number || null;
@@ -4851,74 +4904,263 @@ function ivSetView(view, el){
 }
 
 // &#9472;&#9472; Global Search &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
-let _ivGlobalTimer = null;
-function ivHandleGlobalSearch(q){
+let _ivGlobalTimer  = null;
+let _ivAbortCtrl    = null;   // AbortController for any in-flight fetches
+
+// ── Abort any in-flight search fetches ──────────────────────────────────────
+function ivAbortSearch(){
+  if(_ivAbortCtrl){ _ivAbortCtrl.abort(); _ivAbortCtrl = null; }
   clearTimeout(_ivGlobalTimer);
-  if(!q.trim()){ _ivShowState('home'); return; }
-  _ivGlobalTimer = setTimeout(()=>_ivRunGlobalSearch(q), 350);
 }
 
-async function _ivRunGlobalSearch(q){
+// ── Set search — pure client-side, instant, zero network calls ───────────────
+function ivSearchSets(q){
+  q = (q||'').trim();
+  const clearBtn = document.getElementById('ivClearSearchBtn');
+  if(clearBtn) clearBtn.style.display = q ? 'block' : 'none';
+
+  if(!q){
+    _ivShowState('home');
+    return;
+  }
+
+  const ql = q.toLowerCase();
+  const matched = IV_SETS.filter(s=>{
+    return s.label.toLowerCase().includes(ql)
+      || s.name.toLowerCase().includes(ql)
+      || String(s.year).includes(ql)
+      || s.brand.toLowerCase().includes(ql)
+      || s.sport.toLowerCase().includes(ql);
+  });
+
   _ivShowState('global-results');
-  const bc = document.getElementById('ivBreadcrumb');
-  if(bc) bc.style.display='flex';
+  const labelEl = document.getElementById('ivSearchResultsLabel');
+  if(labelEl) labelEl.textContent = `${matched.length} SET${matched.length!==1?'S':''} MATCHING "${q.toUpperCase()}"`;
+
   const el = document.getElementById('ivGlobalResultsList');
-  if(el) el.innerHTML='<div class="iv-loading">SEARCHING ALL SETS...</div>';
-
-  const activeSets = IV_SETS.filter(s=>IV_SPORTS.find(x=>x.id===s.sport&&x.active));
-  let all = [];
-  await Promise.all(activeSets.map(async s=>{
-    // Pokémon sets share one table and use card_name, not player
-    const realTable   = s.pokemonCols ? 'pokemon_cards' : s.table;
-    const extraFilter = s.seriesFilter ? '&'+s.seriesFilter : '';
-    const selectCols  = s.pokemonCols
-      ? 'card_name,card_number,set_name,series,rarity,card_type,image_small'
-      : 'player,card_number,set_name,year,category,insert_name,team,is_rookie,var_images';
-    const searchField = s.pokemonCols ? 'card_name' : 'player';
-    const orFilter = s.pokemonCols
-      ? 'or=(card_name.ilike.*'+encodeURIComponent(q)+'*,card_number.ilike.*'+encodeURIComponent(q)+'*)'
-      : 'or=(player.ilike.*'+encodeURIComponent(q)+'*,card_number.ilike.*'+encodeURIComponent(q)+'*,insert_name.ilike.*'+encodeURIComponent(q)+'*)';
-    const data = await _rGet(realTable, 'select='+selectCols+'&'+orFilter+extraFilter+'&limit=50');
-    if(data) data.forEach(r=>{
-      // Remap Pokémon fields before pushing into global results
-      const mapped = s.pokemonCols ? {
-        ...r,
-        player:      r.card_name,
-        team:        r.set_name,
-        category:    r.rarity,
-        insert_name: (r.card_type && r.card_type !== 'Pokémon') ? r.card_type : null,
-        is_rookie:   false,
-        year:        s.year,
-        var_images:  r.image_small ? { base:{ front:r.image_small } } : {}
-      } : r;
-      all.push({...mapped, _setDef:s});
-    });
-  }));
-
   if(!el) return;
-  if(!all.length){ el.innerHTML='<div class="iv-empty">No results for "'+q+'"</div>'; return; }
 
-  el.innerHTML = all.slice(0,100).map(r=>{
-    const sport = IV_SPORTS.find(s=>s.id===r._setDef.sport);
-    const hasImg = r.var_images && Object.keys(r.var_images).length;
-    return `<div class="iv-result-row" onclick="ivOpenGlobalResult(${JSON.stringify({...r,_setTable:r._setDef.table}).replace(/"/g,'&quot;')})">
-      <span class="iv-result-sport">${sport?sport.emoji+' '+sport.label:'—'}</span>
-      <div>
-        <div class="iv-result-player">${r.player}</div>
-        <div class="iv-result-set">${r._setDef.label} · ${r.insert_name||r.category||'Base'}</div>
-      </div>
-      ${hasImg?'<span style="font-size:16px;margin-left:auto">&#128444;&#65039;</span>':''}
-      <div class="iv-result-num">#${r.card_number||'—'}</div>
+  if(!matched.length){
+    el.innerHTML = '<div class="iv-empty">No sets match "'+q+'" — try a player name, year, or brand</div>';
+    return;
+  }
+
+  // Render as set tiles (same style as the set browser)
+  el.innerHTML = `<div class="iv-set-grid">${matched.map(s=>{
+    const count = _ivCounts[s.table];
+    const countStr = count != null ? count.toLocaleString()+' cards' : '';
+    const sport = IV_SPORTS.find(x=>x.id===s.sport);
+    return `<div class="iv-set-tile" onclick="ivSearchSelectSet('${s.table}')" style="cursor:pointer">
+      <div class="iv-set-year">${sport?sport.emoji+' ':''} ${s.year}</div>
+      <div class="iv-set-name">${s.name}</div>
+      <div class="iv-set-brand">${s.brand}</div>
+      ${countStr?`<div class="iv-set-count">${countStr}</div>`:''}
     </div>`;
-  }).join('')
-  + (all.length>100?`<div class="iv-meta" style="text-align:center;margin-top:10px">${all.length} results — narrow your search</div>`:'');
+  }).join('')}</div>`;
+}
+
+function ivSearchSelectSet(table){
+  // Clear search, navigate into the set
+  ivClearSetSearch();
+  ivSelectSet(table);
+}
+
+function ivClearSetSearch(){
+  const inp = document.getElementById('ivGlobalSearch');
+  if(inp) inp.value = '';
+  const clearBtn = document.getElementById('ivClearSearchBtn');
+  if(clearBtn) clearBtn.style.display = 'none';
+  _ivShowState('home');
+}
+
+// Keep old names as stubs so nothing breaks if called elsewhere
+function ivHandleGlobalSearch(q){ ivSearchSets(q); }
+function ivHandleGlobalSearchInput(q){ ivSearchSets(q); }
+function ivTriggerGlobalSearch(q){ ivSearchSets(q); }
+
+async function _ivRunGlobalSearch(q){
+  ivSearchSets(q);
 }
 
 function ivOpenGlobalResult(row){
-  // Set active set context then open card
   const setDef = IV_SETS.find(s=>s.table===row._setTable);
   if(setDef){ _ivSet = setDef; _ivSport = setDef.sport; }
   ivOpenCard(row);
+}
+
+// ── PLAYER SEARCH (scoped to selected sport) ─────────────────────────────────
+let _ivPlayerTimer   = null;
+let _ivPlayerAbort   = null;
+let _ivPlayerQuery   = '';
+
+function ivPlayerSearchType(q){
+  clearTimeout(_ivPlayerTimer);
+  const clearBtn = document.getElementById('ivPlayerClearBtn');
+  if(clearBtn) clearBtn.style.display = q ? 'block' : 'none';
+
+  if(!q.trim()){
+    document.getElementById('ivPlayerDropdown').style.display='none';
+    return;
+  }
+  if(q.length < 3){
+    document.getElementById('ivPlayerDropdown').style.display='none';
+    return;
+  }
+  // Debounce autocomplete 250ms
+  _ivPlayerTimer = setTimeout(()=>_ivPlayerAutocomplete(q), 250);
+}
+
+async function _ivPlayerAutocomplete(q){
+  if(!_ivSport) return;
+  const dropdown = document.getElementById('ivPlayerDropdown');
+  if(!dropdown) return;
+  dropdown.innerHTML = '<div style="padding:10px 14px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);letter-spacing:1px">Searching...</div>';
+  dropdown.style.display = 'block';
+
+  // Query only baseball (or active sport) tables — limit 5 per table, dedupe names
+  const sportSets = IV_SETS.filter(s=>s.sport===_ivSport && !s.pokemonCols);
+  const seen = new Set();
+  const names = [];
+
+  if(_ivPlayerAbort) _ivPlayerAbort.abort();
+  _ivPlayerAbort = new AbortController();
+
+  try {
+    await Promise.all(sportSets.map(async s=>{
+      const realTable = s.table;
+      const url = `${_SURL}/${realTable}?select=player&player=ilike.*${encodeURIComponent(q)}*&limit=8`;
+      const res = await fetch(url, { headers: _sbH(), signal: _ivPlayerAbort.signal });
+      if(!res.ok) return;
+      const data = await res.json();
+      if(data) data.forEach(r=>{
+        if(r.player && !seen.has(r.player)){
+          seen.add(r.player);
+          names.push(r.player);
+        }
+      });
+    }));
+  } catch(e){
+    if(e.name === 'AbortError') return;
+  }
+
+  if(!names.length){
+    dropdown.innerHTML = '<div style="padding:10px 14px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)">No players found matching "'+q+'"</div>';
+    return;
+  }
+
+  names.sort();
+  dropdown.innerHTML = names.slice(0,12).map(name=>`
+    <div onclick="ivPlayerSearchGo('${name.replace(/'/g,"\\'")}')"
+      style="padding:10px 14px;cursor:pointer;border-bottom:1px solid rgba(0,170,255,0.07);font-family:Barlow Condensed,sans-serif;font-size:15px;font-weight:600;color:var(--white);transition:background .1s"
+      onmouseover="this.style.background='rgba(0,170,255,0.08)'" onmouseout="this.style.background=''">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--blue);margin-right:8px;vertical-align:middle"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      ${name}
+    </div>`).join('')
+    + (names.length > 12 ? `<div style="padding:8px 14px;font-family:Barlow Condensed,sans-serif;font-size:11px;color:rgba(0,170,255,0.4);letter-spacing:1px">${names.length} matches — keep typing to narrow</div>` : '');
+}
+
+async function ivPlayerSearchGo(playerName){
+  if(!playerName || !_ivSport) return;
+  _ivPlayerQuery = playerName;
+
+  // Close dropdown, fill input
+  document.getElementById('ivPlayerDropdown').style.display='none';
+  document.getElementById('ivPlayerSearchInput').value = playerName;
+  const clearBtn = document.getElementById('ivPlayerClearBtn');
+  if(clearBtn) clearBtn.style.display = 'block';
+
+  // Switch to player results state
+  _ivShowState('player-results');
+  _ivBreadcrumb(true, false);
+
+  const labelEl = document.getElementById('ivPlayerResultsLabel');
+  const subEl   = document.getElementById('ivPlayerResultsSub');
+  const listEl  = document.getElementById('ivPlayerResultsList');
+  const sportDef = IV_SPORTS.find(s=>s.id===_ivSport);
+
+  if(labelEl) labelEl.textContent = `ALL CARDS — ${playerName.toUpperCase()}`;
+  if(subEl)   subEl.textContent   = `Searching all ${sportDef?sportDef.label:''} sets...`;
+  if(listEl)  listEl.innerHTML    = '<div class="iv-loading">SEARCHING ALL '+( sportDef?sportDef.label.toUpperCase():'' )+' SETS...</div>';
+
+  // Abort any previous
+  if(_ivPlayerAbort) _ivPlayerAbort.abort();
+  _ivPlayerAbort = new AbortController();
+
+  const sportSets = IV_SETS.filter(s=>s.sport===_ivSport && !s.pokemonCols);
+  const results   = [];
+
+  try {
+    await Promise.all(sportSets.map(async s=>{
+      const url = `${_SURL}/${s.table}?select=player,card_number,set_name,year,category,insert_name,team,is_rookie,var_images,serial_total&player=ilike.*${encodeURIComponent(playerName)}*&limit=200`;
+      const res = await fetch(url, { headers: _sbH(), signal: _ivPlayerAbort.signal });
+      if(!res.ok) return;
+      const data = await res.json();
+      if(data) data.forEach(r=> results.push({...r, _setDef:s, _setTable:s.table}));
+    }));
+  } catch(e){
+    if(e.name==='AbortError') return;
+    if(listEl) listEl.innerHTML='<div class="iv-empty" style="color:var(--red)">Search failed — try again</div>';
+    return;
+  }
+
+  if(!results.length){
+    if(subEl)  subEl.textContent = '0 cards found';
+    if(listEl) listEl.innerHTML  = `<div class="iv-empty">No cards found for "${playerName}" in ${sportDef?sportDef.label:'this sport'}</div>`;
+    return;
+  }
+
+  // Sort: newest year first, then by set name
+  results.sort((a,b)=>(b.year||0)-(a.year||0)||(a._setDef.label||'').localeCompare(b._setDef.label||''));
+
+  if(subEl) subEl.textContent = `${results.length} card${results.length!==1?'s':''} found across ${new Set(results.map(r=>r._setDef.table)).size} set${new Set(results.map(r=>r._setDef.table)).size!==1?'s':''}`;
+
+  // Group by set
+  const bySet = {};
+  results.forEach(r=>{
+    const key = r._setDef.table;
+    if(!bySet[key]) bySet[key] = { def: r._setDef, cards: [] };
+    bySet[key].cards.push(r);
+  });
+
+  if(listEl) listEl.innerHTML = Object.values(bySet).map(group=>{
+    const rows = group.cards.map((r,idx)=>{
+      const cat = (r.category||'Base').toLowerCase();
+      const catClass = cat.includes('auto')?'iv-cat-auto':cat.includes('insert')?'iv-cat-insert':r.is_rookie?'iv-cat-rookie':'iv-cat-base';
+      const catLabel = r.is_rookie && cat==='base' ? 'RC' : (r.category||'Base');
+      const hasImg = r.var_images && Object.keys(r.var_images).length>0;
+      const serialBadge = r.serial_total ? `<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:#FFC83C;margin-left:6px">/${r.serial_total}</span>` : '';
+      return `<div class="iv-row" style="grid-template-columns:60px 1fr 120px 80px 60px;cursor:pointer" onclick="ivOpenCard(${JSON.stringify({...r}).replace(/"/g,'&quot;')})">
+        <div class="iv-row-num">${r.card_number||'—'}</div>
+        <div>
+          <div class="iv-row-player">${r.player||'—'}${serialBadge}</div>
+          ${r.insert_name?`<div class="iv-row-insert">${r.insert_name}</div>`:''}
+        </div>
+        <div class="iv-row-team">${r.team||'—'}</div>
+        <div class="iv-row-cat"><span class="iv-row-cat-badge ${catClass}">${catLabel}</span></div>
+        <div style="font-size:16px">${hasImg?'&#128444;&#65039;':'<span style="color:rgba(122,149,174,0.3)">—</span>'}</div>
+      </div>`;
+    }).join('');
+
+    return `<div style="margin-bottom:20px">
+      <div style="font-family:Bebas Neue,sans-serif;font-size:14px;letter-spacing:2px;color:var(--blue);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid rgba(0,170,255,0.15)">
+        ${group.def.label} <span style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);font-weight:400">${group.cards.length} card${group.cards.length!==1?'s':''}</span>
+      </div>
+      <div class="iv-checklist">${rows}</div>
+    </div>`;
+  }).join('');
+}
+
+function ivPlayerSearchClear(){
+  _ivPlayerQuery = '';
+  if(_ivPlayerAbort){ _ivPlayerAbort.abort(); _ivPlayerAbort=null; }
+  const inp = document.getElementById('ivPlayerSearchInput');
+  if(inp) inp.value='';
+  document.getElementById('ivPlayerDropdown').style.display='none';
+  const clearBtn = document.getElementById('ivPlayerClearBtn');
+  if(clearBtn) clearBtn.style.display='none';
+  // Return to set browser
+  _ivShowState('sets');
+  _ivBreadcrumb(true, false);
 }
 
 // &#9472;&#9472; Community Panel &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;

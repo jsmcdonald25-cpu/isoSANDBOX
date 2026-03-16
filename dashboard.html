@@ -1084,8 +1084,8 @@ async function logOut(){
               style="flex:1;background:none;border:none;outline:none;font-family:Barlow Condensed,sans-serif;font-size:17px;color:var(--white);padding:15px 8px;letter-spacing:.3px"
               oninput="isoSearchPlayer(this.value)"
               onkeydown="if(event.key==='Escape'){this.value='';document.getElementById('pResults').style.display='none';}"
-              onfocus="document.getElementById('isoPlayerWrap').style.borderColor='var(--blue);document.getElementById(isoPlayerWrap).style.boxShadow=0 0 0 3px rgba(0,170,255,0.15)'"
-              onblur="setTimeout(()=>{document.getElementById('isoPlayerWrap').style.borderColor='rgba(0,170,255,0.3)';document.getElementById('isoPlayerWrap').style.boxShadow='0 4px 24px rgba(0,0,0,0.3)'},150)"/>
+              onfocus="document.getElementById('isoPlayerWrap').style.borderColor='var(--blue)'"
+              onblur="setTimeout(()=>{document.getElementById('isoPlayerWrap').style.borderColor='rgba(0,170,255,0.3)';},150)"/>
           </div>
           <div class="player-results" id="pResults" style="position:absolute;width:100%;z-index:50;margin-top:4px;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.4)"></div>
         </div>

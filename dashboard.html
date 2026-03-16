@@ -692,6 +692,15 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
             onfocus="this.style.borderColor='#00AAFF'" onblur="this.style.borderColor='rgba(0,170,255,0.2)'"
             onkeydown="if(event.key==='Enter')authSignup()"/>
         </div>
+        <div style="position:relative;margin-bottom:10px">
+          <input id="signupUsername" type="text" placeholder="Username — your public identity on GrailISO" autocomplete="off" maxlength="30"
+            style="width:100%;background:#0D1F33;border:1px solid rgba(0,170,255,0.2);border-radius:8px;padding:12px 16px 12px 38px;font-family:Barlow Condensed,sans-serif;font-size:16px;color:white;outline:none;transition:border-color .2s;box-sizing:border-box"
+            onfocus="this.style.borderColor='#00AAFF'" onblur="this.style.borderColor='rgba(0,170,255,0.2)'"
+            oninput="signupUsernameValidate(this.value)"
+            onkeydown="if(event.key==='Enter')authSignup()"/>
+          <span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);font-family:Barlow Condensed,sans-serif;font-size:15px;color:rgba(0,170,255,0.5);pointer-events:none">@</span>
+        </div>
+        <div id="signupUsernameHint" style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:rgba(122,149,174,0.5);letter-spacing:.5px;margin-top:-6px;margin-bottom:8px;padding-left:2px">Letters, numbers, underscores only. This is what others see — your email stays private.</div>
         <input id="signupEmail" type="email" placeholder="Email address" autocomplete="email"
           style="width:100%;background:#0D1F33;border:1px solid rgba(0,170,255,0.2);border-radius:8px;padding:12px 16px;font-family:Barlow Condensed,sans-serif;font-size:16px;color:white;outline:none;margin-bottom:10px;transition:border-color .2s;display:block"
           onfocus="this.style.borderColor='#00AAFF'" onblur="this.style.borderColor='rgba(0,170,255,0.2)'"
@@ -742,7 +751,17 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     btn.style.opacity = loading ? '.6' : '1';
   }
 
-  // &#9472;&#9472; Login &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+  window.signupUsernameValidate = function(val){
+    const hint = document.getElementById('signupUsernameHint');
+    if(!hint) return;
+    const v = val.trim().toLowerCase();
+    if(!v){ hint.textContent='Letters, numbers, underscores only. This is what others see — your email stays private.'; hint.style.color='rgba(122,149,174,0.5)'; return; }
+    if(v.length < 3){ hint.textContent='Too short — minimum 3 characters'; hint.style.color='#FF3B5C'; return; }
+    if(!/^[a-z0-9_]+$/.test(v)){ hint.textContent='Letters, numbers, and underscores only — no spaces or symbols'; hint.style.color='#FF3B5C'; return; }
+    hint.textContent='@'+v+' — looks good!'; hint.style.color='#00E887';
+  };
+
+  // ── Login ──
   window.authLogin = async function(){
     const email = document.getElementById('loginEmail').value.trim();
     const pass  = document.getElementById('loginPassword').value;
@@ -758,15 +777,31 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
   window.authSignup = async function(){
     const firstName = document.getElementById('signupFirstName').value.trim();
     const lastName  = document.getElementById('signupLastName').value.trim();
+    const username  = document.getElementById('signupUsername').value.trim().toLowerCase();
     const email     = document.getElementById('signupEmail').value.trim();
     const pass      = document.getElementById('signupPassword').value;
+
     if(!firstName)          { authErr('signupErr','Enter your first name.'); return; }
     if(!lastName)           { authErr('signupErr','Enter your last name.'); return; }
+    if(!username)           { authErr('signupErr','Choose a username — this is your public identity.'); return; }
+    if(username.length < 3) { authErr('signupErr','Username must be at least 3 characters.'); return; }
+    if(!/^[a-z0-9_]+$/.test(username)){ authErr('signupErr','Username can only contain letters, numbers, and underscores.'); return; }
     if(!email)              { authErr('signupErr','Enter your email address.'); return; }
     if(pass.length < 6)     { authErr('signupErr','Password must be at least 6 characters.'); return; }
+
+    // Check username availability before creating account
+    setBtnLoading('signupBtn', true, 'CREATE ACCOUNT');
+    try {
+      const existing = await _rGet('profiles', 'select=id&username=eq.'+encodeURIComponent(username)+'&limit=1');
+      if(existing && existing.length > 0){
+        setBtnLoading('signupBtn', false, 'CREATE ACCOUNT');
+        authErr('signupErr', '@'+username+' is already taken — try another.');
+        return;
+      }
+    } catch(e){ /* profiles table may not exist yet — continue */ }
+
     const name     = `${firstName} ${lastName}`;
     const initials = (firstName[0] + lastName[0]).toUpperCase();
-    setBtnLoading('signupBtn', true, 'CREATE ACCOUNT');
     const { data, error } = await window._sb.auth.signUp({ email, password: pass });
     if(error){ setBtnLoading('signupBtn', false, 'CREATE ACCOUNT'); authErr('signupErr', error.message); return; }
     if(data && data.user){
@@ -775,6 +810,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
         full_name:  name,
         first_name: firstName,
         last_name:  lastName,
+        username:   username,
         initials:   initials,
         email:      email,
         credits:    5,
@@ -820,8 +856,10 @@ async function initUserProfile(user){
     profile = _pd&&_pd[0]?_pd[0]:null;
   } catch(e){ /* profiles table may not exist yet — handled below */ }
 
-  const name     = profile?.full_name || profile?.name || user.email.split('@')[0];
-  const initials = profile?.initials  || name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const name     = profile?.username
+    ? '@' + profile.username
+    : profile?.full_name || profile?.name || user.email.split('@')[0];
+  const initials = profile?.initials  || name.replace('@','').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
   const credits  = (profile?.credits !== undefined && profile?.credits !== null) ? profile.credits : 0;
   const tier     = profile?.tier || 'Alpha Member';
   const role     = profile?.role || 'user';
@@ -848,6 +886,18 @@ async function initUserProfile(user){
     avatarEl.style.background = 'linear-gradient(135deg, #00AAFF, #0055AA)';
     avatarEl.title = 'Owner';
   }
+
+  // Populate account panel
+  const acctFirst    = document.getElementById('acct-first');
+  const acctLast     = document.getElementById('acct-last');
+  const acctUsername = document.getElementById('acct-username');
+  const acctEmail    = document.getElementById('acct-email');
+  const acctRole     = document.getElementById('acct-role');
+  if(acctFirst)    acctFirst.textContent    = profile?.first_name || '';
+  if(acctLast)     acctLast.textContent     = profile?.last_name  || '';
+  if(acctUsername) acctUsername.textContent = profile?.username ? '@'+profile.username : '—';
+  if(acctEmail)    acctEmail.textContent    = user.email || '';
+  if(acctRole)     acctRole.textContent     = role === 'owner' ? 'Owner / Admin' : role === 'admin' ? 'Admin' : 'Collector / Buyer';
 
   // Show / hide admin nav items
   const adminNavItems = ['nav-admin-price', 'nav-admin-market'];
@@ -1728,7 +1778,8 @@ async function logOut(){
         <div class="acct-grid">
           <div class="af"><div class="af-label">First Name</div><div class="af-val" id="acct-first">Jason</div></div>
           <div class="af"><div class="af-label">Last Name</div><div class="af-val" id="acct-last">McDonald</div></div>
-          <div class="af" style="grid-column:1/-1"><div class="af-label">Email</div><div class="af-val" id="acct-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ec9f999c9c839e98ac8b9e8d8580859f83c28f8381">[email&#160;protected]</a></div></div>
+          <div class="af" style="grid-column:1/-1"><div class="af-label">Username</div><div class="af-val" id="acct-username" style="color:var(--blue)">@jsmcdonald25</div></div>
+          <div class="af" style="grid-column:1/-1"><div class="af-label">Email <span style="font-size:9px;color:var(--muted-text);letter-spacing:1px">— PRIVATE, NEVER SHOWN</span></div><div class="af-val" id="acct-email"></div></div>
           <div class="af" style="grid-column:1/-1"><div class="af-label">Role</div><div class="af-val" id="acct-role">Collector / Buyer</div></div>
         </div>
         <div style="margin-top:14px"><button class="btn btn-ghost" onclick="T('Edit profile &#8212; coming soon')">Edit Profile</button></div>
@@ -2446,14 +2497,14 @@ async function _isoPlayerFetch(q){
 
   try {
     await Promise.all(sets.map(async s=>{
-      const url = `${_SURL}/${s.table}?select=player,team,year&player=ilike.*${encodeURIComponent(q)}*&limit=8`;
+      const url = `${_SURL}/${s.table}?select=player&player=ilike.*${encodeURIComponent(q)}*&limit=8`;
       const r   = await fetch(url,{headers:_sbH(),signal:_isoPlayerAbort.signal});
       if(!r.ok) return;
       const data = await r.json();
       if(data) data.forEach(row=>{
         if(row.player && !seen.has(row.player)){
           seen.add(row.player);
-          names.push({ name:row.player, team:row.team||'' });
+          names.push({ name:row.player, team:'' });
         }
       });
     }));
@@ -4718,7 +4769,7 @@ function _ivBreadcrumb(showSport, showSet){
   if(sep2){  sep2.style.display  = showSet   ? '' : 'none'; }
   if(setEl){ setEl.style.display = showSet   ? '' : 'none'; }
   const sportDef = IV_SPORTS.find(s=>s.id===_ivSport);
-  if(sport && sportDef) sport.textContent = sportDef.emoji+' '+sportDef.label;
+  if(sport && sportDef) sport.innerHTML = sportDef.emoji+' '+sportDef.label;
   if(setEl && _ivSet)   setEl.textContent = _ivSet.label;
 }
 
@@ -5306,7 +5357,11 @@ async function ivPlayerSearchGo(playerName){
 
   try {
     await Promise.all(sportSets.map(async s=>{
-      const url = `${_SURL}/${s.table}?select=player,card_number,set_name,year,category,insert_name,team,is_rookie,var_images,serial_total&player=ilike.*${encodeURIComponent(playerName)}*&limit=200`;
+      // Use proven safe columns only — same set as ivSelectSet checklist view
+      const cols = s.noVarImages
+        ? 'player,card_number,set_name,year,category,insert_name,is_rookie'
+        : 'player,card_number,set_name,year,category,insert_name,is_rookie,var_images';
+      const url = `${_SURL}/${s.table}?select=${cols}&player=ilike.*${encodeURIComponent(playerName)}*&limit=200`;
       const res = await fetch(url, { headers: _sbH(), signal: _ivPlayerAbort.signal });
       if(!res.ok) return;
       const data = await res.json();

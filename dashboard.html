@@ -3098,7 +3098,7 @@ async function submitVault(){
     const dateVal = document.getElementById('vmDateAcquired').value;
     const row = {
       user_id:           user.id,
-      ...(vmCard && vmCard.id ? { card_id: vmCard.id } : {}),
+      ...(vmCard && vmCard.id && vmCard._setTable !== 'card-images' ? { card_id: vmCard.id } : {}),
       player:            vmCard ? vmCard.player : 'Unknown',
       year:              vmCard ? vmCard.year : null,
       brand:             vmCard ? vmCard.brand : null,

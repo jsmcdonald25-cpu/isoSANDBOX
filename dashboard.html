@@ -545,6 +545,12 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 /* Market price in ISOVault list */
 .iv-row-price{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--blue);font-weight:700;text-align:right;white-space:nowrap}
 .iv-row-price.no-data{color:rgba(122,149,174,0.3);font-size:11px}
+/* Global bug report button */
+.bug-report-btn{position:fixed;bottom:56px;right:16px;z-index:9000;background:rgba(13,31,51,0.92);border:1px solid rgba(255,59,92,0.35);border-radius:8px;padding:7px 13px;display:flex;align-items:center;gap:7px;cursor:pointer;transition:all .2s;backdrop-filter:blur(4px)}
+.bug-report-btn:hover{border-color:var(--red);background:rgba(255,59,92,0.12);transform:translateY(-1px)}
+.bug-report-btn-label{font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--red)}
+.bug-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:10002;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.bug-modal{background:var(--deep2);border:1px solid rgba(255,59,92,0.3);border-radius:14px;width:100%;max-width:500px;padding:28px;position:relative}
 .cd-upload-title{font-family:Bebas Neue,sans-serif;font-size:20px;letter-spacing:2px;color:var(--white);margin-bottom:4px}
 .cd-upload-sub{font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:20px;line-height:1.5}
 /* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
@@ -1737,7 +1743,63 @@ async function logOut(){
 </div><!-- /main -->
 </div><!-- /app -->
 
-<!-- VAULT UPLOAD MODAL -->
+<!-- GLOBAL BUG REPORT BUTTON -->
+<div class="bug-report-btn" onclick="openBugReport()" title="Report a bug or issue">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--red)"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+  <span class="bug-report-btn-label">Report Issue</span>
+</div>
+
+<!-- GLOBAL BUG REPORT MODAL -->
+<div class="bug-modal-overlay" id="bugModalOverlay" style="display:none" onclick="if(event.target===this)closeBugReport()">
+  <div class="bug-modal">
+    <button class="vm-close" onclick="closeBugReport()">&#215;</button>
+    <div style="font-family:Bebas Neue,sans-serif;font-size:20px;letter-spacing:2px;color:var(--white);margin-bottom:4px">REPORT AN ISSUE</div>
+    <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:20px;line-height:1.5">Alpha feedback goes directly to the team. Every report is reviewed. Thank you for helping us build this right.</div>
+
+    <!-- Page auto-detected -->
+    <div style="display:flex;gap:10px;margin-bottom:14px">
+      <div style="flex:1">
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:5px">Page / Section</div>
+        <div id="bugPageLabel" style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--blue);padding:8px 12px;background:rgba(0,170,255,0.06);border:1px solid var(--deep-border);border-radius:6px">—</div>
+      </div>
+      <div style="flex:1">
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:5px">Issue Type <span style="color:var(--red)">*</span></div>
+        <select id="bugType" class="vm-input" style="cursor:pointer">
+          <option value="">Select type...</option>
+          <option value="broken">Something is broken</option>
+          <option value="wrong_data">Wrong data / info</option>
+          <option value="design">Display / layout issue</option>
+          <option value="slow">Too slow / not loading</option>
+          <option value="missing">Feature missing or unclear</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px">
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:5px">What were you trying to do? <span style="color:var(--red)">*</span></div>
+      <textarea id="bugDescription" rows="3"
+        style="width:100%;background:var(--deep2);border:1px solid var(--deep-border);border-radius:6px;padding:10px 13px;font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--white);outline:none;resize:vertical;transition:border-color .2s;box-sizing:border-box"
+        placeholder="e.g. I clicked Ichiro on Post ISO and got an error..."
+        onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--deep-border)'"></textarea>
+    </div>
+
+    <div style="margin-bottom:20px">
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:5px">What did you expect to happen? <span style="font-size:9px;color:rgba(122,149,174,0.5)">(optional)</span></div>
+      <textarea id="bugExpected" rows="2"
+        style="width:100%;background:var(--deep2);border:1px solid var(--deep-border);border-radius:6px;padding:10px 13px;font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--white);outline:none;resize:vertical;transition:border-color .2s;box-sizing:border-box"
+        placeholder="e.g. I expected to see a list of Ichiro cards..."
+        onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--deep-border)'"></textarea>
+    </div>
+
+    <div id="bugSubmitError" style="display:none;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--red);margin-bottom:10px"></div>
+
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-primary" style="flex:1;background:var(--red);border-color:var(--red)" id="bugSubmitBtn" onclick="submitBugReport()">SEND REPORT</button>
+      <button class="btn btn-ghost" onclick="closeBugReport()">Cancel</button>
+    </div>
+  </div>
+</div>
 <div class="vault-modal-overlay" id="vaultModalOverlay" style="display:none" onclick="void(0)">
   <div class="vault-modal">
     <button class="vm-close" onclick="closeVaultModal()">&#215;</button>
@@ -2424,72 +2486,81 @@ function pickP(name,team,pos,rookie){
 async function loadISOPlayers(){ /* replaced by live search */ }
 function searchP(q){ isoSearchPlayer(q); }
 let _s3Cards=[];
+let _s3Abort = null;
+
 async function renderCardRes(){
-  if(!ISO.player)return;
-  const listEl=document.getElementById('s3SetList');
-  const subEl=document.getElementById('s3sub');
+  if(!ISO.player) return;
+  const listEl = document.getElementById('s3SetList');
+  const subEl  = document.getElementById('s3sub');
   s3ResetPreview();
+  listEl.innerHTML = '<div class="s3-msg">Searching catalog...</div>';
 
-  listEl.innerHTML='<div class="s3-msg">Searching catalog...</div>';
+  const sportId    = ISO.sportId || null;
+  const setsToSearch = sportId
+    ? IV_SETS.filter(s=>s.sport===sportId && !s.pokemonCols)
+    : IV_SETS.filter(s=>!s.pokemonCols);
 
-  try{
-    const results=[];
-    // Scope to selected sport only — fall back to all non-pokemon sets if no sport set
-    const sportId = ISO.sportId || null;
-    const setsToSearch = sportId
-      ? IV_SETS.filter(s=>s.sport===sportId && !s.pokemonCols)
-      : IV_SETS.filter(s=>!s.pokemonCols);
+  if(_s3Abort) _s3Abort.abort();
+  _s3Abort = new AbortController();
 
-    for(const s of setsToSearch){
-      // Only request columns that exist on every set table — no front_img, no price_market
-      // Only use columns proven to exist on every baseball set table
-      const data=await _rGet(s.table,'select=player,card_number,set_name,year,category,insert_name,is_rookie&player=ilike.*'+encodeURIComponent(ISO.player)+'*&limit=300');
-      if(data) data.forEach((r,i)=>results.push({
-        id:s.table+'_'+i,
-        player:r.player,
-        year:r.year||s.year,
-        brand:s.brand,
-        set:s.name,
-        parallel:r.insert_name||r.category||'Base',
-        run:null,
-        auto:(r.category||'').toLowerCase().includes('auto'),
-        rc:!!r.is_rookie,
-        price:0,
-        isos:0,
-        _cardNumber:r.card_number,
-        _setTable:s.table
-      }));
-    }
+  const results = [];
 
-    _s3Cards=results;
-    if(!results.length){
-      listEl.innerHTML='<div class="s3-msg">No cards found for '+ISO.player+' — try a different spelling.</div>';
-      return;
-    }
-
-    const sets=[],seen=new Set();
-    results.forEach(c=>{
-      const k=c.year+'|'+c.brand+'|'+c.set;
-      if(!seen.has(k)){seen.add(k);sets.push({year:c.year,brand:c.brand,set:c.set,key:k});}
-    });
-    // Sort newest first
-    sets.sort((a,b)=>b.year-a.year);
-
-    subEl.textContent=results.length+' card'+(results.length!==1?'s':'')+' found across '+sets.length+' set'+(sets.length!==1?'s':'')+'. Select a set then pick the variant.';
-    listEl.innerHTML=sets.map(s=>{
-      const vc=results.filter(c=>String(c.year)===String(s.year)&&c.brand===s.brand&&c.set===s.set).length;
-      return'<div class="s3-set-row" onclick="s3SelectSet(this,'+JSON.stringify(s.key)+')">'
-        +'<div class="s3-set-year">'+s.year+'</div>'
-        +'<div class="s3-set-name">'+s.set+'</div>'
-        +'<div class="s3-set-brand">'+s.brand+' &middot; '+vc+' variant'+(vc!==1?'s':'')+'</div>'
-        +'</div>';
-    }).join('');
-    // Auto-select if only one set
-    if(sets.length===1){const r=listEl.querySelector('.s3-set-row');if(r)s3SelectSet(r,sets[0].key);}
-
-  }catch(e){
-    listEl.innerHTML='<div class="s3-msg" style="color:var(--red)">Error: '+e.message+'</div>';
+  try {
+    await Promise.all(setsToSearch.map(async s=>{
+      const url = `${_SURL}/${s.table}?select=player,card_number&player=ilike.*${encodeURIComponent(ISO.player)}*&limit=300`;
+      const r   = await fetch(url, {headers:_sbH(), signal:_s3Abort.signal});
+      if(!r.ok) return; // silently skip — same pattern as working autocomplete
+      const data = await r.json();
+      if(data) data.forEach((row,i)=>{
+        if(!row.player) return;
+        results.push({
+          id:          s.table+'_'+i,
+          player:      row.player,
+          year:        s.year,
+          brand:       s.brand,
+          set:         s.name,
+          parallel:    'Base',
+          run:         null,
+          auto:        false,
+          rc:          false,
+          price:       0,
+          isos:        0,
+          _cardNumber: row.card_number,
+          _setTable:   s.table
+        });
+      });
+    }));
+  } catch(e){
+    if(e.name === 'AbortError') return;
+    listEl.innerHTML = '<div class="s3-msg" style="color:var(--red)">Search failed — try again</div>';
+    return;
   }
+
+  _s3Cards = results;
+
+  if(!results.length){
+    listEl.innerHTML = '<div class="s3-msg">No cards found for <strong>'+ISO.player+'</strong> — check spelling or try a different sport.</div>';
+    return;
+  }
+
+  const sets = [], seen = new Set();
+  results.forEach(c=>{
+    const k = c.year+'|'+c.brand+'|'+c.set;
+    if(!seen.has(k)){ seen.add(k); sets.push({year:c.year, brand:c.brand, set:c.set, key:k}); }
+  });
+  sets.sort((a,b)=>b.year - a.year);
+
+  subEl.textContent = results.length+' card'+(results.length!==1?'s':'')+' found across '+sets.length+' set'+(sets.length!==1?'s':'')+'. Select a set then pick the variant.';
+  listEl.innerHTML = sets.map(s=>{
+    const vc = results.filter(c=>String(c.year)===String(s.year)&&c.brand===s.brand&&c.set===s.set).length;
+    return '<div class="s3-set-row" onclick="s3SelectSet(this,'+JSON.stringify(s.key)+')">'
+      +'<div class="s3-set-year">'+s.year+'</div>'
+      +'<div class="s3-set-name">'+s.set+'</div>'
+      +'<div class="s3-set-brand">'+s.brand+' &middot; '+vc+' variant'+(vc!==1?'s':'')+'</div>'
+      +'</div>';
+  }).join('');
+
+  if(sets.length===1){ const r=listEl.querySelector('.s3-set-row'); if(r) s3SelectSet(r, sets[0].key); }
 }
 function s3ResetPreview(){
   const e=document.getElementById('s3CardEmpty'),c=document.getElementById('s3Card3d');
@@ -6198,6 +6269,97 @@ function _renderAmRecentLog(overrides){
       <div style="font-family:Bebas Neue,sans-serif;font-size:18px;color:#FFC83C">$${parseFloat(r.admin_override_price||0).toFixed(2)}</div>
     </div>`;
   }).join('');
+}
+// ╔═══════════════════════════════════════════════════════════════════════════╗
+// GLOBAL BUG REPORT
+// ╚═══════════════════════════════════════════════════════════════════════════╝
+
+function openBugReport(){
+  // Auto-detect current page
+  const activePanel = document.querySelector('.panel.active');
+  const pageLabel   = activePanel ? (activePanel.id || '').replace('panel-','').toUpperCase() : 'UNKNOWN';
+  const el = document.getElementById('bugPageLabel');
+  if(el) el.textContent = pageLabel;
+
+  // Reset form
+  const bugType = document.getElementById('bugType');
+  const bugDesc = document.getElementById('bugDescription');
+  const bugExp  = document.getElementById('bugExpected');
+  const bugErr  = document.getElementById('bugSubmitError');
+  const bugBtn  = document.getElementById('bugSubmitBtn');
+  if(bugType) bugType.value = '';
+  if(bugDesc) bugDesc.value = '';
+  if(bugExp)  bugExp.value  = '';
+  if(bugErr)  bugErr.style.display = 'none';
+  if(bugBtn)  { bugBtn.disabled = false; bugBtn.textContent = 'SEND REPORT'; }
+
+  document.getElementById('bugModalOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBugReport(){
+  document.getElementById('bugModalOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+async function submitBugReport(){
+  const bugType  = document.getElementById('bugType').value;
+  const bugDesc  = document.getElementById('bugDescription').value.trim();
+  const bugExp   = document.getElementById('bugExpected').value.trim();
+  const bugPage  = document.getElementById('bugPageLabel').textContent;
+  const errEl    = document.getElementById('bugSubmitError');
+  const btn      = document.getElementById('bugSubmitBtn');
+
+  // Validate
+  if(!bugType){
+    errEl.textContent = 'Please select an issue type.';
+    errEl.style.display = 'block'; return;
+  }
+  if(!bugDesc){
+    errEl.textContent = 'Please describe what you were trying to do.';
+    errEl.style.display = 'block'; return;
+  }
+  errEl.style.display = 'none';
+
+  btn.disabled = true;
+  btn.textContent = 'SENDING...';
+
+  try {
+    const user = window._authUser;
+    const ANON_KEY = _SKEY;
+    const SB_REST  = _SURL.replace('/rest/v1','');
+    const sbH = _sbH();
+
+    await fetch(`${SB_REST}/rest/v1/bug_reports`, {
+      method: 'POST',
+      headers: { ...sbH, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({
+        user_id:      user ? user.id : null,
+        user_email:   user ? user.email : null,
+        page:         bugPage,
+        issue_type:   bugType,
+        description:  bugDesc,
+        expected:     bugExp || null,
+        reported_at:  new Date().toISOString(),
+        status:       'open',
+        build:        document.getElementById('buildStamp')?.textContent || null,
+      })
+    });
+
+    btn.textContent = '✓ REPORT SENT';
+    btn.style.background = 'var(--green)';
+    setTimeout(()=>{
+      closeBugReport();
+      btn.style.background = '';
+      T('Bug report sent — thank you. We\'ll look into it.');
+    }, 1200);
+
+  } catch(e){
+    btn.disabled = false;
+    btn.textContent = 'SEND REPORT';
+    errEl.textContent = 'Failed to send — please try again.';
+    errEl.style.display = 'block';
+  }
 }
 
 </script>

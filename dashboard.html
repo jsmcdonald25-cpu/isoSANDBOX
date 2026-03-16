@@ -1992,7 +1992,7 @@ const CARDS=[
     parallel:'Base', run:null, auto:false, rc:false,
     tags:[], price:8, isos:3,
     cardNum:'#SS-24', hasCatalogPic:false,
-    _setTable:'2025_stadium_club_v2', _cardNumber:'SS-24',
+    _setTable:'card-images', _cardNumber:'SS-24',
     _team:'Seattle Mariners',
     variations:[
       {label:'Base',                color:'#00AAFF', glow:'rgba(0,170,255,0.45)',  run:null, isBase:true,  lastSale:'$8',     isos:3,  watching:4},
@@ -3610,7 +3610,7 @@ async function _cdLoadCatalogImages(c){
 function _cdGuessTable(c){
   if(c.year===2026 && c.brand==='Topps' && c.set && c.set.toLowerCase().includes('series')) return '2026_series1_baseball';
   if(c.year===2026 && c.set && c.set.toLowerCase().includes('heritage')) return '2026_heritage_baseball';
-  if(c.year===2025 && c.set && c.set.toLowerCase().includes('stadium')) return '2025_stadium_club_v2';
+  if(c.year===2025 && c.set && c.set.toLowerCase().includes('stadium')) return 'card-images';
   return null;
 }
 

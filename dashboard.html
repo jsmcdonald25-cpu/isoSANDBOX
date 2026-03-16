@@ -1062,21 +1062,27 @@ async function logOut(){
       <!-- Step 1 -->
       <div class="sp active" id="sp1">
         <div class="sp-title">SELECT SPORT</div>
-        <div class="sp-sub">GrailISO is baseball-first. Football and basketball rolling out soon.</div>
-        <div class="sel-grid">
-          <div class="sel-tile sel" onclick="selSport(this,'Baseball')"><div class="tile-icon">&#9918;</div><div class="tile-name">Baseball</div><div class="tile-sub">MLB &#183; Minor League &#183; Vintage</div></div>
-          <div class="sel-tile" style="opacity:.4;pointer-events:none"><div class="tile-icon">&#127944;</div><div class="tile-name">Football</div><div class="tile-sub">Coming soon</div></div>
-          <div class="sel-tile" style="opacity:.4;pointer-events:none"><div class="tile-icon">&#127936;</div><div class="tile-name">Basketball</div><div class="tile-sub">Coming soon</div></div>
-        </div>
-        <div style="display:flex;justify-content:flex-end"><button class="btn btn-primary" onclick="gS(2)">Next &#8212; Choose Player &#8594;</button></div>
+        <div class="sp-sub">Choose the sport for your ISO. Active sports are live — others coming soon.</div>
+        <div class="iv-sport-grid" id="isoSportGrid" style="margin-bottom:20px"></div>
+        <div style="display:flex;justify-content:flex-end"><button class="btn btn-primary" id="sp1next" disabled onclick="gS(2)">Next &#8212; Search Player &#8594;</button></div>
       </div>
       <!-- Step 2 -->
       <div class="sp" id="sp2">
         <div class="sp-title">SEARCH PLAYER</div>
-        <div class="sp-sub">Type a player name. Select from the catalog &#8212; no freeform, no bad data.</div>
-        <div class="fg"><label class="fl">Player Name</label><input class="fc" id="pSearch" type="text" placeholder="e.g. Shohei Ohtani, Aaron Judge, Paul Skenes..." oninput="searchP(this.value)" autocomplete="off"/></div>
-        <div class="player-results" id="pResults"></div>
-        <div class="sel-player-box" id="selPBox">
+        <div class="sp-sub">Type a player name — results pull live from the catalog. Select from the list — no freeform.</div>
+        <div style="position:relative">
+          <div style="display:flex;align-items:center;gap:10px;background:var(--deep2);border:1px solid rgba(0,170,255,0.3);border-radius:10px;padding:0 10px 0 14px;transition:border-color .2s" id="isoPlayerWrap">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--muted-text);flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="pSearch" placeholder="e.g. Ichiro, Griffey, Paul Skenes..." autocomplete="off"
+              style="flex:1;background:none;border:none;outline:none;font-family:Barlow Condensed,sans-serif;font-size:16px;color:var(--white);padding:13px 8px;letter-spacing:.3px"
+              oninput="isoSearchPlayer(this.value)"
+              onkeydown="if(event.key==='Escape'){this.value='';document.getElementById('pResults').style.display='none';}"
+              onfocus="document.getElementById('isoPlayerWrap').style.borderColor='var(--blue)'"
+              onblur="setTimeout(()=>document.getElementById('isoPlayerWrap').style.borderColor='rgba(0,170,255,0.3)',150)"/>
+          </div>
+          <div class="player-results" id="pResults" style="position:absolute;width:100%;z-index:50;margin-top:4px;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.4)"></div>
+        </div>
+        <div class="sel-player-box" id="selPBox" style="margin-top:14px">
           <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Selected Player</div>
           <div id="selPName" style="font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--white);letter-spacing:1px"></div>
           <div id="selPMeta" style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)"></div>
@@ -2235,7 +2241,7 @@ const TICKER=[
 // &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
 // STATE
 // &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
-let ISO={sport:'Baseball',player:null,card:null,grade:'PSA 10'};
+let ISO={sport:'Baseball',sportId:'baseball',player:null,card:null,grade:'PSA 10'};
 let curStep=1;
 let libFilter='all';
 
@@ -2266,7 +2272,7 @@ function N(id,el){
   if(id==='myvault')renderMyVault();
   if(id==='myisos')renderMyISOs();
   if(id==='market')renderMkt();
-  if(id==='post'){curStep=1;gS(1);loadISOPlayers();}
+  if(id==='post'){curStep=1;gS(1);isoRenderSportGrid();}
   if(id==='overview')renderOvMkt();
   if(id==='isoticker')initISOTicker();
 }
@@ -2289,62 +2295,119 @@ function gS(n){
   if(n===3)renderCardRes();
   if(n===5)updateSum();
 }
-function selSport(el,s){
-  document.querySelectorAll('.sel-tile').forEach(t=>t.classList.remove('sel'));
-  el.classList.add('sel');ISO.sport=s;
-}
-// Pre-load real players from Supabase catalog for Post ISO search
-let _isoPlayersLoaded = false;
-async function loadISOPlayers(){
-  if(_isoPlayersLoaded) return;
-  try {
-    const tables = IV_SETS.map(s=>s.table);
-    const seen = new Set(PLAYERS.map(p=>p.name));
-    for(const tbl of tables){
-      const data = await _rGet(tbl,'select=player,team&limit=1000');
-      if(data) data.forEach(r=>{
-        if(r.player && !seen.has(r.player)){
-          seen.add(r.player);
-          PLAYERS.push({name:r.player, team:r.team||'', pos:'', rookie:''});
-        }
-      });
+// ── Post ISO: render sport grid from IV_SPORTS ───────────────────────────────
+function isoRenderSportGrid(){
+  const g = document.getElementById('isoSportGrid');
+  if(!g) return;
+  g.innerHTML = '';
+  IV_SPORTS.forEach(s=>{
+    const sets  = IV_SETS.filter(x=>x.sport===s.id);
+    const count = sets.length ? sets.length+' sets' : '';
+    const tile  = document.createElement('div');
+    tile.className = s.active ? 'iv-sport-tile' : 'iv-sport-tile inactive';
+    tile.id = 'isoSportTile-'+s.id;
+    tile.innerHTML = (s.active ? '<div class="iv-sport-badge">LIVE</div>' : '')
+      + '<div class="iv-sport-emoji">'+s.emoji+'</div>'
+      + '<div class="iv-sport-name">'+s.label+'</div>'
+      + '<div class="iv-sport-count">'+( s.active ? count : 'Coming soon' )+'</div>';
+    if(s.active){
+      tile.style.cursor='pointer';
+      tile.addEventListener('click',()=>isoSelectSport(s));
     }
-    _isoPlayersLoaded = true;
-  } catch(e){ console.warn('loadISOPlayers:', e); }
+    g.appendChild(tile);
+  });
 }
 
-function searchP(q){
-  const r=document.getElementById('pResults');
-  if(q.length<2){r.style.display='none';return;}
-  const ql=q.toLowerCase();
-  // Search PLAYERS first, then unique names from CARDS
-  const fromPlayers=PLAYERS.filter(p=>p.name.toLowerCase().includes(ql));
-  const seen=new Set(fromPlayers.map(p=>p.name));
-  const fromCards=[];
-  CARDS.forEach(c=>{
-    if(c.player&&c.player.toLowerCase().includes(ql)&&!seen.has(c.player)){
-      seen.add(c.player);
-      fromCards.push({name:c.player,team:c._team||'',pos:'',rookie:c.year||''});
-    }
-  });
-  const merged=[...fromPlayers,...fromCards].slice(0,10);
-  if(!merged.length){r.style.display='none';return;}
-  r.innerHTML=merged.map(p=>{
-    const cc=CARDS.filter(c=>c.player===p.name).length;
-    const meta=[p.team,p.pos,p.rookie?'RC '+p.rookie:''].filter(Boolean).join(' &middot; ');
-    return`<div class="pr" onclick="pickP('${p.name.replace(/'/g,"\\'")}','${(p.team||'').replace(/'/g,"\\'")}','${p.pos||''}',${p.rookie||0})"><div><div class="pr-name">${p.name}</div><div class="pr-meta">${meta||''}</div></div><div class="pr-count">${cc} cards</div></div>`;
-  }).join('');
-  r.style.display='block';
+function isoSelectSport(sportDef){
+  ISO.sport = sportDef.label;
+  ISO.sportId = sportDef.id;
+  // Highlight selected
+  document.querySelectorAll('#isoSportGrid .iv-sport-tile').forEach(t=>t.classList.remove('active'));
+  const tile = document.getElementById('isoSportTile-'+sportDef.id);
+  if(tile) tile.classList.add('active');
+  // Enable next button
+  const btn = document.getElementById('sp1next');
+  if(btn) btn.disabled = false;
 }
+
+function selSport(el,s){
+  // Legacy — keep for any residual calls
+  ISO.sport=s;
+}
+
+// ── Post ISO: live player autocomplete (sport-scoped) ────────────────────────
+let _isoPlayerTimer = null;
+let _isoPlayerAbort = null;
+
+function isoSearchPlayer(q){
+  clearTimeout(_isoPlayerTimer);
+  const res = document.getElementById('pResults');
+  if(!q || q.length < 2){ res.style.display='none'; return; }
+  _isoPlayerTimer = setTimeout(()=>_isoPlayerFetch(q), 250);
+}
+
+async function _isoPlayerFetch(q){
+  const res = document.getElementById('pResults');
+  res.innerHTML = '<div class="pr" style="color:var(--muted-text);cursor:default;letter-spacing:1px;font-size:12px">Searching...</div>';
+  res.style.display = 'block';
+
+  // Scope to selected sport's tables — fall back to all if no sport yet
+  const sportId = ISO.sportId || null;
+  const sets = sportId
+    ? IV_SETS.filter(s=>s.sport===sportId && !s.pokemonCols)
+    : IV_SETS.filter(s=>!s.pokemonCols);
+
+  if(_isoPlayerAbort) _isoPlayerAbort.abort();
+  _isoPlayerAbort = new AbortController();
+
+  const seen  = new Set();
+  const names = [];
+
+  try {
+    await Promise.all(sets.map(async s=>{
+      const url = `${_SURL}/${s.table}?select=player,team,year&player=ilike.*${encodeURIComponent(q)}*&limit=8`;
+      const r   = await fetch(url,{headers:_sbH(),signal:_isoPlayerAbort.signal});
+      if(!r.ok) return;
+      const data = await r.json();
+      if(data) data.forEach(row=>{
+        if(row.player && !seen.has(row.player)){
+          seen.add(row.player);
+          names.push({ name:row.player, team:row.team||'' });
+        }
+      });
+    }));
+  } catch(e){
+    if(e.name==='AbortError') return;
+  }
+
+  if(!names.length){
+    res.innerHTML='<div class="pr" style="color:var(--muted-text);cursor:default;font-size:13px">No players found — try fewer characters</div>';
+    return;
+  }
+
+  names.sort((a,b)=>a.name.localeCompare(b.name));
+  res.innerHTML = names.slice(0,12).map(p=>
+    `<div class="pr" onclick="pickP('${p.name.replace(/'/g,"\\'")}','${p.team.replace(/'/g,"\\'")}','',0)">
+      <div><div class="pr-name">${p.name}</div><div class="pr-meta">${p.team||''}</div></div>
+    </div>`
+  ).join('')
+  + (names.length>12?`<div class="pr" style="color:rgba(0,170,255,0.4);font-size:11px;letter-spacing:1px;cursor:default">${names.length} results — keep typing to narrow</div>`:'');
+  res.style.display='block';
+}
+
 function pickP(name,team,pos,rookie){
   ISO.player=name;
   document.getElementById('pSearch').value=name;
   document.getElementById('pResults').style.display='none';
   const b=document.getElementById('selPBox');b.style.display='block';
   document.getElementById('selPName').textContent=name;
-  document.getElementById('selPMeta').textContent=`${team} · ${pos} · Rookie ${rookie}`;
+  document.getElementById('selPMeta').textContent=team ? team : '';
   document.getElementById('s2next').disabled=false;
 }
+
+// Legacy stub — kept so nothing breaks
+async function loadISOPlayers(){ /* replaced by live search */ }
+function searchP(q){ isoSearchPlayer(q); }
 let _s3Cards=[];
 async function renderCardRes(){
   if(!ISO.player)return;

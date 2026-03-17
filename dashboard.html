@@ -4624,6 +4624,15 @@ async function submitCatalogUpload(){
     window._cdCard._varImages[varLabel] = { front: frontURL, back: backURL };
     _cdSetViewerImages(frontURL + _cb, backURL + _cb);
 
+    // Also update _ivData in place so next card open uses fresh var_images, not stale preload
+    if(window._ivData && cardNum){
+      const _ivRow = window._ivData.find(r => String(r.card_number) === String(cardNum));
+      if(_ivRow){
+        if(!_ivRow.var_images) _ivRow.var_images = {};
+        _ivRow.var_images[varLabel] = { front: frontURL, back: backURL };
+      }
+    }
+
     const statusEl=document.getElementById('cd-img-status');
     if(statusEl){ statusEl.style.display='block'; statusEl.textContent=`✓ ${varLabel} image live`; statusEl.style.color='var(--green)';
       setTimeout(()=>statusEl.style.display='none', 3000); }

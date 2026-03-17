@@ -4618,18 +4618,20 @@ async function submitCatalogUpload(){
     btn.textContent='✓ SAVED!';
 
     // Cache locally and load live into viewer
-    // Append cache-bust timestamp so browser always fetches the newly uploaded file
+    // Append cache-bust timestamp on ALL stored URLs so probe always gets fresh image
     const _cb = '?t=' + Date.now();
+    const frontCB = frontURL + _cb;
+    const backCB  = backURL  + _cb;
     if(!window._cdCard._varImages) window._cdCard._varImages = {};
-    window._cdCard._varImages[varLabel] = { front: frontURL, back: backURL };
-    _cdSetViewerImages(frontURL + _cb, backURL + _cb);
+    window._cdCard._varImages[varLabel] = { front: frontCB, back: backCB };
+    _cdSetViewerImages(frontCB, backCB);
 
     // Also update _ivData in place so next card open uses fresh var_images, not stale preload
     if(window._ivData && cardNum){
       const _ivRow = window._ivData.find(r => String(r.card_number) === String(cardNum));
       if(_ivRow){
         if(!_ivRow.var_images) _ivRow.var_images = {};
-        _ivRow.var_images[varLabel] = { front: frontURL, back: backURL };
+        _ivRow.var_images[varLabel] = { front: frontCB, back: backCB };
       }
     }
 

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="cf-rocket-loader" content="disabled" />
 <title>GrailISO &#8212; Buyer Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <script data-cfasync="false" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -5449,16 +5450,19 @@ window._ivMarketCache = {}; // card_number → avg price paid
 async function _ivLoadMarketPrices(table){
   window._ivMarketCache = {};
   try {
-    // Fetch all purchased vault entries for this set's card numbers
-    const { data, error } = await window._sb
-      .from('vault')
-      .select('card_number, price_paid, variation')
-      .eq('set_name', table)
-      .eq('acquisition_type', 'purchased')
-      .not('price_paid','is',null)
-      .not('market_excluded','is',true);
-    if(error || !data) return;
-    // Group by card_number → compute avg per base variation (first entry = base)
+    const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+    const url = 'https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault'
+      + '?select=card_number,price_paid,variation'
+      + '&set_name=eq.' + encodeURIComponent(table)
+      + '&acquisition_type=eq.purchased'
+      + '&price_paid=not.is.null'
+      + '&market_excluded=not.is.true'
+      + '&limit=1000';
+    const r = await fetch(url, { headers:{ 'apikey': SKEY, 'Authorization': 'Bearer ' + SKEY } });
+    if(!r.ok) return;
+    const data = await r.json();
+    if(!data || !data.length) return;
+    // Group by card_number → compute avg price paid
     const map = {};
     data.forEach(r=>{
       const k = (r.card_number||'').toString();
@@ -5557,17 +5561,19 @@ async function _cdLoadLiveMarket(card, variationLabel){
 
   try {
     // Query vault for all submissions of this card + variation
-    const { data, error } = await window._sb
-      .from('vault')
-      .select('price_paid, date_acquired, variation, acquisition_type')
-      .eq('card_number', card._cardNumber)
-      .eq('variation', variationLabel)
-      .not('price_paid', 'is', null)
-      .not('market_excluded', 'is', true)
-      .order('date_acquired', { ascending: false })
-      .limit(50);
+    const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+    const url = 'https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault'
+      + '?select=price_paid,date_acquired,variation,acquisition_type'
+      + '&card_number=eq.' + encodeURIComponent(card._cardNumber)
+      + '&variation=eq.' + encodeURIComponent(variationLabel)
+      + '&price_paid=not.is.null'
+      + '&market_excluded=not.is.true'
+      + '&order=date_acquired.desc'
+      + '&limit=50';
+    const resp = await fetch(url, { headers:{ 'apikey': SKEY, 'Authorization': 'Bearer ' + SKEY } });
+    const data = resp.ok ? await resp.json() : null;
 
-    if(error || !data || !data.length){
+    if(!data || !data.length){
       document.getElementById('cd-mkt-avg').textContent   = '—';
       document.getElementById('cd-mkt-range').textContent = '—';
       document.getElementById('cd-mkt-count').textContent = '0';
@@ -6000,9 +6006,11 @@ async function renderMyISOs(){
   try {
     const { data:{ user } } = await window._sb.auth.getUser();
     if(!user){ if(loading) loading.style.display='none'; if(empty) empty.style.display='block'; return; }
-    const { data, error } = await window._sb
-      .from('isos').select('*').eq('user_id', user.id).order('created_at',{ascending:false});
+    const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+    const _isoResp = await fetch('https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/isos?select=*&user_id=eq.'+user.id+'&order=created_at.desc', { headers:{ 'apikey': SKEY, 'Authorization': 'Bearer ' + SKEY } });
     if(loading) loading.style.display='none';
+    const data = _isoResp.ok ? await _isoResp.json() : null;
+    const error = _isoResp.ok ? null : { message: 'HTTP ' + _isoResp.status };
     if(error){
       if(list){ list.style.display='block'; list.innerHTML=`<div style="padding:20px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--red)">Error loading ISOs: ${error.message}</div>`; }
       return;

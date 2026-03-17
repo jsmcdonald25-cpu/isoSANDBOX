@@ -2383,6 +2383,7 @@ const PM={
   leaderboard:{t:'LEADERBOARD',s:'Top buyers · sellers · most wanted cards'},
   carddetail:{t:'ISOVAULT',s:'Card detail'},
 };
+let _navSuppressHistory = false;
 function N(id,el){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -2397,6 +2398,10 @@ function N(id,el){
   if(id==='post'){curStep=1;gS(1);isoRenderSportGrid();}
   if(id==='overview')renderOvMkt();
   if(id==='isoticker')initISOTicker();
+  // Push panel state into browser history so mouse back button steps through panels
+  if(!_navSuppressHistory){
+    history.pushState({panel:id}, '', window.location.href);
+  }
 }
 
 // &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
@@ -4613,9 +4618,11 @@ async function submitCatalogUpload(){
     btn.textContent='✓ SAVED!';
 
     // Cache locally and load live into viewer
+    // Append cache-bust timestamp so browser always fetches the newly uploaded file
+    const _cb = '?t=' + Date.now();
     if(!window._cdCard._varImages) window._cdCard._varImages = {};
     window._cdCard._varImages[varLabel] = { front: frontURL, back: backURL };
-    _cdSetViewerImages(frontURL, backURL);
+    _cdSetViewerImages(frontURL + _cb, backURL + _cb);
 
     const statusEl=document.getElementById('cd-img-status');
     if(statusEl){ statusEl.style.display='block'; statusEl.textContent=`✓ ${varLabel} image live`; statusEl.style.color='var(--green)';
@@ -5758,10 +5765,15 @@ function _navDragEnd(){ this.style.opacity='1'; document.querySelectorAll('.drag
 // N() is the original function — no override needed
 
 // &#9472;&#9472; Trap browser back button — never leave the app &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
-history.pushState(null, '', window.location.href);
-window.addEventListener('popstate', function(){
-  history.pushState(null, '', window.location.href);
-  N('overview', document.querySelector('[onclick*="overview"]'));
+history.pushState({panel:'overview'}, '', window.location.href);
+window.addEventListener('popstate', function(e){
+  const id = (e.state && e.state.panel) ? e.state.panel : 'overview';
+  const el = document.querySelector('[onclick*="' + id + '"]') || null;
+  _navSuppressHistory = true;
+  N(id, el);
+  _navSuppressHistory = false;
+  // Re-push so we never actually navigate away from the app
+  history.pushState({panel:id}, '', window.location.href);
 });
 
 // ivInit() handles ISOVault rendering on N('library',...)

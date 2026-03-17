@@ -4182,6 +4182,9 @@ function _cdApplyOrientation(landscape){
 // Calls callback(landscape:boolean) exactly once.
 function _cdProbeOrientation(url, callback){
   if(!url){ callback(false); return; }
+  // Strip any existing query params and add unique timestamp — forces browser to fetch
+  // fresh from origin every time. Prevents stale cached image returning wrong dimensions.
+  const probeUrl = url.split('?')[0] + '?_probe=' + Date.now();
   const img = new Image();
   let fired = false;
   function done(landscape){
@@ -4191,11 +4194,8 @@ function _cdProbeOrientation(url, callback){
   }
   img.onload  = function(){ done(this.naturalWidth > this.naturalHeight); };
   img.onerror = function(){ done(false); };
-  img.src = url;
-  // If browser already had it cached, complete fires synchronously before onload
-  if(img.complete && img.naturalWidth > 0){
-    done(img.naturalWidth > img.naturalHeight);
-  }
+  img.src = probeUrl;
+  // NOTE: do NOT check img.complete here — probeUrl is always unique so it will never be cached
 }
 
 function _cdSetViewerImages(frontUrl, backUrl){

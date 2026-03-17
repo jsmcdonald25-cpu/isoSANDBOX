@@ -1504,38 +1504,64 @@ async function logOut(){
   <div class="cd-upload-overlay" id="cdUploadOverlay" style="display:none" onclick="if(event.target===this)closeCatalogUpload()">
     <div class="cd-upload-modal">
       <button class="vm-close" onclick="closeCatalogUpload()">&#215;</button>
-      <div class="cd-upload-title">CONTRIBUTE CATALOG IMAGE</div>
-      <div class="cd-upload-sub" id="cdUploadSub" style="margin-bottom:12px">Your photo becomes the reference image for all collectors.</div>
-      <div class="cd-contrib-badge">
-        <div class="cd-contrib-badge-icon">&#128248;</div>
-        <div class="cd-contrib-badge-text">
-          <strong>Community Contribution &#8212; +2 Credits</strong><br>
-          This upload is for catalog reference only. You do not need to own this card.
-          If you own it and paid for it, use <strong>+ Add to My Vault</strong> instead &#8212; that also feeds the market price engine.
+
+      <!-- SCREEN 1: Upload -->
+      <div id="cdUploadScreen1">
+        <div class="cd-upload-title">CONTRIBUTE CATALOG IMAGE</div>
+        <div class="cd-upload-sub" id="cdUploadSub" style="margin-bottom:12px">Your photo becomes the reference image for all collectors.</div>
+        <div class="cd-contrib-badge">
+          <div class="cd-contrib-badge-icon">&#128248;</div>
+          <div class="cd-contrib-badge-text">
+            <strong>Community Contribution &#8212; +2 Credits</strong><br>
+            This upload is for catalog reference only. You do not need to own this card.
+            If you own it and paid for it, use <strong>+ Add to My Vault</strong> instead &#8212; that also feeds the market price engine.
+          </div>
+        </div>
+        <div class="vm-upload-row" style="margin-bottom:14px">
+          <div class="vm-upload-box" id="cdFrontBox">
+            <input type="file" accept="image/*" id="cdFrontFile" onchange="handleCatalogUpload(this,'front')">
+            <div class="vm-upload-icon">&#128248;</div>
+            <div class="vm-upload-label">FRONT OF CARD</div>
+            <div class="vm-upload-name" id="cdFrontName"></div>
+            <img class="vm-preview" id="cdFrontPreview">
+          </div>
+          <div class="vm-upload-box" id="cdBackBox">
+            <input type="file" accept="image/*" id="cdBackFile" onchange="handleCatalogUpload(this,'back')">
+            <div class="vm-upload-icon">&#128260;</div>
+            <div class="vm-upload-label">BACK OF CARD</div>
+            <div class="vm-upload-name" id="cdBackName"></div>
+            <img class="vm-preview" id="cdBackPreview">
+          </div>
+        </div>
+        <div class="vm-error" id="cdUploadError" style="display:none">Both front and back are required.</div>
+        <div style="display:flex;gap:10px;margin-top:4px">
+          <button class="btn btn-primary" style="flex:1" id="cdReviewBtn" onclick="cdUploadShowConfirm()">REVIEW BEFORE SAVING &#8594;</button>
+          <button class="btn btn-ghost" onclick="closeCatalogUpload()">Cancel</button>
         </div>
       </div>
-      <div class="vm-upload-row" style="margin-bottom:14px">
-        <div class="vm-upload-box" id="cdFrontBox">
-          <input type="file" accept="image/*" id="cdFrontFile" onchange="handleCatalogUpload(this,'front')">
-          <div class="vm-upload-icon">&#128248;</div>
-          <div class="vm-upload-label">FRONT OF CARD</div>
-          <div class="vm-upload-name" id="cdFrontName"></div>
-          <img class="vm-preview" id="cdFrontPreview">
+
+      <!-- SCREEN 2: Confirm -->
+      <div id="cdUploadScreen2" style="display:none">
+        <div class="cd-upload-title">CONFIRM YOUR IMAGES</div>
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:14px">Make sure front and back are correct before saving. Once saved, only an admin can clear it.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+          <div>
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:6px">FRONT</div>
+            <img id="cdConfirmFront" style="width:100%;border-radius:8px;border:1px solid rgba(0,170,255,0.2);display:block">
+          </div>
+          <div>
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:6px">BACK</div>
+            <img id="cdConfirmBack" style="width:100%;border-radius:8px;border:1px solid rgba(0,170,255,0.2);display:block">
+          </div>
         </div>
-        <div class="vm-upload-box" id="cdBackBox">
-          <input type="file" accept="image/*" id="cdBackFile" onchange="handleCatalogUpload(this,'back')">
-          <div class="vm-upload-icon">&#128260;</div>
-          <div class="vm-upload-label">BACK OF CARD</div>
-          <div class="vm-upload-name" id="cdBackName"></div>
-          <img class="vm-preview" id="cdBackPreview">
+        <div class="vm-progress" id="cdUploadProgress" style="display:none"><div class="vm-progress-bar" id="cdUploadProgressBar"></div></div>
+        <div class="vm-error" id="cdUploadError2" style="display:none">Upload failed — please try again.</div>
+        <div style="display:flex;gap:10px;margin-top:4px">
+          <button class="btn btn-primary" style="flex:1;background:var(--green);border-color:var(--green)" id="cdUploadSubmitBtn" onclick="submitCatalogUpload()">&#10003; LOOKS CORRECT — SAVE</button>
+          <button class="btn btn-ghost" onclick="cdUploadBackToUpload()">&#8592; Start Over</button>
         </div>
       </div>
-      <div class="vm-error" id="cdUploadError" style="display:none">Both front and back are required.</div>
-      <div class="vm-progress" id="cdUploadProgress" style="display:none"><div class="vm-progress-bar" id="cdUploadProgressBar"></div></div>
-      <div style="display:flex;gap:10px;margin-top:4px">
-        <button class="btn btn-primary" style="flex:1" id="cdUploadSubmitBtn" onclick="submitCatalogUpload()">SAVE TO CATALOG (+2 CREDITS)</button>
-        <button class="btn btn-ghost" onclick="closeCatalogUpload()">Cancel</button>
-      </div>
+
     </div>
   </div>
 
@@ -4075,7 +4101,14 @@ async function _cdLoadCatalogImages(c){
       _cdSetViewerImages(imgs.front || null, imgs.back || null);
       if(statusEl){ statusEl.textContent='✓ Images loaded'; statusEl.style.color='var(--green)';
         setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
-      if(uploadBtn) uploadBtn.textContent='Replace Image';
+      // Lock upload button if both front+back already exist for this variation — admin only
+      if(uploadBtn){
+        if(imgs.front && imgs.back && !window._isAdmin){
+          uploadBtn.style.display='none';
+        } else {
+          uploadBtn.textContent='Replace Image'; uploadBtn.style.display='inline-flex';
+        }
+      }
       // Update hasCatalogPic so vault modal shows correct path
       c.hasCatalogPic = true;
       if(window._cdCard) window._cdCard.hasCatalogPic = true;
@@ -4117,7 +4150,14 @@ async function _cdLoadCatalogImages(c){
       _cdSetViewerImages(imgs.front || null, imgs.back || null);
       if(statusEl){ statusEl.textContent='✓ Images loaded'; statusEl.style.color='var(--green)';
         setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
-      if(uploadBtn) uploadBtn.textContent='Replace Image';
+      // Lock upload button if both front+back already exist for this variation — admin only
+      if(uploadBtn){
+        if(imgs.front && imgs.back && !window._isAdmin){
+          uploadBtn.style.display='none';
+        } else {
+          uploadBtn.textContent='Replace Image'; uploadBtn.style.display='inline-flex';
+        }
+      }
       // Update hasCatalogPic so vault modal shows correct path
       c.hasCatalogPic = true;
       if(window._cdCard) window._cdCard.hasCatalogPic = true;
@@ -4161,19 +4201,29 @@ const _CD_PORT = {w:280, h:392};
 const _CD_LAND = {w:392, h:280};
 
 function _cdApplyOrientation(landscape){
-  const dim = landscape ? _CD_LAND : _CD_PORT;
+  // Legacy single-face call — applies to both panels (used when no back image)
+  _cdApplyOrientationBoth(landscape, landscape);
+}
+
+// Apply front and back panel dimensions independently
+// sceneLandscape = orientation of the currently VISIBLE face (drives wrap/scene size)
+function _cdApplyOrientationBoth(frontLandscape, backLandscape){
+  const sceneLandscape = _cdFlipped ? backLandscape : frontLandscape;
+  const sceneDim = sceneLandscape ? _CD_LAND : _CD_PORT;
+  const frontDim = frontLandscape ? _CD_LAND : _CD_PORT;
+  const backDim  = backLandscape  ? _CD_LAND : _CD_PORT;
   const wrap  = document.querySelector('.cd-scene-wrap');
   const vwrap = document.querySelector('.cd-viewer-wrap');
   const front = document.getElementById('cd-front');
   const back  = document.getElementById('cd-back');
-  if(wrap){  wrap.style.width  = dim.w+'px'; wrap.style.height = dim.h+'px'; }
-  if(vwrap){ vwrap.style.width = dim.w+'px'; }
-  if(front){ front.style.width = dim.w+'px'; front.style.height= dim.h+'px'; }
+  if(wrap){  wrap.style.width  = sceneDim.w+'px'; wrap.style.height = sceneDim.h+'px'; }
+  if(vwrap){ vwrap.style.width = sceneDim.w+'px'; }
+  if(front){ front.style.width = frontDim.w+'px'; front.style.height = frontDim.h+'px'; }
   if(back){
-    back.style.width  = dim.w+'px';
-    back.style.height = dim.h+'px';
-    back.style.top    = '0';
-    back.style.left   = '0';
+    back.style.width  = backDim.w+'px';
+    back.style.height = backDim.h+'px';
+    back.style.top  = '0';
+    back.style.left = '0';
   }
 }
 
@@ -4225,8 +4275,7 @@ function _cdSetViewerImages(frontUrl, backUrl){
   window._cdBackLandscape  = false;
 
   function applyCurrentFace(){
-    const landscape = _cdFlipped ? window._cdBackLandscape : window._cdFrontLandscape;
-    _cdApplyOrientation(landscape);
+    _cdApplyOrientationBoth(window._cdFrontLandscape, window._cdBackLandscape);
   }
 
   let frontDone = !frontUrl;
@@ -4434,8 +4483,7 @@ function _cdInitRotation(){
 
 function cdFlip(){
   _cdFlipped=!_cdFlipped; _cdRotX=0; _cdRotY=0;
-  const landscape = _cdFlipped ? (window._cdBackLandscape||false) : (window._cdFrontLandscape||false);
-  _cdApplyOrientation(landscape);
+  _cdApplyOrientationBoth(window._cdFrontLandscape||false, window._cdBackLandscape||false);
   _cdApplyTransform();
 }
 function cdToggleSpin(){
@@ -4462,14 +4510,40 @@ function openCatalogUpload(){
   document.getElementById('cdUploadProgress').style.display='none';
   document.getElementById('cdUploadProgressBar').style.width='0';
   const btn=document.getElementById('cdUploadSubmitBtn');
-  btn.textContent='SAVE TO CATALOG'; btn.disabled=false;
+  btn.textContent='✓ LOOKS CORRECT — SAVE'; btn.disabled=false;
   const c=window._cdCard;
   const activeVar = (window._cdVars||[])[window._cdActiveVar||0];
   const varLabel = activeVar ? activeVar.label : 'Base';
   if(c) document.getElementById('cdUploadSub').textContent=
     `${c.player} · ${c.year} ${c.brand} ${c.set} · ${c.cardNum||''} · ${varLabel}`;
+  // Always start on screen 1
+  document.getElementById('cdUploadScreen1').style.display='block';
+  document.getElementById('cdUploadScreen2').style.display='none';
   document.getElementById('cdUploadOverlay').style.display='flex';
   document.body.style.overflow='hidden';
+}
+
+function cdUploadShowConfirm(){
+  if(!_cdCatalogFrontBlob||!_cdCatalogBackBlob){
+    document.getElementById('cdUploadError').style.display='block'; return;
+  }
+  document.getElementById('cdUploadError').style.display='none';
+  // Copy previews into confirm screen
+  const fp = document.getElementById('cdFrontPreview');
+  const bp = document.getElementById('cdBackPreview');
+  document.getElementById('cdConfirmFront').src = fp.src;
+  document.getElementById('cdConfirmBack').src  = bp.src;
+  document.getElementById('cdUploadError2').style.display='none';
+  document.getElementById('cdUploadProgress').style.display='none';
+  document.getElementById('cdUploadProgressBar').style.width='0';
+  document.getElementById('cdUploadSubmitBtn').disabled=false;
+  document.getElementById('cdUploadScreen1').style.display='none';
+  document.getElementById('cdUploadScreen2').style.display='block';
+}
+
+function cdUploadBackToUpload(){
+  document.getElementById('cdUploadScreen2').style.display='none';
+  document.getElementById('cdUploadScreen1').style.display='block';
 }
 
 function closeCatalogUpload(){
@@ -4649,10 +4723,11 @@ async function submitCatalogUpload(){
     setTimeout(()=>{ closeCatalogUpload(); T(`${varLabel} image saved · ${c.player} ${c.cardNum||''}`); }, 900);
 
   } catch(err){
-    btn.disabled=false; btn.textContent='SAVE TO CATALOG';
+    btn.disabled=false; btn.textContent='✓ LOOKS CORRECT — SAVE';
     bar.style.width='0';
-    document.getElementById('cdUploadError').textContent=err.message||'Upload failed — try again.';
-    document.getElementById('cdUploadError').style.display='block';
+    const errEl = document.getElementById('cdUploadError2') || document.getElementById('cdUploadError');
+    errEl.textContent=err.message||'Upload failed — try again.';
+    errEl.style.display='block';
   }
 }
 

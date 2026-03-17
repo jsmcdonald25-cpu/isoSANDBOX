@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ISOGrading — GrailISO</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0D1F33;
+    --grail: #FFFFFF;
+    --iso: #00AAFF;
+    --danger: #FF4444;
+    --warn: #FF8C00;
+    --success: #00CC66;
+    --card-bg: rgba(255,255,255,0.04);
+    --card-border: rgba(255,255,255,0.08);
+    --font-head: 'Bebas Neue', sans-serif;
+    --font-ui: 'Barlow Condensed', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--grail);
+    font-family: var(--font-ui);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── BACKGROUND TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(0,170,255,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 90%, rgba(255,68,68,0.04) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 56px;
+    background: rgba(13,31,51,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--card-border);
+  }
+  .nav-logo {
+    font-family: var(--font-head);
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--grail);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--iso); }
+  .nav-back {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--iso); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    padding: 120px 40px 60px;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--iso);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.1s forwards;
+  }
+
+  .hero-title {
+    font-family: var(--font-head);
+    font-size: clamp(64px, 10vw, 120px);
+    line-height: 0.9;
+    color: var(--grail);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.2s forwards;
+  }
+
+  .hero-title .accent {
+    color: var(--danger);
+    display: block;
+  }
+
+  .hero-subtitle {
+    font-family: var(--font-head);
+    font-size: clamp(28px, 5vw, 52px);
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 1px;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.3s forwards;
+  }
+
+  .hero-manifesto {
+    font-family: var(--font-ui);
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.65);
+    max-width: 640px;
+    margin: 0 auto 48px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.4s forwards;
+  }
+
+  .hero-manifesto strong {
+    color: var(--grail);
+    font-weight: 600;
+  }
+
+  /* ── PILLARS ── */
+  .pillars {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    max-width: 900px;
+    margin: 0 auto 80px;
+    padding: 0 40px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.5s forwards;
+  }
+
+  .pillar {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 24px 20px;
+    text-align: center;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .pillar:hover {
+    border-color: rgba(0,170,255,0.3);
+    transform: translateY(-2px);
+  }
+  .pillar-icon { font-size: 32px; margin-bottom: 12px; }
+  .pillar-label {
+    font-family: var(--font-head);
+    font-size: 18px;
+    letter-spacing: 1px;
+    color: var(--grail);
+    margin-bottom: 8px;
+  }
+  .pillar-text {
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.5;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 0 40px 60px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .divider-line {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+  .divider-line::before, .divider-line::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+  }
+  .divider-label {
+    font-family: var(--font-head);
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.2);
+    white-space: nowrap;
+  }
+  .divider-cta {
+    font-family: var(--font-head);
+    font-size: clamp(28px, 4vw, 44px);
+    color: var(--grail);
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .divider-cta span { color: var(--warn); }
+  .divider-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.4);
+    font-weight: 400;
+  }
+
+  /* ── WIZARD ── */
+  .wizard-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px 120px;
+  }
+
+  .wizard-progress {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 40px;
+    justify-content: center;
+  }
+  .wp-dot {
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.1);
+    flex: 1;
+    max-width: 48px;
+    transition: background 0.4s;
+  }
+  .wp-dot.active { background: var(--iso); }
+  .wp-dot.done { background: rgba(0,170,255,0.35); }
+
+  /* Step card */
+  .step-card {
+    display: none;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 20px;
+    padding: 48px 40px;
+    position: relative;
+    overflow: hidden;
+    animation: stepIn 0.4s ease forwards;
+  }
+  .step-card.active { display: block; }
+  .step-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--iso), transparent);
+  }
+
+  .step-number {
+    font-family: var(--font-head);
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--iso);
+    margin-bottom: 20px;
+    opacity: 0.7;
+  }
+
+  .step-question {
+    font-family: var(--font-head);
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.1;
+    color: var(--grail);
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+
+  .step-hint {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 40px;
+    line-height: 1.6;
+  }
+
+  .step-choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .step-choices.single { grid-template-columns: 1fr; }
+
+  .choice-btn {
+    font-family: var(--font-ui);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 18px 24px;
+    border-radius: 12px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .choice-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .choice-btn:hover::before { opacity: 1; }
+
+  .choice-yes {
+    background: rgba(0,204,102,0.1);
+    border-color: rgba(0,204,102,0.3);
+    color: #00CC66;
+  }
+  .choice-yes:hover {
+    background: rgba(0,204,102,0.18);
+    border-color: #00CC66;
+    transform: translateY(-1px);
+  }
+
+  .choice-no {
+    background: rgba(255,68,68,0.1);
+    border-color: rgba(255,68,68,0.25);
+    color: #FF6666;
+  }
+  .choice-no:hover {
+    background: rgba(255,68,68,0.16);
+    border-color: #FF4444;
+    transform: translateY(-1px);
+  }
+
+  /* ── RESULT CARDS ── */
+  .result-card {
+    display: none;
+    border-radius: 20px;
+    padding: 48px 40px;
+    position: relative;
+    overflow: hidden;
+    animation: stepIn 0.5s ease forwards;
+  }
+  .result-card.active { display: block; }
+
+  .result-dont {
+    background: rgba(255,68,68,0.07);
+    border: 1px solid rgba(255,68,68,0.2);
+  }
+  .result-dont::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #FF4444, transparent);
+  }
+
+  .result-grade {
+    background: rgba(0,170,255,0.07);
+    border: 1px solid rgba(0,170,255,0.2);
+  }
+  .result-grade::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--iso), transparent);
+  }
+
+  .result-verdict {
+    font-family: var(--font-head);
+    font-size: clamp(48px, 7vw, 80px);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+  .result-dont .result-verdict { color: var(--danger); }
+  .result-grade .result-verdict { color: var(--iso); }
+
+  .result-icon { font-size: 48px; margin-bottom: 16px; }
+
+  .result-reason {
+    font-family: var(--font-head);
+    font-size: 20px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+  }
+
+  .result-message {
+    font-size: 16px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.7;
+    margin-bottom: 36px;
+    max-width: 520px;
+  }
+  .result-message strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+
+  .result-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    background: var(--iso);
+    color: #000;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover {
+    background: #33BBFF;
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: transparent;
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover {
+    border-color: rgba(255,255,255,0.3);
+    color: var(--grail);
+  }
+
+  /* Grade process section (shown when "Grade it") */
+  .grade-process {
+    margin-top: 40px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(0,170,255,0.15);
+  }
+  .grade-process-title {
+    font-family: var(--font-head);
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--iso);
+    margin-bottom: 20px;
+  }
+  .grade-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .grade-step-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .gs-num {
+    font-family: var(--font-head);
+    font-size: 20px;
+    color: var(--iso);
+    opacity: 0.4;
+    min-width: 24px;
+    padding-top: 1px;
+  }
+  .gs-text {
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.5;
+  }
+  .gs-text strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+
+  /* restart */
+  .restart-wrap {
+    text-align: center;
+    margin-top: 32px;
+  }
+  .restart-btn {
+    background: none;
+    border: none;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .restart-btn:hover { color: rgba(255,255,255,0.5); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes stepIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    nav { padding: 0 20px; }
+    .hero { padding: 100px 20px 40px; }
+    .pillars { padding: 0 20px; }
+    .step-card, .result-card { padding: 32px 24px; }
+    .step-choices { grid-template-columns: 1fr; }
+    .result-actions { flex-direction: column; }
+    .btn-primary, .btn-ghost { text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="dashboard.html" class="nav-logo">GRAIL<span>ISO</span></a>
+  <a href="dashboard.html" class="nav-back">← Back to Dashboard</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">ISOGrading — A Different Take</div>
+  <h1 class="hero-title">
+    Please Don't
+    <span class="accent">Grade Your Card.</span>
+  </h1>
+  <div class="hero-subtitle">Seriously. We mean it.</div>
+  <p class="hero-manifesto">
+    Card collecting was built on <strong>joy</strong> — the hunt, the flip, the community, the stories. 
+    Grading turned a hobby into a financial instrument. We think that's a problem.<br><br>
+    Before you hand your card to a stranger and wait 9 months for a number, 
+    we want you to think hard. This hobby is best enjoyed with <strong>friends, family, 
+    and collectors from around the world</strong> — not locked in a plastic slab on a shelf.<br><br>
+    But if you're going to grade — <strong>do it right. Do it with us.</strong>
+  </p>
+</section>
+
+<!-- PILLARS -->
+<div class="pillars">
+  <div class="pillar">
+    <div class="pillar-icon">🤝</div>
+    <div class="pillar-label">Community First</div>
+    <div class="pillar-text">Your best trades happen person-to-person. A slab doesn't tell your story.</div>
+  </div>
+  <div class="pillar">
+    <div class="pillar-icon">💸</div>
+    <div class="pillar-label">The Math Is Hard</div>
+    <div class="pillar-text">Fees, wait times, grade risk, and resale spreads eat your margin fast.</div>
+  </div>
+  <div class="pillar">
+    <div class="pillar-icon">🎯</div>
+    <div class="pillar-label">Most Cards Lose</div>
+    <div class="pillar-text">If it doesn't grade a Gem Mint, you likely lost money and 6 months.</div>
+  </div>
+  <div class="pillar">
+    <div class="pillar-icon">❤️</div>
+    <div class="pillar-label">The Joy Is Raw</div>
+    <div class="pillar-text">The hobby was better when it was about the card — not the case around it.</div>
+  </div>
+</div>
+
+<!-- DIVIDER -->
+<div class="divider">
+  <div class="divider-line">
+    <span class="divider-label">Still Thinking About It?</span>
+  </div>
+  <div class="divider-cta">Let's Walk Through It <span>Together.</span></div>
+  <div class="divider-sub">Answer 8 honest questions. We'll tell you what we really think.</div>
+</div>
+
+<!-- WIZARD -->
+<div class="wizard-wrap">
+
+  <!-- Progress dots -->
+  <div class="wizard-progress" id="progressDots"></div>
+
+  <!-- ── STEP 1 ── -->
+  <div class="step-card active" id="step-1">
+    <div class="step-number">QUESTION 01 OF 08</div>
+    <div class="step-question">Are you grading this card specifically for monetary or investment value?</div>
+    <div class="step-hint">Not "it might be worth more" — specifically, is the financial return the primary reason you're considering grading?</div>
+    <div class="step-choices">
+      <button class="choice-btn choice-yes" onclick="goto('step-2')">Yes — it's about the money</button>
+      <button class="choice-btn choice-no" onclick="goto('step-1b')">No — other reasons</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 1B ── -->
+  <div class="step-card" id="step-1b">
+    <div class="step-number">QUESTION 02 OF 08</div>
+    <div class="step-question">Would you genuinely enjoy the grading journey itself?</div>
+    <div class="step-hint">Seeing the final grade, the protection the case provides, the process — not just the result. Be honest with yourself.</div>
+    <div class="step-choices">
+      <button class="choice-btn choice-yes" onclick="showResult('result-joy-grade')">Yes — I love the process</button>
+      <button class="choice-btn choice-no" onclick="showResult('result-joy-dont')">No — not really</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 2 ── -->
+  <div class="step-card" id="step-2">
+    <div class="step-number">QUESTION 02 OF 08</div>
+    <div class="step-question">Do you know the current market value of your card ungraded?</div>
+    <div class="step-hint">Not what you hope it's worth — what it's actually selling for raw, right now, on the open market. Recent comps. Real sales.</div>
+    <div class="step-choices">
+      <button class="choice-btn choice-yes" onclick="goto('step-3')">Yes — I've checked recent sales</button>
+      <button class="choice-btn choice-no" onclick="showResult('result-no-raw-value')">No — not exactly</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 3 ── -->
+  <div class="step-card" id="step-3">
+    <div class="step-number">QUESTION 03 OF 08</div>
+    <div class="step-question">Do you know what it sells for graded at an 8, a 9, AND a 10?</div>
+    <div class="step-hint">All three grades. Not just the PSA 10 moon number — what does an 8 actually sell for? A 9? You need all three numbers before this decision makes sense.</div>
+    <div class="step-choices">
+      <button class="choice-btn choice-yes" onclick="goto('step-4')">Yes — I have all three comps</button>
+      <button class="choice-btn choice-no" onclick="showResult('result-no-graded-value')">No — I only know the 10</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 4 ── -->
+  <div class="step-card" id="step-4">
+    <div class="step-number">QUESTION 04 OF 08</div>
+    <div class="step-question">Is this card a low-numbered parallel? /1, /5, /10 range?</div>
+    <div class="step-hint">Super short print parallels rarely gain significant value from grading — unless they hit Gem Mint 10. The scarcity is already priced in.</div>
+    <div class="step-choices">
+      <button class="choice-btn choice-yes" onclick="showResult('result-low-print')">Yes — it's low-numbered</button>
+      <button class="choice-btn choice-no" onclick="goto('step-5')">No — it's not</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 5 ── -->
+  <div class="step-card" id="step-5">
+    <div class="step-number">QUESTION 05 OF 08</div>
+    <div class="step-question">Is this card genuinely immaculate?</div>
+    <div class="step-hint">Perfect corners. Perfect centering. Flawless auto (if applicable). Zero print defects. No dents, cuts, bends, surface scratches, dust, or hair. Not "pretty good" — IMMACULATE.</div>
+    <div class="step-choices">
+      <button class="choice-btn choice-yes" onclick="goto('step-7')">Yes — it's flawless</button>
+      <button class="choice-btn choice-no" onclick="goto('step-6')">No — it has some issues</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 6 (not immaculate path) ── -->
+  <div class="step-card" id="step-6">
+    <div class="step-number">QUESTION 06 OF 08</div>
+    <div class="step-question">Graded at a 7 or 8 — is your card worth at least $20 more than ungraded?</div>
+    <div class="step-hint">After grading fees, shipping, and wait time — does the graded value at a 7 or 8 still put you meaningfully ahead? Use your real comps from earlier.</div>
+    <div class="step-choices">
+      <button class="choice-btn choice-yes" onclick="showResult('result-grade-it')">Yes — the math works</button>
+      <button class="choice-btn choice-no" onclick="showResult('result-math-fail')">No — it doesn't pencil out</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 7 (immaculate path) ── -->
+  <div class="step-card" id="step-7">
+    <div class="step-number">QUESTION 07 OF 08</div>
+    <div class="step-question">Graded at a 9 — is your card worth $30–$50+ more than ungraded?</div>
+    <div class="step-hint">For a near-perfect card that might not quite hit 10 — does a PSA/BGS/SGC 9 still justify the cost and risk?</div>
+    <div class="step-choices">
+      <button class="choice-btn choice-yes" onclick="showResult('result-grade-it')">Yes — even a 9 works</button>
+      <button class="choice-btn choice-no" onclick="goto('step-8')">No — I need a 10</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 8 (need a 10 path) ── -->
+  <div class="step-card" id="step-8">
+    <div class="step-number">QUESTION 08 OF 08</div>
+    <div class="step-question">You need a Gem Mint 10. If it grades a 9 and you lose money — can you live with that?</div>
+    <div class="step-hint">You are now gambling. The only winning scenario is a 10. If the grader sees something you don't, you lose time and money. Are you genuinely okay with that outcome?</div>
+    <div class="step-choices">
+      <button class="choice-btn choice-no" onclick="showResult('result-gamble-dont')">No — that would sting</button>
+      <button class="choice-btn choice-yes" onclick="showResult('result-grade-it')">Yes — I'm eyes open</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       RESULTS
+  ══════════════════════════════════════ -->
+
+  <!-- Don't grade: No joy in the process -->
+  <div class="result-card result-dont" id="result-joy-dont">
+    <div class="result-icon">💚</div>
+    <div class="result-verdict">DON'T GRADE IT.</div>
+    <div class="result-reason">AND THAT'S PERFECTLY FINE.</div>
+    <p class="result-message">
+      If there's no financial upside and no personal joy in the process — grading is just an expense and a wait. 
+      <strong>Put that money toward your next pull instead.</strong> Trade it, display it, share it with your crew. 
+      That's what this hobby is actually about.
+    </p>
+    <div class="result-actions">
+      <a href="dashboard.html" class="btn-primary">Back to My Vault</a>
+      <button class="btn-ghost" onclick="restartWizard()">Start Over</button>
+    </div>
+  </div>
+
+  <!-- Grade it: Joy path -->
+  <div class="result-card result-grade" id="result-joy-grade">
+    <div class="result-icon">✨</div>
+    <div class="result-verdict">GRADE IT.</div>
+    <div class="result-reason">FOR THE RIGHT REASONS.</div>
+    <p class="result-message">
+      If you genuinely love the journey — the anticipation, seeing your card protected, the grade reveal — that's a perfectly valid reason to grade. 
+      <strong>Just go in knowing it's about the experience, not the return.</strong> 
+      And if you're going to do it, do it right.
+    </p>
+    <div class="grade-process">
+      <div class="grade-process-title">THE ISOGRADING PROCESS</div>
+      <div class="grade-steps">
+        <div class="grade-step-item"><div class="gs-num">01</div><div class="gs-text"><strong>Add it to your ISOVault.</strong> Document condition, acquisition cost, and photos before it leaves your hands.</div></div>
+        <div class="grade-step-item"><div class="gs-num">02</div><div class="gs-text"><strong>Pull real comps.</strong> Use GrailISO market data to confirm raw value before you spend a dollar on grading.</div></div>
+        <div class="grade-step-item"><div class="gs-num">03</div><div class="gs-text"><strong>Choose your grader carefully.</strong> PSA, BGS, SGC — each has different populations, turnaround times, and market preferences per card type.</div></div>
+        <div class="grade-step-item"><div class="gs-num">04</div><div class="gs-text"><strong>Log the result.</strong> When it comes back, update your vault entry with the grade, final cost, and new market value.</div></div>
+        <div class="grade-step-item"><div class="gs-num">05</div><div class="gs-text"><strong>List it on GrailISO.</strong> Your graded card reaches buyers actively searching for exactly that card, grade, and variation.</div></div>
+      </div>
+    </div>
+    <div class="result-actions" style="margin-top:32px">
+      <a href="dashboard.html" class="btn-primary">Open My Vault</a>
+      <button class="btn-ghost" onclick="restartWizard()">Start Over</button>
+    </div>
+  </div>
+
+  <!-- Don't grade: No raw value data -->
+  <div class="result-card result-dont" id="result-no-raw-value">
+    <div class="result-icon">📊</div>
+    <div class="result-verdict">NOT YET.</div>
+    <div class="result-reason">DO YOUR HOMEWORK FIRST.</div>
+    <p class="result-message">
+      Never make a grading decision without knowing your raw card's current market value. 
+      <strong>Check recent eBay sales. Filter to "Sold." Last 90 days.</strong> 
+      If you don't know the baseline, you can't know if grading is worth it. 
+      Come back when you have a real number.
+    </p>
+    <div class="result-actions">
+      <a href="dashboard.html" class="btn-primary">Check Market Data</a>
+      <button class="btn-ghost" onclick="restartWizard()">Start Over</button>
+    </div>
+  </div>
+
+  <!-- Don't grade: No graded comps -->
+  <div class="result-card result-dont" id="result-no-graded-value">
+    <div class="result-icon">🔍</div>
+    <div class="result-verdict">STOP.</div>
+    <div class="result-reason">YOU NEED ALL THREE NUMBERS.</div>
+    <p class="result-message">
+      A PSA 10 sale means nothing if you don't know what an 8 or 9 sold for. 
+      <strong>Most cards don't grade a 10.</strong> If the 8 and 9 comps don't clear your grading costs, 
+      you're gambling — not investing. Pull all three comps, then come back and run the tool again.
+    </p>
+    <div class="result-actions">
+      <a href="dashboard.html" class="btn-primary">Back to Dashboard</a>
+      <button class="btn-ghost" onclick="restartWizard()">Start Over</button>
+    </div>
+  </div>
+
+  <!-- Don't grade: Low numbered parallel -->
+  <div class="result-card result-dont" id="result-low-print">
+    <div class="result-icon">🎯</div>
+    <div class="result-verdict">PROBABLY NOT.</div>
+    <div class="result-reason">THE SCARCITY IS ALREADY PRICED IN.</div>
+    <p class="result-message">
+      Low-run parallels (/1, /5, /10) are valuable because of their print run — not their grade. 
+      <strong>Grading a /5 card rarely moves the needle meaningfully unless it's a Gem Mint 10.</strong> 
+      The population is so small that comps are unreliable anyway. 
+      Hold it raw. Show it off. It's already rare.
+    </p>
+    <div class="result-actions">
+      <a href="dashboard.html" class="btn-primary">Add to My Vault</a>
+      <button class="btn-ghost" onclick="restartWizard()">Start Over</button>
+    </div>
+  </div>
+
+  <!-- Don't grade: Math doesn't work -->
+  <div class="result-card result-dont" id="result-math-fail">
+    <div class="result-icon">🧮</div>
+    <div class="result-verdict">DON'T GRADE IT.</div>
+    <div class="result-reason">THE MATH DOESN'T WORK.</div>
+    <p class="result-message">
+      If a graded 7 or 8 doesn't clear your costs — and that's the most likely outcome for a card with condition issues — 
+      <strong>you're spending money to lose money.</strong> 
+      Sell it raw to someone who loves it, or keep it and enjoy it. 
+      Don't let a grading company profit from your hope.
+    </p>
+    <div class="result-actions">
+      <a href="dashboard.html" class="btn-primary">List It Raw on GrailISO</a>
+      <button class="btn-ghost" onclick="restartWizard()">Start Over</button>
+    </div>
+  </div>
+
+  <!-- Don't grade: Gamble path, don't want risk -->
+  <div class="result-card result-dont" id="result-gamble-dont">
+    <div class="result-icon">🎰</div>
+    <div class="result-verdict">WALK AWAY.</div>
+    <div class="result-reason">IF A 9 HURTS, DON'T RISK IT.</div>
+    <p class="result-message">
+      You've done the work. You know the math. And you know a 9 would sting. 
+      <strong>That feeling is real data — trust it.</strong> 
+      This card has value right now, ungraded, in your hands. 
+      Sell it on GrailISO to someone who wants exactly this card, or hold it and love it. 
+      Protect your joy.
+    </p>
+    <div class="result-actions">
+      <a href="dashboard.html" class="btn-primary">Sell It Raw on GrailISO</a>
+      <button class="btn-ghost" onclick="restartWizard()">Start Over</button>
+    </div>
+  </div>
+
+  <!-- GRADE IT -->
+  <div class="result-card result-grade" id="result-grade-it">
+    <div class="result-icon">🏆</div>
+    <div class="result-verdict">GRADE IT.</div>
+    <div class="result-reason">BUT DO IT RIGHT.</div>
+    <p class="result-message">
+      You've done the work. The math checks out. Your eyes are open. 
+      <strong>Now make sure the process is as sharp as your decision.</strong> 
+      Here's the ISOGrading checklist — follow it every time.
+    </p>
+    <div class="grade-process">
+      <div class="grade-process-title">THE ISOGRADING PROCESS</div>
+      <div class="grade-steps">
+        <div class="grade-step-item"><div class="gs-num">01</div><div class="gs-text"><strong>Document it first.</strong> Add to ISOVault with photos, condition notes, and acquisition cost before it leaves your hands.</div></div>
+        <div class="grade-step-item"><div class="gs-num">02</div><div class="gs-text"><strong>Confirm your comps one more time.</strong> Pull fresh sales in the 30 days before you submit — markets move.</div></div>
+        <div class="grade-step-item"><div class="gs-num">03</div><div class="gs-text"><strong>Pick the right grader for this card.</strong> PSA dominates for vintage and modern stars. BGS for ultra-premium moderns. SGC for vintage raw. Know your buyer's preference.</div></div>
+        <div class="grade-step-item"><div class="gs-num">04</div><div class="gs-text"><strong>Use proper submission packaging.</strong> Card savers, not toploaders. Stamp to prevent sliding. Never ship loose.</div></div>
+        <div class="grade-step-item"><div class="gs-num">05</div><div class="gs-text"><strong>When it returns — log the grade and cost.</strong> Update your ISOVault entry immediately so your market value data stays accurate.</div></div>
+        <div class="grade-step-item"><div class="gs-num">06</div><div class="gs-text"><strong>List it on GrailISO.</strong> Buyers here are searching by grade, variation, and year — your graded card finds its buyer faster.</div></div>
+      </div>
+    </div>
+    <div class="result-actions" style="margin-top:32px">
+      <a href="dashboard.html" class="btn-primary">Add to ISOVault First</a>
+      <button class="btn-ghost" onclick="restartWizard()">Run It Again</button>
+    </div>
+  </div>
+
+  <!-- Restart -->
+  <div class="restart-wrap" id="restartWrap" style="display:none">
+    <button class="restart-btn" onclick="restartWizard()">↩ Start Over</button>
+  </div>
+
+</div><!-- /wizard-wrap -->
+
+<script>
+  const TOTAL_STEPS = 8;
+  const stepOrder = ['step-1','step-1b','step-2','step-3','step-4','step-5','step-6','step-7','step-8'];
+
+  // Build progress dots
+  const dotsEl = document.getElementById('progressDots');
+  for(let i = 0; i < TOTAL_STEPS; i++){
+    const d = document.createElement('div');
+    d.className = 'wp-dot' + (i === 0 ? ' active' : '');
+    d.id = 'dot-' + i;
+    dotsEl.appendChild(d);
+  }
+
+  let currentStepIdx = 0;
+
+  function goto(stepId){
+    // Hide current
+    const all = document.querySelectorAll('.step-card');
+    all.forEach(s => s.classList.remove('active'));
+    const allResults = document.querySelectorAll('.result-card');
+    allResults.forEach(r => r.classList.remove('active'));
+
+    // Show next
+    const next = document.getElementById(stepId);
+    if(next){
+      next.classList.add('active');
+      next.scrollIntoView({ behavior:'smooth', block:'center' });
+    }
+
+    // Update progress
+    currentStepIdx = stepOrder.indexOf(stepId);
+    if(currentStepIdx < 0) currentStepIdx = 0;
+    updateDots(currentStepIdx);
+  }
+
+  function showResult(resultId){
+    const all = document.querySelectorAll('.step-card');
+    all.forEach(s => s.classList.remove('active'));
+    const allResults = document.querySelectorAll('.result-card');
+    allResults.forEach(r => r.classList.remove('active'));
+
+    // Fill remaining dots
+    updateDots(TOTAL_STEPS);
+
+    const r = document.getElementById(resultId);
+    if(r){
+      r.classList.add('active');
+      r.scrollIntoView({ behavior:'smooth', block:'center' });
+    }
+    document.getElementById('restartWrap').style.display = 'block';
+  }
+
+  function updateDots(upToIdx){
+    for(let i = 0; i < TOTAL_STEPS; i++){
+      const d = document.getElementById('dot-' + i);
+      if(!d) continue;
+      d.className = 'wp-dot';
+      if(i < upToIdx) d.classList.add('done');
+      else if(i === upToIdx) d.classList.add('active');
+    }
+  }
+
+  function restartWizard(){
+    document.querySelectorAll('.step-card').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.result-card').forEach(r => r.classList.remove('active'));
+    document.getElementById('step-1').classList.add('active');
+    document.getElementById('restartWrap').style.display = 'none';
+    currentStepIdx = 0;
+    updateDots(0);
+    document.querySelector('.wizard-wrap').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+</script>
+</body>
+</html>

@@ -4472,31 +4472,89 @@ function closeCatalogUpload(){
   document.body.style.overflow='';
 }
 
+// Read EXIF orientation tag from raw ArrayBuffer — no library needed
+function _readExifOrientation(buffer){
+  const view = new DataView(buffer);
+  if(view.getUint16(0,false) !== 0xFFD8) return 1; // not JPEG
+  const len = view.byteLength;
+  let off = 2;
+  while(off < len){
+    if(view.getUint16(off,false) === 0xFFE1){ // APP1
+      if(view.getUint32(off+4,false) !== 0x45786966) return 1; // no Exif header
+      const little = view.getUint16(off+10,false) === 0x4949;
+      const ifdOff = off + 10 + view.getUint32(off+14,little);
+      const tags   = view.getUint16(ifdOff,little);
+      for(let i=0;i<tags;i++){
+        if(view.getUint16(ifdOff+2+i*12,little) === 0x0112)
+          return view.getUint16(ifdOff+2+i*12+8,little);
+      }
+      return 1;
+    }
+    off += 2 + view.getUint16(off+2,false);
+  }
+  return 1;
+}
+
+// Draw image onto canvas with EXIF rotation baked in permanently
+function _drawExifNormalized(img, orientation, maxW){
+  const swap   = orientation >= 5; // orientations 5-8 require width/height swap
+  const srcW   = img.naturalWidth;
+  const srcH   = img.naturalHeight;
+  const longSide = swap ? srcH : srcW;
+  const scale  = longSide > maxW ? maxW / longSide : 1;
+  const dW     = Math.round((swap ? srcH : srcW) * scale);
+  const dH     = Math.round((swap ? srcW : srcH) * scale);
+  const canvas = document.createElement('canvas');
+  canvas.width  = dW;
+  canvas.height = dH;
+  const ctx = canvas.getContext('2d');
+  ctx.save();
+  switch(orientation){
+    case 2: ctx.transform(-1,0,0,1,dW,0); break;
+    case 3: ctx.transform(-1,0,0,-1,dW,dH); break;
+    case 4: ctx.transform(1,0,0,-1,0,dH); break;
+    case 5: ctx.transform(0,1,1,0,0,0); break;
+    case 6: ctx.transform(0,1,-1,0,dH,0); break;
+    case 7: ctx.transform(0,-1,-1,0,dH,dW); break;
+    case 8: ctx.transform(0,-1,1,0,0,dW); break;
+    default: break;
+  }
+  ctx.drawImage(img, 0, 0, swap ? dH : dW, swap ? dW : dH);
+  ctx.restore();
+  return canvas;
+}
+
 function handleCatalogUpload(input, side){
-  const file=input.files[0]; if(!file) return;
-  if(file.size>10*1024*1024){ alert('Max 10MB'); input.value=''; return; }
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const img=new Image();
-    img.onload=()=>{
-      const canvas=document.createElement('canvas');
-      const maxW=1200; const scale=img.width>maxW?maxW/img.width:1;
-      canvas.width=Math.round(img.width*scale); canvas.height=Math.round(img.height*scale);
-      canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
-      canvas.toBlob(blob=>{
-        if(side==='front') _cdCatalogFrontBlob=blob;
-        else               _cdCatalogBackBlob=blob;
-        const box=document.getElementById(side==='front'?'cdFrontBox':'cdBackBox');
-        box.classList.add('has-file');
-        document.getElementById(side==='front'?'cdFrontName':'cdBackName').textContent=file.name;
-        const prev=document.getElementById(side==='front'?'cdFrontPreview':'cdBackPreview');
-        prev.src=canvas.toDataURL('image/jpeg',0.85); prev.style.display='block';
-        document.getElementById('cdUploadError').style.display='none';
-      },'image/jpeg',0.85);
+  const file = input.files[0]; if(!file) return;
+  if(file.size > 10*1024*1024){ alert('Max 10MB'); input.value=''; return; }
+
+  // Two readers: one for raw bytes (EXIF), one for dataURL (img element)
+  const arrReader  = new FileReader();
+  const dataReader = new FileReader();
+
+  arrReader.onload = function(e1){
+    const orientation = _readExifOrientation(e1.target.result);
+    dataReader.onload = function(e2){
+      const img = new Image();
+      img.onload = function(){
+        const canvas = _drawExifNormalized(img, orientation, 1200);
+        canvas.toBlob(blob=>{
+          if(side==='front') _cdCatalogFrontBlob = blob;
+          else               _cdCatalogBackBlob  = blob;
+          const box  = document.getElementById(side==='front'?'cdFrontBox':'cdBackBox');
+          box.classList.add('has-file');
+          document.getElementById(side==='front'?'cdFrontName':'cdBackName').textContent = file.name;
+          const prev = document.getElementById(side==='front'?'cdFrontPreview':'cdBackPreview');
+          prev.src = canvas.toDataURL('image/jpeg', 0.85);
+          prev.style.display = 'block';
+          document.getElementById('cdUploadError').style.display = 'none';
+        }, 'image/jpeg', 0.85);
+      };
+      img.src = e2.target.result;
     };
-    img.src=e.target.result;
+    dataReader.readAsDataURL(file);
   };
-  reader.readAsDataURL(file);
+  arrReader.readAsArrayBuffer(file);
 }
 
 async function submitCatalogUpload(){

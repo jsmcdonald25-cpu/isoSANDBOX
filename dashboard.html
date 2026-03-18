@@ -458,7 +458,26 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .scr-img{width:8px;height:8px;border-radius:50%;display:inline-block;vertical-align:middle;margin-right:5px}
 .scr-hdr{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)}
 .set-loading{text-align:center;padding:40px;font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:1px;color:var(--muted-text)}
-/* VAULT MODAL PRICE */
+/* MY VAULT — FIT TO PAGE */
+.content.vault-active{overflow:hidden;display:flex;flex-direction:column}
+.content.vault-active #panel-myvault{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+#mv-stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px;flex-shrink:0}
+.mv-stat{background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;padding:10px 12px}
+.mv-stat-label{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:2px}
+.mv-stat-val{font-family:Bebas Neue,sans-serif;font-size:22px;line-height:1;color:var(--white)}
+#myVaultGrid{flex:1;min-height:0;overflow:hidden;display:grid !important;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));grid-auto-rows:min-content;align-content:start;gap:8px}
+#mv-add-btn{flex-shrink:0;padding-top:8px}
+.mv-card{background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;overflow:hidden;cursor:pointer;transition:border-color .2s}
+.mv-card:hover{border-color:rgba(0,170,255,.4)}
+.mv-card-img{height:80px;background:rgba(0,170,255,0.06);overflow:hidden;position:relative}
+.mv-card-img img{width:100%;height:100%;object-fit:contain;background:#071828}
+.mv-card-img-empty{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:24px;color:rgba(0,170,255,0.25)}
+.mv-acq-badge{position:absolute;top:4px;left:4px;background:rgba(0,0,0,0.65);border-radius:3px;padding:1px 5px;font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:.8px;text-transform:uppercase}
+.mv-card-info{padding:6px 8px 8px}
+.mv-card-player{font-family:Barlow Condensed,sans-serif;font-weight:700;font-size:12px;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mv-card-set{font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mv-card-price{font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--white);margin-top:4px}
+.mv-card-var{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:.5px;color:var(--blue);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vm-price-wrap{border:1px solid rgba(0,170,255,.25);border-radius:6px;padding:7px 10px;background:rgba(0,170,255,.04);margin-bottom:4px}
 .vm-price-required{font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--blue);letter-spacing:1px;text-transform:uppercase;margin-top:6px;display:flex;align-items:center;gap:5px}
 /* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
@@ -1387,7 +1406,7 @@ async function logOut(){
 
   <!-- MY VAULT -->
   <div class="panel" id="panel-myvault">
-    <div class="section-header">
+    <div class="section-header" style="flex-shrink:0">
       <div class="section-title">MY VAULT</div>
     </div>
     <div id="myVaultEmpty" style="text-align:center;padding:60px 20px;color:var(--muted-text)">
@@ -1396,9 +1415,10 @@ async function logOut(){
       <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;margin-bottom:20px">Browse ISOVault to find a card, then add it to your personal library.</div>
       <button class="btn btn-primary" onclick="N('library',document.querySelector('[onclick*=library]'))">Browse ISOVault</button>
     </div>
+    <div id="mv-stats-bar" style="display:none"></div>
     <div class="card-grid" id="myVaultGrid" style="display:none"></div>
-    <div style="padding-top:16px">
-      <button class="btn btn-primary" style="width:100%;padding:14px;font-size:15px;letter-spacing:1.5px" onclick="N('library', document.querySelector('[onclick*=library]'))">+ ADD CARD TO MY VAULT</button>
+    <div id="mv-add-btn" style="display:none">
+      <button class="btn btn-primary" style="width:100%;padding:10px;font-size:14px;letter-spacing:1.5px" onclick="N('library', document.querySelector('[onclick*=library]'))">+ ADD CARD TO MY VAULT</button>
     </div>
   </div>
 
@@ -2532,6 +2552,9 @@ function N(id,el){
   if(el)el.classList.add('active');
   const m=PM[id];
   if(m){document.getElementById('pgTitle').textContent=m.t;document.getElementById('pgSub').textContent=m.s;}
+  // Fit-to-page for My Vault — lock content scroll
+  const contentEl=document.querySelector('.content');
+  if(contentEl){contentEl.classList.toggle('vault-active',id==='myvault');}
   if(id==='library')ivInit();
   if(id==='myvault')renderMyVault();
   if(id==='myisos')renderMyISOs();
@@ -2539,7 +2562,6 @@ function N(id,el){
   if(id==='post'){curStep=1;gS(1);isoRenderSportGrid();}
   if(id==='overview')renderOvMkt();
   if(id==='isoticker')initISOTicker();
-  // Push panel state into browser history so mouse back button steps through panels
   if(!_navSuppressHistory){
     history.pushState({panel:id}, '', window.location.href);
   }
@@ -3889,7 +3911,6 @@ async function submitVault(){
     const packType  = (vmAcq === 'pulled') ? (document.getElementById('vmPackType').value || null) : null;
     const row = {
       user_id:           user.id,
-      ...(vmCard && vmCard.id && vmCard._setTable !== 'card-images' ? { card_id: vmCard.id } : {}),
       player:            vmCard ? vmCard.player : 'Unknown',
       year:              vmCard ? vmCard.year : null,
       brand:             vmCard ? vmCard.brand : null,
@@ -4039,10 +4060,10 @@ async function _patchVaultThumbnails(rows){
       let url=rd.front_img||null;
       if(!url&&rd.var_images){const k=Object.keys(rd.var_images)[0];if(k)url=(rd.var_images[k]||{}).front||null;}
       if(!url)continue;
-      const thumb=document.querySelector('.card-thumb[data-vaultidx="'+i+'"]');
+      const thumb=document.querySelector('.mv-card[data-vaultidx="'+i+'"]')||document.querySelector('.card-thumb[data-vaultidx="'+i+'"]');
       if(!thumb)continue;
-      const box=thumb.querySelector('.ct-img');if(!box)continue;
-      const badge=box.querySelector('div');
+      const box=thumb.querySelector('.mv-card-img')||thumb.querySelector('.ct-img');if(!box)continue;
+      const badge=box.querySelector('.mv-acq-badge')||box.querySelector('div');
       const img=document.createElement('img');
       img.src=url;img.style.cssText='width:100%;height:100%;object-fit:contain;background:#071828';img.loading='lazy';
       box.innerHTML='';box.appendChild(img);if(badge)box.appendChild(badge);
@@ -4053,96 +4074,74 @@ async function _patchVaultThumbnails(rows){
 function renderMyVault(){
   const grid  = document.getElementById('myVaultGrid');
   const empty = document.getElementById('myVaultEmpty');
+  const statsBar = document.getElementById('mv-stats-bar');
+  const addBtn = document.getElementById('mv-add-btn');
   const user = window._authUser;
   if(!user){
-    if(grid)  grid.style.display='none';
-    if(empty) empty.style.display='block';
+    if(grid)grid.style.display='none';
+    if(statsBar)statsBar.style.display='none';
+    if(addBtn)addBtn.style.display='none';
+    if(empty)empty.style.display='block';
     return;
   }
   const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
   const userToken = window._userAccessToken || ANON_KEY;
-  fetch(`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault?select=*&user_id=eq.${user.id}&status=neq.sold&status=neq.removed&order=created_at.desc`, {
+  fetch('https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault?select=*&user_id=eq.'+user.id+'&status=neq.sold&status=neq.removed&order=created_at.desc', {
     headers: { 'apikey': ANON_KEY, 'Authorization': 'Bearer ' + userToken }
   }).then(r=>r.json()).then(data=>{
     if(!Array.isArray(data)){
-      if(grid)  grid.style.display='none';
-      if(empty){ empty.style.display='block'; empty.innerHTML=`<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--red);padding:20px">Vault error: ${data?.message||'Unknown error'}</div>`; }
+      if(grid)grid.style.display='none';
+      if(statsBar)statsBar.style.display='none';
+      if(addBtn)addBtn.style.display='none';
+      if(empty){empty.style.display='block';empty.innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--red);padding:20px">Vault error: '+(data&&data.message?data.message:'Unknown error')+'</div>';}
       return;
     }
-        if(!data || !data.length){
-          if(grid)  grid.style.display='none';
-          if(empty) empty.style.display='block';
-          return;
-        }
-        if(empty) empty.style.display='none';
-        if(!grid) return;
-        grid.style.display='grid';
-
-        // Summary bar
-        const totalPaid    = data.reduce((s,c)=>s+(parseFloat(c.price_paid)||0),0);
-        const totalEst     = data.reduce((s,c)=>s+(parseFloat(c.estimated_value)||0),0);
-        const gainLoss     = totalEst - totalPaid;
-        const gainPct      = totalPaid>0 ? ((gainLoss/totalPaid)*100).toFixed(1) : 0;
-        const glClass      = gainLoss>=0?'green':'red';
-
-        let summaryHtml = `
-          <div style="grid-column:1/-1;background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:4px">
-            <div><div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Cards in Vault</div>
-              <div style="font-family:Bebas Neue,sans-serif;font-size:28px;color:var(--white)">${data.length}</div></div>
-            <div><div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Total Cost Basis</div>
-              <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--white)">$${totalPaid.toLocaleString()}</div></div>
-            <div><div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Est. Market Value</div>
-              <div style="font-family:Bebas Neue,sans-serif;font-size:28px;color:var(--blue)">$${totalEst.toLocaleString()}</div></div>
-            <div><div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Unrealized Gain/Loss</div>
-              <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--${glClass})">${gainLoss>=0?'+':''}\$${Math.abs(gainLoss).toLocaleString()} <span style="font-size:14px;opacity:.7">(${gainLoss>=0?'+':''}${gainPct}%)</span></div></div>
-          </div>`;
-
-        window._vaultData = data;
-        const cardsHtml = data.map((c,vIdx)=>{
-          const paid  = parseFloat(c.price_paid)||0;
-          const est   = parseFloat(c.estimated_value)||0;
-          const gl    = est - paid;
-          const glPct = paid>0?((gl/paid)*100).toFixed(1):null;
-          const glColor = gl>=0?'var(--green)':'var(--red)';
-          const acqDate = c.date_acquired ? new Date(c.date_acquired).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : null;
-          const imgSrc = c.front_image_url;
-          return `
-          <div class="card-thumb" style="position:relative" data-vaultidx="${vIdx}" onclick="openVaultCard(parseInt(this.dataset.vaultidx))">
-            <div class="ct-img" style="height:110px;background:rgba(0,170,255,0.06);overflow:hidden;padding:0;position:relative">
-              ${imgSrc
-                ? `<img src="${imgSrc}" style="width:100%;height:100%;object-fit:contain;background:#071828" loading="lazy">`
-                : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:30px;color:rgba(0,170,255,0.3)">&#9918;</div>`}
-              <div style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.6);border-radius:4px;padding:2px 6px;font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:${c.acquisition_type==='ripped'?'var(--green)':'var(--blue)'}">
-                ${c.acquisition_type==='ripped'?'&#128230; Ripped':'&#128176; Purchased'}
-              </div>
-            </div>
-            <div class="ct-info" style="padding-bottom:12px">
-              <div class="ct-player">${c.player||'Unknown'}</div>
-              <div class="ct-set">${c.year||''} ${c.brand||''} · ${c.set_name||c.parallel||''}</div>
-              ${c.card_number?`<div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(0,170,255,0.6);margin-top:2px;letter-spacing:.5px">${c.card_number}</div>`:''}
-              ${c.serial_number?`<div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--blue);margin-top:2px">#${c.serial_number}/${c.serial_total||'?'}</div>`:''}
-              <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--deep-border)">
-                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px">
-                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">Paid</div>
-                  <div style="font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--white)">$${paid.toLocaleString()}</div>
-                </div>
-                ${est?`<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px">
-                  <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">Est. Value</div>
-                  <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--blue)">$${est.toLocaleString()}</div>
-                </div>
-                <div style="display:flex;justify-content:flex-end">
-                  <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:700;color:${glColor}">${gl>=0?'+':''}\$${Math.abs(gl).toLocaleString()}${glPct?` (${gl>=0?'+':''}${glPct}%)`:''}</div>
-                </div>`:''}
-                ${acqDate?`<div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted-text);margin-top:4px">${acqDate}</div>`:''}
-              </div>
-              
-            </div>
-          </div>`;
-        }).join('');
-
-        grid.innerHTML = summaryHtml + cardsHtml;
-        _patchVaultThumbnails(data);
-    });
+    if(!data.length){
+      if(grid)grid.style.display='none';
+      if(statsBar)statsBar.style.display='none';
+      if(addBtn)addBtn.style.display='none';
+      if(empty)empty.style.display='block';
+      return;
+    }
+    if(empty)empty.style.display='none';
+    // Stats bar
+    const totalPaid = data.reduce((s,c)=>s+(parseFloat(c.price_paid)||0),0);
+    const totalEst  = data.reduce((s,c)=>s+(parseFloat(c.estimated_value)||0),0);
+    const gl = totalEst - totalPaid;
+    const glPct = totalPaid>0?((gl/totalPaid)*100).toFixed(1):0;
+    const glColor = gl>=0?'var(--green)':'var(--red)';
+    if(statsBar){
+      statsBar.style.display='grid';
+      statsBar.innerHTML='<div class="mv-stat"><div class="mv-stat-label">Cards</div><div class="mv-stat-val">'+data.length+'</div></div>'
+        +'<div class="mv-stat"><div class="mv-stat-label">Cost Basis</div><div class="mv-stat-val">$'+totalPaid.toLocaleString()+'</div></div>'
+        +'<div class="mv-stat"><div class="mv-stat-label">Est. Value</div><div class="mv-stat-val" style="color:var(--blue)">$'+totalEst.toLocaleString()+'</div></div>'
+        +'<div class="mv-stat"><div class="mv-stat-label">Gain / Loss</div><div class="mv-stat-val" style="color:'+glColor+'">'+(gl>=0?'+':'')+'$'+Math.abs(gl).toLocaleString()+' <span style="font-size:11px;opacity:.7">'+(gl>=0?'+':'')+glPct+'%</span></div></div>';
+    }
+    // Cards
+    window._vaultData = data;
+    if(grid){
+      grid.style.display='grid';
+      grid.innerHTML = data.map((c,vIdx)=>{
+        const paid = parseFloat(c.price_paid)||0;
+        const acqColor = c.acquisition_type==='pulled'?'var(--green)':'var(--blue)';
+        const acqLabel = c.acquisition_type==='pulled'?'&#128230; Ripped':'&#128176; Purchased';
+        const imgSrc = c.front_image_url;
+        return '<div class="mv-card" data-vaultidx="'+vIdx+'" onclick="openVaultCard(parseInt(this.dataset.vaultidx))">'
+          +'<div class="mv-card-img">'
+          +(imgSrc?'<img src="'+imgSrc+'" loading="lazy">':'<div class="mv-card-img-empty">&#9918;</div>')
+          +'<div class="mv-acq-badge" style="color:'+acqColor+'">'+acqLabel+'</div>'
+          +'</div>'
+          +'<div class="mv-card-info">'
+          +'<div class="mv-card-player">'+(c.player||'Unknown')+'</div>'
+          +'<div class="mv-card-set">'+(c.year||'')+' '+(c.brand||'')+' · '+(c.set_name||'')+'</div>'
+          +(c.variation?'<div class="mv-card-var">'+c.variation+'</div>':'')
+          +'<div class="mv-card-price">$'+paid.toLocaleString()+'</div>'
+          +'</div></div>';
+      }).join('');
+    }
+    if(addBtn)addBtn.style.display='block';
+    _patchVaultThumbnails(data);
+  });
 }
 
 // &#9472;&#9472; BUILD STAMP &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;

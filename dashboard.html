@@ -742,37 +742,80 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv-view-link{font-family:Barlow Condensed,sans-serif;font-size:10px;color:rgba(0,170,255,0.5);cursor:pointer}
 .mv-view-link:hover{color:var(--blue)}
 
-/* ── MyVault v3 Redesign ── */
-#mv3-hero{display:none;border:1px solid rgba(0,170,255,0.18);border-radius:12px;overflow:hidden;margin-bottom:14px;position:relative;background:rgba(5,18,32,0.9)}
-#mv3-hero-inner{display:grid;grid-template-columns:96px 1fr;align-items:stretch;cursor:pointer;position:relative;z-index:1}
-#mv3-hero-glow{position:absolute;width:220px;height:220px;border-radius:50%;opacity:0.22;filter:blur(55px);top:-40px;left:-30px;pointer-events:none;z-index:0;background:radial-gradient(circle,rgba(0,170,255,0.9) 0%,transparent 70%)}
-#mv3-hero-card-wrap{background:#071828;width:96px;flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:10px 6px}
-#mv3-hero-card{width:84px;height:118px;position:relative;transform-style:preserve-3d;animation:vaultIdleSpin 6s ease-in-out infinite}
-#mv3-hero-card-face{position:absolute;inset:0;border-radius:7px;background:#071828;border:1px solid rgba(0,170,255,0.4);box-shadow:0 8px 28px rgba(0,0,0,0.7),0 0 16px rgba(0,170,255,0.2);overflow:hidden}
-#mv3-hero-card-face img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;border-radius:6px;z-index:1}
-#mv3-hero-card-face::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.08) 0%,transparent 55%);pointer-events:none;z-index:3;border-radius:6px}
-#mv3-hero-info{padding:14px 18px;display:flex;flex-direction:column;justify-content:center;gap:0}
-.mv3-stat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
-.mv3-stat-chip{background:rgba(0,0,0,0.3);border:1px solid var(--deep-border);border-radius:10px;padding:10px 12px;text-align:center}
-.mv3-stat-lbl{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:3px}
-.mv3-stat-val{font-family:Bebas Neue,sans-serif;font-size:22px;line-height:1;color:var(--white)}
-.mv3-stat-val.blue{color:var(--blue)}.mv3-stat-val.green{color:var(--green)}.mv3-stat-val.red{color:var(--red)}
-.mv3-quick-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
-.mv3-q-chip{background:rgba(0,170,255,0.05);border:1px solid rgba(0,170,255,0.14);border-radius:9px;padding:9px 11px;cursor:pointer;transition:border-color .15s;display:flex;flex-direction:column;gap:3px}
-.mv3-q-chip:hover{border-color:rgba(0,170,255,0.4)}
-.mv3-q-lbl{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)}
-.mv3-q-val{font-family:Bebas Neue,sans-serif;font-size:22px;line-height:1;color:var(--white)}
-.mv3-q-val.blue{color:var(--blue)}.mv3-q-val.green{color:var(--green)}
-.mv3-ctrl-bar{display:flex;gap:8px;align-items:center;margin-bottom:12px}
-.mv3-search-wrap{position:relative;flex:1}
-.mv3-search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:12px;color:rgba(122,149,174,0.4);pointer-events:none}
-.mv3-search{width:100%;box-sizing:border-box;background:rgba(0,0,0,0.35);border:1px solid var(--deep-border);border-radius:8px;padding:9px 12px 9px 32px;font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--white);outline:none;transition:border-color .15s}
-.mv3-search::placeholder{color:rgba(122,149,174,0.4)}
-.mv3-search:focus{border-color:rgba(0,170,255,0.4)}
-.mv3-sort{background:rgba(0,0,0,0.35);border:1px solid var(--deep-border);border-radius:8px;padding:9px 10px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted-text);outline:none;cursor:pointer;white-space:nowrap;flex-shrink:0}
-.mv3-sort option{background:#0d1f33;color:var(--white)}
+/* ── MyVault Dashboard ── */
+.content.vault-active{overflow-y:auto !important;display:block !important}
+.content.vault-active #panel-myvault{display:block !important;overflow:visible !important;flex:none !important;min-height:0 !important}
+/* Module grid */
+#mv-dash{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.mv-mod{background:rgba(7,24,40,0.85);border:1px solid var(--deep-border);border-radius:12px;overflow:hidden;transition:border-color .2s,box-shadow .2s;position:relative}
+.mv-mod[data-cols="2"]{grid-column:span 2}.mv-mod[data-cols="3"]{grid-column:span 3}.mv-mod[data-cols="4"]{grid-column:span 4}
+.mv-mod[data-rows="2"]{grid-row:span 2}
+.mv-mod.drag-over{border-color:rgba(0,170,255,0.6);box-shadow:inset 0 0 0 1px rgba(0,170,255,0.25)}
+.mv-mod.is-dragging{opacity:0.3;transform:scale(0.97);pointer-events:none}
+.mv-mod-head{display:flex;align-items:center;gap:8px;padding:8px 12px 8px 10px;border-bottom:1px solid rgba(0,170,255,0.06);user-select:none;cursor:grab}
+.mv-mod-head:active{cursor:grabbing}
+.mv-mod-drag{color:rgba(122,149,174,0.2);font-size:13px;flex-shrink:0;line-height:1;transition:color .15s}
+.mv-mod-head:hover .mv-mod-drag{color:rgba(122,149,174,0.5)}
+#mv-dash.mv-customize-mode .mv-mod{border-style:dashed}
+#mv-dash.mv-customize-mode .mv-mod-drag{color:rgba(0,170,255,0.5) !important}
+.mv-mod-title{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(122,149,174,0.5);flex:1}
+.mv-mod-link{font-family:Barlow Condensed,sans-serif;font-size:10px;color:rgba(0,170,255,0.45);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:color .15s}
+.mv-mod-link:hover{color:var(--blue)}
+.mv-mod-body{padding:14px}
+/* Hero card module */
+#mvmod-hero .mv-mod-body{padding:14px 12px;display:flex;flex-direction:column;align-items:center;gap:12px;justify-content:center;min-height:220px}
+.mv-hero-3d{width:116px;height:163px;position:relative;transform-style:preserve-3d;animation:vaultIdleSpin 6s ease-in-out infinite;cursor:pointer;flex-shrink:0}
+.mv-hero-3d:hover{animation-play-state:paused}
+.mv-hero-face{position:absolute;inset:0;border-radius:9px;background:#071828;border:1px solid rgba(0,170,255,0.45);box-shadow:0 16px 50px rgba(0,0,0,0.8),0 0 28px rgba(0,170,255,0.2);overflow:hidden}
+.mv-hero-face img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;border-radius:8px;z-index:1}
+.mv-hero-face::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.09) 0%,transparent 55%);z-index:3;border-radius:8px;pointer-events:none}
+.mv-hero-meta{text-align:center;width:100%}
+.mv-hero-player{font-family:Bebas Neue,sans-serif;font-size:17px;letter-spacing:.5px;color:var(--white);line-height:1.1;margin-bottom:2px}
+.mv-hero-set{font-family:Barlow Condensed,sans-serif;font-size:10px;color:rgba(0,170,255,0.65);letter-spacing:.3px;margin-bottom:8px}
+.mv-hero-prices{display:flex;gap:10px;justify-content:center;margin-bottom:8px;flex-wrap:wrap}
+.mv-hero-price-item{text-align:center}
+.mv-hero-price-lbl{font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:1px}
+.mv-hero-price-val{font-family:Bebas Neue,sans-serif;font-size:17px;line-height:1;color:var(--white)}
+.mv-hero-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:22px 12px}
+.mv-hero-empty-icon{font-size:38px;opacity:0.15;display:block}
+.mv-hero-empty-txt{font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:.3px;line-height:1.6;color:var(--muted-text);opacity:0.6}
+/* Stats module */
+#mvmod-stats .mv-mod-body{padding:10px;display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.mv-stat-cell{text-align:center;padding:10px 6px;position:relative}
+.mv-stat-cell+.mv-stat-cell::before{content:'';position:absolute;left:0;top:20%;height:60%;width:1px;background:rgba(0,170,255,0.07)}
+.mv-stat-cell-lbl{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:3px}
+.mv-stat-cell-val{font-family:Bebas Neue,sans-serif;font-size:28px;line-height:1;color:var(--white)}
+.mv-stat-cell-val.blue{color:var(--blue)}.mv-stat-cell-val.green{color:var(--green)}.mv-stat-cell-val.red{color:var(--red)}
+/* At-a-glance module */
+#mvmod-glance .mv-mod-body{padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mv-glance-chip{background:rgba(0,0,0,0.2);border:1px solid rgba(0,170,255,0.08);border-radius:9px;padding:10px 12px;cursor:pointer;transition:border-color .15s}
+.mv-glance-chip:hover{border-color:rgba(0,170,255,0.3)}
+.mv-glance-lbl{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:3px}
+.mv-glance-val{font-family:Bebas Neue,sans-serif;font-size:26px;line-height:1;color:var(--white)}
+.mv-glance-val.blue{color:var(--blue)}.mv-glance-val.green{color:var(--green)}
+/* Activity module */
+.mv-act2-item{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid rgba(0,170,255,0.04)}
+.mv-act2-item:last-child{border-bottom:none}
+.mv-act2-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px;background:var(--blue)}
+.mv-act2-dot.green{background:var(--green)}.mv-act2-dot.red{background:var(--red)}.mv-act2-dot.gold{background:#FFD700}
+.mv-act2-body{flex:1;min-width:0}
+.mv-act2-title{font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.mv-act2-sub{font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mv-act2-time{font-family:Barlow Condensed,sans-serif;font-size:10px;color:rgba(122,149,174,0.35);white-space:nowrap;flex-shrink:0}
+/* Card grid section */
+#mv-grid-section{margin-top:4px}
+.mv-grid-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;flex-wrap:wrap}
+.mv-grid-title{font-family:Bebas Neue,sans-serif;font-size:20px;letter-spacing:1px;color:var(--white)}
+.mv-grid-ctrl{display:flex;gap:8px;align-items:center}
+.mv-gsearch-wrap{position:relative}
+.mv-gsearch-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;color:rgba(122,149,174,0.4);pointer-events:none}
+.mv-gsearch{background:rgba(0,0,0,0.35);border:1px solid var(--deep-border);border-radius:8px;padding:8px 12px 8px 30px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--white);outline:none;transition:border-color .15s;width:200px}
+.mv-gsearch::placeholder{color:rgba(122,149,174,0.35)}.mv-gsearch:focus{border-color:rgba(0,170,255,0.4)}
+.mv-gsort{background:rgba(0,0,0,0.35);border:1px solid var(--deep-border);border-radius:8px;padding:8px 10px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted-text);outline:none;cursor:pointer;flex-shrink:0}
+.mv-gsort option{background:#0d1f33;color:var(--white)}
+/* Card tiles */
 .mv3-card{background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .22s;position:relative}
-.mv3-card:hover{border-color:rgba(0,170,255,0.45);transform:translateY(-3px);box-shadow:0 14px 36px rgba(0,0,0,0.5),0 0 0 1px rgba(0,170,255,0.08)}
+.mv3-card:hover{border-color:rgba(0,170,255,0.45);transform:translateY(-3px);box-shadow:0 14px 36px rgba(0,0,0,0.5)}
 .mv3-card-img{height:152px;background:#071828;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center}
 .mv3-card-img img{width:100%;height:100%;object-fit:contain;display:block}
 .mv3-acq{position:absolute;top:7px;left:7px;border-radius:4px;padding:2px 6px;font-family:Barlow Condensed,sans-serif;font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;backdrop-filter:blur(6px)}
@@ -787,6 +830,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv3-price-row{display:flex;justify-content:space-between;align-items:baseline;margin-top:7px;padding-top:7px;border-top:1px solid rgba(0,170,255,0.07)}
 .mv3-paid{font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--white);line-height:1}
 .mv3-gl{font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:700}
+/* Empty state */
 .mv3-empty{text-align:center;padding:50px 20px 40px}
 .mv3-empty-card{width:110px;height:154px;margin:0 auto 22px;position:relative;transform-style:preserve-3d;animation:vaultIdleSpin 5s ease-in-out infinite}
 .mv3-empty-face{position:absolute;inset:0;border-radius:9px;background:#071828;border:1px solid rgba(0,170,255,0.35);box-shadow:0 12px 40px rgba(0,0,0,0.7),0 0 22px rgba(0,170,255,0.18);overflow:hidden}
@@ -1078,8 +1122,8 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mvc-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
 
 /* ── Vault active layout ── */
-.content.vault-active{overflow:hidden;display:flex;flex-direction:column}
-.content.vault-active #panel-myvault{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.content.vault-active{overflow-y:auto;display:block}
+.content.vault-active #panel-myvault{display:block;overflow:visible}
 #mv-stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:8px;flex-shrink:0}
 .mv-stat{background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;padding:10px 12px}
 .mv-stat-label{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:2px}
@@ -1705,87 +1749,18 @@ async function logOut(){
   <div class="panel active" id="panel-myvault">
 
     <!-- PAGE HEADER -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
       <div>
         <div style="font-family:Bebas Neue,sans-serif;font-size:28px;letter-spacing:1.5px;color:var(--white);line-height:1">MY VAULT</div>
         <div id="mv3-header-sub" style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);letter-spacing:.5px;margin-top:1px">Your personal card library</div>
       </div>
-      <button class="btn btn-primary" style="font-size:12px;padding:8px 16px;letter-spacing:1px;flex-shrink:0" onclick="N('library',document.querySelector('[onclick*=library]'))">+ ADD CARD</button>
-    </div>
-
-    <!-- HERO BANNER — shown when a card is starred as featured -->
-    <div id="mv3-hero">
-      <div id="mv3-hero-glow"></div>
-      <div id="mv3-hero-inner">
-        <div id="mv3-hero-card-wrap">
-          <div id="mv3-hero-card">
-            <div id="mv3-hero-card-face">
-              <img id="vaultHeroImg" src="" alt="Featured card">
-              <img id="vaultHeroImgBack" src="" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:2;opacity:0">
-            </div>
-          </div>
-        </div>
-        <div id="mv3-hero-info">
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--blue);margin-bottom:4px">★ FEATURED CARD</div>
-          <div style="font-family:Bebas Neue,sans-serif;font-size:26px;color:var(--white);letter-spacing:1px;line-height:1" id="vaultHeroPlayer"></div>
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:rgba(0,170,255,0.65);letter-spacing:.5px;margin-top:3px" id="vaultHeroSet"></div>
-          <div id="vaultHeroStats" style="display:flex;gap:18px;margin-top:10px"></div>
-          <div style="display:flex;gap:8px;margin-top:10px">
-            <button onclick="vaultHeroClick()" style="background:rgba(0,170,255,0.12);border:1px solid rgba(0,170,255,0.35);border-radius:6px;padding:6px 18px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);cursor:pointer;transition:background .15s" onmouseover="this.style.background='rgba(0,170,255,0.22)'" onmouseout="this.style.background='rgba(0,170,255,0.12)'">View Card ›</button>
-            <button onclick="vaultClearHero()" style="background:none;border:1px solid rgba(122,149,174,0.15);border-radius:6px;padding:6px 10px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;color:rgba(122,149,174,0.4);cursor:pointer">✕ Remove</button>
-          </div>
-        </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button id="mv-customize-btn" onclick="_toggleMvCustomize(this)" style="background:none;border:1px solid var(--deep-border);border-radius:7px;padding:7px 14px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);cursor:pointer;transition:all .15s">⊞ Customize</button>
+        <button class="btn btn-primary" style="font-size:12px;padding:8px 16px;letter-spacing:1px;flex-shrink:0" onclick="N('library',document.querySelector('[onclick*=library]'))">+ ADD CARD</button>
       </div>
     </div>
 
-    <!-- PORTFOLIO STAT STRIP — shown when vault has cards -->
-    <div id="mv3-stats" class="mv3-stat-strip" style="display:none">
-      <div class="mv3-stat-chip">
-        <div class="mv3-stat-lbl" id="mv3-count-lbl">Cards</div>
-        <div class="mv3-stat-val" id="mv3-count-val">—</div>
-      </div>
-      <div class="mv3-stat-chip">
-        <div class="mv3-stat-lbl">Cost Basis</div>
-        <div class="mv3-stat-val" id="mv3-paid-val">—</div>
-      </div>
-      <div class="mv3-stat-chip">
-        <div class="mv3-stat-lbl">Est. Value</div>
-        <div class="mv3-stat-val blue" id="mv3-est-val">—</div>
-      </div>
-      <div class="mv3-stat-chip">
-        <div class="mv3-stat-lbl">Gain / Loss</div>
-        <div class="mv3-stat-val" id="mv3-gl-val">—</div>
-      </div>
-    </div>
-
-    <!-- QUICK ACTION CHIPS — always shown -->
-    <div class="mv3-quick-row">
-      <div class="mv3-q-chip" onclick="N('myisos',document.getElementById('nav-myisos'))">
-        <div class="mv3-q-lbl">Active ISOs</div>
-        <div class="mv3-q-val blue" id="mv-active-isos">—</div>
-      </div>
-      <div class="mv3-q-chip" onclick="T('Buy credits — coming soon')">
-        <div class="mv3-q-lbl">ISO Credits</div>
-        <div class="mv3-q-val" id="mv-credits">—</div>
-      </div>
-      <div class="mv3-q-chip" onclick="N('isoticker',null)">
-        <div class="mv3-q-lbl">Portfolio</div>
-        <div class="mv3-q-val blue" id="mv-ticker-val">—</div>
-      </div>
-      <div class="mv3-q-chip" style="position:relative">
-        <div class="mv3-q-lbl" style="display:flex;align-items:center;gap:5px">
-          Alerts
-          <span id="mv-notif-badge" style="display:none;background:var(--red);border-radius:6px;padding:1px 5px;font-family:Barlow Condensed,sans-serif;font-size:8px;font-weight:700;color:#fff">●</span>
-        </div>
-        <div class="mv3-q-val" style="font-size:16px;color:var(--muted-text)" id="mv-notif-count">—</div>
-      </div>
-    </div>
-
-    <!-- Hidden legacy IDs used by external code -->
-    <span id="mv-ticker-gain" style="display:none"></span>
-    <span id="mv-ticker-top" style="display:none"></span>
-
-    <!-- EMPTY STATE — shown when vault is empty or user not logged in -->
+    <!-- EMPTY STATE -->
     <div id="myVaultEmpty" class="mv3-empty">
       <div class="mv3-empty-card">
         <div class="mv3-empty-face">
@@ -1799,23 +1774,157 @@ async function logOut(){
       <button class="btn btn-primary" onclick="N('library',document.querySelector('[onclick*=library]'))" style="padding:10px 28px;font-size:13px;letter-spacing:1.5px">Browse ISOVault →</button>
     </div>
 
-    <!-- SEARCH + SORT CONTROLS — shown when vault has cards -->
-    <div class="mv3-ctrl-bar" id="mv3-controls" style="display:none">
-      <div class="mv3-search-wrap">
-        <span class="mv3-search-icon">🔍</span>
-        <input class="mv3-search" id="mv3-search-input" type="text" placeholder="Search player, set, year..." oninput="filterVaultGrid(this.value)">
+    <!-- MODULAR DASHBOARD -->
+    <div id="mv-dash" style="display:none">
+
+      <!-- MODULE: Portfolio Stats — full width -->
+      <div class="mv-mod" id="mvmod-stats" data-mod-id="stats" data-cols="4" draggable="true">
+        <div class="mv-mod-head">
+          <span class="mv-mod-drag">⠿</span>
+          <span class="mv-mod-title">Portfolio Overview</span>
+        </div>
+        <div class="mv-mod-body">
+          <div class="mv-stat-cell">
+            <div class="mv-stat-cell-lbl" id="mv3-count-lbl">Cards</div>
+            <div class="mv-stat-cell-val" id="mv3-count-val">—</div>
+          </div>
+          <div class="mv-stat-cell">
+            <div class="mv-stat-cell-lbl">Cost Basis</div>
+            <div class="mv-stat-cell-val" id="mv3-paid-val">—</div>
+          </div>
+          <div class="mv-stat-cell">
+            <div class="mv-stat-cell-lbl">Est. Value</div>
+            <div class="mv-stat-cell-val blue" id="mv3-est-val">—</div>
+          </div>
+          <div class="mv-stat-cell">
+            <div class="mv-stat-cell-lbl">Gain / Loss</div>
+            <div class="mv-stat-cell-val" id="mv3-gl-val">—</div>
+          </div>
+        </div>
       </div>
-      <select class="mv3-sort" id="mv3-sort-sel" onchange="sortVaultGrid(this.value)">
-        <option value="date_desc">Newest First</option>
-        <option value="date_asc">Oldest First</option>
-        <option value="paid_desc">Highest Paid</option>
-        <option value="paid_asc">Lowest Paid</option>
-        <option value="player_asc">Player A→Z</option>
-      </select>
+
+      <!-- MODULE: Featured Card 3D — 1 col × 2 rows -->
+      <div class="mv-mod" id="mvmod-hero" data-mod-id="hero" data-cols="1" data-rows="2" draggable="true">
+        <div class="mv-mod-head">
+          <span class="mv-mod-drag">⠿</span>
+          <span class="mv-mod-title">Featured Card</span>
+        </div>
+        <div class="mv-mod-body">
+          <!-- Populated state -->
+          <div id="mv-hero-content" style="display:none;flex-direction:column;align-items:center;gap:12px;width:100%">
+            <div class="mv-hero-3d" id="vaultHero3d" onclick="vaultHeroClick()" title="Click to view full card">
+              <div class="mv-hero-face" id="vaultHeroFace">
+                <img id="vaultHeroImg" src="" alt="Featured card">
+                <img id="vaultHeroImgBack" src="" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:2;opacity:0">
+              </div>
+            </div>
+            <div class="mv-hero-meta">
+              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:2.5px;color:rgba(255,215,0,0.65);margin-bottom:3px;text-transform:uppercase">★ Featured</div>
+              <div class="mv-hero-player" id="vaultHeroPlayer"></div>
+              <div class="mv-hero-set" id="vaultHeroSet"></div>
+              <div class="mv-hero-prices" id="vaultHeroStats"></div>
+              <div style="display:flex;gap:6px;justify-content:center">
+                <button onclick="vaultHeroClick()" style="background:rgba(0,170,255,0.1);border:1px solid rgba(0,170,255,0.3);border-radius:6px;padding:5px 14px;font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);cursor:pointer;transition:background .15s" onmouseover="this.style.background='rgba(0,170,255,0.2)'" onmouseout="this.style.background='rgba(0,170,255,0.1)'">View Card ›</button>
+                <button onclick="vaultClearHero()" style="background:none;border:1px solid rgba(122,149,174,0.12);border-radius:6px;padding:5px 8px;font-family:Barlow Condensed,sans-serif;font-size:10px;color:rgba(122,149,174,0.35);cursor:pointer">✕</button>
+              </div>
+            </div>
+          </div>
+          <!-- Empty state -->
+          <div id="mv-hero-empty" class="mv-hero-empty">
+            <span class="mv-hero-empty-icon">☆</span>
+            <span class="mv-hero-empty-txt">Tap ★ on any card<br>to feature it here</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MODULE: Market Value by Player — 2 cols -->
+      <div class="mv-mod" id="mvmod-pchart" data-mod-id="pchart" data-cols="2" draggable="true">
+        <div class="mv-mod-head">
+          <span class="mv-mod-drag">⠿</span>
+          <span class="mv-mod-title">Market Value by Player</span>
+        </div>
+        <div class="mv-mod-body" style="padding:10px 12px 12px">
+          <svg id="mv-pchart-svg" viewBox="0 0 340 155" style="width:100%;display:block"></svg>
+        </div>
+      </div>
+
+      <!-- MODULE: Collection Breakdown donut — 1 col -->
+      <div class="mv-mod" id="mvmod-bchart" data-mod-id="bchart" data-cols="1" draggable="true">
+        <div class="mv-mod-head">
+          <span class="mv-mod-drag">⠿</span>
+          <span class="mv-mod-title">Collection Breakdown</span>
+        </div>
+        <div class="mv-mod-body" style="padding:10px 12px 12px">
+          <div style="display:flex;gap:10px;align-items:center">
+            <svg id="mv-bchart-svg" viewBox="0 0 130 130" style="width:110px;min-width:110px;height:110px;display:block;flex-shrink:0"></svg>
+            <div id="mv-bchart-legend" style="flex:1;min-width:0"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MODULE: Recent Activity — 2 cols -->
+      <div class="mv-mod" id="mvmod-activity" data-mod-id="activity" data-cols="2" draggable="true">
+        <div class="mv-mod-head">
+          <span class="mv-mod-drag">⠿</span>
+          <span class="mv-mod-title">Recent Activity</span>
+        </div>
+        <div class="mv-mod-body" style="padding:4px 14px 10px" id="mv-activity-list">
+          <div class="mv-act2-item"><div class="mv-act2-dot"></div><div class="mv-act2-body"><div class="mv-act2-title">—</div><div class="mv-act2-sub">Loading…</div></div></div>
+        </div>
+      </div>
+
+      <!-- MODULE: At a Glance — 1 col -->
+      <div class="mv-mod" id="mvmod-glance" data-mod-id="glance" data-cols="1" draggable="true">
+        <div class="mv-mod-head">
+          <span class="mv-mod-drag">⠿</span>
+          <span class="mv-mod-title">At a Glance</span>
+        </div>
+        <div class="mv-mod-body">
+          <div class="mv-glance-chip" onclick="N('myisos',document.getElementById('nav-myisos'))">
+            <div class="mv-glance-lbl">Active ISOs</div>
+            <div class="mv-glance-val blue" id="mv-active-isos">—</div>
+          </div>
+          <div class="mv-glance-chip" onclick="T('Buy credits — coming soon')">
+            <div class="mv-glance-lbl">ISO Credits</div>
+            <div class="mv-glance-val" id="mv-credits">—</div>
+          </div>
+          <div class="mv-glance-chip" onclick="N('isoticker',null)">
+            <div class="mv-glance-lbl">Portfolio Value</div>
+            <div class="mv-glance-val blue" id="mv-ticker-val">—</div>
+          </div>
+          <div class="mv-glance-chip">
+            <div class="mv-glance-lbl" style="display:flex;align-items:center;gap:5px">Notifications<span id="mv-notif-badge" style="display:none;background:var(--red);border-radius:6px;padding:1px 5px;font-family:Barlow Condensed,sans-serif;font-size:8px;font-weight:700;color:#fff">●</span></div>
+            <div class="mv-glance-val" style="color:var(--muted-text)" id="mv-notif-count">—</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end #mv-dash -->
+
+    <!-- CARD GRID SECTION -->
+    <div id="mv-grid-section" style="display:none">
+      <div class="mv-grid-head">
+        <div class="mv-grid-title">MY CARDS <span id="mv3-count-lbl2" style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);letter-spacing:1px;font-weight:400"></span></div>
+        <div class="mv-grid-ctrl">
+          <div class="mv-gsearch-wrap">
+            <span class="mv-gsearch-icon">🔍</span>
+            <input class="mv-gsearch" id="mv3-search-input" type="text" placeholder="Search player, set, year…" oninput="filterVaultGrid(this.value)">
+          </div>
+          <select class="mv-gsort" id="mv3-sort-sel" onchange="sortVaultGrid(this.value)">
+            <option value="date_desc">Newest First</option>
+            <option value="date_asc">Oldest First</option>
+            <option value="paid_desc">Highest Paid</option>
+            <option value="paid_asc">Lowest Paid</option>
+            <option value="player_asc">Player A → Z</option>
+          </select>
+        </div>
+      </div>
+      <div id="myVaultGrid" style="display:none"></div>
     </div>
 
-    <!-- CARD GRID -->
-    <div id="myVaultGrid" style="display:none"></div>
+    <!-- Hidden legacy IDs used by external code -->
+    <span id="mv-ticker-gain" style="display:none"></span>
+    <span id="mv-ticker-top" style="display:none"></span>
 
   </div>
 
@@ -4654,16 +4763,14 @@ async function _patchVaultThumbnails(rows){
   }
 }
 function renderMyVault(){
-  const grid  = document.getElementById('myVaultGrid');
-  const empty = document.getElementById('myVaultEmpty');
-  const user  = window._authUser;
-  const ctrl  = document.getElementById('mv3-controls');
-  const stats = document.getElementById('mv3-stats');
+  const empty=document.getElementById('myVaultEmpty');
+  const dash =document.getElementById('mv-dash');
+  const gsec =document.getElementById('mv-grid-section');
+  const user =window._authUser;
   if(!user){
-    if(grid)  grid.style.display='none';
     if(empty) empty.style.display='block';
-    if(ctrl)  ctrl.style.display='none';
-    if(stats) stats.style.display='none';
+    if(dash)  dash.style.display='none';
+    if(gsec)  gsec.style.display='none';
     return;
   }
   const ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
@@ -4672,65 +4779,130 @@ function renderMyVault(){
     headers:{'apikey':ANON_KEY,'Authorization':'Bearer '+userToken}
   }).then(r=>r.json()).then(data=>{
     if(!Array.isArray(data)){
-      if(grid)  grid.style.display='none';
       if(empty){ empty.style.display='block'; empty.innerHTML=`<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--red);padding:20px">Vault error: ${data?.message||'Unknown error'}</div>`; }
+      if(dash) dash.style.display='none';
+      if(gsec) gsec.style.display='none';
       return;
     }
     if(!data.length){
-      if(grid)  grid.style.display='none';
       if(empty) empty.style.display='block';
-      if(ctrl)  ctrl.style.display='none';
-      if(stats) stats.style.display='none';
+      if(dash)  dash.style.display='none';
+      if(gsec)  gsec.style.display='none';
       return;
     }
-    // Have cards — hide empty, show grid
     if(empty) empty.style.display='none';
-    if(!grid) return;
-
-    // Portfolio stats
-    const totalPaid=data.reduce((s,c)=>s+(parseFloat(c.price_paid)||0),0);
-    const totalEst=data.reduce((s,c)=>s+(parseFloat(c.estimated_value)||0),0);
-    const gainLoss=totalEst-totalPaid;
-    const glClass=gainLoss>=0?'green':'red';
-    if(stats){
-      stats.style.display='grid';
-      const cv=document.getElementById('mv3-count-val'); if(cv) cv.textContent=data.length;
-      const cl=document.getElementById('mv3-count-lbl'); if(cl) cl.textContent=data.length===1?'Card':'Cards';
-      const pv=document.getElementById('mv3-paid-val'); if(pv) pv.textContent='$'+totalPaid.toLocaleString(undefined,{maximumFractionDigits:0});
-      const ev=document.getElementById('mv3-est-val'); if(ev) ev.textContent=totalEst?'$'+totalEst.toLocaleString(undefined,{maximumFractionDigits:0}):'—';
-      const gl=document.getElementById('mv3-gl-val'); if(gl){ gl.textContent=(gainLoss>=0?'+':'')+`$${Math.abs(gainLoss).toLocaleString(undefined,{maximumFractionDigits:0})}`; gl.className='mv3-stat-val '+glClass; }
-    }
-
-    // Header sub
+    if(dash){ dash.style.display='grid'; _restoreModLayout(); _initModDrag(); }
+    if(gsec)  gsec.style.display='block';
+    window._vaultData=data;
     const hsub=document.getElementById('mv3-header-sub');
     if(hsub) hsub.textContent=data.length+' card'+(data.length!==1?'s':'')+' · '+new Date().toLocaleDateString('en-US',{month:'short',year:'numeric'});
-
-    window._vaultData=data;
-
-    // Controls
-    if(ctrl) ctrl.style.display='flex';
+    const totalPaid=data.reduce((s,c)=>s+(parseFloat(c.price_paid)||0),0);
+    const totalEst =data.reduce((s,c)=>s+(parseFloat(c.estimated_value)||0),0);
+    const gainLoss =totalEst-totalPaid;
+    const glClass  =gainLoss>=0?'green':'red';
+    const cv=document.getElementById('mv3-count-val'); if(cv) cv.textContent=data.length;
+    const cl=document.getElementById('mv3-count-lbl'); if(cl) cl.textContent=data.length===1?'Card':'Cards';
+    const cl2=document.getElementById('mv3-count-lbl2'); if(cl2) cl2.textContent='('+data.length+')';
+    const pv=document.getElementById('mv3-paid-val'); if(pv) pv.textContent='$'+totalPaid.toLocaleString(undefined,{maximumFractionDigits:0});
+    const ev=document.getElementById('mv3-est-val'); if(ev) ev.textContent=totalEst?'$'+totalEst.toLocaleString(undefined,{maximumFractionDigits:0}):'—';
+    const gv=document.getElementById('mv3-gl-val'); if(gv){ gv.textContent=(gainLoss>=0?'+':'')+`$${Math.abs(gainLoss).toLocaleString(undefined,{maximumFractionDigits:0})}`; gv.className='mv-stat-cell-val '+glClass; }
+    _renderPlayerChart(data);
+    _renderBrandChart(data);
+    _renderActivityFeed(data);
     const si=document.getElementById('mv3-search-input'); if(si) si.value='';
     const ss=document.getElementById('mv3-sort-sel'); if(ss) ss.value='date_desc';
-
     _renderVaultGrid(data);
     _patchVaultThumbnails(data);
     _renderVaultHero();
     _updateStarVisuals();
-  });
+  }).catch(err=>{ console.error('renderMyVault:',err); });
 }
 
-// ── Render card grid with provided data array ──────────────────────────────
+function _renderPlayerChart(data){
+  const el=document.getElementById('mv-pchart-svg');
+  if(!el||!data||!data.length){if(el)el.innerHTML='';return;}
+  const byP={};
+  data.forEach(c=>{const p=c.player||'Unknown';const v=parseFloat(c.estimated_value)||parseFloat(c.price_paid)||0;byP[p]=(byP[p]||0)+v;});
+  const sorted=Object.entries(byP).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  if(!sorted.length){el.innerHTML='';return;}
+  const W=340,H=155,PL=4,PR=4,PT=22,PB=28,chartW=W-PL-PR,chartH=H-PT-PB;
+  const n=sorted.length,gap=6,barW=Math.floor((chartW-(n-1)*gap)/n);
+  const maxVal=sorted[0][1]*1.15;
+  let out='<defs>';
+  sorted.forEach((_,i)=>{out+=`<linearGradient id="bgrv${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00AAFF" stop-opacity="${(0.9-i*0.1).toFixed(2)}"/><stop offset="100%" stop-color="#003A6B" stop-opacity="${(0.5-i*0.05).toFixed(2)}"/></linearGradient>`;});
+  out+='</defs>';
+  sorted.forEach(([player,val],i)=>{
+    const x=PL+i*(barW+gap);
+    const bH=Math.max(4,Math.floor(chartH*(val/maxVal)));
+    const y=PT+chartH-bH;
+    const lastName=player.split(' ').pop();
+    const fmtVal=val>=1000?'$'+(val/1000).toFixed(1)+'k':'$'+Math.round(val);
+    out+=`<rect x="${x}" y="${y}" width="${barW}" height="${bH}" rx="3" fill="url(#bgrv${i})"/>`;
+    out+=`<text x="${x+barW/2}" y="${y-5}" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="11" fill="#00AAFF" opacity="0.9">${fmtVal}</text>`;
+    out+=`<text x="${x+barW/2}" y="${H-4}" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-size="9" fill="#7A95AE">${lastName}</text>`;
+  });
+  out+=`<line x1="${PL}" y1="${PT+chartH}" x2="${W-PR}" y2="${PT+chartH}" stroke="rgba(0,170,255,0.07)" stroke-width="1"/>`;
+  el.innerHTML=out;
+}
+
+function _renderBrandChart(data){
+  const svgEl=document.getElementById('mv-bchart-svg');
+  const legEl=document.getElementById('mv-bchart-legend');
+  if(!svgEl||!data||!data.length) return;
+  const byBrand={};
+  data.forEach(c=>{const b=c.brand||'Other';byBrand[b]=(byBrand[b]||0)+1;});
+  const total=data.length;
+  const entries=Object.entries(byBrand).sort((a,b)=>b[1]-a[1]);
+  const COLORS=['#00AAFF','#0088CC','#00CCFF','#0055AA','#55AADD','#003377'];
+  const cx=65,cy=65,R=52,r=28;
+  let startA=-Math.PI/2,paths='',legendHtml='';
+  entries.forEach(([brand,count],i)=>{
+    const sweep=(count/total)*Math.PI*2;
+    const endA=startA+sweep;
+    const large=sweep>Math.PI?1:0;
+    const color=COLORS[i%COLORS.length];
+    const pct=((count/total)*100).toFixed(0);
+    const x1=cx+R*Math.cos(startA),y1=cy+R*Math.sin(startA);
+    const x2=cx+R*Math.cos(endA),y2=cy+R*Math.sin(endA);
+    const xi1=cx+r*Math.cos(endA),yi1=cy+r*Math.sin(endA);
+    const xi2=cx+r*Math.cos(startA),yi2=cy+r*Math.sin(startA);
+    paths+=`<path d="M${x1.toFixed(1)},${y1.toFixed(1)} A${R},${R} 0 ${large},1 ${x2.toFixed(1)},${y2.toFixed(1)} L${xi1.toFixed(1)},${yi1.toFixed(1)} A${r},${r} 0 ${large},0 ${xi2.toFixed(1)},${yi2.toFixed(1)} Z" fill="${color}" stroke="#0D1F33" stroke-width="1.5" opacity="0.88"/>`;
+    legendHtml+=`<div style="display:flex;align-items:center;gap:5px;margin-bottom:5px"><div style="width:8px;height:8px;border-radius:2px;background:${color};flex-shrink:0"></div><div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:#7A95AE;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${brand}</div><div style="font-family:'Bebas Neue',sans-serif;font-size:14px;color:#fff;flex-shrink:0">${pct}%</div></div>`;
+    startA=endA;
+  });
+  paths+=`<text x="${cx}" y="${cy-5}" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-size="8" fill="#7A95AE" letter-spacing="1">CARDS</text><text x="${cx}" y="${cy+13}" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="22" fill="#fff">${total}</text>`;
+  svgEl.innerHTML=paths;
+  if(legEl) legEl.innerHTML=legendHtml;
+}
+
+function _renderActivityFeed(data){
+  const el=document.getElementById('mv-activity-list');
+  if(!el||!data||!data.length) return;
+  const recent=[...data].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0)).slice(0,5);
+  const now=Date.now();
+  el.innerHTML=recent.map(c=>{
+    const ts=c.created_at?new Date(c.created_at):null;
+    let ago='—';
+    if(ts){const d=Math.floor((now-ts.getTime())/1000);ago=d<60?d+'s':d<3600?Math.floor(d/60)+'m':d<86400?Math.floor(d/3600)+'h':Math.floor(d/86400)+'d';}
+    const dot=c.acquisition_type==='ripped'?'green':'blue';
+    const paid=parseFloat(c.price_paid)||0;
+    const meta=[c.brand,c.year,c.set_name||c.parallel].filter(Boolean).join(' · ');
+    return `<div class="mv-act2-item"><div class="mv-act2-dot ${dot}"></div><div class="mv-act2-body"><div class="mv-act2-title">${c.player||'Unknown'}</div><div class="mv-act2-sub">${meta}${paid?' · $'+paid.toLocaleString():''}</div></div><div class="mv-act2-time">${ago}</div></div>`;
+  }).join('');
+}
+
+// ── Render card grid ────────────────────────────────────────────────────────
 function _renderVaultGrid(data){
   const grid=document.getElementById('myVaultGrid');
   if(!grid) return;
-  if(!data||!data.length){ grid.style.display='none'; return; }
+  if(!data||!data.length){grid.style.display='none';return;}
   grid.style.display='grid';
   grid.innerHTML=data.map((c,vIdx)=>{
     const srcIdx=(window._vaultData||[]).indexOf(c);
     const realIdx=srcIdx>=0?srcIdx:vIdx;
     const paid=parseFloat(c.price_paid)||0;
-    const est=parseFloat(c.estimated_value)||0;
-    const gl=est-paid;
+    const est =parseFloat(c.estimated_value)||0;
+    const gl  =est-paid;
     const glColor=gl>=0?'var(--green)':'var(--red)';
     const imgSrc=c.front_image_url;
     const isRipped=c.acquisition_type==='ripped';
@@ -4738,110 +4910,116 @@ function _renderVaultGrid(data){
     const meta=[c.year,c.brand,c.set_name||c.parallel].filter(Boolean).join(' · ');
     return `<div class="mv3-card" data-vaultidx="${realIdx}" onclick="openVaultCard(parseInt(this.dataset.vaultidx))">
       <div class="mv3-card-img">
-        ${imgSrc
-          ?`<img src="${imgSrc}" loading="lazy" alt="${(c.player||'').replace(/"/g,'&quot;')}">`
-          :`<img src="${window._GRAIL_PH||''}" style="object-fit:cover" loading="lazy" alt="GrailISO">`}
+        ${imgSrc?`<img src="${imgSrc}" loading="lazy" alt="${(c.player||'').replace(/"/g,'&quot;')}">`:`<img src="${window._GRAIL_PH||''}" style="object-fit:cover" loading="lazy" alt="GrailISO">`}
         <div class="mv3-acq ${isRipped?'ripped':'bought'}">${isRipped?'⚡ Ripped':'💰 Bought'}</div>
-        <button class="mv3-star-btn${isFeat?' is-featured':''}" id="vaultStar-${realIdx}" onclick="event.stopPropagation();vaultSetFeatured(${realIdx})" title="Set as featured card">${isFeat?'★':'☆'}</button>
+        <button class="mv3-star-btn${isFeat?' is-featured':''}" id="vaultStar-${realIdx}" onclick="event.stopPropagation();vaultSetFeatured(${realIdx})" title="Feature this card">${isFeat?'★':'☆'}</button>
       </div>
       <div class="mv3-info">
         <div class="mv3-player">${c.player||'Unknown'}</div>
         <div class="mv3-set">${meta}</div>
-        ${(c.card_number||c.serial_number)?`<div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:rgba(0,170,255,0.5);margin-top:2px;letter-spacing:.4px">${c.card_number||''}${c.serial_number?' · #'+c.serial_number+(c.serial_total?'/'+c.serial_total:''):''}</div>`:''}
+        ${(c.card_number||c.serial_number)?`<div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:rgba(0,170,255,0.5);margin-top:2px">${c.card_number||''}${c.serial_number?' · #'+c.serial_number+(c.serial_total?'/'+c.serial_total:''):''}</div>`:''}
         <div class="mv3-price-row">
-          <div>
-            <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">Paid</div>
-            <div class="mv3-paid">$${paid.toLocaleString()}</div>
-          </div>
-          ${est?`<div style="text-align:right">
-            <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">G/L</div>
-            <div class="mv3-gl" style="color:${glColor}">${gl>=0?'+':''}$${Math.abs(gl).toLocaleString()}</div>
-          </div>`:''}
+          <div><div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">Paid</div><div class="mv3-paid">$${paid.toLocaleString()}</div></div>
+          ${est?`<div style="text-align:right"><div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">G/L</div><div class="mv3-gl" style="color:${glColor}">${gl>=0?'+':''}$${Math.abs(gl).toLocaleString()}</div></div>`:''}
         </div>
       </div>
     </div>`;
   }).join('');
 }
 
-// ── Star / featured mechanic ───────────────────────────────────────────────
-function vaultSetFeatured(idx){
-  if(window._vaultFeaturedIdx===idx){
-    window._vaultFeaturedIdx=null;
-  } else {
-    window._vaultFeaturedIdx=idx;
-  }
-  _renderVaultHero();
-  _updateStarVisuals();
-}
-
-function vaultIsFeatured(idx){
-  return window._vaultFeaturedIdx===idx;
-}
-
-function vaultClearHero(){
-  window._vaultFeaturedIdx=null;
-  _renderVaultHero();
-  _updateStarVisuals();
-}
-
-function vaultHeroClick(){
-  const idx=window._vaultFeaturedIdx;
-  if(idx==null||!window._vaultData) return;
-  openVaultCard(idx);
-}
-
-function _renderVaultFavs(){
-  // Favorites rail replaced by hero banner in v3 — no-op
-}
+// ── Featured card ────────────────────────────────────────────────────────────
+function vaultSetFeatured(idx){window._vaultFeaturedIdx=(window._vaultFeaturedIdx===idx)?null:idx;_renderVaultHero();_updateStarVisuals();}
+function vaultIsFeatured(idx){return window._vaultFeaturedIdx===idx;}
+function vaultClearHero(){window._vaultFeaturedIdx=null;_renderVaultHero();_updateStarVisuals();}
+function vaultHeroClick(){const idx=window._vaultFeaturedIdx;if(idx==null||!window._vaultData)return;openVaultCard(idx);}
+function _renderVaultFavs(){}
 
 function _renderVaultHero(){
-  const hero=document.getElementById('mv3-hero');
-  if(!hero) return;
+  const hc=document.getElementById('mv-hero-content');
+  const he=document.getElementById('mv-hero-empty');
+  if(!hc||!he) return;
   const idx=window._vaultFeaturedIdx;
   const data=window._vaultData;
   if(idx==null||!data||!data[idx]){
-    hero.style.display='none';
+    hc.style.display='none';he.style.display='flex';
+    const hi=document.getElementById('vaultHeroImg');if(hi) hi.src='';
     return;
   }
+  hc.style.display='flex';he.style.display='none';
   const c=data[idx];
-  hero.style.display='block';
-  // Card image
-  const img=document.getElementById('vaultHeroImg');
-  if(img){ img.src=c.front_image_url||window._GRAIL_PH||''; img.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;border-radius:6px;z-index:1'; }
-  const imgBack=document.getElementById('vaultHeroImgBack');
-  if(imgBack) imgBack.src=c.back_image_url||'';
-  // Text
-  const player=document.getElementById('vaultHeroPlayer'); if(player) player.textContent=(c.player||'').toUpperCase();
-  const set=document.getElementById('vaultHeroSet'); if(set) set.textContent=[c.year,c.brand,c.set_name||c.parallel].filter(Boolean).join(' · ');
-  // Mini stats
+  const img=document.getElementById('vaultHeroImg');if(img) img.src=c.front_image_url||window._GRAIL_PH||'';
+  const imgB=document.getElementById('vaultHeroImgBack');if(imgB) imgB.src=c.back_image_url||'';
+  const player=document.getElementById('vaultHeroPlayer');if(player) player.textContent=(c.player||'').toUpperCase();
+  const set=document.getElementById('vaultHeroSet');if(set) set.textContent=[c.year,c.brand,c.set_name||c.parallel].filter(Boolean).join(' · ');
   const statsEl=document.getElementById('vaultHeroStats');
   if(statsEl){
     const paid=parseFloat(c.price_paid)||0;
     const est=parseFloat(c.estimated_value)||0;
     const gl=est-paid;
-    const glCol=gl>=0?'var(--green)':'var(--red)';
-    statsEl.innerHTML=
-      `<div><div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:1px">Paid</div><div style="font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--white);line-height:1">$${paid.toLocaleString()}</div></div>`+
-      (est?`<div><div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:1px">Est. Value</div><div style="font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--blue);line-height:1">$${est.toLocaleString()}</div></div>`+
-      `<div><div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:1px">G / L</div><div style="font-family:Bebas Neue,sans-serif;font-size:18px;color:${glCol};line-height:1">${gl>=0?'+':''}$${Math.abs(gl).toLocaleString()}</div></div>`:
-      '');
+    statsEl.innerHTML=`<div class="mv-hero-price-item"><div class="mv-hero-price-lbl">Paid</div><div class="mv-hero-price-val">$${paid.toLocaleString()}</div></div>`+
+      (est?`<div class="mv-hero-price-item"><div class="mv-hero-price-lbl">Value</div><div class="mv-hero-price-val" style="color:var(--blue)">$${est.toLocaleString()}</div></div><div class="mv-hero-price-item"><div class="mv-hero-price-lbl">G/L</div><div class="mv-hero-price-val" style="color:${gl>=0?'var(--green)':'var(--red)'}">${gl>=0?'+':''}$${Math.abs(gl).toLocaleString()}</div></div>`:'');
   }
 }
 
 function _updateStarVisuals(){
-  const data=window._vaultData||[];
-  data.forEach((_,i)=>{
-    const btn=document.getElementById('vaultStar-'+i);
-    if(!btn) return;
-    const feat=vaultIsFeatured(i);
-    btn.className='mv3-star-btn'+(feat?' is-featured':'');
-    btn.textContent=feat?'★':'☆';
+  (window._vaultData||[]).forEach((_,i)=>{
+    const btn=document.getElementById('vaultStar-'+i);if(!btn)return;
+    const f=vaultIsFeatured(i);
+    btn.className='mv3-star-btn'+(f?' is-featured':'');
+    btn.textContent=f?'★':'☆';
   });
 }
 
+// ── Module drag-and-drop ─────────────────────────────────────────────────────
+let _mvDragSrc=null;
+function _initModDrag(){
+  document.querySelectorAll('#mv-dash .mv-mod[draggable]').forEach(m=>{
+    m.removeEventListener('dragstart',_modDS);m.removeEventListener('dragover',_modDO);
+    m.removeEventListener('dragleave',_modDL);m.removeEventListener('drop',_modDrop);
+    m.removeEventListener('dragend',_modDE);
+    m.addEventListener('dragstart',_modDS);m.addEventListener('dragover',_modDO);
+    m.addEventListener('dragleave',_modDL);m.addEventListener('drop',_modDrop);
+    m.addEventListener('dragend',_modDE);
+  });
+}
+function _modDS(e){_mvDragSrc=this;e.dataTransfer.effectAllowed='move';setTimeout(()=>this.classList.add('is-dragging'),0);}
+function _modDO(e){e.preventDefault();e.dataTransfer.dropEffect='move';if(this!==_mvDragSrc)this.classList.add('drag-over');return false;}
+function _modDL(){this.classList.remove('drag-over');}
+function _modDrop(e){
+  e.stopPropagation();
+  if(this===_mvDragSrc){this.classList.remove('drag-over');return false;}
+  const dash=document.getElementById('mv-dash');
+  if(!dash||!_mvDragSrc){this.classList.remove('drag-over');return false;}
+  const ch=[...dash.children];
+  if(ch.indexOf(_mvDragSrc)<ch.indexOf(this)) dash.insertBefore(_mvDragSrc,this.nextSibling);
+  else dash.insertBefore(_mvDragSrc,this);
+  this.classList.remove('drag-over');
+  _saveModLayout();
+  return false;
+}
+function _modDE(){this.classList.remove('is-dragging');document.querySelectorAll('#mv-dash .mv-mod').forEach(m=>m.classList.remove('drag-over','is-dragging'));}
+function _saveModLayout(){
+  try{localStorage.setItem('grailiso_mvlayout_v1',JSON.stringify([...document.querySelectorAll('#mv-dash .mv-mod')].map(m=>m.dataset.modId)));}catch(e){}
+}
+function _restoreModLayout(){
+  try{
+    const saved=JSON.parse(localStorage.getItem('grailiso_mvlayout_v1')||'null');
+    if(!saved||!Array.isArray(saved))return;
+    const dash=document.getElementById('mv-dash');if(!dash)return;
+    saved.forEach(id=>{const m=dash.querySelector('[data-mod-id="'+id+'"]');if(m)dash.appendChild(m);});
+  }catch(e){}
+}
+function _toggleMvCustomize(btn){
+  const dash=document.getElementById('mv-dash');if(!dash)return;
+  const on=dash.classList.toggle('mv-customize-mode');
+  if(btn){btn.textContent=on?'✓ Done':'⊞ Customize';btn.style.borderColor=on?'var(--blue)':'var(--deep-border)';btn.style.color=on?'var(--blue)':'var(--muted-text)';}
+  T(on?'Drag modules to rearrange — click Done when finished':'Layout saved');
+}
+
+// ── Search / Sort ─────────────────────────────────────────────────────────────
 function filterVaultGrid(q){
   const data=window._vaultData||[];
-  if(!q||!q.trim()){ _renderVaultGrid(data); _patchVaultThumbnails(data); _updateStarVisuals(); return; }
+  if(!q||!q.trim()){_renderVaultGrid(data);_patchVaultThumbnails(data);_updateStarVisuals();return;}
   const ql=q.toLowerCase();
   const filtered=data.filter(c=>
     (c.player||'').toLowerCase().includes(ql)||

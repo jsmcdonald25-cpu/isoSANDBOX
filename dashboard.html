@@ -692,6 +692,35 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
   .iv-set-grid{grid-template-columns:repeat(2,1fr);gap:10px}
   #scoresBar{left:0!important}
 }
+
+.vault-empty-3d{width:160px;height:224px;position:relative;transform-style:preserve-3d;animation:vaultIdleSpin 5s ease-in-out infinite}
+.vault-empty-face{position:absolute;inset:0;border-radius:10px;background:#071828;border:1px solid rgba(0,170,255,0.4);box-shadow:0 12px 40px rgba(0,0,0,0.7),0 0 22px rgba(0,170,255,0.2);overflow:hidden}
+.vault-empty-shimmer{position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(0,170,255,0.09) 50%,transparent 60%);animation:s3shim 3s ease-in-out infinite;z-index:4;pointer-events:none}
+@keyframes vaultIdleSpin{0%,100%{transform:rotateY(-13deg) rotateX(5deg)}50%{transform:rotateY(13deg) rotateX(-5deg)}}
+.vault-hero-wrap{margin-bottom:20px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.vault-hero-3d{width:280px;height:392px;position:relative;transform-style:preserve-3d;animation:vaultIdleSpin 6s ease-in-out infinite;cursor:pointer;perspective:1200px}
+.vault-hero-face{position:absolute;inset:0;border-radius:10px;background:#071828;border:1px solid rgba(0,170,255,0.5);box-shadow:0 16px 60px rgba(0,0,0,0.7),0 0 30px rgba(0,170,255,0.2);overflow:hidden}
+.vault-hero-face img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:9px;display:block;z-index:1}
+.vault-hero-face::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.08) 0%,transparent 55%);pointer-events:none;z-index:3;border-radius:9px}
+.vault-fav-rail{display:flex;gap:8px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none}
+.vault-fav-rail::-webkit-scrollbar{display:none}
+.vault-fav-card{width:76px;min-width:76px;border-radius:7px;overflow:hidden;cursor:pointer;position:relative;border:2px solid transparent;transition:all .18s}
+.vault-fav-card:hover{border-color:rgba(0,170,255,0.4);transform:translateY(-2px)}
+.vault-fav-card.is-hero{border-color:var(--blue);box-shadow:0 0 12px rgba(0,170,255,0.4)}
+.vault-fav-img{height:106px;overflow:hidden;background:#071828}
+.vault-fav-img img{width:100%;height:100%;object-fit:cover;display:block}
+.vault-fav-name{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:.5px;color:var(--muted-text);padding:4px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--deep2)}
+
+.mv-act-item{display:flex;align-items:center;gap:8px;padding:5px 12px;border-bottom:1px solid rgba(0,170,255,0.05)}
+.mv-act-item:last-child{border-bottom:none}
+.mv-act-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.mv-act-dot.red{background:var(--red)}
+.mv-act-dot.green{background:var(--green)}
+.mv-act-dot.blue{background:var(--blue)}
+.mv-act-dot.gold{background:#FFD700}
+.mv-act-text{font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);flex:1;line-height:1.3}
+.mv-act-text strong{color:var(--white);font-weight:600}
+.mv-act-time{font-family:Barlow Condensed,sans-serif;font-size:10px;color:rgba(122,149,174,0.5);white-space:nowrap;letter-spacing:.5px}
 </style>
 </head>
 <body>
@@ -946,6 +975,7 @@ async function initUserProfile(user){
   if(tierEl)   tierEl.textContent   = tier;
   if(credEl)   credEl.textContent   = credits;
   if(credSub)  credSub.textContent  = `$5 per post · ${credits} left`;
+  const mvCr = document.getElementById('mv-credits'); if(mvCr) mvCr.textContent = credits;
 
   // Owner badge on avatar
   if(window._ownerMode && avatarEl){
@@ -971,6 +1001,10 @@ async function initUserProfile(user){
     const el = document.getElementById(id);
     if(el) el.style.display = window._isAdmin ? 'flex' : 'none';
   });
+  // My Vault is the landing page
+  N('myvault', document.getElementById('nav-myvault'));
+  // Preload ISO count for the chip — silent, no nav side effects
+  (async()=>{ try{ const r=await _rGet('isos','select=id,status&user_id=eq.'+user.id+'&status=in.(active,matched)&limit=100'); const n=(r||[]).length; const el=document.getElementById('mv-active-isos'); if(el) el.textContent=n||'0'; const b=document.getElementById('navBadge-myisos'); if(b){b.textContent=n||'';b.style.display=n?'':'none';} }catch(e){} })();
 }
 
 // &#9472;&#9472; Log out &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
@@ -1010,24 +1044,12 @@ async function logOut(){
       <span class="nav-label">ISOVault</span>
     </div>
 
-    <div class="nav-item" id="nav-overview" onclick="N('overview',this)">
-      <div class="nav-drag-handle">&#10303;</div>
-      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
-      <span class="nav-label">Overview</span>
-    </div>
 
     <div class="nav-item" id="nav-myisos" onclick="N('myisos',this)">
       <div class="nav-drag-handle">&#10303;</div>
       <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
       <span class="nav-label">My ISOs</span>
       <span class="nav-badge" id="navBadge-myisos">3</span>
-    </div>
-
-    <div class="nav-item" id="nav-notifs" onclick="N('notifs',this)">
-      <div class="nav-drag-handle">&#10303;</div>
-      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></div>
-      <span class="nav-label">Notifications</span>
-      <span class="nav-badge red" id="navBadge-notifs">2</span>
     </div>
 
     <div class="nav-item" id="nav-market" onclick="N('market',this)">
@@ -1046,12 +1068,6 @@ async function logOut(){
       <div class="nav-drag-handle">&#10303;</div>
       <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></div>
       <span class="nav-label">My Vault</span>
-    </div>
-
-    <div class="nav-item" id="nav-isoticker" onclick="N('isoticker',this)">
-      <div class="nav-drag-handle">&#10303;</div>
-      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
-      <span class="nav-label">ISOTicker</span>
     </div>
 
     <div class="nav-item" id="nav-admin-price" onclick="N('admin-price',this);loadPriceFlags()">
@@ -1129,46 +1145,12 @@ async function logOut(){
     <div class="topbar-actions" style="flex-shrink:0;margin-left:18px">
       <button class="btn btn-ghost" onclick="N('library',document.querySelector('[onclick*=library]'))">&#128269; ISOVault</button>
       <button class="btn btn-primary" onclick="N('post',document.querySelector('[onclick*=post]'))">+ Post ISO</button>
-      <div class="notif-bell" onclick="N('notifs',document.querySelector('[onclick*=notifs]'))"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><div class="notif-dot"></div></div>
+      <div class="notif-bell" onclick="N('notifs',null)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><div class="notif-dot"></div></div>
     </div>
   </div><!-- /topbar -->
   <div class="content">
 
   <!-- OVERVIEW -->
-  <div class="panel active" id="panel-overview">
-    <div class="stat-row">
-      <div class="stat-card"><div class="stat-label">Active ISOs</div><div class="stat-value blue">3</div><div class="stat-change">1 seller matched</div></div>
-      <div class="stat-card"><div class="stat-label">ISO Credits</div><div class="stat-value" id="stat-credits">12</div><div class="stat-change">5 free &#183; 7 purchased</div></div>
-      <div class="stat-card"><div class="stat-label">Cards Acquired</div><div class="stat-value green">2</div><div class="stat-change up">Both verified at hub</div></div>
-      <div class="stat-card"><div class="stat-label">Total Spent</div><div class="stat-value">$890</div><div class="stat-change">via GrailISO escrow</div></div>
-    </div>
-    <div class="two-col">
-      <div>
-        <div class="section-header"><div class="section-title">ACTIVE ISOs</div><span class="section-link" onclick="N('myisos',document.querySelector('[onclick*=myisos]'))">View All</span></div>
-        <div class="iso-list">
-          <div class="iso-item"><div class="iso-img">&#9918;</div><div class="iso-info"><div class="iso-player">Juan Soto RC Auto Gold /50</div><div class="iso-detail">2019 Bowman Chrome &#183; PSA 10</div></div><div><div class="iso-price">$1,200</div><div class="iso-price-sub">MAX BID</div></div><span class="status-pill matched">MATCHED</span></div>
-          <div class="iso-item"><div class="iso-img">&#9918;</div><div class="iso-info"><div class="iso-player">Shohei Ohtani RC Auto /499</div><div class="iso-detail">2018 Topps Chrome &#183; PSA 9+</div></div><div><div class="iso-price">$650</div><div class="iso-price-sub">MAX BID</div></div><span class="status-pill active">ACTIVE</span></div>
-          <div class="iso-item"><div class="iso-img">&#9918;</div><div class="iso-info"><div class="iso-player">Julio Rodriguez Gold /50</div><div class="iso-detail">2022 Topps Chrome &#183; Any Grade</div></div><div><div class="iso-price">$420</div><div class="iso-price-sub">MAX BID</div></div><span class="status-pill pending">PENDING</span></div>
-        </div>
-      </div>
-      <div>
-        <div class="section-header"><div class="section-title">RECENT ACTIVITY</div></div>
-        <div class="card-block">
-          <div class="activity-list">
-            <div class="activity-item"><div class="a-icon red">&#127919;</div><div><div class="a-text"><strong>Seller matched</strong> your Juan Soto RC Auto Gold /50 ISO</div><div class="a-time">8 min ago</div></div></div>
-            <div class="activity-item"><div class="a-icon green">&#10003;</div><div><div class="a-text">Your <strong>Mike Trout 2011 Topps RC PSA 10</strong> shipped to you</div><div class="a-time">1 day ago</div></div></div>
-            <div class="activity-item"><div class="a-icon blue">&#128203;</div><div><div class="a-text">ISO posted &#8212; <strong>Julio Rodriguez Gold /50</strong> &#183; 1 credit used</div><div class="a-time">4 days ago</div></div></div>
-            <div class="activity-item"><div class="a-icon blue">&#128203;</div><div><div class="a-text">ISO posted &#8212; <strong>Ohtani Chrome Refractor Auto</strong> &#183; 1 credit used</div><div class="a-time">6 days ago</div></div></div>
-            <div class="activity-item"><div class="a-icon gold">&#127942;</div><div><div class="a-text">Account verified &#8212; <strong>5 free ISO credits</strong> granted</div><div class="a-time">1 week ago</div></div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div style="margin-top:22px">
-      <div class="section-header"><div class="section-title">TRENDING BASEBALL</div><span class="section-link" onclick="N('market',document.querySelector('[onclick*=market]'))">Full Market &#8594;</span></div>
-      <div class="card-block"><table class="market-table" id="ovMarket"></table></div>
-    </div>
-  </div>
 
   <!-- POST ISO -->
   <div class="panel" id="panel-post">
@@ -1338,15 +1320,119 @@ async function logOut(){
   </div>
 
   <!-- MY VAULT -->
-  <div class="panel" id="panel-myvault">
-    <div class="section-header">
+  <div class="panel active" id="panel-myvault">
+    <div class="section-header" style="margin-bottom:10px">
       <div class="section-title">MY VAULT</div>
     </div>
-    <div id="myVaultEmpty" style="text-align:center;padding:60px 20px;color:var(--muted-text)">
-      <div style="font-size:48px;margin-bottom:16px">&#127183;</div>
+    <!-- Compact overview strip -->
+    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+      <!-- Active ISOs chip -->
+      <div onclick="N('myisos',document.getElementById('nav-myisos'))" style="flex:1;min-width:120px;background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.18);border-radius:8px;padding:8px 12px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:space-between" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='rgba(0,170,255,0.18)'">
+        <div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">Active ISOs</div>
+          <div style="font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--blue);line-height:1" id="mv-active-isos">—</div>
+        </div>
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:rgba(0,170,255,0.5)">View ›</div>
+      </div>
+      <!-- ISO Credits chip -->
+      <div onclick="T('Buy credits — coming soon')" style="flex:1;min-width:120px;background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.18);border-radius:8px;padding:8px 12px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:space-between" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='rgba(0,170,255,0.18)'">
+        <div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">ISO Credits</div>
+          <div style="font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--white);line-height:1" id="mv-credits">—</div>
+        </div>
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:rgba(0,170,255,0.5)">+ Buy ›</div>
+      </div>
+    </div>
+    <!-- Compact recent activity -->
+    <div id="mv-activity" style="margin-bottom:10px;background:rgba(0,0,0,0.15);border:1px solid var(--deep-border);border-radius:8px;overflow:hidden">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 12px;border-bottom:1px solid var(--deep-border)">
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)">Recent Activity</div>
+      </div>
+      <div id="mv-activity-list" style="padding:4px 0">
+        <div class="mv-act-item"><div class="mv-act-dot red"></div><div class="mv-act-text">Seller matched your <strong>Juan Soto RC Auto Gold /50</strong> ISO</div><div class="mv-act-time">8m</div></div>
+        <div class="mv-act-item"><div class="mv-act-dot green"></div><div class="mv-act-text"><strong>Mike Trout 2011 Topps RC PSA 10</strong> shipped</div><div class="mv-act-time">1d</div></div>
+        <div class="mv-act-item"><div class="mv-act-dot blue"></div><div class="mv-act-text">ISO posted — <strong>Julio Rodriguez Gold /50</strong></div><div class="mv-act-time">4d</div></div>
+      </div>
+    </div>
+    <div id="myVaultEmpty" style="text-align:center;padding:40px 20px 48px;color:var(--muted-text)">
+      <div style="display:flex;justify-content:center;margin-bottom:24px">
+        <div class="vault-empty-3d" id="vaultEmpty3d">
+          <div class="vault-empty-face">
+            <img src="" id="vaultEmptyImg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:9px;display:block;z-index:1">
+            <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.07) 0%,transparent 55%);pointer-events:none;z-index:3;border-radius:9px"></div>
+            <div class="vault-empty-shimmer"></div>
+          </div>
+        </div>
+      </div>
       <div style="font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:2px;color:var(--white);margin-bottom:8px">YOUR VAULT IS EMPTY</div>
       <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;margin-bottom:20px">Browse ISOVault to find a card, then add it to your personal library.</div>
       <button class="btn btn-primary" onclick="N('library',document.querySelector('[onclick*=library]'))">Browse ISOVault</button>
+    </div>
+    <!-- Compact Notifications -->
+    <div style="margin-bottom:10px;background:rgba(0,0,0,0.15);border:1px solid var(--deep-border);border-radius:8px;overflow:hidden">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 12px;border-bottom:1px solid var(--deep-border)">
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)">Notifications</div>
+          <div id="mv-notif-badge" style="display:none;background:var(--red);border-radius:10px;padding:1px 6px;font-family:Barlow Condensed,sans-serif;font-size:9px;font-weight:700;color:#fff;letter-spacing:.5px">2</div>
+        </div>
+        <div onclick="N('notifs',null)" style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(0,170,255,0.5);cursor:pointer" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='rgba(0,170,255,0.5)'">View All ›</div>
+      </div>
+      <div id="mv-notif-list" style="padding:4px 0">
+        <div class="mv-act-item"><div class="mv-act-dot red"></div><div class="mv-act-text"><strong>Seller matched</strong> your Juan Soto RC Auto Gold /50 ISO</div><div class="mv-act-time">8m</div></div>
+        <div class="mv-act-item"><div class="mv-act-dot blue"></div><div class="mv-act-text"><strong>Mike Trout RC PSA 10</strong> shipped — est. 2 days</div><div class="mv-act-time">1d</div></div>
+      </div>
+    </div>
+
+    <!-- ISOTicker Aggregate -->
+    <div onclick="N('isoticker',null)" style="margin-bottom:10px;background:rgba(0,170,255,0.04);border:1px solid rgba(0,170,255,0.14);border-radius:8px;padding:9px 12px;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='rgba(0,170,255,0.14)'">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)">ISOTicker</div>
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(0,170,255,0.5)">Full Ticker ›</div>
+      </div>
+      <div style="display:flex;gap:0">
+        <div style="flex:1;text-align:center;padding:0 6px">
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">Portfolio</div>
+          <div style="font-family:Bebas Neue,sans-serif;font-size:17px;color:var(--blue);line-height:1.2" id="mv-ticker-val">$2,979</div>
+        </div>
+        <div style="width:1px;background:var(--deep-border);height:28px;align-self:center"></div>
+        <div style="flex:1;text-align:center;padding:0 6px">
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">Gain</div>
+          <div style="font-family:Bebas Neue,sans-serif;font-size:17px;color:var(--green);line-height:1.2" id="mv-ticker-gain">+$963</div>
+        </div>
+        <div style="width:1px;background:var(--deep-border);height:28px;align-self:center"></div>
+        <div style="flex:1;text-align:center;padding:0 6px;overflow:hidden">
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">Top Card</div>
+          <div style="font-family:Bebas Neue,sans-serif;font-size:13px;color:var(--white);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="mv-ticker-top">Gunnar +77.8%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Favorites Section -->
+    <div id="myVaultFavSection" style="display:none;margin-bottom:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)">&#11088; My Favorites <span id="favCount" style="color:var(--blue)"></span></div>
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;color:rgba(122,149,174,0.4)">Tap card to set as hero</div>
+      </div>
+      <div class="vault-fav-rail" id="vaultFavRail"></div>
+    </div>
+
+    <!-- Hero Card (full ISOVault size, shown when hero is set) -->
+    <div id="myVaultHero" style="display:none">
+      <div class="vault-hero-wrap">
+        <div class="vault-hero-3d" id="vaultHero3d" onclick="vaultHeroClick()">
+          <div class="vault-hero-face">
+            <img id="vaultHeroImg" src="" alt="Featured card">
+          </div>
+        </div>
+        <div style="text-align:center;width:280px">
+          <div style="font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--white);letter-spacing:1px;line-height:1.1" id="vaultHeroPlayer"></div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--blue);margin-top:2px;letter-spacing:.5px" id="vaultHeroSet"></div>
+          <div style="display:flex;justify-content:center;gap:10px;margin-top:10px">
+            <button onclick="vaultHeroClick()" style="background:rgba(0,170,255,0.1);border:1px solid rgba(0,170,255,0.3);border-radius:6px;padding:6px 16px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);cursor:pointer">View Card</button>
+            <button onclick="vaultClearHero()" style="background:none;border:1px solid rgba(122,149,174,0.2);border-radius:6px;padding:6px 12px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;color:rgba(122,149,174,0.5);cursor:pointer">&#10005; Clear</button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="card-grid" id="myVaultGrid" style="display:none"></div>
     <div style="padding-top:16px">
@@ -2342,13 +2428,126 @@ window._GRAIL_PH = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX
   const pb=document.getElementById('grailph-b');
   const ei=document.getElementById('s3EmptyImg');
   const ci=document.getElementById('s3CImg');
+  const ve=document.getElementById('vaultEmptyImg');
   if(pf) pf.src=window._GRAIL_PH;
   if(pb) pb.src=window._GRAIL_PH;
   if(ei) ei.src=window._GRAIL_PH;
   if(ci) ci.src=window._GRAIL_PH;
+  if(ve) ve.src=window._GRAIL_PH;
+  // Show notification badge
+  const nb=document.getElementById('mv-notif-badge'); if(nb) nb.style.display='inline-block';
 })();
 
 // ── Slab Lab ───────────────────────────────────────────────────────────────
+
+// ── Vault Favorites + Hero Card ────────────────────────────────────────────
+function _getFavs(){ try{ return JSON.parse(localStorage.getItem('grail_favs')||'[]'); }catch(e){ return []; } }
+function _saveFavs(arr){ localStorage.setItem('grail_favs', JSON.stringify(arr)); }
+function vaultIsFeatured(idx){ return _getFavs().includes(idx); }
+
+function vaultSetFeatured(idx){
+  // Toggle add/remove from favorites
+  const row = window._vaultData && window._vaultData[idx];
+  if(!row) return;
+  let favs = _getFavs();
+  const pos = favs.indexOf(idx);
+  if(pos === -1){
+    favs.push(idx);
+  } else {
+    favs.splice(pos, 1);
+    // If this was the hero, clear it
+    if(localStorage.getItem('grail_hero_idx') === String(idx)){
+      localStorage.removeItem('grail_hero_idx');
+    }
+  }
+  _saveFavs(favs);
+  _renderVaultFavs();
+  _renderVaultHero();
+  _updateStarVisuals();
+}
+
+function vaultSetHero(idx){
+  const row = window._vaultData && window._vaultData[idx];
+  if(!row) return;
+  // Ensure in favs
+  const favs = _getFavs();
+  if(!favs.includes(idx)){ favs.push(idx); _saveFavs(favs); }
+  localStorage.setItem('grail_hero_idx', String(idx));
+  _renderVaultHero();
+  _renderVaultFavs();
+  _updateStarVisuals();
+}
+
+function vaultClearHero(){
+  localStorage.removeItem('grail_hero_idx');
+  const hero = document.getElementById('myVaultHero');
+  if(hero) hero.style.display = 'none';
+  _renderVaultFavs();
+}
+
+function vaultClearFeatured(){
+  // Legacy alias — keep in case anything calls it
+  vaultClearHero();
+}
+
+function vaultHeroClick(){
+  const idx = parseInt(localStorage.getItem('grail_hero_idx'));
+  if(isNaN(idx)) return;
+  openVaultCard(idx);
+}
+
+function _updateStarVisuals(){
+  const favs = _getFavs();
+  document.querySelectorAll('[id^="vaultStar-"]').forEach(el=>{
+    const i = parseInt(el.id.replace('vaultStar-',''));
+    const inFav = favs.includes(i);
+    el.style.opacity = inFav ? '1' : '0.5';
+    el.textContent = inFav ? '★' : '☆';
+    el.style.color = inFav ? '#FFD700' : 'rgba(255,255,255,0.6)';
+  });
+}
+
+function _renderVaultFavs(){
+  const favs = _getFavs();
+  const section = document.getElementById('myVaultFavSection');
+  const rail    = document.getElementById('vaultFavRail');
+  const cntEl   = document.getElementById('favCount');
+  if(!section || !rail) return;
+  if(!favs.length || !window._vaultData){ section.style.display='none'; return; }
+  section.style.display = 'block';
+  if(cntEl) cntEl.textContent = '(' + favs.length + ')';
+  const heroIdx = parseInt(localStorage.getItem('grail_hero_idx'));
+  rail.innerHTML = favs.map(idx => {
+    const row = window._vaultData[idx];
+    if(!row) return '';
+    const img   = row.front_image_url || window._GRAIL_PH || '';
+    const name  = (row.player||'').split(' ').slice(-1)[0];
+    const isH   = idx === heroIdx;
+    return `<div class="vault-fav-card${isH?' is-hero':''}" onclick="vaultSetHero(${idx})" title="${row.player||''} — Tap to set as hero">
+      <div class="vault-fav-img"><img src="${img}" loading="lazy" alt="${row.player||''}"></div>
+      <div class="vault-fav-name">${isH?'★ ':''}${name}</div>
+    </div>`;
+  }).join('');
+}
+
+function _renderVaultHero(){
+  const idx  = parseInt(localStorage.getItem('grail_hero_idx'));
+  const hero = document.getElementById('myVaultHero');
+  if(!hero) return;
+  if(isNaN(idx) || !window._vaultData || !window._vaultData[idx]){
+    hero.style.display = 'none';
+    return;
+  }
+  const row = window._vaultData[idx];
+  const heroImg    = document.getElementById('vaultHeroImg');
+  const heroPlayer = document.getElementById('vaultHeroPlayer');
+  const heroSet    = document.getElementById('vaultHeroSet');
+  if(heroImg)    heroImg.src = row.front_image_url || window._GRAIL_PH || '';
+  if(heroPlayer) heroPlayer.textContent = row.player || 'Unknown';
+  if(heroSet)    heroSet.textContent = `${row.year||''} ${row.brand||''} · ${row.set_name||row.parallel||''}`;
+  hero.style.display = 'block';
+}
+
 const SLAB_COLORS = [
   {id:'arctic',  label:'Arctic',   border:'rgba(200,230,255,0.7)', glow:'rgba(200,230,255,0.35)', bg:'linear-gradient(160deg,#d0e8ff,#8ab8d8)',      barBg:'rgba(200,230,255,0.15)', desc:'Crystal-clear case — the classic look'},
   {id:'onyx',    label:'Onyx',     border:'rgba(120,120,140,0.7)', glow:'rgba(80,80,100,0.4)',    bg:'linear-gradient(160deg,#2a2a3a,#111118)',        barBg:'rgba(0,0,0,0.5)',        desc:'Jet black — sleek and bold'},
@@ -2630,7 +2829,6 @@ function N(id,el){
   if(id==='myisos')renderMyISOs();
   if(id==='market')renderMkt();
   if(id==='post'){curStep=1;gS(1);isoRenderSportGrid();}
-  if(id==='overview')renderOvMkt();
   if(id==='isoticker')initISOTicker();
   // Push panel state into browser history so mouse back button steps through panels
   if(!_navSuppressHistory){
@@ -3226,11 +3424,15 @@ function updateITHeader(){
   const gvEl=document.getElementById('itGainVal');
   if(gvEl){gvEl.textContent=(gain>=0?'+':'')+`\$${Math.abs(gain).toLocaleString()}`;gvEl.className='it-stat-val '+(gain>=0?'green':'red');}
   const gpEl=document.getElementById('itGainPct');if(gpEl)gpEl.textContent=(gain>=0?'+':'')+pct+'%';
+  // Sync My Vault ISOTicker aggregate
+  const mvVal=document.getElementById('mv-ticker-val'); if(mvVal) mvVal.textContent='$'+totalCurrent.toLocaleString();
+  const mvGain=document.getElementById('mv-ticker-gain'); if(mvGain){mvGain.textContent=(gain>=0?'+':'')+`\$${Math.abs(gain).toLocaleString()}`;mvGain.style.color=gain>=0?'var(--green)':'var(--red)';}
   if(active.length){
     const best=active.reduce((a,b)=>((b.current-b.paid)/Math.max(b.paid,1)>(a.current-a.paid)/Math.max(a.paid,1)?b:a));
     const bpct=((best.current-best.paid)/Math.max(best.paid,1)*100).toFixed(1);
     const tnEl=document.getElementById('itTopName');if(tnEl)tnEl.textContent=best.player;
     const tpEl=document.getElementById('itTopPct');if(tpEl)tpEl.textContent='+'+bpct+'% since buy';
+    const mvTop=document.getElementById('mv-ticker-top'); if(mvTop) mvTop.textContent=best.player.split(' ').pop()+' +'+ bpct+'%';
   }
   const clEl=document.getElementById('itChartLabel');
   if(clEl){
@@ -4077,15 +4279,21 @@ function renderMyVault(){
         const glClass      = gainLoss>=0?'green':'red';
 
         let summaryHtml = `
-          <div style="grid-column:1/-1;background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:4px">
-            <div><div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Cards in Vault</div>
-              <div style="font-family:Bebas Neue,sans-serif;font-size:28px;color:var(--white)">${data.length}</div></div>
-            <div><div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Total Cost Basis</div>
-              <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--white)">$${totalPaid.toLocaleString()}</div></div>
-            <div><div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Est. Market Value</div>
-              <div style="font-family:Bebas Neue,sans-serif;font-size:28px;color:var(--blue)">$${totalEst.toLocaleString()}</div></div>
-            <div><div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Unrealized Gain/Loss</div>
-              <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--${glClass})">${gainLoss>=0?'+':''}\$${Math.abs(gainLoss).toLocaleString()} <span style="font-size:14px;opacity:.7">(${gainLoss>=0?'+':''}${gainPct}%)</span></div></div>
+          <div style="grid-column:1/-1;background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;padding:10px 14px;display:flex;gap:0;margin-bottom:4px;align-items:center">
+            <div style="flex:1;text-align:center;padding:0 8px">
+              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">${data.length} Cards</div>
+              <div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--white);line-height:1.2">$${totalPaid.toLocaleString()}<span style="font-size:10px;color:var(--muted-text);margin-left:2px">paid</span></div>
+            </div>
+            <div style="width:1px;background:var(--deep-border);height:32px"></div>
+            <div style="flex:1;text-align:center;padding:0 8px">
+              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">Est. Value</div>
+              <div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--blue);line-height:1.2">$${totalEst.toLocaleString()}</div>
+            </div>
+            <div style="width:1px;background:var(--deep-border);height:32px"></div>
+            <div style="flex:1;text-align:center;padding:0 8px">
+              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">Gain / Loss</div>
+              <div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--${glClass});line-height:1.2">${gainLoss>=0?'+':''}\$${Math.abs(gainLoss).toLocaleString()} <span style="font-size:10px;opacity:.7">(${gainLoss>=0?'+':''}${gainPct}%)</span></div>
+            </div>
           </div>`;
 
         window._vaultData = data;
@@ -4106,6 +4314,7 @@ function renderMyVault(){
               <div style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.6);border-radius:4px;padding:2px 6px;font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:${c.acquisition_type==='ripped'?'var(--green)':'var(--blue)'}">
                 ${c.acquisition_type==='ripped'?'&#128230; Ripped':'&#128176; Purchased'}
               </div>
+              <div onclick="event.stopPropagation();vaultSetFeatured(${vIdx})" id="vaultStar-${vIdx}" style="position:absolute;top:5px;right:6px;cursor:pointer;font-size:16px;line-height:1;opacity:0.5;transition:all .15s;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.7))" onmouseover="this.style.opacity='1';this.style.transform='scale(1.2)'" onmouseout="this.style.opacity=vaultIsFeatured(${vIdx})?'1':'0.5';this.style.transform='scale(1)'">☆</div>
             </div>
             <div class="ct-info" style="padding-bottom:12px">
               <div class="ct-player">${c.player||'Unknown'}</div>
@@ -4133,6 +4342,9 @@ function renderMyVault(){
 
         grid.innerHTML = summaryHtml + cardsHtml;
         _patchVaultThumbnails(data);
+        _renderVaultFavs();
+        _renderVaultHero();
+        _updateStarVisuals();
     });
 }
 
@@ -6411,6 +6623,7 @@ async function renderMyISOs(){
     const activeCount = data.filter(i=>i.status==='active'||i.status==='matched').length;
     const badge = document.getElementById('navBadge-myisos');
     if(badge){ badge.textContent=activeCount||''; badge.style.display=activeCount?'':'none'; }
+    const mvIso = document.getElementById('mv-active-isos'); if(mvIso) mvIso.textContent = activeCount||'0';
     if(filters) filters.style.display='flex';
     _renderISOList();
   } catch(e){

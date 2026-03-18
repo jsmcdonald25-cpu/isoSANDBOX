@@ -721,6 +721,15 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv-act-text{font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);flex:1;line-height:1.3}
 .mv-act-text strong{color:var(--white);font-weight:600}
 .mv-act-time{font-family:Barlow Condensed,sans-serif;font-size:10px;color:rgba(122,149,174,0.5);white-space:nowrap;letter-spacing:.5px}
+
+.mv-chip{background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.18);border-radius:8px;padding:8px 10px;cursor:pointer;transition:border-color .15s;display:flex;align-items:center;justify-content:space-between}
+.mv-chip:hover{border-color:var(--blue)}
+.mv-chip-label{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:2px}
+.mv-chip-val{font-family:Bebas Neue,sans-serif;font-size:22px;line-height:1;color:var(--white)}
+.mv-chip-val.blue{color:var(--blue)}
+.mv-chip-link{font-family:Barlow Condensed,sans-serif;font-size:10px;color:rgba(0,170,255,0.5);white-space:nowrap}
+.mv-view-link{font-family:Barlow Condensed,sans-serif;font-size:10px;color:rgba(0,170,255,0.5);cursor:pointer}
+.mv-view-link:hover{color:var(--blue)}
 </style>
 </head>
 <body>
@@ -1321,119 +1330,158 @@ async function logOut(){
 
   <!-- MY VAULT -->
   <div class="panel active" id="panel-myvault">
-    <div class="section-header" style="margin-bottom:10px">
+    <div class="section-header" style="margin-bottom:12px">
       <div class="section-title">MY VAULT</div>
     </div>
-    <!-- Compact overview strip -->
-    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
-      <!-- Active ISOs chip -->
-      <div onclick="N('myisos',document.getElementById('nav-myisos'))" style="flex:1;min-width:120px;background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.18);border-radius:8px;padding:8px 12px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:space-between" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='rgba(0,170,255,0.18)'">
-        <div>
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">Active ISOs</div>
-          <div style="font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--blue);line-height:1" id="mv-active-isos">—</div>
-        </div>
-        <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:rgba(0,170,255,0.5)">View ›</div>
-      </div>
-      <!-- ISO Credits chip -->
-      <div onclick="T('Buy credits — coming soon')" style="flex:1;min-width:120px;background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.18);border-radius:8px;padding:8px 12px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:space-between" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='rgba(0,170,255,0.18)'">
-        <div>
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">ISO Credits</div>
-          <div style="font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--white);line-height:1" id="mv-credits">—</div>
-        </div>
-        <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:rgba(0,170,255,0.5)">+ Buy ›</div>
-      </div>
-    </div>
-    <!-- Compact recent activity -->
-    <div id="mv-activity" style="margin-bottom:10px;background:rgba(0,0,0,0.15);border:1px solid var(--deep-border);border-radius:8px;overflow:hidden">
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 12px;border-bottom:1px solid var(--deep-border)">
-        <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)">Recent Activity</div>
-      </div>
-      <div id="mv-activity-list" style="padding:4px 0">
-        <div class="mv-act-item"><div class="mv-act-dot red"></div><div class="mv-act-text">Seller matched your <strong>Juan Soto RC Auto Gold /50</strong> ISO</div><div class="mv-act-time">8m</div></div>
-        <div class="mv-act-item"><div class="mv-act-dot green"></div><div class="mv-act-text"><strong>Mike Trout 2011 Topps RC PSA 10</strong> shipped</div><div class="mv-act-time">1d</div></div>
-        <div class="mv-act-item"><div class="mv-act-dot blue"></div><div class="mv-act-text">ISO posted — <strong>Julio Rodriguez Gold /50</strong></div><div class="mv-act-time">4d</div></div>
-      </div>
-    </div>
-    <div id="myVaultEmpty" style="text-align:center;padding:40px 20px 48px;color:var(--muted-text)">
-      <div style="display:flex;justify-content:center;margin-bottom:24px">
-        <div class="vault-empty-3d" id="vaultEmpty3d">
-          <div class="vault-empty-face">
-            <img src="" id="vaultEmptyImg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:9px;display:block;z-index:1">
-            <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.07) 0%,transparent 55%);pointer-events:none;z-index:3;border-radius:9px"></div>
-            <div class="vault-empty-shimmer"></div>
+
+    <!-- TWO-COLUMN LAYOUT: Left = Hero + Favs | Right = Info blocks -->
+    <div style="display:grid;grid-template-columns:300px 1fr;gap:16px;margin-bottom:16px;align-items:start">
+
+      <!-- LEFT: Hero card + Favorites -->
+      <div>
+        <!-- Hero card (full ISOVault 280x392, shown when hero is set) -->
+        <div id="myVaultHero" style="display:none;margin-bottom:12px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+            <div class="vault-hero-3d" id="vaultHero3d" onclick="vaultHeroClick()" title="Click to view card">
+              <div class="vault-hero-face" id="vaultHeroFace">
+                <img id="vaultHeroImg" src="" alt="Featured card">
+                <img id="vaultHeroImgBack" src="" alt="Featured card back" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:9px;display:block;z-index:1;opacity:0">
+              </div>
+            </div>
+            <div style="text-align:center;width:100%">
+              <div style="font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--white);letter-spacing:1px;line-height:1.1" id="vaultHeroPlayer"></div>
+              <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--blue);margin-top:1px;letter-spacing:.5px" id="vaultHeroSet"></div>
+              <div style="display:flex;justify-content:center;gap:8px;margin-top:8px">
+                <button onclick="vaultHeroClick()" style="background:rgba(0,170,255,0.1);border:1px solid rgba(0,170,255,0.3);border-radius:6px;padding:5px 14px;font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);cursor:pointer">View Card</button>
+                <button onclick="vaultClearHero()" style="background:none;border:1px solid rgba(122,149,174,0.2);border-radius:6px;padding:5px 10px;font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(122,149,174,0.5);cursor:pointer">✕ Clear</button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div style="font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:2px;color:var(--white);margin-bottom:8px">YOUR VAULT IS EMPTY</div>
-      <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;margin-bottom:20px">Browse ISOVault to find a card, then add it to your personal library.</div>
-      <button class="btn btn-primary" onclick="N('library',document.querySelector('[onclick*=library]'))">Browse ISOVault</button>
-    </div>
-    <!-- Compact Notifications -->
-    <div style="margin-bottom:10px;background:rgba(0,0,0,0.15);border:1px solid var(--deep-border);border-radius:8px;overflow:hidden">
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 12px;border-bottom:1px solid var(--deep-border)">
-        <div style="display:flex;align-items:center;gap:6px">
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)">Notifications</div>
-          <div id="mv-notif-badge" style="display:none;background:var(--red);border-radius:10px;padding:1px 6px;font-family:Barlow Condensed,sans-serif;font-size:9px;font-weight:700;color:#fff;letter-spacing:.5px">2</div>
+
+        <!-- Empty vault 3D card (shown when no cards in vault) -->
+        <div id="myVaultEmpty" style="text-align:center;padding:20px 0 24px;color:var(--muted-text)">
+          <div style="display:flex;justify-content:center;margin-bottom:16px">
+            <div class="vault-empty-3d" id="vaultEmpty3d">
+              <div class="vault-empty-face">
+                <img src="" id="vaultEmptyImg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:9px;display:block;z-index:1">
+                <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.07) 0%,transparent 55%);pointer-events:none;z-index:3;border-radius:9px"></div>
+                <div class="vault-empty-shimmer"></div>
+              </div>
+            </div>
+          </div>
+          <div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--white);margin-bottom:6px">VAULT IS EMPTY</div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;margin-bottom:14px">Browse ISOVault to find cards.</div>
+          <button class="btn btn-primary btn-sm" onclick="N('library',document.querySelector('[onclick*=library]'))">Browse ISOVault</button>
         </div>
-        <div onclick="N('notifs',null)" style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(0,170,255,0.5);cursor:pointer" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='rgba(0,170,255,0.5)'">View All ›</div>
+
+        <!-- Favorites rail (shown when favorites exist) -->
+        <div id="myVaultFavSection" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)">★ Favorites <span id="favCount" style="color:var(--blue)"></span></div>
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;color:rgba(122,149,174,0.4)">Tap to set hero</div>
+          </div>
+          <div class="vault-fav-rail" id="vaultFavRail"></div>
+        </div>
       </div>
-      <div id="mv-notif-list" style="padding:4px 0">
-        <div class="mv-act-item"><div class="mv-act-dot red"></div><div class="mv-act-text"><strong>Seller matched</strong> your Juan Soto RC Auto Gold /50 ISO</div><div class="mv-act-time">8m</div></div>
-        <div class="mv-act-item"><div class="mv-act-dot blue"></div><div class="mv-act-text"><strong>Mike Trout RC PSA 10</strong> shipped — est. 2 days</div><div class="mv-act-time">1d</div></div>
+
+      <!-- RIGHT: Info blocks stacked -->
+      <div style="display:flex;flex-direction:column;gap:8px">
+
+        <!-- Active ISOs + Credits row -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div onclick="N('myisos',document.getElementById('nav-myisos'))" class="mv-chip">
+            <div>
+              <div class="mv-chip-label">Active ISOs</div>
+              <div class="mv-chip-val blue" id="mv-active-isos">—</div>
+            </div>
+            <div class="mv-chip-link">View ›</div>
+          </div>
+          <div onclick="T('Buy credits — coming soon')" class="mv-chip">
+            <div>
+              <div class="mv-chip-label">ISO Credits</div>
+              <div class="mv-chip-val" id="mv-credits">—</div>
+            </div>
+            <div class="mv-chip-link">+ Buy ›</div>
+          </div>
+        </div>
+
+        <!-- Notifications block -->
+        <div style="background:rgba(0,0,0,0.2);border:1px solid var(--deep-border);border-radius:8px;overflow:hidden">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;border-bottom:1px solid var(--deep-border)">
+            <div style="display:flex;align-items:center;gap:5px">
+              <span style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)">Notifications</span>
+              <span id="mv-notif-badge" style="display:none;background:var(--red);border-radius:8px;padding:1px 5px;font-family:Barlow Condensed,sans-serif;font-size:9px;font-weight:700;color:#fff">2</span>
+            </div>
+            <span onclick="N('notifs',null)" class="mv-view-link">View All ›</span>
+          </div>
+          <div id="mv-notif-list" style="padding:2px 0">
+            <div class="mv-act-item"><div class="mv-act-dot red"></div><div class="mv-act-text"><strong>Seller matched</strong> your Juan Soto ISO</div><div class="mv-act-time">8m</div></div>
+            <div class="mv-act-item"><div class="mv-act-dot blue"></div><div class="mv-act-text"><strong>Mike Trout RC PSA 10</strong> shipped</div><div class="mv-act-time">1d</div></div>
+          </div>
+        </div>
+
+        <!-- Recent Activity block -->
+        <div style="background:rgba(0,0,0,0.2);border:1px solid var(--deep-border);border-radius:8px;overflow:hidden">
+          <div style="padding:6px 10px;border-bottom:1px solid var(--deep-border)">
+            <span style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)">Recent Activity</span>
+          </div>
+          <div id="mv-activity-list" style="padding:2px 0">
+            <div class="mv-act-item"><div class="mv-act-dot red"></div><div class="mv-act-text">Seller matched your <strong>Juan Soto RC Auto</strong> ISO</div><div class="mv-act-time">8m</div></div>
+            <div class="mv-act-item"><div class="mv-act-dot green"></div><div class="mv-act-text"><strong>Mike Trout RC PSA 10</strong> shipped</div><div class="mv-act-time">1d</div></div>
+            <div class="mv-act-item"><div class="mv-act-dot blue"></div><div class="mv-act-text">ISO posted — <strong>Julio Rodriguez Gold /50</strong></div><div class="mv-act-time">4d</div></div>
+          </div>
+        </div>
+
+        <!-- ISOTicker aggregate -->
+        <div onclick="N('isoticker',null)" style="background:rgba(0,170,255,0.04);border:1px solid rgba(0,170,255,0.14);border-radius:8px;padding:8px 10px;cursor:pointer;transition:border-color .15s" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='rgba(0,170,255,0.14)'">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <span style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)">ISOTicker</span>
+            <span class="mv-view-link">Full Ticker ›</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;gap:0;align-items:center">
+            <div style="text-align:center;padding:0 4px">
+              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">Portfolio</div>
+              <div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--blue);line-height:1.2" id="mv-ticker-val">$2,979</div>
+            </div>
+            <div style="background:var(--deep-border);height:24px"></div>
+            <div style="text-align:center;padding:0 4px">
+              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">Gain</div>
+              <div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--green);line-height:1.2" id="mv-ticker-gain">+$963</div>
+            </div>
+            <div style="background:var(--deep-border);height:24px"></div>
+            <div style="text-align:center;padding:0 4px;overflow:hidden">
+              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">Top</div>
+              <div style="font-family:Bebas Neue,sans-serif;font-size:13px;color:var(--white);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="mv-ticker-top">Gunnar +77.8%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vault stats (shown when vault has cards) -->
+        <div id="mv-stats-bar" style="display:none;background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;padding:8px 10px">
+          <div style="display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;gap:0;align-items:center">
+            <div style="text-align:center;padding:0 4px">
+              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)" id="mv-card-count-lbl">0 Cards</div>
+              <div style="font-family:Bebas Neue,sans-serif;font-size:14px;color:var(--white);line-height:1.2" id="mv-stat-paid">—</div>
+              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;color:var(--muted-text)">paid</div>
+            </div>
+            <div style="background:var(--deep-border);height:24px"></div>
+            <div style="text-align:center;padding:0 4px">
+              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">Est. Value</div>
+              <div style="font-family:Bebas Neue,sans-serif;font-size:14px;color:var(--blue);line-height:1.2" id="mv-stat-est">—</div>
+            </div>
+            <div style="background:var(--deep-border);height:24px"></div>
+            <div style="text-align:center;padding:0 4px">
+              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">G/L</div>
+              <div style="font-family:Bebas Neue,sans-serif;font-size:14px;line-height:1.2" id="mv-stat-gl">—</div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
-    <!-- ISOTicker Aggregate -->
-    <div onclick="N('isoticker',null)" style="margin-bottom:10px;background:rgba(0,170,255,0.04);border:1px solid rgba(0,170,255,0.14);border-radius:8px;padding:9px 12px;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='rgba(0,170,255,0.14)'">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
-        <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)">ISOTicker</div>
-        <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(0,170,255,0.5)">Full Ticker ›</div>
-      </div>
-      <div style="display:flex;gap:0">
-        <div style="flex:1;text-align:center;padding:0 6px">
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">Portfolio</div>
-          <div style="font-family:Bebas Neue,sans-serif;font-size:17px;color:var(--blue);line-height:1.2" id="mv-ticker-val">$2,979</div>
-        </div>
-        <div style="width:1px;background:var(--deep-border);height:28px;align-self:center"></div>
-        <div style="flex:1;text-align:center;padding:0 6px">
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">Gain</div>
-          <div style="font-family:Bebas Neue,sans-serif;font-size:17px;color:var(--green);line-height:1.2" id="mv-ticker-gain">+$963</div>
-        </div>
-        <div style="width:1px;background:var(--deep-border);height:28px;align-self:center"></div>
-        <div style="flex:1;text-align:center;padding:0 6px;overflow:hidden">
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">Top Card</div>
-          <div style="font-family:Bebas Neue,sans-serif;font-size:13px;color:var(--white);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="mv-ticker-top">Gunnar +77.8%</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Favorites Section -->
-    <div id="myVaultFavSection" style="display:none;margin-bottom:16px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)">&#11088; My Favorites <span id="favCount" style="color:var(--blue)"></span></div>
-        <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;color:rgba(122,149,174,0.4)">Tap card to set as hero</div>
-      </div>
-      <div class="vault-fav-rail" id="vaultFavRail"></div>
-    </div>
-
-    <!-- Hero Card (full ISOVault size, shown when hero is set) -->
-    <div id="myVaultHero" style="display:none">
-      <div class="vault-hero-wrap">
-        <div class="vault-hero-3d" id="vaultHero3d" onclick="vaultHeroClick()">
-          <div class="vault-hero-face">
-            <img id="vaultHeroImg" src="" alt="Featured card">
-          </div>
-        </div>
-        <div style="text-align:center;width:280px">
-          <div style="font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--white);letter-spacing:1px;line-height:1.1" id="vaultHeroPlayer"></div>
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--blue);margin-top:2px;letter-spacing:.5px" id="vaultHeroSet"></div>
-          <div style="display:flex;justify-content:center;gap:10px;margin-top:10px">
-            <button onclick="vaultHeroClick()" style="background:rgba(0,170,255,0.1);border:1px solid rgba(0,170,255,0.3);border-radius:6px;padding:6px 16px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);cursor:pointer">View Card</button>
-            <button onclick="vaultClearHero()" style="background:none;border:1px solid rgba(122,149,174,0.2);border-radius:6px;padding:6px 12px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;color:rgba(122,149,174,0.5);cursor:pointer">&#10005; Clear</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- Full vault grid -->
     <div class="card-grid" id="myVaultGrid" style="display:none"></div>
     <div style="padding-top:16px">
       <button class="btn btn-primary" style="width:100%;padding:14px;font-size:15px;letter-spacing:1.5px" onclick="N('library', document.querySelector('[onclick*=library]'))">+ ADD CARD TO MY VAULT</button>
@@ -1630,6 +1678,10 @@ async function logOut(){
         </div>
         <div class="cd-vault-cta">
           <div class="cd-vault-path-msg" id="cd-path-msg"></div>
+          <!-- Favorites star — shown when opened from My Vault -->
+          <div id="cd-fav-btn" style="display:none;margin-bottom:10px">
+            <button id="cd-fav-star" onclick="cdToggleFav()" style="width:100%;background:rgba(0,0,0,0.2);border:1px solid rgba(255,215,0,0.25);border-radius:8px;padding:9px;font-family:Barlow Condensed,sans-serif;font-size:13px;letter-spacing:1.5px;color:rgba(255,215,0,0.7);cursor:pointer;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='rgba(255,215,0,0.6)';this.style.color='#FFD700'" onmouseout="cdUpdateFavBtn()">☆ Add to Favorites</button>
+          </div>
           <!-- Normal ISOVault CTA -->
           <div id="cd-cta-isovault">
             <button class="btn btn-primary" style="width:100%;font-size:14px;padding:12px" onclick="openVaultModal(window._cdCard)">+ Add This Variation to My Vault</button>
@@ -2490,6 +2542,24 @@ function vaultClearFeatured(){
   vaultClearHero();
 }
 
+// ── Fav button in card detail ───────────────────────────────────────────────
+function cdUpdateFavBtn(){
+  const btn = document.getElementById('cd-fav-star');
+  if(!btn) return;
+  const idx = window._cdMyVaultIdx;
+  const inFav = (typeof idx === 'number') && _getFavs().includes(idx);
+  btn.innerHTML = inFav ? '★ In Favorites' : '☆ Add to Favorites';
+  btn.style.color = inFav ? '#FFD700' : 'rgba(255,215,0,0.7)';
+  btn.style.borderColor = inFav ? 'rgba(255,215,0,0.6)' : 'rgba(255,215,0,0.25)';
+}
+
+function cdToggleFav(){
+  const idx = window._cdMyVaultIdx;
+  if(typeof idx !== 'number') return;
+  vaultSetFeatured(idx);
+  cdUpdateFavBtn();
+}
+
 function vaultHeroClick(){
   const idx = parseInt(localStorage.getItem('grail_hero_idx'));
   if(isNaN(idx)) return;
@@ -2539,13 +2609,36 @@ function _renderVaultHero(){
     return;
   }
   const row = window._vaultData[idx];
-  const heroImg    = document.getElementById('vaultHeroImg');
+  const heroImgF   = document.getElementById('vaultHeroImg');
+  const heroImgB   = document.getElementById('vaultHeroImgBack');
   const heroPlayer = document.getElementById('vaultHeroPlayer');
   const heroSet    = document.getElementById('vaultHeroSet');
-  if(heroImg)    heroImg.src = row.front_image_url || window._GRAIL_PH || '';
+  const frontSrc   = row.front_image_url || window._GRAIL_PH || '';
+  const backSrc    = row.back_image_url  || window._GRAIL_PH || '';
+  if(heroImgF) heroImgF.src = frontSrc;
+  if(heroImgB) heroImgB.src = backSrc;
   if(heroPlayer) heroPlayer.textContent = row.player || 'Unknown';
   if(heroSet)    heroSet.textContent = `${row.year||''} ${row.brand||''} · ${row.set_name||row.parallel||''}`;
   hero.style.display = 'block';
+  // Start front/back flip cycle
+  _startHeroFlip(heroImgF, heroImgB);
+}
+
+let _heroFlipTimer = null;
+function _startHeroFlip(front, back){
+  if(_heroFlipTimer) clearInterval(_heroFlipTimer);
+  let showingFront = true;
+  const fade = (hideEl, showEl) => {
+    hideEl.style.transition = 'opacity 0.5s';
+    showEl.style.transition = 'opacity 0.5s';
+    hideEl.style.opacity = '0';
+    showEl.style.opacity = '1';
+  };
+  _heroFlipTimer = setInterval(()=>{
+    if(!document.getElementById('vaultHeroImg')) { clearInterval(_heroFlipTimer); return; }
+    showingFront = !showingFront;
+    if(showingFront){ fade(back, front); } else { fade(front, back); }
+  }, 3500);
 }
 
 const SLAB_COLORS = [
@@ -4278,23 +4371,16 @@ function renderMyVault(){
         const gainPct      = totalPaid>0 ? ((gainLoss/totalPaid)*100).toFixed(1) : 0;
         const glClass      = gainLoss>=0?'green':'red';
 
-        let summaryHtml = `
-          <div style="grid-column:1/-1;background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;padding:10px 14px;display:flex;gap:0;margin-bottom:4px;align-items:center">
-            <div style="flex:1;text-align:center;padding:0 8px">
-              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">${data.length} Cards</div>
-              <div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--white);line-height:1.2">$${totalPaid.toLocaleString()}<span style="font-size:10px;color:var(--muted-text);margin-left:2px">paid</span></div>
-            </div>
-            <div style="width:1px;background:var(--deep-border);height:32px"></div>
-            <div style="flex:1;text-align:center;padding:0 8px">
-              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">Est. Value</div>
-              <div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--blue);line-height:1.2">$${totalEst.toLocaleString()}</div>
-            </div>
-            <div style="width:1px;background:var(--deep-border);height:32px"></div>
-            <div style="flex:1;text-align:center;padding:0 8px">
-              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">Gain / Loss</div>
-              <div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--${glClass});line-height:1.2">${gainLoss>=0?'+':''}\$${Math.abs(gainLoss).toLocaleString()} <span style="font-size:10px;opacity:.7">(${gainLoss>=0?'+':''}${gainPct}%)</span></div>
-            </div>
-          </div>`;
+        // Push stats into the right-col stats bar
+        const sbBar = document.getElementById('mv-stats-bar');
+        if(sbBar){
+          sbBar.style.display='block';
+          const lbl=document.getElementById('mv-card-count-lbl'); if(lbl) lbl.textContent=data.length+' Card'+(data.length!==1?'s':'');
+          const sp=document.getElementById('mv-stat-paid'); if(sp) sp.textContent='$'+totalPaid.toLocaleString();
+          const se=document.getElementById('mv-stat-est'); if(se) se.textContent='$'+totalEst.toLocaleString();
+          const sg=document.getElementById('mv-stat-gl'); if(sg){sg.textContent=(gainLoss>=0?'+':'')+`$${Math.abs(gainLoss).toLocaleString()}`;sg.style.color=`var(--${glClass})`;}
+        }
+        let summaryHtml = '';
 
         window._vaultData = data;
         const cardsHtml = data.map((c,vIdx)=>{
@@ -6228,6 +6314,9 @@ function _cdSetMyVaultContext(fromMyVault){
   if(ctaIso)    ctaIso.style.display  = fromMyVault ? 'none'             : 'block';
   if(ctaMv)     ctaMv.style.display   = fromMyVault ? 'block'            : 'none';
   if(pathMsg&&fromMyVault) pathMsg.innerHTML = '';
+  // Fav button — only shown when from My Vault
+  const favBtn = document.getElementById('cd-fav-btn');
+  if(favBtn){ favBtn.style.display = fromMyVault ? 'block' : 'none'; if(fromMyVault) cdUpdateFavBtn(); }
 }
 
 function backToVault(){

@@ -25,6 +25,8 @@ const _SURL='https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1';
 const _SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
 function _sbH(){return{apikey:_SKEY,Authorization:'Bearer '+(window._userAccessToken||_SKEY)};}
 async function _rGet(tb,q){const r=await fetch(_SURL+'/'+tb+'?'+q,{headers:_sbH()});if(!r.ok)throw new Error('GET '+tb+' '+r.status);return r.json();}
+// Resolve pseudo-table key (e.g. pokemon_cards__Base) to real Supabase table name
+function _ivRealTable(t){const s=IV_SETS&&IV_SETS.find(x=>x.table===t);return(s&&s.pokemonCols)?'pokemon_cards':t;}
 async function _rPost(tb,b,p){const h={..._sbH(),'Content-Type':'application/json'};if(p)h.Prefer=p;const r=await fetch(_SURL+'/'+tb,{method:'POST',headers:h,body:JSON.stringify(b)});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.message||'POST '+tb+' '+r.status);}return p&&p.includes('return=representation')?r.json():null;}
 async function _rPatch(tb,q,b){const r=await fetch(_SURL+'/'+tb+'?'+q,{method:'PATCH',headers:{..._sbH(),'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(b)});if(!r.ok)throw new Error('PATCH '+tb+' '+r.status);}
 
@@ -330,8 +332,15 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .s3-pill-price{font-family:Bebas Neue,sans-serif;font-size:12px;color:var(--blue);margin-left:5px}
 .s3-msg{font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);padding:14px;text-align:center;letter-spacing:.5px}
 .grade-tiles{display:flex;gap:8px;flex-wrap:wrap}
-.gt{padding:8px 14px;border:1px solid var(--deep-border);border-radius:6px;font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:600;color:var(--muted-text);cursor:pointer;transition:all .15s;user-select:none}
+.gt{padding:8px 14px;border:1px solid var(--deep-border);border-radius:6px;font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:600;color:var(--muted-text);cursor:pointer;transition:all .15s;user-select:none;position:relative}
 .gt:hover{border-color:var(--blue);color:var(--blue)}.gt.sel{background:rgba(0,170,255,.15);border-color:var(--blue);color:var(--blue)}
+.gt-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--deep3);border:1px solid var(--blue);border-radius:6px;padding:6px 10px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:.5px;color:var(--blue);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:10}
+.gt:hover .gt-tip{opacity:1}
+.s4-var-tile{padding:14px 16px;background:rgba(0,170,255,.04);border:1px solid var(--deep-border);border-radius:8px;cursor:pointer;transition:all .15s;text-align:center;user-select:none}
+.s4-var-tile:hover{background:rgba(0,170,255,.1);border-color:var(--blue)}
+.s4-var-tile.sel{background:rgba(0,170,255,.18);border-color:var(--blue)}
+.s4-var-name{font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:1px;color:var(--white);margin-bottom:3px}
+.s4-var-count{font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--blue);letter-spacing:.5px}
 .fg{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
 .fl{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)}
 .fc{background:var(--deep2);border:1px solid var(--deep-border);border-radius:6px;padding:10px 13px;font-family:Barlow Condensed,sans-serif;font-size:15px;color:var(--white);outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
@@ -945,7 +954,7 @@ async function initUserProfile(user){
   if(nameEl)   nameEl.textContent   = name;
   if(tierEl)   tierEl.textContent   = tier;
   if(credEl)   credEl.textContent   = credits;
-  if(credSub)  credSub.textContent  = `$5 per post · ${credits} left`;
+  if(credSub)  credSub.textContent  = `$1 per post · ${credits} left`;
 
   // Owner badge on avatar
   if(window._ownerMode && avatarEl){
@@ -993,7 +1002,7 @@ async function logOut(){
     <div><div class="user-name" id="user-name">Jason McDonald</div><div class="user-tier" id="user-tier">Verified Buyer</div></div>
   </div>
   <div class="sidebar-credits">
-    <div><div class="credits-label">ISO Credits</div><div class="credits-value" id="credits-value">12</div><div class="credits-sub" id="credits-sub">$5 per post &#183; 5 free left</div></div>
+    <div><div class="credits-label">ISO Credits</div><div class="credits-value" id="credits-value">12</div><div class="credits-sub" id="credits-sub">$1 per post &#183; 5 free left</div></div>
     <button class="credits-add" onclick="T('Credits &#8212; coming soon')">+</button>
   </div>
   <nav class="sidebar-nav" id="sidebarNav">
@@ -1179,9 +1188,11 @@ async function logOut(){
       <div class="step-line" id="sl2"></div>
       <div class="step-item"><div class="step-circle soon" id="sc3">3</div><span class="step-text" id="st3">Card</span></div>
       <div class="step-line" id="sl3"></div>
-      <div class="step-item"><div class="step-circle soon" id="sc4">4</div><span class="step-text" id="st4">Grade & Price</span></div>
+      <div class="step-item"><div class="step-circle soon" id="sc4">4</div><span class="step-text" id="st4">Variant</span></div>
       <div class="step-line" id="sl4"></div>
-      <div class="step-item"><div class="step-circle soon" id="sc5">5</div><span class="step-text" id="st5">Review & Post</span></div>
+      <div class="step-item"><div class="step-circle soon" id="sc5">5</div><span class="step-text" id="st5">Grade & Price</span></div>
+      <div class="step-line" id="sl5"></div>
+      <div class="step-item"><div class="step-circle soon" id="sc6">6</div><span class="step-text" id="st6">Review & Post</span></div>
     </div>
     <div class="card-block">
       <!-- Step 1 -->
@@ -1223,10 +1234,13 @@ async function logOut(){
             <div class="sp-title" style="margin-bottom:0">SELECT CARD</div>
           </div>
         </div>
-        <div class="sp-sub" id="s3sub" style="margin-bottom:12px">Select a set on the left, then pick the exact variant.</div>
+        <div class="sp-sub" id="s3sub" style="margin-bottom:12px">Choose a series on the left, then select the exact card.</div>
         <div class="s3-layout">
-          <div class="s3-set-list" id="s3SetList">
-            <div class="s3-msg">Search a player in Step 2 first.</div>
+          <div>
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:6px">CHOOSE SERIES</div>
+            <div class="s3-set-list" id="s3SetList">
+              <div class="s3-msg">Search a player in Step 2 first.</div>
+            </div>
           </div>
           <div class="s3-right">
             <div class="s3-card-stage">
@@ -1235,13 +1249,14 @@ async function logOut(){
                 <div>Select a card</div>
               </div>
               <div class="s3-card-3d" id="s3Card3d" style="display:none">
-                <div class="s3-card-face">
+                <div class="s3-card-face" style="position:relative;overflow:hidden">
                   <div class="s3-card-shimmer"></div>
-                  <div style="position:relative;z-index:1">
+                  <img id="s3CardImg" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:9px;z-index:2" alt="">
+                  <div style="position:relative;z-index:1" id="s3CardText">
                     <div style="font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--white);line-height:1" id="s3CPlayer"></div>
                     <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);margin-top:3px;line-height:1.3" id="s3CSet"></div>
                   </div>
-                  <div style="position:relative;z-index:1">
+                  <div style="position:relative;z-index:1" id="s3CardBottom">
                     <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:.5px;color:rgba(255,255,255,0.5)" id="s3CParallel"></div>
                     <div style="font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--white);line-height:1" id="s3CPrice"></div>
                     <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(0,170,255,0.5)" id="s3CIsos"></div>
@@ -1250,42 +1265,59 @@ async function logOut(){
               </div>
             </div>
             <div id="s3VarSection" style="display:none">
-              <div class="s3-var-label">Choose Variant</div>
+              <div class="s3-var-label">CHOOSE CARD</div>
               <div class="s3-variants" id="s3Variants"></div>
-              <div style="margin-top:10px">
-                <button class="btn btn-ghost btn-sm" id="s3ViewISOBtn" style="display:none;width:100%;justify-content:center" onclick="s3ViewInISOVault()">
-                  &#128269; View Full Card in ISOVault
+              <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+                <button class="btn btn-primary btn-sm" id="s3NextBtn" style="display:none" onclick="gS(4)">Next — Choose Variant &#8594;</button>
+                <button class="btn btn-ghost btn-sm" id="s3ViewISOBtn" style="display:none" onclick="s3ViewInISOVault()">
+                  &#128269; View in ISOVault
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <!-- Step 4 -->
+      <!-- Step 4 — Variant -->
       <div class="sp" id="sp4">
-        <div class="sp-title">GRADE & PRICE</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+          <button class="btn btn-ghost btn-sm" onclick="gS(3)">&#8592; Back</button>
+          <div class="sp-title" style="margin-bottom:0">SELECT VARIANT</div>
+        </div>
+        <div class="sp-sub">Which specific version of this card are you looking for?</div>
+        <div id="s4CardSummary" style="background:rgba(0,170,255,.06);border:1px solid var(--deep-border);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--chrome)"></div>
+        <div id="s4Loading" style="text-align:center;padding:30px;font-family:Barlow Condensed,sans-serif;font-size:13px;letter-spacing:1px;color:var(--muted-text);display:none">Loading variants...</div>
+        <div id="s4VarGrid" class="sel-grid" style="margin-bottom:16px"></div>
+        <div id="s4NoVars" style="display:none;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);padding:20px;text-align:center">No catalog variants found. <span style="color:var(--blue);cursor:pointer" onclick="s4ManualVariant()">Enter manually</span></div>
+      </div>
+      <!-- Step 5 — Grade & Price -->
+      <div class="sp" id="sp5">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+          <button class="btn btn-ghost btn-sm" onclick="gS(4)">&#8592; Back</button>
+          <div class="sp-title" style="margin-bottom:0">GRADE & PRICE</div>
+        </div>
         <div class="sp-sub">Set your ISO/GRADE requirement and price range.</div>
-        <div style="margin-bottom:18px"><label class="fl" style="display:block;margin-bottom:10px">ISO/GRADE Requirement</label>
+        <div style="margin-bottom:18px"><label class="fl" style="display:block;margin-bottom:10px">ISO/GRADE Requirement <span style="color:var(--muted-text);font-size:10px">(hover for vault data)</span></label>
           <div class="grade-tiles">
-            <div class="gt" onclick="selGrade(this)">Raw Only</div>
-            <div class="gt" onclick="selGrade(this)">Any Grade</div>
-            <div class="gt" onclick="selGrade(this)">PSA 7+</div>
-            <div class="gt" onclick="selGrade(this)">PSA 8+</div>
-            <div class="gt" onclick="selGrade(this)">PSA 9+</div>
-            <div class="gt sel" onclick="selGrade(this)">PSA 10</div>
-            <div class="gt" onclick="selGrade(this)">BGS 9.5+</div>
-            <div class="gt" onclick="selGrade(this)">SGC 10</div>
+            <div class="gt" onclick="selGrade(this)">Raw Only<span class="gt-tip" id="gtip-Raw Only"></span></div>
+            <div class="gt" onclick="selGrade(this)">Any Grade<span class="gt-tip" id="gtip-Any Grade"></span></div>
+            <div class="gt" onclick="selGrade(this)">PSA 7+<span class="gt-tip" id="gtip-PSA 7+"></span></div>
+            <div class="gt" onclick="selGrade(this)">PSA 8+<span class="gt-tip" id="gtip-PSA 8+"></span></div>
+            <div class="gt" onclick="selGrade(this)">PSA 9+<span class="gt-tip" id="gtip-PSA 9+"></span></div>
+            <div class="gt sel" onclick="selGrade(this)">PSA 10<span class="gt-tip" id="gtip-PSA 10"></span></div>
+            <div class="gt" onclick="selGrade(this)">BGS 9.5+<span class="gt-tip" id="gtip-BGS 9.5+"></span></div>
+            <div class="gt" onclick="selGrade(this)">SGC 10<span class="gt-tip" id="gtip-SGC 10"></span></div>
           </div>
         </div>
         <div class="dgrid">
-          <div class="fg"><label class="fl">Min Price (USD)</label><input class="fc" type="number" id="minP" placeholder="$25 minimum" min="25"/></div>
-          <div class="fg"><label class="fl">Max Price (USD)</label><input class="fc" type="number" id="maxP" placeholder="Your max bid"/></div>
+          <div class="fg"><label class="fl">Min Price (USD) <span style="color:var(--red)">*</span></label><input class="fc" type="number" id="minP" placeholder="e.g. 25" min="1" required/></div>
+          <div class="fg"><label class="fl">Max Price (USD) <span style="color:var(--red)">*</span></label><input class="fc" type="number" id="maxP" placeholder="e.g. 150" min="1" required/></div>
         </div>
+        <div id="priceErr" style="display:none;color:var(--red);font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:.5px;margin-bottom:10px">Both min and max price are required.</div>
         <div class="fg"><label class="fl">Additional Notes (optional)</label><textarea class="fc" id="notes" rows="3" style="resize:vertical" placeholder="Cert number, jersey number parallel, auto quality, specific condition details..."></textarea></div>
-        <div style="display:flex;justify-content:space-between;margin-top:20px"><button class="btn btn-ghost" onclick="gS(3)">&#8592; Back</button><button class="btn btn-primary" onclick="gS(5)">Next &#8212; Review ISO &#8594;</button></div>
+        <div style="display:flex;justify-content:flex-end;margin-top:20px"><button class="btn btn-primary" onclick="s5Next()">Next &#8212; Review ISO &#8594;</button></div>
       </div>
-      <!-- Step 5 -->
-      <div class="sp" id="sp5">
+      <!-- Step 6 — Review & Post -->
+      <div class="sp" id="sp6">
         <div class="sp-title">REVIEW YOUR ISO</div>
         <div class="sp-sub">Confirm details before broadcasting to matching sellers.</div>
         <div class="iso-sum">
@@ -1294,15 +1326,16 @@ async function logOut(){
           <div class="is-row"><span class="is-label">Player</span><span class="is-val" id="sumPlayer">&#8212;</span></div>
           <div class="is-row"><span class="is-label">Card</span><span class="is-val" id="sumCard">&#8212;</span></div>
           <div class="is-row"><span class="is-label">Set</span><span class="is-val" id="sumSet">&#8212;</span></div>
+          <div class="is-row"><span class="is-label">Variant</span><span class="is-val" id="sumVariant">&#8212;</span></div>
           <div class="is-row"><span class="is-label">ISO/GRADE</span><span class="is-val" id="sumGrade">PSA 10</span></div>
           <div class="is-row"><span class="is-label">Price Range</span><span class="is-val" id="sumPrice">&#8212;</span></div>
         </div>
         <div style="background:rgba(0,170,255,.06);border:1px solid var(--deep-border);border-radius:8px;padding:14px;margin-bottom:16px">
-          <div style="font-family:'Barlow',sans-serif;font-size:13px;color:var(--chrome);line-height:1.6">By posting this ISO you agree that 1 credit ($5) will be deducted. Matching sellers are notified anonymously. You will only see cards matching your exact ISO &#8212; no seller profiles, no other inventory.</div>
+          <div style="font-family:'Barlow',sans-serif;font-size:13px;color:var(--chrome);line-height:1.6">By posting this ISO you agree that 1 credit ($1) will be deducted. Matching sellers are notified anonymously. You will only see cards matching your exact ISO &#8212; no seller profiles, no other inventory.</div>
         </div>
         <div class="submit-bar">
           <div class="credit-cost">Cost: <strong>1 ISO Credit</strong> &nbsp;<span style="font-size:12px;color:var(--muted-text)" id="isoCreditsLeft"></span></div>
-          <div style="display:flex;gap:10px"><button class="btn btn-ghost" onclick="gS(4)">&#8592; Back</button><button class="btn btn-primary" onclick="submitISO()">Post ISO &#8594;</button></div>
+          <div style="display:flex;gap:10px"><button class="btn btn-ghost" onclick="gS(5)">&#8592; Back</button><button class="btn btn-primary" onclick="submitISO()">Post ISO &#8594;</button></div>
         </div>
         <div id="isoSubmitErr" style="display:none;margin-top:10px;padding:10px 14px;background:rgba(255,59,92,0.1);border:1px solid rgba(255,59,92,0.3);border-radius:8px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--red)"></div>
       </div>
@@ -1880,7 +1913,7 @@ async function logOut(){
         <div style="margin-top:14px"><button class="btn btn-ghost" onclick="T('Edit profile &#8212; coming soon')">Edit Profile</button></div>
       </div>
       <div class="card-block"><div class="card-block-title"><div class="dot"></div> ISO Credits</div>
-        <div style="margin-bottom:16px"><div class="stat-label">Balance</div><div class="stat-value blue" id="acct-credits">12</div><div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-top:6px">$5 per ISO post &#183; 5 free on verified account</div></div>
+        <div style="margin-bottom:16px"><div class="stat-label">Balance</div><div class="stat-value blue" id="acct-credits">12</div><div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-top:6px">$1 per ISO post &#183; 5 free on verified account</div></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn btn-ghost btn-sm" onclick="T('5 credits &#8212; $25 &#8212; coming soon')">5 Credits &#8212; $25</button>
           <button class="btn btn-ghost btn-sm" onclick="T('10 credits &#8212; $45 &#8212; coming soon')">10 Credits &#8212; $45</button>
@@ -2505,16 +2538,17 @@ function gS(n){
   curStep=n;
   document.querySelectorAll('.sp').forEach(p=>p.classList.remove('active'));
   document.getElementById('sp'+n).classList.add('active');
-  for(let i=1;i<=5;i++){
+  for(let i=1;i<=6;i++){
     const sc=document.getElementById('sc'+i);
     const st=document.getElementById('st'+i);
     if(i<n){sc.className='step-circle done';sc.textContent='✓';st.className='step-text';}
     else if(i===n){sc.className='step-circle now';sc.textContent=i;st.className='step-text now';}
     else{sc.className='step-circle soon';sc.textContent=i;st.className='step-text';}
-    if(i<5){const sl=document.getElementById('sl'+i);if(sl)sl.className=i<n?'step-line done':'step-line';}
+    if(i<6){const sl=document.getElementById('sl'+i);if(sl)sl.className=i<n?'step-line done':'step-line';}
   }
   if(n===3)renderCardRes();
-  if(n===5)updateSum();
+  if(n===4)loadS4Variants();
+  if(n===6)updateSum();
 }
 // ── Post ISO: render sport grid from IV_SPORTS ───────────────────────────────
 function isoRenderSportGrid(){
@@ -2723,7 +2757,10 @@ function s3ResetPreview(){
   if(e)e.style.display='flex';if(c)c.style.display='none';
   const v=document.getElementById('s3VarSection');if(v)v.style.display='none';
   const p=document.getElementById('s3Variants');if(p)p.innerHTML='';
-  const b=document.getElementById('s3next');if(b){b.disabled=true;b.style.opacity='.4';}
+  const nb=document.getElementById('s3NextBtn');if(nb)nb.style.display='none';
+  const img=document.getElementById('s3CardImg');if(img){img.src='';img.style.display='none';}
+  const t=document.getElementById('s3CardText'),b2=document.getElementById('s3CardBottom');
+  if(t)t.style.opacity='1';if(b2)b2.style.opacity='1';
   ISO.card=null;
 }
 function s3SelectSet(el,key){
@@ -2736,19 +2773,14 @@ function s3SelectSet(el,key){
   const vs=document.getElementById('s3VarSection'),pEl=document.getElementById('s3Variants');
   vs.style.display='block';
   pEl.innerHTML=variants.map((c,i)=>{
-    const tags=[c.auto?'<span class="badge auto">AUTO</span>':'',c.rc?'<span class="badge rc">RC</span>':'',c.run?'<span class="badge num">/'+c.run+'</span>':''].filter(Boolean).join('');
-    const pr=c.price>0?'<span class="s3-pill-price">$'+c.price.toLocaleString()+'</span>':'';
-    const label = c._cardNumber ? '#'+c._cardNumber : (c.parallel||'Base');
-    return'<div class="s3-var-pill" onclick="s3PickVariant(this,'+i+','+JSON.stringify(key).replace(/"/g,'&quot;')+')">'+label+(tags?' '+tags:'')+pr+'</div>';
+    const label=c._cardNumber?'#'+c._cardNumber+' \u2014 '+(c.player||''):(c.parallel||'Base');
+    return'<div class="s3-var-pill" onclick="s3PickVariant(this,'+i+','+JSON.stringify(key).replace(/"/g,'&quot;')+')">'+label+'</div>';
   }).join('');
-  // Show ISOVault button if we have a card number to look up
-  const viewBtn = document.getElementById('s3ViewISOBtn');
-  if(viewBtn) viewBtn.style.display = variants[0]&&variants[0]._cardNumber ? 'flex' : 'none';
-  // Store current set key for ISOVault lookup
-  window._s3CurrentKey = key;
-  // Never auto-select — always require explicit user pick
+  const viewBtn=document.getElementById('s3ViewISOBtn');
+  if(viewBtn)viewBtn.style.display=variants[0]&&variants[0]._cardNumber?'flex':'none';
+  window._s3CurrentKey=key;
 }
-function s3PickVariant(el,idx,key){
+async function s3PickVariant(el,idx,key){
   document.querySelectorAll('.s3-var-pill').forEach(p=>p.classList.remove('sel'));
   el.classList.add('sel');
   const parts=key.split('|'),year=parts[0],brand=parts[1],set=parts[2];
@@ -2760,39 +2792,130 @@ function s3PickVariant(el,idx,key){
   document.getElementById('s3Card3d').style.display='block';
   document.getElementById('s3CPlayer').textContent=card.player;
   document.getElementById('s3CSet').textContent=card.year+' '+card.brand+' '+card.set;
-  document.getElementById('s3CParallel').textContent=card._cardNumber ? '#'+card._cardNumber : (card.parallel||'Base');
+  document.getElementById('s3CParallel').textContent=card._cardNumber?'#'+card._cardNumber:'';
   document.getElementById('s3CPrice').textContent='';
-  document.getElementById('s3CIsos').textContent='Tap again to continue or view in ISOVault';
-  // Auto-advance to Grade & Price
-  setTimeout(()=>gS(4), 500);
+  document.getElementById('s3CIsos').textContent='';
+  const nb=document.getElementById('s3NextBtn');if(nb)nb.style.display='inline-flex';
+  if(card._setTable&&card._cardNumber){
+    try{
+      const realT=_ivRealTable(card._setTable);
+      const r=await fetch(_SURL+'/'+realT+'?select=front_img,var_images&card_number=eq.'+encodeURIComponent(card._cardNumber)+'&limit=1',{headers:_sbH()});
+      if(r.ok){
+        const data=await r.json();
+        if(data&&data[0]){
+          const row=data[0];
+          let src=row.front_img||null;
+          if(!src&&row.var_images){const k=Object.keys(row.var_images)[0];if(k)src=(row.var_images[k]||{}).front||null;}
+          if(src){
+            const imgEl=document.getElementById('s3CardImg');
+            imgEl.src=src;imgEl.style.display='block';
+            const t=document.getElementById('s3CardText'),b2=document.getElementById('s3CardBottom');
+            if(t)t.style.opacity='0';if(b2)b2.style.opacity='0';
+          }
+        }
+      }
+    }catch(e){}
+  }
+}
+function s3ViewInISOVault(){
+  if(!window._s3CurrentKey)return;
+  const parts=window._s3CurrentKey.split('|');
+  const year=parts[0],brand=parts[1],set=parts[2];
+  const variants=_s3Cards.filter(c=>String(c.year)===String(year)&&c.brand===brand&&c.set===set);
+  const card=variants[0];if(!card)return;
+  const setDef=IV_SETS.find(s=>s.table===card._setTable);
+  if(setDef){_ivSet=setDef;_ivSport=setDef.sport;}
+  const row={player:card.player,card_number:card._cardNumber,year:card.year,category:'Base',insert_name:null,team:null,is_rookie:false,var_images:{},_setTable:card._setTable};
+  N('library',document.querySelector('[onclick*=library]'));
+  setTimeout(()=>ivOpenCard(row),200);
 }
 
-function s3ViewInISOVault(){
-  // Take user to ISOVault card detail for this card
-  if(!window._s3CurrentKey) return;
-  const parts = window._s3CurrentKey.split('|');
-  const year=parts[0], brand=parts[1], set=parts[2];
-  const variants = _s3Cards.filter(c=>String(c.year)===String(year)&&c.brand===brand&&c.set===set);
-  const card = variants[0];
-  if(!card) return;
-  // Find the matching set definition
-  const setDef = IV_SETS.find(s=>s.table===card._setTable);
-  if(setDef){ _ivSet=setDef; _ivSport=setDef.sport; }
-  // Build a row object matching what ivOpenCard expects
-  const row = {
-    player:      card.player,
-    card_number: card._cardNumber,
-    year:        card.year,
-    category:    'Base',
-    insert_name: null,
-    team:        null,
-    is_rookie:   false,
-    var_images:  {},
-    _setTable:   card._setTable
-  };
-  // Navigate to ISOVault then open card
-  N('library', document.querySelector('[onclick*=library]'));
-  setTimeout(()=>ivOpenCard(row), 200);
+// Step 4: Variant selection
+let _s4Variants=[];
+async function loadS4Variants(){
+  const card=ISO.card;
+  const sumEl=document.getElementById('s4CardSummary');
+  const loadEl=document.getElementById('s4Loading');
+  const gridEl=document.getElementById('s4VarGrid');
+  const noVarEl=document.getElementById('s4NoVars');
+  if(!card){if(gridEl)gridEl.innerHTML='';return;}
+  if(sumEl)sumEl.innerHTML='<strong style="color:var(--white)">'+card.player+'</strong>&nbsp;&nbsp;<span style="color:var(--blue)">'+card.year+' '+card.brand+' '+card.set+'</span>'+(card._cardNumber?' &nbsp;<span style="color:var(--muted-text)">#'+card._cardNumber+'</span>':'');
+  if(loadEl)loadEl.style.display='block';
+  if(gridEl)gridEl.innerHTML='';
+  if(noVarEl)noVarEl.style.display='none';
+  _s4Variants=[];
+  let varNames=[];
+  try{
+    const realT=_ivRealTable(card._setTable);
+    const r=await fetch(_SURL+'/'+realT+'?select=var_images&card_number=eq.'+encodeURIComponent(card._cardNumber||'')+'&limit=1',{headers:_sbH()});
+    if(r.ok){const data=await r.json();if(data&&data[0]&&data[0].var_images)varNames=Object.keys(data[0].var_images);}
+  }catch(e){}
+  if(!varNames.includes('Base'))varNames=['Base',...varNames];
+  if(loadEl)loadEl.style.display='none';
+  let vaultRows=[];
+  try{
+    const r2=await fetch(_SURL+'/vault?select=variation&player=eq.'+encodeURIComponent(card.player||'')+'&card_number=eq.'+encodeURIComponent(card._cardNumber||'')+'&limit=500',{headers:_sbH()});
+    if(r2.ok)vaultRows=await r2.json();
+  }catch(e){}
+  const vaultByVar={};
+  (vaultRows||[]).forEach(v=>{const k=v.variation||'Base';vaultByVar[k]=(vaultByVar[k]||0)+1;});
+  _s4Variants=varNames;
+  if(!varNames.length){if(noVarEl)noVarEl.style.display='block';return;}
+  if(gridEl)gridEl.innerHTML=varNames.map(vn=>{
+    const cnt=vaultByVar[vn]||0;
+    const badge=cnt>0
+      ?'<div class="s4-var-count">&#128274; '+cnt+' collector'+(cnt!==1?'s':'')+' have this</div>'
+      :'<div class="s4-var-count" style="color:rgba(122,149,174,0.4)">No vault data yet</div>';
+    return'<div class="s4-var-tile" onclick="s4PickVariant(this,'+JSON.stringify(vn).replace(/"/g,'&quot;')+')" ><div class="s4-var-name">'+vn+'</div>'+badge+'</div>';
+  }).join('');
+}
+function s4PickVariant(el,varName){
+  document.querySelectorAll('.s4-var-tile').forEach(t=>t.classList.remove('sel'));
+  el.classList.add('sel');
+  ISO.variant=varName;
+  _isoFetchGradeCounts().then(()=>{setTimeout(()=>gS(5),350);});
+}
+function s4ManualVariant(){
+  const v=prompt('Enter variant name (e.g. Base, Prizm, Gold Refractor):');
+  if(v&&v.trim()){ISO.variant=v.trim();gS(5);}
+}
+async function _isoFetchGradeCounts(){
+  window._isoGradeCounts={};
+  const card=ISO.card;if(!card||!card._cardNumber)return;
+  try{
+    const url=_SURL+'/vault?select=grade&player=eq.'+encodeURIComponent(card.player||'')+'&card_number=eq.'+encodeURIComponent(card._cardNumber||'')+(ISO.variant?'&variation=eq.'+encodeURIComponent(ISO.variant):'')+'&limit=500';
+    const r=await fetch(url,{headers:_sbH()});
+    if(!r.ok)return;
+    const rows=await r.json();
+    (rows||[]).forEach(v=>{if(!v.grade)return;const g=v.grade.trim();window._isoGradeCounts[g]=(window._isoGradeCounts[g]||0)+1;});
+    document.querySelectorAll('#sp5 .gt').forEach(el=>{
+      const txt=el.childNodes[0]&&el.childNodes[0].nodeType===3?el.childNodes[0].textContent.trim():'';
+      const tip=el.querySelector('.gt-tip');if(!tip)return;
+      let total=0;
+      Object.entries(window._isoGradeCounts).forEach(([g,cnt])=>{
+        const gl=g.toLowerCase(),lbl=txt.toLowerCase();
+        if(lbl==='any grade'){total+=cnt;}
+        else if(lbl==='raw only'&&(gl==='raw'||gl.startsWith('raw'))){total+=cnt;}
+        else if(gl.startsWith(lbl.replace('+','').toLowerCase())){total+=cnt;}
+      });
+      tip.textContent=total>0?total+' collector'+(total!==1?'s':'')+' have this graded':'No vault data yet';
+    });
+  }catch(e){}
+}
+function s5Next(){
+  const mn=document.getElementById('minP').value;
+  const mx=document.getElementById('maxP').value;
+  const errEl=document.getElementById('priceErr');
+  if(!mn||!mx||parseFloat(mn)<1||parseFloat(mx)<1){
+    if(errEl){errEl.textContent='Both min and max price are required.';errEl.style.display='block';}
+    return;
+  }
+  if(parseFloat(mn)>parseFloat(mx)){
+    if(errEl){errEl.textContent='Min price cannot exceed max price.';errEl.style.display='block';}
+    return;
+  }
+  if(errEl)errEl.style.display='none';
+  gS(6);
 }
 function pickCard(id,el){
   ISO.card=CARDS.find(c=>c.id===id)||_s3Cards.find(c=>c.id===id);
@@ -2800,91 +2923,113 @@ function pickCard(id,el){
 }
 function selGrade(el){
   document.querySelectorAll('.gt').forEach(t=>t.classList.remove('sel'));
-  el.classList.add('sel');ISO.grade=el.textContent;
+  el.classList.add('sel');
+  // Use first text node only — avoid picking up tooltip span text
+  ISO.grade=el.childNodes[0]&&el.childNodes[0].nodeType===3?el.childNodes[0].textContent.trim():el.textContent.trim();
 }
 function updateSum(){
   document.getElementById('sumSport').textContent=ISO.sport||'—';
   document.getElementById('sumPlayer').textContent=ISO.player||'—';
   if(ISO.card){
-    document.getElementById('sumCard').textContent=ISO.card.parallel;
+    document.getElementById('sumCard').textContent=ISO.card._cardNumber?'#'+ISO.card._cardNumber+' — '+ISO.card.player:ISO.card.parallel;
     document.getElementById('sumSet').textContent=`${ISO.card.year} ${ISO.card.brand} ${ISO.card.set}`;
   }
+  const varEl=document.getElementById('sumVariant');if(varEl)varEl.textContent=ISO.variant||'—';
   document.getElementById('sumGrade').textContent=ISO.grade;
   const mn=document.getElementById('minP').value,mx=document.getElementById('maxP').value;
   document.getElementById('sumPrice').textContent=mn&&mx?`$${mn}–$${mx}`:mx?`Up to $${mx}`:mn?`Min $${mn}`:'—';
-  // Live credits
   const credEl=document.getElementById('credits-value');
   const cur=credEl?parseInt(credEl.textContent)||0:0;
   const leftEl=document.getElementById('isoCreditsLeft');
-  if(leftEl) leftEl.textContent=cur>0?`${cur-1} remaining after post`:'No credits remaining';
+  if(leftEl)leftEl.textContent=cur>0?`${cur-1} remaining after post`:'No credits remaining';
 }
 async function submitISO(){
-  const isoErr = document.getElementById('isoSubmitErr');
-  if(isoErr) isoErr.style.display='none';
-  if(!ISO.player){
-    if(isoErr){isoErr.textContent='Go back to Step 2 and select a player.';isoErr.style.display='block';}
-    return;
-  }
-  if(!ISO.card){
-    if(isoErr){isoErr.textContent='Go back to Step 3 and select a card.';isoErr.style.display='block';}
-    return;
-  }
-  const user = window._authUser;
-  if(!user){
-    if(isoErr){isoErr.textContent='You must be signed in to post an ISO.';isoErr.style.display='block';}
-    return;
-  }
+  const isoErr=document.getElementById('isoSubmitErr');
+  if(isoErr)isoErr.style.display='none';
+  if(!ISO.player){if(isoErr){isoErr.textContent='Go back to Step 2 and select a player.';isoErr.style.display='block';}return;}
+  if(!ISO.card){if(isoErr){isoErr.textContent='Go back to Step 3 and select a card.';isoErr.style.display='block';}return;}
+  const user=window._authUser;
+  if(!user){if(isoErr){isoErr.textContent='You must be signed in to post an ISO.';isoErr.style.display='block';}return;}
 
-  const btn = document.querySelector('[onclick="submitISO()"]');
+  const btn=document.querySelector('[onclick="submitISO()"]');
   if(btn){btn.disabled=true;btn.textContent='POSTING...';}
 
-  try {
-    // Deduct 1 credit
-    const _cp=await _rGet('profiles','select=credits&id=eq.'+user.id+'&limit=1');
-    const profile={credits:(_cp&&_cp[0])?_cp[0].credits:0};
-    const currentCredits = profile ? (parseInt(profile.credits)||0) : 0;
-    if(currentCredits < 1){
+  try{
+    // Deduct 1 credit — use select=* to avoid 400 from missing column alias
+    const _cp=await _rGet('profiles','select=*&id=eq.'+user.id+'&limit=1');
+    const currentCredits=(_cp&&_cp[0])?parseInt(_cp[0].credits)||0:0;
+    if(currentCredits<1){
       T('Not enough credits — you need at least 1 to post an ISO.');
       if(btn){btn.disabled=false;btn.textContent='POST ISO →';}
       return;
     }
-    await _rPatch('profiles','id=eq.'+user.id,{ credits: currentCredits - 1 });
+    await _rPatch('profiles','id=eq.'+user.id,{credits:currentCredits-1});
 
-    // Write ISO record
-    const mn = document.getElementById('minP')?.value||null;
-    const mx = document.getElementById('maxP')?.value||null;
-    const notes = document.getElementById('notes')?.value||null;
+    const mn=document.getElementById('minP')?.value||null;
+    const mx=document.getElementById('maxP')?.value||null;
+    const notes=document.getElementById('notes')?.value||null;
     await _rPost('isos',{
       user_id:    user.id,
       sport:      ISO.sport,
       player:     ISO.player,
-      card_id:    ISO.card.id,
+      card_id:    ISO.card.id||null,
       card_name:  `${ISO.card.year} ${ISO.card.brand} ${ISO.card.set}`,
-      parallel:   ISO.card.parallel,
+      card_number:ISO.card._cardNumber||null,
+      parallel:   ISO.variant||ISO.card.parallel||'Base',
       grade:      ISO.grade,
-      min_price:  mn ? parseFloat(mn) : null,
-      max_price:  mx ? parseFloat(mx) : null,
+      min_price:  mn?parseFloat(mn):null,
+      max_price:  mx?parseFloat(mx):null,
       notes:      notes,
       status:     'active',
       created_at: new Date().toISOString()
     },'return=minimal');
 
-    // Update credit display
-    const credEl = document.getElementById('credits-value');
-    const credSub = document.getElementById('credits-sub');
-    if(credEl) credEl.textContent = currentCredits - 1;
-    if(credSub) credSub.textContent = `$5 per post · ${currentCredits - 1} left`;
+    // Notify matching sellers (best-effort — don't block on failure)
+    try{
+      const cardNum=ISO.card._cardNumber||null;
+      const variantLabel=ISO.variant||'Base';
+      const notifMsg=`Someone is looking for your ${ISO.card.year} ${ISO.card.brand} ${ISO.card.set} #${cardNum||''} (${variantLabel}) — ${ISO.grade}. Price range: $${mn||'?'}–$${mx||'?'}. Check your ISOs.`;
+      // Find vault owners with matching card+variant
+      if(cardNum){
+        const matchRes=await fetch(_SURL+'/vault?select=user_id&card_number=eq.'+encodeURIComponent(cardNum)+'&variation=eq.'+encodeURIComponent(variantLabel)+'&limit=100',{headers:_sbH()});
+        if(matchRes.ok){
+          const matches=await matchRes.json();
+          const seenUsers=new Set();
+          seenUsers.add(user.id); // don't notify yourself
+          const notifBatch=(matches||[]).filter(m=>{
+            if(!m.user_id||seenUsers.has(m.user_id))return false;
+            seenUsers.add(m.user_id);return true;
+          }).map(m=>({
+            user_id:    m.user_id,
+            type:       'iso_match',
+            title:      'Someone wants your card — ISO Posted',
+            message:    notifMsg,
+            read:       false,
+            created_at: new Date().toISOString()
+          }));
+          if(notifBatch.length){
+            await fetch(_SURL+'/notifications',{method:'POST',headers:{..._sbH(),'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(notifBatch)});
+          }
+        }
+      }
+    }catch(e){/* notifications failure never blocks ISO post */}
 
-    T(`ISO posted — ${ISO.player} · ${ISO.card.parallel} · 1 credit used`);
-    ISO={sport:'Baseball',player:null,card:null,grade:'PSA 10'};
+    // Update credit display
+    const credEl=document.getElementById('credits-value');
+    const credSub=document.getElementById('credits-sub');
+    if(credEl)credEl.textContent=currentCredits-1;
+    if(credSub)credSub.textContent=`$1 per post · ${currentCredits-1} left`;
+
+    T(`ISO posted — ${ISO.player} · ${ISO.variant||ISO.card.parallel} · 1 credit used`);
+    ISO={sport:'Baseball',sportId:null,player:null,card:null,variant:null,grade:'PSA 10'};
     setTimeout(()=>N('myisos',document.querySelector('[onclick*=myisos]')),1200);
 
-  } catch(e){
-    const isoErr2 = document.getElementById('isoSubmitErr');
-    const msg = e.message || 'Unknown error - try again';
+  }catch(e){
+    const isoErr2=document.getElementById('isoSubmitErr');
+    const msg=e.message||'Unknown error - try again';
     if(isoErr2){isoErr2.textContent='Failed to post ISO: '+msg;isoErr2.style.display='block';}
-    T('Failed to post ISO - ' + msg);
-  } finally {
+    T('Failed to post ISO - '+msg);
+  }finally{
     if(btn){btn.disabled=false;btn.textContent='POST ISO →';}
   }
 }
@@ -3688,7 +3833,8 @@ async function submitVault(){
       btn.textContent = 'SAVING...';
       document.getElementById('vmProgressBar').style.width='60%';
       if(vmCard._setTable && vmCard._cardNumber){
-        const catRes = await fetch(`${SB_REST}/rest/v1/${vmCard._setTable}?select=front_img,back_img,var_images&card_number=eq.${encodeURIComponent(vmCard._cardNumber)}&player=eq.${encodeURIComponent(vmCard.player)}&limit=1`, { headers: sbHeaders });
+        const _vmRealTbl = _ivRealTable(vmCard._setTable);
+        const catRes = await fetch(`${SB_REST}/rest/v1/${_vmRealTbl}?select=front_img,back_img,var_images&card_number=eq.${encodeURIComponent(vmCard._cardNumber)}&player=eq.${encodeURIComponent(vmCard.player)}&limit=1`, { headers: sbHeaders });
         if(catRes.ok){ const catRows = await catRes.json(); if(catRows[0]){ frontURL=catRows[0].front_img; backURL=catRows[0].back_img; } }
       }
       document.getElementById('vmProgressBar').style.width='80%';
@@ -3856,9 +4002,10 @@ async function _patchVaultThumbnails(rows){
     const table=known?known._setTable:null;
     const cardNum=(c.card_number||'').replace(/^#/,'');
     if(!table)continue;
+    const realTbl=_ivRealTable(table);
     try{
-      let r2=cardNum?await _rGet(table,'select=var_images,front_img&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1'):null;
-      if(!r2||!r2[0])r2=await _rGet(table,'select=var_images,front_img&player=eq.'+encodeURIComponent(c.player||'')+'&limit=1');
+      let r2=cardNum?await _rGet(realTbl,'select=var_images,front_img&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1'):null;
+      if(!r2||!r2[0])r2=await _rGet(realTbl,'select=var_images,front_img&player=eq.'+encodeURIComponent(c.player||'')+'&limit=1');
       if(!r2||!r2[0])continue;
       const rd=r2[0];
       let url=rd.front_img||null;
@@ -4193,12 +4340,12 @@ async function _cdLoadCatalogImages(c){
 
   // Slow path — fetch from Supabase
   if(statusEl){ statusEl.style.display='block'; statusEl.textContent='Loading images...'; statusEl.style.color='var(--muted-text)'; }
-
+  const realTbl2 = _ivRealTable(table);
   try {
-    let _ciRows = await _rGet(table,'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
+    let _ciRows = await _rGet(realTbl2,'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
     if(!_ciRows||!_ciRows[0]){
       const pq=(c.player||'').trim();
-      if(pq) _ciRows=await _rGet(table,'select=var_images&player=eq.'+encodeURIComponent(pq)+'&limit=1');
+      if(pq) _ciRows=await _rGet(realTbl2,'select=var_images&player=eq.'+encodeURIComponent(pq)+'&limit=1');
     }
     const data = _ciRows&&_ciRows[0]?_ciRows[0]:null;
 
@@ -4747,14 +4894,15 @@ async function submitCatalogUpload(){
     bar.style.width='75%';
 
     // Fetch existing var_images so we can merge (not overwrite other variations)
-    const _exRows=await _rGet(table,'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
+    const realTbl3 = _ivRealTable(table);
+    const _exRows=await _rGet(realTbl3,'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
     const varImages=((_exRows&&_exRows[0]&&_exRows[0].var_images)?_exRows[0].var_images:{});
     varImages[varLabel] = { front: frontURL, back: backURL };
 
     bar.style.width='85%';
 
     // Write merged var_images back
-    await _rPatch(table,'card_number=eq.'+encodeURIComponent(cardNum),{ var_images: varImages });
+    await _rPatch(realTbl3,'card_number=eq.'+encodeURIComponent(cardNum),{ var_images: varImages });
 
     bar.style.width='100%';
     btn.textContent='✓ SAVED!';
@@ -4815,7 +4963,7 @@ const IV_SPORTS = [
   { id:'tennis',    label:'Tennis',       emoji:'&#127934;', active:false },
   { id:'nascar',    label:'NASCAR',       emoji:'&#127950;&#65039;', active:false },
   { id:'wrestling', label:'Wrestling',    emoji:'&#129340;', active:false },
-  { id:'pokemon',   label:'Pok&#233;mon',      emoji:'&#9889;', active:true  },
+  { id:'pokemon',   label:'Pokémon',           emoji:'&#9889;', active:true  },
   { id:'soccer2',   label:'Soccer Int\'l',emoji:'&#127757;', active:false },
   { id:'lacrosse',  label:'Lacrosse',     emoji:'&#129357;', active:false },
   { id:'olympic',   label:'Olympic',      emoji:'&#127941;', active:false },
@@ -6695,7 +6843,7 @@ async function submitBugReport(){
 
 </script>
 <!-- PWA: Service Worker + Install Banner + Mobile Nav -->
-<script>
+<script data-cfasync="false">
 (function(){
   'use strict';
   // ── Service Worker ────────────────────────────────────────

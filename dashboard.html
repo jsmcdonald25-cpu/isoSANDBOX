@@ -742,6 +742,56 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv-view-link{font-family:Barlow Condensed,sans-serif;font-size:10px;color:rgba(0,170,255,0.5);cursor:pointer}
 .mv-view-link:hover{color:var(--blue)}
 
+/* ── MyVault v3 Redesign ── */
+#mv3-hero{display:none;border:1px solid rgba(0,170,255,0.18);border-radius:12px;overflow:hidden;margin-bottom:14px;position:relative;background:rgba(5,18,32,0.9)}
+#mv3-hero-inner{display:grid;grid-template-columns:96px 1fr;align-items:stretch;cursor:pointer;position:relative;z-index:1}
+#mv3-hero-glow{position:absolute;width:220px;height:220px;border-radius:50%;opacity:0.22;filter:blur(55px);top:-40px;left:-30px;pointer-events:none;z-index:0;background:radial-gradient(circle,rgba(0,170,255,0.9) 0%,transparent 70%)}
+#mv3-hero-card-wrap{background:#071828;width:96px;flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:10px 6px}
+#mv3-hero-card{width:84px;height:118px;position:relative;transform-style:preserve-3d;animation:vaultIdleSpin 6s ease-in-out infinite}
+#mv3-hero-card-face{position:absolute;inset:0;border-radius:7px;background:#071828;border:1px solid rgba(0,170,255,0.4);box-shadow:0 8px 28px rgba(0,0,0,0.7),0 0 16px rgba(0,170,255,0.2);overflow:hidden}
+#mv3-hero-card-face img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;border-radius:6px;z-index:1}
+#mv3-hero-card-face::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.08) 0%,transparent 55%);pointer-events:none;z-index:3;border-radius:6px}
+#mv3-hero-info{padding:14px 18px;display:flex;flex-direction:column;justify-content:center;gap:0}
+.mv3-stat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.mv3-stat-chip{background:rgba(0,0,0,0.3);border:1px solid var(--deep-border);border-radius:10px;padding:10px 12px;text-align:center}
+.mv3-stat-lbl{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:3px}
+.mv3-stat-val{font-family:Bebas Neue,sans-serif;font-size:22px;line-height:1;color:var(--white)}
+.mv3-stat-val.blue{color:var(--blue)}.mv3-stat-val.green{color:var(--green)}.mv3-stat-val.red{color:var(--red)}
+.mv3-quick-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.mv3-q-chip{background:rgba(0,170,255,0.05);border:1px solid rgba(0,170,255,0.14);border-radius:9px;padding:9px 11px;cursor:pointer;transition:border-color .15s;display:flex;flex-direction:column;gap:3px}
+.mv3-q-chip:hover{border-color:rgba(0,170,255,0.4)}
+.mv3-q-lbl{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)}
+.mv3-q-val{font-family:Bebas Neue,sans-serif;font-size:22px;line-height:1;color:var(--white)}
+.mv3-q-val.blue{color:var(--blue)}.mv3-q-val.green{color:var(--green)}
+.mv3-ctrl-bar{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.mv3-search-wrap{position:relative;flex:1}
+.mv3-search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:12px;color:rgba(122,149,174,0.4);pointer-events:none}
+.mv3-search{width:100%;box-sizing:border-box;background:rgba(0,0,0,0.35);border:1px solid var(--deep-border);border-radius:8px;padding:9px 12px 9px 32px;font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--white);outline:none;transition:border-color .15s}
+.mv3-search::placeholder{color:rgba(122,149,174,0.4)}
+.mv3-search:focus{border-color:rgba(0,170,255,0.4)}
+.mv3-sort{background:rgba(0,0,0,0.35);border:1px solid var(--deep-border);border-radius:8px;padding:9px 10px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted-text);outline:none;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.mv3-sort option{background:#0d1f33;color:var(--white)}
+.mv3-card{background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .22s;position:relative}
+.mv3-card:hover{border-color:rgba(0,170,255,0.45);transform:translateY(-3px);box-shadow:0 14px 36px rgba(0,0,0,0.5),0 0 0 1px rgba(0,170,255,0.08)}
+.mv3-card-img{height:152px;background:#071828;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center}
+.mv3-card-img img{width:100%;height:100%;object-fit:contain;display:block}
+.mv3-acq{position:absolute;top:7px;left:7px;border-radius:4px;padding:2px 6px;font-family:Barlow Condensed,sans-serif;font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;backdrop-filter:blur(6px)}
+.mv3-acq.ripped{background:rgba(0,255,136,0.14);color:var(--green);border:1px solid rgba(0,255,136,0.28)}
+.mv3-acq.bought{background:rgba(0,170,255,0.1);color:var(--blue);border:1px solid rgba(0,170,255,0.22)}
+.mv3-star-btn{position:absolute;top:5px;right:6px;cursor:pointer;font-size:18px;line-height:1;transition:all .18s;filter:drop-shadow(0 1px 4px rgba(0,0,0,0.9));color:rgba(122,149,174,0.3);background:none;border:none;padding:2px}
+.mv3-star-btn:hover{transform:scale(1.25);color:rgba(255,215,0,0.75)}
+.mv3-star-btn.is-featured{color:#FFD700;filter:drop-shadow(0 0 6px rgba(255,215,0,0.5))}
+.mv3-info{padding:8px 10px 10px}
+.mv3-player{font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:.5px;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.15}
+.mv3-set{font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.mv3-price-row{display:flex;justify-content:space-between;align-items:baseline;margin-top:7px;padding-top:7px;border-top:1px solid rgba(0,170,255,0.07)}
+.mv3-paid{font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--white);line-height:1}
+.mv3-gl{font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:700}
+.mv3-empty{text-align:center;padding:50px 20px 40px}
+.mv3-empty-card{width:110px;height:154px;margin:0 auto 22px;position:relative;transform-style:preserve-3d;animation:vaultIdleSpin 5s ease-in-out infinite}
+.mv3-empty-face{position:absolute;inset:0;border-radius:9px;background:#071828;border:1px solid rgba(0,170,255,0.35);box-shadow:0 12px 40px rgba(0,0,0,0.7),0 0 22px rgba(0,170,255,0.18);overflow:hidden}
+.mv3-empty-shimmer{position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(0,170,255,0.1) 50%,transparent 60%);animation:s3shim 3s ease-in-out infinite;z-index:4}
+
 /* ── From merge: Card Detail + MVC + Vault fit-to-page ── */
 .content.carddetail-active{overflow:hidden;display:flex;flex-direction:column}
 .content.carddetail-active #panel-carddetail{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
@@ -1038,7 +1088,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv-sport-chip{padding:5px 13px;border-radius:20px;font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .15s;border:1px solid var(--deep-border);background:rgba(0,0,0,.2);color:var(--muted-text);user-select:none}
 .mv-sport-chip:hover{border-color:rgba(0,170,255,.4);color:var(--white)}
 .mv-sport-chip.active{background:rgba(0,170,255,.12);border-color:var(--blue);color:var(--white)}
-#myVaultGrid{flex:1;min-height:0;overflow:hidden;display:grid !important;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));grid-auto-rows:min-content;align-content:start;gap:8px}
+#myVaultGrid{display:grid !important;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));grid-auto-rows:min-content;align-content:start;gap:10px;margin-bottom:14px}
 #mv-add-btn{flex-shrink:0;padding-top:8px}
 .mv-card{background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;overflow:hidden;cursor:pointer;transition:border-color .2s}
 .mv-card:hover{border-color:rgba(0,170,255,.4)}
@@ -1653,162 +1703,120 @@ async function logOut(){
   <!-- MY VAULT -->
 
   <div class="panel active" id="panel-myvault">
-    <div class="section-header" style="margin-bottom:12px">
-      <div class="section-title">MY VAULT</div>
-    </div>
 
-    <!-- TWO-COLUMN LAYOUT: Left = Hero + Favs | Right = Info blocks -->
-    <div style="display:grid;grid-template-columns:300px 1fr;gap:16px;margin-bottom:16px;align-items:start">
-
-      <!-- LEFT: Hero card + Favorites -->
+    <!-- PAGE HEADER -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
       <div>
-        <!-- Hero card (full ISOVault 280x392, shown when hero is set) -->
-        <div id="myVaultHero" style="display:none;margin-bottom:12px">
-          <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
-            <div class="vault-hero-3d" id="vaultHero3d" onclick="vaultHeroClick()" title="Click to view card">
-              <div class="vault-hero-face" id="vaultHeroFace">
-                <img id="vaultHeroImg" src="" alt="Featured card">
-                <img id="vaultHeroImgBack" src="" alt="Featured card back" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:9px;display:block;z-index:1;opacity:0">
-              </div>
-            </div>
-            <div style="text-align:center;width:100%">
-              <div style="font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--white);letter-spacing:1px;line-height:1.1" id="vaultHeroPlayer"></div>
-              <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--blue);margin-top:1px;letter-spacing:.5px" id="vaultHeroSet"></div>
-              <div style="display:flex;justify-content:center;gap:8px;margin-top:8px">
-                <button onclick="vaultHeroClick()" style="background:rgba(0,170,255,0.1);border:1px solid rgba(0,170,255,0.3);border-radius:6px;padding:5px 14px;font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);cursor:pointer">View Card</button>
-                <button onclick="vaultClearHero()" style="background:none;border:1px solid rgba(122,149,174,0.2);border-radius:6px;padding:5px 10px;font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(122,149,174,0.5);cursor:pointer">✕ Clear</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Empty vault 3D card (shown when no cards in vault) -->
-        <div id="myVaultEmpty" style="text-align:center;padding:20px 0 24px;color:var(--muted-text)">
-          <div style="display:flex;justify-content:center;margin-bottom:16px">
-            <div class="vault-empty-3d" id="vaultEmpty3d">
-              <div class="vault-empty-face">
-                <img src="" id="vaultEmptyImg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:9px;display:block;z-index:1">
-                <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.07) 0%,transparent 55%);pointer-events:none;z-index:3;border-radius:9px"></div>
-                <div class="vault-empty-shimmer"></div>
-              </div>
-            </div>
-          </div>
-          <div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--white);margin-bottom:6px">VAULT IS EMPTY</div>
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;margin-bottom:14px">Browse ISOVault to find cards.</div>
-          <button class="btn btn-primary btn-sm" onclick="N('library',document.querySelector('[onclick*=library]'))">Browse ISOVault</button>
-        </div>
-
-        <!-- Favorites rail (shown when favorites exist) -->
-        <div id="myVaultFavSection" style="display:none">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-            <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)">★ Favorites <span id="favCount" style="color:var(--blue)"></span></div>
-            <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;color:rgba(122,149,174,0.4)">Tap to set hero</div>
-          </div>
-          <div class="vault-fav-rail" id="vaultFavRail"></div>
-        </div>
+        <div style="font-family:Bebas Neue,sans-serif;font-size:28px;letter-spacing:1.5px;color:var(--white);line-height:1">MY VAULT</div>
+        <div id="mv3-header-sub" style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);letter-spacing:.5px;margin-top:1px">Your personal card library</div>
       </div>
+      <button class="btn btn-primary" style="font-size:12px;padding:8px 16px;letter-spacing:1px;flex-shrink:0" onclick="N('library',document.querySelector('[onclick*=library]'))">+ ADD CARD</button>
+    </div>
 
-      <!-- RIGHT: Info blocks stacked -->
-      <div style="display:flex;flex-direction:column;gap:8px">
-
-        <!-- Active ISOs + Credits row -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div onclick="N('myisos',document.getElementById('nav-myisos'))" class="mv-chip">
-            <div>
-              <div class="mv-chip-label">Active ISOs</div>
-              <div class="mv-chip-val blue" id="mv-active-isos">—</div>
-            </div>
-            <div class="mv-chip-link">View ›</div>
-          </div>
-          <div onclick="T('Buy credits — coming soon')" class="mv-chip">
-            <div>
-              <div class="mv-chip-label">ISO Credits</div>
-              <div class="mv-chip-val" id="mv-credits">—</div>
-            </div>
-            <div class="mv-chip-link">+ Buy ›</div>
-          </div>
-        </div>
-
-        <!-- Notifications block -->
-        <div style="background:rgba(0,0,0,0.2);border:1px solid var(--deep-border);border-radius:8px;overflow:hidden">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;border-bottom:1px solid var(--deep-border)">
-            <div style="display:flex;align-items:center;gap:5px">
-              <span style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)">Notifications</span>
-              <span id="mv-notif-badge" style="display:none;background:var(--red);border-radius:8px;padding:1px 5px;font-family:Barlow Condensed,sans-serif;font-size:9px;font-weight:700;color:#fff">2</span>
-            </div>
-            <span onclick="N('notifs',null)" class="mv-view-link">View All ›</span>
-          </div>
-          <div id="mv-notif-list" style="padding:2px 0">
-            <div class="mv-act-item"><div class="mv-act-dot red"></div><div class="mv-act-text"><strong>Seller matched</strong> your Juan Soto ISO</div><div class="mv-act-time">8m</div></div>
-            <div class="mv-act-item"><div class="mv-act-dot blue"></div><div class="mv-act-text"><strong>Mike Trout RC PSA 10</strong> shipped</div><div class="mv-act-time">1d</div></div>
-          </div>
-        </div>
-
-        <!-- Recent Activity block -->
-        <div style="background:rgba(0,0,0,0.2);border:1px solid var(--deep-border);border-radius:8px;overflow:hidden">
-          <div style="padding:6px 10px;border-bottom:1px solid var(--deep-border)">
-            <span style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)">Recent Activity</span>
-          </div>
-          <div id="mv-activity-list" style="padding:2px 0">
-            <div class="mv-act-item"><div class="mv-act-dot red"></div><div class="mv-act-text">Seller matched your <strong>Juan Soto RC Auto</strong> ISO</div><div class="mv-act-time">8m</div></div>
-            <div class="mv-act-item"><div class="mv-act-dot green"></div><div class="mv-act-text"><strong>Mike Trout RC PSA 10</strong> shipped</div><div class="mv-act-time">1d</div></div>
-            <div class="mv-act-item"><div class="mv-act-dot blue"></div><div class="mv-act-text">ISO posted — <strong>Julio Rodriguez Gold /50</strong></div><div class="mv-act-time">4d</div></div>
-          </div>
-        </div>
-
-        <!-- ISOTicker aggregate -->
-        <div onclick="N('isoticker',null)" style="background:rgba(0,170,255,0.04);border:1px solid rgba(0,170,255,0.14);border-radius:8px;padding:8px 10px;cursor:pointer;transition:border-color .15s" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='rgba(0,170,255,0.14)'">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-            <span style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)">ISOTicker</span>
-            <span class="mv-view-link">Full Ticker ›</span>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;gap:0;align-items:center">
-            <div style="text-align:center;padding:0 4px">
-              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">Portfolio</div>
-              <div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--blue);line-height:1.2" id="mv-ticker-val">$2,979</div>
-            </div>
-            <div style="background:var(--deep-border);height:24px"></div>
-            <div style="text-align:center;padding:0 4px">
-              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">Gain</div>
-              <div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--green);line-height:1.2" id="mv-ticker-gain">+$963</div>
-            </div>
-            <div style="background:var(--deep-border);height:24px"></div>
-            <div style="text-align:center;padding:0 4px;overflow:hidden">
-              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">Top</div>
-              <div style="font-family:Bebas Neue,sans-serif;font-size:13px;color:var(--white);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="mv-ticker-top">Gunnar +77.8%</div>
+    <!-- HERO BANNER — shown when a card is starred as featured -->
+    <div id="mv3-hero">
+      <div id="mv3-hero-glow"></div>
+      <div id="mv3-hero-inner">
+        <div id="mv3-hero-card-wrap">
+          <div id="mv3-hero-card">
+            <div id="mv3-hero-card-face">
+              <img id="vaultHeroImg" src="" alt="Featured card">
+              <img id="vaultHeroImgBack" src="" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:2;opacity:0">
             </div>
           </div>
         </div>
-
-        <!-- Vault stats (shown when vault has cards) -->
-        <div id="mv-stats-bar" style="display:none;background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;padding:8px 10px">
-          <div style="display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;gap:0;align-items:center">
-            <div style="text-align:center;padding:0 4px">
-              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)" id="mv-card-count-lbl">0 Cards</div>
-              <div style="font-family:Bebas Neue,sans-serif;font-size:14px;color:var(--white);line-height:1.2" id="mv-stat-paid">—</div>
-              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;color:var(--muted-text)">paid</div>
-            </div>
-            <div style="background:var(--deep-border);height:24px"></div>
-            <div style="text-align:center;padding:0 4px">
-              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">Est. Value</div>
-              <div style="font-family:Bebas Neue,sans-serif;font-size:14px;color:var(--blue);line-height:1.2" id="mv-stat-est">—</div>
-            </div>
-            <div style="background:var(--deep-border);height:24px"></div>
-            <div style="text-align:center;padding:0 4px">
-              <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">G/L</div>
-              <div style="font-family:Bebas Neue,sans-serif;font-size:14px;line-height:1.2" id="mv-stat-gl">—</div>
-            </div>
+        <div id="mv3-hero-info">
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--blue);margin-bottom:4px">★ FEATURED CARD</div>
+          <div style="font-family:Bebas Neue,sans-serif;font-size:26px;color:var(--white);letter-spacing:1px;line-height:1" id="vaultHeroPlayer"></div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:rgba(0,170,255,0.65);letter-spacing:.5px;margin-top:3px" id="vaultHeroSet"></div>
+          <div id="vaultHeroStats" style="display:flex;gap:18px;margin-top:10px"></div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button onclick="vaultHeroClick()" style="background:rgba(0,170,255,0.12);border:1px solid rgba(0,170,255,0.35);border-radius:6px;padding:6px 18px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);cursor:pointer;transition:background .15s" onmouseover="this.style.background='rgba(0,170,255,0.22)'" onmouseout="this.style.background='rgba(0,170,255,0.12)'">View Card ›</button>
+            <button onclick="vaultClearHero()" style="background:none;border:1px solid rgba(122,149,174,0.15);border-radius:6px;padding:6px 10px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;color:rgba(122,149,174,0.4);cursor:pointer">✕ Remove</button>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- Full vault grid -->
-    <div class="card-grid" id="myVaultGrid" style="display:none"></div>
-    <div style="padding-top:16px">
-      <button class="btn btn-primary" style="width:100%;padding:14px;font-size:15px;letter-spacing:1.5px" onclick="N('library', document.querySelector('[onclick*=library]'))">+ ADD CARD TO MY VAULT</button>
+    <!-- PORTFOLIO STAT STRIP — shown when vault has cards -->
+    <div id="mv3-stats" class="mv3-stat-strip" style="display:none">
+      <div class="mv3-stat-chip">
+        <div class="mv3-stat-lbl" id="mv3-count-lbl">Cards</div>
+        <div class="mv3-stat-val" id="mv3-count-val">—</div>
+      </div>
+      <div class="mv3-stat-chip">
+        <div class="mv3-stat-lbl">Cost Basis</div>
+        <div class="mv3-stat-val" id="mv3-paid-val">—</div>
+      </div>
+      <div class="mv3-stat-chip">
+        <div class="mv3-stat-lbl">Est. Value</div>
+        <div class="mv3-stat-val blue" id="mv3-est-val">—</div>
+      </div>
+      <div class="mv3-stat-chip">
+        <div class="mv3-stat-lbl">Gain / Loss</div>
+        <div class="mv3-stat-val" id="mv3-gl-val">—</div>
+      </div>
     </div>
+
+    <!-- QUICK ACTION CHIPS — always shown -->
+    <div class="mv3-quick-row">
+      <div class="mv3-q-chip" onclick="N('myisos',document.getElementById('nav-myisos'))">
+        <div class="mv3-q-lbl">Active ISOs</div>
+        <div class="mv3-q-val blue" id="mv-active-isos">—</div>
+      </div>
+      <div class="mv3-q-chip" onclick="T('Buy credits — coming soon')">
+        <div class="mv3-q-lbl">ISO Credits</div>
+        <div class="mv3-q-val" id="mv-credits">—</div>
+      </div>
+      <div class="mv3-q-chip" onclick="N('isoticker',null)">
+        <div class="mv3-q-lbl">Portfolio</div>
+        <div class="mv3-q-val blue" id="mv-ticker-val">—</div>
+      </div>
+      <div class="mv3-q-chip" style="position:relative">
+        <div class="mv3-q-lbl" style="display:flex;align-items:center;gap:5px">
+          Alerts
+          <span id="mv-notif-badge" style="display:none;background:var(--red);border-radius:6px;padding:1px 5px;font-family:Barlow Condensed,sans-serif;font-size:8px;font-weight:700;color:#fff">●</span>
+        </div>
+        <div class="mv3-q-val" style="font-size:16px;color:var(--muted-text)" id="mv-notif-count">—</div>
+      </div>
+    </div>
+
+    <!-- Hidden legacy IDs used by external code -->
+    <span id="mv-ticker-gain" style="display:none"></span>
+    <span id="mv-ticker-top" style="display:none"></span>
+
+    <!-- EMPTY STATE — shown when vault is empty or user not logged in -->
+    <div id="myVaultEmpty" class="mv3-empty">
+      <div class="mv3-empty-card">
+        <div class="mv3-empty-face">
+          <img id="vaultEmptyImg" src="" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:8px;display:block;z-index:1">
+          <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.06) 0%,transparent 55%);z-index:2;border-radius:8px;pointer-events:none"></div>
+          <div class="mv3-empty-shimmer"></div>
+        </div>
+      </div>
+      <div style="font-family:Bebas Neue,sans-serif;font-size:24px;letter-spacing:2px;color:var(--white);margin-bottom:6px">YOUR VAULT IS EMPTY</div>
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:20px;line-height:1.6">Add cards from ISOVault to start<br>tracking your collection's value.</div>
+      <button class="btn btn-primary" onclick="N('library',document.querySelector('[onclick*=library]'))" style="padding:10px 28px;font-size:13px;letter-spacing:1.5px">Browse ISOVault →</button>
+    </div>
+
+    <!-- SEARCH + SORT CONTROLS — shown when vault has cards -->
+    <div class="mv3-ctrl-bar" id="mv3-controls" style="display:none">
+      <div class="mv3-search-wrap">
+        <span class="mv3-search-icon">🔍</span>
+        <input class="mv3-search" id="mv3-search-input" type="text" placeholder="Search player, set, year..." oninput="filterVaultGrid(this.value)">
+      </div>
+      <select class="mv3-sort" id="mv3-sort-sel" onchange="sortVaultGrid(this.value)">
+        <option value="date_desc">Newest First</option>
+        <option value="date_asc">Oldest First</option>
+        <option value="paid_desc">Highest Paid</option>
+        <option value="paid_asc">Lowest Paid</option>
+        <option value="player_asc">Player A→Z</option>
+      </select>
+    </div>
+
+    <!-- CARD GRID -->
+    <div id="myVaultGrid" style="display:none"></div>
+
   </div>
 
   <div class="panel" id="panel-myvaultcard">
@@ -4648,99 +4656,215 @@ async function _patchVaultThumbnails(rows){
 function renderMyVault(){
   const grid  = document.getElementById('myVaultGrid');
   const empty = document.getElementById('myVaultEmpty');
-  const user = window._authUser;
+  const user  = window._authUser;
+  const ctrl  = document.getElementById('mv3-controls');
+  const stats = document.getElementById('mv3-stats');
   if(!user){
     if(grid)  grid.style.display='none';
     if(empty) empty.style.display='block';
+    if(ctrl)  ctrl.style.display='none';
+    if(stats) stats.style.display='none';
     return;
   }
-  const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
-  const userToken = window._userAccessToken || ANON_KEY;
-  fetch(`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault?select=*&user_id=eq.${user.id}&status=neq.sold&status=neq.removed&order=created_at.desc`, {
-    headers: { 'apikey': ANON_KEY, 'Authorization': 'Bearer ' + userToken }
+  const ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+  const userToken=window._userAccessToken||ANON_KEY;
+  fetch(`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault?select=*&user_id=eq.${user.id}&status=neq.sold&status=neq.removed&order=created_at.desc`,{
+    headers:{'apikey':ANON_KEY,'Authorization':'Bearer '+userToken}
   }).then(r=>r.json()).then(data=>{
     if(!Array.isArray(data)){
       if(grid)  grid.style.display='none';
       if(empty){ empty.style.display='block'; empty.innerHTML=`<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--red);padding:20px">Vault error: ${data?.message||'Unknown error'}</div>`; }
       return;
     }
-        if(!data || !data.length){
-          if(grid)  grid.style.display='none';
-          if(empty) empty.style.display='block';
-          return;
-        }
-        if(empty) empty.style.display='none';
-        if(!grid) return;
-        grid.style.display='grid';
+    if(!data.length){
+      if(grid)  grid.style.display='none';
+      if(empty) empty.style.display='block';
+      if(ctrl)  ctrl.style.display='none';
+      if(stats) stats.style.display='none';
+      return;
+    }
+    // Have cards — hide empty, show grid
+    if(empty) empty.style.display='none';
+    if(!grid) return;
 
-        // Summary bar
-        const totalPaid    = data.reduce((s,c)=>s+(parseFloat(c.price_paid)||0),0);
-        const totalEst     = data.reduce((s,c)=>s+(parseFloat(c.estimated_value)||0),0);
-        const gainLoss     = totalEst - totalPaid;
-        const gainPct      = totalPaid>0 ? ((gainLoss/totalPaid)*100).toFixed(1) : 0;
-        const glClass      = gainLoss>=0?'green':'red';
+    // Portfolio stats
+    const totalPaid=data.reduce((s,c)=>s+(parseFloat(c.price_paid)||0),0);
+    const totalEst=data.reduce((s,c)=>s+(parseFloat(c.estimated_value)||0),0);
+    const gainLoss=totalEst-totalPaid;
+    const glClass=gainLoss>=0?'green':'red';
+    if(stats){
+      stats.style.display='grid';
+      const cv=document.getElementById('mv3-count-val'); if(cv) cv.textContent=data.length;
+      const cl=document.getElementById('mv3-count-lbl'); if(cl) cl.textContent=data.length===1?'Card':'Cards';
+      const pv=document.getElementById('mv3-paid-val'); if(pv) pv.textContent='$'+totalPaid.toLocaleString(undefined,{maximumFractionDigits:0});
+      const ev=document.getElementById('mv3-est-val'); if(ev) ev.textContent=totalEst?'$'+totalEst.toLocaleString(undefined,{maximumFractionDigits:0}):'—';
+      const gl=document.getElementById('mv3-gl-val'); if(gl){ gl.textContent=(gainLoss>=0?'+':'')+`$${Math.abs(gainLoss).toLocaleString(undefined,{maximumFractionDigits:0})}`; gl.className='mv3-stat-val '+glClass; }
+    }
 
-        // Push stats into the right-col stats bar
-        const sbBar = document.getElementById('mv-stats-bar');
-        if(sbBar){
-          sbBar.style.display='block';
-          const lbl=document.getElementById('mv-card-count-lbl'); if(lbl) lbl.textContent=data.length+' Card'+(data.length!==1?'s':'');
-          const sp=document.getElementById('mv-stat-paid'); if(sp) sp.textContent='$'+totalPaid.toLocaleString();
-          const se=document.getElementById('mv-stat-est'); if(se) se.textContent='$'+totalEst.toLocaleString();
-          const sg=document.getElementById('mv-stat-gl'); if(sg){sg.textContent=(gainLoss>=0?'+':'')+`$${Math.abs(gainLoss).toLocaleString()}`;sg.style.color=`var(--${glClass})`;}
-        }
-        let summaryHtml = '';
+    // Header sub
+    const hsub=document.getElementById('mv3-header-sub');
+    if(hsub) hsub.textContent=data.length+' card'+(data.length!==1?'s':'')+' · '+new Date().toLocaleDateString('en-US',{month:'short',year:'numeric'});
 
-        window._vaultData = data;
-        const cardsHtml = data.map((c,vIdx)=>{
-          const paid  = parseFloat(c.price_paid)||0;
-          const est   = parseFloat(c.estimated_value)||0;
-          const gl    = est - paid;
-          const glPct = paid>0?((gl/paid)*100).toFixed(1):null;
-          const glColor = gl>=0?'var(--green)':'var(--red)';
-          const acqDate = c.date_acquired ? new Date(c.date_acquired).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : null;
-          const imgSrc = c.front_image_url;
-          return `
-          <div class="card-thumb" style="position:relative" data-vaultidx="${vIdx}" onclick="openVaultCard(parseInt(this.dataset.vaultidx))">
-            <div class="ct-img" style="height:110px;background:rgba(0,170,255,0.06);overflow:hidden;padding:0;position:relative">
-              ${imgSrc
-                ? `<img src="${imgSrc}" style="width:100%;height:100%;object-fit:contain;background:#071828" loading="lazy">`
-                : `<img src="${window._GRAIL_PH||''}" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy" alt="GrailISO">`}
-              <div style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.6);border-radius:4px;padding:2px 6px;font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:${c.acquisition_type==='ripped'?'var(--green)':'var(--blue)'}">
-                ${c.acquisition_type==='ripped'?'&#128230; Ripped':'&#128176; Purchased'}
-              </div>
-              <div onclick="event.stopPropagation();vaultSetFeatured(${vIdx})" id="vaultStar-${vIdx}" style="position:absolute;top:5px;right:6px;cursor:pointer;font-size:16px;line-height:1;opacity:0.5;transition:all .15s;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.7))" onmouseover="this.style.opacity='1';this.style.transform='scale(1.2)'" onmouseout="this.style.opacity=vaultIsFeatured(${vIdx})?'1':'0.5';this.style.transform='scale(1)'">☆</div>
-            </div>
-            <div class="ct-info" style="padding-bottom:12px">
-              <div class="ct-player">${c.player||'Unknown'}</div>
-              <div class="ct-set">${c.year||''} ${c.brand||''} · ${c.set_name||c.parallel||''}</div>
-              ${c.card_number?`<div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(0,170,255,0.6);margin-top:2px;letter-spacing:.5px">${c.card_number}</div>`:''}
-              ${c.serial_number?`<div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--blue);margin-top:2px">#${c.serial_number}/${c.serial_total||'?'}</div>`:''}
-              <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--deep-border)">
-                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px">
-                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">Paid</div>
-                  <div style="font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--white)">$${paid.toLocaleString()}</div>
-                </div>
-                ${est?`<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px">
-                  <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">Est. Value</div>
-                  <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--blue)">$${est.toLocaleString()}</div>
-                </div>
-                <div style="display:flex;justify-content:flex-end">
-                  <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:700;color:${glColor}">${gl>=0?'+':''}\$${Math.abs(gl).toLocaleString()}${glPct?` (${gl>=0?'+':''}${glPct}%)`:''}</div>
-                </div>`:''}
-                ${acqDate?`<div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted-text);margin-top:4px">${acqDate}</div>`:''}
-              </div>
-              
-            </div>
-          </div>`;
-        }).join('');
+    window._vaultData=data;
 
-        grid.innerHTML = summaryHtml + cardsHtml;
-        _patchVaultThumbnails(data);
-        _renderVaultFavs();
-        _renderVaultHero();
-        _updateStarVisuals();
-    });
+    // Controls
+    if(ctrl) ctrl.style.display='flex';
+    const si=document.getElementById('mv3-search-input'); if(si) si.value='';
+    const ss=document.getElementById('mv3-sort-sel'); if(ss) ss.value='date_desc';
+
+    _renderVaultGrid(data);
+    _patchVaultThumbnails(data);
+    _renderVaultHero();
+    _updateStarVisuals();
+  });
+}
+
+// ── Render card grid with provided data array ──────────────────────────────
+function _renderVaultGrid(data){
+  const grid=document.getElementById('myVaultGrid');
+  if(!grid) return;
+  if(!data||!data.length){ grid.style.display='none'; return; }
+  grid.style.display='grid';
+  grid.innerHTML=data.map((c,vIdx)=>{
+    const srcIdx=(window._vaultData||[]).indexOf(c);
+    const realIdx=srcIdx>=0?srcIdx:vIdx;
+    const paid=parseFloat(c.price_paid)||0;
+    const est=parseFloat(c.estimated_value)||0;
+    const gl=est-paid;
+    const glColor=gl>=0?'var(--green)':'var(--red)';
+    const imgSrc=c.front_image_url;
+    const isRipped=c.acquisition_type==='ripped';
+    const isFeat=vaultIsFeatured(realIdx);
+    const meta=[c.year,c.brand,c.set_name||c.parallel].filter(Boolean).join(' · ');
+    return `<div class="mv3-card" data-vaultidx="${realIdx}" onclick="openVaultCard(parseInt(this.dataset.vaultidx))">
+      <div class="mv3-card-img">
+        ${imgSrc
+          ?`<img src="${imgSrc}" loading="lazy" alt="${(c.player||'').replace(/"/g,'&quot;')}">`
+          :`<img src="${window._GRAIL_PH||''}" style="object-fit:cover" loading="lazy" alt="GrailISO">`}
+        <div class="mv3-acq ${isRipped?'ripped':'bought'}">${isRipped?'⚡ Ripped':'💰 Bought'}</div>
+        <button class="mv3-star-btn${isFeat?' is-featured':''}" id="vaultStar-${realIdx}" onclick="event.stopPropagation();vaultSetFeatured(${realIdx})" title="Set as featured card">${isFeat?'★':'☆'}</button>
+      </div>
+      <div class="mv3-info">
+        <div class="mv3-player">${c.player||'Unknown'}</div>
+        <div class="mv3-set">${meta}</div>
+        ${(c.card_number||c.serial_number)?`<div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:rgba(0,170,255,0.5);margin-top:2px;letter-spacing:.4px">${c.card_number||''}${c.serial_number?' · #'+c.serial_number+(c.serial_total?'/'+c.serial_total:''):''}</div>`:''}
+        <div class="mv3-price-row">
+          <div>
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">Paid</div>
+            <div class="mv3-paid">$${paid.toLocaleString()}</div>
+          </div>
+          ${est?`<div style="text-align:right">
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">G/L</div>
+            <div class="mv3-gl" style="color:${glColor}">${gl>=0?'+':''}$${Math.abs(gl).toLocaleString()}</div>
+          </div>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Star / featured mechanic ───────────────────────────────────────────────
+function vaultSetFeatured(idx){
+  if(window._vaultFeaturedIdx===idx){
+    window._vaultFeaturedIdx=null;
+  } else {
+    window._vaultFeaturedIdx=idx;
+  }
+  _renderVaultHero();
+  _updateStarVisuals();
+}
+
+function vaultIsFeatured(idx){
+  return window._vaultFeaturedIdx===idx;
+}
+
+function vaultClearHero(){
+  window._vaultFeaturedIdx=null;
+  _renderVaultHero();
+  _updateStarVisuals();
+}
+
+function vaultHeroClick(){
+  const idx=window._vaultFeaturedIdx;
+  if(idx==null||!window._vaultData) return;
+  openVaultCard(idx);
+}
+
+function _renderVaultFavs(){
+  // Favorites rail replaced by hero banner in v3 — no-op
+}
+
+function _renderVaultHero(){
+  const hero=document.getElementById('mv3-hero');
+  if(!hero) return;
+  const idx=window._vaultFeaturedIdx;
+  const data=window._vaultData;
+  if(idx==null||!data||!data[idx]){
+    hero.style.display='none';
+    return;
+  }
+  const c=data[idx];
+  hero.style.display='block';
+  // Card image
+  const img=document.getElementById('vaultHeroImg');
+  if(img){ img.src=c.front_image_url||window._GRAIL_PH||''; img.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;border-radius:6px;z-index:1'; }
+  const imgBack=document.getElementById('vaultHeroImgBack');
+  if(imgBack) imgBack.src=c.back_image_url||'';
+  // Text
+  const player=document.getElementById('vaultHeroPlayer'); if(player) player.textContent=(c.player||'').toUpperCase();
+  const set=document.getElementById('vaultHeroSet'); if(set) set.textContent=[c.year,c.brand,c.set_name||c.parallel].filter(Boolean).join(' · ');
+  // Mini stats
+  const statsEl=document.getElementById('vaultHeroStats');
+  if(statsEl){
+    const paid=parseFloat(c.price_paid)||0;
+    const est=parseFloat(c.estimated_value)||0;
+    const gl=est-paid;
+    const glCol=gl>=0?'var(--green)':'var(--red)';
+    statsEl.innerHTML=
+      `<div><div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:1px">Paid</div><div style="font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--white);line-height:1">$${paid.toLocaleString()}</div></div>`+
+      (est?`<div><div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:1px">Est. Value</div><div style="font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--blue);line-height:1">$${est.toLocaleString()}</div></div>`+
+      `<div><div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:1px">G / L</div><div style="font-family:Bebas Neue,sans-serif;font-size:18px;color:${glCol};line-height:1">${gl>=0?'+':''}$${Math.abs(gl).toLocaleString()}</div></div>`:
+      '');
+  }
+}
+
+function _updateStarVisuals(){
+  const data=window._vaultData||[];
+  data.forEach((_,i)=>{
+    const btn=document.getElementById('vaultStar-'+i);
+    if(!btn) return;
+    const feat=vaultIsFeatured(i);
+    btn.className='mv3-star-btn'+(feat?' is-featured':'');
+    btn.textContent=feat?'★':'☆';
+  });
+}
+
+function filterVaultGrid(q){
+  const data=window._vaultData||[];
+  if(!q||!q.trim()){ _renderVaultGrid(data); _patchVaultThumbnails(data); _updateStarVisuals(); return; }
+  const ql=q.toLowerCase();
+  const filtered=data.filter(c=>
+    (c.player||'').toLowerCase().includes(ql)||
+    (c.set_name||'').toLowerCase().includes(ql)||
+    (c.brand||'').toLowerCase().includes(ql)||
+    String(c.year||'').includes(ql)||
+    (c.parallel||'').toLowerCase().includes(ql)||
+    (c.card_number||'').toLowerCase().includes(ql)
+  );
+  _renderVaultGrid(filtered);
+  _updateStarVisuals();
+}
+
+function sortVaultGrid(mode){
+  const data=[...(window._vaultData||[])];
+  if(mode==='date_desc')  data.sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
+  else if(mode==='date_asc')  data.sort((a,b)=>new Date(a.created_at||0)-new Date(b.created_at||0));
+  else if(mode==='paid_desc') data.sort((a,b)=>(parseFloat(b.price_paid)||0)-(parseFloat(a.price_paid)||0));
+  else if(mode==='paid_asc')  data.sort((a,b)=>(parseFloat(a.price_paid)||0)-(parseFloat(b.price_paid)||0));
+  else if(mode==='player_asc')data.sort((a,b)=>(a.player||'').localeCompare(b.player||''));
+  _renderVaultGrid(data);
+  _patchVaultThumbnails(data);
+  _updateStarVisuals();
 }
 
 // &#9472;&#9472; BUILD STAMP &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;

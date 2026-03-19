@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GrailISO · Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --bg: #f4f6f9;
+  --surface: #ffffff;
+  --surface2: #f0f4f8;
+  --border: #e2e8f0;
+  --border2: #cbd5e1;
+  --blue: #0066cc;
+  --blue-light: #e8f0ff;
+  --blue-hover: #0052a3;
+  --green: #059669;
+  --green-light: #ecfdf5;
+  --red: #dc2626;
+  --red-light: #fef2f2;
+  --yellow: #d97706;
+  --yellow-light: #fffbeb;
+  --purple: #7c3aed;
+  --purple-light: #f5f3ff;
+  --text: #0f172a;
+  --text2: #475569;
+  --text3: #94a3b8;
+  --font: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --sidebar-w: 240px;
+  --radius: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; }
+
+/* ── GATE ── */
+#gate {
+  position: fixed; inset: 0; background: var(--bg);
+  display: flex; align-items: center; justify-content: center; z-index: 9999;
+}
+.gate-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 40px; width: 380px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+}
+.gate-logo {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 28px;
+}
+.gate-logo-mark {
+  background: var(--blue); color: #fff; font-family: var(--font);
+  font-size: 10px; font-weight: bold; letter-spacing: 2px;
+  padding: 4px 8px; border-radius: 4px;
+}
+.gate-logo-text { font-size: 13px; font-weight: 600; color: var(--text2); }
+.gate-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.gate-sub { font-size: 13px; color: var(--text3); margin-bottom: 28px; }
+.gate-label { font-size: 11px; font-weight: 600; color: var(--text2); letter-spacing: .5px; margin-bottom: 6px; display: block; }
+.gate-input {
+  width: 100%; background: var(--bg); border: 1px solid var(--border2);
+  color: var(--text); font-family: var(--sans); font-size: 14px;
+  padding: 10px 14px; border-radius: var(--radius); margin-bottom: 14px; outline: none;
+  transition: border-color .15s;
+}
+.gate-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,102,204,0.1); }
+.gate-btn {
+  width: 100%; background: var(--blue); color: #fff; border: none;
+  font-family: var(--sans); font-size: 14px; font-weight: 600;
+  padding: 12px; border-radius: var(--radius); cursor: pointer; transition: background .15s;
+}
+.gate-btn:hover { background: var(--blue-hover); }
+.gate-err { color: var(--red); font-size: 12px; margin-top: 10px; text-align: center; min-height: 18px; }
+.gate-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--red-light); color: var(--red);
+  font-size: 11px; font-weight: 600; padding: 4px 10px;
+  border-radius: 20px; margin-bottom: 20px;
+}
+
+/* ── APP SHELL ── */
+#app { display: none; }
+.sidebar {
+  position: fixed; left: 0; top: 0; bottom: 0; width: var(--sidebar-w);
+  background: var(--surface); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; z-index: 100;
+}
+.sidebar-logo {
+  padding: 20px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.logo-mark {
+  background: var(--blue); color: #fff; font-family: var(--font);
+  font-size: 9px; font-weight: bold; letter-spacing: 2px;
+  padding: 4px 7px; border-radius: 4px; white-space: nowrap;
+}
+.logo-label { font-size: 12px; font-weight: 700; color: var(--text2); }
+.logo-admin { font-size: 10px; color: var(--red); font-weight: 700; letter-spacing: 1px; }
+.nav-section { padding: 16px 12px 4px; font-size: 10px; font-weight: 700; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; }
+.nav-item {
+  margin: 1px 8px; padding: 9px 12px; cursor: pointer;
+  font-size: 13px; color: var(--text2); border-radius: 6px;
+  display: flex; align-items: center; gap: 10px; transition: all .1s;
+  font-weight: 500;
+}
+.nav-item:hover { background: var(--bg); color: var(--text); }
+.nav-item.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
+.nav-icon { width: 16px; height: 16px; flex-shrink: 0; }
+.nav-badge {
+  margin-left: auto; background: var(--red); color: #fff;
+  font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px;
+}
+.sidebar-footer {
+  margin-top: auto; padding: 16px; border-top: 1px solid var(--border);
+}
+.user-chip {
+  display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+  background: var(--bg); border-radius: 8px; margin-bottom: 10px;
+}
+.user-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--blue); color: #fff; font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.user-name { font-size: 12px; font-weight: 600; }
+.user-role { font-size: 10px; color: var(--red); font-weight: 700; }
+.logout-btn {
+  width: 100%; background: none; border: 1px solid var(--border2);
+  color: var(--text2); font-family: var(--sans); font-size: 12px;
+  padding: 8px; border-radius: 6px; cursor: pointer; transition: all .15s;
+}
+.logout-btn:hover { border-color: var(--red); color: var(--red); }
+
+/* ── MAIN ── */
+.main { margin-left: var(--sidebar-w); padding: 32px; min-height: 100vh; }
+.panel { display: none; }
+.panel.active { display: block; }
+.panel-header { margin-bottom: 28px; }
+.panel-eyebrow { font-size: 11px; font-weight: 700; color: var(--blue); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+.panel-title { font-size: 26px; font-weight: 800; }
+.panel-sub { font-size: 13px; color: var(--text2); margin-top: 4px; }
+
+/* ── STATS ROW ── */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px;
+}
+.stat-val { font-size: 32px; font-weight: 800; color: var(--blue); }
+.stat-lab { font-size: 11px; font-weight: 600; color: var(--text2); margin-top: 4px; text-transform: uppercase; letter-spacing: .5px; }
+.stat-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
+}
+.card-title { font-size: 13px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+.card-title small { font-weight: 400; color: var(--text3); font-size: 12px; margin-left: 6px; }
+
+/* ── INPUTS ── */
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 11px; font-weight: 700; color: var(--text2); margin-bottom: 5px; letter-spacing: .3px; }
+.input, .select, .textarea {
+  width: 100%; background: var(--bg); border: 1px solid var(--border2);
+  color: var(--text); font-family: var(--sans); font-size: 13px;
+  padding: 9px 12px; border-radius: 6px; outline: none; transition: border-color .15s;
+}
+.input:focus, .select:focus, .textarea:focus {
+  border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,102,204,0.08);
+}
+.select option { background: #fff; }
+.textarea { resize: vertical; min-height: 100px; font-family: var(--font); font-size: 12px; }
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--blue); color: #fff; border: none;
+  font-family: var(--sans); font-size: 13px; font-weight: 600;
+  padding: 9px 18px; border-radius: 6px; cursor: pointer; transition: background .15s;
+}
+.btn:hover { background: var(--blue-hover); }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-ghost { background: none; border: 1px solid var(--border2); color: var(--text2); }
+.btn-ghost:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+.btn-danger { background: var(--red); }
+.btn-danger:hover { background: #b91c1c; }
+.btn-success { background: var(--green); }
+.btn-success:hover { background: #047857; }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ── TABLE ── */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead { background: var(--bg); }
+th { padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 700; color: var(--text2); letter-spacing: .5px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg); }
+.badge {
+  display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px;
+  border-radius: 10px; text-transform: uppercase; letter-spacing: .5px;
+}
+.badge-blue { background: var(--blue-light); color: var(--blue); }
+.badge-green { background: var(--green-light); color: var(--green); }
+.badge-red { background: var(--red-light); color: var(--red); }
+.badge-yellow { background: var(--yellow-light); color: var(--yellow); }
+.badge-purple { background: var(--purple-light); color: var(--purple); }
+.badge-gray { background: var(--bg); color: var(--text2); border: 1px solid var(--border); }
+
+/* ── SEARCH BAR ── */
+.search-bar {
+  display: flex; gap: 8px; margin-bottom: 16px;
+}
+.search-bar .input { flex: 1; }
+
+/* ── VARIATION PILL EDITOR ── */
+.pill-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.pill-row {
+  display: grid; grid-template-columns: 1fr 100px 40px 40px;
+  gap: 8px; align-items: center;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px;
+}
+.pill-swatch {
+  width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border);
+  cursor: pointer;
+}
+.pill-preview {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+  margin-bottom: 12px;
+}
+.add-pill-btn {
+  background: none; border: 1px dashed var(--border2); color: var(--text2);
+  font-size: 12px; padding: 8px; border-radius: 6px; cursor: pointer;
+  width: 100%; font-family: var(--sans); transition: all .15s;
+}
+.add-pill-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+/* ── TOAST ── */
+#toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--text); color: #fff; font-size: 13px; font-weight: 500;
+  padding: 12px 18px; border-radius: 8px; z-index: 9999;
+  transform: translateY(80px); opacity: 0; transition: all .25s;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+}
+#toast.show { transform: translateY(0); opacity: 1; }
+#toast.success { background: var(--green); }
+#toast.error { background: var(--red); }
+
+/* ── GRID ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+/* ── EMPTY STATE ── */
+.empty {
+  text-align: center; padding: 48px; color: var(--text3);
+  font-size: 13px;
+}
+.empty-icon { font-size: 32px; margin-bottom: 12px; }
+
+/* ── LOADING ── */
+.loading { text-align: center; padding: 32px; color: var(--text3); font-size: 13px; }
+
+/* ── COLOR PICKER ROW ── */
+.color-presets { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.color-dot {
+  width: 22px; height: 22px; border-radius: 50%; cursor: pointer;
+  border: 2px solid transparent; transition: border-color .1s;
+}
+.color-dot:hover, .color-dot.selected { border-color: var(--text); }
+
+/* ── SECTION DIVIDER ── */
+.divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN GATE ── -->
+<div id="gate">
+  <div class="gate-box">
+    <div class="gate-logo">
+      <div class="gate-logo-mark">GRAIL ISO</div>
+      <div class="gate-logo-text">Admin Portal</div>
+    </div>
+    <span class="gate-badge">🔒 Owner Access Only</span>
+    <h2 class="gate-title">Sign In</h2>
+    <p class="gate-sub">This portal requires an owner-level account.</p>
+    <label class="gate-label">EMAIL</label>
+    <input class="gate-input" id="gateEmail" type="email" placeholder="admin@grailiso.com" autocomplete="email">
+    <label class="gate-label">PASSWORD</label>
+    <input class="gate-input" id="gatePass" type="password" placeholder="••••••••••" autocomplete="current-password">
+    <button class="gate-btn" onclick="gateLogin()">Sign In to Admin</button>
+    <div class="gate-err" id="gateErr"></div>
+  </div>
+</div>
+
+<!-- ── APP ── -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">GRAIL ISO</div>
+      <div>
+        <div class="logo-label">Dashboard</div>
+        <div class="logo-admin">ADMIN PORTAL</div>
+      </div>
+    </div>
+
+    <div class="nav-section">Overview</div>
+    <div class="nav-item active" onclick="nav('overview',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Overview
+    </div>
+
+    <div class="nav-section">Content</div>
+    <div class="nav-item" onclick="nav('sets',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+      Set Manager
+    </div>
+    <div class="nav-item" onclick="nav('cards',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      Card / Variation Editor
+    </div>
+    <div class="nav-item" onclick="nav('images',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      Image Manager
+    </div>
+
+    <div class="nav-section">Users</div>
+    <div class="nav-item" onclick="nav('users',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      User Manager
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="user-avatar" id="adminAvatar">A</div>
+        <div>
+          <div class="user-name" id="adminName">Admin</div>
+          <div class="user-role">OWNER</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="adminLogout()">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- ── OVERVIEW ── -->
+    <div class="panel active" id="panel-overview">
+      <div class="panel-header">
+        <div class="panel-eyebrow">GrailISO Admin</div>
+        <div class="panel-title">Overview</div>
+        <div class="panel-sub">Platform health and quick actions.</div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-val" id="stat-sets">—</div>
+          <div class="stat-lab">Active Sets</div>
+          <div class="stat-sub">in iv_sets</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-users">—</div>
+          <div class="stat-lab">Total Users</div>
+          <div class="stat-sub">registered profiles</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-vault">—</div>
+          <div class="stat-lab">Vault Entries</div>
+          <div class="stat-sub">across all users</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-isos">—</div>
+          <div class="stat-lab">Active ISOs</div>
+          <div class="stat-sub">open listings</div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Quick Actions</div>
+          <div class="btn-row">
+            <button class="btn" onclick="nav('cards',document.querySelector('[onclick*=cards]'))">+ Add Card Variation</button>
+            <button class="btn btn-ghost" onclick="nav('sets',document.querySelector('[onclick*=sets]'))">Manage Sets</button>
+            <button class="btn btn-ghost" onclick="nav('users',document.querySelector('[onclick*=users]'))">View Users</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">System Info</div>
+          <table>
+            <tr><td style="color:var(--text2);font-size:12px">Supabase Project</td><td style="font-family:var(--font);font-size:11px">jyfaegmnzkarlcximxjo</td></tr>
+            <tr><td style="color:var(--text2);font-size:12px">Build</td><td id="sysVersion" style="font-family:var(--font);font-size:11px">—</td></tr>
+            <tr><td style="color:var(--text2);font-size:12px">Admin Session</td><td id="adminSession" style="font-family:var(--font);font-size:11px;color:var(--green)">Active</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SET MANAGER ── -->
+    <div class="panel" id="panel-sets">
+      <div class="panel-header">
+        <div class="panel-eyebrow">Content</div>
+        <div class="panel-title">Set Manager</div>
+        <div class="panel-sub">Add and edit sets in the ISOVault catalog (iv_sets table).</div>
+      </div>
+
+      <div class="card" id="set-form-card">
+        <div class="card-title">Add New Set <small>— creates entry in iv_sets and the Supabase table</small></div>
+        <div class="grid-2">
+          <div class="field"><label>TABLE NAME (snake_case)</label><input class="input" id="sf-table" placeholder="2025_topps_chrome_baseball"></div>
+          <div class="field"><label>DISPLAY LABEL</label><input class="input" id="sf-label" placeholder="2025 Topps Chrome Baseball"></div>
+          <div class="field"><label>SPORT</label>
+            <select class="select" id="sf-sport">
+              <option value="baseball">Baseball</option>
+              <option value="basketball">Basketball</option>
+              <option value="football">Football</option>
+              <option value="hockey">Hockey</option>
+            </select>
+          </div>
+          <div class="field"><label>YEAR</label><input class="input" id="sf-year" type="number" placeholder="2025"></div>
+          <div class="field"><label>BRAND</label><input class="input" id="sf-brand" placeholder="Topps"></div>
+          <div class="field"><label>SET NAME</label><input class="input" id="sf-name" placeholder="Chrome"></div>
+          <div class="field"><label>COLUMN SCHEMA</label>
+            <select class="select" id="sf-schema">
+              <option value="standard">Standard (baseball/basketball/football)</option>
+              <option value="pokemon">Pokémon TCG</option>
+              <option value="legacy">Legacy</option>
+            </select>
+          </div>
+          <div class="field"><label>SORT ORDER</label><input class="input" id="sf-sort" type="number" placeholder="100"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-success" onclick="saveSet()">+ Add Set</button>
+        </div>
+        <div id="set-msg" style="margin-top:10px;font-size:12px;color:var(--green)"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">All Sets <small id="sets-count"></small></div>
+        <div class="loading" id="sets-loading">Loading sets…</div>
+        <div class="table-wrap" id="sets-table-wrap" style="display:none">
+          <table>
+            <thead><tr>
+              <th>Table</th><th>Label</th><th>Sport</th><th>Year</th><th>Brand</th><th>Schema</th><th>Sort</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="sets-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CARD / VARIATION EDITOR ── -->
+    <div class="panel" id="panel-cards">
+      <div class="panel-header">
+        <div class="panel-eyebrow">Content</div>
+        <div class="panel-title">Card / Variation Editor</div>
+        <div class="panel-sub">Search any card and edit its variation pills, colors, and print runs.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Find a Card</div>
+        <div class="grid-2">
+          <div class="field"><label>SET TABLE</label>
+            <select class="select" id="ce-set" onchange="ceLoadSet()">
+              <option value="">— Select a set —</option>
+            </select>
+          </div>
+          <div class="field"><label>SEARCH PLAYER OR CARD #</label>
+            <div style="display:flex;gap:8px">
+              <input class="input" id="ce-search" placeholder="Shohei Ohtani or 001" onkeydown="if(event.key==='Enter')ceSearch()">
+              <button class="btn" onclick="ceSearch()">Search</button>
+            </div>
+          </div>
+        </div>
+        <div id="ce-results"></div>
+      </div>
+
+      <div class="card" id="ce-editor-card" style="display:none">
+        <div class="card-title" id="ce-editor-title">Edit Variations</div>
+
+        <div class="grid-2" style="margin-bottom:16px">
+          <div class="field"><label>PLAYER</label><input class="input" id="ce-player" readonly style="opacity:.6"></div>
+          <div class="field"><label>CARD #</label><input class="input" id="ce-cardnum" readonly style="opacity:.6"></div>
+          <div class="field"><label>CATEGORY</label><input class="input" id="ce-category"></div>
+          <div class="field"><label>INSERT NAME (for inserts)</label><input class="input" id="ce-insert"></div>
+          <div class="field"><label>IS ROOKIE</label>
+            <select class="select" id="ce-rookie"><option value="false">No</option><option value="true">Yes — RC</option></select>
+          </div>
+        </div>
+
+        <hr class="divider">
+        <div class="card-title">Variation Pills <small>— click to edit each pill</small></div>
+
+        <div id="ce-pills-preview" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px"></div>
+        <div id="ce-pill-list" class="pill-list"></div>
+
+        <button class="add-pill-btn" onclick="ceAddPill()">+ Add Variation</button>
+
+        <hr class="divider">
+        <div class="btn-row" style="margin-top:8px">
+          <button class="btn btn-success" onclick="ceSave()">💾 Save Changes</button>
+          <button class="btn btn-ghost" onclick="ceCancel()">Cancel</button>
+        </div>
+        <div id="ce-msg" style="margin-top:10px;font-size:12px"></div>
+      </div>
+    </div>
+
+    <!-- ── IMAGE MANAGER ── -->
+    <div class="panel" id="panel-images">
+      <div class="panel-header">
+        <div class="panel-eyebrow">Content</div>
+        <div class="panel-title">Image Manager</div>
+        <div class="panel-sub">Find cards missing catalog images and track upload coverage.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Check a Set for Missing Images</div>
+        <div class="search-bar">
+          <select class="select" id="img-set" style="max-width:320px">
+            <option value="">— Select a set —</option>
+          </select>
+          <button class="btn" onclick="imgCheck()">Check Coverage</button>
+        </div>
+        <div id="img-results"></div>
+      </div>
+    </div>
+
+    <!-- ── USER MANAGER ── -->
+    <div class="panel" id="panel-users">
+      <div class="panel-header">
+        <div class="panel-eyebrow">Users</div>
+        <div class="panel-title">User Manager</div>
+        <div class="panel-sub">View all collector profiles. Promote or demote admin access.</div>
+      </div>
+
+      <div class="search-bar">
+        <input class="input" id="user-search" placeholder="Search by username or email…" oninput="userFilter()">
+        <button class="btn btn-ghost" onclick="loadUsers()">↻ Refresh</button>
+      </div>
+
+      <div class="card">
+        <div class="loading" id="users-loading">Loading users…</div>
+        <div class="table-wrap" id="users-table-wrap" style="display:none">
+          <table>
+            <thead><tr>
+              <th>User</th><th>Username</th><th>Email</th><th>Role</th><th>Admin</th><th>Credits</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="users-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<div id="toast"></div>
+
+<script>
+// ── CONFIG ──
+const SB_URL  = 'https://jyfaegmnzkarlcximxjo.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+const REST    = SB_URL + '/rest/v1';
+
+const _sb = supabase.createClient(SB_URL, SB_ANON);
+let _token = null;
+let _adminUser = null;
+let _allSets = [];
+let _allUsers = [];
+let _ceCard = null; // currently editing card row
+let _cePills = [];  // working copy of variations
+
+// ── HELPERS ──
+function toast(msg, type='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show ' + type;
+  setTimeout(() => el.className = '', 3000);
+}
+
+async function _get(table, query='') {
+  const headers = { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + (_token||SB_ANON) };
+  const r = await fetch(`${REST}/${table}?${query}`, { headers });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+async function _patch(table, query, body) {
+  const headers = {
+    'apikey': SB_ANON, 'Authorization': 'Bearer ' + (_token||SB_ANON),
+    'Content-Type': 'application/json', 'Prefer': 'return=representation'
+  };
+  const r = await fetch(`${REST}/${table}?${query}`, { method: 'PATCH', headers, body: JSON.stringify(body) });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+async function _post(table, body) {
+  const headers = {
+    'apikey': SB_ANON, 'Authorization': 'Bearer ' + (_token||SB_ANON),
+    'Content-Type': 'application/json', 'Prefer': 'return=representation'
+  };
+  const r = await fetch(`${REST}/${table}`, { method: 'POST', headers, body: JSON.stringify(body) });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+// ── GATE ──
+async function gateLogin() {
+  const email = document.getElementById('gateEmail').value.trim();
+  const pass  = document.getElementById('gatePass').value;
+  const errEl = document.getElementById('gateErr');
+  errEl.textContent = '';
+  if (!email || !pass) { errEl.textContent = 'Please enter email and password.'; return; }
+  try {
+    const { data, error } = await _sb.auth.signInWithPassword({ email, password: pass });
+    if (error) throw error;
+    // Check owner role
+    const profiles = await _get('profiles', `id=eq.${data.user.id}&select=username,role,is_admin&limit=1`);
+    const p = profiles && profiles[0];
+    if (!p || (p.role !== 'owner' && p.is_admin !== true)) {
+      await _sb.auth.signOut();
+      errEl.textContent = 'Access denied. Owner account required.';
+      return;
+    }
+    _token = data.session.access_token;
+    _adminUser = { ...data.user, ...p };
+    document.getElementById('adminName').textContent = p.username ? '@'+p.username : email.split('@')[0];
+    document.getElementById('adminAvatar').textContent = (p.username||email)[0].toUpperCase();
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadOverview();
+    populateSetDropdowns();
+    loadUsers();
+  } catch(e) {
+    errEl.textContent = e.message || 'Login failed.';
+  }
+}
+
+document.getElementById('gatePass').addEventListener('keydown', e => { if (e.key==='Enter') gateLogin(); });
+
+async function adminLogout() {
+  await _sb.auth.signOut();
+  location.reload();
+}
+
+// ── NAV ──
+function nav(id, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const panel = document.getElementById('panel-' + id);
+  if (panel) panel.classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+// ── OVERVIEW ──
+async function loadOverview() {
+  document.getElementById('sysVersion').textContent = new Date().toLocaleDateString();
+  try {
+    const [sets, users, vault, isos] = await Promise.all([
+      _get('iv_sets', 'select=id'),
+      _get('profiles', 'select=id'),
+      _get('vault', 'select=id&limit=1', ),
+      _get('isos', 'select=id&status=eq.active'),
+    ]);
+    document.getElementById('stat-sets').textContent  = sets?.length  || '0';
+    document.getElementById('stat-users').textContent = users?.length || '0';
+    document.getElementById('stat-vault').textContent = vault?.length >= 1000 ? '1000+' : (vault?.length || '0');
+    document.getElementById('stat-isos').textContent  = isos?.length  || '0';
+  } catch(e) { console.warn('overview stats:', e); }
+}
+
+// ── SET MANAGER ──
+async function loadSets() {
+  try {
+    const rows = await _get('iv_sets', 'select=*&order=sort_order.asc');
+    _allSets = rows || [];
+    document.getElementById('sets-count').textContent = `— ${_allSets.length} sets`;
+    const tbody = document.getElementById('sets-tbody');
+    tbody.innerHTML = _allSets.map(s => `
+      <tr>
+        <td><span style="font-family:var(--font);font-size:11px">${s.table_name}</span></td>
+        <td>${s.label||'—'}</td>
+        <td><span class="badge badge-blue">${s.sport||'—'}</span></td>
+        <td>${s.year||'—'}</td>
+        <td>${s.brand||'—'}</td>
+        <td><span class="badge badge-gray">${s.col_schema||'standard'}</span></td>
+        <td>${s.sort_order||'—'}</td>
+        <td><button class="btn btn-sm btn-ghost" onclick="editSet(${s.id})">Edit</button></td>
+      </tr>
+    `).join('');
+    document.getElementById('sets-loading').style.display = 'none';
+    document.getElementById('sets-table-wrap').style.display = 'block';
+  } catch(e) { toast('Failed to load sets: ' + e.message, 'error'); }
+}
+
+async function saveSet() {
+  const body = {
+    table_name:  document.getElementById('sf-table').value.trim(),
+    label:       document.getElementById('sf-label').value.trim(),
+    sport:       document.getElementById('sf-sport').value,
+    year:        parseInt(document.getElementById('sf-year').value) || null,
+    brand:       document.getElementById('sf-brand').value.trim(),
+    name:        document.getElementById('sf-name').value.trim(),
+    col_schema:  document.getElementById('sf-schema').value,
+    sort_order:  parseInt(document.getElementById('sf-sort').value) || 100,
+  };
+  if (!body.table_name || !body.label) { toast('Table name and label required.', 'error'); return; }
+  try {
+    await _post('iv_sets', body);
+    document.getElementById('set-msg').textContent = `✓ Set "${body.label}" added.`;
+    toast('Set added!', 'success');
+    loadSets();
+    populateSetDropdowns();
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+// ── CARD EDITOR ──
+async function populateSetDropdowns() {
+  if (_allSets.length === 0) {
+    try { _allSets = await _get('iv_sets', 'select=*&order=sort_order.asc') || []; } catch(e) {}
+  }
+  ['ce-set','img-set'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = '<option value="">— Select a set —</option>' +
+      _allSets.map(s => `<option value="${s.table_name}">${s.label||s.table_name}</option>`).join('');
+  });
+}
+
+function ceLoadSet() {
+  document.getElementById('ce-results').innerHTML = '';
+  document.getElementById('ce-editor-card').style.display = 'none';
+}
+
+async function ceSearch() {
+  const table = document.getElementById('ce-set').value;
+  const q     = document.getElementById('ce-search').value.trim();
+  if (!table) { toast('Select a set first.', 'error'); return; }
+  if (!q)     { toast('Enter a player name or card number.', 'error'); return; }
+  document.getElementById('ce-results').innerHTML = '<div class="loading">Searching…</div>';
+  document.getElementById('ce-editor-card').style.display = 'none';
+  try {
+    const byNum  = await _get(table, `card_number=ilike.*${encodeURIComponent(q)}*&select=player,card_number,category,insert_name,is_rookie,variations,var_images&limit=20`);
+    const byName = await _get(table, `player=ilike.*${encodeURIComponent(q)}*&select=player,card_number,category,insert_name,is_rookie,variations,var_images&limit=20`);
+    const seen = new Set();
+    const rows = [...(byNum||[]), ...(byName||[])].filter(r => {
+      const k = r.card_number; if (seen.has(k)) return false; seen.add(k); return true;
+    });
+    if (!rows.length) { document.getElementById('ce-results').innerHTML = '<div class="empty"><div class="empty-icon">🔍</div>No cards found.</div>'; return; }
+    document.getElementById('ce-results').innerHTML = `
+      <div class="table-wrap" style="margin-top:12px">
+        <table>
+          <thead><tr><th>#</th><th>Player</th><th>Category</th><th>Variations</th><th></th></tr></thead>
+          <tbody>${rows.map(r => `
+            <tr>
+              <td style="font-family:var(--font);font-size:11px">${r.card_number}</td>
+              <td>${r.player}</td>
+              <td><span class="badge badge-gray">${r.category||'—'}</span></td>
+              <td style="font-size:11px;color:var(--text2)">${(r.variations||[]).length} pills</td>
+              <td><button class="btn btn-sm" onclick='ceEdit(${JSON.stringify(r).replace(/'/g,"&#39;")})'>Edit</button></td>
+            </tr>
+          `).join('')}</tbody>
+        </table>
+      </div>`;
+  } catch(e) { document.getElementById('ce-results').innerHTML = '<div class="empty">Error: '+e.message+'</div>'; }
+}
+
+const PILL_COLORS = [
+  {label:'Blue',    color:'#00AAFF', glow:'rgba(0,170,255,0.4)'},
+  {label:'Green',   color:'#00C851', glow:'rgba(0,200,81,0.45)'},
+  {label:'Yellow',  color:'#FFD700', glow:'rgba(255,215,0,0.45)'},
+  {label:'Gold',    color:'#FFC83C', glow:'rgba(255,200,60,0.5)'},
+  {label:'Red',     color:'#FF4444', glow:'rgba(255,68,68,0.5)'},
+  {label:'Orange',  color:'#FF8C00', glow:'rgba(255,140,0,0.5)'},
+  {label:'Purple',  color:'#9B59B6', glow:'rgba(155,89,182,0.45)'},
+  {label:'Pink',    color:'#FF69B4', glow:'rgba(255,105,180,0.4)'},
+  {label:'Gray',    color:'#AAAAAA', glow:'rgba(170,170,170,0.4)'},
+  {label:'Emerald', color:'#00E887', glow:'rgba(0,232,135,0.45)'},
+  {label:'Sky',     color:'#C8E6FF', glow:'rgba(200,230,255,0.5)'},
+  {label:'Black',   color:'#555555', glow:'rgba(100,100,100,0.4)'},
+];
+
+function ceEdit(row) {
+  _ceCard = row;
+  _cePills = JSON.parse(JSON.stringify(row.variations || []));
+  document.getElementById('ce-player').value   = row.player;
+  document.getElementById('ce-cardnum').value  = row.card_number;
+  document.getElementById('ce-category').value = row.category || '';
+  document.getElementById('ce-insert').value   = row.insert_name || '';
+  document.getElementById('ce-rookie').value   = row.is_rookie ? 'true' : 'false';
+  document.getElementById('ce-editor-title').textContent = `Edit — ${row.player} #${row.card_number}`;
+  document.getElementById('ce-editor-card').style.display = 'block';
+  document.getElementById('ce-msg').textContent = '';
+  renderPills();
+  document.getElementById('ce-editor-card').scrollIntoView({ behavior: 'smooth' });
+}
+
+function renderPills() {
+  // Preview row
+  const preview = document.getElementById('ce-pills-preview');
+  preview.innerHTML = _cePills.map((p,i) => `
+    <span class="pill-preview" style="background:${p.color}22;border:1px solid ${p.color};color:${p.color}">
+      ${p.label}${p.run?` /${p.run}`:''}
+    </span>
+  `).join('');
+
+  // Edit list
+  const list = document.getElementById('ce-pill-list');
+  list.innerHTML = _cePills.map((p,i) => `
+    <div class="pill-row" id="pill-row-${i}">
+      <input class="input" value="${p.label||''}" placeholder="Label (e.g. Blue /50)"
+        oninput="_cePills[${i}].label=this.value;renderPillPreview()">
+      <input class="input" type="number" value="${p.run||''}" placeholder="Run (/99)"
+        oninput="_cePills[${i}].run=this.value?parseInt(this.value):null;renderPillPreview()">
+      <input type="color" class="pill-swatch" value="${p.color||'#00AAFF'}"
+        oninput="setPillColor(${i},this.value)">
+      <button class="btn btn-sm btn-danger" onclick="removePill(${i})" title="Remove">✕</button>
+    </div>
+  `).join('');
+}
+
+function renderPillPreview() {
+  const preview = document.getElementById('ce-pills-preview');
+  preview.innerHTML = _cePills.map(p => `
+    <span class="pill-preview" style="background:${(p.color||'#00AAFF')}22;border:1px solid ${p.color||'#00AAFF'};color:${p.color||'#00AAFF'}">
+      ${p.label||'New'}${p.run?` /${p.run}`:''}
+    </span>
+  `).join('');
+}
+
+function setPillColor(i, hex) {
+  _cePills[i].color = hex;
+  // auto-set glow
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  _cePills[i].glow = `rgba(${r},${g},${b},0.45)`;
+  renderPillPreview();
+}
+
+function removePill(i) {
+  _cePills.splice(i, 1);
+  renderPills();
+}
+
+function ceAddPill() {
+  _cePills.push({ label: 'New Variation', run: null, color: '#00AAFF', glow: 'rgba(0,170,255,0.4)', isBase: false });
+  renderPills();
+  // scroll to new pill
+  setTimeout(() => {
+    const rows = document.querySelectorAll('.pill-row');
+    if (rows.length) rows[rows.length-1].scrollIntoView({ behavior:'smooth' });
+  }, 50);
+}
+
+async function ceSave() {
+  const table = document.getElementById('ce-set').value;
+  if (!table || !_ceCard) return;
+  const msg = document.getElementById('ce-msg');
+  msg.style.color = 'var(--text2)';
+  msg.textContent = 'Saving…';
+  try {
+    const body = {
+      category:    document.getElementById('ce-category').value,
+      insert_name: document.getElementById('ce-insert').value || null,
+      is_rookie:   document.getElementById('ce-rookie').value === 'true',
+      variations:  _cePills,
+    };
+    await _patch(table, `card_number=eq.${encodeURIComponent(_ceCard.card_number)}`, body);
+    msg.style.color = 'var(--green)';
+    msg.textContent = '✓ Saved successfully.';
+    toast('Card updated!', 'success');
+    _ceCard.variations = _cePills;
+  } catch(e) {
+    msg.style.color = 'var(--red)';
+    msg.textContent = 'Error: ' + e.message;
+    toast('Save failed.', 'error');
+  }
+}
+
+function ceCancel() {
+  document.getElementById('ce-editor-card').style.display = 'none';
+  _ceCard = null; _cePills = [];
+}
+
+// ── IMAGE MANAGER ──
+async function imgCheck() {
+  const table = document.getElementById('img-set').value;
+  if (!table) { toast('Select a set first.', 'error'); return; }
+  document.getElementById('img-results').innerHTML = '<div class="loading">Checking…</div>';
+  try {
+    const rows = await _get(table, 'select=player,card_number,var_images&limit=1000');
+    const total    = rows.length;
+    const withImgs = rows.filter(r => r.var_images && Object.keys(r.var_images).length > 0).length;
+    const missing  = rows.filter(r => !r.var_images || Object.keys(r.var_images).length === 0);
+    document.getElementById('img-results').innerHTML = `
+      <div class="grid-3" style="margin:16px 0">
+        <div class="stat-card"><div class="stat-val">${total}</div><div class="stat-lab">Total Cards</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--green)">${withImgs}</div><div class="stat-lab">Have Images</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--red)">${missing.length}</div><div class="stat-lab">Missing Images</div></div>
+      </div>
+      ${missing.length ? `
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Player</th><th>Status</th></tr></thead>
+            <tbody>${missing.map(r=>`
+              <tr>
+                <td style="font-family:var(--font);font-size:11px">${r.card_number}</td>
+                <td>${r.player}</td>
+                <td><span class="badge badge-red">No Image</span></td>
+              </tr>`).join('')}</tbody>
+          </table>
+        </div>` : '<div class="empty"><div class="empty-icon">✅</div>All cards have images!</div>'}
+    `;
+  } catch(e) { document.getElementById('img-results').innerHTML = '<div class="empty">Error: '+e.message+'</div>'; }
+}
+
+// ── USER MANAGER ──
+async function loadUsers() {
+  document.getElementById('users-loading').style.display = 'block';
+  document.getElementById('users-table-wrap').style.display = 'none';
+  try {
+    const rows = await _get('profiles', 'select=id,username,full_name,email,role,is_admin,credits,tier&order=created_at.desc&limit=200');
+    _allUsers = rows || [];
+    renderUsers(_allUsers);
+  } catch(e) { toast('Failed to load users: ' + e.message, 'error'); }
+}
+
+function renderUsers(rows) {
+  document.getElementById('users-loading').style.display = 'none';
+  document.getElementById('users-table-wrap').style.display = 'block';
+  const tbody = document.getElementById('users-tbody');
+  tbody.innerHTML = rows.map(u => `
+    <tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">
+            ${(u.username||u.full_name||'?')[0].toUpperCase()}
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:600">${u.full_name||u.username||'—'}</div>
+            <div style="font-size:11px;color:var(--text3)">${u.email||'—'}</div>
+          </div>
+        </div>
+      </td>
+      <td style="font-family:var(--font);font-size:12px">${u.username?'@'+u.username:'—'}</td>
+      <td style="font-size:12px;color:var(--text2)">${u.email||'—'}</td>
+      <td><span class="badge ${u.role==='owner'?'badge-red':u.role==='admin'?'badge-purple':'badge-gray'}">${u.role||'user'}</span></td>
+      <td>${u.is_admin?'<span class="badge badge-green">Admin</span>':'<span class="badge badge-gray">—</span>'}</td>
+      <td>${u.credits||0}</td>
+      <td>
+        <div style="display:flex;gap:4px">
+          ${u.is_admin
+            ? `<button class="btn btn-sm btn-ghost" onclick="setAdmin('${u.id}',false)">Revoke Admin</button>`
+            : `<button class="btn btn-sm btn-success" onclick="setAdmin('${u.id}',true)">Make Admin</button>`}
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function userFilter() {
+  const q = document.getElementById('user-search').value.toLowerCase();
+  const filtered = _allUsers.filter(u =>
+    (u.username||'').toLowerCase().includes(q) ||
+    (u.email||'').toLowerCase().includes(q) ||
+    (u.full_name||'').toLowerCase().includes(q)
+  );
+  renderUsers(filtered);
+}
+
+async function setAdmin(userId, isAdmin) {
+  try {
+    await _patch('profiles', `id=eq.${userId}`, { is_admin: isAdmin });
+    toast(isAdmin ? '✓ Admin granted' : '✓ Admin revoked', 'success');
+    loadUsers();
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', () => {
+  // Wire up panel nav to also load data
+  document.querySelectorAll('.nav-item').forEach(el => {
+    const orig = el.getAttribute('onclick');
+    if (orig && orig.includes("'sets'"))   el.addEventListener('click', () => { loadSets(); });
+    if (orig && orig.includes("'users'"))  el.addEventListener('click', () => { loadUsers(); });
+    if (orig && orig.includes("'images'")) el.addEventListener('click', () => { populateSetDropdowns(); });
+    if (orig && orig.includes("'cards'"))  el.addEventListener('click', () => { populateSetDropdowns(); });
+  });
+});
+</script>
+</body>
+</html>

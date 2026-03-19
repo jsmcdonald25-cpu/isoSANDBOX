@@ -5920,43 +5920,35 @@ const IV_SPORTS = [
   { id:'multisport',label:'Multi-Sport',  emoji:'&#127894;&#65039;', active:false },
 ];
 
-// All Supabase-backed set tables
-const IV_SETS = [
-  { table:'2026_series1_baseball',                    sport:'baseball',    year:2026, brand:'Topps',  name:'Series 1',             label:'2026 Topps Series 1'               },
-  { table:'2026_heritage_baseball',                   sport:'baseball',    year:2026, brand:'Topps',  name:'Heritage',             label:'2026 Topps Heritage'               },
-  { table:'2025_bowman_baseball',                     sport:'baseball',    year:2025, brand:'Bowman', name:'Baseball',             label:'2025 Bowman Baseball'              },
-  { table:'2025_bowman_chrome_baseball',              sport:'baseball',    year:2025, brand:'Bowman', name:'Chrome',               label:'2025 Bowman Chrome Baseball'       },
-  { table:'2025_bowman_baseball_sapphire',            sport:'baseball',    year:2025, brand:'Bowman', name:'Sapphire',             label:'2025 Bowman Sapphire Baseball'     },
-  { table:'2025_bowman_chrome_baseball_sapphire',     sport:'baseball',    year:2025, brand:'Bowman', name:'Chrome Sapphire',      label:'2025 Bowman Chrome Sapphire'       },
-  { table:'2025_bowman_chrome_mega_box_baseball',     sport:'baseball',    year:2025, brand:'Bowman', name:'Chrome Mega Box',      label:'2025 Bowman Chrome Mega Box'       },
-  { table:'2025_bowman_draft_baseball_sapphire',      sport:'baseball',    year:2025, brand:'Bowman', name:'Draft Sapphire',       label:'2025 Bowman Draft Sapphire'        },
-  { table:'2025_bowman_draft_mega_box_baseball',      sport:'baseball',    year:2025, brand:'Bowman', name:'Draft Mega Box',       label:'2025 Bowman Draft Mega Box'        },
-  { table:'2025_bowman_mega_box_baseball',            sport:'baseball',    year:2025, brand:'Bowman', name:'Mega Box',             label:'2025 Bowman Mega Box Baseball'     },
-  { table:'2025_bowmans_best_baseball',               sport:'baseball',    year:2025, brand:'Bowman', name:"Bowman's Best",        label:"2025 Bowman's Best Baseball"       },
-  { table:'2025_topps_bw',                            sport:'baseball',    year:2025, brand:'Topps',  name:'Black & White',        label:'2025 Topps Black & White Baseball' },
-  { table:'2025_topps_museum_collection_baseball',    sport:'baseball',    year:2025, brand:'Topps',  name:'Museum Collection',    label:'2025 Topps Museum Collection'      },
-  { table:'2024_25_bowman_university_chrome_basketball', sport:'basketball', year:2025, brand:'Bowman', name:'University Chrome',  label:'2024-25 Bowman University Chrome'  },
-  { table:'2025_-_2026_topps_basketball',                sport:'basketball', year:2026, brand:'Topps',  name:'Topps Basketball',   label:'2025-26 Topps Basketball',  noVarImages:true },
-  { table:'2025_26_topps_chrome_cactus_jack_basketball', sport:'basketball', year:2025, brand:'Topps',  name:'Chrome Cactus Jack', label:'2025-26 Topps Chrome Cactus Jack'  },
-  { table:'card-images', sport:'baseball', year:2025, brand:'Topps', name:'Stadium Club', label:'2025 Topps Stadium Club Baseball', noVarImages:true },
-  // ── Pokémon TCG — all sets share pokemon_cards table, filtered by series ──
-  // seriesFilter values match exactly what's in pokemon_cards.series column
-  { table:'pokemon_cards__Base',     seriesFilter:'series=eq.Base',                           sport:'pokemon', year:1999, brand:'Pokémon TCG', name:'Base Era',         label:'Pokémon — Base (1999–2000)',            pokemonCols:true },
-  { table:'pokemon_cards__Gym',      seriesFilter:'series=eq.Gym',                            sport:'pokemon', year:2000, brand:'Pokémon TCG', name:'Gym',              label:'Pokémon — Gym (2000)',                   pokemonCols:true },
-  { table:'pokemon_cards__Neo',      seriesFilter:'series=eq.Neo',                            sport:'pokemon', year:2000, brand:'Pokémon TCG', name:'Neo',              label:'Pokémon — Neo (2000–2002)',             pokemonCols:true },
-  { table:'pokemon_cards__ECard',    seriesFilter:'series=eq.E-Card',                         sport:'pokemon', year:2002, brand:'Pokémon TCG', name:'E-Card',           label:'Pokémon — E-Card (2002–2003)',          pokemonCols:true },
-  { table:'pokemon_cards__EX',       seriesFilter:'series=eq.EX',                             sport:'pokemon', year:2003, brand:'Pokémon TCG', name:'EX Series',        label:'Pokémon — EX Series (2003–2007)',       pokemonCols:true },
-  { table:'pokemon_cards__DP',       seriesFilter:'series=eq.Diamond%20%26%20Pearl',          sport:'pokemon', year:2007, brand:'Pokémon TCG', name:'Diamond & Pearl',  label:'Pokémon — Diamond & Pearl (2007–2009)', pokemonCols:true },
-  { table:'pokemon_cards__Platinum', seriesFilter:'series=eq.Platinum',                       sport:'pokemon', year:2009, brand:'Pokémon TCG', name:'Platinum',         label:'Pokémon — Platinum (2009)',             pokemonCols:true },
-  { table:'pokemon_cards__HGSS',     seriesFilter:'series=eq.HeartGold%20%26%20SoulSilver',   sport:'pokemon', year:2010, brand:'Pokémon TCG', name:'HGSS',             label:'Pokémon — HeartGold & SoulSilver (2010)', pokemonCols:true },
-  { table:'pokemon_cards__BW',       seriesFilter:'series=eq.Black%20%26%20White',             sport:'pokemon', year:2011, brand:'Pokémon TCG', name:'Black & White',    label:'Pokémon — Black & White (2011–2013)',   pokemonCols:true },
-  { table:'pokemon_cards__XY',       seriesFilter:'series=eq.XY',                             sport:'pokemon', year:2013, brand:'Pokémon TCG', name:'XY',               label:'Pokémon — XY (2013–2016)',              pokemonCols:true },
-  { table:'pokemon_cards__ME',       seriesFilter:'series=eq.Mega%20Evolution',               sport:'pokemon', year:2014, brand:'Pokémon TCG', name:'Mega Evolution',   label:'Pokémon — Mega Evolution',              pokemonCols:true },
-  { table:'pokemon_cards__SM',       seriesFilter:'series=eq.Sun%20%26%20Moon',               sport:'pokemon', year:2016, brand:'Pokémon TCG', name:'Sun & Moon',       label:'Pokémon — Sun & Moon (2016–2019)',      pokemonCols:true },
-  { table:'pokemon_cards__SWSH',     seriesFilter:'series=eq.Sword%20%26%20Shield',           sport:'pokemon', year:2019, brand:'Pokémon TCG', name:'Sword & Shield',   label:'Pokémon — Sword & Shield (2019–2023)',  pokemonCols:true },
-  { table:'pokemon_cards__SV',       seriesFilter:'series=eq.Scarlet%20%26%20Violet',         sport:'pokemon', year:2023, brand:'Pokémon TCG', name:'Scarlet & Violet', label:'Pokémon — Scarlet & Violet (2023+)',    pokemonCols:true },
-  { table:'pokemon_cards__Other',    seriesFilter:'series=in.(Other,NP,POP)',                  sport:'pokemon', year:2000, brand:'Pokémon TCG', name:'Other & Promos',   label:'Pokémon — Other & Promos',              pokemonCols:true },
-];
+// All Supabase-backed set tables — loaded dynamically from iv_sets table
+let IV_SETS = [];
+
+// Resolves once IV_SETS is populated from Supabase
+let _ivSetsReady = (async function _ivLoadSets(){
+  try {
+    const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+    const url = 'https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/iv_sets?select=*&order=sort_order.asc';
+    const resp = await fetch(url, { headers:{ 'apikey':SKEY, 'Authorization':'Bearer '+SKEY } });
+    if(!resp.ok) throw new Error('iv_sets HTTP '+resp.status);
+    const rows = await resp.json();
+    if(!rows || !rows.length) throw new Error('iv_sets empty');
+    IV_SETS = rows.map(r => ({
+      table:        r.table_name,
+      sport:        r.sport,
+      year:         r.year,
+      brand:        r.brand,
+      name:         r.name,
+      label:        r.label,
+      pokemonCols:  r.col_schema === 'pokemon',
+      legacyCols:   r.col_schema === 'legacy',
+      noVarImages:  r.no_var_images || r.col_schema === 'legacy' || r.col_schema === 'pokemon',
+      seriesFilter: r.series_filter || null,
+    }));
+  } catch(e) {
+    console.warn('_ivLoadSets failed:', e);
+    IV_SETS = [];
+  }
+})();
 
 // State
 let _ivSport    = null;   // selected sport id
@@ -5972,6 +5964,7 @@ let _ivInited   = false;
 
 // &#9472;&#9472; Entry Point &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 async function ivInit(){
+  await _ivSetsReady;
   if(!_ivInited){
     _ivInited = true;
     _ivPrefetchCounts();
@@ -6309,9 +6302,11 @@ async function ivSelectSet(table){
   // Pokémon columns differ from baseball columns
   const _selectCols = setDef.pokemonCols
     ? 'card_name,card_number,set_name,series,rarity,card_type,national_dex_number,image_small,image_hires'
-    : setDef.noVarImages
-      ? 'player,card_number,set_name,year,sport,team,category,insert_name,is_rookie'
-      : 'player,card_number,set_name,year,sport,team,category,insert_name,is_rookie,var_images';
+    : setDef.legacyCols
+      ? '*'
+      : setDef.noVarImages
+        ? 'player,card_number,set_name,year,sport,team,category,insert_name,is_rookie'
+        : 'player,card_number,set_name,year,sport,team,category,insert_name,is_rookie,var_images';
 
   let all = [], from = 0, PAGE = 1000, err = null;
   while(true){
@@ -6345,6 +6340,23 @@ async function ivSelectSet(table){
       is_rookie:   false,
       year:        setDef.year,
       var_images:  r.image_small ? { base:{ front:r.image_small, back:r.image_hires||null } } : {}
+    }));
+  }
+
+  // Remap legacy columns (e.g. 1987 Topps: "Player Name", "Card #", "Team", "Type")
+  if(setDef.legacyCols){
+    all = all.map(r=>({
+      ...r,
+      player:      r['Player Name'] || r.player || '',
+      card_number: String(r['Card #'] || r.card_number || ''),
+      team:        r['Team'] || r.team || '',
+      category:    r['Type'] || r.category || 'Base',
+      set_name:    setDef.label,
+      year:        setDef.year,
+      sport:       setDef.sport,
+      insert_name: null,
+      is_rookie:   (r['Type']||r.category||'').toLowerCase().includes('rookie'),
+      var_images:  {}
     }));
   }
 

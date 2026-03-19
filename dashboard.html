@@ -1427,8 +1427,11 @@ async function initUserProfile(user){
     const el = document.getElementById(id);
     if(el) el.style.display = window._isAdmin ? 'flex' : 'none';
   });
-  // My Vault is the landing page
-  N('myvault', document.getElementById('nav-myvault'));
+  // My Vault is the landing page — only on first load, not on token refresh
+  if(!window._profileLoaded){
+    window._profileLoaded = true;
+    N('myvault', document.getElementById('nav-myvault'));
+  }
   // Preload ISO count for the chip — silent, no nav side effects
   (async()=>{ try{ const r=await _rGet('isos','select=id,status&user_id=eq.'+user.id+'&status=in.(active,matched)&limit=100'); const n=(r||[]).length; const el=document.getElementById('mv-active-isos'); if(el) el.textContent=n||'0'; const b=document.getElementById('navBadge-myisos'); if(b){b.textContent=n||'';b.style.display=n?'':'none';} }catch(e){} })();
 }
@@ -4718,7 +4721,7 @@ function openVaultCard(idx){
     hasCatalogPic:!!(row.var_images&&Object.keys(row.var_images).length),
     _setTable:null,_cardNumber:(row.card_number||'').replace(/^#/,''),
     _varImages:row.var_images||{},
-    variations:(row.variations&&row.variations.length)?row.variations.map(v=>({...v,lastSale:'—',isos:0,pop:null,watching:null})):[{label:row.parallel||row.category||'Base',color:'#00AAFF',glow:'rgba(0,170,255,0.4)',run:null,isBase:true,lastSale:'—',isos:0,pop:null,watching:null}]
+    variations:[{label:row.parallel||row.category||'Base',color:'#00AAFF',glow:'rgba(0,170,255,0.4)',run:null,isBase:true,lastSale:'—',isos:0,pop:null,watching:null}]
   };
   window._cdCard=card;
   document.getElementById('cd-bc-sport').textContent='Baseball';
@@ -6306,7 +6309,7 @@ async function ivSelectSet(table){
       ? '*'
       : setDef.noVarImages
         ? 'player,card_number,set_name,year,sport,team,category,insert_name,is_rookie'
-        : 'player,card_number,set_name,year,sport,team,category,insert_name,is_rookie,var_images,variations';
+        : 'player,card_number,set_name,year,sport,team,category,insert_name,is_rookie,var_images';
 
   let all = [], from = 0, PAGE = 1000, err = null;
   while(true){
@@ -6527,9 +6530,11 @@ function ivOpenCard(row){
     _team:       row.team,
     _category:   row.category,
     _varImages:  row.var_images || {},
-    variations: (row.variations && row.variations.length)
-      ? row.variations.map(v=>({...v, lastSale:'—', isos:0, pop:null, watching:null}))
-      : [{label: row.insert_name || row.category || 'Base', color:'#00AAFF', glow:'rgba(0,170,255,0.4)', run:null, isBase:true, lastSale:'—', isos:0, pop:null, watching:null}]
+    variations: [{
+      label: row.insert_name || row.category || 'Base',
+      color:'#00AAFF', glow:'rgba(0,170,255,0.4)',
+      run:null, isBase:true, lastSale:'—', isos:0, pop:null, watching:null
+    }]
   };
 
   window._cdDbCardNum = row.card_number || null;

@@ -1978,6 +1978,10 @@ async function logOut(){
       <span class="iv-crumb iv-crumb-home" onclick="ivGoHome()">ISOVault</span>
       <span class="iv-sep">&#8250;</span>
       <span class="iv-crumb" id="ivCrumbSport" style="display:none" onclick="ivGoSport()"></span>
+      <span class="iv-sep iv-sep-brand" style="display:none">&#8250;</span>
+      <span class="iv-crumb" id="ivCrumbBrand" style="display:none" onclick="ivGoBrand()"></span>
+      <span class="iv-sep iv-sep-year" style="display:none">&#8250;</span>
+      <span class="iv-crumb" id="ivCrumbYear" style="display:none" onclick="ivGoYear()"></span>
       <span class="iv-sep iv-sep2" style="display:none">&#8250;</span>
       <span class="iv-crumb iv-crumb-active" id="ivCrumbSet" style="display:none"></span>
     </div>
@@ -6078,15 +6082,59 @@ function _ivShowState(state){
 }
 
 function _ivBreadcrumb(showSport, showSet){
-  const sport = document.getElementById('ivCrumbSport');
-  const sep2  = document.querySelector('.iv-sep2');
-  const setEl = document.getElementById('ivCrumbSet');
-  if(sport){ sport.style.display = showSport ? '' : 'none'; }
-  if(sep2){  sep2.style.display  = showSet   ? '' : 'none'; }
-  if(setEl){ setEl.style.display = showSet   ? '' : 'none'; }
+  const sport    = document.getElementById('ivCrumbSport');
+  const sepBrand = document.querySelector('.iv-sep-brand');
+  const brand    = document.getElementById('ivCrumbBrand');
+  const sepYear  = document.querySelector('.iv-sep-year');
+  const yearEl   = document.getElementById('ivCrumbYear');
+  const sep2     = document.querySelector('.iv-sep2');
+  const setEl    = document.getElementById('ivCrumbSet');
+
+  if(sport)    sport.style.display    = showSport ? '' : 'none';
+  if(sepBrand) sepBrand.style.display = showSet   ? '' : 'none';
+  if(brand)    brand.style.display    = showSet   ? '' : 'none';
+  if(sepYear)  sepYear.style.display  = showSet   ? '' : 'none';
+  if(yearEl)   yearEl.style.display   = showSet   ? '' : 'none';
+  if(sep2)     sep2.style.display     = showSet   ? '' : 'none';
+  if(setEl)    setEl.style.display    = showSet   ? '' : 'none';
+
   const sportDef = IV_SPORTS.find(s=>s.id===_ivSport);
   if(sport && sportDef) sport.innerHTML = sportDef.emoji+' '+sportDef.label;
-  if(setEl && _ivSet)   setEl.textContent = _ivSet.label;
+  if(brand && _ivSet)   brand.textContent = _ivSet.brand;
+  if(yearEl && _ivSet)  yearEl.textContent = _ivSet.year;
+  if(setEl && _ivSet)   setEl.textContent  = _ivSet.label;
+}
+
+function ivGoBrand(){
+  if(!_ivSport) return;
+  const b = _ivSet ? _ivSet.brand : 'all';
+  _ivSet = null; _ivData = []; _ivFiltered = [];
+  _ivBrandFilter = b;
+  _ivYearFilter  = 'all';
+  _ivShowState('sets');
+  _ivRenderSetBrowser();
+  // Activate the brand pill
+  document.querySelectorAll('#ivBrandPills .iv-pill').forEach(p=>{
+    p.classList.toggle('active', p.textContent === b);
+  });
+  _ivApplySetFilters();
+  _ivBreadcrumb(true, false);
+}
+
+function ivGoYear(){
+  if(!_ivSport) return;
+  const y = _ivSet ? _ivSet.year : 'all';
+  _ivSet = null; _ivData = []; _ivFiltered = [];
+  _ivYearFilter  = y;
+  _ivBrandFilter = 'all';
+  _ivShowState('sets');
+  _ivRenderSetBrowser();
+  // Activate the year pill
+  document.querySelectorAll('#ivYearPills .iv-pill').forEach(p=>{
+    p.classList.toggle('active', p.textContent === String(y));
+  });
+  _ivApplySetFilters();
+  _ivBreadcrumb(true, false);
 }
 
 // &#9472;&#9472; Sport Tiles &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;

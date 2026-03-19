@@ -837,6 +837,20 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv3-empty-card{width:110px;height:154px;margin:0 auto 22px;position:relative;transform-style:preserve-3d;animation:vaultIdleSpin 5s ease-in-out infinite}
 .mv3-empty-face{position:absolute;inset:0;border-radius:9px;background:#071828;border:1px solid rgba(0,170,255,0.35);box-shadow:0 12px 40px rgba(0,0,0,0.7),0 0 22px rgba(0,170,255,0.18);overflow:hidden}
 .mv3-empty-shimmer{position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(0,170,255,0.1) 50%,transparent 60%);animation:s3shim 3s ease-in-out infinite;z-index:4}
+/* MV Scores module */
+.mv-scores-row{display:flex;align-items:center;gap:0;padding:7px 14px;border-bottom:1px solid rgba(0,170,255,0.05);transition:background .12s}
+.mv-scores-row:last-child{border-bottom:none}
+.mv-scores-row:hover{background:rgba(0,170,255,0.04)}
+.mv-sc-sport{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(0,170,255,0.5);width:34px;flex-shrink:0}
+.mv-sc-teams{font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:700;color:var(--white);flex:1;letter-spacing:.3px}
+.mv-sc-score{font-family:Bebas Neue,sans-serif;font-size:17px;letter-spacing:1px;color:var(--blue);flex-shrink:0;min-width:52px;text-align:center}
+.mv-sc-status{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:3px;flex-shrink:0;min-width:44px;text-align:center}
+.mv-sc-status.live{color:var(--green);background:rgba(0,232,135,0.1)}
+.mv-sc-status.final{color:rgba(122,149,174,0.5);background:rgba(122,149,174,0.06)}
+.mv-sc-status.sched{color:rgba(0,170,255,0.5);background:rgba(0,170,255,0.06)}
+#mv-scores-list::-webkit-scrollbar{width:3px}
+#mv-scores-list::-webkit-scrollbar-thumb{background:rgba(0,170,255,0.18);border-radius:2px}
+.mv-act2-empty{font-family:Barlow Condensed,sans-serif;font-size:12px;color:rgba(122,149,174,0.35);letter-spacing:.5px;text-align:center;padding:30px 0}
 /* ── From merge: Card Detail + MVC + Vault fit-to-page ── */
 .content.carddetail-active{overflow:hidden;display:flex;flex-direction:column}
 .content.carddetail-active #panel-carddetail{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
@@ -1749,8 +1763,8 @@ async function logOut(){
 
   <div class="panel active" id="panel-myvault">
 
-    <!-- PAGE HEADER -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+    <!-- MV HEADER -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
       <div>
         <div style="font-family:Bebas Neue,sans-serif;font-size:30px;letter-spacing:2px;color:var(--white);line-height:1">MY VAULT</div>
         <div id="mv3-header-sub" style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);letter-spacing:.5px;margin-top:2px">Your personal card library</div>
@@ -1761,50 +1775,47 @@ async function logOut(){
       </div>
     </div>
 
-    <!-- EMPTY STATE -->
-    <div id="myVaultEmpty" class="mv3-empty">
-      <div class="mv3-empty-card">
-        <div class="mv3-empty-face">
-          <img id="vaultEmptyImg" src="" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:8px;display:block;z-index:1">
-          <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.06) 0%,transparent 55%);z-index:2;border-radius:8px;pointer-events:none"></div>
-          <div class="mv3-empty-shimmer"></div>
-        </div>
-      </div>
-      <div style="font-family:Bebas Neue,sans-serif;font-size:26px;letter-spacing:2px;color:var(--white);margin-bottom:8px">YOUR VAULT IS EMPTY</div>
-      <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:22px;line-height:1.7">Add cards from ISOVault to start<br>tracking your collection's value.</div>
-      <button class="btn btn-primary" onclick="N('library',document.querySelector('[onclick*=library]'))" style="padding:10px 28px;font-size:13px;letter-spacing:1.5px">Browse ISOVault &rarr;</button>
-    </div>
+    <!-- MODULAR DASHBOARD — always visible when logged in -->
+    <div id="mv-dash" style="display:none;grid-template-columns:repeat(12,1fr);gap:12px;margin-bottom:16px">
 
-    <!-- MODULAR DASHBOARD -->
-    <div id="mv-dash" style="display:none;grid-template-columns:repeat(12,1fr);gap:12px;margin-bottom:20px">
-
-      <!-- PORTFOLIO STATS — full width -->
+      <!-- ROW 1: PORTFOLIO STATS — full width KPI bar -->
       <div class="mv-mod" id="mvmod-stats" data-mod-id="stats" style="grid-column:span 12" draggable="true">
         <div class="mv-mod-head mv-mod-head-drag">
           <span class="mv-mod-drag">&#x2837;</span>
           <span class="mv-mod-title">Portfolio Overview</span>
+          <span style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;color:rgba(122,149,174,0.3);margin-left:auto">LIVE DATA</span>
         </div>
         <div class="mv-stat-row">
           <div class="mv-stat-cell">
             <div class="mv-stat-cell-lbl" id="mv3-count-lbl">Cards</div>
-            <div class="mv-stat-cell-val" id="mv3-count-val">&mdash;</div>
+            <div class="mv-stat-cell-val" id="mv3-count-val">0</div>
           </div>
           <div class="mv-stat-cell">
             <div class="mv-stat-cell-lbl">Cost Basis</div>
-            <div class="mv-stat-cell-val" id="mv3-paid-val">&mdash;</div>
+            <div class="mv-stat-cell-val" id="mv3-paid-val">$0</div>
           </div>
           <div class="mv-stat-cell">
             <div class="mv-stat-cell-lbl">Est. Value</div>
-            <div class="mv-stat-cell-val blue" id="mv3-est-val">&mdash;</div>
+            <div class="mv-stat-cell-val blue" id="mv3-est-val">$0</div>
           </div>
           <div class="mv-stat-cell">
             <div class="mv-stat-cell-lbl">Gain / Loss</div>
             <div class="mv-stat-cell-val" id="mv3-gl-val">&mdash;</div>
           </div>
+          <div class="mv-stat-cell" onclick="N('myisos',document.getElementById('nav-myisos'))" style="cursor:pointer">
+            <div class="mv-stat-cell-lbl">Active ISOs</div>
+            <div class="mv-stat-cell-val blue" id="mv-active-isos">0</div>
+          </div>
+          <div class="mv-stat-cell" onclick="T('Buy credits — coming soon')" style="cursor:pointer">
+            <div class="mv-stat-cell-lbl">ISO Credits</div>
+            <div class="mv-stat-cell-val" id="mv-credits">0</div>
+          </div>
         </div>
       </div>
 
-      <!-- FEATURED CARD — 3 cols x 2 rows -->
+      <!-- ROW 2: FEATURED CARD (3 cols x2 rows) + PLAYER CHART (6 cols) + GLANCE (3 cols) -->
+
+      <!-- Featured Card — 3 cols, 2 rows tall -->
       <div class="mv-mod" id="mvmod-hero" data-mod-id="hero" style="grid-column:span 3;grid-row:span 2" draggable="true">
         <div class="mv-mod-head mv-mod-head-drag">
           <span class="mv-mod-drag">&#x2837;</span>
@@ -1830,81 +1841,98 @@ async function logOut(){
             </div>
           </div>
           <div id="mv-hero-empty" class="mv-hero-empty">
-            <span class="mv-hero-empty-icon">&#9734;</span>
-            <span class="mv-hero-empty-txt">Tap &#9733; on any card below<br>to feature it here</span>
+            <div style="width:100px;height:140px;border:2px dashed rgba(0,170,255,0.15);border-radius:9px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+              <span style="font-size:32px;color:rgba(0,170,255,0.15)">&#9734;</span>
+            </div>
+            <span class="mv-hero-empty-txt">Star any card in<br>MY CARDS to feature it</span>
           </div>
         </div>
       </div>
 
-      <!-- PLAYER VALUE CHART — 5 cols -->
-      <div class="mv-mod" id="mvmod-pchart" data-mod-id="pchart" style="grid-column:span 5" draggable="true">
+      <!-- Market Value by Player — 6 cols -->
+      <div class="mv-mod" id="mvmod-pchart" data-mod-id="pchart" style="grid-column:span 6" draggable="true">
         <div class="mv-mod-head mv-mod-head-drag">
           <span class="mv-mod-drag">&#x2837;</span>
           <span class="mv-mod-title">Market Value by Player</span>
         </div>
-        <div class="mv-mod-body" style="padding:10px 14px 14px">
-          <svg id="mv-pchart-svg" viewBox="0 0 380 160" style="width:100%;height:auto;display:block;min-height:130px"></svg>
+        <div class="mv-mod-body" style="padding:10px 14px 14px;min-height:170px;display:flex;align-items:center">
+          <svg id="mv-pchart-svg" viewBox="0 0 480 155" style="width:100%;height:auto;display:block"></svg>
         </div>
       </div>
 
-      <!-- AT A GLANCE — 4 cols -->
-      <div class="mv-mod" id="mvmod-glance" data-mod-id="glance" style="grid-column:span 4" draggable="true">
-        <div class="mv-mod-head mv-mod-head-drag">
-          <span class="mv-mod-drag">&#x2837;</span>
-          <span class="mv-mod-title">At a Glance</span>
-        </div>
-        <div class="mv-mod-body" style="padding:12px">
-          <div class="mv-glance-grid">
-            <div class="mv-glance-chip" onclick="N('myisos',document.getElementById('nav-myisos'))">
-              <div class="mv-glance-lbl">Active ISOs</div>
-              <div class="mv-glance-val blue" id="mv-active-isos">&mdash;</div>
-            </div>
-            <div class="mv-glance-chip" onclick="T('Buy credits — coming soon')">
-              <div class="mv-glance-lbl">ISO Credits</div>
-              <div class="mv-glance-val" id="mv-credits">&mdash;</div>
-            </div>
-            <div class="mv-glance-chip" onclick="N('isoticker',null)" style="grid-column:span 2">
-              <div class="mv-glance-lbl">Portfolio Value</div>
-              <div class="mv-glance-val blue" id="mv-ticker-val">&mdash;</div>
-            </div>
-          </div>
-          <div style="display:flex;align-items:center;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,170,255,0.07)">
-            <span style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);flex:1">Notifications</span>
-            <span id="mv-notif-badge" style="display:none;background:var(--red);border-radius:6px;padding:2px 7px;font-family:Barlow Condensed,sans-serif;font-size:9px;font-weight:700;color:#fff">&#9679;</span>
-            <span style="font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--muted-text)" id="mv-notif-count">0</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- RECENT ACTIVITY — 5 cols -->
-      <div class="mv-mod" id="mvmod-activity" data-mod-id="activity" style="grid-column:span 5" draggable="true">
-        <div class="mv-mod-head mv-mod-head-drag">
-          <span class="mv-mod-drag">&#x2837;</span>
-          <span class="mv-mod-title">Recent Activity</span>
-        </div>
-        <div class="mv-mod-body" style="padding:8px 16px 12px" id="mv-activity-list">
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);padding:12px 0">Loading&hellip;</div>
-        </div>
-      </div>
-
-      <!-- COLLECTION BREAKDOWN — 4 cols -->
-      <div class="mv-mod" id="mvmod-bchart" data-mod-id="bchart" style="grid-column:span 4" draggable="true">
+      <!-- Collection Breakdown donut — 3 cols -->
+      <div class="mv-mod" id="mvmod-bchart" data-mod-id="bchart" style="grid-column:span 3" draggable="true">
         <div class="mv-mod-head mv-mod-head-drag">
           <span class="mv-mod-drag">&#x2837;</span>
           <span class="mv-mod-title">Collection Breakdown</span>
         </div>
-        <div class="mv-mod-body" style="padding:10px 14px 14px">
-          <div style="display:flex;gap:12px;align-items:center">
-            <svg id="mv-bchart-svg" viewBox="0 0 140 140" style="width:120px;min-width:120px;height:120px;display:block;flex-shrink:0"></svg>
-            <div id="mv-bchart-legend" style="flex:1;min-width:0"></div>
+        <div class="mv-mod-body" style="padding:10px 14px 14px;min-height:170px;display:flex;align-items:center">
+          <div style="display:flex;flex-direction:column;gap:8px;align-items:center;width:100%">
+            <svg id="mv-bchart-svg" viewBox="0 0 140 140" style="width:110px;min-width:110px;height:110px;display:block"></svg>
+            <div id="mv-bchart-legend" style="width:100%;min-width:0"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 3: LIVE SCORES MODULE (6 cols) + RECENT ACTIVITY (6 cols) -->
+
+      <!-- LIVE SCORES / SCHEDULE — 6 cols -->
+      <div class="mv-mod" id="mvmod-scores" data-mod-id="scores" style="grid-column:span 6" draggable="true">
+        <div class="mv-mod-head mv-mod-head-drag">
+          <span class="mv-mod-drag">&#x2837;</span>
+          <span class="mv-mod-title" id="mv-scores-title">Live Scores</span>
+          <div style="display:flex;align-items:center;gap:6px;margin-left:auto">
+            <span style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;color:rgba(0,232,135,0.6);text-transform:uppercase">&#9679; LIVE DATA</span>
+            <button onclick="_mvToggleScores(this)" id="mv-scores-toggle" style="background:rgba(0,170,255,0.1);border:1px solid rgba(0,170,255,0.25);border-radius:4px;padding:2px 8px;font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);cursor:pointer">Schedule</button>
+          </div>
+        </div>
+        <div class="mv-mod-body" style="padding:0;overflow:hidden">
+          <div id="mv-scores-list" style="max-height:220px;overflow-y:auto;padding:8px 0"></div>
+        </div>
+      </div>
+
+      <!-- RECENT ACTIVITY — 6 cols -->
+      <div class="mv-mod" id="mvmod-activity" data-mod-id="activity" style="grid-column:span 6" draggable="true">
+        <div class="mv-mod-head mv-mod-head-drag">
+          <span class="mv-mod-drag">&#x2837;</span>
+          <span class="mv-mod-title">Recent Activity</span>
+        </div>
+        <div class="mv-mod-body" style="padding:8px 16px 12px;min-height:150px" id="mv-activity-list">
+          <div class="mv-act2-empty">No vault activity yet</div>
+        </div>
+      </div>
+
+      <!-- ROW 4: CARD PRICE SCROLLER — full width -->
+      <div class="mv-mod" id="mvmod-ticker" data-mod-id="ticker" style="grid-column:span 12" draggable="true">
+        <div class="mv-mod-head mv-mod-head-drag">
+          <span class="mv-mod-drag">&#x2837;</span>
+          <span class="mv-mod-title">Card Market Pulse</span>
+          <span style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;color:rgba(0,232,135,0.6);margin-left:auto">&#9679; LIVE DATA</span>
+        </div>
+        <div style="overflow:hidden;padding:0 0 2px">
+          <div class="card-ticker-wrap" style="margin:0;border:none;border-radius:0;background:transparent;border-top:1px solid rgba(0,170,255,0.06)">
+            <div class="card-ticker-inner" id="mv-card-ticker"></div>
           </div>
         </div>
       </div>
 
     </div><!-- end #mv-dash -->
 
+    <!-- NOT LOGGED IN EMPTY STATE -->
+    <div id="myVaultEmpty" class="mv3-empty" style="display:none">
+      <div class="mv3-empty-card">
+        <div class="mv3-empty-face">
+          <img id="vaultEmptyImg" src="" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:8px;display:block;z-index:1">
+          <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.06) 0%,transparent 55%);z-index:2;border-radius:8px;pointer-events:none"></div>
+          <div class="mv3-empty-shimmer"></div>
+        </div>
+      </div>
+      <div style="font-family:Bebas Neue,sans-serif;font-size:26px;letter-spacing:2px;color:var(--white);margin-bottom:8px">SIGN IN TO VIEW YOUR VAULT</div>
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:22px;line-height:1.7">Track your collection, monitor value,<br>and manage your ISOs.</div>
+    </div>
+
     <!-- CARD GRID SECTION -->
-    <div id="mv-grid-section" style="display:none;margin-top:8px">
+    <div id="mv-grid-section" style="display:none;margin-top:4px">
       <div class="mv-grid-head">
         <div class="mv-grid-title">MY CARDS <span id="mv3-count-lbl2" style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);letter-spacing:1px;font-weight:400"></span></div>
         <div class="mv-grid-ctrl">
@@ -1927,9 +1955,11 @@ async function logOut(){
     <!-- Hidden legacy IDs -->
     <span id="mv-ticker-gain" style="display:none"></span>
     <span id="mv-ticker-top" style="display:none"></span>
+    <span id="mv-notif-badge" style="display:none"></span>
+    <span id="mv-notif-count" style="display:none"></span>
+    <span id="mv-ticker-val" style="display:none"></span>
 
   </div>
-
   <div class="panel" id="panel-myvaultcard">
     <div class="cd-back-btn" onclick="N('myvault',document.querySelector('[onclick*=myvault]'))">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
@@ -1978,10 +2008,6 @@ async function logOut(){
       <span class="iv-crumb iv-crumb-home" onclick="ivGoHome()">ISOVault</span>
       <span class="iv-sep">&#8250;</span>
       <span class="iv-crumb" id="ivCrumbSport" style="display:none" onclick="ivGoSport()"></span>
-      <span class="iv-sep iv-sep-brand" style="display:none">&#8250;</span>
-      <span class="iv-crumb" id="ivCrumbBrand" style="display:none" onclick="ivGoBrand()"></span>
-      <span class="iv-sep iv-sep-year" style="display:none">&#8250;</span>
-      <span class="iv-crumb" id="ivCrumbYear" style="display:none" onclick="ivGoYear()"></span>
       <span class="iv-sep iv-sep2" style="display:none">&#8250;</span>
       <span class="iv-crumb iv-crumb-active" id="ivCrumbSet" style="display:none"></span>
     </div>
@@ -2085,13 +2111,13 @@ async function logOut(){
       <span id="cd-back-label">Back to ISOVault</span>
     </div>
     <div class="cd-breadcrumb">
-      <span class="cd-crumb" id="cd-bc-home" onclick="window._ivReturnState='home';backToVault();">ISOVault</span>
+      <span class="cd-crumb" id="cd-bc-home" onclick="backToVault()">ISOVault</span>
       <span class="cd-crumb-sep">&#8250;</span>
-      <span class="cd-crumb" id="cd-bc-sport" onclick="window._ivReturnState='sets';backToVault();">Baseball</span>
+      <span class="cd-crumb" id="cd-bc-sport">Baseball</span>
       <span class="cd-crumb-sep">&#8250;</span>
-      <span class="cd-crumb" id="cd-bc-brand" onclick="window._ivReturnBrand=document.getElementById('cd-bc-brand').textContent;window._ivReturnState='sets-brand';backToVault();">Topps</span>
+      <span class="cd-crumb" id="cd-bc-brand">Topps</span>
       <span class="cd-crumb-sep">&#8250;</span>
-      <span class="cd-crumb" id="cd-bc-year" onclick="window._ivReturnYear=document.getElementById('cd-bc-year').textContent;window._ivReturnState='sets-year';backToVault();">2026</span>
+      <span class="cd-crumb" id="cd-bc-year">2026</span>
       <span class="cd-crumb-sep">&#8250;</span>
       <span class="cd-crumb active" id="cd-bc-set">Series 1 Mojo</span>
     </div>
@@ -4773,45 +4799,59 @@ function renderMyVault(){
   const dash =document.getElementById('mv-dash');
   const gsec =document.getElementById('mv-grid-section');
   const user =window._authUser;
+
+  // Not logged in
   if(!user){
-    if(empty) empty.style.display='block';
+    if(empty){empty.style.display='block';}
     if(dash)  dash.style.display='none';
     if(gsec)  gsec.style.display='none';
     return;
   }
+
+  // Logged in — show dashboard immediately, load live data
+  if(empty) empty.style.display='none';
+  if(dash){ dash.style.display='grid'; _restoreModLayout(); _initModDrag(); }
+  _mvInitScores(true);
+  _mvInitCardTicker();
+
   const ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
   const userToken=window._userAccessToken||ANON_KEY;
   fetch(`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault?select=*&user_id=eq.${user.id}&status=neq.sold&status=neq.removed&order=created_at.desc`,{
     headers:{'apikey':ANON_KEY,'Authorization':'Bearer '+userToken}
   }).then(r=>r.json()).then(data=>{
     if(!Array.isArray(data)){
-      if(empty){ empty.style.display='block'; empty.innerHTML=`<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--red);padding:20px">Vault error: ${data?.message||'Unknown error'}</div>`; }
-      if(dash) dash.style.display='none';
-      if(gsec) gsec.style.display='none';
+      const al=document.getElementById('mv-activity-list');
+      if(al) al.innerHTML=`<div class="mv-act2-empty" style="color:var(--red)">Error: ${data?.message||'Could not load vault'}</div>`;
       return;
     }
-    if(!data.length){
-      if(empty) empty.style.display='block';
-      if(dash)  dash.style.display='none';
-      if(gsec)  gsec.style.display='none';
-      return;
-    }
-    if(empty) empty.style.display='none';
-    if(dash){ dash.style.display='grid'; _restoreModLayout(); _initModDrag(); }
-    if(gsec)  gsec.style.display='block';
     window._vaultData=data;
+    const count=data.length;
     const hsub=document.getElementById('mv3-header-sub');
-    if(hsub) hsub.textContent=data.length+' card'+(data.length!==1?'s':'')+' · '+new Date().toLocaleDateString('en-US',{month:'short',year:'numeric'});
+    if(hsub) hsub.textContent=count>0
+      ? count+' card'+(count!==1?'s':'')+' \u00b7 '+new Date().toLocaleDateString('en-US',{month:'short',year:'numeric'})
+      : 'No cards yet \u00b7 add your first card';
     const totalPaid=data.reduce((s,c)=>s+(parseFloat(c.price_paid)||0),0);
     const totalEst =data.reduce((s,c)=>s+(parseFloat(c.estimated_value)||0),0);
     const gainLoss =totalEst-totalPaid;
     const glClass  =gainLoss>=0?'green':'red';
-    const cv=document.getElementById('mv3-count-val'); if(cv) cv.textContent=data.length;
-    const cl=document.getElementById('mv3-count-lbl'); if(cl) cl.textContent=data.length===1?'Card':'Cards';
-    const cl2=document.getElementById('mv3-count-lbl2'); if(cl2) cl2.textContent='('+data.length+')';
+    const cv=document.getElementById('mv3-count-val'); if(cv) cv.textContent=count||'0';
+    const cl=document.getElementById('mv3-count-lbl'); if(cl) cl.textContent=count===1?'Card':'Cards';
+    const cl2=document.getElementById('mv3-count-lbl2'); if(cl2) cl2.textContent=count?'('+count+')':'';
     const pv=document.getElementById('mv3-paid-val'); if(pv) pv.textContent='$'+totalPaid.toLocaleString(undefined,{maximumFractionDigits:0});
-    const ev=document.getElementById('mv3-est-val'); if(ev) ev.textContent=totalEst?'$'+totalEst.toLocaleString(undefined,{maximumFractionDigits:0}):'—';
-    const gv=document.getElementById('mv3-gl-val'); if(gv){ gv.textContent=(gainLoss>=0?'+':'')+`$${Math.abs(gainLoss).toLocaleString(undefined,{maximumFractionDigits:0})}`; gv.className='mv-stat-cell-val '+glClass; }
+    const ev=document.getElementById('mv3-est-val'); if(ev) ev.textContent='$'+totalEst.toLocaleString(undefined,{maximumFractionDigits:0});
+    const gv=document.getElementById('mv3-gl-val'); if(gv){
+      gv.textContent=count?(gainLoss>=0?'+':'')+`$${Math.abs(gainLoss).toLocaleString(undefined,{maximumFractionDigits:0})}`:'\u2014';
+      if(count) gv.className='mv-stat-cell-val '+glClass;
+    }
+    if(!count){
+      _renderPlayerChart([]);
+      _renderBrandChart([]);
+      _renderActivityFeed([]);
+      _renderVaultHero();
+      if(gsec) gsec.style.display='none';
+      return;
+    }
+    if(gsec) gsec.style.display='block';
     _renderPlayerChart(data);
     _renderBrandChart(data);
     _renderActivityFeed(data);
@@ -4824,13 +4864,108 @@ function renderMyVault(){
   }).catch(err=>{ console.error('renderMyVault:',err); });
 }
 
+// ── Scores module inside MyVault ────────────────────────────────────────────
+window._mvScoresMode=true;
+function _mvToggleScores(btn){
+  window._mvScoresMode=!window._mvScoresMode;
+  const title=document.getElementById('mv-scores-title');
+  if(title) title.textContent=window._mvScoresMode?'Live Scores':'Schedule';
+  if(btn) btn.textContent=window._mvScoresMode?'Schedule':'Scores';
+  _mvInitScores(window._mvScoresMode);
+}
+async function _mvInitScores(scores){
+  const list=document.getElementById('mv-scores-list');
+  if(!list) return;
+  list.innerHTML='<div class="mv-scores-row"><span class="mv-sc-teams" style="color:rgba(122,149,174,0.4)">Loading\u2026</span></div>';
+  const SPORTS=[
+    {label:'NBA',url:'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard'},
+    {label:'MLB',url:'https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard'},
+    {label:'NHL',url:'https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard'},
+    {label:'NFL',url:'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard'},
+  ];
+  try{
+    const results=await Promise.allSettled(SPORTS.map(s=>
+      Promise.race([fetch(s.url).then(r=>r.json()),new Promise((_,rej)=>setTimeout(()=>rej('timeout'),6000))]).then(d=>({sport:s.label,data:d}))
+    ));
+    let allEvents=[];
+    results.forEach(r=>{
+      if(r.status!=='fulfilled') return;
+      const {sport,data}=r.value;
+      (data.events||[]).forEach(ev=>{
+        const comp=ev.competitions?.[0]; if(!comp) return;
+        const home=comp.competitors?.find(c=>c.homeAway==='home');
+        const away=comp.competitors?.find(c=>c.homeAway==='away');
+        const state=ev.status?.type?.state;
+        const date=ev.date?new Date(ev.date):null;
+        allEvents.push({sport,home,away,state,date});
+      });
+    });
+    if(!allEvents.length){
+      list.innerHTML='<div class="mv-scores-row"><span class="mv-sc-teams" style="color:rgba(122,149,174,0.3)">No games found</span></div>';
+      return;
+    }
+    // In scores mode show final/live; in schedule show pre
+    const filtered=scores
+      ? allEvents.filter(e=>e.state==='in'||e.state==='post').sort((a,b)=>b.state==='in'?1:-1)
+      : allEvents.filter(e=>e.state==='pre').sort((a,b)=>a.date-b.date);
+    if(!filtered.length){
+      list.innerHTML='<div class="mv-scores-row"><span class="mv-sc-teams" style="color:rgba(122,149,174,0.3)">'+(scores?'No completed games yet':'No upcoming games found')+'</span></div>';
+      return;
+    }
+    list.innerHTML=filtered.slice(0,20).map(e=>{
+      const hn=e.home?.team?.abbreviation||'?';
+      const an=e.away?.team?.abbreviation||'?';
+      const isLive=e.state==='in', isFinal=e.state==='post';
+      let score='', status='', statusCls='sched';
+      if(isLive){
+        score=`<span class="mv-sc-score">${e.away?.score||0}\u2013${e.home?.score||0}</span>`;
+        status='\u25cf LIVE'; statusCls='live';
+      } else if(isFinal){
+        score=`<span class="mv-sc-score">${e.away?.score||0}\u2013${e.home?.score||0}</span>`;
+        status='FINAL'; statusCls='final';
+      } else if(e.date){
+        const t=e.date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+        status=t; statusCls='sched';
+      } else { status='TBD'; }
+      return `<div class="mv-scores-row"><span class="mv-sc-sport">${e.sport}</span><span class="mv-sc-teams">${an} @ ${hn}</span>${score}<span class="mv-sc-status ${statusCls}">${status}</span></div>`;
+    }).join('');
+  } catch(err){
+    list.innerHTML='<div class="mv-scores-row"><span class="mv-sc-teams" style="color:rgba(122,149,174,0.3)">Could not load scores</span></div>';
+  }
+}
+
+// ── Card price ticker inside MyVault ───────────────────────────────────────
+function _mvInitCardTicker(){
+  const inner=document.getElementById('mv-card-ticker');
+  if(!inner) return;
+  // Reuse demoCards from initCardTicker
+  const demoCards=[
+    {n:'Juan Soto RC Auto Gold /50',g:'PSA 10',p:'$1,200',c:'+12.4%',d:'up'},
+    {n:'Shohei Ohtani Chrome Auto /499',g:'PSA 9',p:'$650',c:'-3.1%',d:'dn'},
+    {n:'Mike Trout 2011 Topps RC',g:'PSA 10',p:'$890',c:'+5.7%',d:'up'},
+    {n:'Julio Rodriguez Gold /50',g:'Raw',p:'$420',c:'+8.2%',d:'up'},
+    {n:'Ronald Acuna Jr Auto /25',g:'BGS 9.5',p:'$1,850',c:'+21.0%',d:'up'},
+    {n:'Gunnar Henderson RC Prizm',g:'PSA 10',p:'$310',c:'+77.8%',d:'up'},
+    {n:'Wander Franco Auto /99',g:'PSA 10',p:'$180',c:'-9.3%',d:'dn'},
+    {n:'Adley Rutschman RC Chrome',g:'PSA 10',p:'$95',c:'+14.1%',d:'up'},
+  ];
+  let html='';
+  [...demoCards,...demoCards].forEach(c=>{
+    html+=`<span class="ct-item"><span class="ct-name">${c.n}</span><span class="ct-sep">\u00b7</span><span>${c.g}</span><span class="ct-sep">\u00b7</span><span class="ct-price">${c.p}</span><span class="ct-chg ${c.d}"> ${c.c}</span><span class="ct-sep" style="margin-left:8px">\u2b25</span></span>`;
+  });
+  inner.innerHTML=html;
+}
+
 function _renderPlayerChart(data){
   const el=document.getElementById('mv-pchart-svg');
   if(!el||!data||!data.length){if(el)el.innerHTML='';return;}
   const byP={};
   data.forEach(c=>{const p=c.player||'Unknown';const v=parseFloat(c.estimated_value)||parseFloat(c.price_paid)||0;byP[p]=(byP[p]||0)+v;});
   const sorted=Object.entries(byP).sort((a,b)=>b[1]-a[1]).slice(0,6);
-  if(!sorted.length){el.innerHTML='';return;}
+  if(!sorted.length){
+    el.innerHTML='<text x="190" y="80" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-size="12" fill="rgba(122,149,174,0.35)" letter-spacing="1">ADD CARDS TO SEE VALUE CHART</text>';
+    return;
+  }
   const W=340,H=155,PL=4,PR=4,PT=22,PB=28,chartW=W-PL-PR,chartH=H-PT-PB;
   const n=sorted.length,gap=6,barW=Math.floor((chartW-(n-1)*gap)/n);
   const maxVal=sorted[0][1]*1.15;
@@ -4854,7 +4989,12 @@ function _renderPlayerChart(data){
 function _renderBrandChart(data){
   const svgEl=document.getElementById('mv-bchart-svg');
   const legEl=document.getElementById('mv-bchart-legend');
-  if(!svgEl||!data||!data.length) return;
+  if(!svgEl) return;
+  if(!data||!data.length){
+    svgEl.innerHTML='<text x="70" y="75" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-size="10" fill="rgba(122,149,174,0.3)" letter-spacing="1">NO DATA</text>';
+    if(legEl) legEl.innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:rgba(122,149,174,0.3);letter-spacing:1px">Add cards to see breakdown</div>';
+    return;
+  }
   const byBrand={};
   data.forEach(c=>{const b=c.brand||'Other';byBrand[b]=(byBrand[b]||0)+1;});
   const total=data.length;
@@ -5904,7 +6044,7 @@ async function submitCatalogUpload(){
 // &#9472;&#9472; Sport + Set Registry &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 const IV_SPORTS = [
   { id:'baseball',  label:'Baseball',     emoji:'&#9918;', active:true  },
-  { id:'basketball',label:'Basketball',   emoji:'&#127936;', active:true  },
+  { id:'basketball',label:'Basketball',   emoji:'&#127936;', active:false },
   { id:'football',  label:'Football',     emoji:'&#127944;', active:false },
   { id:'hockey',    label:'Hockey',       emoji:'&#127954;', active:false },
   { id:'soccer',    label:'Soccer',       emoji:'&#9917;', active:false },
@@ -5936,7 +6076,6 @@ const IV_SETS = [
   { table:'2025_topps_bw',                            sport:'baseball',    year:2025, brand:'Topps',  name:'Black & White',        label:'2025 Topps Black & White Baseball' },
   { table:'2025_topps_museum_collection_baseball',    sport:'baseball',    year:2025, brand:'Topps',  name:'Museum Collection',    label:'2025 Topps Museum Collection'      },
   { table:'2024_25_bowman_university_chrome_basketball', sport:'basketball', year:2025, brand:'Bowman', name:'University Chrome',  label:'2024-25 Bowman University Chrome'  },
-  { table:'2025_-_2026_topps_basketball',                sport:'basketball', year:2026, brand:'Topps',  name:'Topps Basketball',   label:'2025-26 Topps Basketball',  noVarImages:true },
   { table:'2025_26_topps_chrome_cactus_jack_basketball', sport:'basketball', year:2025, brand:'Topps',  name:'Chrome Cactus Jack', label:'2025-26 Topps Chrome Cactus Jack'  },
   { table:'card-images', sport:'baseball', year:2025, brand:'Topps', name:'Stadium Club', label:'2025 Topps Stadium Club Baseball', noVarImages:true },
   // ── Pokémon TCG — all sets share pokemon_cards table, filtered by series ──
@@ -5976,50 +6115,6 @@ async function ivInit(){
     _ivInited = true;
     _ivPrefetchCounts();
     _ivLoadCatalogCards();
-  }
-  if(window._ivReturnState){
-    const rs = window._ivReturnState;
-    window._ivReturnState = null;
-    if(rs === 'home'){
-      ivGoHome();
-      ivRenderSports();
-      return;
-    } else if(rs === 'cards'){
-      _ivShowState('cards');
-      _ivBreadcrumb(true, true);
-      ivRenderSports();
-      return;
-    } else if(rs === 'sets'){
-      _ivShowState('sets');
-      _ivRenderSetBrowser();
-      _ivBreadcrumb(true, false);
-      ivRenderSports();
-      return;
-    } else if(rs === 'sets-brand'){
-      _ivShowState('sets');
-      _ivRenderSetBrowser();
-      document.querySelectorAll('#ivBrandPills .iv-pill').forEach(p=>{
-        p.classList.toggle('active', p.textContent === window._ivReturnBrand);
-      });
-      _ivBrandFilter = window._ivReturnBrand || 'all';
-      window._ivReturnBrand = null;
-      _ivApplySetFilters();
-      _ivBreadcrumb(true, false);
-      ivRenderSports();
-      return;
-    } else if(rs === 'sets-year'){
-      _ivShowState('sets');
-      _ivRenderSetBrowser();
-      document.querySelectorAll('#ivYearPills .iv-pill').forEach(p=>{
-        p.classList.toggle('active', p.textContent === String(window._ivReturnYear));
-      });
-      _ivYearFilter = window._ivReturnYear || 'all';
-      window._ivReturnYear = null;
-      _ivApplySetFilters();
-      _ivBreadcrumb(true, false);
-      ivRenderSports();
-      return;
-    }
   }
   ivGoHome();
   ivRenderSports();
@@ -6126,59 +6221,15 @@ function _ivShowState(state){
 }
 
 function _ivBreadcrumb(showSport, showSet){
-  const sport    = document.getElementById('ivCrumbSport');
-  const sepBrand = document.querySelector('.iv-sep-brand');
-  const brand    = document.getElementById('ivCrumbBrand');
-  const sepYear  = document.querySelector('.iv-sep-year');
-  const yearEl   = document.getElementById('ivCrumbYear');
-  const sep2     = document.querySelector('.iv-sep2');
-  const setEl    = document.getElementById('ivCrumbSet');
-
-  if(sport)    sport.style.display    = showSport ? '' : 'none';
-  if(sepBrand) sepBrand.style.display = showSet   ? '' : 'none';
-  if(brand)    brand.style.display    = showSet   ? '' : 'none';
-  if(sepYear)  sepYear.style.display  = showSet   ? '' : 'none';
-  if(yearEl)   yearEl.style.display   = showSet   ? '' : 'none';
-  if(sep2)     sep2.style.display     = showSet   ? '' : 'none';
-  if(setEl)    setEl.style.display    = showSet   ? '' : 'none';
-
+  const sport = document.getElementById('ivCrumbSport');
+  const sep2  = document.querySelector('.iv-sep2');
+  const setEl = document.getElementById('ivCrumbSet');
+  if(sport){ sport.style.display = showSport ? '' : 'none'; }
+  if(sep2){  sep2.style.display  = showSet   ? '' : 'none'; }
+  if(setEl){ setEl.style.display = showSet   ? '' : 'none'; }
   const sportDef = IV_SPORTS.find(s=>s.id===_ivSport);
   if(sport && sportDef) sport.innerHTML = sportDef.emoji+' '+sportDef.label;
-  if(brand && _ivSet)   brand.textContent = _ivSet.brand;
-  if(yearEl && _ivSet)  yearEl.textContent = _ivSet.year;
-  if(setEl && _ivSet)   setEl.textContent  = _ivSet.label;
-}
-
-function ivGoBrand(){
-  if(!_ivSport) return;
-  const b = _ivSet ? _ivSet.brand : 'all';
-  _ivSet = null; _ivData = []; _ivFiltered = [];
-  _ivBrandFilter = b;
-  _ivYearFilter  = 'all';
-  _ivShowState('sets');
-  _ivRenderSetBrowser();
-  // Activate the brand pill
-  document.querySelectorAll('#ivBrandPills .iv-pill').forEach(p=>{
-    p.classList.toggle('active', p.textContent === b);
-  });
-  _ivApplySetFilters();
-  _ivBreadcrumb(true, false);
-}
-
-function ivGoYear(){
-  if(!_ivSport) return;
-  const y = _ivSet ? _ivSet.year : 'all';
-  _ivSet = null; _ivData = []; _ivFiltered = [];
-  _ivYearFilter  = y;
-  _ivBrandFilter = 'all';
-  _ivShowState('sets');
-  _ivRenderSetBrowser();
-  // Activate the year pill
-  document.querySelectorAll('#ivYearPills .iv-pill').forEach(p=>{
-    p.classList.toggle('active', p.textContent === String(y));
-  });
-  _ivApplySetFilters();
-  _ivBreadcrumb(true, false);
+  if(setEl && _ivSet)   setEl.textContent = _ivSet.label;
 }
 
 // &#9472;&#9472; Sport Tiles &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
@@ -7048,7 +7099,6 @@ function backToVault(){
     window._cdFromMyVault = false;
     N('myvault', document.querySelector('[onclick*="myvault"]'));
   } else {
-    window._ivReturnState = 'cards';
     N('library', document.querySelector('[onclick*="library"]'));
   }
 }

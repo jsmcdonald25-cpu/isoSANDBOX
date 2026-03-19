@@ -1427,11 +1427,8 @@ async function initUserProfile(user){
     const el = document.getElementById(id);
     if(el) el.style.display = window._isAdmin ? 'flex' : 'none';
   });
-  // My Vault is the landing page — only on first load, not on token refresh
-  if(!window._profileLoaded){
-    window._profileLoaded = true;
-    N('myvault', document.getElementById('nav-myvault'));
-  }
+  // My Vault is the landing page
+  N('myvault', document.getElementById('nav-myvault'));
   // Preload ISO count for the chip — silent, no nav side effects
   (async()=>{ try{ const r=await _rGet('isos','select=id,status&user_id=eq.'+user.id+'&status=in.(active,matched)&limit=100'); const n=(r||[]).length; const el=document.getElementById('mv-active-isos'); if(el) el.textContent=n||'0'; const b=document.getElementById('navBadge-myisos'); if(b){b.textContent=n||'';b.style.display=n?'':'none';} }catch(e){} })();
 }
@@ -1467,6 +1464,12 @@ async function logOut(){
       <span class="nav-label">Post ISO</span>
     </div>
 
+    <div class="nav-item" id="nav-myvault" onclick="N('myvault',this)">
+      <div class="nav-drag-handle">&#10303;</div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></div>
+      <span class="nav-label">My Vault</span>
+    </div>
+
     <div class="nav-item" id="nav-library" onclick="N('library',this)">
       <div class="nav-drag-handle">&#10303;</div>
       <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div>
@@ -1491,12 +1494,6 @@ async function logOut(){
       <div class="nav-drag-handle">&#10303;</div>
       <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="14" width="4" height="8" rx="1"/><rect x="9" y="9" width="4" height="13" rx="1"/><rect x="16" y="4" width="4" height="18" rx="1"/><line x1="2" y1="22" x2="22" y2="22"/></svg></div>
       <span class="nav-label">Leaderboard</span>
-    </div>
-
-    <div class="nav-item" id="nav-myvault" onclick="N('myvault',this)">
-      <div class="nav-drag-handle">&#10303;</div>
-      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></div>
-      <span class="nav-label">My Vault</span>
     </div>
 
     <div class="nav-item" id="nav-admin-price" onclick="N('admin-price',this);loadPriceFlags()">
@@ -3182,115 +3179,8 @@ const PLAYERS=[
   {name:'Hank Aaron',team:'Braves',pos:'OF',rookie:1954},
 ];
 
-const CARDS=[
-  {id:1,player:'Mike Trout',year:2011,brand:'Topps',set:'Update Series',parallel:'Base RC',run:null,auto:false,rc:true,tags:['rc'],price:850,isos:14},
-  {id:2,player:'Mike Trout',year:2011,brand:'Topps',set:'Update Series',parallel:'Diamond Anniversary /60',run:60,auto:false,rc:true,tags:['rc','numbered'],price:4200,isos:6},
-  {id:3,player:'Mike Trout',year:2012,brand:'Bowman',set:'Chrome',parallel:'Gold Auto /50',run:50,auto:true,rc:false,tags:['auto','numbered'],price:3800,isos:8},
-  {id:4,player:'Mike Trout',year:2011,brand:'Topps',set:'Chrome',parallel:'Refractor RC',run:null,auto:false,rc:true,tags:['rc'],price:620,isos:11},
-  {id:5,player:'Shohei Ohtani',year:2018,brand:'Topps',set:'Chrome',parallel:'Refractor RC Auto /499',run:499,auto:true,rc:true,tags:['auto','rc','numbered'],price:640,isos:22},
-  {id:6,player:'Shohei Ohtani',year:2018,brand:'Bowman',set:'Chrome',parallel:'Gold RC Auto /50',run:50,auto:true,rc:true,tags:['auto','rc','numbered'],price:8200,isos:5},
-  {id:7,player:'Shohei Ohtani',year:2018,brand:'Topps',set:'Update Series',parallel:'Base RC',run:null,auto:false,rc:true,tags:['rc'],price:180,isos:31},
-  {id:8,player:'Shohei Ohtani',year:2023,brand:'Topps',set:'Chrome Black',parallel:'Auto /50',run:50,auto:true,rc:false,tags:['auto','numbered'],price:4400,isos:7},
-  {id:9,player:'Shohei Ohtani',year:2023,brand:'Topps',set:'Chrome',parallel:'Red Refractor /5',run:5,auto:false,rc:false,tags:['numbered'],price:1900,isos:3},
-  {id:10,player:'Juan Soto',year:2018,brand:'Topps',set:'Update Series',parallel:'Base RC',run:null,auto:false,rc:true,tags:['rc'],price:95,isos:18},
-  {id:11,player:'Juan Soto',year:2019,brand:'Bowman',set:'Chrome',parallel:'Gold Auto /50',run:50,auto:true,rc:false,tags:['auto','numbered'],price:1180,isos:12},
-  {id:12,player:'Juan Soto',year:2018,brand:'Bowman',set:'Chrome',parallel:'Refractor RC Auto /499',run:499,auto:true,rc:true,tags:['auto','rc','numbered'],price:420,isos:9},
-  {id:13,player:'Juan Soto',year:2022,brand:'Topps',set:'Chrome Sapphire',parallel:'Base',run:null,auto:false,rc:false,tags:[],price:65,isos:4},
-  {id:14,player:'Ronald Acuña Jr.',year:2018,brand:'Topps',set:'Update Series',parallel:'Base RC',run:null,auto:false,rc:true,tags:['rc'],price:75,isos:16},
-  {id:15,player:'Ronald Acuña Jr.',year:2018,brand:'Bowman',set:'Chrome',parallel:'Silver Wave Auto /25',run:25,auto:true,rc:true,tags:['auto','rc','numbered'],price:2400,isos:6},
-  {id:16,player:'Ronald Acuña Jr.',year:2018,brand:'Topps',set:'Chrome',parallel:'Refractor RC Auto',run:null,auto:true,rc:true,tags:['auto','rc'],price:390,isos:8},
-  {id:17,player:'Julio Rodriguez',year:2022,brand:'Topps',set:'Update Series',parallel:'Base RC',run:null,auto:false,rc:true,tags:['rc'],price:18,isos:22},
-  {id:18,player:'Julio Rodriguez',year:2022,brand:'Topps',set:'Chrome',parallel:'Gold /50 RC',run:50,auto:false,rc:true,tags:['rc','numbered'],price:410,isos:9},
-  {id:19,player:'Julio Rodriguez',year:2022,brand:'Bowman',set:'Chrome',parallel:'Green Auto RC /99',run:99,auto:true,rc:true,tags:['auto','rc','numbered'],price:680,isos:11},
-  {id:20,player:'Aaron Judge',year:2017,brand:'Topps',set:'Chrome',parallel:'RC Auto Refractor /499',run:499,auto:true,rc:true,tags:['auto','rc','numbered'],price:1100,isos:14},
-  {id:21,player:'Aaron Judge',year:2022,brand:'Topps',set:'Chrome Black',parallel:'Auto /50',run:50,auto:true,rc:false,tags:['auto','numbered'],price:2800,isos:7},
-  {id:22,player:'Aaron Judge',year:2017,brand:'Bowman',set:'Chrome',parallel:'Gold RC Auto /50',run:50,auto:true,rc:true,tags:['auto','rc','numbered'],price:3200,isos:5},
-  {id:23,player:'Fernando Tatis Jr.',year:2019,brand:'Bowman',set:'Chrome',parallel:'Gold RC Auto /50',run:50,auto:true,rc:true,tags:['auto','rc','numbered'],price:1600,isos:10},
-  {id:24,player:'Fernando Tatis Jr.',year:2019,brand:'Topps',set:'Update Series',parallel:'Base RC',run:null,auto:false,rc:true,tags:['rc'],price:55,isos:19},
-  {id:25,player:'Gunnar Henderson',year:2023,brand:'Topps',set:'Chrome',parallel:'RC Auto /499',run:499,auto:true,rc:true,tags:['auto','rc','numbered'],price:320,isos:18},
-  {id:26,player:'Gunnar Henderson',year:2023,brand:'Bowman',set:'Chrome',parallel:'Orange RC Auto /25',run:25,auto:true,rc:true,tags:['auto','rc','numbered'],price:1800,isos:9},
-  {id:27,player:'Gunnar Henderson',year:2023,brand:'Topps',set:'Update Series',parallel:'Base RC',run:null,auto:false,rc:true,tags:['rc'],price:28,isos:24},
-  {id:28,player:'Jackson Holliday',year:2024,brand:'Bowman',set:'Chrome',parallel:'Gold RC Auto /50',run:50,auto:true,rc:true,tags:['auto','rc','numbered'],price:1100,isos:22},
-  {id:29,player:'Jackson Holliday',year:2024,brand:'Topps',set:'Chrome',parallel:'RC Auto /499',run:499,auto:true,rc:true,tags:['auto','rc','numbered'],price:280,isos:19},
-  {id:30,player:'Jackson Holliday',year:2024,brand:'Topps',set:'Series 1',parallel:'Base RC',run:null,auto:false,rc:true,tags:['rc'],price:18,isos:28},
-  {id:31,player:'Paul Skenes',year:2024,brand:'Topps',set:'Chrome',parallel:'RC Auto /499',run:499,auto:true,rc:true,tags:['auto','rc','numbered'],price:280,isos:31},
-  {id:32,player:'Paul Skenes',year:2024,brand:'Bowman',set:'Chrome',parallel:'Gold RC Auto /50',run:50,auto:true,rc:true,tags:['auto','rc','numbered'],price:2200,isos:14},
-  {id:33,player:'Paul Skenes',year:2024,brand:'Topps',set:'Series 1',parallel:'Base RC',run:null,auto:false,rc:true,tags:['rc'],price:22,isos:38},
-  {id:34,player:'Elly De La Cruz',year:2023,brand:'Topps',set:'Chrome',parallel:'RC Auto /499',run:499,auto:true,rc:true,tags:['auto','rc','numbered'],price:210,isos:20},
-  {id:35,player:'Corbin Carroll',year:2023,brand:'Topps',set:'Chrome',parallel:'RC Auto /499',run:499,auto:true,rc:true,tags:['auto','rc','numbered'],price:160,isos:16},
-  {id:36,player:'Bobby Witt Jr.',year:2022,brand:'Bowman',set:'Chrome',parallel:'Gold RC Auto /50',run:50,auto:true,rc:true,tags:['auto','rc','numbered'],price:1400,isos:8},
-  {id:37,player:'Bobby Witt Jr.',year:2022,brand:'Topps',set:'Chrome',parallel:'RC Auto /499',run:499,auto:true,rc:true,tags:['auto','rc','numbered'],price:240,isos:15},
-  {id:38,player:'Mookie Betts',year:2014,brand:'Bowman',set:'Chrome',parallel:'Gold RC Auto /50',run:50,auto:true,rc:true,tags:['auto','rc','numbered'],price:2100,isos:6},
-  {id:39,player:'Bryce Harper',year:2010,brand:'Bowman',set:'Chrome',parallel:'Prospect Auto',run:null,auto:true,rc:false,tags:['auto'],price:480,isos:8},
-  {id:40,player:'Yordan Alvarez',year:2019,brand:'Topps',set:'Chrome',parallel:'RC Auto /499',run:499,auto:true,rc:true,tags:['auto','rc','numbered'],price:380,isos:11},
-  {id:41,player:'Spencer Strider',year:2022,brand:'Topps',set:'Chrome',parallel:'RC Auto /499',run:499,auto:true,rc:true,tags:['auto','rc','numbered'],price:140,isos:9},
-  {id:42,player:'Wander Franco',year:2021,brand:'Topps',set:'Chrome',parallel:'RC Auto /499',run:499,auto:true,rc:true,tags:['auto','rc','numbered'],price:190,isos:7},
-  {id:43,player:'Mickey Mantle',year:1952,brand:'Topps',set:'Base Set',parallel:'Base',run:null,auto:false,rc:false,tags:['vintage'],price:85000,isos:2},
-  {id:44,player:'Mickey Mantle',year:1953,brand:'Topps',set:'Base Set',parallel:'Base',run:null,auto:false,rc:false,tags:['vintage'],price:12000,isos:1},
-  {id:45,player:'Willie Mays',year:1951,brand:'Bowman',set:'Base Set',parallel:'Base RC',run:null,auto:false,rc:true,tags:['vintage','rc'],price:28000,isos:3},
-  {id:46,player:'Derek Jeter',year:1993,brand:'SP',set:'Foil',parallel:'RC',run:null,auto:false,rc:true,tags:['vintage','rc'],price:3200,isos:4},
-  {id:47,player:'Hank Aaron',year:1954,brand:'Topps',set:'Base Set',parallel:'Base RC',run:null,auto:false,rc:true,tags:['vintage','rc'],price:12000,isos:2},
-  {id:48,player:'Francisco Lindor',year:2015,brand:'Bowman',set:'Chrome',parallel:'Gold RC /50',run:50,auto:false,rc:true,tags:['rc','numbered'],price:340,isos:5},
-  {
-    id:49, player:'Ichiro Suzuki', year:2026, brand:'Topps', set:'Series 1',
-    parallel:'Base Mojo', run:null, auto:false, rc:false,
-    tags:['insert'], price:45, isos:7,
-    cardNum:'#91C-25', hasCatalogPic:true,
-    _setTable:'2026_series1_baseball', _cardNumber:'91C-25',
-    variations:[
-      {label:'Base Mojo',     color:'#00AAFF', glow:'rgba(0,170,255,0.45)',  run:null, isBase:true, lastSale:'$45',   isos:7,  pop:214, watching:12},
-      {label:'Blue /150',     color:'#4488FF', glow:'rgba(68,136,255,0.45)', run:150,  isBase:false,lastSale:'$78',   isos:3,  pop:82,  watching:5},
-      {label:'Gold /50',      color:'#FFC83C', glow:'rgba(255,200,60,0.5)',  run:50,   isBase:false,lastSale:'$195',  isos:2,  pop:24,  watching:8},
-      {label:'Red /25',       color:'#FF4444', glow:'rgba(255,68,68,0.5)',   run:25,   isBase:false,lastSale:'$280',  isos:1,  pop:12,  watching:4},
-      {label:'Black /10',     color:'#888888', glow:'rgba(160,160,160,0.4)', run:10,   isBase:false,lastSale:'$490',  isos:1,  pop:5,   watching:6},
-      {label:'Platinum /5',   color:'#C8E6FF', glow:'rgba(200,230,255,0.5)', run:5,    isBase:false,lastSale:'$820',  isos:0,  pop:2,   watching:3},
-      {label:'Superfractor 1/1',color:'#FFD700',glow:'rgba(255,215,0,0.7)', run:1, superfractor:true,isBase:false,lastSale:'$4,200',isos:0,pop:1,watching:19},
-    ]
-  },
-  {
-    id:51, player:'Ichiro Suzuki', year:2026, brand:'Topps', set:'Series 1',
-    parallel:'1991 Topps Baseball', run:null, auto:false, rc:false,
-    tags:['insert'], price:35, isos:0,
-    cardNum:'#T91-33', hasCatalogPic:true,
-    _setTable:'2026_series1_baseball', _cardNumber:'T91-33',
-    variations:[
-      {label:'Base',        color:'#00AAFF', glow:'rgba(0,170,255,0.45)',  run:null, isBase:true, lastSale:'$35',  isos:0, pop:null, watching:0},
-      {label:'Blue /150',   color:'#4488FF', glow:'rgba(68,136,255,0.45)', run:150,  isBase:false,lastSale:'$65',  isos:0, pop:null, watching:0},
-      {label:'Gold /50',    color:'#FFC83C', glow:'rgba(255,200,60,0.5)',  run:50,   isBase:false,lastSale:'$150', isos:0, pop:null, watching:0},
-      {label:'Red /25',     color:'#FF4444', glow:'rgba(255,68,68,0.5)',   run:25,   isBase:false,lastSale:'$220', isos:0, pop:null, watching:0},
-      {label:'Black /10',   color:'#888888', glow:'rgba(160,160,160,0.4)', run:10,   isBase:false,lastSale:'$380', isos:0, pop:null, watching:0},
-      {label:'Platinum /5', color:'#C8E6FF', glow:'rgba(200,230,255,0.5)', run:5,    isBase:false,lastSale:'$640', isos:0, pop:null, watching:0},
-    ]
-  },
-  {
-    id:50, player:'Ken Griffey Jr.', year:2025, brand:'Topps', set:'Stadium Club',
-    parallel:'Base', run:null, auto:false, rc:false,
-    tags:[], price:8, isos:3,
-    cardNum:'#SS-24', hasCatalogPic:false,
-    _setTable:'card-images', _cardNumber:'SS-24',
-    _team:'Seattle Mariners',
-    variations:[
-      {label:'Base',                color:'#00AAFF', glow:'rgba(0,170,255,0.45)',  run:null, isBase:true,  lastSale:'$8',     isos:3,  watching:4},
-      {label:'Red Foil',            color:'#FF3B5C', glow:'rgba(255,59,92,0.5)',   run:null, isBase:false, lastSale:'$3',     isos:1,  watching:2},
-      {label:'Sepia',               color:'#A0785A', glow:'rgba(160,120,90,0.45)', run:null, isBase:false, lastSale:'—',      isos:0,  watching:1},
-      {label:'Black & White',       color:'#CCCCCC', glow:'rgba(200,200,200,0.4)', run:null, isBase:false, lastSale:'—',      isos:0,  watching:1},
-      {label:'Bronze',              color:'#CD7F32', glow:'rgba(205,127,50,0.5)',  run:null, isBase:false, lastSale:'—',      isos:0,  watching:0},
-      {label:'Light Blue',          color:'#87CEEB', glow:'rgba(135,206,235,0.4)', run:null, isBase:false, lastSale:'—',      isos:0,  watching:0},
-      {label:'Lime Green',          color:'#32CD32', glow:'rgba(50,205,50,0.4)',   run:null, isBase:false, lastSale:'—',      isos:0,  watching:0},
-      {label:'Pink',                color:'#FF69B4', glow:'rgba(255,105,180,0.4)', run:null, isBase:false, lastSale:'—',      isos:0,  watching:0},
-      {label:'Member Only',         color:'#FFD700', glow:'rgba(255,215,0,0.45)',  run:null, isBase:false, lastSale:'—',      isos:0,  watching:0},
-      {label:"Photographer's Proof",color:'#B8860B', glow:'rgba(184,134,11,0.45)',run:null, isBase:false, lastSale:'—',      isos:0,  watching:0},
-      {label:'Green Foil /199',     color:'#00C851', glow:'rgba(0,200,81,0.45)',   run:199,  isBase:false, lastSale:'—',      isos:0,  watching:1},
-      {label:'Turquoise Foil /99',  color:'#00CED1', glow:'rgba(0,206,209,0.45)', run:99,   isBase:false, lastSale:'—',      isos:0,  watching:1},
-      {label:'Purple Foil /75',     color:'#9B59B6', glow:'rgba(155,89,182,0.45)',run:75,   isBase:false, lastSale:'—',      isos:0,  watching:1},
-      {label:'Gold Foil /50',       color:'#FFC83C', glow:'rgba(255,200,60,0.5)', run:50,   isBase:false, lastSale:'—',      isos:0,  watching:2},
-      {label:'Rainbow Foil /25',    color:'#FF6B6B', glow:'rgba(255,107,107,0.5)',run:25,   isBase:false, lastSale:'—',      isos:0,  watching:2},
-      {label:'First Day Issue /10', color:'#FF8C00', glow:'rgba(255,140,0,0.5)',  run:10,   isBase:false, lastSale:'—',      isos:0,  watching:3},
-      {label:'Gold Rainbow Foil 1/1',color:'#FFD700',glow:'rgba(255,215,0,0.7)', run:1, superfractor:true,isBase:false,lastSale:'—',isos:0,watching:5},
-      {label:'SuperFractor 1/1',    color:'#FFD700', glow:'rgba(255,215,0,0.7)',  run:1, superfractor:true,isBase:false,lastSale:'—',isos:0,watching:8},
-    ]
-  },
-];
+const CARDS=[];
+
 
 const MKT=[
   {player:'Shohei Ohtani',card:'2018 Topps Chrome · RC Auto /499',last:640,bid:620,ask:680,isos:22,chg:+9.6,pop:1140},
@@ -4719,9 +4609,15 @@ function openVaultCard(idx){
     run:null,auto:false,rc:!!row.is_rookie,tags:row.is_rookie?['rc']:[],
     price:parseFloat(row.estimated_value)||0,isos:0,
     hasCatalogPic:!!(row.var_images&&Object.keys(row.var_images).length),
-    _setTable:null,_cardNumber:(row.card_number||'').replace(/^#/,''),
+    _setTable:'card-images',_cardNumber:(row.card_number||'').replace(/^#/,''),
     _varImages:row.var_images||{},
-    variations:[{label:row.parallel||row.category||'Base',color:'#00AAFF',glow:'rgba(0,170,255,0.4)',run:null,isBase:true,lastSale:'—',isos:0,pop:null,watching:null}]
+    variations:(function(){
+      const lbl=row.parallel||row.category||'Base';
+      const clr=_varPillColor(lbl);
+      return [{label:lbl,color:clr.color,glow:clr.glow,superfractor:clr.superfractor||false,
+        run:null,isBase:clr.isBase||false,lastSale:'—',isos:0,pop:null,watching:null,
+        _varImages:row.var_images||null}];
+    })()
   };
   window._cdCard=card;
   document.getElementById('cd-bc-sport').textContent='Baseball';
@@ -5284,12 +5180,11 @@ async function _cdLoadCatalogImages(c){
       const _pm1 = document.getElementById('cd-path-msg');
       if(_pm1) _pm1.innerHTML = '<strong>This card has a catalog image.</strong> Confirm how you acquired it and the price you paid — no photo upload needed.';
     } else {
-      const hasAny = Object.keys(preloaded).length > 0;
-      if(statusEl){ statusEl.textContent = hasAny ? 'No image for this variation' : 'No catalog images yet';
-        statusEl.style.color='rgba(122,149,174,0.5)';
-        setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
+      // var_images key exists but no image for active variation — fall through to slow path
+      // so we can try fetching a fresh copy (admin may have uploaded after page load)
+      if(statusEl){ statusEl.style.display='none'; }
     }
-    return;
+    // Don't return — fall through to slow path to try a fresh DB fetch
   }
 
   // Slow path — fetch from Supabase
@@ -6486,6 +6381,29 @@ function _ivRenderGrid(){
 }
 
 // &#9472;&#9472; Card click → Detail panel &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Parallel/category → pill color mapping ──────────────────────────────────
+function _varPillColor(label){
+  const l = (label||'').toLowerCase();
+  if(l.includes('superfractor'))                 return {color:'#FFD700',glow:'rgba(255,215,0,0.5)',superfractor:true};
+  if(l.includes('1/1')||l==='one of one')        return {color:'#FFD700',glow:'rgba(255,215,0,0.5)',superfractor:true};
+  if(l.includes('rainbow'))                      return {color:'#FF6FD8',glow:'rgba(255,111,216,0.4)'};
+  if(l.includes('gold'))                         return {color:'#FFD700',glow:'rgba(255,215,0,0.4)'};
+  if(l.includes('silver'))                       return {color:'#C0C0C0',glow:'rgba(192,192,192,0.4)'};
+  if(l.includes('red'))                          return {color:'#FF3B5C',glow:'rgba(255,59,92,0.4)'};
+  if(l.includes('blue'))                         return {color:'#00AAFF',glow:'rgba(0,170,255,0.4)'};
+  if(l.includes('green'))                        return {color:'#00E887',glow:'rgba(0,232,135,0.4)'};
+  if(l.includes('purple'))                       return {color:'#A855F7',glow:'rgba(168,85,247,0.4)'};
+  if(l.includes('orange'))                       return {color:'#FF8C00',glow:'rgba(255,140,0,0.4)'};
+  if(l.includes('black'))                        return {color:'#888EA8',glow:'rgba(136,142,168,0.4)'};
+  if(l.includes('white'))                        return {color:'#FFFFFF',glow:'rgba(255,255,255,0.3)'};
+  if(l.includes('pink'))                         return {color:'#FF6FD8',glow:'rgba(255,111,216,0.4)'};
+  if(l.includes('auto')||l.includes('autograph'))return {color:'#00E887',glow:'rgba(0,232,135,0.4)'};
+  if(l.includes('refractor'))                    return {color:'#00E5FF',glow:'rgba(0,229,255,0.4)'};
+  if(l.includes('chrome')||l.includes('prizm'))  return {color:'#C0C0C0',glow:'rgba(192,192,192,0.4)'};
+  if(l.includes('base')||l==='')                 return {color:'#00AAFF',glow:'rgba(0,170,255,0.4)',isBase:true};
+  return {color:'#00AAFF',glow:'rgba(0,170,255,0.4)'};
+}
+
 function ivOpenCard(row){
   try {
   // Check if there's a known CARDS entry — must match set table if active set is known
@@ -6525,16 +6443,41 @@ function ivOpenCard(row){
     rc:      !!row.is_rookie, tags: row.is_rookie?['rc']:[],
     price: 0, isos: 0,
     hasCatalogPic: !!(row.var_images && Object.keys(row.var_images).length),
-    _setTable:   _ivSet ? _ivSet.table : null,
+    _setTable:   _ivSet ? _ivSet.table : 'card-images',
     _cardNumber: row.card_number,
     _team:       row.team,
     _category:   row.category,
     _varImages:  row.var_images || {},
-    variations: [{
-      label: row.insert_name || row.category || 'Base',
-      color:'#00AAFF', glow:'rgba(0,170,255,0.4)',
-      run:null, isBase:true, lastSale:'—', isos:0, pop:null, watching:null
-    }]
+    variations: (function(){
+      // Build full variation list from all rows sharing this card_number in the active set
+      const allRows = (_ivData||[]).filter(x=>
+        x.card_number === row.card_number && x.player === row.player
+      );
+      // Collect unique category/insert combos
+      const seen = {};
+      const vars = [];
+      const baseLabel = row.insert_name ? row.insert_name + ' — ' + row.category : (row.category||'Base');
+      allRows.forEach(x=>{
+        const lbl = x.insert_name ? x.insert_name + ' — ' + x.category : (x.category||'Base');
+        if(seen[lbl]) return;
+        seen[lbl] = true;
+        const clr = _varPillColor(lbl);
+        // Try to parse serial from category e.g. "/50"
+        const runMatch = (x.category||'').match(/\/\s*(\d+)/);
+        vars.push({label:lbl, color:clr.color, glow:clr.glow, superfractor:clr.superfractor||false,
+          run:runMatch?parseInt(runMatch[1]):null, isBase:clr.isBase||false,
+          lastSale:'—', isos:0, pop:null, watching:null,
+          _varImages: x.var_images||null});
+      });
+      // Fallback: just the clicked row
+      if(!vars.length){
+        const clr = _varPillColor(baseLabel);
+        vars.push({label:baseLabel, color:clr.color, glow:clr.glow,
+          run:null, isBase:clr.isBase||false, lastSale:'—', isos:0, pop:null, watching:null,
+          _varImages: row.var_images||null});
+      }
+      return vars;
+    })()
   };
 
   window._cdDbCardNum = row.card_number || null;

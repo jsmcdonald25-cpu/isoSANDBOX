@@ -926,7 +926,7 @@ async function loadUsers() {
   document.getElementById('users-loading').style.display = 'block';
   document.getElementById('users-table-wrap').style.display = 'none';
   try {
-    const rows = await _get('profiles', 'select=id,username,email,role,is_admin,credits,tier&order=created_at.desc&limit=200');
+    const rows = await _get('profiles', 'select=id,username,role,is_admin,credits,tier,created_at&order=created_at.desc&limit=200');
     _allUsers = rows || [];
     renderUsers(_allUsers);
   } catch(e) { toast('Failed to load users: ' + e.message, 'error'); }
@@ -945,12 +945,12 @@ function renderUsers(rows) {
           </div>
           <div>
             <div style="font-size:13px;font-weight:600">${u.username||'—'}</div>
-            <div style="font-size:11px;color:var(--text3)">${u.email||'—'}</div>
+            <div style="font-size:11px;color:var(--text3)">${u.username ? '@'+u.username : u.id.slice(0,8)+'...'}</div>
           </div>
         </div>
       </td>
       <td style="font-family:var(--font);font-size:12px">${u.username?'@'+u.username:'—'}</td>
-      <td style="font-size:12px;color:var(--text2)">${u.email||'—'}</td>
+      <td style="font-size:12px;color:var(--text2)">${u.username ? '@'+u.username : u.id.slice(0,8)+'...'}</td>
       <td><span class="badge ${u.role==='owner'?'badge-red':u.role==='admin'?'badge-purple':'badge-gray'}">${u.role||'user'}</span></td>
       <td>${u.is_admin?'<span class="badge badge-green">Admin</span>':'<span class="badge badge-gray">—</span>'}</td>
       <td>${u.credits||0}</td>
@@ -969,7 +969,7 @@ function userFilter() {
   const q = document.getElementById('user-search').value.toLowerCase();
   const filtered = _allUsers.filter(u =>
     (u.username||'').toLowerCase().includes(q) ||
-    (u.email||'').toLowerCase().includes(q) ||
+    (u.username||'').toLowerCase().includes(q) ||
     (u.username||'').toLowerCase().includes(q)
   );
   renderUsers(filtered);

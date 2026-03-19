@@ -2085,13 +2085,13 @@ async function logOut(){
       <span id="cd-back-label">Back to ISOVault</span>
     </div>
     <div class="cd-breadcrumb">
-      <span class="cd-crumb" id="cd-bc-home" onclick="backToVault()">ISOVault</span>
+      <span class="cd-crumb" id="cd-bc-home" onclick="window._ivReturnState='home';backToVault();">ISOVault</span>
       <span class="cd-crumb-sep">&#8250;</span>
-      <span class="cd-crumb" id="cd-bc-sport" onclick="backToVault();ivGoSport();">Baseball</span>
+      <span class="cd-crumb" id="cd-bc-sport" onclick="window._ivReturnState='sets';backToVault();">Baseball</span>
       <span class="cd-crumb-sep">&#8250;</span>
-      <span class="cd-crumb" id="cd-bc-brand" onclick="backToVault();ivGoBrand();">Topps</span>
+      <span class="cd-crumb" id="cd-bc-brand" onclick="window._ivReturnBrand=document.getElementById('cd-bc-brand').textContent;window._ivReturnState='sets-brand';backToVault();">Topps</span>
       <span class="cd-crumb-sep">&#8250;</span>
-      <span class="cd-crumb" id="cd-bc-year" onclick="backToVault();ivGoYear();">2026</span>
+      <span class="cd-crumb" id="cd-bc-year" onclick="window._ivReturnYear=document.getElementById('cd-bc-year').textContent;window._ivReturnState='sets-year';backToVault();">2026</span>
       <span class="cd-crumb-sep">&#8250;</span>
       <span class="cd-crumb active" id="cd-bc-set">Series 1 Mojo</span>
     </div>
@@ -5977,6 +5977,50 @@ async function ivInit(){
     _ivPrefetchCounts();
     _ivLoadCatalogCards();
   }
+  if(window._ivReturnState){
+    const rs = window._ivReturnState;
+    window._ivReturnState = null;
+    if(rs === 'home'){
+      ivGoHome();
+      ivRenderSports();
+      return;
+    } else if(rs === 'cards'){
+      _ivShowState('cards');
+      _ivBreadcrumb(true, true);
+      ivRenderSports();
+      return;
+    } else if(rs === 'sets'){
+      _ivShowState('sets');
+      _ivRenderSetBrowser();
+      _ivBreadcrumb(true, false);
+      ivRenderSports();
+      return;
+    } else if(rs === 'sets-brand'){
+      _ivShowState('sets');
+      _ivRenderSetBrowser();
+      document.querySelectorAll('#ivBrandPills .iv-pill').forEach(p=>{
+        p.classList.toggle('active', p.textContent === window._ivReturnBrand);
+      });
+      _ivBrandFilter = window._ivReturnBrand || 'all';
+      window._ivReturnBrand = null;
+      _ivApplySetFilters();
+      _ivBreadcrumb(true, false);
+      ivRenderSports();
+      return;
+    } else if(rs === 'sets-year'){
+      _ivShowState('sets');
+      _ivRenderSetBrowser();
+      document.querySelectorAll('#ivYearPills .iv-pill').forEach(p=>{
+        p.classList.toggle('active', p.textContent === String(window._ivReturnYear));
+      });
+      _ivYearFilter = window._ivReturnYear || 'all';
+      window._ivReturnYear = null;
+      _ivApplySetFilters();
+      _ivBreadcrumb(true, false);
+      ivRenderSports();
+      return;
+    }
+  }
   ivGoHome();
   ivRenderSports();
 }
@@ -7004,6 +7048,7 @@ function backToVault(){
     window._cdFromMyVault = false;
     N('myvault', document.querySelector('[onclick*="myvault"]'));
   } else {
+    window._ivReturnState = 'cards';
     N('library', document.querySelector('[onclick*="library"]'));
   }
 }

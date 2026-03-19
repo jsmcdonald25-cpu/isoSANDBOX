@@ -4718,7 +4718,7 @@ function openVaultCard(idx){
     hasCatalogPic:!!(row.var_images&&Object.keys(row.var_images).length),
     _setTable:null,_cardNumber:(row.card_number||'').replace(/^#/,''),
     _varImages:row.var_images||{},
-    variations:[{label:row.parallel||row.category||'Base',color:'#00AAFF',glow:'rgba(0,170,255,0.4)',run:null,isBase:true,lastSale:'—',isos:0,pop:null,watching:null}]
+    variations:(row.variations&&row.variations.length)?row.variations.map(v=>({...v,lastSale:'—',isos:0,pop:null,watching:null})):[{label:row.parallel||row.category||'Base',color:'#00AAFF',glow:'rgba(0,170,255,0.4)',run:null,isBase:true,lastSale:'—',isos:0,pop:null,watching:null}]
   };
   window._cdCard=card;
   document.getElementById('cd-bc-sport').textContent='Baseball';
@@ -6306,7 +6306,7 @@ async function ivSelectSet(table){
       ? '*'
       : setDef.noVarImages
         ? 'player,card_number,set_name,year,sport,team,category,insert_name,is_rookie'
-        : 'player,card_number,set_name,year,sport,team,category,insert_name,is_rookie,var_images';
+        : 'player,card_number,set_name,year,sport,team,category,insert_name,is_rookie,var_images,variations';
 
   let all = [], from = 0, PAGE = 1000, err = null;
   while(true){
@@ -6527,11 +6527,9 @@ function ivOpenCard(row){
     _team:       row.team,
     _category:   row.category,
     _varImages:  row.var_images || {},
-    variations: [{
-      label: row.insert_name || row.category || 'Base',
-      color:'#00AAFF', glow:'rgba(0,170,255,0.4)',
-      run:null, isBase:true, lastSale:'—', isos:0, pop:null, watching:null
-    }]
+    variations: (row.variations && row.variations.length)
+      ? row.variations.map(v=>({...v, lastSale:'—', isos:0, pop:null, watching:null}))
+      : [{label: row.insert_name || row.category || 'Base', color:'#00AAFF', glow:'rgba(0,170,255,0.4)', run:null, isBase:true, lastSale:'—', isos:0, pop:null, watching:null}]
   };
 
   window._cdDbCardNum = row.card_number || null;

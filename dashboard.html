@@ -5840,7 +5840,8 @@ let _ivSetsReady = (async function _ivLoadSets(){
       pokemonCols:  r.col_schema === 'pokemon',
       legacyCols:   r.col_schema === 'legacy',
       noVarImages:  r.no_var_images || r.col_schema === 'legacy' || r.col_schema === 'pokemon',
-      seriesFilter: r.series_filter || null,
+      seriesFilter:     r.series_filter || null,
+      defaultParallels: Array.isArray(r.default_parallels) ? r.default_parallels : [],
     }));
   } catch(e) {
     console.warn('_ivLoadSets failed:', e);
@@ -6449,28 +6450,52 @@ function ivOpenCard(row){
     _category:   row.category,
     _varImages:  row.var_images || {},
     variations: (function(){
-      // Build full variation list from all rows sharing this card_number in the active set
+      // SOURCE 1: Multiple DB rows for this card (one row per parallel)
       const allRows = (_ivData||[]).filter(x=>
         x.card_number === row.card_number && x.player === row.player
       );
-      // Collect unique category/insert combos
       const seen = {};
       const vars = [];
-      const baseLabel = row.insert_name ? row.insert_name + ' — ' + row.category : (row.category||'Base');
       allRows.forEach(x=>{
         const lbl = x.insert_name ? x.insert_name + ' — ' + x.category : (x.category||'Base');
         if(seen[lbl]) return;
         seen[lbl] = true;
         const clr = _varPillColor(lbl);
-        // Try to parse serial from category e.g. "/50"
         const runMatch = (x.category||'').match(/\/\s*(\d+)/);
         vars.push({label:lbl, color:clr.color, glow:clr.glow, superfractor:clr.superfractor||false,
           run:runMatch?parseInt(runMatch[1]):null, isBase:clr.isBase||false,
-          lastSale:'—', isos:0, pop:null, watching:null,
-          _varImages: x.var_images||null});
+          lastSale:'—', isos:0, pop:null, watching:null, _varImages: x.var_images||null});
       });
-      // Fallback: just the clicked row
+
+      // SOURCE 2: Set-level default_parallels from iv_sets (fills in when checklist = Base only)
+      if(vars.length <= 1 && _ivSet && _ivSet.defaultParallels && _ivSet.defaultParallels.length){
+        _ivSet.defaultParallels.forEach(p=>{
+          const lbl = p.label || p;
+          if(seen[lbl]) return;
+          seen[lbl] = true;
+          const clr = _varPillColor(lbl);
+          vars.push({label:lbl, color:clr.color, glow:clr.glow, superfractor:clr.superfractor||false,
+            run:p.run||null, isBase:clr.isBase||false,
+            lastSale:'—', isos:0, pop:null, watching:null, _varImages:null});
+        });
+      }
+
+      // SOURCE 3: var_images keys (uploaded parallels not yet in checklist rows)
+      if(row.var_images && Object.keys(row.var_images).length){
+        Object.keys(row.var_images).forEach(lbl=>{
+          if(seen[lbl]) return;
+          seen[lbl] = true;
+          const clr = _varPillColor(lbl);
+          vars.push({label:lbl, color:clr.color, glow:clr.glow, superfractor:clr.superfractor||false,
+            run:null, isBase:clr.isBase||false,
+            lastSale:'—', isos:0, pop:null, watching:null,
+            _varImages: {[lbl]: row.var_images[lbl]}});
+        });
+      }
+
+      // FALLBACK: just the single clicked row
       if(!vars.length){
+        const baseLabel = row.insert_name ? row.insert_name + ' — ' + row.category : (row.category||'Base');
         const clr = _varPillColor(baseLabel);
         vars.push({label:baseLabel, color:clr.color, glow:clr.glow,
           run:null, isBase:clr.isBase||false, lastSale:'—', isos:0, pop:null, watching:null,

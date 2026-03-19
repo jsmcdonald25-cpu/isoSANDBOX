@@ -5335,35 +5335,48 @@ function _cdSetViewerImages(frontUrl, backUrl){
   }
 
   // Probe front and back orientations independently
-  window._cdFrontLandscape = false;
-  window._cdBackLandscape  = false;
+  // Accept pre-known orientations (from canvas at upload time) to skip network probe
+  const _knownFront = (typeof arguments[2] === 'boolean') ? arguments[2] : null;
+  const _knownBack  = (typeof arguments[3] === 'boolean') ? arguments[3] : null;
+
+  window._cdFrontLandscape = _knownFront !== null ? _knownFront : false;
+  window._cdBackLandscape  = _knownBack  !== null ? _knownBack  : false;
 
   function applyCurrentFace(){
     _cdApplyOrientationBoth(window._cdFrontLandscape, window._cdBackLandscape);
   }
 
-  let frontDone = !frontUrl;
-  let backDone  = !backUrl;
+  let frontDone = !frontUrl || (_knownFront !== null);
+  let backDone  = !backUrl  || (_knownBack  !== null);
 
   function checkBothDone(){
     if(frontDone && backDone) applyCurrentFace();
   }
 
-  if(frontUrl){
-    _cdProbeOrientation(frontUrl, function(landscape){
-      window._cdFrontLandscape = landscape;
-      if(imgFront) imgFront.src = frontUrl;
-      frontDone = true;
-      checkBothDone();
-    });
-  }
-  if(backUrl){
-    _cdProbeOrientation(backUrl, function(landscape){
-      window._cdBackLandscape = landscape;
-      if(imgBack) imgBack.src = backUrl;
-      backDone = true;
-      checkBothDone();
-    });
+  // Apply immediately if both orientations are already known (no probe needed)
+  if(frontDone && backDone){
+    // Still set image src
+    if(frontUrl && imgFront) imgFront.src = frontUrl;
+    if(backUrl  && imgBack)  imgBack.src  = backUrl;
+    applyCurrentFace();
+  } else {
+    // Probe any face whose orientation we don't already know
+    if(frontUrl && _knownFront === null){
+      _cdProbeOrientation(frontUrl, function(landscape){
+        window._cdFrontLandscape = landscape;
+        if(imgFront) imgFront.src = frontUrl;
+        frontDone = true;
+        checkBothDone();
+      });
+    }
+    if(backUrl && _knownBack === null){
+      _cdProbeOrientation(backUrl, function(landscape){
+        window._cdBackLandscape = landscape;
+        if(imgBack) imgBack.src = backUrl;
+        backDone = true;
+        checkBothDone();
+      });
+    }
   }
   if(!frontUrl && !backUrl){
     _cdApplyOrientation(false);
@@ -5688,9 +5701,17 @@ function handleCatalogUpload(input, side){
           box.classList.add('has-file');
           document.getElementById(side==='front'?'cdFrontName':'cdBackName').textContent = file.name;
           const prev = document.getElementById(side==='front'?'cdFrontPreview':'cdBackPreview');
-          prev.src = canvas.toDataURL('image/jpeg', 0.85);
+          const _dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+          prev.src = _dataUrl;
           prev.style.display = 'block';
           document.getElementById('cdUploadError').style.display = 'none';
+          // Store detected orientation for immediate use after submit — no probe needed
+          if(side==='front') window._cdUploadFrontLandscape = (canvas.width > canvas.height);
+          else               window._cdUploadBackLandscape  = (canvas.width > canvas.height);
+          // Update upload box aspect ratio hint so user can see orientation
+          const _prev2 = document.getElementById(side==='front'?'cdFrontPreview':'cdBackPreview');
+          const _isLand = canvas.width > canvas.height;
+          _prev2.style.maxHeight = _isLand ? '80px' : '120px';
         }, 'image/jpeg', 0.85);
       };
       img.src = e2.target.result;
@@ -5762,7 +5783,11 @@ async function submitCatalogUpload(){
     const backCB  = backURL  + _cb;
     if(!window._cdCard._varImages) window._cdCard._varImages = {};
     window._cdCard._varImages[varLabel] = { front: frontCB, back: backCB };
-    _cdSetViewerImages(frontCB, backCB);
+    // Pass canvas-detected orientations directly — no probe needed, no CDN race
+    _cdSetViewerImages(frontCB, backCB,
+      window._cdUploadFrontLandscape || false,
+      window._cdUploadBackLandscape  || false
+    );
 
     // Also update _ivData in place so next card open uses fresh var_images, not stale preload
     if(window._ivData && cardNum){

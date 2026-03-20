@@ -5998,8 +5998,18 @@ async function submitCatalogUpload(){
 
     bar.style.width='85%';
 
-    // Write merged var_images back (orientation included)
-    await _rPatch(table,'card_number=eq.'+encodeURIComponent(cardNum),{ var_images: varImages });
+    // Write merged var_images back — use return=representation so we can verify the write actually happened
+    // Supabase returns 204 OK even when RLS silently blocks the UPDATE (0 rows affected, no error)
+    const _patchResp = await fetch(_SURL+'/'+table+'?card_number=eq.'+encodeURIComponent(cardNum),{
+      method:'PATCH',
+      headers:{..._sbH(),'Content-Type':'application/json','Prefer':'return=representation'},
+      body:JSON.stringify({ var_images: varImages })
+    });
+    if(!_patchResp.ok) throw new Error('DB write failed: HTTP '+_patchResp.status);
+    const _patchData = await _patchResp.json();
+    if(!_patchData || !_patchData.length){
+      throw new Error('Image URLs saved to storage but DB record was not updated. Ask admin to enable UPDATE policy on '+table+' for authenticated users.');
+    }
 
     bar.style.width='100%';
     btn.textContent='✓ SAVED!';

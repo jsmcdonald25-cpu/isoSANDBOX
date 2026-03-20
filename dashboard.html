@@ -2110,13 +2110,13 @@ async function logOut(){
             <div class="cd-card" id="cd-card">
               <div class="cd-front" id="cd-front">
                 <div class="cd-card-placeholder" id="cd-placeholder-front" style="background:#071828;width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:10px"><img id="grailph-f" style="width:100%;height:100%;object-fit:cover;border-radius:10px;display:block" alt="GrailISO"></div>
-                <img id="cd-img-front" class="cd-card-face" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:10px" alt="Card front">
+                <img id="cd-img-front" class="cd-card-face" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border-radius:10px" alt="Card front">
                 <div class="cd-glare" id="cd-glare-front"></div>
                 <div class="cd-shimmer" id="cd-shimmer-el" style="display:none"></div>
               </div>
               <div class="cd-back" id="cd-back">
                 <div id="cd-placeholder-back" style="width:100%;height:100%;background:#071828;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:10px"><img id="grailph-b" style="width:100%;height:100%;object-fit:cover;border-radius:10px;display:block" alt="GrailISO"></div>
-                <img id="cd-img-back" class="cd-card-face" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:10px" alt="Card back">
+                <img id="cd-img-back" class="cd-card-face" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border-radius:10px" alt="Card back">
               </div>
             </div>
           </div>
@@ -2328,13 +2328,13 @@ async function logOut(){
         <div id="cdConfirmGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
           <div>
             <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:6px">FRONT</div>
-            <div id="cdConfirmFrontWrap" style="background:#0a1929;border:1px solid rgba(0,170,255,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden">
+            <div id="cdConfirmFrontWrap" style="height:240px;background:#0a1929;border:1px solid rgba(0,170,255,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden">
               <img id="cdConfirmFront" style="display:block;border-radius:8px;object-fit:contain;max-width:100%;max-height:100%">
             </div>
           </div>
           <div>
             <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:6px">BACK</div>
-            <div id="cdConfirmBackWrap" style="background:#0a1929;border:1px solid rgba(0,170,255,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden">
+            <div id="cdConfirmBackWrap" style="height:240px;background:#0a1929;border:1px solid rgba(0,170,255,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden">
               <img id="cdConfirmBack" style="display:block;border-radius:8px;object-fit:contain;max-width:100%;max-height:100%">
             </div>
           </div>
@@ -5358,10 +5358,12 @@ async function _cdLoadCatalogImages(c){
     const varKey = activeVar ? activeVar.label : null;
     const imgs = varKey ? preloaded[varKey] : null;
     if(imgs && (imgs.front || imgs.back)){
-      _cdSetViewerImages(imgs.front || null, imgs.back || null);
+      // Pass stored orientation — never probe, never let CDN dimensions override saved value
+      _cdSetViewerImages(imgs.front || null, imgs.back || null,
+        imgs.frontLandscape !== undefined ? imgs.frontLandscape : null,
+        imgs.backLandscape  !== undefined ? imgs.backLandscape  : null);
       if(statusEl){ statusEl.textContent='✓ Images loaded'; statusEl.style.color='var(--green)';
         setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
-      // Lock upload button if both front+back already exist for this variation — admin only
       if(uploadBtn){
         if(imgs.front && imgs.back && !window._isAdmin){
           uploadBtn.style.display='none';
@@ -5369,17 +5371,14 @@ async function _cdLoadCatalogImages(c){
           uploadBtn.textContent='Replace Image'; uploadBtn.style.display='inline-flex';
         }
       }
-      // Update hasCatalogPic so vault modal shows correct path
       c.hasCatalogPic = true;
       if(window._cdCard) window._cdCard.hasCatalogPic = true;
       const _pm1 = document.getElementById('cd-path-msg');
       if(_pm1) _pm1.innerHTML = '<strong>This card has a catalog image.</strong> Confirm how you acquired it and the price you paid — no photo upload needed.';
-    } else {
-      // var_images key exists but no image for active variation — fall through to slow path
-      // so we can try fetching a fresh copy (admin may have uploaded after page load)
-      if(statusEl){ statusEl.style.display='none'; }
+      return; // Images found and applied — do NOT fall through to slow path
     }
-    // Don't return — fall through to slow path to try a fresh DB fetch
+    // var_images exists but no image for this specific variation — fall through to slow path
+    if(statusEl){ statusEl.style.display='none'; }
   }
 
   // Slow path — fetch from Supabase
@@ -5406,7 +5405,10 @@ async function _cdLoadCatalogImages(c){
     const imgs = varKey ? data.var_images[varKey] : null;
 
     if(imgs && (imgs.front || imgs.back)){
-      _cdSetViewerImages(imgs.front || null, imgs.back || null);
+      // Pass stored orientation — never probe
+      _cdSetViewerImages(imgs.front || null, imgs.back || null,
+        imgs.frontLandscape !== undefined ? imgs.frontLandscape : null,
+        imgs.backLandscape  !== undefined ? imgs.backLandscape  : null);
       if(statusEl){ statusEl.textContent='✓ Images loaded'; statusEl.style.color='var(--green)';
         setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
       // Lock upload button if both front+back already exist for this variation — admin only
@@ -5919,22 +5921,12 @@ function handleCatalogUpload(input, side){
           prev.src = _dataUrl;
           prev.style.display = 'block';
           document.getElementById('cdUploadError').style.display = 'none';
-          // Store detected orientation for immediate use after submit — no probe needed
-          if(side==='front') window._cdUploadFrontLandscape = (canvas.width > canvas.height);
-          else               window._cdUploadBackLandscape  = (canvas.width > canvas.height);
-          // Always update selects and label with detection result — user can correct if wrong
-          const _isL = canvas.width > canvas.height;
-          const _selF=document.getElementById('cdOrientFront'), _selB=document.getElementById('cdOrientBack');
-          if(side==='front' && _selF) _selF.value=_isL?'landscape':'portrait';
-          if(side==='back'  && _selB) _selB.value=_isL?'landscape':'portrait';
-          const _lbl = document.getElementById('cdOrientAutoLabel');
-          const _fVal = _selF?_selF.value:'?', _bVal = _selB?_selB.value:'?';
-          if(_lbl) _lbl.textContent = 'detected — correct below if wrong';
-          // Update upload box aspect ratio hint — portrait gets more height, landscape gets less
+          // Do NOT auto-detect orientation from canvas dimensions — screenshots are always
+          // landscape (1920x1080) even when the card inside is portrait. User must choose below.
+          // Update upload box aspect ratio hint only
           const _prev2 = document.getElementById(side==='front'?'cdFrontPreview':'cdBackPreview');
-          const _isLand = canvas.width > canvas.height;
-          _prev2.style.maxHeight = _isLand ? '70px' : '140px';
-          _prev2.style.display = 'block';
+          const _lbl = document.getElementById('cdOrientAutoLabel');
+          if(_lbl) _lbl.textContent = 'choose orientation below';
         }, 'image/jpeg', 0.85);
       };
       img.src = e2.target.result;
@@ -6452,6 +6444,19 @@ function _ivRenderSetTiles(sets){
 async function ivSelectSet(table){
   const setDef = IV_SETS.find(s=>s.table===table);
   if(!setDef) return;
+
+  // If same set is already loaded, skip the full Supabase re-fetch — just re-render
+  // This preserves any in-memory var_images updates made since last fetch
+  if(_ivSet && _ivSet.table === table && _ivData && _ivData.length){
+    _ivCat = 'all'; _ivSearch = '';
+    const cs = document.getElementById('ivCardSearch'); if(cs) cs.value='';
+    document.querySelectorAll('#ivCatPills .chip').forEach((c,i)=>{c.classList.toggle('active',i===0);});
+    _ivShowState('cards');
+    _ivBreadcrumb(true, true);
+    _ivApplyCardFilters();
+    return;
+  }
+
   _ivSet   = setDef;
   _ivCat   = 'all';
   _ivSearch = '';
@@ -6827,9 +6832,14 @@ function ivOpenCard(row){
   const uploadBtn = document.getElementById('cd-upload-btn');
   if(uploadBtn){ uploadBtn.textContent='📷 Upload Image'; uploadBtn.style.display='inline-flex'; }
 
-  // Load images from var_images if present
+  // Load images from var_images if present — pass stored orientation so probe never fires
   const firstVar = card._varImages && Object.values(card._varImages)[0];
-  _cdSetViewerImages(firstVar?firstVar.front:null, firstVar?firstVar.back:null);
+  _cdSetViewerImages(
+    firstVar ? firstVar.front : null,
+    firstVar ? firstVar.back  : null,
+    firstVar && firstVar.frontLandscape !== undefined ? firstVar.frontLandscape : null,
+    firstVar && firstVar.backLandscape  !== undefined ? firstVar.backLandscape  : null
+  );
   if(card.hasCatalogPic && uploadBtn) uploadBtn.textContent = 'Replace Image';
 
   _cdReset3D();

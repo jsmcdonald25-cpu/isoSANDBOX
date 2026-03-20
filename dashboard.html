@@ -6397,8 +6397,8 @@ async function ivSelectSet(table){
     : setDef.legacyCols
       ? '*'
       : setDef.noVarImages
-        ? 'player,card_number,set_name,year,sport,team,category,insert_name,is_rookie'
-        : 'player,card_number,set_name,year,sport,team,category,insert_name,is_rookie,var_images';
+        ? 'player,card_number,set_name,year,sport,team,category,insert_name,is_rookie,variations'
+        : 'player,card_number,set_name,year,sport,team,category,insert_name,is_rookie,var_images,variations';
 
   let all = [], from = 0, PAGE = 1000, err = null;
   while(true){
@@ -6645,22 +6645,40 @@ function ivOpenCard(row){
     _category:   row.category,
     _varImages:  row.var_images || {},
     variations: (function(){
-      // SOURCE 1: Multiple DB rows for this card (one row per parallel)
-      const allRows = (_ivData||[]).filter(x=>
-        x.card_number === row.card_number && x.player === row.player
-      );
+      // SOURCE 1a: row.variations — admin-edited pills (authoritative, stored by Card/Variation Editor)
       const seen = {};
       const vars = [];
-      allRows.forEach(x=>{
-        const lbl = x.insert_name ? x.insert_name + ' — ' + x.category : (x.category||'Base');
-        if(seen[lbl]) return;
-        seen[lbl] = true;
-        const clr = _varPillColor(lbl);
-        const runMatch = (x.category||'').match(/\/\s*(\d+)/);
-        vars.push({label:lbl, color:clr.color, glow:clr.glow, superfractor:clr.superfractor||false,
-          run:runMatch?parseInt(runMatch[1]):null, isBase:clr.isBase||false,
-          lastSale:'—', isos:0, pop:null, watching:null, _varImages: x.var_images||null});
-      });
+      if(row.variations && Array.isArray(row.variations) && row.variations.length){
+        row.variations.forEach(p=>{
+          const lbl = p.label || 'Base';
+          if(seen[lbl]) return;
+          seen[lbl] = true;
+          // Use admin-set color/glow if present, otherwise derive from label
+          const clr = (p.color && p.glow) ? p : _varPillColor(lbl);
+          vars.push({label:lbl, color:clr.color, glow:clr.glow,
+            superfractor:p.superfractor||clr.superfractor||false,
+            run:p.run||null, isBase:p.isBase||clr.isBase||false,
+            lastSale:'—', isos:0, pop:null, watching:null,
+            _varImages: row.var_images||null});
+        });
+      }
+
+      // SOURCE 1b: Multiple DB rows for same card_number (one row per parallel — legacy import style)
+      if(!vars.length){
+        const allRows = (_ivData||[]).filter(x=>
+          x.card_number === row.card_number && x.player === row.player
+        );
+        allRows.forEach(x=>{
+          const lbl = x.insert_name ? x.insert_name + ' — ' + x.category : (x.category||'Base');
+          if(seen[lbl]) return;
+          seen[lbl] = true;
+          const clr = _varPillColor(lbl);
+          const runMatch = (x.category||'').match(/\/\s*(\d+)/);
+          vars.push({label:lbl, color:clr.color, glow:clr.glow, superfractor:clr.superfractor||false,
+            run:runMatch?parseInt(runMatch[1]):null, isBase:clr.isBase||false,
+            lastSale:'—', isos:0, pop:null, watching:null, _varImages: x.var_images||null});
+        });
+      }
 
       // SOURCE 2: iv_sets.default_parallels — set once per set in the admin panel or via SQL.
       // Works from both normal ISOVault (_ivSet) and player-search (row._setDef) paths.
@@ -6951,8 +6969,8 @@ async function ivPlayerSearchGo(playerName){
     await Promise.all(sportSets.map(async s=>{
       // Use proven safe columns only — same set as ivSelectSet checklist view
       const cols = s.noVarImages
-        ? 'player,card_number,set_name,year,category,insert_name,is_rookie'
-        : 'player,card_number,set_name,year,category,insert_name,is_rookie,var_images';
+        ? 'player,card_number,set_name,year,category,insert_name,is_rookie,variations'
+        : 'player,card_number,set_name,year,category,insert_name,is_rookie,var_images,variations';
       const url = `${_SURL}/${s.table}?select=${cols}&player=ilike.*${encodeURIComponent(playerName)}*&limit=200`;
       const res = await fetch(url, { headers: _sbH(), signal: _ivPlayerAbort.signal });
       if(!res.ok) return;

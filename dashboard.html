@@ -168,7 +168,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .vm-upload-icon{display:none}
 .vm-upload-label{font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);letter-spacing:.5px}
 .vm-upload-name{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--green);margin-top:4px;word-break:break-all}
-.vm-preview{width:100%;max-height:55px;object-fit:contain;border-radius:4px;margin-top:4px;display:none;border:1px solid var(--deep-border)}
+.vm-preview{max-width:100%;width:auto;max-height:55px;object-fit:contain;border-radius:4px;margin:4px auto 0;display:none;border:1px solid var(--deep-border)}
 .vm-input{width:100%;background:rgba(0,0,0,0.25);border:1px solid var(--deep-border);border-radius:6px;padding:10px 13px;color:var(--white);font-family:Barlow Condensed,sans-serif;font-size:14px;outline:none;transition:border-color .2s;box-sizing:border-box}
 .vm-input:focus{border-color:var(--blue)}.vm-input::placeholder{color:var(--muted-text)}
 .vm-serial-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
@@ -3311,6 +3311,7 @@ const PM={
 };
 let _navSuppressHistory = false;
 function N(id,el){
+  if(id !== 'carddetail') window._prevSection = window._currentSection || null;
   window._currentSection = id; // track so token-refresh doesn't reset nav
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -5829,19 +5830,30 @@ function cdUploadShowConfirm(){
     document.getElementById('cdUploadError').style.display='block'; return;
   }
   document.getElementById('cdUploadError').style.display='none';
-  // Copy previews into confirm screen
+  // Copy previews into confirm screen with orientation-correct sizing
   const fp = document.getElementById('cdFrontPreview');
   const bp = document.getElementById('cdBackPreview');
-  document.getElementById('cdConfirmFront').src = fp.src;
-  document.getElementById('cdConfirmBack').src  = bp.src;
-  // If front is landscape, stack images vertically so landscape proportions show
+  const _isFrontLand = window._cdUploadFrontLandscape || false;
+  const _isBackLand  = window._cdUploadBackLandscape  || false;
+  const cfImg = document.getElementById('cdConfirmFront');
+  const cbImg = document.getElementById('cdConfirmBack');
+  cfImg.src = fp.src;
+  cbImg.src = bp.src;
+  // Size each image by orientation — portrait = tall+narrow, landscape = short+wide
+  // width:auto + max-height lets the image breathe at its natural aspect ratio
+  cfImg.style.width    = _isFrontLand ? '100%'  : 'auto';
+  cfImg.style.maxWidth = _isFrontLand ? '100%'  : '100%';
+  cfImg.style.maxHeight= _isFrontLand ? '160px' : '260px';
+  cfImg.style.display  = 'block';
+  cfImg.style.margin   = '0 auto';
+  cbImg.style.width    = _isBackLand  ? '100%'  : 'auto';
+  cbImg.style.maxWidth = _isBackLand  ? '100%'  : '100%';
+  cbImg.style.maxHeight= _isBackLand  ? '160px' : '260px';
+  cbImg.style.display  = 'block';
+  cbImg.style.margin   = '0 auto';
+  // Keep grid always 2-col — orientation is communicated by image shape, not layout
   const _cfGrid = document.getElementById('cdConfirmGrid');
-  if(_cfGrid){
-    const _isFrontLand = window._cdUploadFrontLandscape || false;
-    const _isBackLand  = window._cdUploadBackLandscape  || false;
-    const _anyLand = _isFrontLand || _isBackLand;
-    _cfGrid.style.gridTemplateColumns = _anyLand ? '1fr' : '1fr 1fr';
-  }
+  if(_cfGrid) _cfGrid.style.gridTemplateColumns = '1fr 1fr';
   document.getElementById('cdUploadError2').style.display='none';
   document.getElementById('cdUploadProgress').style.display='none';
   document.getElementById('cdUploadProgressBar').style.width='0';
@@ -5950,10 +5962,11 @@ function handleCatalogUpload(input, side){
           const _selF=document.getElementById('cdOrientFront'), _selB=document.getElementById('cdOrientBack');
           if(side==='front' && _selF) _selF.value=_isL?'landscape':'portrait';
           if(side==='back'  && _selB) _selB.value=_isL?'landscape':'portrait';
-          // Update upload box aspect ratio hint so user can see orientation
+          // Update upload box aspect ratio hint — portrait gets more height, landscape gets less
           const _prev2 = document.getElementById(side==='front'?'cdFrontPreview':'cdBackPreview');
           const _isLand = canvas.width > canvas.height;
-          _prev2.style.maxHeight = _isLand ? '80px' : '120px';
+          _prev2.style.maxHeight = _isLand ? '70px' : '140px';
+          _prev2.style.display = 'block';
         }, 'image/jpeg', 0.85);
       };
       img.src = e2.target.result;
@@ -7326,25 +7339,28 @@ async function _cdLoadLiveMarket(card, variationLabel){
 // &#9472;&#9472; Back to Vault from Card Detail &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 function _cdSetMyVaultContext(fromMyVault){
   window._cdFromMyVault = !!fromMyVault;
+  const prev = window._prevSection || (fromMyVault ? 'myvault' : 'library');
   const backLabel = document.getElementById('cd-back-label');
   const bcHome    = document.getElementById('cd-bc-home');
   const ctaIso    = document.getElementById('cd-cta-isovault');
   const ctaMv     = document.getElementById('cd-cta-myvault');
   const pathMsg   = document.getElementById('cd-path-msg');
-  if(backLabel) backLabel.textContent = fromMyVault ? 'Back to My Vault' : 'Back to ISOVault';
-  if(bcHome)    bcHome.textContent    = fromMyVault ? 'My Vault'         : 'ISOVault';
-  if(ctaIso)    ctaIso.style.display  = fromMyVault ? 'none'             : 'block';
-  if(ctaMv)     ctaMv.style.display   = fromMyVault ? 'block'            : 'none';
-  if(pathMsg&&fromMyVault) pathMsg.innerHTML = '';
+  const isFromMv  = prev === 'myvault';
+  if(backLabel) backLabel.textContent = isFromMv ? 'Back to My Vault' : 'Back to ISOVault';
+  if(bcHome)    bcHome.textContent    = isFromMv ? 'My Vault'         : 'ISOVault';
+  if(ctaIso)    ctaIso.style.display  = isFromMv ? 'none'             : 'block';
+  if(ctaMv)     ctaMv.style.display   = isFromMv ? 'block'            : 'none';
+  if(pathMsg&&isFromMv) pathMsg.innerHTML = '';
   // Fav button — only shown when from My Vault
   const favBtn = document.getElementById('cd-fav-btn');
-  if(favBtn){ favBtn.style.display = fromMyVault ? 'block' : 'none'; if(fromMyVault) cdUpdateFavBtn(); }
+  if(favBtn){ favBtn.style.display = isFromMv ? 'block' : 'none'; if(isFromMv) cdUpdateFavBtn(); }
 }
 
 function backToVault(){
   if(_cdSpinner){ clearInterval(_cdSpinner); _cdSpinner=null; _cdSpinning=false; }
-  if(window._cdFromMyVault){
-    window._cdFromMyVault = false;
+  const prev = window._prevSection || (window._cdFromMyVault ? 'myvault' : 'library');
+  window._cdFromMyVault = false;
+  if(prev === 'myvault'){
     N('myvault', document.querySelector('[onclick*="myvault"]'));
   } else {
     window._ivReturnState = 'cards';

@@ -2292,6 +2292,32 @@ async function logOut(){
             <img class="vm-preview" id="cdBackPreview">
           </div>
         </div>
+
+        <!-- Orientation override — auto-detected from image, but override if wrong -->
+        <div id="cdOrientSection" style="background:rgba(0,170,255,0.05);border:1px solid rgba(0,170,255,0.15);border-radius:8px;padding:10px 12px;margin-bottom:10px;font-family:Barlow Condensed,sans-serif;font-size:12px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <input type="checkbox" id="cdOrientOverride" style="cursor:pointer;accent-color:var(--blue)">
+            <label for="cdOrientOverride" style="color:var(--chrome);cursor:pointer;letter-spacing:.5px">OVERRIDE AUTO-DETECTED ORIENTATION</label>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;display:none" id="cdOrientPickers">
+            <div>
+              <div style="color:var(--muted-text);font-size:11px;letter-spacing:1px;margin-bottom:4px">FRONT</div>
+              <select id="cdOrientFront" style="width:100%;background:var(--deep3);border:1px solid var(--deep-border);border-radius:6px;padding:5px 8px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--white)">
+                <option value="portrait">Portrait (tall)</option>
+                <option value="landscape">Landscape (wide)</option>
+              </select>
+            </div>
+            <div>
+              <div style="color:var(--muted-text);font-size:11px;letter-spacing:1px;margin-bottom:4px">BACK</div>
+              <select id="cdOrientBack" style="width:100%;background:var(--deep3);border:1px solid var(--deep-border);border-radius:6px;padding:5px 8px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--white)">
+                <option value="portrait">Portrait (tall)</option>
+                <option value="landscape">Landscape (wide)</option>
+              </select>
+            </div>
+          </div>
+          <div style="color:var(--muted-text);font-size:11px;margin-top:4px" id="cdOrientAutoLabel">Auto-detected from image EXIF data</div>
+        </div>
+
         <div class="vm-error" id="cdUploadError" style="display:none">Both front and back are required.</div>
         <div style="display:flex;gap:10px;margin-top:4px">
           <button class="btn btn-primary" style="flex:1" id="cdReviewBtn" onclick="cdUploadShowConfirm()">REVIEW BEFORE SAVING &#8594;</button>
@@ -5748,6 +5774,33 @@ function cdReset(){ _cdReset3D(); }
 function openCatalogUpload(){
   _cdCatalogFrontBlob=null; _cdCatalogBackBlob=null;
   ['cdFrontBox','cdBackBox'].forEach(id=>document.getElementById(id).classList.remove('has-file'));
+  // Reset orientation override
+  const _oc = document.getElementById('cdOrientOverride');
+  if(_oc){ _oc.checked=false; }
+  const _op = document.getElementById('cdOrientPickers');
+  if(_op){ _op.style.display='none'; }
+  const _ol = document.getElementById('cdOrientAutoLabel');
+  if(_ol){ _ol.textContent='Auto-detected from image EXIF data'; }
+  // Wire checkbox
+  if(_oc && !_oc._wired){
+    _oc._wired = true;
+    _oc.addEventListener('change', function(){
+      const pickers = document.getElementById('cdOrientPickers');
+      const lbl = document.getElementById('cdOrientAutoLabel');
+      if(this.checked){
+        if(pickers) pickers.style.display='grid';
+        if(lbl) lbl.textContent='Manual override — choose orientation for each face';
+        // Pre-set selects to auto-detected value
+        const ff = document.getElementById('cdOrientFront');
+        const bb = document.getElementById('cdOrientBack');
+        if(ff) ff.value = window._cdUploadFrontLandscape ? 'landscape' : 'portrait';
+        if(bb) bb.value = window._cdUploadBackLandscape  ? 'landscape' : 'portrait';
+      } else {
+        if(pickers) pickers.style.display='none';
+        if(lbl) lbl.textContent='Auto-detected from image EXIF data';
+      }
+    });
+  }
   ['cdFrontName','cdBackName'].forEach(id=>document.getElementById(id).textContent='');
   ['cdFrontPreview','cdBackPreview'].forEach(id=>{ const el=document.getElementById(id); el.style.display='none'; el.src=''; });
   ['cdFrontFile','cdBackFile'].forEach(id=>document.getElementById(id).value='');
@@ -5876,6 +5929,16 @@ function handleCatalogUpload(input, side){
           // Store detected orientation for immediate use after submit — no probe needed
           if(side==='front') window._cdUploadFrontLandscape = (canvas.width > canvas.height);
           else               window._cdUploadBackLandscape  = (canvas.width > canvas.height);
+          // Update auto-detect label and pre-fill selects if override is open
+          const _isL = canvas.width > canvas.height;
+          const _lbl = document.getElementById('cdOrientAutoLabel');
+          const _fL = window._cdUploadFrontLandscape, _bL = window._cdUploadBackLandscape;
+          if(_lbl && !document.getElementById('cdOrientOverride')?.checked){
+            _lbl.textContent = 'Auto-detected: Front='+(window._cdUploadFrontLandscape?'Landscape':'Portrait')+', Back='+(window._cdUploadBackLandscape?'Landscape':'Portrait');
+          }
+          const _selF=document.getElementById('cdOrientFront'), _selB=document.getElementById('cdOrientBack');
+          if(side==='front' && _selF) _selF.value=_isL?'landscape':'portrait';
+          if(side==='back'  && _selB) _selB.value=_isL?'landscape':'portrait';
           // Update upload box aspect ratio hint so user can see orientation
           const _prev2 = document.getElementById(side==='front'?'cdFrontPreview':'cdBackPreview');
           const _isLand = canvas.width > canvas.height;
@@ -5951,11 +6014,29 @@ async function submitCatalogUpload(){
     const backCB  = backURL  + _cb;
     if(!window._cdCard._varImages) window._cdCard._varImages = {};
     window._cdCard._varImages[varLabel] = { front: frontCB, back: backCB };
-    // Pass canvas-detected orientations directly — no probe needed, no CDN race
-    _cdSetViewerImages(frontCB, backCB,
-      window._cdUploadFrontLandscape || false,
-      window._cdUploadBackLandscape  || false
-    );
+
+    // CRITICAL: update _cdVars so cdSelectVar finds the image for this pill
+    if(window._cdVars){
+      window._cdVars.forEach(v=>{
+        if(v.label === varLabel){
+          if(!v._varImages) v._varImages = {};
+          v._varImages[varLabel] = { front: frontCB, back: backCB };
+        }
+      });
+    }
+
+    // Apply orientation override if checkbox was checked, else use canvas-detected
+    const _forceOrient = document.getElementById('cdOrientOverride');
+    const _overrideChecked = _forceOrient && _forceOrient.checked;
+    const _frontIsLand = _overrideChecked
+      ? (document.getElementById('cdOrientFront').value === 'landscape')
+      : (window._cdUploadFrontLandscape || false);
+    const _backIsLand = _overrideChecked
+      ? (document.getElementById('cdOrientBack').value === 'landscape')
+      : (window._cdUploadBackLandscape || false);
+
+    // Pass orientations directly — zero network probe, zero CDN race
+    _cdSetViewerImages(frontCB, backCB, _frontIsLand, _backIsLand);
 
     // Also update _ivData in place so next card open uses fresh var_images, not stale preload
     if(window._ivData && cardNum){

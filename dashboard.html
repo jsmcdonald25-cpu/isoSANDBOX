@@ -1146,6 +1146,62 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .s4-var-name{font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:1px;color:var(--white);margin-bottom:3px}
 .s4-var-count{font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--blue);letter-spacing:.5px}
 
+/* ── SELLER DASHBOARD ── */
+.sd-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.sd-stat{background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden}
+.sd-stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--blue),transparent);opacity:.3}
+.sd-stat-label{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px}
+.sd-stat-val{font-family:Bebas Neue,sans-serif;font-size:30px;line-height:1;color:var(--white)}
+.sd-stat-val.blue{color:var(--blue)}.sd-stat-val.green{color:var(--green)}.sd-stat-val.amber{color:#FFB800}
+.sd-stat-sub{font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-top:3px}
+.sd-section{background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;margin-bottom:16px;overflow:hidden}
+.sd-section-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--deep-border)}
+.sd-section-title{font-family:Bebas Neue,sans-serif;font-size:15px;letter-spacing:2px;color:var(--white)}
+.sd-section-sub{font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);letter-spacing:.5px}
+.sd-empty{text-align:center;padding:32px 20px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);letter-spacing:.5px;line-height:1.7}
+.sd-card-row{display:grid;grid-template-columns:44px 1fr auto auto;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(0,170,255,.06);cursor:pointer;transition:background .15s}
+.sd-card-row:last-child{border-bottom:none}
+.sd-card-row:hover{background:rgba(0,170,255,.05)}
+.sd-card-thumb{width:44px;height:60px;border-radius:5px;background:#071828;border:1px solid rgba(0,170,255,.2);overflow:hidden;flex-shrink:0}
+.sd-card-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.sd-card-player{font-family:Barlow Condensed,sans-serif;font-weight:700;font-size:15px;color:var(--white);line-height:1.2}
+.sd-card-meta{font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-top:2px}
+.sd-card-serial{font-family:Barlow Condensed,sans-serif;font-size:11px;color:#FFB800;margin-top:2px;font-weight:700}
+.sd-price-col{text-align:right}
+.sd-ask{font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--green);line-height:1}
+.sd-ask-lbl{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:2px}
+.sd-iso-badge{background:rgba(0,170,255,.15);border:1px solid rgba(0,170,255,.3);border-radius:4px;padding:3px 9px;font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:700;color:var(--blue);letter-spacing:.5px;white-space:nowrap}
+.sd-iso-badge.matched{background:rgba(0,232,135,.15);border-color:rgba(0,232,135,.3);color:var(--green)}
+.sd-match-row{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-bottom:1px solid rgba(0,170,255,.06)}
+.sd-match-row:last-child{border-bottom:none}
+.sd-match-icon{width:36px;height:36px;border-radius:50%;background:rgba(0,170,255,.1);border:1px solid rgba(0,170,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.sd-match-icon.new{background:rgba(0,232,135,.1);border-color:rgba(0,232,135,.3)}
+.sd-match-body{flex:1;min-width:0}
+.sd-match-title{font-family:Barlow Condensed,sans-serif;font-weight:700;font-size:14px;color:var(--white);margin-bottom:3px}
+.sd-match-msg{font-family:Barlow,sans-serif;font-size:12px;color:var(--chrome);line-height:1.5}
+.sd-match-time{font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);margin-top:5px}
+.sd-market-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.sd-mkt-cell{padding:14px 16px;border-right:1px solid rgba(0,170,255,.07)}
+.sd-mkt-cell:last-child{border-right:none}
+.sd-mkt-lbl{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px}
+.sd-mkt-val{font-family:Bebas Neue,sans-serif;font-size:22px;line-height:1;color:var(--white)}
+.sd-mkt-sub{font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-top:2px}
+/* Available for ISO modal */
+.iso-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:10100;display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
+.iso-modal-overlay.open{display:flex}
+.iso-modal{background:var(--deep2);border:1px solid rgba(0,170,255,.3);border-radius:12px;width:100%;max-width:480px;padding:20px;position:relative}
+.iso-modal-title{font-family:Bebas Neue,sans-serif;font-size:20px;letter-spacing:2px;color:var(--white);margin-bottom:2px}
+.iso-modal-sub{font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-bottom:14px}
+.iso-modal-card-info{background:rgba(0,170,255,.06);border:1px solid var(--deep-border);border-radius:8px;padding:10px 14px;margin-bottom:14px}
+.iso-modal-card-name{font-family:Barlow Condensed,sans-serif;font-size:16px;font-weight:700;color:var(--white)}
+.iso-modal-card-meta{font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-top:2px}
+.iso-warning{display:none;align-items:flex-start;gap:8px;padding:10px 13px;background:rgba(255,184,0,.08);border:1px solid rgba(255,184,0,.3);border-radius:7px;margin-bottom:12px}
+.iso-warning.show{display:flex}
+.iso-warning-icon{font-size:13px;flex-shrink:0;margin-top:1px}
+.iso-warning-text{font-family:Barlow Condensed,sans-serif;font-size:12px;color:#FFB800;line-height:1.5}
+.iso-avail-btn{background:rgba(0,232,135,.12);border:1px solid rgba(0,232,135,.35);color:var(--green);font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;padding:8px 6px;border-radius:8px;cursor:pointer;transition:all .2s;text-align:center;white-space:nowrap}
+.iso-avail-btn:hover{background:rgba(0,232,135,.22);border-color:rgba(0,232,135,.6)}
+.iso-avail-btn.active{background:rgba(255,59,92,.1);border-color:rgba(255,59,92,.4);color:var(--red)}
 
 </style>
 </head>
@@ -1484,6 +1540,13 @@ async function logOut(){
       <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
       <span class="nav-label">My ISOs</span>
       <span class="nav-badge" id="navBadge-myisos">3</span>
+    </div>
+
+    <div class="nav-item" id="nav-sellerdash" onclick="N('sellerdash',this)">
+      <div class="nav-drag-handle">&#10303;</div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <span class="nav-label">Seller Dashboard</span>
+      <span class="nav-badge" id="navBadge-sellerdash" style="display:none">0</span>
     </div>
 
     <div class="nav-item" id="nav-market" onclick="N('market',this)">
@@ -1970,6 +2033,9 @@ async function logOut(){
           <button id="cd-slablab-btn" onclick="openSlabLab()" style="background:linear-gradient(135deg,#0a1f35,#112840);border:1px solid rgba(0,170,255,0.35);border-radius:8px;padding:8px 6px;font-family:Bebas Neue,sans-serif;font-size:12px;letter-spacing:1.5px;color:var(--blue);cursor:pointer;transition:all .2s;text-align:center;white-space:nowrap">&#129514; SLAB LAB</button>
           <button class="btn btn-primary" style="font-size:12px;padding:8px 6px;letter-spacing:1px" id="mvcSoldBtn" onclick="mvcSold()">&#128176; SOLD</button>
           <button class="btn btn-ghost" style="font-size:12px;padding:8px 6px;letter-spacing:1px;border-color:rgba(255,59,92,0.3);color:rgba(255,59,92,0.7)" id="mvcRemoveBtn" onclick="mvcRemove()">&#128465; REMOVE</button>
+        </div>
+        <div style="margin-top:8px">
+          <button id="mvcISOBtn" class="iso-avail-btn" style="width:100%;padding:10px 6px;font-size:13px;letter-spacing:1.5px" onclick="openAvailForISO()">&#128276; MAKE AVAILABLE FOR ISO</button>
         </div>
         <div id="mvcNotes" style="display:none;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);padding:8px 0"></div>
       </div>
@@ -2655,8 +2721,101 @@ async function logOut(){
     </div>
   </div>
 
+  <!-- SELLER DASHBOARD -->
+  <div class="panel" id="panel-sellerdash">
+    <!-- Stats bar -->
+    <div class="sd-stats" id="sdStats">
+      <div class="sd-stat"><div class="sd-stat-label">Cards Available</div><div class="sd-stat-val blue" id="sd-avail-count">—</div><div class="sd-stat-sub">listed for ISO</div></div>
+      <div class="sd-stat"><div class="sd-stat-label">Active ISO Matches</div><div class="sd-stat-val" id="sd-match-count">—</div><div class="sd-stat-sub">buyers searching your cards</div></div>
+      <div class="sd-stat"><div class="sd-stat-label">Total in Vault</div><div class="sd-stat-val" id="sd-vault-count">—</div><div class="sd-stat-sub">cards you own</div></div>
+      <div class="sd-stat"><div class="sd-stat-label">Unread Notifications</div><div class="sd-stat-val amber" id="sd-notif-count">—</div><div class="sd-stat-sub">new ISO activity</div></div>
+    </div>
+
+    <!-- ISO Matches — cards buyers are searching for -->
+    <div class="sd-section">
+      <div class="sd-section-head">
+        <div>
+          <div class="sd-section-title">ISO MATCHES</div>
+          <div class="sd-section-sub">Active buyer ISOs for cards in your vault</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="renderSellerDash()">&#8635; Refresh</button>
+      </div>
+      <div id="sdMatchList">
+        <div class="sd-empty">Loading matches...</div>
+      </div>
+    </div>
+
+    <!-- Your available cards -->
+    <div class="sd-section">
+      <div class="sd-section-head">
+        <div>
+          <div class="sd-section-title">CARDS AVAILABLE FOR ISO</div>
+          <div class="sd-section-sub">Cards you've marked ready to sell</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="N('myvault',document.getElementById('nav-myvault'))">Go to My Vault</button>
+      </div>
+      <div id="sdAvailList">
+        <div class="sd-empty">Loading your listed cards...</div>
+      </div>
+    </div>
+
+    <!-- Market data for your cards -->
+    <div class="sd-section">
+      <div class="sd-section-head">
+        <div>
+          <div class="sd-section-title">MARKET DATA</div>
+          <div class="sd-section-sub">Recent sale prices for cards in your vault</div>
+        </div>
+      </div>
+      <div id="sdMarketList">
+        <div class="sd-empty">Add cards to your vault to see market data.</div>
+      </div>
+    </div>
+
+    <!-- Notification center -->
+    <div class="sd-section">
+      <div class="sd-section-head">
+        <div>
+          <div class="sd-section-title">NOTIFICATION CENTER</div>
+          <div class="sd-section-sub">ISO activity on your cards</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="sdMarkAllReadBtn" onclick="sdMarkAllRead()" style="display:none">Mark all read</button>
+      </div>
+      <div id="sdNotifList">
+        <div class="sd-empty">No notifications yet. Add cards and mark them available for ISO.</div>
+      </div>
+    </div>
+  </div>
+
   </div><!-- /content -->
-</div><!-- /main -->
+
+<!-- AVAILABLE FOR ISO MODAL -->
+<div class="iso-modal-overlay" id="isoModalOverlay" onclick="if(event.target===this)closeAvailForISO()">
+  <div class="iso-modal">
+    <button class="vm-close" onclick="closeAvailForISO()" style="position:absolute;top:12px;right:14px;background:none;border:none;color:var(--muted-text);font-size:20px;cursor:pointer;line-height:1">&#215;</button>
+    <div class="iso-modal-title">AVAILABLE FOR ISO</div>
+    <div class="iso-modal-sub">Set your minimum asking price. Buyers will see this card when they post an ISO that matches.</div>
+    <div class="iso-modal-card-info" id="isoModalCardInfo">
+      <div class="iso-modal-card-name" id="isoModalCardName">—</div>
+      <div class="iso-modal-card-meta" id="isoModalCardMeta">—</div>
+    </div>
+    <div class="vm-section">
+      <div class="vm-label">Minimum Ask Price (USD) <span class="req">*</span></div>
+      <input class="vm-input" type="number" id="isoModalAskPrice" min="1" placeholder="e.g. 75" oninput="sdCheckPrice(this.value)" />
+    </div>
+    <div class="iso-warning" id="isoModalWarning">
+      <span class="iso-warning-icon">&#9888;</span>
+      <span class="iso-warning-text">If your price exceeds market value, there is a possibility that the ISO will not be visible to buyers.</span>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeAvailForISO()">Cancel</button>
+      <button class="btn btn-primary" style="flex:1;background:var(--green);color:#0D1F33" id="isoModalConfirmBtn" onclick="sdConfirmAvailForISO()">&#10003; Confirm Available</button>
+    </div>
+    <div id="isoModalRemoveRow" style="display:none;margin-top:10px;text-align:center">
+      <button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:rgba(255,59,92,.3);width:100%" onclick="sdRemoveFromISO()">&#128308; Remove from ISO Listings</button>
+    </div>
+  </div>
+</div>
 </div><!-- /app -->
 
 <!-- GLOBAL BUG REPORT BUTTON -->
@@ -3313,6 +3472,7 @@ const PM={
   isoticker:{t:'ISOTICKER',s:'Your collection — value since purchase'},
   leaderboard:{t:'LEADERBOARD',s:'Top buyers · sellers · most wanted cards'},
   carddetail:{t:'ISOVAULT',s:'Card detail'},
+  sellerdash:{t:'SELLER DASHBOARD',s:'Your listed cards · ISO matches · market data'},
 };
 let _navSuppressHistory = false;
 function N(id,el){
@@ -3335,6 +3495,7 @@ function N(id,el){
   if(id==='myvault')renderMyVault();
   if(id==='myisos')renderMyISOs();
   if(id==='market')renderMkt();
+  if(id==='sellerdash')renderSellerDash();
   if(id==='post'){curStep=1;gS(1);isoRenderSportGrid();}
   if(id==='isoticker')initISOTicker();
   // Push panel state into browser history so mouse back button steps through panels
@@ -3823,6 +3984,333 @@ function libType(type,el){
 function C(el){el.closest('.filter-row').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');}
 let _tt;
 function T(msg){const t=document.getElementById('toast');document.getElementById('toastText').textContent=msg;t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),3000);}
+
+// ══════════════════════════════════════════════════════
+// SELLER DASHBOARD
+// ══════════════════════════════════════════════════════
+
+window._sdVaultCards = [];
+window._sdCurrentCard = null;
+
+async function renderSellerDash(){
+  const uid = window._authUser?.id;
+  if(!uid) return;
+
+  // ── Fetch vault rows for this user ──
+  let vaultRows = [];
+  try {
+    const r = await fetch(_SURL+'/vault?select=id,player,year,brand,set_name,card_number,variation,serial_number,serial_total,grade,grade_company,is_for_sale,asking_price,price_paid,front_image_url,image_front_url,estimated_value&user_id=eq.'+uid+'&status=neq.removed&limit=200', {headers:_sbH()});
+    if(r.ok) vaultRows = await r.json();
+  } catch(e){}
+  window._sdVaultCards = vaultRows || [];
+
+  const avail   = vaultRows.filter(c=>c.is_for_sale);
+  const total   = vaultRows.length;
+
+  // ── Fetch matches for this seller ──
+  let matchRows = [];
+  try {
+    const r = await fetch(_SURL+'/matches?select=id,iso_id,vault_entry_id,seller_notified,seller_notified_at,created_at&seller_id=eq.'+uid+'&order=created_at.desc&limit=50', {headers:_sbH()});
+    if(r.ok) matchRows = await r.json();
+  } catch(e){}
+
+  // ── Fetch seller notifications ──
+  let notifRows = [];
+  try {
+    const r = await fetch(_SURL+'/notifications?select=id,type,title,body,is_read,created_at&user_id=eq.'+uid+'&order=created_at.desc&limit=30', {headers:_sbH()});
+    if(r.ok) notifRows = await r.json();
+  } catch(e){}
+
+  const sellerNotifs = notifRows.filter(n=>n.type==='iso_match'||n.type==='seller_match'||n.type==='new_iso');
+  const unread = sellerNotifs.filter(n=>!n.is_read).length;
+
+  // ── Stats ──
+  const el = id=>document.getElementById(id);
+  if(el('sd-avail-count')) el('sd-avail-count').textContent = avail.length;
+  if(el('sd-match-count')) el('sd-match-count').textContent = matchRows.length;
+  if(el('sd-vault-count')) el('sd-vault-count').textContent = total;
+  if(el('sd-notif-count')) el('sd-notif-count').textContent = unread||'0';
+
+  // Badge on nav
+  const badge = el('navBadge-sellerdash');
+  if(badge){ badge.textContent=unread||''; badge.style.display=unread?'':'none'; }
+
+  // ── ISO Matches list ──
+  sdRenderMatches(matchRows, vaultRows);
+
+  // ── Available cards list ──
+  sdRenderAvailCards(avail);
+
+  // ── Market data ──
+  sdRenderMarket(vaultRows);
+
+  // ── Notifications ──
+  sdRenderNotifs(sellerNotifs);
+  if(el('sdMarkAllReadBtn')) el('sdMarkAllReadBtn').style.display = unread ? '' : 'none';
+}
+
+function sdRenderMatches(matches, vault){
+  const el = document.getElementById('sdMatchList');
+  if(!el) return;
+  if(!matches.length){
+    el.innerHTML='<div class="sd-empty">No ISO matches yet.<br>Add cards to your vault and mark them available for ISO to start receiving matches.</div>';
+    return;
+  }
+  el.innerHTML = matches.map(m=>{
+    const card = vault.find(v=>v.id===m.vault_entry_id)||{};
+    const player = card.player||'Unknown Card';
+    const meta   = [card.year,card.brand,card.set_name].filter(Boolean).join(' ');
+    const isNew  = !m.seller_notified;
+    const ts     = m.created_at ? new Date(m.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+    return `<div class="sd-match-row">
+      <div class="sd-match-icon${isNew?' new':''}">&#128276;</div>
+      <div class="sd-match-body">
+        <div class="sd-match-title">${player}</div>
+        <div class="sd-match-msg">A buyer has posted an ISO for this card. No buyer info is shown — your identity is protected until both parties confirm a transaction.</div>
+        <div class="sd-match-time">${ts}</div>
+      </div>
+      ${isNew?'<span class="sd-iso-badge matched">NEW</span>':''}
+    </div>`;
+  }).join('');
+}
+
+function sdRenderAvailCards(cards){
+  const el = document.getElementById('sdAvailList');
+  if(!el) return;
+  if(!cards.length){
+    el.innerHTML='<div class="sd-empty">No cards listed yet.<br>Go to My Vault, open a card, and click <strong>Mark Available for ISO</strong>.</div>';
+    return;
+  }
+  el.innerHTML = cards.map(c=>{
+    const imgUrl = c.front_image_url||c.image_front_url||'';
+    const player = c.player||'—';
+    const meta   = [c.year,c.brand,c.set_name].filter(Boolean).join(' · ');
+    const serial = c.serial_number&&c.serial_total ? `#${c.serial_number}/${c.serial_total}` : (c.serial_number?`#${c.serial_number}`:'');
+    const ask    = c.asking_price ? '$'+Number(c.asking_price).toLocaleString('en-US',{minimumFractionDigits:0}) : '—';
+    const grade  = c.grade ? `${c.grade_company||''}${c.grade}`.trim() : 'Raw';
+    const thumb  = imgUrl
+      ? `<div class="sd-card-thumb"><img src="${imgUrl}" loading="lazy"/></div>`
+      : `<div class="sd-card-thumb" style="display:flex;align-items:center;justify-content:center;color:rgba(0,170,255,.2);font-size:18px">&#9654;</div>`;
+    return `<div class="sd-card-row">
+      ${thumb}
+      <div>
+        <div class="sd-card-player">${player}</div>
+        <div class="sd-card-meta">${meta}</div>
+        ${serial?`<div class="sd-card-serial">${serial}</div>`:''}
+        <div class="sd-card-meta" style="margin-top:3px">Grade: ${grade}</div>
+      </div>
+      <div class="sd-price-col">
+        <div class="sd-ask-lbl">Min Ask</div>
+        <div class="sd-ask">${ask}</div>
+      </div>
+      <span class="sd-iso-badge matched">&#10003; Listed</span>
+    </div>`;
+  }).join('');
+}
+
+function sdRenderMarket(vault){
+  const el = document.getElementById('sdMarketList');
+  if(!el) return;
+  if(!vault.length){
+    el.innerHTML='<div class="sd-empty">Add cards to your vault to see market data.</div>';
+    return;
+  }
+  // Show estimated values for vault cards that have them
+  const withEst = vault.filter(c=>c.estimated_value&&Number(c.estimated_value)>0).slice(0,6);
+  if(!withEst.length){
+    el.innerHTML='<div class="sd-empty">Market data will appear here as cards are priced. Check back as the platform grows.</div>';
+    return;
+  }
+  el.innerHTML = withEst.map(c=>{
+    const player  = c.player||'—';
+    const est     = '$'+Number(c.estimated_value).toLocaleString('en-US',{minimumFractionDigits:0});
+    const paid    = c.price_paid ? '$'+Number(c.price_paid).toLocaleString('en-US',{minimumFractionDigits:0}) : '—';
+    const gl      = c.price_paid&&c.estimated_value ? Number(c.estimated_value)-Number(c.price_paid) : null;
+    const glStr   = gl!==null ? (gl>=0?'+$'+gl.toFixed(0):'-$'+Math.abs(gl).toFixed(0)) : '—';
+    const glColor = gl===null?'':gl>=0?'var(--green)':'var(--red)';
+    return `<div class="sd-card-row" style="grid-template-columns:1fr auto auto auto;gap:10px">
+      <div>
+        <div class="sd-card-player">${player}</div>
+        <div class="sd-card-meta">${[c.year,c.set_name].filter(Boolean).join(' · ')}</div>
+      </div>
+      <div class="sd-mkt-cell"><div class="sd-mkt-lbl">Est. Value</div><div class="sd-mkt-val">${est}</div></div>
+      <div class="sd-mkt-cell"><div class="sd-mkt-lbl">Paid</div><div class="sd-mkt-val" style="color:var(--muted-text)">${paid}</div></div>
+      <div class="sd-mkt-cell"><div class="sd-mkt-lbl">G/L</div><div class="sd-mkt-val" style="color:${glColor}">${glStr}</div></div>
+    </div>`;
+  }).join('');
+}
+
+function sdRenderNotifs(notifs){
+  const el = document.getElementById('sdNotifList');
+  if(!el) return;
+  if(!notifs.length){
+    el.innerHTML='<div class="sd-empty">No notifications yet.</div>';
+    return;
+  }
+  el.innerHTML = notifs.map(n=>{
+    const ts    = n.created_at ? new Date(n.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+    const unrd  = !n.is_read;
+    return `<div class="sd-match-row" style="${unrd?'border-left:2px solid var(--blue);':''}">
+      <div class="sd-match-icon${unrd?' new':''}">&#128161;</div>
+      <div class="sd-match-body">
+        <div class="sd-match-title">${n.title||'ISO Activity'}</div>
+        <div class="sd-match-msg">${n.body||''}</div>
+        <div class="sd-match-time">${ts}</div>
+      </div>
+      ${unrd?'<span class="sd-iso-badge">NEW</span>':''}
+    </div>`;
+  }).join('');
+}
+
+async function sdMarkAllRead(){
+  const uid = window._authUser?.id;
+  if(!uid) return;
+  try {
+    await fetch(_SURL+'/notifications?user_id=eq.'+uid+'&is_read=eq.false',{method:'PATCH',headers:{..._sbH(),'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({is_read:true})});
+    T('All notifications marked as read');
+    renderSellerDash();
+  } catch(e){ T('Error marking notifications read'); }
+}
+
+// ── Available for ISO modal ──────────────────────────
+
+window._sdCurrentVaultId = null;
+
+function openAvailForISO(){
+  const card = window._currentVaultCard;
+  if(!card){ T('No card selected'); return; }
+  window._sdCurrentVaultId = card.id;
+
+  const name = card.player||'Unknown';
+  const meta = [card.year,card.brand,card.set_name,card.variation].filter(Boolean).join(' · ');
+  const serialNote = (card.serial_number&&card.serial_total) ? ` · #${card.serial_number}/${card.serial_total}` : '';
+
+  document.getElementById('isoModalCardName').textContent = name;
+  document.getElementById('isoModalCardMeta').textContent = meta + serialNote;
+
+  // Pre-fill if already listed
+  const askEl = document.getElementById('isoModalAskPrice');
+  askEl.value = card.is_for_sale&&card.asking_price ? card.asking_price : '';
+
+  // Show remove row if already listed
+  const removeRow = document.getElementById('isoModalRemoveRow');
+  if(removeRow) removeRow.style.display = card.is_for_sale ? '' : 'none';
+
+  // Update button state
+  const btn = document.getElementById('mvcISOBtn');
+  if(btn){
+    if(card.is_for_sale){
+      btn.classList.add('active');
+      btn.textContent = '🟢 CURRENTLY LISTED FOR ISO';
+    } else {
+      btn.classList.remove('active');
+      btn.textContent = '🔴 MARK AVAILABLE FOR ISO';
+    }
+  }
+
+  document.getElementById('isoModalWarning').classList.remove('show');
+  document.getElementById('isoModalOverlay').classList.add('open');
+  askEl.focus();
+}
+
+function closeAvailForISO(){
+  document.getElementById('isoModalOverlay').classList.remove('open');
+  window._sdCurrentVaultId = null;
+}
+
+function sdCheckPrice(val){
+  const card    = window._currentVaultCard;
+  const estVal  = card?.estimated_value ? Number(card.estimated_value) : null;
+  const warning = document.getElementById('isoModalWarning');
+  if(!warning) return;
+  if(estVal && Number(val) > estVal * 1.15){
+    warning.classList.add('show');
+  } else {
+    warning.classList.remove('show');
+  }
+}
+
+async function sdConfirmAvailForISO(){
+  const vid  = window._sdCurrentVaultId;
+  const ask  = Number(document.getElementById('isoModalAskPrice').value);
+  if(!vid){ T('No card selected'); return; }
+  if(!ask||ask<1){ T('Enter a minimum ask price'); return; }
+
+  const btn = document.getElementById('isoModalConfirmBtn');
+  if(btn){ btn.disabled=true; btn.textContent='Saving...'; }
+
+  try {
+    const r = await fetch(_SURL+'/vault?id=eq.'+vid, {
+      method:'PATCH',
+      headers:{..._sbH(),'Content-Type':'application/json',Prefer:'return=minimal'},
+      body:JSON.stringify({is_for_sale:true, asking_price:ask})
+    });
+    if(!r.ok) throw new Error('PATCH vault '+r.status);
+
+    // Update local card reference so button state refreshes
+    if(window._currentVaultCard){
+      window._currentVaultCard.is_for_sale = true;
+      window._currentVaultCard.asking_price = ask;
+    }
+    // Refresh the MyVault card detail button
+    const mvcBtn = document.getElementById('mvcISOBtn');
+    if(mvcBtn){ mvcBtn.classList.add('active'); mvcBtn.textContent='🟢 CURRENTLY LISTED FOR ISO'; }
+
+    closeAvailForISO();
+    T('Card marked available for ISO');
+    // Re-run match check silently
+    sdRunMatchCheck(vid);
+  } catch(e){
+    T('Error saving — try again');
+  } finally {
+    if(btn){ btn.disabled=false; btn.textContent='✓ Confirm Available'; }
+  }
+}
+
+async function sdRemoveFromISO(){
+  const vid = window._sdCurrentVaultId;
+  if(!vid) return;
+  try {
+    await fetch(_SURL+'/vault?id=eq.'+vid, {
+      method:'PATCH',
+      headers:{..._sbH(),'Content-Type':'application/json',Prefer:'return=minimal'},
+      body:JSON.stringify({is_for_sale:false, asking_price:null})
+    });
+    if(window._currentVaultCard){
+      window._currentVaultCard.is_for_sale = false;
+      window._currentVaultCard.asking_price = null;
+    }
+    const mvcBtn = document.getElementById('mvcISOBtn');
+    if(mvcBtn){ mvcBtn.classList.remove('active'); mvcBtn.textContent='🔴 MARK AVAILABLE FOR ISO'; }
+    closeAvailForISO();
+    T('Card removed from ISO listings');
+  } catch(e){ T('Error removing — try again'); }
+}
+
+// Silent match check: after marking available, scan isos table for matches
+async function sdRunMatchCheck(vaultId){
+  const uid  = window._authUser?.id;
+  const card = window._currentVaultCard;
+  if(!uid||!card) return;
+  try {
+    // Find active ISOs that match this player
+    const r = await fetch(_SURL+'/isos?select=id,user_id,player,sport,status&player=eq.'+encodeURIComponent(card.player||'')+'&status=eq.active&limit=20',{headers:_sbH()});
+    if(!r.ok) return;
+    const isos = await r.json();
+    if(!isos||!isos.length) return;
+    // Insert match rows for each ISO found (skip dupes via on-conflict)
+    for(const iso of isos){
+      if(iso.user_id===uid) continue; // skip own ISOs
+      try {
+        await fetch(_SURL+'/matches', {
+          method:'POST',
+          headers:{..._sbH(),'Content-Type':'application/json',Prefer:'resolution=ignore-duplicates,return=minimal'},
+          body:JSON.stringify({iso_id:iso.id, vault_entry_id:vaultId, buyer_id:iso.user_id, seller_id:uid, match_score:1})
+        });
+      } catch(e){}
+    }
+  } catch(e){}
+}
 
 // &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
 // ISOTICKER

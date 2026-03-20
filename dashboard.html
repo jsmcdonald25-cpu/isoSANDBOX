@@ -5950,6 +5950,7 @@ function handleCatalogUpload(input, side){
           const _selId = side === 'front' ? 'cdOrientFront' : 'cdOrientBack';
           const _sel = document.getElementById(_selId);
           if(_sel) _sel.value = _autoLand ? 'landscape' : 'portrait';
+          console.log('[ORIENT_DETECT] side:', side, '| canvas:', canvas.width+'x'+canvas.height, '| autoLand:', _autoLand, '| select set to:', _autoLand ? 'landscape' : 'portrait');
           const _lbl = document.getElementById('cdOrientAutoLabel');
           if(_lbl) _lbl.textContent = 'auto-detected — change if incorrect';
         }, 'image/jpeg', 0.85);
@@ -6006,6 +6007,8 @@ async function submitCatalogUpload(){
     // Orientation selects are always visible and always source of truth
     const _frontIsLand = (document.getElementById('cdOrientFront').value === 'landscape');
     const _backIsLand  = (document.getElementById('cdOrientBack').value  === 'landscape');
+    console.log('[ORIENT_SAVE] front select:', document.getElementById('cdOrientFront').value, '→ frontLandscape:', _frontIsLand);
+    console.log('[ORIENT_SAVE] back select:', document.getElementById('cdOrientBack').value, '→ backLandscape:', _backIsLand);
 
     // Fetch existing var_images so we can merge (not overwrite other variations)
     const _exRows=await _rGet(table,'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');

@@ -2110,13 +2110,13 @@ async function logOut(){
             <div class="cd-card" id="cd-card">
               <div class="cd-front" id="cd-front">
                 <div class="cd-card-placeholder" id="cd-placeholder-front" style="background:#071828;width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:10px"><img id="grailph-f" style="width:100%;height:100%;object-fit:cover;border-radius:10px;display:block" alt="GrailISO"></div>
-                <img id="cd-img-front" class="cd-card-face" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:10px" alt="Card front">
+                <img id="cd-img-front" class="cd-card-face" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border-radius:10px" alt="Card front">
                 <div class="cd-glare" id="cd-glare-front"></div>
                 <div class="cd-shimmer" id="cd-shimmer-el" style="display:none"></div>
               </div>
               <div class="cd-back" id="cd-back">
                 <div id="cd-placeholder-back" style="width:100%;height:100%;background:#071828;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:10px"><img id="grailph-b" style="width:100%;height:100%;object-fit:cover;border-radius:10px;display:block" alt="GrailISO"></div>
-                <img id="cd-img-back" class="cd-card-face" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:10px" alt="Card back">
+                <img id="cd-img-back" class="cd-card-face" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border-radius:10px" alt="Card back">
               </div>
             </div>
           </div>
@@ -5943,12 +5943,15 @@ function handleCatalogUpload(input, side){
           prev.src = _dataUrl;
           prev.style.display = 'block';
           document.getElementById('cdUploadError').style.display = 'none';
-          // Do NOT auto-detect orientation from canvas dimensions — screenshots are always
-          // landscape (1920x1080) even when the card inside is portrait. User must choose below.
-          // Update upload box aspect ratio hint only
-          const _prev2 = document.getElementById(side==='front'?'cdFrontPreview':'cdBackPreview');
+          // Auto-detect orientation from canvas dimensions — works correctly for real card photos.
+          // User can override the select if detection is wrong (e.g. screenshot of a portrait card
+          // inside a landscape browser window).
+          const _autoLand = canvas.width > canvas.height;
+          const _selId = side === 'front' ? 'cdOrientFront' : 'cdOrientBack';
+          const _sel = document.getElementById(_selId);
+          if(_sel) _sel.value = _autoLand ? 'landscape' : 'portrait';
           const _lbl = document.getElementById('cdOrientAutoLabel');
-          if(_lbl) _lbl.textContent = 'choose orientation below';
+          if(_lbl) _lbl.textContent = 'auto-detected — change if incorrect';
         }, 'image/jpeg', 0.85);
       };
       img.src = e2.target.result;

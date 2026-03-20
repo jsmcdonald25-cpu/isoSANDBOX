@@ -5344,20 +5344,25 @@ async function _cdLoadCatalogImages(c){
   const uploadBtn = document.getElementById('cd-upload-btn');
 
   const table = c._setTable || _cdGuessTable(c);
+  console.log('[GRAIL_TRACE] _cdLoadCatalogImages — table:', table, '| _setTable:', c._setTable, '| _cdDbCardNum:', window._cdDbCardNum);
   if(!table){
+    console.log('[GRAIL_TRACE] BAIL: no table');
     if(statusEl){ statusEl.style.display='block'; statusEl.textContent='No set table found'; statusEl.style.color='rgba(122,149,174,0.5)'; }
     return;
   }
 
   // _cdDbCardNum = actual DB card_number from ISOVault row (may differ from card's _cardNumber)
   const cardNum = window._cdDbCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber || null));
+  console.log('[GRAIL_TRACE] cardNum:', cardNum, '| c.cardNum:', c.cardNum, '| c._cardNumber:', c._cardNumber);
   if(!cardNum){
+    console.log('[GRAIL_TRACE] BAIL: no cardNum');
     if(statusEl){ statusEl.style.display='block'; statusEl.textContent='No card number'; statusEl.style.color='rgba(122,149,174,0.5)'; }
     return;
   }
 
   // Fast path — var_images already loaded from ISOVault row, no Supabase query needed
   const preloaded = window._cdPreloadVarImages;
+  console.log('[GRAIL_TRACE] preloaded:', preloaded);
   window._cdPreloadVarImages = null;
   if(preloaded && Object.keys(preloaded).length){
     window._cdCard._varImages = preloaded;
@@ -5390,16 +5395,20 @@ async function _cdLoadCatalogImages(c){
 
   // Slow path — fetch from Supabase
   if(statusEl){ statusEl.style.display='block'; statusEl.textContent='Loading images...'; statusEl.style.color='var(--muted-text)'; }
+  console.log('[GRAIL_TRACE] Slow path — fetching var_images for', table, 'card_number=', cardNum);
 
   try {
     let _ciRows = await _rGet(table,'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
+    console.log('[GRAIL_TRACE] slow path result:', JSON.stringify(_ciRows));
     if(!_ciRows||!_ciRows[0]){
       const pq=(c.player||'').trim();
       if(pq) _ciRows=await _rGet(table,'select=var_images&player=eq.'+encodeURIComponent(pq)+'&limit=1');
+      console.log('[GRAIL_TRACE] player fallback result:', JSON.stringify(_ciRows));
     }
     const data = _ciRows&&_ciRows[0]?_ciRows[0]:null;
 
     if(!data || !data.var_images || !Object.keys(data.var_images).length){
+      console.log('[GRAIL_TRACE] BAIL: no var_images in data:', JSON.stringify(data));
       if(statusEl){ statusEl.textContent='No catalog images yet'; statusEl.style.color='rgba(122,149,174,0.5)';
         setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
       return;
@@ -5410,6 +5419,7 @@ async function _cdLoadCatalogImages(c){
     const activeVar = (window._cdVars || [])[window._cdActiveVar || 0];
     const varKey = activeVar ? activeVar.label : null;
     const imgs = varKey ? data.var_images[varKey] : null;
+    console.log('[GRAIL_TRACE] varKey:', varKey, '| var_images keys:', Object.keys(data.var_images), '| imgs match:', !!imgs);
 
     if(imgs && (imgs.front || imgs.back)){
       // Pass stored orientation — never probe

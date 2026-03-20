@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GrailISO · Admin</title>
+<!-- admin_03_20_25_1225 -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
@@ -339,6 +340,23 @@ tr:hover td { background: var(--bg); }
       User Manager
     </div>
 
+    <div class="nav-section">Platform</div>
+    <div class="nav-item" onclick="nav('isos',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+      ISO Manager
+    </div>
+    <div class="nav-item" onclick="nav('credits',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Credit Events
+    </div>
+
+    <div class="nav-section">Reports</div>
+    <div class="nav-item" onclick="nav('messages',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      Message Center
+      <span id="msg-nav-badge" style="margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;display:none">0</span>
+    </div>
+
     <div class="sidebar-footer">
       <div class="user-chip">
         <div class="user-avatar" id="adminAvatar">A</div>
@@ -550,9 +568,201 @@ tr:hover td { background: var(--bg); }
         <div class="table-wrap" id="users-table-wrap" style="display:none">
           <table>
             <thead><tr>
-              <th>User</th><th>Username</th><th>Email</th><th>Role</th><th>Admin</th><th>Credits</th><th>Actions</th>
+              <th>User</th><th>Username</th><th>Role</th><th>Admin</th><th>Joined</th><th>Actions</th>
             </tr></thead>
             <tbody id="users-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ── MESSAGE CENTER ── -->
+    <div class="panel" id="panel-messages">
+      <div class="panel-header">
+        <div class="panel-eyebrow">Reports</div>
+        <div class="panel-title">Message Center</div>
+        <div class="panel-sub">Review all bug and card error reports from testers. Award credits for valid findings.</div>
+      </div>
+
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-val" id="msg-stat-total">—</div><div class="stat-lab">Total Reports</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--yellow)" id="msg-stat-pending">—</div><div class="stat-lab">Pending</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--blue)" id="msg-stat-reviewed">—</div><div class="stat-lab">Reviewed</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--green)" id="msg-stat-resolved">—</div><div class="stat-lab">Resolved</div></div>
+      </div>
+
+      <!-- Tab bar: Bug Reports | Card Error Reports -->
+      <div style="display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:16px">
+        <button id="msgtab-bugs"   onclick="msgSwitchTab('bugs')"   style="padding:8px 16px;border:none;border-bottom:2px solid var(--blue);background:none;color:var(--blue);font-size:13px;font-weight:600;cursor:pointer">Bug Reports <span id="msgtab-bugs-ct" style="background:var(--red);color:#fff;font-size:10px;border-radius:10px;padding:1px 6px;margin-left:4px;display:none">0</span></button>
+        <button id="msgtab-cards"  onclick="msgSwitchTab('cards')"  style="padding:8px 16px;border:none;border-bottom:2px solid transparent;background:none;color:var(--text2);font-size:13px;cursor:pointer">Card Errors <span id="msgtab-cards-ct" style="background:var(--red);color:#fff;font-size:10px;border-radius:10px;padding:1px 6px;margin-left:4px;display:none">0</span></button>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-sm" id="mft-all"      onclick="msgSetFilter('all')"      style="background:var(--blue);color:#fff">All</button>
+            <button class="btn btn-sm btn-ghost" id="mft-pending"  onclick="msgSetFilter('pending')">Pending</button>
+            <button class="btn btn-sm btn-ghost" id="mft-reviewed" onclick="msgSetFilter('reviewed')">Reviewed</button>
+            <button class="btn btn-sm btn-ghost" id="mft-resolved" onclick="msgSetFilter('resolved')">Resolved</button>
+          </div>
+          <input class="input" id="msg-search" placeholder="Search note, page, or user…" oninput="msgRender()" style="flex:1;min-width:180px;max-width:320px">
+          <button class="btn btn-ghost" onclick="loadMessages()">&#8635; Refresh</button>
+        </div>
+
+        <div class="loading" id="msg-loading" style="display:none">Loading reports…</div>
+        <div id="msg-empty" class="empty" style="display:none">
+          <div class="empty-icon">&#128237;</div>
+          <div>No reports match this filter.</div>
+        </div>
+
+        <!-- Bug Reports table -->
+        <div class="table-wrap" id="msg-bug-table-wrap">
+          <table>
+            <thead><tr>
+              <th style="width:110px">Submitted</th>
+              <th style="width:80px">Type</th>
+              <th style="width:100px">Page</th>
+              <th>What happened</th>
+              <th style="width:80px">User</th>
+              <th style="width:80px">Status</th>
+              <th style="width:180px">Actions</th>
+            </tr></thead>
+            <tbody id="msg-bug-tbody"></tbody>
+          </table>
+        </div>
+
+        <!-- Card Error Reports table (hidden by default) -->
+        <div class="table-wrap" id="msg-card-table-wrap" style="display:none">
+          <table>
+            <thead><tr>
+              <th style="width:110px">Submitted</th>
+              <th style="width:130px">Card</th>
+              <th style="width:80px">Set</th>
+              <th style="width:70px">Variation</th>
+              <th>Note</th>
+              <th style="width:80px">Status</th>
+              <th style="width:180px">Actions</th>
+            </tr></thead>
+            <tbody id="msg-card-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    </div>
+
+    <!-- Award Credits Modal -->
+    <div id="msg-credits-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9000;align-items:center;justify-content:center">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px;width:360px;box-shadow:0 20px 60px rgba(0,0,0,0.15)">
+        <div style="font-size:15px;font-weight:700;margin-bottom:4px">Award Credits</div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:18px">Report from <strong id="mc-user-label">—</strong></div>
+        <div class="field">
+          <label>CREDITS TO AWARD</label>
+          <input class="input" id="mc-amount" type="number" min="1" max="100" value="5" placeholder="5">
+        </div>
+        <div class="field">
+          <label>REASON (optional)</label>
+          <input class="input" id="mc-reason" placeholder="Valid bug report — +5 credits">
+        </div>
+        <div id="mc-err" style="font-size:12px;color:var(--red);margin-bottom:10px;display:none"></div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn btn-success" onclick="msgDoAwardCredits()" style="flex:1">Award Credits</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('msg-credits-modal').style.display='none'">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ISO MANAGER ── -->
+    <div class="panel" id="panel-isos">
+      <div class="panel-header">
+        <div class="panel-eyebrow">Platform</div>
+        <div class="panel-title">ISO Manager</div>
+        <div class="panel-sub">View, search, and remove any ISO posted platform-wide.</div>
+      </div>
+
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-val" id="iso-stat-total">—</div><div class="stat-lab">Total ISOs</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--green)" id="iso-stat-active">—</div><div class="stat-lab">Active</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--blue)" id="iso-stat-matched">—</div><div class="stat-lab">Matched</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--text3)" id="iso-stat-closed">—</div><div class="stat-lab">Closed / Done</div></div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-sm" id="isof-all"      onclick="isoSetFilter('all')"       style="background:var(--blue);color:#fff">All</button>
+            <button class="btn btn-sm btn-ghost" id="isof-active"   onclick="isoSetFilter('active')">Active</button>
+            <button class="btn btn-sm btn-ghost" id="isof-matched"  onclick="isoSetFilter('matched')">Matched</button>
+            <button class="btn btn-sm btn-ghost" id="isof-closed"   onclick="isoSetFilter('closed')">Closed</button>
+          </div>
+          <input class="input" id="iso-search" placeholder="Search player, set, or user ID…" oninput="isoRender()" style="flex:1;min-width:180px;max-width:340px">
+          <button class="btn btn-ghost" onclick="loadIsos()">&#8635; Refresh</button>
+        </div>
+
+        <div class="loading" id="iso-loading" style="display:none">Loading ISOs…</div>
+        <div id="iso-empty" class="empty" style="display:none">
+          <div class="empty-icon">&#128269;</div>
+          <div>No ISOs match this filter.</div>
+        </div>
+        <div class="table-wrap" id="iso-table-wrap">
+          <table>
+            <thead><tr>
+              <th style="width:110px">Posted</th>
+              <th>Player</th>
+              <th>Card / Set</th>
+              <th style="width:80px">Max $</th>
+              <th style="width:80px">User</th>
+              <th style="width:80px">Status</th>
+              <th style="width:120px">Actions</th>
+            </tr></thead>
+            <tbody id="iso-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CREDIT EVENTS ── -->
+    <div class="panel" id="panel-credits">
+      <div class="panel-header">
+        <div class="panel-eyebrow">Platform</div>
+        <div class="panel-title">Credit Events</div>
+        <div class="panel-sub">Full audit log of every credit awarded or deducted across the platform.</div>
+      </div>
+
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-val" id="ce-stat-total">—</div><div class="stat-lab">Total Events</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--green)" id="ce-stat-awarded">—</div><div class="stat-lab">Credits Awarded</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--red)" id="ce-stat-deducted">—</div><div class="stat-lab">Credits Deducted</div></div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+          <input class="input" id="ce-search" placeholder="Search user, reason, or note…" oninput="ceEventsRender()" style="flex:1;min-width:180px;max-width:340px">
+          <select class="select" id="ce-reason-filter" onchange="ceEventsRender()" style="max-width:180px">
+            <option value="">All reasons</option>
+            <option value="bug_report">Bug report</option>
+            <option value="price_correction">Price correction</option>
+            <option value="admin_award">Admin award</option>
+            <option value="iso_post">ISO post</option>
+          </select>
+          <button class="btn btn-ghost" onclick="loadCreditEvents()">&#8635; Refresh</button>
+        </div>
+        <div class="loading" id="ce-loading" style="display:none">Loading credit events…</div>
+        <div id="ce-empty" class="empty" style="display:none">
+          <div class="empty-icon">&#128176;</div>
+          <div>No credit events match this filter.</div>
+        </div>
+        <div class="table-wrap" id="ce-table-wrap">
+          <table>
+            <thead><tr>
+              <th style="width:110px">Date</th>
+              <th style="width:90px">User</th>
+              <th style="width:80px">Amount</th>
+              <th style="width:110px">Reason</th>
+              <th>Note</th>
+            </tr></thead>
+            <tbody id="ce-tbody"></tbody>
           </table>
         </div>
       </div>
@@ -926,7 +1136,7 @@ async function loadUsers() {
   document.getElementById('users-loading').style.display = 'block';
   document.getElementById('users-table-wrap').style.display = 'none';
   try {
-    const rows = await _get('profiles', 'select=id,username,role,is_admin,credits,tier,created_at&order=created_at.desc&limit=200');
+    const rows = await _get('profiles', 'select=id,username,role,is_admin,tier,created_at&order=created_at.desc&limit=200');
     _allUsers = rows || [];
     renderUsers(_allUsers);
   } catch(e) { toast('Failed to load users: ' + e.message, 'error'); }
@@ -936,8 +1146,9 @@ function renderUsers(rows) {
   document.getElementById('users-loading').style.display = 'none';
   document.getElementById('users-table-wrap').style.display = 'block';
   const tbody = document.getElementById('users-tbody');
-  tbody.innerHTML = rows.map(u => `
-    <tr>
+  tbody.innerHTML = rows.map(u => {
+    const joined = u.created_at ? new Date(u.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+    return `<tr>
       <td>
         <div style="display:flex;align-items:center;gap:8px">
           <div style="width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">
@@ -945,24 +1156,24 @@ function renderUsers(rows) {
           </div>
           <div>
             <div style="font-size:13px;font-weight:600">${u.username||'—'}</div>
-            <div style="font-size:11px;color:var(--text3)">${u.username ? '@'+u.username : u.id.slice(0,8)+'...'}</div>
+            <div style="font-size:11px;color:var(--text3)">${u.id.slice(0,8)}…</div>
           </div>
         </div>
       </td>
       <td style="font-family:var(--font);font-size:12px">${u.username?'@'+u.username:'—'}</td>
-      <td style="font-size:12px;color:var(--text2)">${u.username ? '@'+u.username : u.id.slice(0,8)+'...'}</td>
       <td><span class="badge ${u.role==='owner'?'badge-red':u.role==='admin'?'badge-purple':'badge-gray'}">${u.role||'user'}</span></td>
       <td>${u.is_admin?'<span class="badge badge-green">Admin</span>':'<span class="badge badge-gray">—</span>'}</td>
-      <td>${u.credits||0}</td>
+      <td style="font-size:11px;color:var(--text2)">${joined}</td>
       <td>
         <div style="display:flex;gap:4px">
           ${u.is_admin
             ? `<button class="btn btn-sm btn-ghost" onclick="setAdmin('${u.id}',false)">Revoke Admin</button>`
             : `<button class="btn btn-sm btn-success" onclick="setAdmin('${u.id}',true)">Make Admin</button>`}
+          <button class="btn btn-sm" onclick="viewCreditEvents('${u.id}','${u.username||u.id.slice(0,8)}')" style="font-size:10px;background:var(--yellow-light);color:var(--yellow);border:1px solid var(--yellow)">Credits</button>
         </div>
       </td>
-    </tr>
-  `).join('');
+    </tr>`;
+  }).join('');
 }
 
 function userFilter() {
@@ -992,8 +1203,393 @@ document.addEventListener('DOMContentLoaded', () => {
     if (orig && orig.includes("'users'"))  el.addEventListener('click', () => { loadUsers(); });
     if (orig && orig.includes("'images'")) el.addEventListener('click', () => { populateSetDropdowns(); });
     if (orig && orig.includes("'cards'"))  el.addEventListener('click', () => { populateSetDropdowns(); });
+    if (orig && orig.includes("'messages'")) el.addEventListener('click', () => { loadMessages(); });
+    if (orig && orig.includes("'isos'"))     el.addEventListener('click', () => { loadIsos(); });
+    if (orig && orig.includes("'credits'"))  el.addEventListener('click', () => { loadCreditEvents(); });
   });
 });
+// ── MESSAGE CENTER ──
+let _allReports    = [];
+let _allCardErrors = [];
+let _msgTab        = 'bugs';
+let _msgFilter     = 'all';
+let _mcReportId    = null;
+let _mcUserId      = null;
+
+function _isOpen(status) {
+  return !status || status === 'pending' || status === 'open';
+}
+
+async function loadMessages() {
+  document.getElementById('msg-loading').style.display = 'block';
+  document.getElementById('msg-bug-table-wrap').style.display  = 'none';
+  document.getElementById('msg-card-table-wrap').style.display = 'none';
+  document.getElementById('msg-empty').style.display = 'none';
+  try {
+    const [bugs, errs] = await Promise.all([
+      _get('bug_reports',   'select=*&order=created_at.desc&limit=500').catch(()=>[]),
+      _get('error_reports', 'select=*&order=reported_at.desc&limit=500').catch(()=>[]),
+    ]);
+    _allReports    = bugs  || [];
+    _allCardErrors = errs  || [];
+
+    const allRows   = [..._allReports, ..._allCardErrors];
+    const total     = allRows.length;
+    const pending   = allRows.filter(r => _isOpen(r.status)).length;
+    const reviewed  = allRows.filter(r => r.status === 'reviewed').length;
+    const resolved  = allRows.filter(r => r.status === 'resolved').length;
+
+    document.getElementById('msg-stat-total').textContent    = total;
+    document.getElementById('msg-stat-pending').textContent  = pending;
+    document.getElementById('msg-stat-reviewed').textContent = reviewed;
+    document.getElementById('msg-stat-resolved').textContent = resolved;
+
+    // Tab badges
+    const bugPend  = _allReports.filter(r => _isOpen(r.status)).length;
+    const cardPend = _allCardErrors.filter(r => _isOpen(r.status)).length;
+    const bugBadge  = document.getElementById('msgtab-bugs-ct');
+    const cardBadge = document.getElementById('msgtab-cards-ct');
+    if (bugBadge)  { bugBadge.textContent  = bugPend;  bugBadge.style.display  = bugPend  ? '' : 'none'; }
+    if (cardBadge) { cardBadge.textContent = cardPend; cardBadge.style.display = cardPend ? '' : 'none'; }
+
+    // Nav badge = total pending
+    const navBadge = document.getElementById('msg-nav-badge');
+    if (navBadge) { navBadge.textContent = pending; navBadge.style.display = pending ? 'inline-block' : 'none'; }
+
+    document.getElementById('msg-loading').style.display = 'none';
+    msgRender();
+  } catch(e) {
+    document.getElementById('msg-loading').style.display = 'none';
+    toast('Failed to load reports: ' + e.message, 'error');
+  }
+}
+
+function msgSwitchTab(tab) {
+  _msgTab = tab;
+  const bugTab  = document.getElementById('msgtab-bugs');
+  const cardTab = document.getElementById('msgtab-cards');
+  if (bugTab)  { bugTab.style.borderBottomColor  = tab === 'bugs'  ? 'var(--blue)' : 'transparent'; bugTab.style.color  = tab === 'bugs'  ? 'var(--blue)' : 'var(--text2)'; bugTab.style.fontWeight = tab === 'bugs'  ? '600' : '400'; }
+  if (cardTab) { cardTab.style.borderBottomColor = tab === 'cards' ? 'var(--blue)' : 'transparent'; cardTab.style.color = tab === 'cards' ? 'var(--blue)' : 'var(--text2)'; cardTab.style.fontWeight = tab === 'cards' ? '600' : '400'; }
+  msgRender();
+}
+
+function msgSetFilter(f) {
+  _msgFilter = f;
+  ['all','pending','reviewed','resolved'].forEach(k => {
+    const btn = document.getElementById('mft-' + k);
+    if (!btn) return;
+    const active = k === f;
+    btn.className = 'btn btn-sm' + (active ? '' : ' btn-ghost');
+    btn.style.background = active ? 'var(--blue)' : '';
+    btn.style.color = active ? '#fff' : '';
+  });
+  msgRender();
+}
+
+function msgRender() {
+  const q = (document.getElementById('msg-search')?.value || '').toLowerCase();
+  const bugWrap  = document.getElementById('msg-bug-table-wrap');
+  const cardWrap = document.getElementById('msg-card-table-wrap');
+  if (!bugWrap || !cardWrap) return;
+  bugWrap.style.display  = _msgTab === 'bugs'  ? 'block' : 'none';
+  cardWrap.style.display = _msgTab === 'cards' ? 'block' : 'none';
+
+  if (_msgTab === 'bugs') {
+    let rows = _allReports.slice();
+    if (_msgFilter === 'pending')  rows = rows.filter(r => _isOpen(r.status));
+    else if (_msgFilter === 'reviewed') rows = rows.filter(r => r.status === 'reviewed');
+    else if (_msgFilter === 'resolved') rows = rows.filter(r => r.status === 'resolved');
+    if (q) rows = rows.filter(r =>
+      (r.description||'').toLowerCase().includes(q) ||
+      (r.page||'').toLowerCase().includes(q) ||
+      (r.issue_type||'').toLowerCase().includes(q) ||
+      (r.user_id||'').toLowerCase().includes(q)
+    );
+    if (!rows.length) {
+      document.getElementById('msg-empty').style.display = 'flex';
+      bugWrap.style.display = 'none'; return;
+    }
+    document.getElementById('msg-empty').style.display = 'none';
+    bugWrap.style.display = 'block';
+    document.getElementById('msg-bug-tbody').innerHTML = rows.map(r => {
+      const status = r.status || 'open';
+      const normSt = _isOpen(status) ? 'pending' : status;
+      const badgeClass = normSt === 'pending' ? 'badge-yellow' : normSt === 'reviewed' ? 'badge-blue' : 'badge-green';
+      const dt = r.created_at ? new Date(r.created_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) : '—';
+      const canReview  = _isOpen(status);
+      const canResolve = status !== 'resolved';
+      return `<tr>
+        <td style="font-size:11px;color:var(--text2);white-space:nowrap">${dt}</td>
+        <td><span class="badge badge-gray" style="font-size:10px">${r.issue_type||'—'}</span></td>
+        <td style="font-size:11px;color:var(--text2);word-break:break-all">${r.page||'—'}</td>
+        <td style="font-size:12px;line-height:1.4">${r.description||'—'}${r.expected?`<div style="font-size:11px;color:var(--text3);margin-top:2px">Expected: ${r.expected}</div>`:''}</td>
+        <td style="font-size:11px;font-family:var(--font)">${r.user_id?r.user_id.slice(0,8)+'…':'—'}</td>
+        <td><span class="badge ${badgeClass}">${normSt.charAt(0).toUpperCase()+normSt.slice(1)}</span></td>
+        <td>
+          <div style="display:flex;gap:4px;flex-wrap:wrap">
+            ${canReview  ? `<button class="btn btn-sm" onclick="msgMarkStatus('bug_reports','${r.id}','reviewed')" style="background:var(--blue);color:#fff;font-size:10px">&#10003; Review</button>` : ''}
+            ${canResolve ? `<button class="btn btn-sm btn-success" onclick="msgMarkStatus('bug_reports','${r.id}','resolved')" style="font-size:10px">&#10003;&#10003; Resolve</button>` : ''}
+            ${r.user_id  ? `<button class="btn btn-sm" onclick="msgOpenCredits('bug_reports','${r.id}','${r.user_id}')" style="background:var(--yellow-light);color:var(--yellow);border:1px solid var(--yellow);font-size:10px">+ Credits</button>` : ''}
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  } else {
+    let rows = _allCardErrors.slice();
+    if (_msgFilter === 'pending')  rows = rows.filter(r => _isOpen(r.status));
+    else if (_msgFilter === 'reviewed') rows = rows.filter(r => r.status === 'reviewed');
+    else if (_msgFilter === 'resolved') rows = rows.filter(r => r.status === 'resolved');
+    if (q) rows = rows.filter(r =>
+      (r.note||'').toLowerCase().includes(q) ||
+      (r.card_name||'').toLowerCase().includes(q) ||
+      (r.set_table||'').toLowerCase().includes(q)
+    );
+    if (!rows.length) {
+      document.getElementById('msg-empty').style.display = 'flex';
+      cardWrap.style.display = 'none'; return;
+    }
+    document.getElementById('msg-empty').style.display = 'none';
+    cardWrap.style.display = 'block';
+    document.getElementById('msg-card-tbody').innerHTML = rows.map(r => {
+      const status = r.status || 'pending';
+      const badgeClass = _isOpen(status) ? 'badge-yellow' : status === 'reviewed' ? 'badge-blue' : 'badge-green';
+      const dt = (r.reported_at||r.created_at) ? new Date(r.reported_at||r.created_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) : '—';
+      const canReview  = _isOpen(status);
+      const canResolve = status !== 'resolved';
+      return `<tr>
+        <td style="font-size:11px;color:var(--text2);white-space:nowrap">${dt}</td>
+        <td style="font-size:12px">${r.card_name||'—'}${r.card_number?`<div style="font-size:10px;color:var(--text3);font-family:var(--font)">#${r.card_number}</div>`:''}</td>
+        <td style="font-size:11px;font-family:var(--font);color:var(--text2)">${r.set_table||'—'}</td>
+        <td style="font-size:11px;color:var(--text2)">${r.variation||'—'}</td>
+        <td style="font-size:12px;line-height:1.4">${r.note||'—'}</td>
+        <td><span class="badge ${badgeClass}">${(_isOpen(status)?'Pending':status.charAt(0).toUpperCase()+status.slice(1))}</span></td>
+        <td>
+          <div style="display:flex;gap:4px;flex-wrap:wrap">
+            ${canReview  ? `<button class="btn btn-sm" onclick="msgMarkStatus('error_reports','${r.id}','reviewed')" style="background:var(--blue);color:#fff;font-size:10px">&#10003; Review</button>` : ''}
+            ${canResolve ? `<button class="btn btn-sm btn-success" onclick="msgMarkStatus('error_reports','${r.id}','resolved')" style="font-size:10px">&#10003;&#10003; Resolve</button>` : ''}
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+}
+
+async function msgMarkStatus(table, reportId, status) {
+  try {
+    const updateObj = { status, reviewed_by: _adminUser?.id||null, reviewed_at: new Date().toISOString() };
+    await _patch(table, `id=eq.${reportId}`, updateObj);
+    const arr = table === 'bug_reports' ? _allReports : _allCardErrors;
+    const r = arr.find(x => String(x.id) === String(reportId));
+    if (r) r.status = status;
+    const allRows = [..._allReports, ..._allCardErrors];
+    const pending = allRows.filter(r => _isOpen(r.status)).length;
+    document.getElementById('msg-stat-pending').textContent = pending;
+    const navBadge = document.getElementById('msg-nav-badge');
+    if (navBadge) { navBadge.textContent = pending; navBadge.style.display = pending ? 'inline-block' : 'none'; }
+    toast('Report marked as ' + status, 'success');
+    msgRender();
+  } catch(e) { toast('Update failed: ' + e.message, 'error'); }
+}
+
+function msgOpenCredits(table, reportId, userId) {
+  _mcReportId = reportId;
+  _mcUserId   = userId;
+  _mcTable    = table;
+  document.getElementById('mc-user-label').textContent = userId.slice(0,8) + '…';
+  document.getElementById('mc-amount').value = '5';
+  document.getElementById('mc-reason').value = '';
+  document.getElementById('mc-err').style.display = 'none';
+  document.getElementById('msg-credits-modal').style.display = 'flex';
+}
+let _mcTable = 'bug_reports';
+
+async function msgDoAwardCredits() {
+  const amount = parseInt(document.getElementById('mc-amount').value, 10);
+  const reason = document.getElementById('mc-reason').value.trim() || 'Bug report award';
+  const errEl  = document.getElementById('mc-err');
+  if (!amount || amount < 1) { errEl.textContent = 'Enter a valid credit amount.'; errEl.style.display = 'block'; return; }
+  errEl.style.display = 'none';
+  try {
+    const rows = await _get('profiles', `id=eq.${_mcUserId}&select=id,credits&limit=1`).catch(()=>[]);
+    const cur  = (rows && rows[0]?.credits) || 0;
+    await _patch('profiles', `id=eq.${_mcUserId}`, { credits: cur + amount });
+    await _post('credit_events', { user_id: _mcUserId, amount, reason: 'bug_report', note: reason, created_at: new Date().toISOString() }).catch(()=>{});
+    await msgMarkStatus(_mcTable, _mcReportId, 'resolved');
+    document.getElementById('msg-credits-modal').style.display = 'none';
+    toast(`✓ ${amount} credits awarded and report resolved.`, 'success');
+  } catch(e) {
+    errEl.textContent = 'Failed: ' + e.message;
+    errEl.style.display = 'block';
+  }
+}
+
+// ── ISO MANAGER ──
+let _allIsos   = [];
+let _isoFilter = 'all';
+
+async function loadIsos() {
+  document.getElementById('iso-loading').style.display = 'block';
+  document.getElementById('iso-table-wrap').style.display = 'none';
+  document.getElementById('iso-empty').style.display = 'none';
+  try {
+    const rows = await _get('isos', 'select=*&order=created_at.desc&limit=1000');
+    _allIsos = rows || [];
+    const total   = _allIsos.length;
+    const active  = _allIsos.filter(r => r.status === 'active').length;
+    const matched = _allIsos.filter(r => r.status === 'matched').length;
+    const closed  = _allIsos.filter(r => r.status === 'completed' || r.status === 'closed' || r.status === 'cancelled').length;
+    document.getElementById('iso-stat-total').textContent   = total;
+    document.getElementById('iso-stat-active').textContent  = active;
+    document.getElementById('iso-stat-matched').textContent = matched;
+    document.getElementById('iso-stat-closed').textContent  = closed;
+    document.getElementById('iso-loading').style.display = 'none';
+    isoRender();
+  } catch(e) {
+    document.getElementById('iso-loading').style.display = 'none';
+    toast('Failed to load ISOs: ' + e.message, 'error');
+  }
+}
+
+function isoSetFilter(f) {
+  _isoFilter = f;
+  ['all','active','matched','closed'].forEach(k => {
+    const btn = document.getElementById('isof-' + k);
+    if (!btn) return;
+    const active = k === f;
+    btn.className = 'btn btn-sm' + (active ? '' : ' btn-ghost');
+    btn.style.background = active ? 'var(--blue)' : '';
+    btn.style.color = active ? '#fff' : '';
+  });
+  isoRender();
+}
+
+function isoRender() {
+  const q = (document.getElementById('iso-search')?.value || '').toLowerCase();
+  let rows = _allIsos.slice();
+  if (_isoFilter === 'active')  rows = rows.filter(r => r.status === 'active');
+  else if (_isoFilter === 'matched') rows = rows.filter(r => r.status === 'matched');
+  else if (_isoFilter === 'closed')  rows = rows.filter(r => r.status === 'completed' || r.status === 'closed' || r.status === 'cancelled');
+  if (q) rows = rows.filter(r =>
+    (r.player_name||r.player||'').toLowerCase().includes(q) ||
+    (r.set_name||r.card_set||'').toLowerCase().includes(q) ||
+    (r.user_id||'').toLowerCase().includes(q)
+  );
+  document.getElementById('iso-loading').style.display = 'none';
+  if (!rows.length) {
+    document.getElementById('iso-table-wrap').style.display = 'none';
+    document.getElementById('iso-empty').style.display = 'flex'; return;
+  }
+  document.getElementById('iso-empty').style.display = 'none';
+  document.getElementById('iso-table-wrap').style.display = 'block';
+  const statusColors = { active:'badge-green', matched:'badge-blue', completed:'badge-gray', closed:'badge-gray', cancelled:'badge-red' };
+  document.getElementById('iso-tbody').innerHTML = rows.map(r => {
+    const dt = r.created_at ? new Date(r.created_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) : '—';
+    const player = r.player_name || r.player || '—';
+    const cardSet = [r.card_set||r.set_name, r.variation||r.parallel].filter(Boolean).join(' · ') || '—';
+    const maxPrice = r.max_price ? `$${parseFloat(r.max_price).toFixed(0)}` : '—';
+    const status   = r.status || 'active';
+    const bClass   = statusColors[status] || 'badge-gray';
+    return `<tr>
+      <td style="font-size:11px;color:var(--text2);white-space:nowrap">${dt}</td>
+      <td style="font-size:13px;font-weight:600">${player}</td>
+      <td style="font-size:11px;color:var(--text2)">${cardSet}</td>
+      <td style="font-size:12px;font-weight:600">${maxPrice}</td>
+      <td style="font-size:11px;font-family:var(--font)">${r.user_id?r.user_id.slice(0,8)+'…':'—'}</td>
+      <td><span class="badge ${bClass}">${status.charAt(0).toUpperCase()+status.slice(1)}</span></td>
+      <td>
+        <div style="display:flex;gap:4px">
+          ${status === 'active' ? `<button class="btn btn-sm btn-ghost" onclick="isoSetStatus('${r.id}','closed')" style="font-size:10px">Close</button>` : ''}
+          <button class="btn btn-sm" onclick="isoDelete('${r.id}')" style="background:var(--red-light);color:var(--red);border:1px solid var(--red);font-size:10px">Delete</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function isoSetStatus(id, status) {
+  try {
+    await _patch('isos', `id=eq.${id}`, { status });
+    const r = _allIsos.find(x => x.id == id);
+    if (r) r.status = status;
+    isoRender(); toast('ISO updated', 'success');
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+async function isoDelete(id) {
+  if (!confirm('Permanently delete this ISO? This cannot be undone.')) return;
+  try {
+    const headers = { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + (_token||SB_ANON) };
+    const r = await fetch(`${REST}/isos?id=eq.${id}`, { method: 'DELETE', headers });
+    if (!r.ok) throw new Error(await r.text());
+    _allIsos = _allIsos.filter(x => x.id != id);
+    isoRender(); toast('ISO deleted', 'success');
+  } catch(e) { toast('Delete failed: ' + e.message, 'error'); }
+}
+
+// ── CREDIT EVENTS ──
+let _allCreditEvents = [];
+
+async function loadCreditEvents(filterUserId, filterLabel) {
+  document.getElementById('ce-loading').style.display = 'block';
+  document.getElementById('ce-table-wrap').style.display = 'none';
+  document.getElementById('ce-empty').style.display = 'none';
+  try {
+    const rows = await _get('credit_events', 'select=*&order=created_at.desc&limit=1000');
+    _allCreditEvents = rows || [];
+    const total    = _allCreditEvents.length;
+    const awarded  = _allCreditEvents.filter(r => (r.amount||0) > 0).reduce((s,r) => s + (r.amount||0), 0);
+    const deducted = Math.abs(_allCreditEvents.filter(r => (r.amount||0) < 0).reduce((s,r) => s + (r.amount||0), 0));
+    document.getElementById('ce-stat-total').textContent    = total;
+    document.getElementById('ce-stat-awarded').textContent  = '+' + awarded;
+    document.getElementById('ce-stat-deducted').textContent = '-' + deducted;
+    document.getElementById('ce-loading').style.display = 'none';
+    // If called from user manager, pre-filter
+    if (filterUserId) {
+      document.getElementById('ce-search').value = filterUserId;
+    }
+    ceEventsRender();
+  } catch(e) {
+    document.getElementById('ce-loading').style.display = 'none';
+    toast('Failed to load credit events: ' + e.message, 'error');
+  }
+}
+
+function ceEventsRender() {
+  const q = (document.getElementById('ce-search')?.value || '').toLowerCase();
+  const reason = document.getElementById('ce-reason-filter')?.value || '';
+  let rows = _allCreditEvents.slice();
+  if (q) rows = rows.filter(r =>
+    (r.user_id||'').toLowerCase().includes(q) ||
+    (r.reason||'').toLowerCase().includes(q) ||
+    (r.note||'').toLowerCase().includes(q)
+  );
+  if (reason) rows = rows.filter(r => (r.reason||'') === reason);
+  if (!rows.length) {
+    document.getElementById('ce-table-wrap').style.display = 'none';
+    document.getElementById('ce-empty').style.display = 'flex'; return;
+  }
+  document.getElementById('ce-empty').style.display = 'none';
+  document.getElementById('ce-table-wrap').style.display = 'block';
+  document.getElementById('ce-tbody').innerHTML = rows.map(r => {
+    const dt = r.created_at ? new Date(r.created_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) : '—';
+    const amt = (r.amount||0) > 0 ? `<span style="color:var(--green);font-weight:600">+${r.amount}</span>` : `<span style="color:var(--red);font-weight:600">${r.amount}</span>`;
+    const reasonColors = { bug_report:'badge-purple', price_correction:'badge-blue', admin_award:'badge-green', iso_post:'badge-gray' };
+    const bClass = reasonColors[r.reason] || 'badge-gray';
+    return `<tr>
+      <td style="font-size:11px;color:var(--text2);white-space:nowrap">${dt}</td>
+      <td style="font-size:11px;font-family:var(--font)">${r.user_id?r.user_id.slice(0,8)+'…':'—'}</td>
+      <td>${amt}</td>
+      <td><span class="badge ${bClass}" style="font-size:10px">${r.reason||'—'}</span></td>
+      <td style="font-size:12px;color:var(--text2)">${r.note||'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function viewCreditEvents(userId, label) {
+  nav('credits', document.querySelector('[onclick*="credits"]'));
+  loadCreditEvents(userId, label);
+}
+
 </script>
 </body>
 </html>

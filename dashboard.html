@@ -2293,29 +2293,25 @@ async function logOut(){
           </div>
         </div>
 
-        <!-- Orientation override — auto-detected from image, but override if wrong -->
+        <!-- Orientation — always visible, selects are source of truth, canvas detection pre-fills -->
         <div id="cdOrientSection" style="background:rgba(0,170,255,0.05);border:1px solid rgba(0,170,255,0.15);border-radius:8px;padding:10px 12px;margin-bottom:10px;font-family:Barlow Condensed,sans-serif;font-size:12px">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-            <input type="checkbox" id="cdOrientOverride" style="cursor:pointer;accent-color:var(--blue)">
-            <label for="cdOrientOverride" style="color:var(--chrome);cursor:pointer;letter-spacing:.5px">OVERRIDE AUTO-DETECTED ORIENTATION</label>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;display:none" id="cdOrientPickers">
+          <div style="color:var(--chrome);letter-spacing:.5px;margin-bottom:8px;font-size:11px">CONFIRM ORIENTATION &mdash; <span id="cdOrientAutoLabel" style="color:var(--muted-text)">upload images to detect</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="cdOrientPickers">
             <div>
               <div style="color:var(--muted-text);font-size:11px;letter-spacing:1px;margin-bottom:4px">FRONT</div>
               <select id="cdOrientFront" style="width:100%;background:var(--deep3);border:1px solid var(--deep-border);border-radius:6px;padding:5px 8px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--white)">
-                <option value="portrait">Portrait (tall)</option>
-                <option value="landscape">Landscape (wide)</option>
+                <option value="portrait">Portrait (tall ↕)</option>
+                <option value="landscape">Landscape (wide ↔)</option>
               </select>
             </div>
             <div>
               <div style="color:var(--muted-text);font-size:11px;letter-spacing:1px;margin-bottom:4px">BACK</div>
               <select id="cdOrientBack" style="width:100%;background:var(--deep3);border:1px solid var(--deep-border);border-radius:6px;padding:5px 8px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--white)">
-                <option value="portrait">Portrait (tall)</option>
-                <option value="landscape">Landscape (wide)</option>
+                <option value="portrait">Portrait (tall ↕)</option>
+                <option value="landscape">Landscape (wide ↔)</option>
               </select>
             </div>
           </div>
-          <div style="color:var(--muted-text);font-size:11px;margin-top:4px" id="cdOrientAutoLabel">Auto-detected from image EXIF data</div>
         </div>
 
         <div class="vm-error" id="cdUploadError" style="display:none">Both front and back are required.</div>
@@ -2332,11 +2328,15 @@ async function logOut(){
         <div id="cdConfirmGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
           <div>
             <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:6px">FRONT</div>
-            <img id="cdConfirmFront" style="width:100%;border-radius:8px;border:1px solid rgba(0,170,255,0.2);display:block">
+            <div id="cdConfirmFrontWrap" style="background:#0a1929;border:1px solid rgba(0,170,255,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden">
+              <img id="cdConfirmFront" style="display:block;border-radius:8px;object-fit:contain;max-width:100%;max-height:100%">
+            </div>
           </div>
           <div>
             <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:6px">BACK</div>
-            <img id="cdConfirmBack" style="width:100%;border-radius:8px;border:1px solid rgba(0,170,255,0.2);display:block">
+            <div id="cdConfirmBackWrap" style="background:#0a1929;border:1px solid rgba(0,170,255,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden">
+              <img id="cdConfirmBack" style="display:block;border-radius:8px;object-fit:contain;max-width:100%;max-height:100%">
+            </div>
           </div>
         </div>
         <div class="vm-progress" id="cdUploadProgress" style="display:none"><div class="vm-progress-bar" id="cdUploadProgressBar"></div></div>
@@ -5777,34 +5777,15 @@ function cdReset(){ _cdReset3D(); }
 // &#9472;&#9472; Catalog Image Upload &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 function openCatalogUpload(){
   _cdCatalogFrontBlob=null; _cdCatalogBackBlob=null;
+  window._cdUploadFrontLandscape = false;
+  window._cdUploadBackLandscape  = false;
   ['cdFrontBox','cdBackBox'].forEach(id=>document.getElementById(id).classList.remove('has-file'));
-  // Reset orientation override
-  const _oc = document.getElementById('cdOrientOverride');
-  if(_oc){ _oc.checked=false; }
-  const _op = document.getElementById('cdOrientPickers');
-  if(_op){ _op.style.display='none'; }
+  // Reset orientation selects to portrait default
+  const _selF=document.getElementById('cdOrientFront'), _selB=document.getElementById('cdOrientBack');
+  if(_selF) _selF.value='portrait';
+  if(_selB) _selB.value='portrait';
   const _ol = document.getElementById('cdOrientAutoLabel');
-  if(_ol){ _ol.textContent='Auto-detected from image EXIF data'; }
-  // Wire checkbox
-  if(_oc && !_oc._wired){
-    _oc._wired = true;
-    _oc.addEventListener('change', function(){
-      const pickers = document.getElementById('cdOrientPickers');
-      const lbl = document.getElementById('cdOrientAutoLabel');
-      if(this.checked){
-        if(pickers) pickers.style.display='grid';
-        if(lbl) lbl.textContent='Manual override — choose orientation for each face';
-        // Pre-set selects to auto-detected value
-        const ff = document.getElementById('cdOrientFront');
-        const bb = document.getElementById('cdOrientBack');
-        if(ff) ff.value = window._cdUploadFrontLandscape ? 'landscape' : 'portrait';
-        if(bb) bb.value = window._cdUploadBackLandscape  ? 'landscape' : 'portrait';
-      } else {
-        if(pickers) pickers.style.display='none';
-        if(lbl) lbl.textContent='Auto-detected from image EXIF data';
-      }
-    });
-  }
+  if(_ol){ _ol.textContent='upload images to detect'; }
   ['cdFrontName','cdBackName'].forEach(id=>document.getElementById(id).textContent='');
   ['cdFrontPreview','cdBackPreview'].forEach(id=>{ const el=document.getElementById(id); el.style.display='none'; el.src=''; });
   ['cdFrontFile','cdBackFile'].forEach(id=>document.getElementById(id).value='');
@@ -5830,30 +5811,19 @@ function cdUploadShowConfirm(){
     document.getElementById('cdUploadError').style.display='block'; return;
   }
   document.getElementById('cdUploadError').style.display='none';
-  // Copy previews into confirm screen with orientation-correct sizing
+  // Read orientation from the selects — user has confirmed/corrected these
+  const _isFrontLand = (document.getElementById('cdOrientFront').value === 'landscape');
+  const _isBackLand  = (document.getElementById('cdOrientBack').value  === 'landscape');
+  // Copy previews into confirm screen
   const fp = document.getElementById('cdFrontPreview');
   const bp = document.getElementById('cdBackPreview');
-  const _isFrontLand = window._cdUploadFrontLandscape || false;
-  const _isBackLand  = window._cdUploadBackLandscape  || false;
-  const cfImg = document.getElementById('cdConfirmFront');
-  const cbImg = document.getElementById('cdConfirmBack');
-  cfImg.src = fp.src;
-  cbImg.src = bp.src;
-  // Size each image by orientation — portrait = tall+narrow, landscape = short+wide
-  // width:auto + max-height lets the image breathe at its natural aspect ratio
-  cfImg.style.width    = _isFrontLand ? '100%'  : 'auto';
-  cfImg.style.maxWidth = _isFrontLand ? '100%'  : '100%';
-  cfImg.style.maxHeight= _isFrontLand ? '160px' : '260px';
-  cfImg.style.display  = 'block';
-  cfImg.style.margin   = '0 auto';
-  cbImg.style.width    = _isBackLand  ? '100%'  : 'auto';
-  cbImg.style.maxWidth = _isBackLand  ? '100%'  : '100%';
-  cbImg.style.maxHeight= _isBackLand  ? '160px' : '260px';
-  cbImg.style.display  = 'block';
-  cbImg.style.margin   = '0 auto';
-  // Keep grid always 2-col — orientation is communicated by image shape, not layout
-  const _cfGrid = document.getElementById('cdConfirmGrid');
-  if(_cfGrid) _cfGrid.style.gridTemplateColumns = '1fr 1fr';
+  document.getElementById('cdConfirmFront').src = fp.src;
+  document.getElementById('cdConfirmBack').src  = bp.src;
+  // Set wrapper heights based on confirmed orientation so images render at correct proportions
+  const fWrap = document.getElementById('cdConfirmFrontWrap');
+  const bWrap = document.getElementById('cdConfirmBackWrap');
+  if(fWrap) fWrap.style.height = _isFrontLand ? '130px' : '240px';
+  if(bWrap) bWrap.style.height = _isBackLand  ? '130px' : '240px';
   document.getElementById('cdUploadError2').style.display='none';
   document.getElementById('cdUploadProgress').style.display='none';
   document.getElementById('cdUploadProgressBar').style.width='0';
@@ -5952,16 +5922,14 @@ function handleCatalogUpload(input, side){
           // Store detected orientation for immediate use after submit — no probe needed
           if(side==='front') window._cdUploadFrontLandscape = (canvas.width > canvas.height);
           else               window._cdUploadBackLandscape  = (canvas.width > canvas.height);
-          // Update auto-detect label and pre-fill selects if override is open
+          // Always update selects and label with detection result — user can correct if wrong
           const _isL = canvas.width > canvas.height;
-          const _lbl = document.getElementById('cdOrientAutoLabel');
-          const _fL = window._cdUploadFrontLandscape, _bL = window._cdUploadBackLandscape;
-          if(_lbl && !document.getElementById('cdOrientOverride')?.checked){
-            _lbl.textContent = 'Auto-detected: Front='+(window._cdUploadFrontLandscape?'Landscape':'Portrait')+', Back='+(window._cdUploadBackLandscape?'Landscape':'Portrait');
-          }
           const _selF=document.getElementById('cdOrientFront'), _selB=document.getElementById('cdOrientBack');
           if(side==='front' && _selF) _selF.value=_isL?'landscape':'portrait';
           if(side==='back'  && _selB) _selB.value=_isL?'landscape':'portrait';
+          const _lbl = document.getElementById('cdOrientAutoLabel');
+          const _fVal = _selF?_selF.value:'?', _bVal = _selB?_selB.value:'?';
+          if(_lbl) _lbl.textContent = 'detected — correct below if wrong';
           // Update upload box aspect ratio hint — portrait gets more height, landscape gets less
           const _prev2 = document.getElementById(side==='front'?'cdFrontPreview':'cdBackPreview');
           const _isLand = canvas.width > canvas.height;
@@ -6018,15 +5986,9 @@ async function submitCatalogUpload(){
 
     bar.style.width='75%';
 
-    // Resolve orientation BEFORE DB write so it persists across hard refreshes
-    const _forceOrient = document.getElementById('cdOrientOverride');
-    const _overrideChecked = _forceOrient && _forceOrient.checked;
-    const _frontIsLand = _overrideChecked
-      ? (document.getElementById('cdOrientFront').value === 'landscape')
-      : (window._cdUploadFrontLandscape || false);
-    const _backIsLand = _overrideChecked
-      ? (document.getElementById('cdOrientBack').value === 'landscape')
-      : (window._cdUploadBackLandscape || false);
+    // Orientation selects are always visible and always source of truth
+    const _frontIsLand = (document.getElementById('cdOrientFront').value === 'landscape');
+    const _backIsLand  = (document.getElementById('cdOrientBack').value  === 'landscape');
 
     // Fetch existing var_images so we can merge (not overwrite other variations)
     const _exRows=await _rGet(table,'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');

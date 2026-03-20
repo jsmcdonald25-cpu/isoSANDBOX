@@ -3319,7 +3319,14 @@ function N(id,el){
   if(el)el.classList.add('active');
   const m=PM[id];
   if(m){document.getElementById('pgTitle').textContent=m.t;document.getElementById('pgSub').textContent=m.s;}
-  if(id==='library')ivInit();
+  if(id==='library'){
+    // If navigating to ISOVault from card detail via sidebar, preserve the card list
+    // instead of letting ivGoHome() wipe _ivData. Same behaviour as backToVault().
+    if(window._prevSection === 'carddetail' && _ivSet && _ivData && _ivData.length){
+      window._ivReturnState = 'cards';
+    }
+    ivInit();
+  }
   if(id==='myvault')renderMyVault();
   if(id==='myisos')renderMyISOs();
   if(id==='market')renderMkt();

@@ -5502,6 +5502,7 @@ function _cdProbeOrientation(url, callback){
   }
   img.onload  = function(){ done(this.naturalWidth > this.naturalHeight); };
   img.onerror = function(){ done(false); };
+  img.crossOrigin = 'anonymous';
   img.src = probeUrl;
   // NOTE: do NOT check img.complete here — probeUrl is always unique so it will never be cached
 }
@@ -6004,14 +6005,25 @@ async function submitCatalogUpload(){
 
     bar.style.width='75%';
 
+    // Resolve orientation BEFORE DB write so it persists across hard refreshes
+    const _forceOrient = document.getElementById('cdOrientOverride');
+    const _overrideChecked = _forceOrient && _forceOrient.checked;
+    const _frontIsLand = _overrideChecked
+      ? (document.getElementById('cdOrientFront').value === 'landscape')
+      : (window._cdUploadFrontLandscape || false);
+    const _backIsLand = _overrideChecked
+      ? (document.getElementById('cdOrientBack').value === 'landscape')
+      : (window._cdUploadBackLandscape || false);
+
     // Fetch existing var_images so we can merge (not overwrite other variations)
     const _exRows=await _rGet(table,'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
     const varImages=((_exRows&&_exRows[0]&&_exRows[0].var_images)?_exRows[0].var_images:{});
-    varImages[varLabel] = { front: frontURL, back: backURL };
+    // Include orientation in DB write — this is what keeps images correct after hard refresh
+    varImages[varLabel] = { front: frontURL, back: backURL, frontLandscape: _frontIsLand, backLandscape: _backIsLand };
 
     bar.style.width='85%';
 
-    // Write merged var_images back
+    // Write merged var_images back (orientation included)
     await _rPatch(table,'card_number=eq.'+encodeURIComponent(cardNum),{ var_images: varImages });
 
     bar.style.width='100%';
@@ -6022,15 +6034,6 @@ async function submitCatalogUpload(){
     const _cb = '?t=' + Date.now();
     const frontCB = frontURL + _cb;
     const backCB  = backURL  + _cb;
-    // Resolve orientations FIRST before using them anywhere
-    const _forceOrient = document.getElementById('cdOrientOverride');
-    const _overrideChecked = _forceOrient && _forceOrient.checked;
-    const _frontIsLand = _overrideChecked
-      ? (document.getElementById('cdOrientFront').value === 'landscape')
-      : (window._cdUploadFrontLandscape || false);
-    const _backIsLand = _overrideChecked
-      ? (document.getElementById('cdOrientBack').value === 'landscape')
-      : (window._cdUploadBackLandscape || false);
 
     if(!window._cdCard._varImages) window._cdCard._varImages = {};
     // Store orientation alongside URLs so cdSelectVar can apply without probing
@@ -6056,7 +6059,7 @@ async function submitCatalogUpload(){
       const _ivRow = window._ivData.find(r => String(r.card_number) === String(cardNum));
       if(_ivRow){
         if(!_ivRow.var_images) _ivRow.var_images = {};
-        _ivRow.var_images[varLabel] = { front: frontCB, back: backCB };
+        _ivRow.var_images[varLabel] = { front: frontCB, back: backCB, frontLandscape: _frontIsLand, backLandscape: _backIsLand };
       }
     }
 

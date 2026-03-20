@@ -2267,7 +2267,12 @@ async function logOut(){
       <!-- SCREEN 1: Upload -->
       <div id="cdUploadScreen1">
         <div class="cd-upload-title">CONTRIBUTE CATALOG IMAGE</div>
-        <div class="cd-upload-sub" id="cdUploadSub" style="margin-bottom:12px">Your photo becomes the reference image for all collectors.</div>
+        <div class="cd-upload-sub" id="cdUploadSub" style="margin-bottom:8px">Your photo becomes the reference image for all collectors.</div>
+        <div style="background:rgba(255,184,0,0.07);border:1px solid rgba(255,184,0,0.2);border-radius:7px;padding:8px 12px;margin-bottom:10px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--gold);line-height:1.5">
+          📐 <strong>PHOTO TIPS:</strong> Shoot or crop so the card fills the frame.<br>
+          Portrait cards → top of card at top of photo.<br>
+          Landscape cards → left side of card at left of photo (reading direction).
+        </div>
         <div class="cd-contrib-badge">
           <div class="cd-contrib-badge-icon">&#128248;</div>
           <div class="cd-contrib-badge-text">
@@ -5559,10 +5564,10 @@ function _cdSetViewerImages(frontUrl, backUrl){
     function _doIt(){
       const imgIsLand = imgEl.naturalWidth > imgEl.naturalHeight;
       if(isLandscape && !imgIsLand){
-        // Portrait image, landscape container — rotate 90deg to fill
+        // Portrait image, landscape container — rotate -90deg (CCW) to fill
         imgEl.style.width='240px'; imgEl.style.height='336px';
         imgEl.style.top='-48px';  imgEl.style.left='48px';
-        imgEl.style.transform='rotate(90deg)'; imgEl.style.objectFit='cover';
+        imgEl.style.transform='rotate(-90deg)'; imgEl.style.objectFit='cover';
       } else if(!isLandscape && imgIsLand){
         // Landscape image, portrait container — rotate 90deg to fill
         imgEl.style.width='336px'; imgEl.style.height='240px';
@@ -5861,19 +5866,43 @@ function cdUploadShowConfirm(){
     document.getElementById('cdUploadError').style.display='block'; return;
   }
   document.getElementById('cdUploadError').style.display='none';
-  // Read orientation from the selects — user has confirmed/corrected these
   const _isFrontLand = (document.getElementById('cdOrientFront').value === 'landscape');
   const _isBackLand  = (document.getElementById('cdOrientBack').value  === 'landscape');
-  // Copy previews into confirm screen
   const fp = document.getElementById('cdFrontPreview');
   const bp = document.getElementById('cdBackPreview');
-  document.getElementById('cdConfirmFront').src = fp.src;
-  document.getElementById('cdConfirmBack').src  = bp.src;
-  // Set wrapper heights based on confirmed orientation so images render at correct proportions
-  const fWrap = document.getElementById('cdConfirmFrontWrap');
-  const bWrap = document.getElementById('cdConfirmBackWrap');
-  if(fWrap) fWrap.style.height = _isFrontLand ? '130px' : '240px';
-  if(bWrap) bWrap.style.height = _isBackLand  ? '130px' : '240px';
+  const cfImg = document.getElementById('cdConfirmFront');
+  const cbImg = document.getElementById('cdConfirmBack');
+  cfImg.src = fp.src;
+  cbImg.src = bp.src;
+
+  function _applyConfirmRotation(imgEl, wrapEl, isLand){
+    if(!imgEl || !wrapEl) return;
+    function _doRotate(){
+      const imgIsLand = imgEl.naturalWidth > imgEl.naturalHeight;
+      if(isLand && !imgIsLand){
+        wrapEl.style.height = '130px';
+        imgEl.style.width='185px'; imgEl.style.height='130px';
+        imgEl.style.transform='rotate(-90deg)';
+        imgEl.style.objectFit='cover'; imgEl.style.maxWidth='none'; imgEl.style.maxHeight='none';
+      } else if(!isLand && imgIsLand){
+        wrapEl.style.height = '240px';
+        imgEl.style.width='168px'; imgEl.style.height='240px';
+        imgEl.style.transform='rotate(90deg)';
+        imgEl.style.objectFit='cover'; imgEl.style.maxWidth='none'; imgEl.style.maxHeight='none';
+      } else {
+        wrapEl.style.height = isLand ? '130px' : '240px';
+        imgEl.style.width=''; imgEl.style.height='';
+        imgEl.style.transform=''; imgEl.style.objectFit='contain';
+        imgEl.style.maxWidth='100%'; imgEl.style.maxHeight='100%';
+      }
+    }
+    if(imgEl.complete && imgEl.naturalWidth){ _doRotate(); }
+    else { imgEl.onload = _doRotate; }
+  }
+
+  _applyConfirmRotation(cfImg, document.getElementById('cdConfirmFrontWrap'), _isFrontLand);
+  _applyConfirmRotation(cbImg, document.getElementById('cdConfirmBackWrap'), _isBackLand);
+
   document.getElementById('cdUploadError2').style.display='none';
   document.getElementById('cdUploadProgress').style.display='none';
   document.getElementById('cdUploadProgressBar').style.width='0';

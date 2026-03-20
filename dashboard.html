@@ -5605,6 +5605,16 @@ function _buildVariationPills(c){
       onclick="cdSelectVar(${i})">${v.label}${runLabel}</div>`;
   }).join('');
   cdSelectVar(0, true);
+  // If pill 0 has no image but another pill does, auto-select the first pill with an image
+  const _varImgs = window._cdCard && window._cdCard._varImages;
+  if(_varImgs && Object.keys(_varImgs).length){
+    const vars = window._cdVars || [];
+    const hasImg0 = vars[0] && _varImgs[vars[0].label] && (_varImgs[vars[0].label].front || _varImgs[vars[0].label].back);
+    if(!hasImg0){
+      const firstWithImg = vars.findIndex(v => _varImgs[v.label] && (_varImgs[v.label].front || _varImgs[v.label].back));
+      if(firstWithImg > 0) cdSelectVar(firstWithImg, true);
+    }
+  }
 }
 
 function cdSelectVar(idx, skipShimmer){
@@ -6839,14 +6849,6 @@ function ivOpenCard(row){
   const uploadBtn = document.getElementById('cd-upload-btn');
   if(uploadBtn){ uploadBtn.textContent='📷 Upload Image'; uploadBtn.style.display='inline-flex'; }
 
-  // Load images from var_images if present — pass stored orientation so probe never fires
-  const firstVar = card._varImages && Object.values(card._varImages)[0];
-  _cdSetViewerImages(
-    firstVar ? firstVar.front : null,
-    firstVar ? firstVar.back  : null,
-    firstVar && firstVar.frontLandscape !== undefined ? firstVar.frontLandscape : null,
-    firstVar && firstVar.backLandscape  !== undefined ? firstVar.backLandscape  : null
-  );
   if(card.hasCatalogPic && uploadBtn) uploadBtn.textContent = 'Replace Image';
 
   _cdReset3D();

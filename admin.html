@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GrailISO · Admin</title>
-<!-- admin_03_20_25_1225 -->
+<!-- admin_03_20_25_1649 -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
@@ -341,6 +341,10 @@ tr:hover td { background: var(--bg); }
     </div>
 
     <div class="nav-section">Platform</div>
+    <div class="nav-item" onclick="nav('market',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      Market Pricing
+    </div>
     <div class="nav-item" onclick="nav('isos',this)">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
       ISO Manager
@@ -764,6 +768,159 @@ tr:hover td { background: var(--bg); }
             </tr></thead>
             <tbody id="ce-tbody"></tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MARKET PRICING ── -->
+    <div class="panel" id="panel-market">
+      <div class="panel-header">
+        <div class="panel-eyebrow">Platform</div>
+        <div class="panel-title">Market Pricing</div>
+        <div class="panel-sub">Override individual card prices or batch-update an entire set via CSV.</div>
+      </div>
+
+      <!-- Tab bar -->
+      <div style="display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:20px">
+        <button id="mptab-single" onclick="mpSwitchTab('single')" style="padding:8px 16px;border:none;border-bottom:2px solid var(--blue);background:none;color:var(--blue);font-size:13px;font-weight:600;cursor:pointer">Single Card Override</button>
+        <button id="mptab-batch"  onclick="mpSwitchTab('batch')"  style="padding:8px 16px;border:none;border-bottom:2px solid transparent;background:none;color:var(--text2);font-size:13px;cursor:pointer">Batch Upload</button>
+      </div>
+
+      <!-- ── SINGLE CARD ── -->
+      <div id="mp-single-pane">
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-title">Find Card</div>
+          <div style="display:flex;gap:8px;margin-bottom:8px">
+            <select class="select" id="mp-set-select" onchange="mpSingleSetChanged()" style="max-width:280px">
+              <option value="">— Select set —</option>
+            </select>
+            <input class="input" id="mp-single-search" placeholder="Player name or card #" oninput="mpSingleSearch()" style="flex:1">
+          </div>
+          <div id="mp-single-results" style="display:none;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;max-height:240px;overflow-y:auto"></div>
+        </div>
+
+        <div id="mp-single-form" style="display:none">
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-title">Selected Card</div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:16px">
+              <div style="font-size:15px;font-weight:700" id="mp-card-name">—</div>
+              <div style="font-size:12px;color:var(--text2);margin-top:2px" id="mp-card-detail">—</div>
+              <div style="display:flex;gap:24px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+                <div>
+                  <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3)">Current Market Price</div>
+                  <div style="font-size:18px;font-weight:700;color:var(--text);margin-top:2px" id="mp-current-price">$0.00</div>
+                </div>
+                <div>
+                  <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3)">Entry Count</div>
+                  <div style="font-size:18px;font-weight:700;color:var(--text);margin-top:2px" id="mp-entry-count">0</div>
+                </div>
+                <div>
+                  <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3)">Active Override</div>
+                  <div style="font-size:18px;font-weight:700;color:var(--yellow);margin-top:2px" id="mp-override-ind">None</div>
+                </div>
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="field">
+                <label>NEW PRICE ($)</label>
+                <input class="input" id="mp-new-price" type="number" min="0" step="0.01" placeholder="0.00">
+                <div id="mp-price-err" style="font-size:11px;color:var(--red);margin-top:4px;display:none">Enter a valid price</div>
+              </div>
+              <div class="field">
+                <label>REASON</label>
+                <select class="select" id="mp-reason">
+                  <option value="opening_price">Opening price set</option>
+                  <option value="correction">Data correction</option>
+                  <option value="bad_data">Bad / outlier data</option>
+                  <option value="seasonal">Seasonal adjustment</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div id="mp-submit-err" style="font-size:12px;color:var(--red);margin-bottom:10px;display:none"></div>
+            <div class="btn-row">
+              <button class="btn btn-success" id="mp-apply-btn" onclick="mpApplySingle()">Apply Override</button>
+              <button class="btn btn-ghost" onclick="mpClearSingle()">Clear</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent overrides log -->
+        <div class="card">
+          <div class="card-title">Recent Overrides <small id="mp-log-count"></small></div>
+          <div id="mp-recent-log"><div class="loading">Loading…</div></div>
+        </div>
+      </div>
+
+      <!-- ── BATCH UPLOAD ── -->
+      <div id="mp-batch-pane" style="display:none">
+
+        <!-- Step 1: Download template -->
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-title">Step 1 — Download Pricing Template</div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6">
+            Select a set. The template CSV will pre-fill every card with its current market price.
+            Add your prices in the <strong>new_price</strong> column, leave blank to skip a card.
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <select class="select" id="mp-batch-set" onchange="mpBatchSetChanged()" style="flex:1;max-width:340px">
+              <option value="">— Select set —</option>
+            </select>
+            <span id="mp-batch-set-info" style="font-size:12px;color:var(--text3)"></span>
+            <button class="btn btn-success" id="mp-dl-btn" onclick="mpDownloadTemplate()" disabled>&#8595; Download Template</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Upload filled CSV -->
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-title">Step 2 — Upload Filled CSV</div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:14px">After adding prices, upload the same file here.</div>
+          <div style="border:2px dashed var(--border2);border-radius:var(--radius);padding:32px;text-align:center;cursor:pointer;transition:border-color .2s" id="mp-drop-zone"
+            onclick="document.getElementById('mp-csv-input').click()"
+            ondragover="event.preventDefault();this.style.borderColor='var(--blue)'"
+            ondragleave="this.style.borderColor='var(--border2)'"
+            ondrop="event.preventDefault();this.style.borderColor='var(--border2)';mpHandleDrop(event.dataTransfer.files[0])">
+            <div style="font-size:24px;margin-bottom:8px">&#128196;</div>
+            <div style="font-size:14px;font-weight:600;margin-bottom:4px">Click to select or drag CSV here</div>
+            <div style="font-size:12px;color:var(--text3)" id="mp-file-label">No file selected</div>
+          </div>
+          <input type="file" id="mp-csv-input" accept=".csv" style="display:none" onchange="mpHandleFile(this.files[0])">
+        </div>
+
+        <!-- Step 3: Preview diff -->
+        <div id="mp-preview-card" class="card" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div>
+              <div class="card-title" style="margin-bottom:2px">Step 3 — Review Changes</div>
+              <div style="font-size:12px;color:var(--text2)" id="mp-preview-summary"></div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-ghost" onclick="mpClearBatch()">Cancel</button>
+              <button class="btn btn-success" id="mp-confirm-btn" onclick="mpConfirmBatch()">&#10003; Apply All Prices</button>
+            </div>
+          </div>
+          <div id="mp-batch-err" style="font-size:12px;color:var(--red);margin-bottom:10px;display:none"></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th>#</th><th>Player</th><th>Variation</th>
+                <th style="width:110px">Current Price</th>
+                <th style="width:110px">New Price</th>
+                <th style="width:80px">Change</th>
+              </tr></thead>
+              <tbody id="mp-preview-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Batch result -->
+        <div id="mp-batch-result" style="display:none" class="card">
+          <div style="text-align:center;padding:20px">
+            <div style="font-size:32px;margin-bottom:8px">&#10003;</div>
+            <div style="font-size:15px;font-weight:700" id="mp-result-msg"></div>
+            <div style="font-size:12px;color:var(--text2);margin-top:4px" id="mp-result-sub"></div>
+            <button class="btn btn-ghost" style="margin-top:16px" onclick="mpClearBatch()">Upload Another</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1204,6 +1361,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (orig && orig.includes("'images'")) el.addEventListener('click', () => { populateSetDropdowns(); });
     if (orig && orig.includes("'cards'"))  el.addEventListener('click', () => { populateSetDropdowns(); });
     if (orig && orig.includes("'messages'")) el.addEventListener('click', () => { loadMessages(); });
+    if (orig && orig.includes("'market'"))   el.addEventListener('click', () => { loadMarket(); });
     if (orig && orig.includes("'isos'"))     el.addEventListener('click', () => { loadIsos(); });
     if (orig && orig.includes("'credits'"))  el.addEventListener('click', () => { loadCreditEvents(); });
   });
@@ -1588,6 +1746,408 @@ function ceEventsRender() {
 function viewCreditEvents(userId, label) {
   nav('credits', document.querySelector('[onclick*="credits"]'));
   loadCreditEvents(userId, label);
+}
+
+// ── MARKET PRICING ──
+let _mpSelectedCard  = null;
+let _mpSingleTimer   = null;
+let _mpSingleCards   = [];
+let _mpBatchSetTable = '';
+let _mpBatchCards    = [];
+let _mpBatchPrices   = {};   // card_number|variation -> current market price row
+let _mpParsedRows    = [];   // rows from uploaded CSV with new_price filled
+let _mpActiveTab     = 'single';
+
+async function loadMarket() {
+  mpPopulateSetDropdowns();
+  mpLoadRecentLog();
+}
+
+function mpSwitchTab(tab) {
+  _mpActiveTab = tab;
+  const s = document.getElementById('mptab-single');
+  const b = document.getElementById('mptab-batch');
+  const sp = document.getElementById('mp-single-pane');
+  const bp = document.getElementById('mp-batch-pane');
+  s.style.borderBottomColor = tab === 'single' ? 'var(--blue)' : 'transparent';
+  s.style.color = tab === 'single' ? 'var(--blue)' : 'var(--text2)';
+  s.style.fontWeight = tab === 'single' ? '600' : '400';
+  b.style.borderBottomColor = tab === 'batch' ? 'var(--blue)' : 'transparent';
+  b.style.color = tab === 'batch' ? 'var(--blue)' : 'var(--text2)';
+  b.style.fontWeight = tab === 'batch' ? '600' : '400';
+  sp.style.display = tab === 'single' ? 'block' : 'none';
+  bp.style.display = tab === 'batch'  ? 'block' : 'none';
+}
+
+async function mpPopulateSetDropdowns() {
+  try {
+    const sets = await _get('iv_sets', 'select=table_name,label&order=sort_order.asc');
+    const opts = (sets||[]).map(s => `<option value="${s.table_name}">${s.label}</option>`).join('');
+    ['mp-set-select','mp-batch-set'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = '<option value="">— Select set —</option>' + opts;
+    });
+  } catch(e) { /* non-critical */ }
+}
+
+// ── SINGLE CARD ──
+function mpSingleSetChanged() {
+  document.getElementById('mp-single-search').value = '';
+  document.getElementById('mp-single-results').style.display = 'none';
+  document.getElementById('mp-single-form').style.display = 'none';
+  _mpSingleCards = [];
+  _mpSelectedCard = null;
+}
+
+function mpSingleSearch() {
+  clearTimeout(_mpSingleTimer);
+  const q = document.getElementById('mp-single-search').value.trim();
+  const setTable = document.getElementById('mp-set-select').value;
+  const res = document.getElementById('mp-single-results');
+  if (!q || q.length < 2 || !setTable) { res.style.display = 'none'; return; }
+  _mpSingleTimer = setTimeout(async () => {
+    try {
+      const rows = await _get(setTable,
+        `select=card_number,player,category,insert_name,is_rookie&or=(player.ilike.*${encodeURIComponent(q)}*,card_number.ilike.*${encodeURIComponent(q)}*)&limit=30`
+      );
+      _mpSingleCards = rows || [];
+      if (!_mpSingleCards.length) {
+        res.innerHTML = '<div style="padding:12px 14px;font-size:13px;color:var(--text3)">No cards found</div>';
+        res.style.display = 'block'; return;
+      }
+      res.innerHTML = _mpSingleCards.map((r, i) => `
+        <div onclick="mpSingleSelect(${i})" style="padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;transition:background .1s" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
+          <div>
+            <div style="font-size:13px;font-weight:600">${r.player||'—'}</div>
+            <div style="font-size:11px;color:var(--text2)">${r.category||'Base'}${r.insert_name?' · '+r.insert_name:''}${r.is_rookie?' · RC':''}</div>
+          </div>
+          <div style="font-size:11px;font-family:var(--font);color:var(--text3)">#${r.card_number||'—'}</div>
+        </div>`).join('');
+      res.style.display = 'block';
+    } catch(e) {
+      res.innerHTML = '<div style="padding:12px;color:var(--red);font-size:13px">Search failed: ' + e.message + '</div>';
+      res.style.display = 'block';
+    }
+  }, 280);
+}
+
+async function mpSingleSelect(idx) {
+  const row = _mpSingleCards[idx];
+  if (!row) return;
+  const setTable = document.getElementById('mp-set-select').value;
+  _mpSelectedCard = { ...row, _setTable: setTable };
+  document.getElementById('mp-single-results').style.display = 'none';
+  document.getElementById('mp-single-search').value = row.player || '';
+  document.getElementById('mp-card-name').textContent   = row.player || '—';
+  document.getElementById('mp-card-detail').textContent = `#${row.card_number} · ${row.category||'Base'}${row.insert_name?' · '+row.insert_name:''}`;
+  document.getElementById('mp-new-price').value = '';
+  document.getElementById('mp-price-err').style.display = 'none';
+  document.getElementById('mp-submit-err').style.display = 'none';
+  // Fetch current market price
+  try {
+    const pr = await _get('card_market_prices',
+      `card_number=eq.${encodeURIComponent(row.card_number||'')}&set_table=eq.${encodeURIComponent(setTable)}&limit=1`);
+    const p = pr && pr[0];
+    document.getElementById('mp-current-price').textContent = p ? '$'+parseFloat(p.market_price||0).toFixed(2) : '$0.00';
+    document.getElementById('mp-entry-count').textContent   = p ? (p.entry_count||0) : '0';
+    document.getElementById('mp-override-ind').textContent  = p && p.admin_override_price ? '$'+parseFloat(p.admin_override_price).toFixed(2) : 'None';
+    if (p) document.getElementById('mp-new-price').value = parseFloat(p.market_price||0).toFixed(2);
+  } catch(e) { /* use defaults */ }
+  document.getElementById('mp-single-form').style.display = 'block';
+}
+
+function mpClearSingle() {
+  _mpSelectedCard = null;
+  document.getElementById('mp-single-search').value = '';
+  document.getElementById('mp-single-results').style.display = 'none';
+  document.getElementById('mp-single-form').style.display = 'none';
+}
+
+async function mpApplySingle() {
+  if (!_mpSelectedCard) return;
+  const newPrice = parseFloat(document.getElementById('mp-new-price').value);
+  if (!document.getElementById('mp-new-price').value || isNaN(newPrice) || newPrice < 0) {
+    document.getElementById('mp-price-err').style.display = 'block'; return;
+  }
+  document.getElementById('mp-price-err').style.display = 'none';
+  const reason = document.getElementById('mp-reason').value || 'other';
+  const btn = document.getElementById('mp-apply-btn');
+  btn.disabled = true; btn.textContent = 'Applying…';
+  document.getElementById('mp-submit-err').style.display = 'none';
+  try {
+    const cardNum  = _mpSelectedCard.card_number || null;
+    const setTable = _mpSelectedCard._setTable || null;
+    const now      = new Date().toISOString();
+    const existing = await _get('card_market_prices',
+      `card_number=eq.${encodeURIComponent(cardNum||'')}&set_table=eq.${encodeURIComponent(setTable||'')}&limit=1`);
+    const ex = existing && existing[0];
+    const payload = {
+      market_price:          newPrice,
+      admin_override_price:  newPrice,
+      admin_override_reason: reason,
+      admin_override_at:     now,
+      admin_override_by:     _adminUser?.id || null,
+      updated_at:            now,
+    };
+    if (ex) {
+      await _patch('card_market_prices', `id=eq.${ex.id}`, payload);
+    } else {
+      await _post('card_market_prices', {
+        ...payload,
+        card_number: cardNum,
+        set_table:   setTable,
+        variation:   'Base',
+        entry_count: 0,
+        created_at:  now,
+      });
+    }
+    document.getElementById('mp-current-price').textContent = '$'+newPrice.toFixed(2);
+    document.getElementById('mp-override-ind').textContent  = '$'+newPrice.toFixed(2);
+    btn.textContent = '✓ Applied';
+    btn.style.background = 'var(--green)'; btn.style.color = '#fff';
+    setTimeout(() => { btn.disabled = false; btn.textContent = 'Apply Override'; btn.style.background = ''; btn.style.color = ''; }, 2200);
+    toast('Override applied — ' + (_mpSelectedCard.player||'card') + ' → $' + newPrice.toFixed(2), 'success');
+    mpLoadRecentLog();
+  } catch(e) {
+    document.getElementById('mp-submit-err').textContent = e.message || 'Failed — try again';
+    document.getElementById('mp-submit-err').style.display = 'block';
+    btn.disabled = false; btn.textContent = 'Apply Override';
+  }
+}
+
+async function mpLoadRecentLog() {
+  const el = document.getElementById('mp-recent-log');
+  if (!el) return;
+  try {
+    const rows = await _get('card_market_prices',
+      'select=card_number,set_table,variation,market_price,admin_override_price,admin_override_reason,admin_override_at&admin_override_price=not.is.null&order=admin_override_at.desc&limit=30');
+    const ct = document.getElementById('mp-log-count');
+    if (ct) ct.textContent = rows && rows.length ? `(${rows.length})` : '';
+    if (!rows || !rows.length) {
+      el.innerHTML = '<div class="empty" style="padding:20px 0"><div>No overrides on record yet.</div></div>'; return;
+    }
+    const reasonLabel = { bad_data:'Bad data', opening_price:'Opening price', correction:'Correction', seasonal:'Seasonal', other:'Other' };
+    el.innerHTML = `<div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Set</th><th>Variation</th><th>Price</th><th>Reason</th><th>Date</th></tr></thead>
+      <tbody>${rows.map(r => {
+        const dt = r.admin_override_at ? new Date(r.admin_override_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) : '—';
+        return `<tr>
+          <td style="font-family:var(--font);font-size:11px">${r.card_number||'—'}</td>
+          <td style="font-size:11px;color:var(--text2)">${r.set_table||'—'}</td>
+          <td style="font-size:11px">${r.variation||'Base'}</td>
+          <td style="font-weight:700;color:var(--green)">$${parseFloat(r.admin_override_price||0).toFixed(2)}</td>
+          <td><span class="badge badge-gray" style="font-size:10px">${reasonLabel[r.admin_override_reason]||r.admin_override_reason||'—'}</span></td>
+          <td style="font-size:11px;color:var(--text2);white-space:nowrap">${dt}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table></div>`;
+  } catch(e) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--red);padding:12px">Failed to load log: ' + e.message + '</div>';
+  }
+}
+
+// ── BATCH UPLOAD ──
+async function mpBatchSetChanged() {
+  _mpBatchSetTable = document.getElementById('mp-batch-set').value;
+  const btn = document.getElementById('mp-dl-btn');
+  const info = document.getElementById('mp-batch-set-info');
+  btn.disabled = !_mpBatchSetTable;
+  info.textContent = '';
+  mpClearBatch();
+  if (!_mpBatchSetTable) return;
+  // Count cards in set
+  try {
+    const rows = await _get(_mpBatchSetTable, 'select=card_number&limit=1000');
+    _mpBatchCards = rows || [];
+    info.textContent = `${_mpBatchCards.length} cards in set`;
+  } catch(e) {
+    info.textContent = 'Could not load set';
+    _mpBatchCards = [];
+  }
+}
+
+async function mpDownloadTemplate() {
+  if (!_mpBatchSetTable || !_mpBatchCards.length) return;
+  const btn = document.getElementById('mp-dl-btn');
+  btn.disabled = true; btn.textContent = '⏳ Building…';
+  try {
+    // Pull full card list
+    const cards = await _get(_mpBatchSetTable,
+      'select=card_number,player,category,insert_name,variation&order=card_number.asc&limit=2000');
+    // Pull all existing market prices for this set
+    const prices = await _get('card_market_prices',
+      `set_table=eq.${encodeURIComponent(_mpBatchSetTable)}&select=card_number,variation,market_price,admin_override_price&limit=2000`)
+      .catch(() => []);
+    // Build lookup: card_number|variation -> price
+    const priceMap = {};
+    (prices||[]).forEach(p => { priceMap[`${p.card_number}|${p.variation||'Base'}`] = p; });
+
+    // Build CSV rows — one row per card (Base variation)
+    const header = 'card_number,player,set_table,variation,current_price,new_price,reason';
+    const rows = (cards||[]).map(card => {
+      const variation = card.variation || 'Base';
+      const key = `${card.card_number}|${variation}`;
+      const pr  = priceMap[key];
+      const cur = pr ? parseFloat(pr.admin_override_price || pr.market_price || 0).toFixed(2) : '';
+      const player = (card.player||'').replace(/,/g, ' ');
+      return [card.card_number, player, _mpBatchSetTable, variation, cur, '', 'opening_price'].join(',');
+    });
+
+    const csv = [header, ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = `pricing_${_mpBatchSetTable}_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    btn.textContent = '✓ Downloaded';
+    btn.style.background = 'var(--green)'; btn.style.color = '#fff';
+    setTimeout(() => { btn.disabled = false; btn.textContent = '↓ Download Template'; btn.style.background = ''; btn.style.color = ''; }, 2200);
+    toast(`Template downloaded — ${(cards||[]).length} cards`, 'success');
+  } catch(e) {
+    toast('Download failed: ' + e.message, 'error');
+    btn.disabled = false; btn.textContent = '↓ Download Template';
+  }
+}
+
+function mpHandleDrop(file) { if (file) mpHandleFile(file); }
+
+function mpHandleFile(file) {
+  if (!file || !file.name.endsWith('.csv')) { toast('Please select a .csv file', 'error'); return; }
+  document.getElementById('mp-file-label').textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = e => mpParseCSV(e.target.result);
+  reader.readAsText(file);
+}
+
+function mpParseCSV(text) {
+  const lines  = text.trim().split('\n');
+  const header = lines[0].split(',').map(h => h.trim().toLowerCase());
+  const idxOf  = k => header.indexOf(k);
+  const cnIdx  = idxOf('card_number');
+  const plIdx  = idxOf('player');
+  const stIdx  = idxOf('set_table');
+  const vaIdx  = idxOf('variation');
+  const npIdx  = idxOf('new_price');
+  const cpIdx  = idxOf('current_price');
+  const reIdx  = idxOf('reason');
+
+  if (cnIdx < 0 || npIdx < 0) {
+    toast('CSV must have card_number and new_price columns', 'error'); return;
+  }
+
+  _mpParsedRows = [];
+  let skipped = 0;
+  lines.slice(1).forEach(line => {
+    if (!line.trim()) return;
+    const cols = line.split(',');
+    const np = cols[npIdx] ? parseFloat(cols[npIdx]) : NaN;
+    if (isNaN(np) || np <= 0) { skipped++; return; } // blank = skip
+    _mpParsedRows.push({
+      card_number:  (cols[cnIdx]||'').trim(),
+      player:       plIdx >= 0 ? (cols[plIdx]||'').trim() : '—',
+      set_table:    stIdx >= 0 ? (cols[stIdx]||'').trim() : _mpBatchSetTable,
+      variation:    vaIdx >= 0 ? (cols[vaIdx]||'').trim() : 'Base',
+      current_price: cpIdx >= 0 ? parseFloat(cols[cpIdx]) || 0 : 0,
+      new_price:    np,
+      reason:       reIdx >= 0 ? (cols[reIdx]||'').trim() || 'opening_price' : 'opening_price',
+    });
+  });
+
+  if (!_mpParsedRows.length) {
+    toast('No rows with a new_price found in the CSV', 'error'); return;
+  }
+  mpShowPreview(skipped);
+}
+
+function mpShowPreview(skipped) {
+  const card = document.getElementById('mp-preview-card');
+  const sum  = document.getElementById('mp-preview-summary');
+  const tbody= document.getElementById('mp-preview-tbody');
+  sum.textContent = `${_mpParsedRows.length} cards will be updated${skipped ? ' · ' + skipped + ' skipped (no new_price)' : ''}`;
+  tbody.innerHTML = _mpParsedRows.map(r => {
+    const cur   = r.current_price > 0 ? '$'+r.current_price.toFixed(2) : '—';
+    const nw    = '$'+r.new_price.toFixed(2);
+    const diff  = r.current_price > 0 ? r.new_price - r.current_price : null;
+    let chg = '—';
+    if (diff !== null) {
+      const pct  = ((diff / r.current_price) * 100).toFixed(1);
+      const col  = diff > 0 ? 'var(--green)' : diff < 0 ? 'var(--red)' : 'var(--text3)';
+      const sign = diff > 0 ? '+' : '';
+      chg = `<span style="color:${col};font-weight:600">${sign}${pct}%</span>`;
+    }
+    return `<tr>
+      <td style="font-family:var(--font);font-size:11px">${r.card_number}</td>
+      <td style="font-size:12px;font-weight:600">${r.player}</td>
+      <td style="font-size:11px;color:var(--text2)">${r.variation||'Base'}</td>
+      <td style="font-size:13px;color:var(--text2)">${cur}</td>
+      <td style="font-size:13px;font-weight:700;color:var(--green)">${nw}</td>
+      <td>${chg}</td>
+    </tr>`;
+  }).join('');
+  card.style.display = 'block';
+  document.getElementById('mp-batch-result').style.display = 'none';
+}
+
+async function mpConfirmBatch() {
+  if (!_mpParsedRows.length) return;
+  const btn = document.getElementById('mp-confirm-btn');
+  btn.disabled = true; btn.textContent = 'Applying…';
+  document.getElementById('mp-batch-err').style.display = 'none';
+  const now = new Date().toISOString();
+  let applied = 0; let failed = 0;
+  try {
+    for (const row of _mpParsedRows) {
+      try {
+        const existing = await _get('card_market_prices',
+          `card_number=eq.${encodeURIComponent(row.card_number)}&set_table=eq.${encodeURIComponent(row.set_table)}&limit=1`);
+        const ex = existing && existing[0];
+        const payload = {
+          market_price:          row.new_price,
+          admin_override_price:  row.new_price,
+          admin_override_reason: row.reason || 'opening_price',
+          admin_override_at:     now,
+          admin_override_by:     _adminUser?.id || null,
+          updated_at:            now,
+        };
+        if (ex) {
+          await _patch('card_market_prices', `id=eq.${ex.id}`, payload);
+        } else {
+          await _post('card_market_prices', {
+            ...payload,
+            card_number: row.card_number,
+            set_table:   row.set_table,
+            variation:   row.variation || 'Base',
+            entry_count: 0,
+            created_at:  now,
+          });
+        }
+        applied++;
+      } catch(e) { failed++; }
+      // Update button progress
+      btn.textContent = `Applying… ${applied + failed}/${_mpParsedRows.length}`;
+    }
+    document.getElementById('mp-preview-card').style.display = 'none';
+    const res = document.getElementById('mp-batch-result');
+    document.getElementById('mp-result-msg').textContent = `${applied} price${applied !== 1 ? 's' : ''} applied successfully`;
+    document.getElementById('mp-result-sub').textContent = failed ? `${failed} failed — check console` : 'All records updated.';
+    res.style.display = 'block';
+    toast(`Batch complete — ${applied} prices updated`, 'success');
+    mpLoadRecentLog();
+  } catch(e) {
+    document.getElementById('mp-batch-err').textContent = 'Batch failed: ' + e.message;
+    document.getElementById('mp-batch-err').style.display = 'block';
+    btn.disabled = false; btn.textContent = '✓ Apply All Prices';
+  }
+}
+
+function mpClearBatch() {
+  _mpParsedRows = [];
+  document.getElementById('mp-file-label').textContent = 'No file selected';
+  document.getElementById('mp-csv-input').value = '';
+  document.getElementById('mp-preview-card').style.display = 'none';
+  document.getElementById('mp-batch-result').style.display = 'none';
 }
 
 </script>

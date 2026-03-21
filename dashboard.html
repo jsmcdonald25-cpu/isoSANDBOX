@@ -2956,6 +2956,36 @@ function openSlabLab(){
   const sb=document.getElementById('slab-spin-btn'); if(sb) sb.textContent='Stop';
   document.getElementById('slabLabOverlay').style.display='block';
   document.body.style.overflow='hidden';
+  // DEBUG TRACKER - remove when positioning is fixed
+  setTimeout(function(){
+    var cb=document.getElementById('slabCardBack');
+    var unit=document.getElementById('slabUnit');
+    var dbg=document.getElementById('slabPosDebug');
+    if(!dbg){
+      dbg=document.createElement('div');
+      dbg.id='slabPosDebug';
+      dbg.style.cssText='position:fixed;bottom:10px;left:10px;z-index:99999;background:rgba(0,0,0,0.9);border:2px solid #00AAFF;border-radius:8px;padding:10px 14px;font-family:monospace;font-size:11px;color:#00FF00;min-width:300px;pointer-events:none;line-height:1.8';
+      document.body.appendChild(dbg);
+    }
+    function update(){
+      if(!cb||!unit) return;
+      var cr=cb.getBoundingClientRect();
+      var ur=unit.getBoundingClientRect();
+      var cx=Math.round((cr.left+cr.width/2)-(ur.left+ur.width/2));
+      var cy=Math.round((cr.top+cr.height/2)-(ur.top+ur.height/2));
+      dbg.innerHTML=
+        '<b style="color:#00AAFF">SLAB BACK TRACKER</b><br>'+
+        'style.left: <b>'+cb.style.left+'</b><br>'+
+        'style.top: <b>'+cb.style.top+'</b><br>'+
+        'style.width: <b>'+cb.style.width+'</b><br>'+
+        'style.height: <b>'+cb.style.height+'</b><br>'+
+        'style.transform: <b>'+cb.style.transform+'</b><br>'+
+        'BoundingRect: <b>'+Math.round(cr.left)+'x'+Math.round(cr.top)+' / '+Math.round(cr.width)+'w '+Math.round(cr.height)+'h</b><br>'+
+        'Center offset from slab: <b style="color:'+(Math.abs(cx)<20?'#00FF00':'#FF3B5C')+'">x='+cx+' y='+cy+'</b>';
+    }
+    update();
+    setInterval(update,500);
+  },400);
 }
 
 function closeSlabLab(){
@@ -7547,64 +7577,6 @@ async function submitBugReport(){
   dismissBtn.addEventListener('click', hideBanner);
   window.addEventListener('appinstalled',function(){hideBanner();_prompt=null;});
 })();
-</script>
-
-<!-- SLAB DEBUG OVERLAY - REMOVE WHEN DONE -->
-<div id="slabDebug" style="display:none;position:fixed;bottom:10px;left:10px;z-index:99999;background:rgba(0,0,0,0.85);border:1px solid #00AAFF;border-radius:8px;padding:10px 14px;font-family:monospace;font-size:11px;color:#00AAFF;min-width:280px;pointer-events:none"></div>
-<script data-cfasync="false">
-function _slabDebugUpdate(){
-  const dbg=document.getElementById('slabDebug');
-  if(!dbg) return;
-  const cb=document.getElementById('slabCardBack');
-  const unit=document.getElementById('slabUnit');
-  const backFace=cb?cb.parentElement:null;
-  if(!cb||!unit){ dbg.innerHTML='slabCardBack: NOT FOUND'; return; }
-  const cbRect=cb.getBoundingClientRect();
-  const unitRect=unit.getBoundingClientRect();
-  const backRect=backFace?backFace.getBoundingClientRect():{};
-  const cbStyle=window.getComputedStyle(cb);
-  dbg.innerHTML=
-    '<b style="color:#fff;font-size:12px">SLAB BACK DEBUG</b><br>'+
-    '─────────────────────<br>'+
-    'slabUnit rect: '+Math.round(unitRect.left)+'x'+Math.round(unitRect.top)+' / '+Math.round(unitRect.width)+'w '+Math.round(unitRect.height)+'h<br>'+
-    'backFace rect: '+Math.round(backRect.left)+'x'+Math.round(backRect.top)+' / '+Math.round(backRect.width)+'w '+Math.round(backRect.height)+'h<br>'+
-    'cardBack rect: '+Math.round(cbRect.left)+'x'+Math.round(cbRect.top)+' / '+Math.round(cbRect.width)+'w '+Math.round(cbRect.height)+'h<br>'+
-    'cardBack style.left: '+cb.style.left+'<br>'+
-    'cardBack style.top: '+cb.style.top+'<br>'+
-    'cardBack style.width: '+cb.style.width+'<br>'+
-    'cardBack style.height: '+cb.style.height+'<br>'+
-    'cardBack transform: '+cb.style.transform+'<br>'+
-    'computed transform: '+cbStyle.transform+'<br>'+
-    '─────────────────────<br>'+
-    'center offset from unit: x='+Math.round((cbRect.left+cbRect.width/2)-(unitRect.left+unitRect.width/2))+' y='+Math.round((cbRect.top+cbRect.height/2)-(unitRect.top+unitRect.height/2));
-}
-// Patch openSlabLab to show debug
-const _origOpenSlab=window.openSlabLab;
-window.openSlabLab=function(){
-  if(_origOpenSlab) _origOpenSlab.apply(this,arguments);
-  const dbg=document.getElementById('slabDebug');
-  if(dbg) dbg.style.display='block';
-  setTimeout(_slabDebugUpdate,300);
-};
-// Patch slabFlip to update debug
-const _origSlabFlip=window.slabFlip;
-window.slabFlip=function(){
-  if(_origSlabFlip) _origSlabFlip.apply(this,arguments);
-  setTimeout(_slabDebugUpdate,300);
-};
-// Update on drag
-document.addEventListener('mousemove',function(){
-  if(document.getElementById('slabLabOverlay')&&document.getElementById('slabLabOverlay').style.display==='block'){
-    _slabDebugUpdate();
-  }
-});
-// Patch closeSlabLab to hide debug
-const _origCloseSlab=window.closeSlabLab;
-window.closeSlabLab=function(){
-  if(_origCloseSlab) _origCloseSlab.apply(this,arguments);
-  const dbg=document.getElementById('slabDebug');
-  if(dbg) dbg.style.display='none';
-};
 </script>
 </body>
 </html>

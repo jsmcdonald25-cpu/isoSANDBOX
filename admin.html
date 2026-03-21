@@ -483,11 +483,46 @@ tr:hover td { background: var(--bg); }
       <div class="panel-header">
         <div class="panel-eyebrow">Content</div>
         <div class="panel-title">Card / Variation Editor</div>
-        <div class="panel-sub">Search any card and edit its variation pills, colors, and print runs.</div>
+        <div class="panel-sub">Add, delete, and edit cards and variation pills.</div>
+      </div>
+
+      <!-- ADD NEW CARD -->
+      <div class="card" id="ce-add-card" style="display:none">
+        <div class="card-title">Add New Card <small>— inserts a new row into the selected set table</small></div>
+        <div class="grid-2">
+          <div class="field"><label>CARD NUMBER *</label><input class="input" id="nc-num" placeholder="001"></div>
+          <div class="field"><label>PLAYER NAME *</label><input class="input" id="nc-player" placeholder="Shohei Ohtani"></div>
+          <div class="field"><label>TEAM</label><input class="input" id="nc-team" placeholder="Los Angeles Dodgers"></div>
+          <div class="field"><label>YEAR</label><input class="input" id="nc-year" type="number" placeholder="2025"></div>
+          <div class="field"><label>SET NAME</label><input class="input" id="nc-setname" placeholder="Topps Series 1"></div>
+          <div class="field"><label>CATEGORY</label>
+            <select class="select" id="nc-category">
+              <option value="Base">Base</option>
+              <option value="Insert">Insert</option>
+              <option value="Parallel">Parallel</option>
+              <option value="Auto">Auto</option>
+              <option value="Relic">Relic</option>
+              <option value="Short Print">Short Print</option>
+            </select>
+          </div>
+          <div class="field"><label>INSERT NAME (optional)</label><input class="input" id="nc-insert" placeholder="Leave blank for base cards"></div>
+          <div class="field"><label>IS ROOKIE</label>
+            <select class="select" id="nc-rookie"><option value="false">No</option><option value="true">Yes — RC</option></select>
+          </div>
+        </div>
+        <div id="nc-err" style="font-size:12px;color:var(--red);margin-bottom:10px;display:none"></div>
+        <div class="btn-row">
+          <button class="btn btn-success" onclick="ceAddCard()">+ Add Card</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('ce-add-card').style.display='none';document.getElementById('ce-add-toggle').textContent='+ Add New Card'">Cancel</button>
+        </div>
+        <div id="nc-msg" style="margin-top:8px;font-size:12px"></div>
       </div>
 
       <div class="card">
-        <div class="card-title">Find a Card</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div class="card-title" style="margin:0">Find a Card</div>
+          <button class="btn btn-success btn-sm" id="ce-add-toggle" onclick="ceToggleAddForm()">+ Add New Card</button>
+        </div>
         <div class="grid-2">
           <div class="field"><label>SET TABLE</label>
             <select class="select" id="ce-set" onchange="ceLoadSet()">
@@ -505,7 +540,10 @@ tr:hover td { background: var(--bg); }
       </div>
 
       <div class="card" id="ce-editor-card" style="display:none">
-        <div class="card-title" id="ce-editor-title">Edit Variations</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div class="card-title" id="ce-editor-title" style="margin:0">Edit Variations</div>
+          <button class="btn btn-danger btn-sm" id="ce-delete-btn" onclick="ceConfirmDelete()">🗑 Delete Card</button>
+        </div>
 
         <div class="grid-2" style="margin-bottom:16px">
           <div class="field"><label>PLAYER</label><input class="input" id="ce-player" readonly style="opacity:.6"></div>
@@ -516,6 +554,28 @@ tr:hover td { background: var(--bg); }
             <select class="select" id="ce-rookie"><option value="false">No</option><option value="true">Yes — RC</option></select>
           </div>
         </div>
+
+        <hr class="divider">
+        <div class="card-title">Card Images <small>— front &amp; back catalog photos</small></div>
+        <div class="grid-2" style="margin-bottom:12px">
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;letter-spacing:.3px">FRONT IMAGE</div>
+            <div id="ce-img-front-preview" style="width:100%;height:160px;background:var(--bg);border:2px dashed var(--border2);border-radius:6px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;overflow:hidden;cursor:pointer" onclick="document.getElementById('ce-img-front-input').click()">
+              <span id="ce-img-front-placeholder" style="color:var(--text3);font-size:12px;text-align:center;pointer-events:none">Click to select<br>front image</span>
+            </div>
+            <input type="file" id="ce-img-front-input" accept="image/*" style="display:none" onchange="cePreviewImage('front',this)">
+            <button class="btn btn-ghost btn-sm" onclick="document.getElementById('ce-img-front-input').click()" style="width:100%">Choose Front Image</button>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;letter-spacing:.3px">BACK IMAGE</div>
+            <div id="ce-img-back-preview" style="width:100%;height:160px;background:var(--bg);border:2px dashed var(--border2);border-radius:6px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;overflow:hidden;cursor:pointer" onclick="document.getElementById('ce-img-back-input').click()">
+              <span id="ce-img-back-placeholder" style="color:var(--text3);font-size:12px;text-align:center;pointer-events:none">Click to select<br>back image</span>
+            </div>
+            <input type="file" id="ce-img-back-input" accept="image/*" style="display:none" onchange="cePreviewImage('back',this)">
+            <button class="btn btn-ghost btn-sm" onclick="document.getElementById('ce-img-back-input').click()" style="width:100%">Choose Back Image</button>
+          </div>
+        </div>
+        <div id="ce-img-status" style="font-size:12px;color:var(--text2);margin-bottom:4px;min-height:16px"></div>
 
         <hr class="divider">
         <div class="card-title">Variation Pills</div>
@@ -957,6 +1017,8 @@ let _allSets = [];
 let _allUsers = [];
 let _ceCard = null; // currently editing card row
 let _cePills = [];  // working copy of variations
+let _ceImgFront = null; // pending front image File
+let _ceImgBack  = null; // pending back image File
 
 // ── HELPERS ──
 function toast(msg, type='') {
@@ -991,6 +1053,29 @@ async function _post(table, body) {
   const r = await fetch(`${REST}/${table}`, { method: 'POST', headers, body: JSON.stringify(body) });
   if (!r.ok) throw new Error(await r.text());
   return r.json();
+}
+
+async function _delete(table, query) {
+  const headers = { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + (_token||SB_ANON) };
+  const r = await fetch(`${REST}/${table}?${query}`, { method: 'DELETE', headers });
+  if (!r.ok) throw new Error(await r.text());
+  return true;
+}
+
+async function _uploadImage(bucket, path, file) {
+  const url = `${SB_URL}/storage/v1/object/${bucket}/${path}`;
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'apikey': SB_ANON,
+      'Authorization': 'Bearer ' + (_token||SB_ANON),
+      'Content-Type': file.type || 'image/jpeg',
+      'x-upsert': 'true'
+    },
+    body: file
+  });
+  if (!r.ok) throw new Error(await r.text());
+  return `${SB_URL}/storage/v1/object/public/${bucket}/${path}`;
 }
 
 // ── GATE ──
@@ -1139,14 +1224,19 @@ async function ceSearch() {
     document.getElementById('ce-results').innerHTML = `
       <div class="table-wrap" style="margin-top:12px">
         <table>
-          <thead><tr><th>#</th><th>Player</th><th>Category</th><th>Variations</th><th></th></tr></thead>
+          <thead><tr><th>#</th><th>Player</th><th>Category</th><th>Variations</th><th>Actions</th></tr></thead>
           <tbody>${rows.map(r => `
             <tr>
               <td style="font-family:var(--font);font-size:11px">${r.card_number}</td>
               <td>${r.player}</td>
               <td><span class="badge badge-gray">${r.category||'—'}</span></td>
               <td style="font-size:11px;color:var(--text2)">${(r.variations||[]).length} pills</td>
-              <td><button class="btn btn-sm" onclick='ceEdit(${JSON.stringify(r).replace(/'/g,"&#39;")})'>Edit</button></td>
+              <td>
+                <div style="display:flex;gap:4px">
+                  <button class="btn btn-sm" onclick='ceEdit(${JSON.stringify(r).replace(/'/g,"&#39;")})'>Edit</button>
+                  <button class="btn btn-sm btn-danger" onclick="ceConfirmDeleteRow('${r.card_number}','${(r.player||'').replace(/'/g,'&#39;')}')">Delete</button>
+                </div>
+              </td>
             </tr>
           `).join('')}</tbody>
         </table>
@@ -1172,6 +1262,8 @@ const PILL_COLORS = [
 function ceEdit(row) {
   _ceCard = row;
   _cePills = JSON.parse(JSON.stringify(row.variations || []));
+  _ceImgFront = null;
+  _ceImgBack  = null;
   document.getElementById('ce-player').value   = row.player;
   document.getElementById('ce-cardnum').value  = row.card_number;
   document.getElementById('ce-category').value = row.category || '';
@@ -1180,8 +1272,109 @@ function ceEdit(row) {
   document.getElementById('ce-editor-title').textContent = `Edit — ${row.player} #${row.card_number}`;
   document.getElementById('ce-editor-card').style.display = 'block';
   document.getElementById('ce-msg').textContent = '';
+  document.getElementById('ce-img-status').textContent = '';
+  // Load existing images
+  const vi = row.var_images || {};
+  const frontPreview = document.getElementById('ce-img-front-preview');
+  const backPreview  = document.getElementById('ce-img-back-preview');
+  frontPreview.innerHTML = vi.front
+    ? `<img src="${vi.front}" style="width:100%;height:100%;object-fit:contain" onerror="this.parentElement.innerHTML='<span style=color:var(--red);font-size:11px>Image load error</span>'">`
+    : '<span id="ce-img-front-placeholder" style="color:var(--text3);font-size:12px;text-align:center;pointer-events:none">Click to select<br>front image</span>';
+  backPreview.innerHTML = vi.back
+    ? `<img src="${vi.back}" style="width:100%;height:100%;object-fit:contain" onerror="this.parentElement.innerHTML='<span style=color:var(--red);font-size:11px>Image load error</span>'">`
+    : '<span id="ce-img-back-placeholder" style="color:var(--text3);font-size:12px;text-align:center;pointer-events:none">Click to select<br>back image</span>';
+  // Reset file inputs
+  document.getElementById('ce-img-front-input').value = '';
+  document.getElementById('ce-img-back-input').value  = '';
   renderPills();
   document.getElementById('ce-editor-card').scrollIntoView({ behavior: 'smooth' });
+}
+
+function cePreviewImage(side, input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  if (side === 'front') _ceImgFront = file;
+  else _ceImgBack = file;
+  const previewEl = document.getElementById(`ce-img-${side}-preview`);
+  const reader = new FileReader();
+  reader.onload = e => {
+    previewEl.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:contain">`;
+  };
+  reader.readAsDataURL(file);
+  document.getElementById('ce-img-status').textContent = `✓ ${side === 'front' ? 'Front' : 'Back'} image selected — will upload on Save.`;
+}
+
+function ceToggleAddForm() {
+  const card = document.getElementById('ce-add-card');
+  const btn  = document.getElementById('ce-add-toggle');
+  const open = card.style.display === 'none' || card.style.display === '';
+  card.style.display = open ? 'block' : 'none';
+  btn.textContent = open ? '✕ Cancel' : '+ Add New Card';
+}
+
+async function ceAddCard() {
+  const table = document.getElementById('ce-set').value;
+  if (!table) { toast('Select a set first.', 'error'); return; }
+  const num    = document.getElementById('nc-num').value.trim();
+  const player = document.getElementById('nc-player').value.trim();
+  const errEl  = document.getElementById('nc-err');
+  const msgEl  = document.getElementById('nc-msg');
+  errEl.style.display = 'none';
+  msgEl.textContent   = '';
+  if (!num || !player) {
+    errEl.textContent = 'Card number and player name are required.';
+    errEl.style.display = 'block';
+    return;
+  }
+  const body = {
+    card_number:  num,
+    player:       player,
+    team:         document.getElementById('nc-team').value.trim() || null,
+    year:         parseInt(document.getElementById('nc-year').value) || null,
+    set_name:     document.getElementById('nc-setname').value.trim() || null,
+    category:     document.getElementById('nc-category').value,
+    insert_name:  document.getElementById('nc-insert').value.trim() || null,
+    is_rookie:    document.getElementById('nc-rookie').value === 'true',
+    variations:   [],
+    var_images:   {},
+  };
+  try {
+    await _post(table, body);
+    msgEl.style.color   = 'var(--green)';
+    msgEl.textContent   = `✓ Card #${num} — ${player} added.`;
+    toast('Card added!', 'success');
+    // Clear form
+    ['nc-num','nc-player','nc-team','nc-year','nc-setname','nc-insert'].forEach(id => { document.getElementById(id).value = ''; });
+    document.getElementById('nc-category').value = 'Base';
+    document.getElementById('nc-rookie').value   = 'false';
+  } catch(e) {
+    errEl.textContent   = 'Error: ' + e.message;
+    errEl.style.display = 'block';
+    toast('Add failed.', 'error');
+  }
+}
+
+function ceConfirmDeleteRow(cardNumber, player) {
+  if (!confirm(`Delete card #${cardNumber} — ${player}?\n\nThis cannot be undone.`)) return;
+  ceDeleteCard(cardNumber);
+}
+
+function ceConfirmDelete() {
+  if (!_ceCard) return;
+  if (!confirm(`Delete card #${_ceCard.card_number} — ${_ceCard.player}?\n\nThis cannot be undone.`)) return;
+  ceDeleteCard(_ceCard.card_number);
+}
+
+async function ceDeleteCard(cardNumber) {
+  const table = document.getElementById('ce-set').value;
+  if (!table) return;
+  try {
+    await _delete(table, `card_number=eq.${encodeURIComponent(cardNumber)}`);
+    toast('Card deleted.', 'success');
+    document.getElementById('ce-editor-card').style.display = 'none';
+    _ceCard = null; _cePills = [];
+    ceSearch();
+  } catch(e) { toast('Delete failed: ' + e.message, 'error'); }
 }
 
 function renderPills() {
@@ -1256,21 +1449,62 @@ function removePill(i) {
 async function ceSave() {
   const table = document.getElementById('ce-set').value;
   if (!table || !_ceCard) return;
-  const msg = document.getElementById('ce-msg');
-  msg.style.color = 'var(--text2)';
-  msg.textContent = 'Saving…';
+  const msg    = document.getElementById('ce-msg');
+  const imgSt  = document.getElementById('ce-img-status');
+  msg.style.color   = 'var(--text2)';
+  msg.textContent   = 'Saving…';
+  imgSt.textContent = '';
+
+  // Upload any pending images first
+  const vi = JSON.parse(JSON.stringify(_ceCard.var_images || {}));
+  const BUCKET = 'card-images';
+  const safeName = (s) => (s||'').replace(/[^a-zA-Z0-9_\-]/g, '_').toLowerCase();
+
+  if (_ceImgFront) {
+    try {
+      imgSt.textContent = 'Uploading front image…';
+      const ext  = _ceImgFront.name.split('.').pop() || 'jpg';
+      const path = `${safeName(table)}/${safeName(_ceCard.card_number)}/front.${ext}`;
+      vi.front   = await _uploadImage(BUCKET, path, _ceImgFront);
+      _ceImgFront = null;
+      imgSt.textContent = '✓ Front image uploaded.';
+    } catch(e) {
+      imgSt.style.color = 'var(--red)';
+      imgSt.textContent = 'Front upload failed: ' + e.message;
+      msg.textContent   = '';
+      return;
+    }
+  }
+  if (_ceImgBack) {
+    try {
+      imgSt.textContent = 'Uploading back image…';
+      const ext  = _ceImgBack.name.split('.').pop() || 'jpg';
+      const path = `${safeName(table)}/${safeName(_ceCard.card_number)}/back.${ext}`;
+      vi.back    = await _uploadImage(BUCKET, path, _ceImgBack);
+      _ceImgBack = null;
+      imgSt.textContent = '✓ Images uploaded.';
+    } catch(e) {
+      imgSt.style.color = 'var(--red)';
+      imgSt.textContent = 'Back upload failed: ' + e.message;
+      msg.textContent   = '';
+      return;
+    }
+  }
+
   try {
     const body = {
       category:    document.getElementById('ce-category').value,
       insert_name: document.getElementById('ce-insert').value || null,
       is_rookie:   document.getElementById('ce-rookie').value === 'true',
       variations:  _cePills,
+      var_images:  vi,
     };
     await _patch(table, `card_number=eq.${encodeURIComponent(_ceCard.card_number)}`, body);
     msg.style.color = 'var(--green)';
     msg.textContent = '✓ Saved successfully.';
     toast('Card updated!', 'success');
     _ceCard.variations = _cePills;
+    _ceCard.var_images = vi;
   } catch(e) {
     msg.style.color = 'var(--red)';
     msg.textContent = 'Error: ' + e.message;
@@ -1320,7 +1554,7 @@ async function loadUsers() {
   document.getElementById('users-loading').style.display = 'block';
   document.getElementById('users-table-wrap').style.display = 'none';
   try {
-    const rows = await _get('profiles', 'select=id,username,role,is_admin,tier,created_at&order=created_at.desc&limit=200');
+    const rows = await _get('profiles', 'select=id,username,role,is_admin,created_at&order=created_at.desc&limit=200');
     _allUsers = rows || [];
     renderUsers(_allUsers);
   } catch(e) { toast('Failed to load users: ' + e.message, 'error'); }

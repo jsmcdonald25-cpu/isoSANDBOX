@@ -2180,7 +2180,7 @@ async function logOut(){
 
   <!-- SLAB LAB OVERLAY -->
   <div id="slabLabOverlay" style="display:none;position:fixed;inset:0;z-index:10000;background:#E8EDF2;overflow:hidden" onclick="if(event.target===this)closeSlabLab()">
-    <div id="slabBg" style="position:absolute;inset:0;pointer-events:none;transition:background .4s;background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(180,220,255,0.7),#E8EDF2 68%)"></div>
+
     <div style="position:relative;z-index:1;height:100%;display:flex;flex-direction:column;overflow:hidden">
 
       <!-- Centered title bar -->
@@ -3042,8 +3042,6 @@ function _applySlabColor(idx){
   const s=color[f]; if(!s)return;
   const filter=`hue-rotate(${s.hue}deg) saturate(${s.sat}) brightness(${s.bri}) contrast(${s.con})`;
   ['slabFrameF','slabFrameB'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.filter=filter; });
-  const bg=document.getElementById('slabBg');
-  if(bg) bg.style.background=`radial-gradient(ellipse 60% 55% at 50% 50%,${s.glow},#E8EDF2 68%)`;
   const lbl=document.getElementById('slabColorLabel');
   const desc=document.getElementById('slabDesc');
   if(lbl) lbl.textContent=`${color.label.toUpperCase()} \u00B7 ${f.toUpperCase()}`;

@@ -5290,7 +5290,7 @@ async function _cdLoadCatalogImages(c){
 
 function _cdGuessTable(c){
   if(c.year===2026 && c.brand==='Topps' && c.set && c.set.toLowerCase().includes('series')) return '2026_series1_baseball';
-  if(c.year===2026 && c.set && c.set.toLowerCase().includes('heritage')) return '2026_heritage_baseball';
+  if(c.year===2026 && c.set && c.set.toLowerCase().includes('heritage')) return '2026_topps_heritage_baseball';
   if(c.year===2025 && c.set && c.set.toLowerCase().includes('stadium')) return 'card-images';
   return null;
 }
@@ -6397,11 +6397,7 @@ async function ivSelectSet(table){
   // Pokémon columns differ from baseball columns
   const _selectCols = setDef.pokemonCols
     ? 'card_name,card_number,set_name,series,rarity,card_type,national_dex_number,image_small,image_hires'
-    : setDef.legacyCols
-      ? '*'
-      : setDef.noVarImages
-        ? 'player,card_number,set_name,year,sport,team,category,insert_name,is_rookie,variations'
-        : 'player,card_number,set_name,year,sport,team,category,insert_name,is_rookie,var_images,variations';
+    : '*';
 
   let all = [], from = 0, PAGE = 1000, err = null;
   while(true){

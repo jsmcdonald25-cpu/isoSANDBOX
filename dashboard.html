@@ -2211,12 +2211,16 @@ async function logOut(){
               <!-- FRONT FACE -->
               <div id="slabFrontFace" style="position:absolute;inset:0;border-radius:12px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden">
                 <img id="slabFrameF" src="GRAILISO_slab.png" style="position:absolute;inset:0;width:100%;height:100%;display:block;transition:filter .35s;z-index:1" alt="">
-                <img id="slabCardFront" style="position:absolute;left:15px;top:133px;width:307px;height:337px;object-fit:contain;display:block;z-index:2;border-radius:8px" alt="">
+                <div style="position:absolute;left:15px;top:133px;width:307px;height:337px;z-index:2;border-radius:8px;overflow:hidden">
+                  <img id="slabCardFront" style="width:100%;height:100%;object-fit:contain;display:block" alt="">
+                </div>
               </div>
               <!-- BACK FACE -->
               <div id="slabBackFace" style="position:absolute;inset:0;border-radius:12px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg)">
                 <img id="slabFrameB" src="GRAILISO_slab.png" style="position:absolute;inset:0;width:100%;height:100%;display:block;transform:scaleX(-1);transition:filter .35s;z-index:1" alt="">
-                <img id="slabCardBack" style="position:absolute;left:15px;top:133px;width:307px;height:337px;object-fit:contain;display:block;z-index:2;border-radius:8px" alt="">
+                <div style="position:absolute;left:15px;top:133px;width:307px;height:337px;z-index:2;border-radius:8px;overflow:hidden">
+                  <img id="slabCardBack" style="width:100%;height:100%;object-fit:contain;display:block" alt="">
+                </div>
               </div>
             </div>
           </div>

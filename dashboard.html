@@ -3018,16 +3018,14 @@ function _slabLoadDefault(){
 }
 
 function openSlabLab(opts){
+  // If a vault card is selected, go directly to standalone Slab Lab
   const row=window._vaultData&&window._vaultData[window._cdMyVaultIdx];
-  if(row){
-    _slabSetImages(row.front_image_url, row.back_image_url,
-      [row.player, row.year, row.set_name, row.card_number?'#'+row.card_number:''].filter(Boolean).join(' · '));
-  } else if(opts && opts.frontUrl){
-    _slabSetImages(opts.frontUrl, opts.backUrl, opts.label||'', opts.frontLandscape, opts.backLandscape);
-  } else {
-    _slabLoadDefault();
+  if(row && row.id){
+    window.location.href = 'slablab.html?vault_id=' + encodeURIComponent(row.id);
+    return;
   }
-  _slabShowOverlay();
+  // Otherwise enter pick mode — user must choose a card first
+  slabChooseCard();
 }
 
 // Navigate to ISOVault in "pick for Slab Lab" mode
@@ -3044,20 +3042,10 @@ function slabPickCard(row, table){
   window._slabPickMode = false;
   const banner=document.getElementById('slabPickBanner');
   if(banner) banner.style.display='none';
-  let frontUrl = row.front_img || row.front_image_url || null;
-  let backUrl  = row.back_img  || row.back_image_url  || null;
-  let fLand = false, bLand = false;
-  if(row.var_images){
-    const base=row.var_images['Base']||row.var_images[Object.keys(row.var_images)[0]];
-    if(base){
-      if(!frontUrl) frontUrl=base.front||null;
-      if(!backUrl) backUrl=base.back||null;
-      fLand=!!base.frontLandscape;
-      bLand=!!base.backLandscape;
-    }
+  // Navigate to standalone Slab Lab with vault_id
+  if(row && row.id){
+    window.location.href = 'slablab.html?vault_id=' + encodeURIComponent(row.id);
   }
-  const label = [row.player, row.card_number?'#'+row.card_number:''].filter(Boolean).join(' · ');
-  openSlabLab({ frontUrl:frontUrl, backUrl:backUrl, label:label, frontLandscape:fLand, backLandscape:bLand });
 }
 
 function closeSlabLab(){

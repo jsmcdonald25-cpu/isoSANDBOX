@@ -2194,58 +2194,72 @@ async function logOut(){
 
     <div style="position:relative;z-index:1;height:100%;display:flex;flex-direction:column;overflow:hidden">
 
-      <!-- Centered title bar -->
-      <div style="position:relative;text-align:center;padding:12px 18px 6px;flex-shrink:0">
-        <button onclick="closeSlabLab()" style="position:absolute;right:18px;top:12px;background:rgba(0,0,0,0.1);border:1px solid rgba(0,0,0,0.15);border-radius:8px;color:#1a2a3a;font-size:18px;cursor:pointer;padding:2px 10px;line-height:1">&#215;</button>
+      <!-- Top bar: title + close -->
+      <div style="position:relative;text-align:center;padding:10px 18px 6px;flex-shrink:0">
+        <button onclick="closeSlabLab()" style="position:absolute;right:18px;top:10px;background:rgba(0,0,0,0.1);border:1px solid rgba(0,0,0,0.15);border-radius:8px;color:#1a2a3a;font-size:18px;cursor:pointer;padding:2px 10px;line-height:1">&#215;</button>
         <div style="font-family:Bebas Neue,sans-serif;font-size:24px;letter-spacing:3px;color:#1a2a3a">&#129514; SLAB LAB</div>
-        <div id="slabCardLabel" style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#1a2a3a;margin:2px 0 1px"></div>
-        <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#7a95ae">Drag to rotate &middot; Pick color &amp; finish</div>
-        <button onclick="slabChooseCard()" style="margin-top:6px;background:linear-gradient(135deg,#0a1f35,#112840);border:1px solid rgba(0,170,255,0.35);border-radius:8px;padding:6px 18px;font-family:Bebas Neue,sans-serif;font-size:11px;letter-spacing:1.5px;color:#00AAFF;cursor:pointer;transition:all .2s">&#128257; CHOOSE CARD</button>
+        <div id="slabCardLabel" style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#1a2a3a;margin:2px 0 0"></div>
       </div>
 
-      <!-- Finish selector -->
-      <div style="display:flex;gap:5px;margin:0 18px 6px;background:rgba(0,0,0,0.08);border-radius:10px;padding:3px;flex-shrink:0">
-        <button id="finish-matte"   onclick="setSlabFinish('matte')"   style="flex:1;padding:5px 4px;border-radius:7px;border:none;font-family:Bebas Neue,sans-serif;font-size:12px;letter-spacing:2px;cursor:pointer;transition:all .2s;background:transparent;color:#7a95ae">MATTE</button>
-        <button id="finish-crystal" onclick="setSlabFinish('crystal')" style="flex:1;padding:5px 4px;border-radius:7px;border:none;font-family:Bebas Neue,sans-serif;font-size:12px;letter-spacing:2px;cursor:pointer;transition:all .2s;background:var(--blue);color:#fff">CRYSTAL</button>
-        <button id="finish-vivid"   onclick="setSlabFinish('vivid')"   style="flex:1;padding:5px 4px;border-radius:7px;border:none;font-family:Bebas Neue,sans-serif;font-size:12px;letter-spacing:2px;cursor:pointer;transition:all .2s;background:transparent;color:#7a95ae">VIVID</button>
-      </div>
+      <!-- Main content: slab left+down, controls right+up -->
+      <div style="flex:1;display:flex;flex-direction:row;min-height:0;overflow:hidden;padding:0 18px 12px">
 
-      <!-- 3D slab scene -->
-      <div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0">
-        <div id="slabScene" style="perspective:900px;cursor:grab;touch-action:none;user-select:none">
-          <div id="slabUnit" style="transform-style:preserve-3d;transition:transform 0.05s linear;will-change:transform;position:relative;width:336px;height:485px">
-            <!-- FRONT FACE — border-radius clips dark corners visually -->
-            <div style="position:absolute;inset:0;border-radius:12px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden">
-              <img id="slabCardFront" style="position:absolute;left:27px;top:130px;width:280px;height:323px;object-fit:cover;display:block" alt="">
-              <img id="slabFrameF" src="/images/slab-frame-front.png" style="position:absolute;inset:0;width:100%;height:100%;display:block;transition:filter .35s" alt="">
-            </div>
-            <!-- BACK FACE -->
-            <div style="position:absolute;inset:0;border-radius:12px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg)">
-              <img id="slabCardBack" style="position:absolute;left:27px;top:130px;width:280px;height:323px;object-fit:cover;display:block;transform:scaleX(-1)" alt="">
-              <img id="slabFrameB" src="/images/slab-frame-back.png" style="position:absolute;inset:0;width:100%;height:100%;display:block;transform:scaleX(-1);transition:filter .35s" alt="">
+        <!-- LEFT: 3D slab scene pushed down -->
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;padding-top:5%">
+          <div id="slabScene" style="perspective:900px;cursor:grab;touch-action:none;user-select:none">
+            <div id="slabUnit" style="transform-style:preserve-3d;transition:transform 0.05s linear;will-change:transform;position:relative;width:346px;height:500px">
+              <!-- FRONT FACE -->
+              <div id="slabFrontFace" style="position:absolute;inset:0;border-radius:12px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden">
+                <img id="slabFrameF" src="GRAILISO_slab.png" style="position:absolute;inset:0;width:100%;height:100%;display:block;transition:filter .35s;z-index:1" alt="">
+                <img id="slabCardFront" style="position:absolute;left:15px;top:143px;width:307px;height:345px;object-fit:contain;display:block;z-index:2" alt="">
+              </div>
+              <!-- BACK FACE -->
+              <div id="slabBackFace" style="position:absolute;inset:0;border-radius:12px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg)">
+                <img id="slabFrameB" src="GRAILISO_slab.png" style="position:absolute;inset:0;width:100%;height:100%;display:block;transform:scaleX(-1);transition:filter .35s;z-index:1" alt="">
+                <img id="slabCardBack" style="position:absolute;left:15px;top:143px;width:307px;height:345px;object-fit:contain;display:block;z-index:2" alt="">
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Controls — exactly as ISOVault 3D viewer -->
-      <div class="cd-viewer-controls" style="flex-shrink:0;padding:8px 18px 4px">
-        <button class="cd-ctrl-btn" onclick="slabFlip()">Flip</button>
-        <button class="cd-ctrl-btn" id="slab-spin-btn" onclick="slabToggleSpin()">Auto Spin</button>
-        <button class="cd-ctrl-btn" onclick="slabReset()">Reset</button>
-      </div>
+        <!-- RIGHT: Controls panel -->
+        <div style="width:300px;flex-shrink:0;display:flex;flex-direction:column;justify-content:center;gap:14px">
 
-      <!-- Color label -->
-      <div style="text-align:center;flex-shrink:0;padding:4px 18px 2px">
-        <div id="slabColorLabel" style="font-family:Bebas Neue,sans-serif;font-size:14px;letter-spacing:3px;color:#1a2a3a">ARCTIC &middot; CRYSTAL</div>
-        <div id="slabDesc" style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:#7a95ae;letter-spacing:.5px;min-height:13px"></div>
-      </div>
+          <!-- Choose card button -->
+          <div style="text-align:center">
+            <button onclick="slabChooseCard()" style="width:100%;background:linear-gradient(135deg,#0a1f35,#112840);border:1px solid rgba(0,170,255,0.35);border-radius:8px;padding:10px 24px;font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:1.5px;color:#00AAFF;cursor:pointer;transition:all .2s">&#128257; CHOOSE CARD</button>
+          </div>
 
-      <!-- Swatches -->
-      <div style="flex-shrink:0;padding:6px 18px 12px">
-        <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#7a95ae;margin-bottom:6px;text-align:center">Color &middot; <span id="slabFinishLabel" style="color:var(--blue)">Crystal</span></div>
-        <div id="slabSwatches" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center"></div>
-        <div style="text-align:center;margin-top:8px;font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--blue)">ISO/GRADING — COMING SOON</div>
+          <!-- Finish selector -->
+          <div style="display:flex;gap:5px;background:rgba(0,0,0,0.08);border-radius:10px;padding:4px">
+            <button id="finish-matte"   onclick="setSlabFinish('matte')"   style="flex:1;padding:6px 4px;border-radius:7px;border:none;font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:2px;cursor:pointer;transition:all .2s;background:transparent;color:#7a95ae">MATTE</button>
+            <button id="finish-crystal" onclick="setSlabFinish('crystal')" style="flex:1;padding:6px 4px;border-radius:7px;border:none;font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:2px;cursor:pointer;transition:all .2s;background:var(--blue);color:#fff">CRYSTAL</button>
+            <button id="finish-vivid"   onclick="setSlabFinish('vivid')"   style="flex:1;padding:6px 4px;border-radius:7px;border:none;font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:2px;cursor:pointer;transition:all .2s;background:transparent;color:#7a95ae">VIVID</button>
+          </div>
+
+          <!-- Flip/Spin/Reset controls -->
+          <div class="cd-viewer-controls" style="padding:0">
+            <button class="cd-ctrl-btn" onclick="slabFlip()">Flip</button>
+            <button class="cd-ctrl-btn" id="slab-spin-btn" onclick="slabToggleSpin()">Auto Spin</button>
+            <button class="cd-ctrl-btn" onclick="slabReset()">Reset</button>
+          </div>
+
+          <!-- Color label -->
+          <div style="text-align:center">
+            <div id="slabColorLabel" style="font-family:Bebas Neue,sans-serif;font-size:15px;letter-spacing:3px;color:#1a2a3a">ARCTIC &middot; CRYSTAL</div>
+            <div id="slabDesc" style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:#7a95ae;letter-spacing:.5px;min-height:13px"></div>
+          </div>
+
+          <!-- Swatches -->
+          <div>
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#7a95ae;margin-bottom:8px;text-align:center">Color &middot; <span id="slabFinishLabel" style="color:var(--blue)">Crystal</span></div>
+            <div id="slabSwatches" style="display:flex;flex-wrap:wrap;gap:7px;justify-content:center"></div>
+          </div>
+
+          <div style="text-align:center;font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--blue)">ISO/GRADING — COMING SOON</div>
+          <div style="text-align:center;font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#7a95ae">Drag to rotate &middot; Pick color &amp; finish</div>
+        </div>
+
       </div>
 
     </div>
@@ -2964,34 +2978,39 @@ function _slabShowOverlay(){
   document.body.style.overflow='hidden';
 }
 
-function _slabSetImages(frontUrl, backUrl, label){
+function _slabSetImages(frontUrl, backUrl, label, frontLandscape, backLandscape){
   const cf=document.getElementById('slabCardFront');
   const cb=document.getElementById('slabCardBack');
   if(cf) cf.src=frontUrl||window._GRAIL_PH||'';
   if(cb) cb.src=backUrl||window._GRAIL_PH||'';
   const lbl=document.getElementById('slabCardLabel');
   if(lbl) lbl.textContent=label||'';
+
+  // Front face orientation
+  const ff=document.getElementById('slabFrontFace');
+  if(ff){
+    ff.style.transform = frontLandscape ? 'rotateZ(90deg)' : '';
+  }
+  if(cf){
+    cf.style.transform = frontLandscape ? 'rotate(-90deg)' : '';
+  }
+
+  // Back face orientation
+  const bf=document.getElementById('slabBackFace');
+  if(bf){
+    bf.style.transform = backLandscape ? 'rotateY(180deg) rotateZ(90deg)' : 'rotateY(180deg)';
+  }
+  if(cb){
+    cb.style.transform = backLandscape ? 'rotate(-90deg)' : '';
+  }
 }
 
 // Default card: 2025 Topps B&W Ohtani #001
-async function _slabLoadDefault(){
-  try{
-    await _ivSetsReady;
-    const bwSet = IV_SETS.find(s=>s.table&&s.table.match(/topps_bw/i));
-    const table = bwSet ? bwSet.table : '2025_topps_bw';
-    const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
-    const res = await fetch(`${_SURL}/${table}?select=player,card_number,front_img,back_img&card_number=eq.001&limit=1`,
-      { headers:{ 'apikey':SKEY, 'Authorization':'Bearer '+SKEY } });
-    if(res.ok){
-      const rows=await res.json();
-      if(rows&&rows[0]){
-        const r=rows[0];
-        _slabSetImages(r.front_img, r.back_img, (r.player||'Shohei Ohtani')+' · 2025 Topps B&W #001');
-        return;
-      }
-    }
-  }catch(e){ console.warn('Slab Lab default load failed:',e); }
-  _slabSetImages(null, null, '2025 Topps B&W · Ohtani #001');
+var _SLAB_DEFAULT_FRONT = 'https://jyfaegmnzkarlcximxjo.supabase.co/storage/v1/object/public/card-images/catalog/2025_topps_bw/001/base_front.jpg';
+var _SLAB_DEFAULT_BACK  = 'https://jyfaegmnzkarlcximxjo.supabase.co/storage/v1/object/public/card-images/catalog/2025_topps_bw/001/base_back.jpg';
+
+function _slabLoadDefault(){
+  _slabSetImages(_SLAB_DEFAULT_FRONT, _SLAB_DEFAULT_BACK, 'Shohei Ohtani · 2025 Topps B&W #001', false, true);
 }
 
 function openSlabLab(opts){
@@ -3000,7 +3019,7 @@ function openSlabLab(opts){
     _slabSetImages(row.front_image_url, row.back_image_url,
       [row.player, row.year, row.set_name, row.card_number?'#'+row.card_number:''].filter(Boolean).join(' · '));
   } else if(opts && opts.frontUrl){
-    _slabSetImages(opts.frontUrl, opts.backUrl, opts.label||'');
+    _slabSetImages(opts.frontUrl, opts.backUrl, opts.label||'', opts.frontLandscape, opts.backLandscape);
   } else {
     _slabLoadDefault();
   }
@@ -3021,10 +3040,20 @@ function slabPickCard(row, table){
   window._slabPickMode = false;
   const banner=document.getElementById('slabPickBanner');
   if(banner) banner.style.display='none';
-  const frontUrl = row.front_img || row.front_image_url || null;
-  const backUrl  = row.back_img  || row.back_image_url  || null;
+  let frontUrl = row.front_img || row.front_image_url || null;
+  let backUrl  = row.back_img  || row.back_image_url  || null;
+  let fLand = false, bLand = false;
+  if(row.var_images){
+    const base=row.var_images['Base']||row.var_images[Object.keys(row.var_images)[0]];
+    if(base){
+      if(!frontUrl) frontUrl=base.front||null;
+      if(!backUrl) backUrl=base.back||null;
+      fLand=!!base.frontLandscape;
+      bLand=!!base.backLandscape;
+    }
+  }
   const label = [row.player, row.card_number?'#'+row.card_number:''].filter(Boolean).join(' · ');
-  openSlabLab({ frontUrl:frontUrl, backUrl:backUrl, label:label });
+  openSlabLab({ frontUrl:frontUrl, backUrl:backUrl, label:label, frontLandscape:fLand, backLandscape:bLand });
 }
 
 function closeSlabLab(){

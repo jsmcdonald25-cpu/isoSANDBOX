@@ -19,6 +19,7 @@
       --deep3:   #061420;
       --muted:   #7a95ae;
       --border:  rgba(0,170,255,0.15);
+      --panel-bg: rgba(8,20,36,0.92);
     }
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     html, body { height:100%; overflow:hidden; background:var(--bg); }
@@ -113,8 +114,16 @@
     .sl-err-icon { font-size:34px; }
     .sl-err-msg  { font-size:14px; letter-spacing:.8px; text-align:center; line-height:1.5; }
 
-    /* ── MAIN STAGE ──────────────────────────── */
-    .sl-stage {
+    /* ── MAIN LAYOUT: slab viewer + control panel ── */
+    .sl-main {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* ── SLAB VIEWER (left/center) ─────────── */
+    .sl-viewer {
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -123,31 +132,6 @@
       position: relative;
       min-height: 0;
       overflow: hidden;
-      gap: 0;
-    }
-
-    /* Finish selector */
-    .sl-finish-row {
-      display: flex;
-      gap: 4px;
-      background: rgba(0,0,0,0.30);
-      border-radius: 10px;
-      padding: 3px;
-      flex-shrink: 0;
-      border: 1px solid var(--border);
-      margin-bottom: 16px;
-    }
-    .sl-finish-btn {
-      padding: 6px 20px;
-      border-radius: 7px;
-      border: none;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 13px;
-      letter-spacing: 2.5px;
-      cursor: pointer;
-      transition: all .2s;
-      background: transparent;
-      color: var(--muted);
     }
 
     /* Spotlight — ambient glow behind the slab */
@@ -213,12 +197,13 @@
       transition: filter .35s;
     }
 
-    /* Controls */
-    .sl-controls {
+    /* Viewer controls (below slab) */
+    .sl-viewer-controls {
       display: flex;
       gap: 8px;
       margin-top: 14px;
       flex-shrink: 0;
+      z-index: 1;
     }
     .sl-ctrl-btn {
       padding: 6px 20px;
@@ -235,49 +220,107 @@
     }
     .sl-ctrl-btn:hover { background: rgba(0,170,255,0.16); }
 
-    /* ── BOTTOM PANEL ────────────────────────── */
-    .sl-bottom {
+    /* ── CONTROL PANEL (right side, not flush) ── */
+    .sl-panel {
+      width: 340px;
       flex-shrink: 0;
-      padding: 10px 20px 14px;
-      background: rgba(0,0,0,0.18);
-      border-top: 1px solid var(--border);
-    }
-    .sl-color-label-row {
       display: flex;
-      align-items: baseline;
-      gap: 10px;
-      margin-bottom: 3px;
+      flex-direction: column;
+      padding: 16px 24px 16px 0;
+      overflow: hidden;
     }
-    .sl-color-name {
+    .sl-panel-inner {
+      flex: 1;
+      background: var(--panel-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+      backdrop-filter: blur(12px);
+    }
+    .sl-panel-inner::-webkit-scrollbar { width: 4px; }
+    .sl-panel-inner::-webkit-scrollbar-track { background: transparent; }
+    .sl-panel-inner::-webkit-scrollbar-thumb { background: rgba(0,170,255,0.2); border-radius: 4px; }
+
+    /* Panel sections */
+    .sl-panel-section {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sl-panel-section:last-child { border-bottom: none; }
+    .sl-panel-label {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 16px;
+      font-size: 14px;
+      letter-spacing: 3px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    /* Active color display */
+    .sl-active-color {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+    .sl-active-swatch {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 2px solid rgba(255,255,255,0.15);
+      flex-shrink: 0;
+    }
+    .sl-active-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
       letter-spacing: 3px;
       color: var(--white);
+      line-height: 1;
     }
-    .sl-color-desc {
+    .sl-active-desc {
       font-size: 11px;
       color: var(--muted);
       letter-spacing: .3px;
+      line-height: 1.4;
+      margin-top: 2px;
     }
-    .sl-finish-label {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 9px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+
+    /* Finish selector in panel */
+    .sl-finish-row {
+      display: flex;
+      gap: 4px;
+      background: rgba(0,0,0,0.30);
+      border-radius: 10px;
+      padding: 3px;
+      border: 1px solid var(--border);
+    }
+    .sl-finish-btn {
+      flex: 1;
+      padding: 7px 10px;
+      border-radius: 7px;
+      border: none;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      cursor: pointer;
+      transition: all .2s;
+      background: transparent;
       color: var(--muted);
-      margin-bottom: 8px;
       text-align: center;
     }
-    /* Swatch grid — 8 per row × 2 rows = 16 */
+
+    /* Swatch grid — 6 per row */
     #slabSwatches {
       display: grid;
-      grid-template-columns: repeat(8, 1fr);
+      grid-template-columns: repeat(6, 1fr);
       gap: 8px;
       justify-items: center;
     }
     .swatch {
-      width: 30px;
-      height: 30px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
       cursor: pointer;
       border: 2px solid transparent;
@@ -289,6 +332,180 @@
       box-shadow: 0 0 0 2px rgba(5,16,28,0.9), 0 0 0 4px rgba(255,255,255,0.65);
     }
 
+    /* Slider controls */
+    .sl-slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .sl-slider-row:last-child { margin-bottom: 0; }
+    .sl-slider-name {
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      width: 80px;
+      flex-shrink: 0;
+    }
+    .sl-slider-val {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px;
+      letter-spacing: 1px;
+      color: var(--blue);
+      width: 36px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    input[type="range"] {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      background: rgba(0,170,255,0.15);
+      border-radius: 4px;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--blue);
+      cursor: pointer;
+      border: 2px solid var(--deep2);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--blue);
+      cursor: pointer;
+      border: 2px solid var(--deep2);
+    }
+
+    /* Toggle switches */
+    .sl-toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .sl-toggle-row:last-child { margin-bottom: 0; }
+    .sl-toggle-name {
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .sl-toggle {
+      width: 38px;
+      height: 20px;
+      background: rgba(0,170,255,0.12);
+      border: 1px solid rgba(0,170,255,0.25);
+      border-radius: 12px;
+      cursor: pointer;
+      position: relative;
+      transition: background .2s, border-color .2s;
+      flex-shrink: 0;
+    }
+    .sl-toggle.on {
+      background: rgba(0,170,255,0.35);
+      border-color: var(--blue);
+    }
+    .sl-toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: transform .2s, background .2s;
+    }
+    .sl-toggle.on::after {
+      transform: translateX(18px);
+      background: var(--blue);
+    }
+
+    /* Background pattern selector */
+    .sl-bg-options {
+      display: flex;
+      gap: 6px;
+    }
+    .sl-bg-opt {
+      flex: 1;
+      padding: 6px 4px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .sl-bg-opt:hover { border-color: rgba(0,170,255,0.35); }
+    .sl-bg-opt.active {
+      background: rgba(0,170,255,0.12);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    /* Speed control */
+    .sl-speed-row {
+      display: flex;
+      gap: 6px;
+    }
+    .sl-speed-btn {
+      flex: 1;
+      padding: 5px 4px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .sl-speed-btn:hover { border-color: rgba(0,170,255,0.35); }
+    .sl-speed-btn.active {
+      background: rgba(0,170,255,0.12);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    /* Viewer background patterns */
+    .sl-viewer.bg-grid::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,170,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,170,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .sl-viewer.bg-dots::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(0,170,255,0.06) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .sl-viewer.bg-none::before { display: none; }
+
     /* Responsive: scale slab on small viewports */
     @media (max-height: 700px) {
       #slabUnit { transform: scale(0.80); transform-origin: center center; }
@@ -296,6 +513,12 @@
     }
     @media (max-height: 580px) {
       #slabUnit { transform: scale(0.65); transform-origin: center center; }
+    }
+    @media (max-width: 860px) {
+      .sl-main { flex-direction: column; }
+      .sl-panel { width: 100%; padding: 0; max-height: 260px; }
+      .sl-panel-inner { border-radius: 0; border-left: none; border-right: none; }
+      #slabSwatches { grid-template-columns: repeat(8, 1fr); }
     }
   </style>
 </head>
@@ -324,66 +547,134 @@
   <button class="sl-back-btn" onclick="goBack()">&#8592; Back to My Vault</button>
 </div>
 
-<!-- MAIN STAGE -->
-<div class="sl-stage" id="slStage" style="display:none">
+<!-- MAIN LAYOUT -->
+<div class="sl-main" id="slMain" style="display:none">
 
-  <!-- Ambient spotlight behind slab -->
-  <div class="sl-spotlight-wrap">
-    <div id="slabSpotlight"></div>
-  </div>
+  <!-- SLAB VIEWER -->
+  <div class="sl-viewer bg-grid" id="slViewer">
+    <div class="sl-spotlight-wrap">
+      <div id="slabSpotlight"></div>
+    </div>
 
-  <!-- Finish selector -->
-  <div class="sl-finish-row">
-    <button class="sl-finish-btn" id="finish-matte"   onclick="setSlabFinish('matte')">MATTE</button>
-    <button class="sl-finish-btn" id="finish-crystal" onclick="setSlabFinish('crystal')">CRYSTAL</button>
-    <button class="sl-finish-btn" id="finish-vivid"   onclick="setSlabFinish('vivid')">VIVID</button>
-  </div>
-
-  <!-- 3D Slab -->
-  <div id="slabScene">
-    <div id="slabUnit">
-      <!-- FRONT FACE -->
-      <div class="slab-face">
-        <img id="slabCardFront" class="slab-card-img" src="images/grail-placeholder.jpg" alt="">
-        <img id="slabFrameF"    class="slab-frame-img" src="images/slab-frame-front.png" alt="">
+    <div id="slabScene">
+      <div id="slabUnit">
+        <div class="slab-face">
+          <img id="slabCardFront" class="slab-card-img" alt="">
+          <img id="slabFrameF"    class="slab-frame-img" src="images/slab-frame-front.png" alt="">
+        </div>
+        <div class="slab-face slab-face-back">
+          <img id="slabCardBack" class="slab-card-img"  style="transform:scaleX(-1)" alt="">
+          <img id="slabFrameB"   class="slab-frame-img" style="transform:scaleX(-1)" src="images/slab-frame-back.png" alt="">
+        </div>
       </div>
-      <!-- BACK FACE — scaleX(-1) corrects mirror from rotateY(180deg) -->
-      <div class="slab-face slab-face-back">
-        <img id="slabCardBack" class="slab-card-img"  style="transform:scaleX(-1)" src="images/grail-placeholder.jpg" alt="">
-        <img id="slabFrameB"   class="slab-frame-img" style="transform:scaleX(-1)" src="images/slab-frame-back.png" alt="">
-      </div>
+    </div>
+
+    <div class="sl-viewer-controls">
+      <button class="sl-ctrl-btn" onclick="slabFlip()">Flip</button>
+      <button class="sl-ctrl-btn" id="slab-spin-btn" onclick="slabToggleSpin()">Auto Spin</button>
+      <button class="sl-ctrl-btn" onclick="slabReset()">Reset</button>
     </div>
   </div>
 
-  <!-- Controls -->
-  <div class="sl-controls">
-    <button class="sl-ctrl-btn" onclick="slabFlip()">Flip</button>
-    <button class="sl-ctrl-btn" id="slab-spin-btn" onclick="slabToggleSpin()">Auto Spin</button>
-    <button class="sl-ctrl-btn" onclick="slabReset()">Reset</button>
+  <!-- CONTROL PANEL -->
+  <div class="sl-panel">
+    <div class="sl-panel-inner">
+
+      <!-- Active color display -->
+      <div class="sl-panel-section">
+        <div class="sl-active-color">
+          <div class="sl-active-swatch" id="slActiveSwatch"></div>
+          <div>
+            <div class="sl-active-name" id="slColorLabel">COBALT · CRYSTAL</div>
+            <div class="sl-active-desc" id="slColorDesc"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Finish -->
+      <div class="sl-panel-section">
+        <div class="sl-panel-label">FINISH</div>
+        <div class="sl-finish-row">
+          <button class="sl-finish-btn" id="finish-matte"   onclick="setSlabFinish('matte')">MATTE</button>
+          <button class="sl-finish-btn" id="finish-crystal" onclick="setSlabFinish('crystal')">CRYSTAL</button>
+          <button class="sl-finish-btn" id="finish-vivid"   onclick="setSlabFinish('vivid')">VIVID</button>
+        </div>
+      </div>
+
+      <!-- Colors -->
+      <div class="sl-panel-section">
+        <div class="sl-panel-label">SLAB COLOR</div>
+        <div id="slabSwatches"></div>
+      </div>
+
+      <!-- Glow / Lighting -->
+      <div class="sl-panel-section">
+        <div class="sl-panel-label">LIGHTING</div>
+        <div class="sl-slider-row">
+          <span class="sl-slider-name">Glow</span>
+          <input type="range" id="slGlow" min="0" max="100" value="100" oninput="onGlowChange(this.value)">
+          <span class="sl-slider-val" id="slGlowVal">100</span>
+        </div>
+        <div class="sl-slider-row">
+          <span class="sl-slider-name">Ambient</span>
+          <input type="range" id="slAmbient" min="0" max="100" value="50" oninput="onAmbientChange(this.value)">
+          <span class="sl-slider-val" id="slAmbientVal">50</span>
+        </div>
+      </div>
+
+      <!-- Display Options -->
+      <div class="sl-panel-section">
+        <div class="sl-panel-label">DISPLAY</div>
+        <div class="sl-toggle-row">
+          <span class="sl-toggle-name">Edge Light</span>
+          <div class="sl-toggle on" id="togEdgeLight" onclick="toggleEdgeLight()"></div>
+        </div>
+        <div class="sl-toggle-row">
+          <span class="sl-toggle-name">Slab Shadow</span>
+          <div class="sl-toggle on" id="togShadow" onclick="toggleShadow()"></div>
+        </div>
+        <div class="sl-toggle-row">
+          <span class="sl-toggle-name">Card Visible</span>
+          <div class="sl-toggle on" id="togCard" onclick="toggleCard()"></div>
+        </div>
+      </div>
+
+      <!-- Background -->
+      <div class="sl-panel-section">
+        <div class="sl-panel-label">BACKGROUND</div>
+        <div class="sl-bg-options">
+          <button class="sl-bg-opt active" id="bg-grid" onclick="setBg('grid')">Grid</button>
+          <button class="sl-bg-opt" id="bg-dots" onclick="setBg('dots')">Dots</button>
+          <button class="sl-bg-opt" id="bg-none" onclick="setBg('none')">None</button>
+        </div>
+      </div>
+
+      <!-- Spin Speed -->
+      <div class="sl-panel-section">
+        <div class="sl-panel-label">SPIN SPEED</div>
+        <div class="sl-speed-row">
+          <button class="sl-speed-btn" id="speed-slow"   onclick="setSpinSpeed('slow')">Slow</button>
+          <button class="sl-speed-btn active" id="speed-med" onclick="setSpinSpeed('med')">Med</button>
+          <button class="sl-speed-btn" id="speed-fast"   onclick="setSpinSpeed('fast')">Fast</button>
+          <button class="sl-speed-btn" id="speed-off"    onclick="setSpinSpeed('off')">Off</button>
+        </div>
+      </div>
+
+    </div>
   </div>
 
-</div>
-
-<!-- BOTTOM PANEL -->
-<div class="sl-bottom" id="slBottom" style="display:none">
-  <div class="sl-color-label-row">
-    <div class="sl-color-name" id="slColorLabel">COBALT · CRYSTAL</div>
-    <div class="sl-color-desc" id="slColorDesc"></div>
-  </div>
-  <div class="sl-finish-label">Color · <span id="slFinishLabel" style="color:var(--blue)">Crystal</span></div>
-  <div id="slabSwatches"></div>
 </div>
 
 <script data-cfasync="false">
 // ═══════════════════════════════════════════════════════
-// CONFIG — copy SB_KEY anon key from dashboard.html
+// CONFIG
 // ═══════════════════════════════════════════════════════
 const SB_URL  = 'https://jyfaegmnzkarlcximxjo.supabase.co';
-const SB_KEY  = '__PASTE_ANON_KEY_FROM_DASHBOARD_HERE__';
+const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
 const SB_REST = SB_URL + '/rest/v1';
 
 // ═══════════════════════════════════════════════════════
-// 16-COLOR PALETTE  (8 original + 8 new)
+// 24-COLOR PALETTE  (8 original + 8 wave 2 + 8 wave 3)
 // matte   = dead flat, low sat, tactile — glow OFF
 // crystal = vibrant glass, high sat, depth — glow ON
 // vivid   = oversaturated electric, full blast — glow MAX
@@ -455,7 +746,7 @@ const SLAB_COLORS = [
     vivid:  {hue:55,  sat:2.85, bri:1.08, con:1.28, glow:'rgba(152,28,252,0.92)', desc:'Amethyst Vivid — ultraviolet pulse'}
   },
 
-  // ── NEW 8 ────────────────────────────────────────────
+  // ── WAVE 2 ────────────────────────────────────────────
   {
     id:'teal', label:'Teal',
     swatchBg:'linear-gradient(135deg,#007a7a,#003838)',
@@ -520,21 +811,94 @@ const SLAB_COLORS = [
     crystal:{hue:-95, sat:2.60, bri:1.22, con:1.18, glow:'rgba(0,255,128,0.88)',  desc:'Crystal Emerald Crystal — max gem saturation, elite finish'},
     vivid:  {hue:-95, sat:3.00, bri:1.32, con:1.32, glow:'rgba(0,235,108,0.96)',  desc:'Crystal Emerald Vivid — neon emerald, radioactive'}
   },
+
+  // ── WAVE 3 (NEW 8) ─────────────────────────────────────
+  {
+    id:'sapphire', label:'Sapphire',
+    swatchBg:'linear-gradient(135deg,#1a3a8c,#0a1844)',
+    swatchBorder:'rgba(60,100,255,0.90)',
+    matte:  {hue:25,  sat:0.22, bri:0.42, con:0.76, glow:'transparent',           desc:'Sapphire Matte — deep royal blue, flat velvet'},
+    crystal:{hue:25,  sat:2.20, bri:0.92, con:1.14, glow:'rgba(60,100,255,0.80)', desc:'Sapphire Crystal — royal blue glass, gem clarity'},
+    vivid:  {hue:25,  sat:2.85, bri:1.04, con:1.30, glow:'rgba(40,80,255,0.94)',  desc:'Sapphire Vivid — electric royal, full depth'}
+  },
+  {
+    id:'midnight', label:'Midnight',
+    swatchBg:'linear-gradient(135deg,#0f1a2e,#050a14)',
+    swatchBorder:'rgba(30,50,100,0.85)',
+    matte:  {hue:10,  sat:0.04, bri:0.18, con:0.73, glow:'transparent',           desc:'Midnight Matte — near-black blue, void flat'},
+    crystal:{hue:10,  sat:0.42, bri:0.38, con:1.08, glow:'rgba(20,40,100,0.42)',  desc:'Midnight Crystal — deep space glass, faint blue shimmer'},
+    vivid:  {hue:10,  sat:0.78, bri:0.48, con:1.22, glow:'rgba(20,50,140,0.58)',  desc:'Midnight Vivid — dark matter, electric undercurrent'}
+  },
+  {
+    id:'ivory', label:'Ivory',
+    swatchBg:'linear-gradient(135deg,#f5e8d0,#c8b898)',
+    swatchBorder:'rgba(245,232,208,0.92)',
+    matte:  {hue:-155,sat:0.12, bri:0.82, con:0.76, glow:'transparent',           desc:'Ivory Matte — warm cream, museum flat'},
+    crystal:{hue:-155,sat:0.52, bri:1.22, con:1.08, glow:'rgba(245,232,208,0.68)',desc:'Ivory Crystal — warm glass, antique clarity'},
+    vivid:  {hue:-155,sat:0.88, bri:1.38, con:1.22, glow:'rgba(255,240,200,0.82)',desc:'Ivory Vivid — sunlit warmth, golden radiance'}
+  },
+  {
+    id:'bronze', label:'Bronze',
+    swatchBg:'linear-gradient(135deg,#8b6914,#4a3508)',
+    swatchBorder:'rgba(180,130,40,0.88)',
+    matte:  {hue:-168,sat:0.30, bri:0.48, con:0.76, glow:'transparent',           desc:'Bronze Matte — aged bronze, oxidized flat'},
+    crystal:{hue:-168,sat:1.80, bri:1.02, con:1.12, glow:'rgba(180,130,40,0.72)', desc:'Bronze Crystal — polished bronze glass, warm depth'},
+    vivid:  {hue:-168,sat:2.60, bri:1.14, con:1.28, glow:'rgba(200,140,20,0.88)', desc:'Bronze Vivid — molten bronze, ancient fire'}
+  },
+  {
+    id:'ocean', label:'Ocean',
+    swatchBg:'linear-gradient(135deg,#0a5a6e,#022a38)',
+    swatchBorder:'rgba(0,180,200,0.88)',
+    matte:  {hue:-28, sat:0.20, bri:0.48, con:0.76, glow:'transparent',           desc:'Ocean Matte — deep sea, flat tide'},
+    crystal:{hue:-28, sat:2.00, bri:1.04, con:1.12, glow:'rgba(0,180,200,0.78)',  desc:'Ocean Crystal — deep water glass, current depth'},
+    vivid:  {hue:-28, sat:2.85, bri:1.12, con:1.28, glow:'rgba(0,200,220,0.92)',  desc:'Ocean Vivid — bioluminescent, electric current'}
+  },
+  {
+    id:'slate', label:'Slate',
+    swatchBg:'linear-gradient(135deg,#4a5568,#2d3748)',
+    swatchBorder:'rgba(120,140,160,0.80)',
+    matte:  {hue:5,   sat:0.06, bri:0.52, con:0.74, glow:'transparent',           desc:'Slate Matte — blue-grey stone, raw flat'},
+    crystal:{hue:5,   sat:0.40, bri:0.88, con:1.08, glow:'rgba(120,140,170,0.52)',desc:'Slate Crystal — polished stone glass, cool finish'},
+    vivid:  {hue:5,   sat:0.82, bri:0.96, con:1.24, glow:'rgba(100,130,180,0.65)',desc:'Slate Vivid — charged grey, steel storm'}
+  },
+  {
+    id:'lime', label:'Lime',
+    swatchBg:'linear-gradient(135deg,#4a8c00,#2a5000)',
+    swatchBorder:'rgba(140,255,0,0.88)',
+    matte:  {hue:-78, sat:0.22, bri:0.52, con:0.76, glow:'transparent',           desc:'Lime Matte — yellow-green flat, muted citrus'},
+    crystal:{hue:-78, sat:2.10, bri:1.08, con:1.12, glow:'rgba(140,255,0,0.72)',  desc:'Lime Crystal — acid green glass, sharp citrus'},
+    vivid:  {hue:-78, sat:2.85, bri:1.18, con:1.28, glow:'rgba(120,255,0,0.92)',  desc:'Lime Vivid — neon lime, radioactive glow'}
+  },
+  {
+    id:'magenta', label:'Magenta',
+    swatchBg:'linear-gradient(135deg,#8c0060,#440030)',
+    swatchBorder:'rgba(255,0,160,0.90)',
+    matte:  {hue:88,  sat:0.22, bri:0.48, con:0.76, glow:'transparent',           desc:'Magenta Matte — deep fuchsia, flat satin'},
+    crystal:{hue:88,  sat:2.20, bri:1.04, con:1.14, glow:'rgba(255,0,160,0.78)',  desc:'Magenta Crystal — hot pink glass, neon gem'},
+    vivid:  {hue:88,  sat:2.85, bri:1.12, con:1.30, glow:'rgba(255,0,140,0.94)',  desc:'Magenta Vivid — electric fuchsia, full spectrum'}
+  },
 ];
 
 // ═══════════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════════
-let _finish    = 'crystal';  // default: crystal (most impressive on load)
-let _activeIdx = 2;          // default color: Cobalt
+let _finish    = 'crystal';
+let _activeIdx = 2;          // default: Cobalt
 let _rotX = 0, _rotY = 0;
 let _flipped = false;
 let _dragging = false, _lastX = 0, _lastY = 0;
 let _spinner = null, _spinning = false;
 let _listenersAttached = false;
+let _glowMult    = 1.0;
+let _ambientVal   = 50;
+let _edgeLight    = true;
+let _shadowOn     = true;
+let _cardVisible  = true;
+let _spinSpeed    = 0.38;
+let _currentBg    = 'grid';
 
 // ═══════════════════════════════════════════════════════
-// INIT — read vault_id param, auth, fetch card
+// INIT
 // ═══════════════════════════════════════════════════════
 async function init(){
   const params  = new URLSearchParams(window.location.search);
@@ -544,13 +908,12 @@ async function init(){
     return;
   }
 
-  // Auth via Supabase SDK (auth only — data uses REST below)
   let token = null;
   try {
     const _sb = supabase.createClient(SB_URL, SB_KEY);
     const { data:{ session } } = await _sb.auth.getSession();
     if(!session){
-      showError('Not signed in. Return to the dashboard and sign in first.');
+      showError('Not signed in. Return to the Dashboard and sign in first.');
       return;
     }
     token = session.access_token;
@@ -559,7 +922,6 @@ async function init(){
     return;
   }
 
-  // Fetch vault row via REST — no SDK data call
   try {
     const r = await fetch(
       `${SB_REST}/vault?id=eq.${encodeURIComponent(vaultId)}&select=front_image_url,back_image_url,player,year,brand,set_name,parallel,card_number&limit=1`,
@@ -573,7 +935,7 @@ async function init(){
     );
     if(!r.ok){ showError('Failed to load card (HTTP ' + r.status + ')'); return; }
     const rows = await r.json();
-    if(!rows || !rows.length){ showError('Card not found in your vault.'); return; }
+    if(!rows || !rows.length){ showError('Card not found in My Vault.'); return; }
     loadCard(rows[0]);
   } catch(e){
     showError('Network error: ' + e.message);
@@ -581,30 +943,25 @@ async function init(){
 }
 
 function loadCard(row){
-  // Load images
   const cf = document.getElementById('slabCardFront');
   const cb = document.getElementById('slabCardBack');
   if(cf) cf.src = row.front_image_url || 'images/grail-placeholder.jpg';
   if(cb) cb.src = row.back_image_url  || 'images/grail-placeholder.jpg';
 
-  // Card info in header
   const name   = row.player || '—';
   const detail = [row.year, row.brand, row.set_name, row.parallel, row.card_number ? '#' + row.card_number : null]
                    .filter(Boolean).join(' · ');
   document.getElementById('slCardName').textContent   = name;
   document.getElementById('slCardDetail').textContent = detail;
 
-  // Show UI
   document.getElementById('slLoading').style.display = 'none';
-  document.getElementById('slStage').style.display   = 'flex';
-  document.getElementById('slBottom').style.display  = 'block';
+  document.getElementById('slMain').style.display    = 'flex';
 
-  // Build and apply
   _buildSwatches();
   _applyColor(_activeIdx);
   _updateFinishBtns();
   _initRotation();
-  startSpin(0.38);  // gentle auto-spin on load
+  startSpin(_spinSpeed);
 }
 
 // ═══════════════════════════════════════════════════════
@@ -664,6 +1021,7 @@ function slabFlip(){
 function startSpin(speed){
   if(_spinner) clearInterval(_spinner);
   _spinning = true;
+  _spinSpeed = speed;
   _spinner = setInterval(()=>{ if(!_dragging){ _rotY += speed; _applyTransform(); } }, 16);
   const btn = document.getElementById('slab-spin-btn');
   if(btn) btn.textContent = 'Stop';
@@ -676,7 +1034,7 @@ function stopSpin(){
   if(btn) btn.textContent = 'Auto Spin';
 }
 
-function slabToggleSpin(){ _spinning ? stopSpin() : startSpin(1.0); }
+function slabToggleSpin(){ _spinning ? stopSpin() : startSpin(_spinSpeed || 0.38); }
 
 function slabReset(){
   stopSpin();
@@ -691,8 +1049,6 @@ function setSlabFinish(finish){
   _finish = finish;
   _updateFinishBtns();
   _applyColor(_activeIdx);
-  const lbl = document.getElementById('slFinishLabel');
-  if(lbl) lbl.textContent = finish.charAt(0).toUpperCase() + finish.slice(1);
 }
 
 function _updateFinishBtns(){
@@ -739,17 +1095,33 @@ function _applyColor(idx){
     if(el) el.style.filter = filter;
   });
 
-  // Spotlight — completely off for matte, enabled for crystal/vivid
+  // Edge light (box-shadow on slab unit)
+  const unit = document.getElementById('slabUnit');
+  if(unit){
+    if(_edgeLight && s.glow !== 'transparent'){
+      unit.style.boxShadow = `0 0 40px 8px ${s.glow}`;
+    } else {
+      unit.style.boxShadow = 'none';
+    }
+  }
+
+  // Spotlight
   const spot = document.getElementById('slabSpotlight');
   if(spot){
-    if(_finish === 'matte'){
+    if(_finish === 'matte' || _glowMult === 0){
       spot.style.opacity    = '0';
       spot.style.background = 'transparent';
     } else {
-      const intensity = _finish === 'vivid' ? 0.62 : 0.42;
+      const baseIntensity = _finish === 'vivid' ? 0.62 : 0.42;
       spot.style.background = `radial-gradient(circle, ${s.glow} 0%, transparent 68%)`;
-      spot.style.opacity    = String(intensity);
+      spot.style.opacity    = String(baseIntensity * _glowMult);
     }
+  }
+
+  // Shadow
+  const scene = document.getElementById('slabScene');
+  if(scene){
+    scene.style.filter = _shadowOn ? 'drop-shadow(0 20px 40px rgba(0,0,0,0.5))' : 'none';
   }
 
   // Labels
@@ -757,6 +1129,10 @@ function _applyColor(idx){
   const desc = document.getElementById('slColorDesc');
   if(lbl)  lbl.textContent  = `${color.label.toUpperCase()} · ${_finish.toUpperCase()}`;
   if(desc) desc.textContent = s.desc;
+
+  // Active swatch preview in panel
+  const activeSw = document.getElementById('slActiveSwatch');
+  if(activeSw) activeSw.style.background = color.swatchBg;
 
   // Swatch ring active state
   SLAB_COLORS.forEach((_, i) => {
@@ -767,6 +1143,74 @@ function _applyColor(idx){
 }
 
 // ═══════════════════════════════════════════════════════
+// PANEL CONTROLS
+// ═══════════════════════════════════════════════════════
+function onGlowChange(val){
+  _glowMult = val / 100;
+  document.getElementById('slGlowVal').textContent = val;
+  _applyColor(_activeIdx);
+}
+
+function onAmbientChange(val){
+  _ambientVal = Number(val);
+  document.getElementById('slAmbientVal').textContent = val;
+  const viewer = document.getElementById('slViewer');
+  if(viewer){
+    const base = 13; // base bg lightness
+    const boost = (val / 100) * 12;
+    viewer.style.background = `hsl(210, 45%, ${base + boost}%)`;
+  }
+}
+
+function toggleEdgeLight(){
+  _edgeLight = !_edgeLight;
+  document.getElementById('togEdgeLight').classList.toggle('on', _edgeLight);
+  _applyColor(_activeIdx);
+}
+
+function toggleShadow(){
+  _shadowOn = !_shadowOn;
+  document.getElementById('togShadow').classList.toggle('on', _shadowOn);
+  _applyColor(_activeIdx);
+}
+
+function toggleCard(){
+  _cardVisible = !_cardVisible;
+  document.getElementById('togCard').classList.toggle('on', _cardVisible);
+  const vis = _cardVisible ? 'visible' : 'hidden';
+  ['slabCardFront','slabCardBack'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.visibility = vis;
+  });
+}
+
+function setBg(mode){
+  _currentBg = mode;
+  const viewer = document.getElementById('slViewer');
+  viewer.classList.remove('bg-grid','bg-dots','bg-none');
+  viewer.classList.add('bg-' + mode);
+  ['grid','dots','none'].forEach(id => {
+    const btn = document.getElementById('bg-' + id);
+    if(btn) btn.classList.toggle('active', id === mode);
+  });
+}
+
+function setSpinSpeed(mode){
+  const speeds = { slow: 0.18, med: 0.38, fast: 1.0, off: 0 };
+  _spinSpeed = speeds[mode] || 0.38;
+  ['slow','med','fast','off'].forEach(id => {
+    const btn = document.getElementById('speed-' + id);
+    if(btn) btn.classList.toggle('active', id === mode);
+  });
+  if(mode === 'off'){
+    stopSpin();
+  } else {
+    if(_spinning) stopSpin();
+    startSpin(_spinSpeed);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
 // NAV
 // ═══════════════════════════════════════════════════════
 function goBack(){
@@ -774,7 +1218,7 @@ function goBack(){
   if(document.referrer && document.referrer.includes(window.location.hostname)){
     window.history.back();
   } else {
-    window.location.href = '/dashboard.html#myvault';
+    window.location.href = 'dashboard.html#myvault';
   }
 }
 

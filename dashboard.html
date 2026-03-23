@@ -1489,7 +1489,7 @@ async function logOut(){
 
     <div class="nav-item" id="nav-slablab" onclick="openSlabLab()">
       <div class="nav-drag-handle">&#10303;</div>
-      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="2" width="18" height="20" rx="2"/><rect x="6" y="6" width="12" height="12" rx="1"/><line x1="3" y1="4" x2="21" y2="4"/></svg></div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="1" width="18" height="22" rx="3"/><rect x="6" y="7" width="12" height="13" rx="1"/><line x1="8" y1="4" x2="16" y2="4"/></svg></div>
       <span class="nav-label">Slab Lab</span>
     </div>
 
@@ -1963,6 +1963,11 @@ async function logOut(){
 
   <!-- ISOVAULT SEARCH ENGINE -->
   <div class="panel" id="panel-library">
+    <!-- SLAB LAB PICK MODE BANNER -->
+    <div id="slabPickBanner" style="display:none;background:linear-gradient(135deg,#0a1f35,#112840);border:1px solid rgba(0,170,255,0.35);border-radius:10px;padding:10px 16px;margin:0 0 10px;text-align:center;font-family:Bebas Neue,sans-serif;font-size:14px;letter-spacing:2px;color:#00AAFF">
+      &#129514; SELECT A CARD FOR SLAB LAB
+      <button onclick="window._slabPickMode=false;document.getElementById('slabPickBanner').style.display='none'" style="margin-left:12px;background:rgba(255,255,255,0.1);border:1px solid rgba(0,170,255,0.3);border-radius:6px;padding:3px 12px;font-family:Bebas Neue,sans-serif;font-size:11px;letter-spacing:1px;color:#7a95ae;cursor:pointer">CANCEL</button>
+    </div>
     <!-- BREADCRUMB -->
     <div class="iv-breadcrumb" id="ivBreadcrumb" style="display:none">
       <span class="iv-crumb iv-crumb-home" onclick="ivGoHome()">ISOVault</span>
@@ -2193,7 +2198,9 @@ async function logOut(){
       <div style="position:relative;text-align:center;padding:12px 18px 6px;flex-shrink:0">
         <button onclick="closeSlabLab()" style="position:absolute;right:18px;top:12px;background:rgba(0,0,0,0.1);border:1px solid rgba(0,0,0,0.15);border-radius:8px;color:#1a2a3a;font-size:18px;cursor:pointer;padding:2px 10px;line-height:1">&#215;</button>
         <div style="font-family:Bebas Neue,sans-serif;font-size:24px;letter-spacing:3px;color:#1a2a3a">&#129514; SLAB LAB</div>
+        <div id="slabCardLabel" style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#1a2a3a;margin:2px 0 1px"></div>
         <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#7a95ae">Drag to rotate &middot; Pick color &amp; finish</div>
+        <button onclick="slabChooseCard()" style="margin-top:6px;background:linear-gradient(135deg,#0a1f35,#112840);border:1px solid rgba(0,170,255,0.35);border-radius:8px;padding:6px 18px;font-family:Bebas Neue,sans-serif;font-size:11px;letter-spacing:1.5px;color:#00AAFF;cursor:pointer;transition:all .2s">&#128257; CHOOSE CARD</button>
       </div>
 
       <!-- Finish selector -->
@@ -2941,13 +2948,7 @@ let _slabRotX=0,_slabRotY=0,_slabFlipped=false;
 let _slabDragging=false,_slabLastX=0,_slabLastY=0;
 let _slabSpinner=null,_slabSpinning=false,_slabListenersAttached=false;
 
-function openSlabLab(){
-  const row=window._vaultData&&window._vaultData[window._cdMyVaultIdx];
-  if(!row) return;
-  const cf=document.getElementById('slabCardFront');
-  const cb=document.getElementById('slabCardBack');
-  if(cf) cf.src=row.front_image_url||window._GRAIL_PH||'';
-  if(cb) cb.src=row.back_image_url||window._GRAIL_PH||'';
+function _slabShowOverlay(){
   window._slabFinish=window._slabFinish||'crystal';
   _slabFlipped=false; _slabRotX=0; _slabRotY=0;
   _applySlabTransform();
@@ -2955,13 +2956,75 @@ function openSlabLab(){
   _applySlabColor(window._slabActiveIdx||0);
   _updateFinishBtns();
   _initSlabRotation();
-  // Start gentle auto-spin
   _slabSpinning=true;
   if(_slabSpinner) clearInterval(_slabSpinner);
   _slabSpinner=setInterval(()=>{ if(!_slabDragging){ _slabRotY+=0.35; _applySlabTransform(); } },16);
   const sb=document.getElementById('slab-spin-btn'); if(sb) sb.textContent='Stop';
   document.getElementById('slabLabOverlay').style.display='block';
   document.body.style.overflow='hidden';
+}
+
+function _slabSetImages(frontUrl, backUrl, label){
+  const cf=document.getElementById('slabCardFront');
+  const cb=document.getElementById('slabCardBack');
+  if(cf) cf.src=frontUrl||window._GRAIL_PH||'';
+  if(cb) cb.src=backUrl||window._GRAIL_PH||'';
+  const lbl=document.getElementById('slabCardLabel');
+  if(lbl) lbl.textContent=label||'';
+}
+
+// Default card: 2025 Topps B&W Ohtani #001
+async function _slabLoadDefault(){
+  try{
+    await _ivSetsReady;
+    const bwSet = IV_SETS.find(s=>s.table&&s.table.match(/topps_bw/i));
+    const table = bwSet ? bwSet.table : '2025_topps_bw';
+    const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+    const res = await fetch(`${_SURL}/${table}?select=player,card_number,front_img,back_img&card_number=eq.001&limit=1`,
+      { headers:{ 'apikey':SKEY, 'Authorization':'Bearer '+SKEY } });
+    if(res.ok){
+      const rows=await res.json();
+      if(rows&&rows[0]){
+        const r=rows[0];
+        _slabSetImages(r.front_img, r.back_img, (r.player||'Shohei Ohtani')+' · 2025 Topps B&W #001');
+        return;
+      }
+    }
+  }catch(e){ console.warn('Slab Lab default load failed:',e); }
+  _slabSetImages(null, null, '2025 Topps B&W · Ohtani #001');
+}
+
+function openSlabLab(opts){
+  const row=window._vaultData&&window._vaultData[window._cdMyVaultIdx];
+  if(row){
+    _slabSetImages(row.front_image_url, row.back_image_url,
+      [row.player, row.year, row.set_name, row.card_number?'#'+row.card_number:''].filter(Boolean).join(' · '));
+  } else if(opts && opts.frontUrl){
+    _slabSetImages(opts.frontUrl, opts.backUrl, opts.label||'');
+  } else {
+    _slabLoadDefault();
+  }
+  _slabShowOverlay();
+}
+
+// Navigate to ISOVault in "pick for Slab Lab" mode
+function slabChooseCard(){
+  closeSlabLab();
+  window._slabPickMode = true;
+  const banner=document.getElementById('slabPickBanner');
+  if(banner) banner.style.display='block';
+  N('library', document.getElementById('nav-library'));
+}
+
+// Called from ISOVault when user picks a card for Slab Lab
+function slabPickCard(row, table){
+  window._slabPickMode = false;
+  const banner=document.getElementById('slabPickBanner');
+  if(banner) banner.style.display='none';
+  const frontUrl = row.front_img || row.front_image_url || null;
+  const backUrl  = row.back_img  || row.back_image_url  || null;
+  const label = [row.player, row.card_number?'#'+row.card_number:''].filter(Boolean).join(' · ');
+  openSlabLab({ frontUrl:frontUrl, backUrl:backUrl, label:label });
 }
 
 function closeSlabLab(){
@@ -6509,6 +6572,11 @@ function _varPillColor(label){
 
 function ivOpenCard(row){
   try {
+  // If in Slab Lab pick mode, send card directly to Slab Lab
+  if(window._slabPickMode){
+    slabPickCard(row, _ivSet ? _ivSet.table : null);
+    return;
+  }
   // Check if there's a known CARDS entry — must match set table if active set is known
   const activeTable = _ivSet ? _ivSet.table : null;
   const known = CARDS.find(c=>{

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GrailISO — Visual Platform Map v1.9.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D1F33;--deep2:#112840;--deep3:#143050;
+  --white:#FFFFFF;--blue:#00AAFF;--green:#00E887;
+  --gold:#FFB800;--red:#FF3B5C;--muted:#7A95AE;
+  --border:rgba(0,170,255,0.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--white);font-family:'Barlow Condensed',sans-serif;padding:40px;min-width:1200px}
+h1{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:4px;margin-bottom:4px}
+h1 .g{color:var(--white)} h1 .i{color:var(--blue)}
+.sub{font-size:13px;color:var(--muted);letter-spacing:1px;margin-bottom:40px}
+.section-label{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:3px;color:var(--muted);margin-bottom:16px;border-left:2px solid var(--border);padding-left:10px}
+.diagram-wrap{margin-bottom:50px}
+svg text{font-family:'Barlow Condensed',sans-serif}
+</style>
+</head>
+<body>
+
+<h1><span class="g">GRAIL</span><span class="i">/ISO</span></h1>
+<div class="sub">VISUAL PLATFORM MAP · v1.9.0 · BUILD 20260318 · PRIVATE ALPHA LIVE · isosandbox.com</div>
+
+<!-- ═══════════════ DIAGRAM 1: DEPLOY PIPELINE ═══════════════ -->
+<div class="section-label">DEPLOY PIPELINE</div>
+<div class="diagram-wrap">
+<svg viewBox="0 0 1100 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1100px">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#00AAFF" opacity=".7"/>
+    </marker>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- nodes -->
+  <!-- LOCAL -->
+  <rect x="10" y="20" width="170" height="90" rx="8" fill="#112840" stroke="#00AAFF" stroke-width="1" stroke-opacity=".4"/>
+  <text x="95" y="42" text-anchor="middle" font-family="'Bebas Neue'" font-size="13" fill="#00AAFF" letter-spacing="2">LOCAL DEV</text>
+  <text x="95" y="60" text-anchor="middle" font-size="11" fill="#FFFFFF">C:\isoSandBox\</text>
+  <text x="95" y="76" text-anchor="middle" font-size="10" fill="#7A95AE">dashboard_clean.html</text>
+  <text x="95" y="92" text-anchor="middle" font-size="10" fill="#7A95AE">Rename via Explorer only</text>
+  <text x="95" y="106" text-anchor="middle" font-size="9" fill="#FF3B5C">⚠ Never PowerShell &gt;</text>
+
+  <!-- arrow -->
+  <line x1="183" y1="65" x2="218" y2="65" stroke="#00AAFF" stroke-width="1.5" stroke-opacity=".6" marker-end="url(#arr)"/>
+  <text x="200" y="57" text-anchor="middle" font-size="9" fill="#7A95AE">git push</text>
+
+  <!-- GITHUB -->
+  <rect x="222" y="20" width="170" height="90" rx="8" fill="#112840" stroke="#00AAFF" stroke-width="1" stroke-opacity=".4"/>
+  <text x="307" y="42" text-anchor="middle" font-family="'Bebas Neue'" font-size="13" fill="#00AAFF" letter-spacing="2">GITHUB</text>
+  <text x="307" y="60" text-anchor="middle" font-size="11" fill="#FFFFFF">isoSANDBOX</text>
+  <text x="307" y="76" text-anchor="middle" font-size="10" fill="#7A95AE">jsmcdonald25-cpu · main</text>
+  <text x="307" y="92" text-anchor="middle" font-size="10" fill="#7A95AE">auto-deploy trigger</text>
+
+  <!-- arrow -->
+  <line x1="395" y1="65" x2="430" y2="65" stroke="#00AAFF" stroke-width="1.5" stroke-opacity=".6" marker-end="url(#arr)"/>
+  <text x="412" y="57" text-anchor="middle" font-size="9" fill="#7A95AE">webhook</text>
+
+  <!-- NETLIFY -->
+  <rect x="434" y="20" width="170" height="90" rx="8" fill="#112840" stroke="#00E887" stroke-width="1.5" stroke-opacity=".5"/>
+  <text x="519" y="42" text-anchor="middle" font-family="'Bebas Neue'" font-size="13" fill="#00E887" letter-spacing="2">NETLIFY</text>
+  <text x="519" y="60" text-anchor="middle" font-size="11" fill="#FFFFFF">ReverseHighway team</text>
+  <text x="519" y="76" text-anchor="middle" font-size="10" fill="#00E887">isosandbox.com ✅ LIVE</text>
+  <text x="519" y="92" text-anchor="middle" font-size="10" fill="#7A95AE">Auto-build from main</text>
+
+  <!-- arrow -->
+  <line x1="607" y1="65" x2="642" y2="65" stroke="#00AAFF" stroke-width="1.5" stroke-opacity=".6" marker-end="url(#arr)"/>
+
+  <!-- CLOUDFLARE -->
+  <rect x="646" y="20" width="170" height="90" rx="8" fill="#112840" stroke="#FFB800" stroke-width="1" stroke-opacity=".4"/>
+  <text x="731" y="42" text-anchor="middle" font-family="'Bebas Neue'" font-size="13" fill="#FFB800" letter-spacing="2">CLOUDFLARE CDN</text>
+  <text x="731" y="60" text-anchor="middle" font-size="11" fill="#FFFFFF">Via Netlify routing</text>
+  <text x="731" y="76" text-anchor="middle" font-size="10" fill="#7A95AE">Registrar: Namecheap</text>
+  <text x="731" y="92" text-anchor="middle" font-size="10" fill="#FF3B5C">⚠ Rocket Loader — all</text>
+  <text x="731" y="106" text-anchor="middle" font-size="9" fill="#FFB800">script tags: data-cfasync="false"</text>
+
+  <!-- arrow -->
+  <line x1="819" y1="65" x2="854" y2="65" stroke="#00AAFF" stroke-width="1.5" stroke-opacity=".6" marker-end="url(#arr)"/>
+
+  <!-- USER -->
+  <rect x="858" y="20" width="170" height="90" rx="8" fill="#112840" stroke="#00AAFF" stroke-width="1" stroke-opacity=".4"/>
+  <text x="943" y="42" text-anchor="middle" font-family="'Bebas Neue'" font-size="13" fill="#00AAFF" letter-spacing="2">USER</text>
+  <text x="943" y="60" text-anchor="middle" font-size="11" fill="#FFFFFF">Browser (web)</text>
+  <text x="943" y="76" text-anchor="middle" font-size="10" fill="#7A95AE">PWA — Android + iOS</text>
+  <text x="943" y="92" text-anchor="middle" font-size="10" fill="#7A95AE">Installable from browser</text>
+</svg>
+</div>
+
+<!-- ═══════════════ DIAGRAM 2: TECH STACK ═══════════════ -->
+<div class="section-label">TECH STACK — LAYER MAP</div>
+<div class="diagram-wrap">
+<svg viewBox="0 0 1100 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1100px">
+
+  <!-- FRONTEND layer -->
+  <rect x="10" y="10" width="1080" height="80" rx="8" fill="#112840" stroke="#00AAFF" stroke-width="1" stroke-opacity=".35"/>
+  <text x="24" y="32" font-family="'Bebas Neue'" font-size="11" fill="#00AAFF" letter-spacing="2">FRONTEND</text>
+  <!-- boxes inside -->
+  <rect x="80" y="22" width="150" height="56" rx="5" fill="#0a1929" stroke="rgba(0,170,255,0.2)" stroke-width="1"/>
+  <text x="155" y="43" text-anchor="middle" font-family="'Bebas Neue'" font-size="12" fill="#FFFFFF" letter-spacing="1">dashboard.html</text>
+  <text x="155" y="58" text-anchor="middle" font-size="10" fill="#7A95AE">~7,914 lines · Single file</text>
+  <text x="155" y="71" text-anchor="middle" font-size="10" fill="#7A95AE">13 panels · 7 script tags</text>
+
+  <rect x="248" y="22" width="150" height="56" rx="5" fill="#0a1929" stroke="rgba(0,170,255,0.2)" stroke-width="1"/>
+  <text x="323" y="43" text-anchor="middle" font-family="'Bebas Neue'" font-size="12" fill="#00E887" letter-spacing="1">PWA ✅</text>
+  <text x="323" y="58" text-anchor="middle" font-size="10" fill="#7A95AE">manifest.json + sw.js</text>
+  <text x="323" y="71" text-anchor="middle" font-size="10" fill="#7A95AE">Android banner · iOS Share</text>
+
+  <rect x="416" y="22" width="150" height="56" rx="5" fill="#0a1929" stroke="rgba(0,170,255,0.2)" stroke-width="1"/>
+  <text x="491" y="43" text-anchor="middle" font-family="'Bebas Neue'" font-size="12" fill="#FFFFFF" letter-spacing="1">Design System</text>
+  <text x="491" y="58" text-anchor="middle" font-size="10" fill="#7A95AE">Bebas Neue / Barlow</text>
+  <text x="491" y="71" text-anchor="middle" font-size="10" fill="#7A95AE">BG #0D1F33 · permanent</text>
+
+  <rect x="584" y="22" width="150" height="56" rx="5" fill="#0a1929" stroke="rgba(0,170,255,0.2)" stroke-width="1"/>
+  <text x="659" y="43" text-anchor="middle" font-family="'Bebas Neue'" font-size="12" fill="#FFFFFF" letter-spacing="1">Mobile Responsive</text>
+  <text x="659" y="58" text-anchor="middle" font-size="10" fill="#7A95AE">768px breakpoint</text>
+  <text x="659" y="71" text-anchor="middle" font-size="10" fill="#7A95AE">Hamburger sidebar</text>
+
+  <rect x="752" y="22" width="170" height="56" rx="5" fill="#0a1929" stroke="rgba(0,170,255,0.2)" stroke-width="1"/>
+  <text x="837" y="43" text-anchor="middle" font-family="'Bebas Neue'" font-size="12" fill="#FFFFFF" letter-spacing="1">Locked File</text>
+  <text x="837" y="58" text-anchor="middle" font-size="10" fill="#FF3B5C">card-viewer.html</text>
+  <text x="837" y="71" text-anchor="middle" font-size="10" fill="#7A95AE">NEVER MODIFY</text>
+
+  <!-- BACKEND layer -->
+  <rect x="10" y="110" width="520" height="80" rx="8" fill="#112840" stroke="#00AAFF" stroke-width="1" stroke-opacity=".35"/>
+  <text x="24" y="132" font-family="'Bebas Neue'" font-size="11" fill="#00AAFF" letter-spacing="2">SUPABASE — AUTH + DATABASE</text>
+
+  <rect x="80" y="122" width="155" height="56" rx="5" fill="#0a1929" stroke="rgba(0,170,255,0.2)" stroke-width="1"/>
+  <text x="157" y="143" text-anchor="middle" font-family="'Bebas Neue'" font-size="12" fill="#00E887" letter-spacing="1">Sandbox ✅ ACTIVE</text>
+  <text x="157" y="158" text-anchor="middle" font-size="10" fill="#7A95AE">jyfaegmnzkarlcximxjo</text>
+  <text x="157" y="171" text-anchor="middle" font-size="10" fill="#7A95AE">REST/PostgREST</text>
+
+  <rect x="253" y="122" width="155" height="56" rx="5" fill="#0a1929" stroke="rgba(255,184,0,0.25)" stroke-width="1"/>
+  <text x="330" y="143" text-anchor="middle" font-family="'Bebas Neue'" font-size="12" fill="#FFB800" letter-spacing="1">Production</text>
+  <text x="330" y="158" text-anchor="middle" font-size="10" fill="#7A95AE">wqorfvumiljrbpjwsmal</text>
+  <text x="330" y="171" text-anchor="middle" font-size="10" fill="#FFB800">Schema not yet run</text>
+
+  <!-- DATA RULES box -->
+  <rect x="548" y="110" width="542" height="80" rx="8" fill="#112840" stroke="rgba(0,170,255,0.35)" stroke-width="1"/>
+  <text x="562" y="132" font-family="'Bebas Neue'" font-size="11" fill="#00AAFF" letter-spacing="2">DATA LAYER RULES</text>
+
+  <rect x="568" y="122" width="240" height="56" rx="5" fill="#0a1929" stroke="rgba(255,59,92,0.2)" stroke-width="1"/>
+  <text x="688" y="141" text-anchor="middle" font-size="10" fill="#7A95AE">REST only — _rGet / _rPost / _rPatch / _rDelete</text>
+  <text x="688" y="156" text-anchor="middle" font-size="10" fill="#FF3B5C">✗ Never SDK for data calls</text>
+  <text x="688" y="171" text-anchor="middle" font-size="10" fill="#FF3B5C">✗ Never card_id in vault insert</text>
+
+  <rect x="826" y="122" width="240" height="56" rx="5" fill="#0a1929" stroke="rgba(0,232,135,0.2)" stroke-width="1"/>
+  <text x="946" y="141" text-anchor="middle" font-size="10" fill="#7A95AE">SDK auth only: signIn · signUp · signOut</text>
+  <text x="946" y="156" text-anchor="middle" font-size="10" fill="#00E887">✓ RLS + public read on every new table</text>
+  <text x="946" y="171" text-anchor="middle" font-size="10" fill="#00E887">✓ _ivRealTable() for all Pokémon fetches</text>
+
+  <!-- PAYMENTS layer -->
+  <rect x="10" y="210" width="250" height="80" rx="8" fill="#112840" stroke="rgba(255,184,0,0.3)" stroke-width="1"/>
+  <text x="24" y="232" font-family="'Bebas Neue'" font-size="11" fill="#FFB800" letter-spacing="2">STRIPE — PARKED</text>
+  <text x="130" y="258" text-anchor="middle" font-size="11" fill="#7A95AE">No API keys yet</text>
+  <text x="130" y="275" text-anchor="middle" font-size="10" fill="#7A95AE">Escrow · Identity verify — attorney req'd</text>
+
+  <!-- CREDITS layer -->
+  <rect x="278" y="210" width="250" height="80" rx="8" fill="#112840" stroke="rgba(0,170,255,0.3)" stroke-width="1"/>
+  <text x="292" y="232" font-family="'Bebas Neue'" font-size="11" fill="#00AAFF" letter-spacing="2">ISO CREDITS</text>
+  <text x="403" y="258" text-anchor="middle" font-family="'Bebas Neue'" font-size="24" fill="#FFFFFF">$1</text>
+  <text x="403" y="278" text-anchor="middle" font-size="10" fill="#7A95AE">per ISO post · balance in profiles.credits</text>
+
+  <!-- localStorage -->
+  <rect x="546" y="210" width="250" height="80" rx="8" fill="#112840" stroke="rgba(0,170,255,0.2)" stroke-width="1"/>
+  <text x="560" y="232" font-family="'Bebas Neue'" font-size="11" fill="#00AAFF" letter-spacing="2">LOCALSTORAGE</text>
+  <text x="671" y="252" text-anchor="middle" font-size="10" fill="#7A95AE">grail_favs — favorites array</text>
+  <text x="671" y="267" text-anchor="middle" font-size="10" fill="#7A95AE">grail_hero_idx — hero card index</text>
+  <text x="671" y="282" text-anchor="middle" font-size="10" fill="#7A95AE">grail_featured_idx — legacy alias</text>
+
+  <!-- Site gate -->
+  <rect x="814" y="210" width="276" height="80" rx="8" fill="#112840" stroke="rgba(0,170,255,0.2)" stroke-width="1"/>
+  <text x="828" y="232" font-family="'Bebas Neue'" font-size="11" fill="#00AAFF" letter-spacing="2">SITE GATE</text>
+  <text x="952" y="256" text-anchor="middle" font-family="'Bebas Neue'" font-size="22" fill="#FFFFFF" letter-spacing="3">grail2026</text>
+  <text x="952" y="278" text-anchor="middle" font-size="10" fill="#7A95AE">One-time per session · cookie-based</text>
+</svg>
+</div>
+
+<!-- ═══════════════ DIAGRAM 3: PANEL NAVIGATION MAP ═══════════════ -->
+<div class="section-label">PANEL NAVIGATION MAP — 13 PANELS + OVERLAYS</div>
+<div class="diagram-wrap">
+<svg viewBox="0 0 1100 520" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1100px">
+  <defs>
+    <marker id="a2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="#00AAFF" opacity=".6"/>
+    </marker>
+    <marker id="a3" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="#00E887" opacity=".7"/>
+    </marker>
+    <marker id="a4" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="#FFB800" opacity=".7"/>
+    </marker>
+  </defs>
+
+  <!-- SIDEBAR (left column) -->
+  <rect x="10" y="10" width="170" height="490" rx="8" fill="#112840" stroke="rgba(0,170,255,0.25)" stroke-width="1"/>
+  <text x="95" y="32" text-anchor="middle" font-family="'Bebas Neue'" font-size="12" fill="#00AAFF" letter-spacing="2">SIDEBAR NAV</text>
+
+  <!-- nav items -->
+  <rect x="22" y="42" width="146" height="36" rx="5" fill="#0D1F33" stroke="rgba(0,232,135,0.4)" stroke-width="1.5"/>
+  <text x="95" y="56" text-anchor="middle" font-family="'Bebas Neue'" font-size="13" fill="#00E887" letter-spacing="1">MY VAULT ★</text>
+  <text x="95" y="70" text-anchor="middle" font-size="9" fill="#7A95AE">Default landing · panel-myvault</text>
+
+  <rect x="22" y="86" width="146" height="36" rx="5" fill="#0D1F33" stroke="rgba(0,170,255,0.25)" stroke-width="1"/>
+  <text x="95" y="100" text-anchor="middle" font-family="'Bebas Neue'" font-size="13" fill="#FFFFFF" letter-spacing="1">ISOVAULT</text>
+  <text x="95" y="114" text-anchor="middle" font-size="9" fill="#7A95AE">panel-library</text>
+
+  <rect x="22" y="130" width="146" height="36" rx="5" fill="#0D1F33" stroke="rgba(0,170,255,0.25)" stroke-width="1"/>
+  <text x="95" y="144" text-anchor="middle" font-family="'Bebas Neue'" font-size="13" fill="#FFFFFF" letter-spacing="1">POST ISO</text>
+  <text x="95" y="158" text-anchor="middle" font-size="9" fill="#7A95AE">panel-post</text>
+
+  <rect x="22" y="174" width="146" height="36" rx="5" fill="#0D1F33" stroke="rgba(0,170,255,0.25)" stroke-width="1"/>
+  <text x="95" y="188" text-anchor="middle" font-family="'Bebas Neue'" font-size="13" fill="#FFFFFF" letter-spacing="1">MY ISOs</text>
+  <text x="95" y="202" text-anchor="middle" font-size="9" fill="#7A95AE">panel-myisos</text>
+
+  <rect x="22" y="218" width="146" height="36" rx="5" fill="#0D1F33" stroke="rgba(0,170,255,0.25)" stroke-width="1"/>
+  <text x="95" y="232" text-anchor="middle" font-family="'Bebas Neue'" font-size="13" fill="#FFFFFF" letter-spacing="1">MARKET DATA</text>
+  <text x="95" y="246" text-anchor="middle" font-size="9" fill="#7A95AE">panel-market</text>
+
+  <rect x="22" y="262" width="146" height="36" rx="5" fill="#0D1F33" stroke="rgba(0,170,255,0.25)" stroke-width="1"/>
+  <text x="95" y="276" text-anchor="middle" font-family="'Bebas Neue'" font-size="13" fill="#FFFFFF" letter-spacing="1">LEADERBOARD</text>
+  <text x="95" y="290" text-anchor="middle" font-size="9" fill="#7A95AE">panel-leaderboard</text>
+
+  <!-- admin -->
+  <text x="95" y="320" text-anchor="middle" font-size="9" fill="#7A95AE" letter-spacing="1">ADMIN ONLY</text>
+  <rect x="22" y="328" width="146" height="28" rx="4" fill="#0D1F33" stroke="rgba(0,170,255,0.2)" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="95" y="346" text-anchor="middle" font-size="10" fill="#7A95AE">Price Flags · Market Override</text>
+
+  <!-- bottom -->
+  <text x="95" y="382" text-anchor="middle" font-size="9" fill="#7A95AE" letter-spacing="1">FOOTER</text>
+  <rect x="22" y="390" width="146" height="28" rx="4" fill="#0D1F33" stroke="rgba(0,170,255,0.2)" stroke-width="1"/>
+  <text x="95" y="408" text-anchor="middle" font-size="10" fill="#7A95AE">Community · Account · Log Out</text>
+
+  <!-- MAIN PANELS (center) -->
+  <!-- My Vault (detailed) -->
+  <rect x="210" y="10" width="290" height="200" rx="8" fill="#143050" stroke="#00E887" stroke-width="1.5" stroke-opacity=".6"/>
+  <text x="226" y="32" font-family="'Bebas Neue'" font-size="14" fill="#00E887" letter-spacing="2">MY VAULT — LANDING</text>
+  <text x="226" y="50" font-size="10" fill="#FFFFFF">Left col (300px)</text>
+  <text x="226" y="64" font-size="10" fill="#7A95AE">  Hero card 280×392 · crossfade 3.5s</text>
+  <text x="226" y="78" font-size="10" fill="#7A95AE">  Favorites rail (horizontal scroll)</text>
+  <text x="226" y="92" font-size="10" fill="#7A95AE">  vaultIdleSpin empty state</text>
+  <text x="226" y="112" font-size="10" fill="#FFFFFF">Right col (1fr)</text>
+  <text x="226" y="126" font-size="10" fill="#7A95AE">  Active ISOs chip → myisos</text>
+  <text x="226" y="140" font-size="10" fill="#7A95AE">  Credits chip · Notifications (2)</text>
+  <text x="226" y="154" font-size="10" fill="#7A95AE">  Recent Activity · ISOTicker agg</text>
+  <text x="226" y="168" font-size="10" fill="#7A95AE">  Vault stats bar</text>
+  <text x="226" y="182" font-size="10" fill="#7A95AE">  Sport filter chips (2+ sports)</text>
+  <text x="226" y="196" font-size="10" fill="#7A95AE">  Card grid — ☆/★ favorites</text>
+
+  <!-- Card grid arrow → My Vault Card -->
+  <line x1="500" y1="100" x2="545" y2="100" stroke="#00AAFF" stroke-width="1.5" stroke-opacity=".6" marker-end="url(#a2)"/>
+
+  <!-- My Vault Card -->
+  <rect x="549" y="10" width="200" height="130" rx="8" fill="#143050" stroke="#00AAFF" stroke-width="1" stroke-opacity=".5"/>
+  <text x="565" y="32" font-family="'Bebas Neue'" font-size="12" fill="#00AAFF" letter-spacing="2">MY VAULT CARD</text>
+  <text x="565" y="50" font-size="10" fill="#7A95AE">panel-myvaultcard · fit-to-page</text>
+  <text x="565" y="65" font-size="10" fill="#7A95AE">Image · Player · Set · Variation</text>
+  <text x="565" y="79" font-size="10" fill="#7A95AE">Price paid · Est. value · Gain/loss</text>
+  <text x="565" y="95" font-size="10" fill="#FFFFFF">CTAs:</text>
+  <text x="565" y="109" font-size="10" fill="#00E887">  🧪 SLAB LAB  SOLD  REMOVE</text>
+  <text x="565" y="123" font-size="10" fill="#7A95AE">Back → My Vault grid</text>
+
+  <!-- Slab Lab arrow -->
+  <line x1="649" y1="140" x2="649" y2="175" stroke="#00E887" stroke-width="1.5" stroke-opacity=".6" marker-end="url(#a3)"/>
+
+  <!-- Slab Lab -->
+  <rect x="549" y="179" width="200" height="90" rx="8" fill="#143050" stroke="#00E887" stroke-width="1" stroke-opacity=".5"/>
+  <text x="565" y="200" font-family="'Bebas Neue'" font-size="12" fill="#00E887" letter-spacing="2">ISO/SLAB — SLAB LAB</text>
+  <text x="565" y="216" font-size="10" fill="#7A95AE">8 colors × 3 finishes = 24 combos</text>
+  <text x="565" y="230" font-size="10" fill="#7A95AE">Matte · Crystal (default) · Vivid</text>
+  <text x="565" y="244" font-size="10" fill="#7A95AE">3D slab · Flip / Auto Spin / Reset</text>
+  <text x="565" y="258" font-size="10" fill="#7A95AE">GRAILISO_slab.png base64 overlay</text>
+
+  <!-- ISOVault -->
+  <rect x="210" y="222" width="290" height="130" rx="8" fill="#143050" stroke="#00AAFF" stroke-width="1" stroke-opacity=".5"/>
+  <text x="226" y="244" font-family="'Bebas Neue'" font-size="14" fill="#00AAFF" letter-spacing="2">ISOVAULT BROWSER</text>
+  <text x="226" y="260" font-size="10" fill="#7A95AE">4-row pill nav: Category → Mfr → Year → Set</text>
+  <text x="226" y="274" font-size="10" fill="#7A95AE">Player search: sport-scoped, debounce 250ms</text>
+  <text x="226" y="288" font-size="10" fill="#7A95AE">Global search: client-side IV_SETS, instant</text>
+  <text x="226" y="302" font-size="10" fill="#7A95AE">_ivRealTable() for Pokémon pseudo-tables</text>
+  <text x="226" y="316" font-size="10" fill="#FFFFFF">→ Card Detail: 300px/1fr grid · fit-to-page</text>
+  <text x="226" y="330" font-size="10" fill="#7A95AE">  3D hover · var pills · vault CTA</text>
+  <text x="226" y="344" font-size="10" fill="#7A95AE">  cd-viewer-wrap must close before cd-info</text>
+
+  <!-- ISOVault → Vault Modal arrow -->
+  <line x1="500" y1="316" x2="545" y2="295" stroke="#00AAFF" stroke-width="1.5" stroke-opacity=".6" marker-end="url(#a2)"/>
+
+  <!-- Vault Modal (acquisition) -->
+  <rect x="549" y="280" width="200" height="110" rx="8" fill="#143050" stroke="#00AAFF" stroke-width="1" stroke-opacity=".4"/>
+  <text x="565" y="300" font-family="'Bebas Neue'" font-size="12" fill="#00AAFF" letter-spacing="2">VAULT MODAL</text>
+  <text x="565" y="316" font-size="10" fill="#7A95AE">Ripped 📦 / Purchased 💳 (primary)</text>
+  <text x="565" y="330" font-size="10" fill="#7A95AE">Trade · Other (secondary row)</text>
+  <text x="565" y="344" font-size="10" fill="#FFFFFF">Price paid — MANDATORY</text>
+  <text x="565" y="358" font-size="10" fill="#FF3B5C">✗ card_id never in insert</text>
+  <text x="565" y="372" font-size="10" fill="#7A95AE">After add → N(myvault)</text>
+
+  <!-- Post ISO -->
+  <rect x="210" y="365" width="290" height="145" rx="8" fill="#143050" stroke="#00AAFF" stroke-width="1" stroke-opacity=".5"/>
+  <text x="226" y="387" font-family="'Bebas Neue'" font-size="14" fill="#00AAFF" letter-spacing="2">POST ISO — 6-STEP WIZARD</text>
+
+  <!-- mini flow inside -->
+  <rect x="222" y="397" width="56" height="28" rx="4" fill="#0D1F33" stroke="rgba(0,170,255,0.3)" stroke-width="1"/>
+  <text x="250" y="415" text-anchor="middle" font-size="9" fill="#00AAFF">SPORT</text>
+  <text x="282" y="415" font-size="10" fill="#7A95AE">→</text>
+  <rect x="290" y="397" width="56" height="28" rx="4" fill="#0D1F33" stroke="rgba(0,170,255,0.3)" stroke-width="1"/>
+  <text x="318" y="415" text-anchor="middle" font-size="9" fill="#00AAFF">PLAYER</text>
+  <text x="350" y="415" font-size="10" fill="#7A95AE">→</text>
+  <rect x="358" y="397" width="56" height="28" rx="4" fill="#0D1F33" stroke="rgba(0,170,255,0.3)" stroke-width="1"/>
+  <text x="386" y="415" text-anchor="middle" font-size="9" fill="#00AAFF">CARD</text>
+  <text x="418" y="415" font-size="10" fill="#7A95AE">→</text>
+  <rect x="426" y="397" width="60" height="28" rx="4" fill="#0D1F33" stroke="rgba(0,170,255,0.3)" stroke-width="1"/>
+  <text x="456" y="415" text-anchor="middle" font-size="9" fill="#00AAFF">VARIANT</text>
+
+  <rect x="222" y="434" width="80" height="28" rx="4" fill="#0D1F33" stroke="rgba(0,170,255,0.3)" stroke-width="1"/>
+  <text x="262" y="452" text-anchor="middle" font-size="9" fill="#00AAFF">GRADE+PRICE</text>
+  <text x="306" y="452" font-size="10" fill="#7A95AE">→</text>
+  <rect x="314" y="434" width="80" height="28" rx="4" fill="#0D1F33" stroke="rgba(0,170,255,0.3)" stroke-width="1"/>
+  <text x="354" y="452" text-anchor="middle" font-size="9" fill="#00E887">REVIEW+POST</text>
+
+  <text x="226" y="480" font-size="10" fill="#7A95AE">$1 ISO credit · Seller notifs (up to 100 matches)</text>
+  <text x="226" y="493" font-size="10" fill="#7A95AE">s5Next() gate · JSON.stringify → &amp;quot; escape</text>
+  <text x="226" y="506" font-size="10" fill="#7A95AE">Stores card_number + variation. Best-effort notifs.</text>
+
+  <!-- RIGHT COLUMN: DB tables -->
+  <rect x="780" y="10" width="310" height="500" rx="8" fill="#0D1F33" stroke="rgba(0,170,255,0.2)" stroke-width="1"/>
+  <text x="796" y="32" font-family="'Bebas Neue'" font-size="12" fill="#00AAFF" letter-spacing="2">SUPABASE TABLES</text>
+
+  <!-- core -->
+  <text x="796" y="54" font-size="9" fill="#7A95AE" letter-spacing="1">CORE</text>
+  <rect x="796" y="60" width="282" height="22" rx="3" fill="#112840"/>
+  <text x="806" y="75" font-size="10" fill="#FFFFFF">profiles</text>
+  <text x="1070" y="75" text-anchor="end" font-size="9" fill="#7A95AE">id · username · credits · is_admin ⚠</text>
+
+  <rect x="796" y="86" width="282" height="22" rx="3" fill="#112840"/>
+  <text x="806" y="101" font-size="10" fill="#FFFFFF">vault_entries</text>
+  <text x="1070" y="101" text-anchor="end" font-size="9" fill="#FFB800">status ⚠ migration needed</text>
+
+  <rect x="796" y="112" width="282" height="22" rx="3" fill="#112840"/>
+  <text x="806" y="127" font-size="10" fill="#FFFFFF">card_market_prices</text>
+  <text x="1070" y="127" text-anchor="end" font-size="9" fill="#7A95AE">time-weighted avg engine</text>
+
+  <rect x="796" y="138" width="282" height="22" rx="3" fill="#112840"/>
+  <text x="806" y="153" font-size="10" fill="#FFFFFF">notifications</text>
+  <text x="1070" y="153" text-anchor="end" font-size="9" fill="#7A95AE">type: iso_match · unread badge</text>
+
+  <rect x="796" y="164" width="282" height="22" rx="3" fill="#112840"/>
+  <text x="806" y="179" font-size="10" fill="#FFFFFF">bug_reports</text>
+  <text x="1070" y="179" text-anchor="end" font-size="9" fill="#7A95AE">global bug report button</text>
+
+  <!-- catalog -->
+  <text x="796" y="210" font-size="9" fill="#7A95AE" letter-spacing="1">CATALOG TABLES</text>
+
+  <rect x="796" y="216" width="282" height="22" rx="3" fill="#143050"/>
+  <text x="806" y="231" font-size="10" fill="#00AAFF">card-images</text>
+  <text x="1070" y="231" text-anchor="end" font-size="9" fill="#7A95AE">master · Stadium Club seeded</text>
+
+  <rect x="796" y="242" width="282" height="22" rx="3" fill="#143050"/>
+  <text x="806" y="257" font-size="10" fill="#AACC88">2026_series1_baseball</text>
+  <text x="1070" y="257" text-anchor="end" font-size="9" fill="#7A95AE">Topps Series 1</text>
+
+  <rect x="796" y="268" width="282" height="22" rx="3" fill="#143050"/>
+  <text x="806" y="283" font-size="10" fill="#AACC88">2025_topps_black_white</text>
+  <text x="1070" y="283" text-anchor="end" font-size="9" fill="#FFB800">316 cards · RLS needed ⚠</text>
+
+  <rect x="796" y="294" width="282" height="22" rx="3" fill="#143050"/>
+  <text x="806" y="309" font-size="10" fill="#AACC88">2025_-_2026_topps_basketball</text>
+  <text x="1070" y="309" text-anchor="end" font-size="9" fill="#7A95AE">3,348 cards · noVarImages</text>
+
+  <rect x="796" y="320" width="282" height="22" rx="3" fill="#143050"/>
+  <text x="806" y="335" font-size="10" fill="#AACC88">pokemon_cards</text>
+  <text x="1070" y="335" text-anchor="end" font-size="9" fill="#7A95AE">20,034 · 17 series · 171 sets</text>
+
+  <!-- market price engine -->
+  <text x="796" y="370" font-size="9" fill="#7A95AE" letter-spacing="1">MARKET PRICE ENGINE</text>
+  <rect x="796" y="376" width="282" height="90" rx="5" fill="#112840"/>
+  <text x="806" y="394" font-size="10" fill="#FFFFFF">Time-weighted average on submitVault()</text>
+  <text x="806" y="410" font-size="10" fill="#7A95AE">Decay: 0.70 first 5 · 0.85 after 5</text>
+  <text x="806" y="426" font-size="10" fill="#7A95AE">Weights: bought 1.0 · pulled 0.7 · trade 0.3</text>
+  <text x="806" y="442" font-size="10" fill="#7A95AE">Admin override = new baseline</text>
+  <text x="806" y="458" font-size="10" fill="#FFB800">ISOVault list wiring: pending ⚠</text>
+
+</svg>
+</div>
+
+<!-- ═══════════════ DIAGRAM 4: SLASH SYSTEM ═══════════════ -->
+<div class="section-label">SLASH SYSTEM — PRODUCT MAP</div>
+<div class="diagram-wrap">
+<svg viewBox="0 0 1100 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1100px">
+
+  <!-- Core platform center -->
+  <rect x="380" y="140" width="340" height="100" rx="10" fill="#112840" stroke="#00E887" stroke-width="2" stroke-opacity=".7"/>
+  <text x="550" y="175" text-anchor="middle" font-family="'Bebas Neue'" font-size="28" fill="#FFFFFF" letter-spacing="3">GRAIL</text>
+  <text x="550" y="175" text-anchor="middle" font-family="'Bebas Neue'" font-size="28" fill="#FFFFFF" letter-spacing="3" dx="65" dy="0">/</text>
+  <text x="616" y="175" text-anchor="middle" font-family="'Bebas Neue'" font-size="28" fill="#00AAFF" letter-spacing="3">ISO</text>
+  <text x="550" y="200" text-anchor="middle" font-size="11" fill="#7A95AE">Demand-first · isosandbox.com</text>
+  <text x="550" y="216" text-anchor="middle" font-size="10" fill="#00E887">PRIVATE ALPHA — LIVE</text>
+  <text x="550" y="232" text-anchor="middle" font-size="10" fill="#7A95AE">Stop Searching. Start Demanding. Find Your Grail.</text>
+
+  <!-- LIVE products — top row -->
+  <rect x="10" y="10" width="155" height="65" rx="7" fill="#112840" stroke="#00E887" stroke-width="1.5" stroke-opacity=".6"/>
+  <text x="88" y="35" text-anchor="middle" font-family="'Bebas Neue'" font-size="14" fill="#00AAFF" letter-spacing="1">ISO/VAULT</text>
+  <text x="88" y="52" text-anchor="middle" font-size="10" fill="#7A95AE">Inventory + collection</text>
+  <text x="88" y="65" text-anchor="middle" font-size="9" fill="#00E887">LIVE</text>
+  <line x1="165" y1="40" x2="380" y2="175" stroke="#00E887" stroke-width="1" stroke-opacity=".3"/>
+
+  <rect x="185" y="10" width="155" height="65" rx="7" fill="#112840" stroke="#00E887" stroke-width="1.5" stroke-opacity=".6"/>
+  <text x="262" y="35" text-anchor="middle" font-family="'Bebas Neue'" font-size="14" fill="#00AAFF" letter-spacing="1">ISO/SLAB</text>
+  <text x="262" y="52" text-anchor="middle" font-size="10" fill="#7A95AE">Slab Lab · 24 combos</text>
+  <text x="262" y="65" text-anchor="middle" font-size="9" fill="#00E887">LIVE</text>
+  <line x1="340" y1="40" x2="430" y2="140" stroke="#00E887" stroke-width="1" stroke-opacity=".3"/>
+
+  <rect x="360" y="10" width="155" height="65" rx="7" fill="#112840" stroke="#00E887" stroke-width="1.5" stroke-opacity=".6"/>
+  <text x="437" y="35" text-anchor="middle" font-family="'Bebas Neue'" font-size="14" fill="#00AAFF" letter-spacing="1">ISO/SCAN</text>
+  <text x="437" y="52" text-anchor="middle" font-size="10" fill="#7A95AE">Card catalog browser</text>
+  <text x="437" y="65" text-anchor="middle" font-size="9" fill="#00E887">LIVE (basic)</text>
+  <line x1="437" y1="75" x2="490" y2="140" stroke="#00E887" stroke-width="1" stroke-opacity=".3"/>
+
+  <rect x="535" y="10" width="155" height="65" rx="7" fill="#112840" stroke="#00E887" stroke-width="1.5" stroke-opacity=".6"/>
+  <text x="612" y="35" text-anchor="middle" font-family="'Bebas Neue'" font-size="14" fill="#00AAFF" letter-spacing="1">ISO/CREDITS</text>
+  <text x="612" y="52" text-anchor="middle" font-size="10" fill="#7A95AE">$1/post · profiles.credits</text>
+  <text x="612" y="65" text-anchor="middle" font-size="9" fill="#00E887">LIVE</text>
+  <line x1="612" y1="75" x2="580" y2="140" stroke="#00E887" stroke-width="1" stroke-opacity=".3"/>
+
+  <rect x="710" y="10" width="155" height="65" rx="7" fill="#112840" stroke="#00E887" stroke-width="1.5" stroke-opacity=".6"/>
+  <text x="787" y="35" text-anchor="middle" font-family="'Bebas Neue'" font-size="14" fill="#00AAFF" letter-spacing="1">ISO/RANK</text>
+  <text x="787" y="52" text-anchor="middle" font-size="10" fill="#7A95AE">Seller reputation</text>
+  <text x="787" y="65" text-anchor="middle" font-size="9" fill="#7A95AE">PARTIAL</text>
+  <line x1="787" y1="75" x2="680" y2="140" stroke="#00AAFF" stroke-width="1" stroke-opacity=".25"/>
+
+  <rect x="885" y="10" width="155" height="65" rx="7" fill="#112840" stroke="#7A95AE" stroke-width="1" stroke-opacity=".4"/>
+  <text x="962" y="35" text-anchor="middle" font-family="'Bebas Neue'" font-size="14" fill="#7A95AE" letter-spacing="1">ISO/MARKET</text>
+  <text x="962" y="52" text-anchor="middle" font-size="10" fill="#7A95AE">Secondary marketplace</text>
+  <text x="962" y="65" text-anchor="middle" font-size="9" fill="#7A95AE">PLANNED</text>
+
+  <!-- BOTTOM ROW — parked/future -->
+  <rect x="10" y="300" width="145" height="65" rx="7" fill="#112840" stroke="#FF3B5C" stroke-width="1" stroke-opacity=".4"/>
+  <text x="82" y="323" text-anchor="middle" font-family="'Bebas Neue'" font-size="13" fill="#FF3B5C" letter-spacing="1">ISO/FOMO ENGINE</text>
+  <text x="82" y="340" text-anchor="middle" font-size="9" fill="#7A95AE">The revenue engine</text>
+  <text x="82" y="355" text-anchor="middle" font-size="9" fill="#FF3B5C">DO NOT BUILD YET</text>
+  <line x1="82" y1="300" x2="430" y2="240" stroke="#FF3B5C" stroke-width="1" stroke-opacity=".25"/>
+
+  <rect x="175" y="300" width="145" height="65" rx="7" fill="#112840" stroke="#7A95AE" stroke-width="1" stroke-opacity=".4"/>
+  <text x="247" y="323" text-anchor="middle" font-family="'Bebas Neue'" font-size="13" fill="#7A95AE" letter-spacing="1">ISO/GRADING</text>
+  <text x="247" y="340" text-anchor="middle" font-size="9" fill="#7A95AE">1,000pt AI system</text>
+  <text x="247" y="355" text-anchor="middle" font-size="9" fill="#7A95AE">Spec locked</text>
+
+  <rect x="340" y="300" width="145" height="65" rx="7" fill="#112840" stroke="#7A95AE" stroke-width="1" stroke-opacity=".4"/>
+  <text x="412" y="323" text-anchor="middle" font-family="'Bebas Neue'" font-size="13" fill="#7A95AE" letter-spacing="1">ISO/BIOMETRICS</text>
+  <text x="412" y="340" text-anchor="middle" font-size="9" fill="#7A95AE">4-layer fingerprint</text>
+  <text x="412" y="355" text-anchor="middle" font-size="9" fill="#7A95AE">Hardware pending</text>
+
+  <rect x="505" y="300" width="145" height="65" rx="7" fill="#112840" stroke="#7A95AE" stroke-width="1" stroke-opacity=".4"/>
+  <text x="577" y="323" text-anchor="middle" font-family="'Bebas Neue'" font-size="13" fill="#7A95AE" letter-spacing="1">ISO/TRACK</text>
+  <text x="577" y="340" text-anchor="middle" font-size="9" fill="#7A95AE">Provenance + custody</text>
+  <text x="577" y="355" text-anchor="middle" font-size="9" fill="#7A95AE">Planned</text>
+
+  <rect x="670" y="300" width="145" height="65" rx="7" fill="#112840" stroke="#7A95AE" stroke-width="1" stroke-opacity=".4"/>
+  <text x="742" y="323" text-anchor="middle" font-family="'Bebas Neue'" font-size="13" fill="#7A95AE" letter-spacing="1">ISO/DEMAND</text>
+  <text x="742" y="340" text-anchor="middle" font-size="9" fill="#7A95AE">Demand layer licensing</text>
+  <text x="742" y="355" text-anchor="middle" font-size="9" fill="#7A95AE">B2B data moat</text>
+
+  <rect x="835" y="300" width="145" height="65" rx="7" fill="#112840" stroke="#FFB800" stroke-width="1" stroke-opacity=".4"/>
+  <text x="907" y="323" text-anchor="middle" font-family="'Bebas Neue'" font-size="13" fill="#FFB800" letter-spacing="1">ISO/BAY</text>
+  <text x="907" y="340" text-anchor="middle" font-size="9" fill="#7A95AE">eBay CRM pipeline</text>
+  <text x="907" y="355" text-anchor="middle" font-size="9" fill="#FFB800">Post-funding</text>
+
+  <!-- legend -->
+  <rect x="10" y="255" width="10" height="10" fill="#00E887" rx="2" opacity=".7"/>
+  <text x="25" y="265" font-size="10" fill="#7A95AE">Live / Partial</text>
+  <rect x="105" y="255" width="10" height="10" fill="#7A95AE" rx="2" opacity=".4"/>
+  <text x="120" y="265" font-size="10" fill="#7A95AE">Planned / Spec locked</text>
+  <rect x="275" y="255" width="10" height="10" fill="#FF3B5C" rx="2" opacity=".4"/>
+  <text x="290" y="265" font-size="10" fill="#7A95AE">Post-stability priority</text>
+  <rect x="440" y="255" width="10" height="10" fill="#FFB800" rx="2" opacity=".4"/>
+  <text x="455" y="265" font-size="10" fill="#7A95AE">Parked / Post-funding</text>
+</svg>
+</div>
+
+<div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:#7A95AE;margin-top:20px;letter-spacing:.5px">
+  GrailISO LLC · GrailISO_Visual_v1.9.0.html · Session 25 · March 19, 2026 · ISOdashboard_03_19_26_0822
+</div>
+</body>
+</html>

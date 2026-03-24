@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ISO/ARTS — GrailISO</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&family=Barlow:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0D1F33;
+  --grail: #FFFFFF;
+  --iso: #00AAFF;
+  --green: #00E887;
+  --gold: #FFB800;
+  --red: #FF3B5C;
+  --surface: #112236;
+  --surface2: #162840;
+  --border: rgba(0,170,255,0.15);
+  --border2: rgba(255,255,255,0.08);
+  --text-dim: rgba(255,255,255,0.45);
+  --text-mid: rgba(255,255,255,0.7);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--grail);
+  font-family: 'Barlow Condensed', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky; top:0; z-index:100;
+  background: rgba(13,31,51,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 2px;
+}
+.nav-logo span { color: var(--iso); }
+.nav-right { display:flex; align-items:center; gap:24px; }
+.nav-link {
+  font-size: 13px; font-weight:600; letter-spacing:1.5px;
+  color: var(--text-mid); text-decoration:none; text-transform:uppercase;
+  transition: color 0.2s;
+}
+.nav-link:hover, .nav-link.active { color: var(--iso); }
+.nav-cta {
+  background: var(--iso); color: #000;
+  font-size:12px; font-weight:700; letter-spacing:1.5px;
+  padding: 8px 18px; border-radius:4px;
+  text-decoration:none; text-transform:uppercase;
+  transition: opacity 0.2s;
+}
+.nav-cta:hover { opacity:0.85; }
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  padding: 80px 32px 64px;
+  text-align: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 50%, rgba(0,170,255,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 80% 30%, rgba(0,232,135,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 50% at 50% 100%, rgba(255,184,0,0.05) 0%, transparent 60%);
+}
+.hero-eyebrow {
+  display: inline-flex; align-items:center; gap:8px;
+  font-size:11px; font-weight:700; letter-spacing:3px;
+  color: var(--iso); text-transform:uppercase;
+  margin-bottom: 20px;
+}
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content:''; width:32px; height:1px; background:var(--iso); opacity:0.4;
+}
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(64px, 10vw, 120px);
+  line-height: 0.9;
+  letter-spacing: 4px;
+  margin-bottom: 8px;
+}
+.hero-title .iso { color: var(--iso); }
+.hero-title .slash { color: var(--iso); }
+.hero-subtitle {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(18px, 3vw, 28px);
+  letter-spacing: 6px;
+  color: var(--text-dim);
+  margin-bottom: 32px;
+}
+.hero-desc {
+  font-family: 'Barlow', sans-serif;
+  font-size: 17px; font-weight:300;
+  color: var(--text-mid);
+  max-width: 560px; margin: 0 auto 40px;
+  line-height: 1.7;
+}
+.hero-desc strong { color: var(--grail); font-weight:500; }
+.hero-actions { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+.btn-primary {
+  background: var(--iso); color:#000;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size:14px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+  padding:14px 32px; border-radius:4px; border:none; cursor:pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.btn-primary:hover { opacity:0.85; transform:translateY(-1px); }
+.btn-outline {
+  background: transparent; color:var(--grail);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size:14px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+  padding:14px 32px; border-radius:4px; border:1px solid var(--border2); cursor:pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-outline:hover { border-color:var(--iso); color:var(--iso); }
+
+/* ── SCHOLAR BANNER ── */
+.scholar-banner {
+  margin: 0 32px 48px;
+  padding: 20px 28px;
+  background: linear-gradient(135deg, rgba(255,184,0,0.08) 0%, rgba(255,184,0,0.03) 100%);
+  border: 1px solid rgba(255,184,0,0.25);
+  border-radius: 8px;
+  display: flex; align-items:center; gap:20px;
+  flex-wrap:wrap;
+}
+.scholar-icon {
+  font-size:32px; flex-shrink:0;
+}
+.scholar-text { flex:1; min-width:200px; }
+.scholar-text strong {
+  font-size:15px; font-weight:700; letter-spacing:1px; text-transform:uppercase;
+  color: var(--gold); display:block; margin-bottom:4px;
+}
+.scholar-text p {
+  font-size:14px; color:var(--text-mid); line-height:1.5;
+}
+.scholar-badge {
+  background: rgba(255,184,0,0.12);
+  border: 1px solid rgba(255,184,0,0.3);
+  padding: 8px 16px; border-radius:4px;
+  font-size:12px; font-weight:700; letter-spacing:1.5px;
+  color: var(--gold); text-transform:uppercase; white-space:nowrap;
+}
+
+/* ── SECTION HEADERS ── */
+.section-header {
+  padding: 0 32px;
+  margin-bottom: 28px;
+  display:flex; align-items:baseline; justify-content:space-between; gap:16px;
+}
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px; letter-spacing:3px;
+}
+.section-title span { color:var(--iso); }
+.section-link {
+  font-size:12px; font-weight:600; letter-spacing:1.5px;
+  color:var(--iso); text-decoration:none; text-transform:uppercase;
+}
+.section-link:hover { opacity:0.7; }
+
+/* ── FEATURED ARTIST ── */
+.featured-wrap {
+  margin: 0 32px 56px;
+}
+.featured-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+}
+.featured-image-col {
+  position:relative;
+  background: linear-gradient(160deg, #1a3a5c 0%, #0a1e35 100%);
+  min-height: 420px;
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+}
+.featured-art-placeholder {
+  width:260px; height:340px;
+  background: linear-gradient(160deg, #1e4060 0%, #0d2840 100%);
+  border: 1px solid rgba(0,170,255,0.2);
+  border-radius:4px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:12px;
+  position:relative;
+  overflow:hidden;
+}
+.featured-art-placeholder::before {
+  content:'';
+  position:absolute; inset:0;
+  background: radial-gradient(ellipse at 30% 30%, rgba(0,170,255,0.12), transparent 60%);
+}
+.art-icon { font-size:64px; opacity:0.3; }
+.art-label {
+  font-size:11px; font-weight:600; letter-spacing:2px;
+  color:var(--text-dim); text-transform:uppercase;
+}
+.featured-badge {
+  position:absolute; top:16px; left:16px;
+  background: var(--gold); color:#000;
+  font-size:10px; font-weight:800; letter-spacing:2px;
+  padding:5px 12px; border-radius:3px; text-transform:uppercase;
+}
+.featured-info-col {
+  padding: 36px 40px;
+  display:flex; flex-direction:column;
+}
+.featured-week {
+  font-size:11px; font-weight:700; letter-spacing:3px;
+  color:var(--gold); text-transform:uppercase; margin-bottom:12px;
+}
+.featured-name {
+  font-family:'Bebas Neue', sans-serif;
+  font-size:52px; letter-spacing:3px; line-height:1;
+  margin-bottom:6px;
+}
+.featured-handle {
+  font-size:14px; color:var(--iso); margin-bottom:20px;
+}
+.featured-tags {
+  display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px;
+}
+.tag {
+  background: rgba(0,170,255,0.1);
+  border:1px solid rgba(0,170,255,0.2);
+  padding:4px 12px; border-radius:20px;
+  font-size:12px; font-weight:600; letter-spacing:1px;
+  color:var(--iso); text-transform:uppercase;
+}
+.tag.sport { background:rgba(0,232,135,0.08); border-color:rgba(0,232,135,0.2); color:var(--green); }
+.featured-bio {
+  font-family:'Barlow', sans-serif;
+  font-size:15px; color:var(--text-mid); line-height:1.7;
+  margin-bottom:24px; flex:1;
+}
+.featured-stats {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:1px; background:var(--border2);
+  border:1px solid var(--border2); border-radius:6px;
+  overflow:hidden; margin-bottom:24px;
+}
+.stat-item {
+  background:var(--surface2);
+  padding:14px 16px; text-align:center;
+}
+.stat-num {
+  font-family:'Bebas Neue', sans-serif;
+  font-size:28px; letter-spacing:1px; color:var(--grail);
+  display:block;
+}
+.stat-label {
+  font-size:10px; font-weight:600; letter-spacing:1.5px;
+  color:var(--text-dim); text-transform:uppercase;
+}
+.featured-ctas { display:flex; gap:12px; }
+.btn-sm {
+  font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
+  padding:10px 20px; border-radius:4px; border:none; cursor:pointer;
+  transition: opacity 0.2s;
+}
+.btn-sm.primary { background:var(--iso); color:#000; }
+.btn-sm.outline { background:transparent; color:var(--grail); border:1px solid var(--border2); }
+.btn-sm:hover { opacity:0.8; }
+
+/* ── MONTHLY CONTEST ── */
+.contest-wrap {
+  margin: 0 32px 56px;
+  background: linear-gradient(135deg, rgba(255,59,92,0.06) 0%, rgba(0,170,255,0.04) 100%);
+  border:1px solid rgba(255,59,92,0.2);
+  border-radius:10px;
+  overflow:hidden;
+}
+.contest-header {
+  background: linear-gradient(135deg, rgba(255,59,92,0.15), rgba(255,59,92,0.05));
+  border-bottom:1px solid rgba(255,59,92,0.2);
+  padding:20px 28px;
+  display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+}
+.contest-title-group { display:flex; align-items:center; gap:16px; }
+.contest-emoji { font-size:28px; }
+.contest-name {
+  font-family:'Bebas Neue', sans-serif;
+  font-size:26px; letter-spacing:3px;
+}
+.contest-name span { color:var(--red); }
+.contest-month {
+  font-size:11px; font-weight:600; letter-spacing:2px;
+  color:var(--text-dim); text-transform:uppercase;
+}
+.contest-timer {
+  display:flex; gap:12px;
+}
+.timer-block {
+  text-align:center; background:rgba(255,59,92,0.12);
+  border:1px solid rgba(255,59,92,0.25);
+  padding:10px 16px; border-radius:6px;
+}
+.timer-num {
+  font-family:'Bebas Neue', sans-serif;
+  font-size:28px; color:var(--red); display:block;
+}
+.timer-label {
+  font-size:9px; font-weight:700; letter-spacing:1.5px;
+  color:var(--text-dim); text-transform:uppercase;
+}
+.contest-entries {
+  padding:24px 28px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));
+  gap:16px;
+}
+.contest-entry {
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:8px; overflow:hidden; cursor:pointer;
+  transition:border-color 0.2s, transform 0.15s;
+  position:relative;
+}
+.contest-entry:hover { border-color:var(--iso); transform:translateY(-2px); }
+.contest-entry.leader { border-color:var(--gold); }
+.entry-art {
+  height:160px;
+  background: linear-gradient(160deg, #1a3050 0%, #0d2040 100%);
+  display:flex; align-items:center; justify-content:center;
+  font-size:48px; color:rgba(255,255,255,0.08);
+  position:relative;
+}
+.entry-art-text { font-size:36px; opacity:0.25; }
+.leader-crown {
+  position:absolute; top:8px; right:8px;
+  font-size:18px;
+}
+.entry-info {
+  padding:12px 14px;
+}
+.entry-artist {
+  font-size:13px; font-weight:700; margin-bottom:2px;
+}
+.entry-card-name {
+  font-size:11px; color:var(--text-dim); margin-bottom:10px;
+}
+.vote-row {
+  display:flex; align-items:center; justify-content:space-between;
+}
+.vote-count {
+  font-family:'Bebas Neue', sans-serif;
+  font-size:20px; color:var(--iso);
+}
+.vote-label {
+  font-size:9px; font-weight:600; letter-spacing:1px;
+  color:var(--text-dim); text-transform:uppercase; display:block;
+}
+.vote-btn {
+  background:var(--iso); color:#000;
+  font-size:10px; font-weight:800; letter-spacing:1px;
+  padding:5px 12px; border-radius:3px; border:none; cursor:pointer;
+  text-transform:uppercase;
+  transition:opacity 0.2s;
+}
+.vote-btn:hover { opacity:0.8; }
+.vote-btn.voted { background:var(--green); color:#000; }
+.vote-btn.voted::before { content:'✓ '; }
+.contest-footer {
+  padding:16px 28px;
+  border-top:1px solid var(--border2);
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
+}
+.vote-rule {
+  font-size:12px; color:var(--text-dim);
+}
+.vote-rule strong { color:var(--grail); }
+
+/* ── ARTIST GRID ── */
+.artists-wrap {
+  margin: 0 32px 56px;
+}
+.artist-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+  gap:20px;
+}
+.artist-card {
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:10px; overflow:hidden;
+  cursor:pointer;
+  transition:border-color 0.2s, transform 0.15s;
+}
+.artist-card:hover { border-color:var(--iso); transform:translateY(-2px); }
+.artist-portfolio-strip {
+  height:120px;
+  background:linear-gradient(160deg, #1a3050 0%, #0d2040 100%);
+  display:grid; grid-template-columns:1fr 1fr 1fr;
+  gap:2px; overflow:hidden;
+}
+.portfolio-thumb {
+  background:linear-gradient(160deg,#1e3f60,#0d2540);
+  display:flex; align-items:center; justify-content:center;
+  font-size:24px; opacity:0.4;
+}
+.portfolio-thumb:first-child { font-size:32px; opacity:0.5; }
+.artist-body {
+  padding:16px 18px;
+}
+.artist-header {
+  display:flex; align-items:center; gap:10px; margin-bottom:10px;
+}
+.artist-avatar {
+  width:40px; height:40px; border-radius:50%;
+  background:linear-gradient(135deg,#1e4060,#00AAFF22);
+  border:2px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; flex-shrink:0;
+}
+.artist-meta { flex:1; }
+.artist-name {
+  font-size:16px; font-weight:700; margin-bottom:1px;
+}
+.artist-handle { font-size:12px; color:var(--text-dim); }
+.artist-commission {
+  font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase;
+  padding:3px 8px; border-radius:3px;
+}
+.commission-open { background:rgba(0,232,135,0.15); color:var(--green); border:1px solid rgba(0,232,135,0.25); }
+.commission-closed { background:rgba(255,59,92,0.1); color:var(--red); border:1px solid rgba(255,59,92,0.2); }
+.commission-waitlist { background:rgba(255,184,0,0.1); color:var(--gold); border:1px solid rgba(255,184,0,0.2); }
+.artist-sports {
+  display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;
+}
+.sport-chip {
+  font-size:10px; font-weight:600; letter-spacing:1px;
+  background:rgba(0,170,255,0.08); border:1px solid rgba(0,170,255,0.15);
+  color:var(--iso); padding:2px 8px; border-radius:20px; text-transform:uppercase;
+}
+.artist-footer {
+  display:flex; align-items:center; justify-content:space-between;
+  padding-top:12px; border-top:1px solid var(--border2);
+}
+.artist-stat {
+  text-align:center;
+}
+.artist-stat-num {
+  font-family:'Bebas Neue', sans-serif;
+  font-size:20px; color:var(--grail); display:block;
+}
+.artist-stat-label {
+  font-size:9px; font-weight:600; letter-spacing:1px;
+  color:var(--text-dim); text-transform:uppercase;
+}
+.verified-badge {
+  font-size:10px; font-weight:700; letter-spacing:1px;
+  background:rgba(0,232,135,0.1); border:1px solid rgba(0,232,135,0.2);
+  color:var(--green); padding:4px 10px; border-radius:3px; text-transform:uppercase;
+}
+
+/* ── GRADE SYSTEM ── */
+.grade-wrap {
+  margin:0 32px 56px;
+  display:grid; grid-template-columns:1fr 1fr; gap:24px;
+}
+.grade-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px; padding:28px;
+}
+.grade-card-title {
+  font-family:'Bebas Neue', sans-serif;
+  font-size:22px; letter-spacing:2px; margin-bottom:6px;
+}
+.grade-card-title span { color:var(--iso); }
+.grade-desc { font-size:13px; color:var(--text-dim); margin-bottom:20px; line-height:1.5; }
+.grade-bars { display:flex; flex-direction:column; gap:14px; }
+.grade-bar-row { }
+.grade-bar-label {
+  display:flex; justify-content:space-between; margin-bottom:6px;
+}
+.grade-bar-name { font-size:13px; font-weight:600; }
+.grade-bar-pct { font-size:13px; color:var(--text-dim); }
+.grade-bar-track {
+  height:6px; background:rgba(255,255,255,0.07); border-radius:3px; overflow:hidden;
+}
+.grade-bar-fill {
+  height:100%; border-radius:3px;
+  background:linear-gradient(90deg,var(--iso),var(--green));
+  transition:width 1s ease;
+}
+.grade-example {
+  margin-top:20px; padding:16px;
+  background:var(--surface2);
+  border:1px solid var(--border2); border-radius:6px;
+}
+.grade-example-label {
+  font-size:10px; font-weight:600; letter-spacing:2px;
+  color:var(--text-dim); text-transform:uppercase; margin-bottom:10px;
+}
+.grade-score-display {
+  display:flex; align-items:baseline; gap:8px;
+}
+.grade-score-num {
+  font-family:'Bebas Neue', sans-serif;
+  font-size:48px; color:var(--green); letter-spacing:2px;
+}
+.grade-score-max {
+  font-size:16px; color:var(--text-dim);
+}
+.grade-score-label {
+  font-size:11px; font-weight:600; letter-spacing:1px;
+  color:var(--text-dim); text-transform:uppercase;
+}
+.auth-flow { display:flex; flex-direction:column; gap:12px; }
+.auth-step {
+  display:flex; align-items:flex-start; gap:14px;
+  padding:14px 16px; background:var(--surface2);
+  border:1px solid var(--border2); border-radius:6px;
+}
+.auth-step-num {
+  width:24px; height:24px; border-radius:50%;
+  background:var(--iso); color:#000;
+  font-size:11px; font-weight:800;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; margin-top:1px;
+}
+.auth-step-text { }
+.auth-step-title { font-size:14px; font-weight:700; margin-bottom:2px; }
+.auth-step-desc { font-size:12px; color:var(--text-dim); line-height:1.5; }
+.auth-badge {
+  margin-top:12px; padding:10px 14px;
+  background:rgba(0,232,135,0.08); border:1px solid rgba(0,232,135,0.2);
+  border-radius:6px; display:flex; align-items:center; gap:10px;
+}
+.auth-badge-icon { font-size:18px; }
+.auth-badge-text { font-size:12px; color:var(--green); font-weight:600; }
+
+/* ── SEARCH ── */
+.search-wrap {
+  margin:0 32px 56px;
+}
+.search-bar {
+  display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;
+}
+.search-input {
+  flex:1; min-width:200px;
+  background:var(--surface); border:1px solid var(--border);
+  color:var(--grail); font-family:'Barlow Condensed', sans-serif;
+  font-size:15px; padding:12px 18px; border-radius:6px;
+  outline:none;
+}
+.search-input::placeholder { color:var(--text-dim); }
+.search-input:focus { border-color:var(--iso); }
+.search-filter {
+  background:var(--surface); border:1px solid var(--border);
+  color:var(--grail); font-family:'Barlow Condensed', sans-serif;
+  font-size:14px; padding:12px 16px; border-radius:6px;
+  outline:none; cursor:pointer;
+}
+.search-filter option { background:var(--surface); }
+.filter-chips {
+  display:flex; gap:10px; flex-wrap:wrap;
+}
+.filter-chip {
+  padding:6px 16px; border-radius:20px;
+  font-size:12px; font-weight:600; letter-spacing:1px;
+  cursor:pointer; transition:all 0.15s; text-transform:uppercase;
+  border:1px solid var(--border2); background:transparent; color:var(--text-mid);
+}
+.filter-chip.active, .filter-chip:hover {
+  background:var(--iso); border-color:var(--iso); color:#000;
+}
+
+/* ── REVENUE MODEL ── */
+.model-wrap {
+  margin:0 32px 56px;
+  display:grid; grid-template-columns:repeat(3,1fr); gap:20px;
+}
+.model-card {
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:10px; padding:28px;
+  text-align:center;
+}
+.model-icon { font-size:36px; margin-bottom:16px; }
+.model-title {
+  font-family:'Bebas Neue', sans-serif;
+  font-size:20px; letter-spacing:2px; margin-bottom:8px;
+}
+.model-amount {
+  font-family:'Bebas Neue', sans-serif;
+  font-size:48px; letter-spacing:2px; margin-bottom:6px;
+}
+.model-amount.green { color:var(--green); }
+.model-amount.iso { color:var(--iso); }
+.model-amount.gold { color:var(--gold); }
+.model-desc { font-size:13px; color:var(--text-dim); line-height:1.5; }
+.model-card.highlighted {
+  border-color:rgba(255,184,0,0.3);
+  background:linear-gradient(160deg, rgba(255,184,0,0.06), var(--surface));
+}
+
+/* ── STUDENT SECTION ── */
+.student-wrap {
+  margin:0 32px 56px;
+  background:linear-gradient(135deg, rgba(0,232,135,0.05), rgba(0,170,255,0.04));
+  border:1px solid rgba(0,232,135,0.15);
+  border-radius:10px; padding:36px;
+  display:grid; grid-template-columns:1fr auto; gap:32px; align-items:center;
+}
+.student-title {
+  font-family:'Bebas Neue', sans-serif;
+  font-size:36px; letter-spacing:3px; margin-bottom:10px;
+}
+.student-title span { color:var(--green); }
+.student-desc {
+  font-family:'Barlow', sans-serif;
+  font-size:15px; color:var(--text-mid); line-height:1.7; margin-bottom:20px;
+  max-width:500px;
+}
+.student-perks { display:flex; flex-direction:column; gap:8px; }
+.student-perk {
+  display:flex; align-items:center; gap:10px;
+  font-size:14px; color:var(--text-mid);
+}
+.student-perk::before {
+  content:'→';
+  color:var(--green); font-weight:700; flex-shrink:0;
+}
+.student-cta-col { text-align:center; }
+.first-sale-badge {
+  display:inline-flex; flex-direction:column; align-items:center; gap:6px;
+  background:linear-gradient(135deg,rgba(0,232,135,0.12),rgba(0,232,135,0.04));
+  border:1px solid rgba(0,232,135,0.25);
+  border-radius:10px; padding:24px 32px; margin-bottom:16px;
+}
+.first-sale-icon { font-size:40px; }
+.first-sale-label {
+  font-family:'Bebas Neue', sans-serif;
+  font-size:16px; letter-spacing:2px; color:var(--green);
+}
+
+/* ── FOOTER ── */
+footer {
+  border-top:1px solid var(--border2);
+  padding:40px 32px;
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:20px;
+}
+.footer-logo {
+  font-family:'Bebas Neue', sans-serif;
+  font-size:18px; letter-spacing:2px;
+}
+.footer-logo span { color:var(--iso); }
+.footer-legal { font-size:12px; color:var(--text-dim); line-height:1.6; max-width:500px; }
+.footer-links { display:flex; gap:20px; }
+.footer-link { font-size:12px; color:var(--text-dim); text-decoration:none; }
+.footer-link:hover { color:var(--iso); }
+
+/* ── UTILITIES ── */
+.divider { border:none; border-top:1px solid var(--border2); margin:0 32px 48px; }
+.section-gap { height:56px; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(20px); }
+  to { opacity:1; transform:translateY(0); }
+}
+.hero > * { animation: fadeUp 0.6s ease both; }
+.hero-eyebrow { animation-delay:0.1s; }
+.hero-title { animation-delay:0.2s; }
+.hero-subtitle { animation-delay:0.25s; }
+.hero-desc { animation-delay:0.3s; }
+.hero-actions { animation-delay:0.4s; }
+
+/* ── TIMER JS ── */
+
+/* ── MOBILE ── */
+@media(max-width:768px) {
+  nav { padding:0 16px; }
+  .hero { padding:48px 16px 40px; }
+  .scholar-banner, .featured-wrap, .artists-wrap, .grade-wrap,
+  .contest-wrap, .search-wrap, .model-wrap, .student-wrap, .section-header { margin-left:16px; margin-right:16px; }
+  .featured-card { grid-template-columns:1fr; }
+  .featured-image-col { min-height:240px; }
+  .grade-wrap { grid-template-columns:1fr; }
+  .model-wrap { grid-template-columns:1fr; }
+  .student-wrap { grid-template-columns:1fr; }
+  .student-cta-col { display:none; }
+  .contest-timer { display:none; }
+  .divider { margin-left:16px; margin-right:16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">GRAIL<span>/ISO</span></div>
+  <div class="nav-right">
+    <a href="#" class="nav-link">ISOVault</a>
+    <a href="#" class="nav-link active">ISO/ARTS</a>
+    <a href="#" class="nav-link">My Vault</a>
+    <a href="#" class="nav-cta">Sign In</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-eyebrow">GrailISO Presents</div>
+  <h1 class="hero-title">
+    <span class="iso">ISO</span><span class="slash">/</span>ARTS
+  </h1>
+  <p class="hero-subtitle">Where Card Art Finds Its Grail</p>
+  <p class="hero-desc">
+    The card art community finally has a home. <strong>Artists never pay a fee — ever.</strong>
+    Every sale funds a scholarship for the next generation of card artists.
+    Original work. Verified authentic. No chaos.
+  </p>
+  <div class="hero-actions">
+    <button class="btn-primary" onclick="document.querySelector('.artists-wrap').scrollIntoView({behavior:'smooth'})">Browse Artists</button>
+    <button class="btn-outline" onclick="showApplyModal()">Apply as Artist</button>
+  </div>
+</div>
+
+<!-- SCHOLARSHIP BANNER -->
+<div class="scholar-banner">
+  <div class="scholar-icon">🎓</div>
+  <div class="scholar-text">
+    <strong>ISO/ARTS Scholarship Fund</strong>
+    <p>100% of buyer fees go directly to art education. Every purchase you make funds a scholarship for an emerging card artist. Administered through our nonprofit partner — GrailISO never touches the fund.</p>
+  </div>
+  <div class="scholar-badge">10% Buyer Premium → 100% Scholarship</div>
+</div>
+
+<!-- FEATURED ARTIST -->
+<div class="section-header">
+  <div class="section-title">FEATURED <span>ARTIST</span> OF THE WEEK</div>
+  <a href="#" class="section-link">Past Features →</a>
+</div>
+<div class="featured-wrap">
+  <div class="featured-card">
+    <div class="featured-image-col">
+      <div class="featured-badge">★ Artist of the Week</div>
+      <div class="featured-art-placeholder">
+        <div class="art-icon">🎨</div>
+        <div class="art-label">Featured Piece</div>
+      </div>
+    </div>
+    <div class="featured-info-col">
+      <div class="featured-week">March 17 – 23, 2026</div>
+      <div class="featured-name">Marcus Chen</div>
+      <div class="featured-handle">@mchen_cardart</div>
+      <div class="featured-tags">
+        <span class="tag sport">Baseball</span>
+        <span class="tag sport">Basketball</span>
+        <span class="tag">Watercolor</span>
+        <span class="tag">Caricature</span>
+        <span class="tag">Mixed Media</span>
+      </div>
+      <p class="featured-bio">
+        Marcus started painting custom cards in 2019 after watching his daughter lose interest in collecting because "the cards all look the same." Now one of the most recognized names in the custom card art community, his watercolor caricature style has been commissioned by collectors in 22 countries. He donates 5% of all sales to youth art programs independently.
+      </p>
+      <div class="featured-stats">
+        <div class="stat-item">
+          <span class="stat-num">312</span>
+          <span class="stat-label">Pieces Sold</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">$847</span>
+          <span class="stat-label">Avg Sale</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">2.1K</span>
+          <span class="stat-label">Followers</span>
+        </div>
+      </div>
+      <div class="featured-ctas">
+        <button class="btn-sm primary">View Portfolio</button>
+        <button class="btn-sm outline">Request Commission</button>
+        <button class="btn-sm outline">Follow Artist</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MONTHLY CONTEST -->
+<div class="section-header">
+  <div class="section-title">ISO/ARTS <span>SHOWDOWN</span> — MARCH 2026</div>
+  <a href="#" class="section-link">Contest Rules →</a>
+</div>
+<div class="contest-wrap">
+  <div class="contest-header">
+    <div class="contest-title-group">
+      <div class="contest-emoji">🏆</div>
+      <div>
+        <div class="contest-name">MONTHLY <span>SHOWDOWN</span></div>
+        <div class="contest-month">1 Vote Per Account Per Day · Voting Ends March 31</div>
+      </div>
+    </div>
+    <div class="contest-timer" id="contestTimer">
+      <div class="timer-block">
+        <span class="timer-num" id="tDays">11</span>
+        <span class="timer-label">Days</span>
+      </div>
+      <div class="timer-block">
+        <span class="timer-num" id="tHours">14</span>
+        <span class="timer-label">Hrs</span>
+      </div>
+      <div class="timer-block">
+        <span class="timer-num" id="tMins">32</span>
+        <span class="timer-label">Min</span>
+      </div>
+    </div>
+  </div>
+  <div class="contest-entries">
+    <!-- Entry 1 - Leader -->
+    <div class="contest-entry leader">
+      <div class="entry-art">
+        <span class="entry-art-text">🎨</span>
+        <div class="leader-crown">👑</div>
+      </div>
+      <div class="entry-info">
+        <div class="entry-artist">Marcus Chen</div>
+        <div class="entry-card-name">Shohei Ohtani — Watercolor Series</div>
+        <div class="vote-row">
+          <div>
+            <span class="vote-count">1,847</span>
+            <span class="vote-label">Votes</span>
+          </div>
+          <button class="vote-btn voted" onclick="castVote(this)">Voted</button>
+        </div>
+      </div>
+    </div>
+    <!-- Entry 2 -->
+    <div class="contest-entry">
+      <div class="entry-art"><span class="entry-art-text">✏️</span></div>
+      <div class="entry-info">
+        <div class="entry-artist">Jade Williams</div>
+        <div class="entry-card-name">LeBron James — Pencil Portrait</div>
+        <div class="vote-row">
+          <div>
+            <span class="vote-count">1,412</span>
+            <span class="vote-label">Votes</span>
+          </div>
+          <button class="vote-btn" onclick="castVote(this)">Vote</button>
+        </div>
+      </div>
+    </div>
+    <!-- Entry 3 -->
+    <div class="contest-entry">
+      <div class="entry-art"><span class="entry-art-text">🖌️</span></div>
+      <div class="entry-info">
+        <div class="entry-artist">Raj Patel</div>
+        <div class="entry-card-name">Charizard — Acrylic Holographic</div>
+        <div class="vote-row">
+          <div>
+            <span class="vote-count">1,203</span>
+            <span class="vote-label">Votes</span>
+          </div>
+          <button class="vote-btn" onclick="castVote(this)">Vote</button>
+        </div>
+      </div>
+    </div>
+    <!-- Entry 4 -->
+    <div class="contest-entry">
+      <div class="entry-art"><span class="entry-art-text">🎭</span></div>
+      <div class="entry-info">
+        <div class="entry-artist">Sofia Torres</div>
+        <div class="entry-card-name">Derek Jeter — Ink Caricature</div>
+        <div class="vote-row">
+          <div>
+            <span class="vote-count">987</span>
+            <span class="vote-label">Votes</span>
+          </div>
+          <button class="vote-btn" onclick="castVote(this)">Vote</button>
+        </div>
+      </div>
+    </div>
+    <!-- Entry 5 -->
+    <div class="contest-entry">
+      <div class="entry-art"><span class="entry-art-text">💻</span></div>
+      <div class="entry-info">
+        <div class="entry-artist">Tyler Brooks</div>
+        <div class="entry-card-name">Patrick Mahomes — Digital Art</div>
+        <div class="vote-row">
+          <div>
+            <span class="vote-count">744</span>
+            <span class="vote-label">Votes</span>
+          </div>
+          <button class="vote-btn" onclick="castVote(this)">Vote</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="contest-footer">
+    <div class="vote-rule">
+      <strong>1 free vote per account per day.</strong> Winner's scholarship fund donation directed to their nominated school or nonprofit of their choice.
+    </div>
+    <button class="btn-sm primary" onclick="showSubmitModal()">Submit My Entry</button>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div class="section-header">
+  <div class="section-title">FIND AN <span>ARTIST</span></div>
+</div>
+<div class="search-wrap">
+  <div class="search-bar">
+    <input class="search-input" type="text" placeholder="Search by artist name or player...">
+    <select class="search-filter">
+      <option value="">All Sports</option>
+      <option>Baseball</option>
+      <option>Basketball</option>
+      <option>Football</option>
+      <option>Hockey</option>
+      <option>Soccer</option>
+      <option>Pokémon</option>
+    </select>
+    <select class="search-filter">
+      <option value="">All Mediums</option>
+      <option>Painted</option>
+      <option>Digital</option>
+      <option>Pencil / Sketch</option>
+      <option>Caricature</option>
+      <option>Mixed Media</option>
+    </select>
+    <select class="search-filter">
+      <option value="">All Status</option>
+      <option>Open for Commissions</option>
+      <option>Waitlist</option>
+    </select>
+  </div>
+  <div class="filter-chips">
+    <button class="filter-chip active">All</button>
+    <button class="filter-chip">Baseball</button>
+    <button class="filter-chip">Basketball</button>
+    <button class="filter-chip">Football</button>
+    <button class="filter-chip">Hockey</button>
+    <button class="filter-chip">Pokémon</button>
+    <button class="filter-chip">Open Commissions</button>
+    <button class="filter-chip">Under $100</button>
+  </div>
+</div>
+
+<!-- ARTIST GRID -->
+<div class="artists-wrap">
+  <div class="artist-grid" id="artistGrid">
+
+    <!-- Artist 1 -->
+    <div class="artist-card">
+      <div class="artist-portfolio-strip">
+        <div class="portfolio-thumb">🎨</div>
+        <div class="portfolio-thumb">🖌️</div>
+        <div class="portfolio-thumb">✏️</div>
+      </div>
+      <div class="artist-body">
+        <div class="artist-header">
+          <div class="artist-avatar">🎨</div>
+          <div class="artist-meta">
+            <div class="artist-name">Marcus Chen</div>
+            <div class="artist-handle">@mchen_cardart</div>
+          </div>
+          <div class="artist-commission commission-open">Open</div>
+        </div>
+        <div class="artist-sports">
+          <span class="sport-chip">Baseball</span>
+          <span class="sport-chip">Basketball</span>
+        </div>
+        <div class="artist-footer">
+          <div class="artist-stat"><span class="artist-stat-num">312</span><span class="artist-stat-label">Sold</span></div>
+          <div class="artist-stat"><span class="artist-stat-num">$847</span><span class="artist-stat-label">Avg</span></div>
+          <div class="artist-stat"><span class="artist-stat-num">2.1K</span><span class="artist-stat-label">Followers</span></div>
+          <div class="verified-badge">✓ Auth</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Artist 2 -->
+    <div class="artist-card">
+      <div class="artist-portfolio-strip">
+        <div class="portfolio-thumb">✏️</div>
+        <div class="portfolio-thumb">🖼️</div>
+        <div class="portfolio-thumb">🎭</div>
+      </div>
+      <div class="artist-body">
+        <div class="artist-header">
+          <div class="artist-avatar">✏️</div>
+          <div class="artist-meta">
+            <div class="artist-name">Jade Williams</div>
+            <div class="artist-handle">@jadewcardart</div>
+          </div>
+          <div class="artist-commission commission-waitlist">Waitlist</div>
+        </div>
+        <div class="artist-sports">
+          <span class="sport-chip">Basketball</span>
+          <span class="sport-chip">Football</span>
+        </div>
+        <div class="artist-footer">
+          <div class="artist-stat"><span class="artist-stat-num">187</span><span class="artist-stat-label">Sold</span></div>
+          <div class="artist-stat"><span class="artist-stat-num">$620</span><span class="artist-stat-label">Avg</span></div>
+          <div class="artist-stat"><span class="artist-stat-num">1.4K</span><span class="artist-stat-label">Followers</span></div>
+          <div class="verified-badge">✓ Auth</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Artist 3 -->
+    <div class="artist-card">
+      <div class="artist-portfolio-strip">
+        <div class="portfolio-thumb">🎮</div>
+        <div class="portfolio-thumb">💻</div>
+        <div class="portfolio-thumb">🌟</div>
+      </div>
+      <div class="artist-body">
+        <div class="artist-header">
+          <div class="artist-avatar">💻</div>
+          <div class="artist-meta">
+            <div class="artist-name">Raj Patel</div>
+            <div class="artist-handle">@rajpcardz</div>
+          </div>
+          <div class="artist-commission commission-open">Open</div>
+        </div>
+        <div class="artist-sports">
+          <span class="sport-chip">Pokémon</span>
+          <span class="sport-chip">Baseball</span>
+        </div>
+        <div class="artist-footer">
+          <div class="artist-stat"><span class="artist-stat-num">94</span><span class="artist-stat-label">Sold</span></div>
+          <div class="artist-stat"><span class="artist-stat-num">$340</span><span class="artist-stat-label">Avg</span></div>
+          <div class="artist-stat"><span class="artist-stat-num">890</span><span class="artist-stat-label">Followers</span></div>
+          <div class="verified-badge">✓ Auth</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Artist 4 -->
+    <div class="artist-card">
+      <div class="artist-portfolio-strip">
+        <div class="portfolio-thumb">🖌️</div>
+        <div class="portfolio-thumb">🎨</div>
+        <div class="portfolio-thumb">🌈</div>
+      </div>
+      <div class="artist-body">
+        <div class="artist-header">
+          <div class="artist-avatar">🖌️</div>
+          <div class="artist-meta">
+            <div class="artist-name">Sofia Torres</div>
+            <div class="artist-handle">@sofiartcards</div>
+          </div>
+          <div class="artist-commission commission-closed">Closed</div>
+        </div>
+        <div class="artist-sports">
+          <span class="sport-chip">Baseball</span>
+          <span class="sport-chip">Hockey</span>
+        </div>
+        <div class="artist-footer">
+          <div class="artist-stat"><span class="artist-stat-num">241</span><span class="artist-stat-label">Sold</span></div>
+          <div class="artist-stat"><span class="artist-stat-num">$1.2K</span><span class="artist-stat-label">Avg</span></div>
+          <div class="artist-stat"><span class="artist-stat-num">3.2K</span><span class="artist-stat-label">Followers</span></div>
+          <div class="verified-badge">✓ Auth</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Artist 5 — Emerging -->
+    <div class="artist-card">
+      <div class="artist-portfolio-strip">
+        <div class="portfolio-thumb">🌱</div>
+        <div class="portfolio-thumb">✨</div>
+        <div class="portfolio-thumb">🎯</div>
+      </div>
+      <div class="artist-body">
+        <div class="artist-header">
+          <div class="artist-avatar">🌱</div>
+          <div class="artist-meta">
+            <div class="artist-name">Aisha Johnson</div>
+            <div class="artist-handle">@aishajcards</div>
+          </div>
+          <div class="artist-commission commission-open">Open</div>
+        </div>
+        <div class="artist-sports">
+          <span class="sport-chip">Football</span>
+          <span class="sport-chip">Soccer</span>
+        </div>
+        <div class="artist-footer">
+          <div class="artist-stat"><span class="artist-stat-num">3</span><span class="artist-stat-label">Sold</span></div>
+          <div class="artist-stat"><span class="artist-stat-num">$85</span><span class="artist-stat-label">Avg</span></div>
+          <div class="artist-stat"><span class="artist-stat-num">42</span><span class="artist-stat-label">Followers</span></div>
+          <div class="verified-badge" style="background:rgba(255,184,0,0.1);border-color:rgba(255,184,0,0.25);color:var(--gold);">🌱 New</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Artist 6 -->
+    <div class="artist-card">
+      <div class="artist-portfolio-strip">
+        <div class="portfolio-thumb">🏒</div>
+        <div class="portfolio-thumb">🎭</div>
+        <div class="portfolio-thumb">🖊️</div>
+      </div>
+      <div class="artist-body">
+        <div class="artist-header">
+          <div class="artist-avatar">🎭</div>
+          <div class="artist-meta">
+            <div class="artist-name">Tyler Brooks</div>
+            <div class="artist-handle">@tbrooks_art</div>
+          </div>
+          <div class="artist-commission commission-open">Open</div>
+        </div>
+        <div class="artist-sports">
+          <span class="sport-chip">Hockey</span>
+          <span class="sport-chip">Football</span>
+        </div>
+        <div class="artist-footer">
+          <div class="artist-stat"><span class="artist-stat-num">128</span><span class="artist-stat-label">Sold</span></div>
+          <div class="artist-stat"><span class="artist-stat-num">$490</span><span class="artist-stat-label">Avg</span></div>
+          <div class="artist-stat"><span class="artist-stat-num">760</span><span class="artist-stat-label">Followers</span></div>
+          <div class="verified-badge">✓ Auth</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ISO/ARTS GRADE + AUTH -->
+<div class="section-header">
+  <div class="section-title">ISO/ARTS <span>GRADE</span> SYSTEM</div>
+</div>
+<div class="grade-wrap">
+  <div class="grade-card">
+    <div class="grade-card-title">ISO/ARTS <span>GRADE</span></div>
+    <p class="grade-desc">Every piece receives a numerical grade on the same 1–1000 scale as our card grading system. Four sub-categories. One score that travels with the piece forever.</p>
+    <div class="grade-bars">
+      <div class="grade-bar-row">
+        <div class="grade-bar-label"><span class="grade-bar-name">Execution</span><span class="grade-bar-pct">30%</span></div>
+        <div class="grade-bar-track"><div class="grade-bar-fill" style="width:30%"></div></div>
+      </div>
+      <div class="grade-bar-row">
+        <div class="grade-bar-label"><span class="grade-bar-name">Likeness</span><span class="grade-bar-pct">25%</span></div>
+        <div class="grade-bar-track"><div class="grade-bar-fill" style="width:25%"></div></div>
+      </div>
+      <div class="grade-bar-row">
+        <div class="grade-bar-label"><span class="grade-bar-name">Condition</span><span class="grade-bar-pct">25%</span></div>
+        <div class="grade-bar-track"><div class="grade-bar-fill" style="width:25%"></div></div>
+      </div>
+      <div class="grade-bar-row">
+        <div class="grade-bar-label"><span class="grade-bar-name">Originality</span><span class="grade-bar-pct">20%</span></div>
+        <div class="grade-bar-track"><div class="grade-bar-fill" style="width:20%"></div></div>
+      </div>
+    </div>
+    <div class="grade-example">
+      <div class="grade-example-label">Example Grade</div>
+      <div class="grade-score-display">
+        <span class="grade-score-num">847</span>
+        <div>
+          <span class="grade-score-max">/ 1000</span><br>
+          <span class="grade-score-label">ISO/ARTS GRADE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="grade-card">
+    <div class="grade-card-title">AUTHENTICITY <span>VERIFICATION</span></div>
+    <p class="grade-desc">Every piece is scanned on upload. AI detects duplicates, stolen work, and stock image elements. Clean pieces earn the Authentic badge before listing goes live.</p>
+    <div class="auth-flow">
+      <div class="auth-step">
+        <div class="auth-step-num">1</div>
+        <div class="auth-step-text">
+          <div class="auth-step-title">Artist Uploads</div>
+          <div class="auth-step-desc">Piece submitted with front/back photos, medium, dimensions, and player/subject details.</div>
+        </div>
+      </div>
+      <div class="auth-step">
+        <div class="auth-step-num">2</div>
+        <div class="auth-step-text">
+          <div class="auth-step-title">AI Scans for Originality</div>
+          <div class="auth-step-desc">System checks for duplicate uploads, known stock imagery, and digital reproduction markers.</div>
+        </div>
+      </div>
+      <div class="auth-step">
+        <div class="auth-step-num">3</div>
+        <div class="auth-step-text">
+          <div class="auth-step-title">Badge Applied — Listing Goes Live</div>
+          <div class="auth-step-desc">Flagged pieces go to manual admin review. Confirmed fraud: escrow returned to buyer, seller CC charged return cost.</div>
+        </div>
+      </div>
+    </div>
+    <div class="auth-badge">
+      <div class="auth-badge-icon">✓</div>
+      <div class="auth-badge-text">AUTHENTIC — Verified Original from Artist · DMCA Protected</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- REVENUE MODEL -->
+<div class="section-header">
+  <div class="section-title">HOW <span>IT WORKS</span></div>
+</div>
+<div class="model-wrap">
+  <div class="model-card">
+    <div class="model-icon">🎨</div>
+    <div class="model-title">Artist Fee</div>
+    <div class="model-amount green">$0</div>
+    <p class="model-desc">Artists never pay anything to list, sell, or commission work on ISO/ARTS. Ever. The only exception is confirmed fraud — seller is charged the cost to return funds to the buyer.</p>
+  </div>
+  <div class="model-card highlighted">
+    <div class="model-icon">🎓</div>
+    <div class="model-title">Buyer Premium</div>
+    <div class="model-amount gold">10%</div>
+    <p class="model-desc">Buyers pay a 10% premium on every purchase. 100% of that amount goes to the ISO/ARTS Scholarship Fund — administered by our nonprofit partner, not GrailISO.</p>
+  </div>
+  <div class="model-card">
+    <div class="model-icon">🏫</div>
+    <div class="model-title">Monthly Donation</div>
+    <div class="model-amount iso">100%</div>
+    <p class="model-desc">Every month, accumulated scholarship funds are donated to the contest winner's nominated school, art program, or nonprofit of their choice.</p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- STUDENT SECTION -->
+<div class="section-header">
+  <div class="section-title">EMERGING <span>ARTIST</span> PROGRAM</div>
+</div>
+<div class="student-wrap">
+  <div>
+    <div class="student-title">GROW YOUR <span>CRAFT</span> HERE</div>
+    <p class="student-desc">ISO/ARTS is built for the community — including the artists just starting out. New and student artists get boosted visibility, simplified listing, and access to mentorship from established creators.</p>
+    <div class="student-perks">
+      <div class="student-perk">Platform-boosted discovery for new artist accounts</div>
+      <div class="student-perk">Simplified listing flow — get your first piece live in minutes</div>
+      <div class="student-perk">Mentorship matching with established ISO/ARTS artists</div>
+      <div class="student-perk">First Sale milestone celebration — your followers get notified</div>
+      <div class="student-perk">Dedicated "Emerging Artists" browse section in search</div>
+    </div>
+  </div>
+  <div class="student-cta-col">
+    <div class="first-sale-badge">
+      <div class="first-sale-icon">🌱</div>
+      <div class="first-sale-label">First Sale!</div>
+    </div>
+    <button class="btn-outline" onclick="showApplyModal()">Apply as Emerging Artist</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">GRAIL<span>/ISO</span> · ISO/ARTS</div>
+  <div class="footer-legal">
+    GrailISO is a platform. All artwork is created and owned by the individual artists. Artists warrant they own all rights to submitted work. GrailISO is protected under DMCA Section 512 Safe Harbor. To report infringing content: dmca@grailiso.com
+  </div>
+  <div class="footer-links">
+    <a href="#" class="footer-link">Artist ToS</a>
+    <a href="#" class="footer-link">DMCA Policy</a>
+    <a href="#" class="footer-link">Scholarship Fund</a>
+    <a href="#" class="footer-link">Apply as Artist</a>
+  </div>
+</footer>
+
+<script>
+// ── FILTER CHIPS ──
+document.querySelectorAll('.filter-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+  });
+});
+
+// ── VOTE BUTTON ──
+function castVote(btn) {
+  const alreadyVoted = document.querySelector('.vote-btn.voted');
+  if (alreadyVoted && alreadyVoted !== btn) {
+    showToast('You\'ve already voted today. Come back tomorrow for your next vote.', 'info');
+    return;
+  }
+  if (btn.classList.contains('voted')) return;
+  const countEl = btn.closest('.vote-row').querySelector('.vote-count');
+  countEl.textContent = (parseInt(countEl.textContent.replace(/,/g,'')) + 1).toLocaleString();
+  btn.classList.add('voted');
+  btn.textContent = '✓ Voted';
+  showToast('Vote cast! Come back tomorrow for your next vote.', 'success');
+}
+
+// ── TOAST ──
+function showToast(msg, type) {
+  const t = document.createElement('div');
+  t.style.cssText = `
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:${type==='success'?'#00E887':'#00AAFF'}; color:#000;
+    font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:700;
+    padding:12px 24px; border-radius:6px; z-index:9999;
+    animation:fadeUp 0.3s ease;
+    white-space:nowrap;
+  `;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+// ── MODALS (stubs) ──
+function showApplyModal() {
+  showToast('Artist application coming soon!', 'info');
+}
+function showSubmitModal() {
+  showToast('Contest submission opens March 1 each month.', 'info');
+}
+
+// ── COUNTDOWN TIMER ──
+function updateTimer() {
+  const now = new Date();
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+  const diff = endOfMonth - now;
+  if (diff <= 0) return;
+  const days = Math.floor(diff / 86400000);
+  const hrs  = Math.floor((diff % 86400000) / 3600000);
+  const mins = Math.floor((diff % 3600000) / 60000);
+  const tDays = document.getElementById('tDays');
+  const tHours = document.getElementById('tHours');
+  const tMins = document.getElementById('tMins');
+  if (tDays) tDays.textContent = String(days).padStart(2,'0');
+  if (tHours) tHours.textContent = String(hrs).padStart(2,'0');
+  if (tMins) tMins.textContent = String(mins).padStart(2,'0');
+}
+updateTimer();
+setInterval(updateTimer, 30000);
+
+// ── GRADE BAR ANIMATION ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.grade-bar-fill').forEach(bar => {
+        const w = bar.style.width;
+        bar.style.width = '0';
+        setTimeout(() => { bar.style.width = w; }, 100);
+      });
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.grade-card').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

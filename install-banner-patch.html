@@ -1,0 +1,246 @@
+<!-- ============================================================
+     GRAILISO PWA — Install Banner Patch
+     
+     STEP 1: Paste the <style> block inside your existing <style>
+             tag in dashboard.html (or in <head>
+    <meta name="robots" content="noindex, nofollow"> as its own block).
+     
+     STEP 2: Paste the <div id="pwa-install-banner"> immediately
+             after the opening <body> tag — before everything else.
+     
+     STEP 3: Paste the <script> block just before </body>,
+             AFTER the service worker registration script.
+     ============================================================ -->
+
+
+<!-- ── STEP 1: CSS ──────────────────────────────────────────── -->
+<style>
+/* PWA Install Banner */
+#pwa-install-banner {
+  display: none; /* hidden until beforeinstallprompt fires */
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  background: #112840;
+  border-bottom: 1px solid #00AAFF33;
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  box-sizing: border-box;
+  width: 100%;
+  animation: bannerSlideIn 0.3s ease;
+}
+
+#pwa-install-banner.visible {
+  display: flex;
+}
+
+@keyframes bannerSlideIn {
+  from { opacity: 0; transform: translateY(-100%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+#pwa-install-banner.fade-out {
+  animation: bannerFadeOut 0.6s ease forwards;
+}
+
+@keyframes bannerFadeOut {
+  to { opacity: 0; transform: translateY(-100%); }
+}
+
+.pwa-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.pwa-banner-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #0D1F33;
+  border: 1px solid #00AAFF44;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Bebas Neue', 'Arial Black', Impact, sans-serif;
+  color: #00AAFF;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.pwa-banner-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pwa-banner-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #FFFFFF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pwa-banner-sub {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  color: #7A9BB5;
+  white-space: nowrap;
+}
+
+.pwa-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+#pwa-install-btn {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #0D1F33;
+  background: #00AAFF;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  white-space: nowrap;
+}
+
+#pwa-install-btn:hover {
+  background: #33BBFF;
+  transform: scale(1.02);
+}
+
+#pwa-install-btn:active {
+  transform: scale(0.98);
+}
+
+#pwa-install-btn.installed {
+  background: #00E887;
+  color: #0D1F33;
+  pointer-events: none;
+}
+
+#pwa-dismiss-btn {
+  background: none;
+  border: none;
+  color: #7A9BB5;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: color 0.2s;
+}
+
+#pwa-dismiss-btn:hover {
+  color: #FFFFFF;
+}
+</style>
+
+
+<!-- ── STEP 2: Banner HTML (paste after opening <body>) ──────── -->
+<div id="pwa-install-banner" role="banner" aria-label="Install GrailISO app">
+  <div class="pwa-banner-left">
+    <div class="pwa-banner-icon">G/</div>
+    <div class="pwa-banner-text">
+      <span class="pwa-banner-title">Install GrailISO</span>
+      <span class="pwa-banner-sub">Add to Home Screen for the full experience</span>
+    </div>
+  </div>
+  <div class="pwa-banner-actions">
+    <button id="pwa-install-btn">Install</button>
+    <button id="pwa-dismiss-btn" aria-label="Dismiss">✕</button>
+  </div>
+</div>
+
+
+<!-- ── STEP 3: JS (paste just before </body>) ────────────────── -->
+<script>
+(function () {
+  'use strict';
+
+  const STORAGE_KEY = 'grailiso_pwa_dismissed';
+  let _deferredPrompt = null;
+
+  const banner  = document.getElementById('pwa-install-banner');
+  const installBtn = document.getElementById('pwa-install-btn');
+  const dismissBtn = document.getElementById('pwa-dismiss-btn');
+
+  // Don't show if user already dismissed this session
+  const wasDismissed = sessionStorage.getItem(STORAGE_KEY);
+
+  // ── Capture the install prompt ──────────────────────────────
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    _deferredPrompt = e;
+
+    // Only show if not dismissed this session
+    if (!wasDismissed) {
+      banner.classList.add('visible');
+    }
+  });
+
+  // ── Install button clicked ──────────────────────────────────
+  installBtn.addEventListener('click', async () => {
+    if (!_deferredPrompt) return;
+
+    _deferredPrompt.prompt();
+    const { outcome } = await _deferredPrompt.userChoice;
+    _deferredPrompt = null;
+
+    if (outcome === 'accepted') {
+      // Show installed state then fade banner
+      installBtn.textContent = 'Installed ✓';
+      installBtn.classList.add('installed');
+      dismissBtn.style.display = 'none';
+
+      setTimeout(() => {
+        banner.classList.add('fade-out');
+        setTimeout(() => {
+          banner.classList.remove('visible');
+          banner.classList.remove('fade-out');
+        }, 600);
+      }, 1200);
+    } else {
+      // Dismissed the OS prompt — hide banner for this session
+      hideBanner();
+    }
+  });
+
+  // ── Dismiss button clicked ──────────────────────────────────
+  dismissBtn.addEventListener('click', () => {
+    hideBanner();
+  });
+
+  // ── Already installed — never show banner ───────────────────
+  window.addEventListener('appinstalled', () => {
+    hideBanner();
+    _deferredPrompt = null;
+  });
+
+  function hideBanner() {
+    sessionStorage.setItem(STORAGE_KEY, '1');
+    banner.classList.add('fade-out');
+    setTimeout(() => {
+      banner.classList.remove('visible');
+      banner.classList.remove('fade-out');
+    }, 600);
+  }
+
+})();
+</script>

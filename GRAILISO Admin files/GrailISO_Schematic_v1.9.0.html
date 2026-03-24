@@ -1,0 +1,1764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GrailISO — Platform Schematic v1.9.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0D1F33;
+  --deep2:   #112840;
+  --deep3:   #143050;
+  --deep4:   #0a1929;
+  --white:   #FFFFFF;
+  --blue:    #00AAFF;
+  --blue-glow: rgba(0,170,255,0.25);
+  --green:   #00E887;
+  --gold:    #FFB800;
+  --red:     #FF3B5C;
+  --muted:   #7A95AE;
+  --border:  rgba(0,170,255,0.15);
+  --border2: rgba(0,170,255,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:'Barlow Condensed',sans-serif;min-height:100vh;overflow-x:hidden}
+
+/* ── HEADER ── */
+.hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 40px;background:var(--deep2);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:200;
+  backdrop-filter:blur(8px);
+}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;line-height:1}
+.logo .g{color:var(--white)}
+.logo .i{color:var(--blue)}
+.hdr-sub{font-size:11px;letter-spacing:2px;color:var(--muted);margin-top:2px;font-family:'Bebas Neue',sans-serif}
+.hdr-meta{text-align:right;font-size:12px;color:var(--muted);line-height:1.7}
+.hdr-meta b{color:var(--white)}
+.hdr-meta .live{color:var(--green);font-weight:600}
+
+/* ── TABS ── */
+.tabs{
+  display:flex;background:var(--deep2);border-bottom:1px solid var(--border);
+  padding:0 40px;overflow-x:auto;position:sticky;top:65px;z-index:190;
+  gap:0;
+}
+.tabs::-webkit-scrollbar{height:2px}
+.tabs::-webkit-scrollbar-thumb{background:var(--border)}
+.tab{
+  font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1.8px;
+  padding:13px 18px 11px;cursor:pointer;color:var(--muted);
+  border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;
+  user-select:none;
+}
+.tab:hover{color:var(--white)}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+
+/* ── CONTENT ── */
+.content{padding:36px 40px 80px}
+.view{display:none;animation:fadeIn .2s ease}
+.view.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ── SECTION HEADER ── */
+.sec-title{
+  font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;
+  color:var(--white);margin-bottom:6px;display:flex;align-items:center;gap:10px;
+}
+.sec-title .acc{color:var(--blue)}
+.sec-sub{color:var(--muted);font-size:13px;margin-bottom:28px;letter-spacing:.3px;line-height:1.6}
+
+/* ── CARDS ── */
+.card{
+  background:var(--deep2);border:1px solid var(--border);
+  border-radius:10px;padding:20px 22px;
+}
+.card-title{
+  font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;
+  color:var(--blue);margin-bottom:14px;display:flex;align-items:center;gap:8px;
+}
+
+/* ── ARCH LAYER ── */
+.arch-row{display:flex;gap:12px;flex-wrap:wrap;align-items:stretch}
+.arch-box{
+  background:var(--deep3);border:1px solid var(--border);border-radius:8px;
+  padding:14px 16px;min-width:150px;flex:1;
+}
+.arch-box-title{
+  font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1.5px;
+  color:var(--blue);margin-bottom:8px;
+}
+.arch-box-detail{font-size:12px;color:var(--muted);line-height:1.75}
+.arch-box-detail b{color:var(--white)}
+.arch-box-detail .warn{color:var(--red);font-size:11px}
+.arch-box-detail .ok{color:var(--green)}
+.arch-box-detail .gold{color:var(--gold)}
+.arch-arr{display:flex;align-items:center;color:var(--blue);font-size:20px;padding:0 4px;flex-shrink:0}
+
+/* ── TAGS ── */
+.tag{
+  display:inline-block;font-size:10px;letter-spacing:.8px;font-weight:600;
+  padding:2px 7px;border-radius:3px;margin-right:4px;margin-bottom:4px;
+  border:1px solid transparent;
+}
+.tl{background:rgba(0,232,135,.12);color:var(--green);border-color:rgba(0,232,135,.25)}
+.tp{background:rgba(255,184,0,.12);color:var(--gold);border-color:rgba(255,184,0,.25)}
+.tn{background:rgba(122,149,174,.12);color:var(--muted);border-color:rgba(122,149,174,.2)}
+.tr{background:rgba(255,59,92,.1);color:var(--red);border-color:rgba(255,59,92,.2)}
+.tb{background:rgba(0,170,255,.1);color:var(--blue);border-color:rgba(0,170,255,.2)}
+
+/* ── FLOW STEPS ── */
+.flow-wrap{overflow-x:auto;padding-bottom:6px}
+.flow-steps{display:flex;gap:0;align-items:stretch;min-width:max-content}
+.fstep{
+  background:var(--deep3);border:1px solid var(--border);border-radius:8px;
+  padding:14px 15px;width:155px;flex-shrink:0;position:relative;
+}
+.fstep.blue{border-left:3px solid var(--blue)}
+.fstep-num{font-family:'Bebas Neue',sans-serif;font-size:30px;color:rgba(0,170,255,.2);line-height:1;margin-bottom:3px}
+.fstep-name{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1.5px;color:var(--white);margin-bottom:5px}
+.fstep-detail{font-size:11px;color:var(--muted);line-height:1.6}
+.farr{display:flex;align-items:center;color:var(--blue);font-size:18px;padding:0 5px;flex-shrink:0}
+.farr-or{display:flex;align-items:center;color:var(--muted);font-size:11px;padding:0 5px;flex-shrink:0;letter-spacing:1px}
+
+/* ── PANEL MAP ── */
+.panel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.pb{
+  background:var(--deep3);border:1px solid var(--border);border-radius:8px;
+  padding:13px 14px;cursor:pointer;transition:all .18s;
+}
+.pb:hover{border-color:var(--blue);box-shadow:0 0 18px rgba(0,170,255,.1);transform:translateY(-1px)}
+.pb.sel{border-color:var(--blue);background:rgba(0,170,255,.06)}
+.pb-name{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1.5px;color:var(--white);margin-bottom:3px}
+.pb-id{font-family:monospace;font-size:10px;color:var(--blue);margin-bottom:7px}
+.pb-detail{font-size:11px;color:var(--muted);line-height:1.5}
+
+/* ── DETAIL PANEL ── */
+.detail-box{
+  background:var(--deep2);border:1px solid rgba(0,170,255,.35);
+  border-radius:10px;padding:20px 22px;min-height:280px;
+  position:sticky;top:120px;
+}
+.detail-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--blue);margin-bottom:3px}
+.detail-id{font-family:monospace;font-size:11px;color:var(--muted);margin-bottom:14px}
+.detail-rows{display:flex;flex-direction:column;gap:9px}
+.dr{display:flex;gap:10px;align-items:flex-start}
+.dk{font-size:10px;letter-spacing:1px;color:var(--muted);min-width:88px;text-transform:uppercase;padding-top:2px;flex-shrink:0}
+.dv{font-size:12px;color:var(--white);line-height:1.55;flex:1}
+.dv.mono{font-family:monospace;color:var(--blue);font-size:11px;word-break:break-all}
+.dv.green{color:var(--green)}
+.dv.gold{color:var(--gold)}
+.dv.red{color:var(--red)}
+.dv.blue{color:var(--blue)}
+
+/* ── DB TABLES ── */
+.db-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.dbt{background:var(--deep3);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.dbt-hdr{
+  background:rgba(0,170,255,.09);padding:9px 13px;
+  font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1.5px;
+  color:var(--blue);display:flex;justify-content:space-between;align-items:center;
+}
+.dbt-cnt{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted);letter-spacing:0}
+.dbt-cols{padding:9px 13px;display:flex;flex-wrap:wrap;gap:3px}
+.ct{font-family:monospace;font-size:10px;padding:2px 5px;background:rgba(255,255,255,.04);border-radius:3px;color:var(--muted)}
+.ct.pk{color:var(--gold)}
+.ct.fk{color:var(--blue)}
+.ct.warn{color:var(--gold);background:rgba(255,184,0,.08)}
+
+/* ── SLASH CARDS ── */
+.slash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:13px}
+.sc{
+  background:var(--deep3);border:1px solid var(--border);border-radius:8px;
+  padding:14px 16px;transition:all .2s;
+}
+.sc:hover{transform:translateY(-2px);border-color:rgba(0,170,255,.35)}
+.sc-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;margin-bottom:6px}
+.sc-name .g{color:var(--white)}
+.sc-name .s{color:var(--blue)}
+.sc-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-top:7px}
+
+/* ── FOMO BOX ── */
+.fomo-box{
+  background:linear-gradient(135deg,rgba(255,59,92,.07),rgba(255,184,0,.04));
+  border:1px solid rgba(255,59,92,.28);border-radius:10px;padding:22px;
+}
+.fomo-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2.5px;color:var(--red);margin-bottom:8px}
+
+/* ── DIVIDER ── */
+.div{height:1px;background:var(--border);margin:26px 0}
+
+/* ── GRID UTILS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.g4{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.mb{margin-bottom:22px}
+.mb2{margin-bottom:32px}
+
+/* ── SECTION LABEL ── */
+.slabel{
+  font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2.5px;
+  color:var(--muted);margin-bottom:11px;padding-left:10px;
+  border-left:2px solid var(--border2);
+}
+
+/* ── MONO BLOCK ── */
+.mono-block{
+  font-family:monospace;font-size:12px;color:var(--blue);
+  line-height:2;background:rgba(0,0,0,.3);padding:14px;
+  border-radius:6px;
+}
+.mono-block .c{color:var(--muted)}
+
+/* ── LEGEND ── */
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:22px}
+.li{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+.ldot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+
+/* ── PENDING NODES ── */
+.pending-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.pnode{
+  background:var(--deep3);border:1px solid var(--border);border-radius:8px;
+  padding:13px 15px;
+}
+.pnode.crit{border-left:3px solid var(--red)}
+.pnode.warn{border-left:3px solid var(--gold)}
+.pnode-label{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:var(--white);margin-bottom:4px}
+.pnode-detail{font-size:11px;color:var(--muted);line-height:1.55}
+
+/* ── PRINT ── */
+@media print{
+  .tabs,.hdr{display:none}
+  .view{display:block !important;page-break-before:always}
+  body{background:#fff;color:#000}
+  .card,.arch-box,.pb,.dbt,.sc,.pnode{background:#f5f5f5;border-color:#ccc}
+}
+
+/* ── MOBILE ── */
+@media(max-width:768px){
+  .content{padding:20px}
+  .hdr{padding:14px 20px}
+  .tabs{padding:0 20px;top:58px}
+  .g2,.g3{grid-template-columns:1fr}
+  .arch-row{flex-direction:column}
+  .fstep{width:140px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ HEADER ═══════════════════ -->
+<div class="hdr">
+  <div>
+    <div class="logo"><span class="g">GRAIL</span><span class="i">/ISO</span></div>
+    <div class="hdr-sub">Platform Schematic</div>
+  </div>
+  <div class="hdr-meta">
+    Build <b>v1.9.0</b> · Session <b>25</b> · <span class="live">PRIVATE ALPHA — LIVE</span><br>
+    March 19, 2026 · <b>isosandbox.com</b><br>
+    <span style="color:var(--muted)">dashboard.html · ~7,098 lines · 13 panels</span>
+  </div>
+</div>
+
+<!-- ═══════════════════ TABS ═══════════════════ -->
+<div class="tabs">
+  <div class="tab active" onclick="showView('arch',this)">Platform Architecture</div>
+  <div class="tab" onclick="showView('panels',this)">Panel Map</div>
+  <div class="tab" onclick="showView('flows',this)">User Flows</div>
+  <div class="tab" onclick="showView('data',this)">Data Layer</div>
+  <div class="tab" onclick="showView('slash',this)">Slash System</div>
+  <div class="tab" onclick="showView('pending',this)">Pending / Roadmap</div>
+</div>
+
+<div class="content">
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 1 · PLATFORM ARCHITECTURE
+     ═══════════════════════════════════════════════════════ -->
+<div id="view-arch" class="view active">
+
+  <div class="sec-title">Platform <span class="acc">Architecture</span></div>
+  <div class="sec-sub">Single-file dashboard · REST-only data layer · GitHub → Netlify auto-deploy · Supabase auth + database</div>
+
+  <!-- Deploy Pipeline -->
+  <div class="card mb2">
+    <div class="card-title">⚙ Deploy Pipeline</div>
+    <div class="arch-row" style="flex-wrap:nowrap;overflow-x:auto;align-items:center">
+      <div class="arch-box" style="min-width:155px">
+        <div class="arch-box-title">📁 Local Dev</div>
+        <div class="arch-box-detail">
+          <b>C:\isoSandBox\</b><br>
+          dashboard_clean.html<br>
+          Rename → dashboard.html<br>
+          Via Explorer only<br>
+          <span class="warn">⚠ Never PowerShell &gt; (UTF-16 LE)</span>
+        </div>
+      </div>
+      <div class="arch-arr">→</div>
+      <div class="arch-box" style="min-width:160px">
+        <div class="arch-box-title">GitHub</div>
+        <div class="arch-box-detail">
+          Repo: <b>isoSANDBOX</b><br>
+          User: <b>jsmcdonald25-cpu</b><br>
+          Branch: <b>main</b><br>
+          <code style="font-size:10px;color:var(--blue)">git add dashboard.html</code><br>
+          <code style="font-size:10px;color:var(--blue)">git commit -m "msg"</code><br>
+          <code style="font-size:10px;color:var(--blue)">git push</code>
+        </div>
+      </div>
+      <div class="arch-arr">→</div>
+      <div class="arch-box" style="min-width:155px">
+        <div class="arch-box-title">Netlify</div>
+        <div class="arch-box-detail">
+          Auto-deploy on push<br>
+          Team: <b>ReverseHighway</b><br>
+          <b>isosandbox.com</b><br>
+          <span class="ok">✅ LIVE</span><br>
+          Verify incognito first
+        </div>
+      </div>
+      <div class="arch-arr">→</div>
+      <div class="arch-box" style="min-width:155px">
+        <div class="arch-box-title">Cloudflare CDN</div>
+        <div class="arch-box-detail">
+          Via Netlify routing<br>
+          Registrar: <b>Namecheap</b><br>
+          <span class="warn">⚠ Rocket Loader active</span><br>
+          All &lt;script&gt; tags need<br>
+          <code style="font-size:10px;color:var(--gold)">data-cfasync="false"</code>
+        </div>
+      </div>
+      <div class="arch-arr">→</div>
+      <div class="arch-box" style="min-width:130px">
+        <div class="arch-box-title">User</div>
+        <div class="arch-box-detail">
+          Browser (web)<br>
+          PWA (installed)<br>
+          Android banner<br>
+          iOS Share menu
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Frontend -->
+  <div class="card mb2">
+    <div class="card-title">🖥 Frontend — dashboard.html</div>
+    <div class="arch-row">
+      <div class="arch-box">
+        <div class="arch-box-title">Single-File App</div>
+        <div class="arch-box-detail">
+          <b>~7,098 lines</b> HTML/CSS/JS<br>
+          13 panels · 7 script tags<br>
+          7 open / 7 close (balanced)<br>
+          All script tags: <span class="gold">data-cfasync="false"</span><br>
+          Node.js syntax check before every push
+        </div>
+      </div>
+      <div class="arch-box">
+        <div class="arch-box-title">PWA</div>
+        <div class="arch-box-detail">
+          <span class="ok">✅ LIVE (Session 21)</span><br>
+          manifest.json + sw.js + icons<br>
+          Installable: Android + iOS<br>
+          networkOnly → Supabase<br>
+          cacheFirst → shell assets
+        </div>
+      </div>
+      <div class="arch-box">
+        <div class="arch-box-title">Design System</div>
+        <div class="arch-box-detail">
+          BG: <b>#0D1F33</b> (permanent)<br>
+          GRAIL: <b>#FFFFFF</b> · ISO: <b style="color:var(--blue)">#00AAFF</b><br>
+          Green: #00E887 · Gold: #FFB800<br>
+          Red: #FF3B5C · Muted: #7A95AE<br>
+          Fonts: Bebas Neue / Barlow Condensed
+        </div>
+      </div>
+      <div class="arch-box">
+        <div class="arch-box-title">Auth Layer</div>
+        <div class="arch-box-detail">
+          Supabase SDK: <b>auth only</b><br>
+          signIn · signUp · signOut<br>
+          onAuthStateChange · getUser<br>
+          <span class="warn">⚠ No SDK for data — REST only</span><br>
+          window._sb = supabase client
+        </div>
+      </div>
+      <div class="arch-box">
+        <div class="arch-box-title">Mobile Responsive</div>
+        <div class="arch-box-detail">
+          Breakpoint: <b>768px</b><br>
+          Hamburger sidebar + overlay<br>
+          Sidebar: fixed, slides from left<br>
+          Fit-to-page: myvault, carddetail, mvc<br>
+          Sidebar width: 180px (desktop)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Backend -->
+  <div class="card mb2">
+    <div class="card-title">🗄 Backend — Supabase</div>
+    <div class="arch-row">
+      <div class="arch-box">
+        <div class="arch-box-title">Sandbox Project</div>
+        <div class="arch-box-detail">
+          <b>grailiso-sandbox</b><br>
+          URL: <code style="font-size:10px;color:var(--blue)">jyfaegmnzkarlcximxjo</code><br>
+          <span class="ok">✅ ACTIVE DEV</span><br>
+          Auth + REST/PostgREST<br>
+          Free tier · Scott admin UUID locked
+        </div>
+      </div>
+      <div class="arch-box">
+        <div class="arch-box-title">Production Project</div>
+        <div class="arch-box-detail">
+          <b>GrailISO</b><br>
+          URL: <code style="font-size:10px;color:var(--gold)">wqorfvumiljrbpjwsmal</code><br>
+          <span class="gold">Schema NOT yet run</span><br>
+          Awaiting platform stability<br>
+          + attorney engagement
+        </div>
+      </div>
+      <div class="arch-box">
+        <div class="arch-box-title">REST Helpers</div>
+        <div class="arch-box-detail">
+          <code style="font-size:10px;color:var(--blue)">_rGet(tb, query)</code><br>
+          <code style="font-size:10px;color:var(--blue)">_rPost(tb, body)</code><br>
+          <code style="font-size:10px;color:var(--blue)">_rPatch(tb, q, body)</code><br>
+          <code style="font-size:10px;color:var(--blue)">_rDelete(tb, query)</code><br>
+          Cross-table: direct fetch() + Promise.all
+        </div>
+      </div>
+      <div class="arch-box">
+        <div class="arch-box-title">RLS Rule</div>
+        <div class="arch-box-detail">
+          Every new table:<br>
+          1. Enable RLS<br>
+          2. Add public read policy<br>
+          <span class="warn">⚠ Or anon key can't read it</span><br>
+          Table names w/ hyphens → double-quote in SQL
+        </div>
+      </div>
+      <div class="arch-box">
+        <div class="arch-box-title">Helpers</div>
+        <div class="arch-box-detail">
+          <code style="font-size:10px;color:var(--blue)">_ivRealTable(t)</code> → pokemon<br>
+          <code style="font-size:10px;color:var(--blue)">_cdCardTitle(yr,br,st,pl)</code><br>
+          <code style="font-size:10px;color:var(--blue)">_mvSport(row)</code><br>
+          <code style="font-size:10px;color:var(--blue)">_sbH()</code> → auth headers<br>
+          Locked forever: window._GRAIL_PH
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payments + Credits + localStorage -->
+  <div class="g3 mb2">
+    <div class="card">
+      <div class="card-title">💳 Stripe</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.8">
+        <span class="tag tp">PARKED</span><br>
+        No API keys yet<br>
+        Identity verification (future)<br>
+        Credit card processing (future)<br>
+        Escrow model (attorney required)
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🪙 ISO Credits</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.8">
+        <span class="tag tl">LIVE</span><br>
+        <b style="color:var(--white)">$1 per ISO post</b><br>
+        Balance: profiles.credits<br>
+        Grade fail → ISOCredits refund<br>
+        Money stays in ecosystem
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📦 localStorage</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.8">
+        <code style="color:var(--blue)">grail_favs</code> — favorites array<br>
+        <code style="color:var(--blue)">grail_hero_idx</code> — hero card<br>
+        <code style="color:var(--blue)">grail_featured_idx</code> — legacy alias<br>
+        Site gate: <b style="color:var(--white)">grail2026</b>
+      </div>
+    </div>
+  </div>
+
+  <!-- Critical Rules -->
+  <div class="card">
+    <div class="card-title">⚠ Permanent Hard Rules</div>
+    <div class="g3" style="gap:14px;font-size:12px">
+      <div>
+        <div style="color:var(--red);font-size:11px;letter-spacing:1px;margin-bottom:8px">NEVER DO</div>
+        <div style="line-height:2;color:var(--muted)">
+          <span style="color:var(--red)">✗</span> SDK for data (REST only)<br>
+          <span style="color:var(--red)">✗</span> card_id in vault insert<br>
+          <span style="color:var(--red)">✗</span> JSON.stringify in onclick without &amp;quot; escape<br>
+          <span style="color:var(--red)">✗</span> PowerShell &gt; to write files<br>
+          <span style="color:var(--red)">✗</span> Touch card-viewer.html<br>
+          <span style="color:var(--red)">✗</span> Cloudflare dashboard instructions (Namecheap)
+        </div>
+      </div>
+      <div>
+        <div style="color:var(--gold);font-size:11px;letter-spacing:1px;margin-bottom:8px">ALWAYS DO</div>
+        <div style="line-height:2;color:var(--muted)">
+          <span style="color:var(--gold)">✓</span> data-cfasync="false" on all script tags<br>
+          <span style="color:var(--gold)">✓</span> Node.js syntax check before delivery<br>
+          <span style="color:var(--gold)">✓</span> Read full function before touching it<br>
+          <span style="color:var(--gold)">✓</span> RLS enable + public read on new tables<br>
+          <span style="color:var(--gold)">✓</span> Double-quote SQL table names w/ special chars<br>
+          <span style="color:var(--gold)">✓</span> Upload PROJECT.md at every session start
+        </div>
+      </div>
+      <div>
+        <div style="color:var(--blue);font-size:11px;letter-spacing:1px;margin-bottom:8px">FOMO ENGINE RULES</div>
+        <div style="line-height:2;color:var(--muted)">
+          <span style="color:var(--blue)">→</span> Real data only — no fake timers<br>
+          <span style="color:var(--blue)">→</span> /admin/fomo — DO NOT BUILD YET<br>
+          <span style="color:var(--blue)">→</span> Every feature must create FOMO<br>
+          <span style="color:var(--blue)">→</span> Buyers: supply slipping away<br>
+          <span style="color:var(--blue)">→</span> Sellers: demand waiting now
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 2 · PANEL MAP
+     ═══════════════════════════════════════════════════════ -->
+<div id="view-panels" class="view">
+
+  <div class="sec-title">Panel <span class="acc">Map</span></div>
+  <div class="sec-sub">All 13 panels + overlays in dashboard.html · Click any card to inspect</div>
+
+  <div style="display:grid;grid-template-columns:1fr 320px;gap:22px;align-items:start">
+    <div>
+
+      <div class="slabel mb">SIDEBAR NAV PANELS (6 items)</div>
+      <div class="panel-grid mb2">
+
+        <div class="pb" onclick="showPanelDetail('myvault')" id="pb-myvault">
+          <div class="pb-name">My Vault</div>
+          <div class="pb-id">#panel-myvault</div>
+          <span class="tag tl">LIVE</span><span class="tag tb">LANDING</span>
+          <div class="pb-detail">Default landing after login. Two-col: Hero card + Stats/Activity right col.</div>
+        </div>
+
+        <div class="pb" onclick="showPanelDetail('library')" id="pb-library">
+          <div class="pb-name">ISOVault</div>
+          <div class="pb-id">#panel-library</div>
+          <span class="tag tl">LIVE</span>
+          <div class="pb-detail">Full catalog. 4-row pill nav. Sport-scoped player search. Card grid + checklist.</div>
+        </div>
+
+        <div class="pb" onclick="showPanelDetail('post')" id="pb-post">
+          <div class="pb-name">Post ISO</div>
+          <div class="pb-id">#panel-post</div>
+          <span class="tag tl">LIVE</span>
+          <div class="pb-detail">6-step wizard: Sport → Player → Card → Variant → Grade → Review.</div>
+        </div>
+
+        <div class="pb" onclick="showPanelDetail('myisos')" id="pb-myisos">
+          <div class="pb-name">My ISOs</div>
+          <div class="pb-id">#panel-myisos</div>
+          <span class="tag tl">LIVE</span>
+          <div class="pb-detail">Active ISO list. Filters. Nav badge count preloaded on login.</div>
+        </div>
+
+        <div class="pb" onclick="showPanelDetail('market')" id="pb-market">
+          <div class="pb-name">Market Data</div>
+          <div class="pb-id">#panel-market</div>
+          <span class="tag tl">LIVE</span>
+          <div class="pb-detail">Market price engine. Time-weighted avg. card_market_prices table.</div>
+        </div>
+
+        <div class="pb" onclick="showPanelDetail('leaderboard')" id="pb-leaderboard">
+          <div class="pb-name">Leaderboard</div>
+          <div class="pb-id">#panel-leaderboard</div>
+          <span class="tag tl">LIVE</span>
+          <div class="pb-detail">ISO/RANK seller reputation. Full ranking engine pending.</div>
+        </div>
+
+      </div>
+
+      <div class="slabel mb">SECONDARY PANELS</div>
+      <div class="panel-grid mb2">
+
+        <div class="pb" onclick="showPanelDetail('carddetail')" id="pb-carddetail">
+          <div class="pb-name">Card Detail</div>
+          <div class="pb-id">#panel-carddetail</div>
+          <span class="tag tl">LIVE</span>
+          <div class="pb-detail">From ISOVault. 3D hover rotation, variation pills, vault CTA. Fit-to-page.</div>
+        </div>
+
+        <div class="pb" onclick="showPanelDetail('myvaultcard')" id="pb-myvaultcard">
+          <div class="pb-name">My Vault Card</div>
+          <div class="pb-id">#panel-myvaultcard</div>
+          <span class="tag tl">LIVE</span>
+          <div class="pb-detail">From My Vault. Slab Lab / Sold / Remove CTAs. Fit-to-page.</div>
+        </div>
+
+        <div class="pb" onclick="showPanelDetail('isoticker')" id="pb-isoticker">
+          <div class="pb-name">ISO Ticker</div>
+          <div class="pb-id">#panel-isoticker</div>
+          <span class="tag tl">LIVE</span>
+          <div class="pb-detail">Portfolio / Gain / Top Card aggregate. Chart view. Hidden mobile.</div>
+        </div>
+
+        <div class="pb" onclick="showPanelDetail('notifs')" id="pb-notifs">
+          <div class="pb-name">Notifications</div>
+          <div class="pb-id">#panel-notifs</div>
+          <span class="tag tl">LIVE</span>
+          <div class="pb-detail">ISO match alerts + seller nudges. Unread badge. Bell icon top-right.</div>
+        </div>
+
+        <div class="pb" onclick="showPanelDetail('account')" id="pb-account">
+          <div class="pb-name">Account</div>
+          <div class="pb-id">#panel-account</div>
+          <span class="tag tl">LIVE</span>
+          <div class="pb-detail">@username (public). Email private. Credits. Community link.</div>
+        </div>
+
+      </div>
+
+      <div class="slabel mb">ADMIN PANELS (hidden for non-admins)</div>
+      <div class="panel-grid mb2">
+
+        <div class="pb" onclick="showPanelDetail('admin-price')" id="pb-admin-price">
+          <div class="pb-name">Price Flags</div>
+          <div class="pb-id">#panel-admin-price</div>
+          <span class="tag tl">LIVE</span><span class="tag tb">ADMIN</span>
+          <div class="pb-detail">±40% auto-detect. Review queue. +1 credit for correction.</div>
+        </div>
+
+        <div class="pb" onclick="showPanelDetail('admin-market')" id="pb-admin-market">
+          <div class="pb-name">Market Override</div>
+          <div class="pb-id">#panel-admin-market</div>
+          <span class="tag tl">LIVE</span><span class="tag tb">ADMIN</span>
+          <div class="pb-detail">Card search → price → PATCH card_market_prices. Log.</div>
+        </div>
+
+      </div>
+
+      <div class="slabel mb">OVERLAYS / MODALS</div>
+      <div class="panel-grid">
+
+        <div class="pb" onclick="showPanelDetail('slablab')">
+          <div class="pb-name">Slab Lab</div>
+          <div class="pb-id">modal overlay — ISO/SLAB</div>
+          <span class="tag tl">LIVE</span>
+          <div class="pb-detail">8 colors × 3 finishes = 24 combos. 3D slab unit. Flip/Spin/Reset.</div>
+        </div>
+
+        <div class="pb" onclick="showPanelDetail('vault-modal')">
+          <div class="pb-name">Vault Modal</div>
+          <div class="pb-id">modal overlay</div>
+          <span class="tag tl">LIVE</span>
+          <div class="pb-detail">Acquisition flow: Ripped / Purchased / Trade / Other. Price mandatory.</div>
+        </div>
+
+        <div class="pb" onclick="showPanelDetail('sold-modal')">
+          <div class="pb-name">Sold / Remove</div>
+          <div class="pb-id">modal overlay</div>
+          <span class="tag tl">LIVE</span>
+          <div class="pb-detail">Venue tiles or reason dropdown. Police tape confirm. Hard DELETE.</div>
+        </div>
+
+        <div class="pb" onclick="showPanelDetail('upload-gate')">
+          <div class="pb-name">Upload Gate</div>
+          <div class="pb-id">modal overlay</div>
+          <span class="tag tl">LIVE</span>
+          <div class="pb-detail">2-screen review before save. Per-variation lock (non-admin).</div>
+        </div>
+
+        <div class="pb" onclick="showPanelDetail('community')">
+          <div class="pb-name">Community Panel</div>
+          <div class="pb-id">slide-in overlay</div>
+          <span class="tag tl">LIVE</span>
+          <div class="pb-detail">Slide from right. Backdrop click closes. Bottom sidebar item.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DETAIL PANEL -->
+    <div>
+      <div class="detail-box" id="detailBox">
+        <div class="detail-title" id="dTitle">SELECT A PANEL</div>
+        <div class="detail-id" id="dId">Click any panel to inspect</div>
+        <div class="detail-rows" id="dRows">
+          <div style="color:var(--muted);font-size:12px;padding-top:16px">Panel details, layout, data calls, and navigation connections appear here.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 3 · USER FLOWS
+     ═══════════════════════════════════════════════════════ -->
+<div id="view-flows" class="view">
+
+  <div class="sec-title">User <span class="acc">Flows</span></div>
+  <div class="sec-sub">All primary journeys through the platform · Built flows in full color · Locked spec flows at reduced opacity</div>
+
+  <!-- Auth -->
+  <div class="card mb2">
+    <div class="card-title">🔐 Auth Flow</div>
+    <div class="flow-wrap"><div class="flow-steps">
+      <div class="fstep">
+        <div class="fstep-num">1</div>
+        <div class="fstep-name">Site Gate</div>
+        <div class="fstep-detail">Password: <b>grail2026</b><br>One-time per session<br>Cookie-based</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep">
+        <div class="fstep-num">2</div>
+        <div class="fstep-name">Auth Screen</div>
+        <div class="fstep-detail">auth.html<br>Login or Signup<br>Email + password</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep">
+        <div class="fstep-num">3</div>
+        <div class="fstep-name">Signup Only</div>
+        <div class="fstep-detail">First + last name<br>Username 3–30 chars<br>Real-time uniqueness check</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep">
+        <div class="fstep-num">4</div>
+        <div class="fstep-name">Supabase Auth</div>
+        <div class="fstep-detail">signIn / signUp<br>onAuthStateChange<br>profiles row created</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep">
+        <div class="fstep-num">5</div>
+        <div class="fstep-name">My Vault</div>
+        <div class="fstep-detail">Landing page<br>Vault data loaded<br>ISO count preloaded</div>
+      </div>
+    </div></div>
+    <div style="margin-top:12px;font-size:12px;color:var(--red)">⚠ Known bug: auth.html references <code>seller_preferences</code> table which does not exist — errors on seller signups.</div>
+  </div>
+
+  <!-- ISOVault Browse -->
+  <div class="card mb2">
+    <div class="card-title">🔍 ISOVault Browse Flow</div>
+    <div class="flow-wrap"><div class="flow-steps">
+      <div class="fstep">
+        <div class="fstep-num">1</div>
+        <div class="fstep-name">Category</div>
+        <div class="fstep-detail">Sport tile grid<br>15 sports<br>4-row pill nav starts</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep">
+        <div class="fstep-num">2</div>
+        <div class="fstep-name">Manufacturer</div>
+        <div class="fstep-detail">Topps · Panini<br>Upper Deck · etc.<br>Pill row 2</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep">
+        <div class="fstep-num">3</div>
+        <div class="fstep-name">Year</div>
+        <div class="fstep-detail">Year selection<br>Filtered by mfr<br>Pill row 3</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep">
+        <div class="fstep-num">4</div>
+        <div class="fstep-name">Set</div>
+        <div class="fstep-detail">Set selection<br>Pill row 4<br>→ REST fetch fires</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep">
+        <div class="fstep-num">5</div>
+        <div class="fstep-name">Card Grid</div>
+        <div class="fstep-detail">Player search<br>250ms debounce<br>Checklist view</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep">
+        <div class="fstep-num">6</div>
+        <div class="fstep-name">Card Detail</div>
+        <div class="fstep-detail">3D hover rotation<br>Variation pills<br>Market data</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep">
+        <div class="fstep-num">7</div>
+        <div class="fstep-name">Add to Vault</div>
+        <div class="fstep-detail">Acquisition modal<br>4 types<br>Price paid req'd</div>
+      </div>
+    </div></div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)">
+      <span>Also: <b style="color:var(--white)">Global Search</b> → client-side IV_SETS filter, zero DB queries, instant</span>
+      <span>·</span>
+      <span><b style="color:var(--white)">Player Search</b> → sport-scoped, AbortController kills in-flight fetches</span>
+      <span>·</span>
+      <span>Back nav → grid + search reset</span>
+    </div>
+  </div>
+
+  <!-- Post ISO -->
+  <div class="card mb2">
+    <div class="card-title">📣 Post ISO — 6-Step Wizard</div>
+    <div class="flow-wrap"><div class="flow-steps">
+      <div class="fstep blue">
+        <div class="fstep-num">1</div>
+        <div class="fstep-name">Sport</div>
+        <div class="fstep-detail">Sport tile grid<br>Auto-advance on click<br>No Next button</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep blue">
+        <div class="fstep-num">2</div>
+        <div class="fstep-name">Player</div>
+        <div class="fstep-detail">Sport-scoped search<br>Auto-advance on pick<br>REST query</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep blue">
+        <div class="fstep-num">3</div>
+        <div class="fstep-name">Card</div>
+        <div class="fstep-detail">Series (left)<br>Card pills<br>214×300px preview</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep blue">
+        <div class="fstep-num">4</div>
+        <div class="fstep-name">Variant</div>
+        <div class="fstep-detail">Tiles from var_images<br>FOMO vault count badges<br>Auto-advance</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep blue">
+        <div class="fstep-num">5</div>
+        <div class="fstep-name">Grade & Price</div>
+        <div class="fstep-detail">Grade tiles + tooltips<br>Min + max required<br>s5Next() gate</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep blue">
+        <div class="fstep-num">6</div>
+        <div class="fstep-name">Review & Post</div>
+        <div class="fstep-detail">$1 credit deducted<br>ISO written to DB<br>Seller notifs fired</div>
+      </div>
+    </div></div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)">
+      On post: finds vault owners matching <code style="color:var(--blue)">card_number + variation</code> (up to 100) → batch writes to <b style="color:var(--white)">notifications</b> table (type: 'iso_match'). Best-effort — never blocks ISO post.
+    </div>
+  </div>
+
+  <!-- My Vault Flow -->
+  <div class="card mb2">
+    <div class="card-title">🏛 My Vault Flow</div>
+    <div class="flow-wrap"><div class="flow-steps">
+      <div class="fstep">
+        <div class="fstep-num">→</div>
+        <div class="fstep-name">My Vault</div>
+        <div class="fstep-detail">Landing page<br>Left: Hero + Favs rail<br>Right: Stats + Activity</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep">
+        <div class="fstep-num">→</div>
+        <div class="fstep-name">Card Grid</div>
+        <div class="fstep-detail">Vault entries<br>Sport filter chips<br>☆/★ favorites</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep">
+        <div class="fstep-num">→</div>
+        <div class="fstep-name">My Vault Card</div>
+        <div class="fstep-detail">panel-myvaultcard<br>Image, stats, price<br>3 CTAs: Slab/Sold/Remove</div>
+      </div>
+      <div class="farr">↓</div>
+      <div class="fstep" style="border-left:2px solid var(--blue)">
+        <div class="fstep-num">A</div>
+        <div class="fstep-name">Slab Lab</div>
+        <div class="fstep-detail">ISO/SLAB modal<br>8 colors × 3 finishes<br>Flip/Spin/Reset</div>
+      </div>
+      <div class="farr-or">or</div>
+      <div class="fstep" style="border-left:2px solid var(--gold)">
+        <div class="fstep-num">B</div>
+        <div class="fstep-name">Sold</div>
+        <div class="fstep-detail">Venue tiles 2×2<br>Price + date<br>Updates vault_entries</div>
+      </div>
+      <div class="farr-or">or</div>
+      <div class="fstep" style="border-left:2px solid var(--red)">
+        <div class="fstep-num">C</div>
+        <div class="fstep-name">Remove</div>
+        <div class="fstep-detail">Reason dropdown<br>Police tape confirm<br>Hard DELETE</div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- Transaction flow -->
+  <div class="card">
+    <div class="card-title">🔄 Transaction Flow — Locked Spec (Not Yet Built)</div>
+    <div class="flow-wrap"><div class="flow-steps" style="opacity:.6">
+      <div class="fstep">
+        <div class="fstep-name">Buyer Posts ISO</div>
+        <div class="fstep-detail">Pays grade fee<br>Held in escrow</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep">
+        <div class="fstep-name">Seller Matches</div>
+        <div class="fstep-detail">Pays verify fee<br>Ships to GrailISO HQ</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep">
+        <div class="fstep-name">ISO/BIOMETRICS</div>
+        <div class="fstep-detail">4-layer fingerprint<br>950+ = confirmed<br>750–949 = human review<br>&lt;750 = void</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep">
+        <div class="fstep-name">ISO/GRADING</div>
+        <div class="fstep-detail">1,000pt AI system<br>5 categories<br>Scores posted simultaneously</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep">
+        <div class="fstep-name">Grade Check</div>
+        <div class="fstep-detail">Meets floor → ship buyer<br>Below floor → 24hr window<br>Accept or void</div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fstep">
+        <div class="fstep-name">Buyer Confirms</div>
+        <div class="fstep-detail">24hr → auto-release<br>Funds released<br>ISO closed</div>
+      </div>
+    </div></div>
+    <div style="margin-top:12px;font-size:12px;color:var(--gold)">⚠ Requires: Attorney engagement · Stripe API keys · TN Foreign LLC · Escrow / money transmitter legal approval</div>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 4 · DATA LAYER
+     ═══════════════════════════════════════════════════════ -->
+<div id="view-data" class="view">
+
+  <div class="sec-title">Data <span class="acc">Layer</span></div>
+  <div class="sec-sub">Supabase REST/PostgREST · All tables · Auth SDK · Market price engine · Critical data rules</div>
+
+  <div class="g2 mb2">
+    <!-- Core tables -->
+    <div>
+      <div class="slabel mb">CORE APPLICATION TABLES</div>
+      <div style="display:flex;flex-direction:column;gap:11px">
+
+        <div class="dbt">
+          <div class="dbt-hdr">profiles <span class="dbt-cnt">1 row per user</span></div>
+          <div class="dbt-cols">
+            <span class="ct pk">id (UUID FK auth)</span>
+            <span class="ct">username</span><span class="ct">email</span>
+            <span class="ct">first_name</span><span class="ct">last_name</span>
+            <span class="ct">credits</span><span class="ct">tier</span>
+            <span class="ct">role</span><span class="ct warn">is_admin ⚠ migration needed</span>
+          </div>
+        </div>
+
+        <div class="dbt">
+          <div class="dbt-hdr">vault_entries <span class="dbt-cnt">1 row per physical card</span></div>
+          <div class="dbt-cols">
+            <span class="ct pk">id</span>
+            <span class="ct fk">user_id</span>
+            <span class="ct">player</span><span class="ct">year</span>
+            <span class="ct">brand</span><span class="ct">set_name</span>
+            <span class="ct">parallel</span><span class="ct">card_number</span>
+            <span class="ct">variation</span><span class="ct">sport</span>
+            <span class="ct">team</span><span class="ct">serial_number</span>
+            <span class="ct">serial_total</span><span class="ct">price_paid</span>
+            <span class="ct">estimated_value</span><span class="ct">acquisition_type</span>
+            <span class="ct">purchase_source</span><span class="ct">pack_type</span>
+            <span class="ct">date_acquired</span><span class="ct">front_image_url</span>
+            <span class="ct">back_image_url</span><span class="ct">has_catalog_pic</span>
+            <span class="ct warn">status ⚠ migration needed</span>
+            <span class="ct warn">sold_price ⚠</span>
+            <span class="ct warn">sold_venue ⚠</span>
+            <span class="ct warn">sold_date ⚠</span>
+            <span class="ct warn">remove_reason ⚠</span>
+          </div>
+        </div>
+
+        <div class="dbt">
+          <div class="dbt-hdr">card_market_prices <span class="dbt-cnt">market price engine</span></div>
+          <div class="dbt-cols">
+            <span class="ct pk">id</span>
+            <span class="ct">card_number</span><span class="ct">set_name</span>
+            <span class="ct">current_price</span><span class="ct">entry_count</span>
+            <span class="ct">is_admin_override</span><span class="ct">updated_at</span>
+          </div>
+        </div>
+
+        <div class="dbt">
+          <div class="dbt-hdr">notifications <span class="dbt-cnt">iso_match + system</span></div>
+          <div class="dbt-cols">
+            <span class="ct pk">id</span>
+            <span class="ct fk">user_id</span>
+            <span class="ct">type</span><span class="ct">message</span>
+            <span class="ct">read</span><span class="ct">created_at</span>
+          </div>
+        </div>
+
+        <div class="dbt">
+          <div class="dbt-hdr">bug_reports <span class="dbt-cnt">user submissions</span></div>
+          <div class="dbt-cols">
+            <span class="ct pk">id</span>
+            <span class="ct fk">user_id</span>
+            <span class="ct">description</span>
+            <span class="ct">page</span><span class="ct">created_at</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Catalog tables -->
+    <div>
+      <div class="slabel mb">CARD CATALOG TABLES</div>
+      <div style="display:flex;flex-direction:column;gap:11px">
+
+        <div class="dbt">
+          <div class="dbt-hdr">card-images <span class="dbt-cnt">Master catalog · Stadium Club seeded</span></div>
+          <div class="dbt-cols">
+            <span class="ct pk">id</span>
+            <span class="ct">player</span><span class="ct">card_number</span>
+            <span class="ct">set_name</span><span class="ct">year</span>
+            <span class="ct">sport</span><span class="ct">team</span>
+            <span class="ct">category</span><span class="ct">insert_name</span>
+            <span class="ct">is_rookie</span><span class="ct">front_img</span>
+            <span class="ct">back_img</span><span class="ct">variations (JSON)</span>
+            <span class="ct">var_images (JSON)</span>
+          </div>
+        </div>
+
+        <div class="dbt">
+          <div class="dbt-hdr">2026_series1_baseball <span class="dbt-cnt">Topps Series 1 Baseball</span></div>
+          <div class="dbt-cols">
+            <span class="ct">player</span><span class="ct">card_number</span>
+            <span class="ct">set_name</span><span class="ct">year</span>
+            <span class="ct">category</span><span class="ct">insert_name</span>
+            <span class="ct">is_rookie</span><span class="ct">team</span>
+          </div>
+        </div>
+
+        <div class="dbt">
+          <div class="dbt-hdr">2025_topps_black_white <span class="dbt-cnt">316 cards · ⚠ RLS policy needed</span></div>
+          <div class="dbt-cols">
+            <span class="ct">player</span><span class="ct">card_number</span>
+            <span class="ct">set_name</span><span class="ct">year</span>
+            <span class="ct">category</span><span class="ct">variations (JSON)</span>
+          </div>
+        </div>
+
+        <div class="dbt">
+          <div class="dbt-hdr">2025_-_2026_topps_basketball <span class="dbt-cnt">3,348 cards · NBA</span></div>
+          <div class="dbt-cols">
+            <span class="ct">player</span><span class="ct">card_number</span>
+            <span class="ct">set_name</span><span class="ct">year</span>
+            <span class="ct">category</span><span class="ct">team</span>
+            <span class="ct warn">noVarImages:true</span>
+          </div>
+        </div>
+
+        <div class="dbt">
+          <div class="dbt-hdr">pokemon_cards <span class="dbt-cnt">20,034 cards · 17 series · 171 sets</span></div>
+          <div class="dbt-cols">
+            <span class="ct">card_name</span><span class="ct">card_number</span>
+            <span class="ct">set_name</span><span class="ct">series</span>
+            <span class="ct">year</span><span class="ct">card_type</span>
+            <span class="ct">hp</span><span class="ct">rarity</span>
+            <span class="ct">front_img</span><span class="ct">back_img</span>
+            <span class="ct">variations</span><span class="ct">var_images</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- REST access + rules -->
+  <div class="card mb2">
+    <div class="card-title">⚡ Data Access Rules</div>
+    <div class="g3">
+      <div>
+        <div class="slabel mb">REST HELPERS (use these)</div>
+        <div class="mono-block">
+          _rGet(tb, query)<br>
+          _rPost(tb, body)<br>
+          _rPatch(tb, query, body)<br>
+          _rDelete(tb, query)<br>
+          <span class="c">// cross-table = direct fetch()</span><br>
+          <span class="c">// _rGet throws on HTTP 400</span><br>
+          <span class="c">// Use: if(!r.ok) return []</span>
+        </div>
+      </div>
+      <div>
+        <div class="slabel mb">CRITICAL RULES</div>
+        <div style="font-size:12px;line-height:2;color:var(--muted)">
+          <span style="color:var(--red)">✗</span> Never SDK for data — REST only<br>
+          <span style="color:var(--red)">✗</span> card_id never in vault insert (FK error)<br>
+          <span style="color:var(--red)">✗</span> JSON.stringify in onclick → escape &amp;quot;<br>
+          <span style="color:var(--gold)">⚠</span> Table names w/ hyphens → double-quote SQL<br>
+          <span style="color:var(--gold)">⚠</span> RLS + public read on every new table<br>
+          <span style="color:var(--green)">✓</span> _ivRealTable() for all Pokémon pseudo-tables<br>
+          <span style="color:var(--green)">✓</span> SDK auth only: signIn/signUp/signOut
+        </div>
+      </div>
+      <div>
+        <div class="slabel mb">ISOVault SAFE SELECT COLS</div>
+        <div style="font-size:12px;line-height:2;color:var(--muted)">
+          For all baseball/basketball tables:<br>
+          <code style="color:var(--blue)">player, card_number, set_name</code><br>
+          <code style="color:var(--blue)">year, category, insert_name</code><br>
+          <code style="color:var(--blue)">is_rookie, team</code><br>
+          <span style="color:var(--gold)">+ noVarImages:true for basketball</span><br>
+          (suppresses var_images from query)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Market Price Engine -->
+  <div class="card">
+    <div class="card-title">📊 Market Price Engine</div>
+    <div class="g3">
+      <div>
+        <div class="slabel mb">ALGORITHM</div>
+        <div style="font-size:13px;color:var(--white);line-height:2">
+          Time-weighted average<br>
+          Decay: <b>0.70</b> (first 5 entries)<br>
+          Decay: <b>0.85</b> (after 5)<br>
+          Fires on every submitVault()
+        </div>
+      </div>
+      <div>
+        <div class="slabel mb">ACQUISITION WEIGHTS</div>
+        <div style="font-size:13px;color:var(--white);line-height:2">
+          Purchased single: <b>1.0</b><br>
+          Ripped / Pulled: <b>0.7</b><br>
+          Trade: <b>0.3</b><br>
+          Other: <b>0.1</b>
+        </div>
+      </div>
+      <div>
+        <div class="slabel mb">ADMIN OVERRIDE</div>
+        <div style="font-size:13px;color:var(--white);line-height:2">
+          Sets new baseline<br>
+          Real entries resume after<br>
+          Writes → card_market_prices<br>
+          ISOVault list wiring: pending
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 5 · SLASH SYSTEM
+     ═══════════════════════════════════════════════════════ -->
+<div id="view-slash" class="view">
+
+  <div class="sec-title">Slash <span class="acc">System</span></div>
+  <div class="sec-sub"><b style="color:var(--white)">GRAIL</b> = always white · <b style="color:var(--blue)">ISO</b> = always electric blue · forward slash only · body copy: GrailISO, IsoVault, IsoSlab etc.</div>
+
+  <div class="legend">
+    <div class="li"><div class="ldot" style="background:var(--green)"></div>Live / Built</div>
+    <div class="li"><div class="ldot" style="background:var(--blue)"></div>Live (Partial)</div>
+    <div class="li"><div class="ldot" style="background:var(--gold)"></div>Parked / Planned</div>
+    <div class="li"><div class="ldot" style="background:var(--red)"></div>Requires Attorney / COPPA</div>
+    <div class="li"><div class="ldot" style="background:var(--muted)"></div>Reserved / Post-Funding</div>
+  </div>
+
+  <div class="slash-grid">
+
+    <div class="sc" style="border-color:rgba(0,232,135,.3)">
+      <div class="sc-name"><span class="g">GRAIL</span><span class="s">/ISO</span></div>
+      <span class="tag tl">LIVE — PRIVATE ALPHA</span>
+      <div class="sc-desc">The core platform. Demand-first sports card marketplace. Buyers broadcast wants (ISO = In Search Of). Sellers respond to demand. Seller inventory never publicly visible. Buyer intent data = unique monetizable asset. <i>isosandbox.com</i></div>
+    </div>
+
+    <div class="sc" style="border-color:rgba(0,232,135,.3)">
+      <div class="sc-name"><span class="s">ISO</span><span class="s">/VAULT</span></div>
+      <span class="tag tl">LIVE</span>
+      <div class="sc-desc">Seller inventory + collection manager. Two vault paths. Sport filter chips. Hero card + favorites rail. Slab Lab CTA. vault_entries table. My Vault is landing page on login.</div>
+    </div>
+
+    <div class="sc" style="border-color:rgba(0,232,135,.3)">
+      <div class="sc-name"><span class="s">ISO</span><span class="s">/SLAB</span></div>
+      <span class="tag tl">LIVE</span>
+      <div class="sc-desc">Slab Lab. 8 colors × 3 finishes = 24 combos. GRAILISO_slab.png base64 overlay (336×485px). 3D slab unit — card locked inside, entire slab rotates. Matte / Crystal (default) / Vivid finish system.</div>
+    </div>
+
+    <div class="sc" style="border-color:rgba(0,232,135,.3)">
+      <div class="sc-name"><span class="s">ISO</span><span class="s">/SCAN</span></div>
+      <span class="tag tl">LIVE (Basic)</span>
+      <div class="sc-desc">Card catalog + browse. ISOVault: 4-row pill nav, sport-scoped player search, 5 catalog tables. Pokémon (20,034 cards), NBA (3,348), Baseball (1,000+), Topps B&amp;W (316). AI recognition: planned.</div>
+    </div>
+
+    <div class="sc" style="border-color:rgba(0,232,135,.3)">
+      <div class="sc-name"><span class="s">ISO</span><span class="s">/CREDITS</span></div>
+      <span class="tag tl">LIVE</span>
+      <div class="sc-desc">Posting credit system. <b style="color:var(--white)">$1 per ISO post.</b> Balance in profiles.credits. ISOCredits refund on grade fail. Money stays in ecosystem. Buy prompt from My Vault credits chip.</div>
+    </div>
+
+    <div class="sc" style="border-color:rgba(255,59,92,.3)">
+      <div class="sc-name"><span class="s">ISO</span><span class="s">/FOMO ENGINE</span></div>
+      <span class="tag tr">POST-STABILITY — DO NOT BUILD YET</span>
+      <div class="sc-desc">The revenue engine. The nervous system. Connects every signal. Fires the right action at the right user at the right moment. Real data only. 5 trigger stacks: Supply, Demand, Market, Collection, Timing. Admin dashboard at /admin/fomo.</div>
+    </div>
+
+    <div class="sc" style="border-color:rgba(0,170,255,.25)">
+      <div class="sc-name"><span class="s">ISO</span><span class="s">/GRADING</span></div>
+      <span class="tag tn">SPEC LOCKED — NOT BUILT</span>
+      <div class="sc-desc">1,000-point grading system (÷100 = X.XX). 5 categories: Centering (250), Corners (250), Edges (200), Surface (200) — all AI. Card Appeal (100) — human. 4 era tolerance bands. $30/card · $20 bulk (20+ cards).</div>
+    </div>
+
+    <div class="sc" style="border-color:rgba(0,170,255,.25)">
+      <div class="sc-name"><span class="s">ISO</span><span class="s">/BIOMETRICS</span></div>
+      <span class="tag tn">SPEC LOCKED — HARDWARE PENDING</span>
+      <div class="sc-desc">4-layer card fingerprint authentication: paper fiber · print dot cluster · surface micro-scratches · edge fiber tear. 1–1,000 match confidence. 950+ = confirmed. 750–949 = human review. &lt;750 = void.</div>
+    </div>
+
+    <div class="sc" style="border-color:rgba(0,170,255,.25)">
+      <div class="sc-name"><span class="s">ISO</span><span class="s">/DEFENDER</span></div>
+      <span class="tag tn">PLANNED</span>
+      <div class="sc-desc">Fraud intelligence system. Works in tandem with ISO/BIOMETRICS and ISO/GRADING to protect both buyer and seller in every transaction. ToS: "Unable to authenticate" — not an accusation.</div>
+    </div>
+
+    <div class="sc" style="border-color:rgba(0,170,255,.25)">
+      <div class="sc-name"><span class="s">ISO</span><span class="s">/MARKET</span></div>
+      <span class="tag tn">PLANNED</span>
+      <div class="sc-desc">Secondary marketplace. ISO matches convert to transactions. Escrow-based settlement. Stripe-powered. Requires attorney engagement + money transmitter license + TN Foreign LLC.</div>
+    </div>
+
+    <div class="sc" style="border-color:rgba(0,170,255,.25)">
+      <div class="sc-name"><span class="s">ISO</span><span class="s">/TRACK</span></div>
+      <span class="tag tn">PLANNED</span>
+      <div class="sc-desc">Provenance + chain of custody. Every authenticated card carries a full ownership history. Pairs with ISO/BIOMETRICS fingerprint. Foundation for long-term card value credibility.</div>
+    </div>
+
+    <div class="sc" style="border-color:rgba(0,170,255,.25)">
+      <div class="sc-name"><span class="s">ISO</span><span class="s">/RANK</span></div>
+      <span class="tag tn">PLANNED</span>
+      <div class="sc-desc">Seller reputation system. Leaderboard panel built. Full ranking engine pending. Disintermediation defense: ToS prohibits real-handle usernames. Value lock + rep system as primary defense.</div>
+    </div>
+
+    <div class="sc" style="border-color:rgba(0,170,255,.25)">
+      <div class="sc-name"><span class="s">ISO</span><span class="s">/DEMAND</span></div>
+      <span class="tag tn">PLANNED</span>
+      <div class="sc-desc">Demand layer licensing business. Buyer intent data is the unique monetizable B2B asset. License aggregated demand signals to card shops, distributors, manufacturers. Core VC pitch data moat.</div>
+    </div>
+
+    <div class="sc" style="border-color:rgba(255,184,0,.25);opacity:.85">
+      <div class="sc-name"><span class="s">ISO</span><span class="s">/INFO</span></div>
+      <span class="tag tp">PARKED</span>
+      <div class="sc-desc">Contextual card/player/set storytelling layer. Wikipedia API + Claude narrative inline on card detail. Seeds emotional connection to cards. No build date set.</div>
+    </div>
+
+    <div class="sc" style="border-color:rgba(255,184,0,.25);opacity:.85">
+      <div class="sc-name"><span class="s">ISO</span><span class="s">/BAY</span></div>
+      <span class="tag tp">PARKED — POST-FUNDING</span>
+      <div class="sc-desc">eBay seller CRM. Architecture: OAuth 2.0 via Netlify Functions, eBay Sell APIs, Supabase token storage. Strategy: Embrace → Extend → Extinguish. Parked pending attorney + funding.</div>
+    </div>
+
+    <div class="sc" style="border-color:rgba(255,59,92,.2);opacity:.8">
+      <div class="sc-name"><span class="s">ISO</span><span class="s">/MOMENTUM</span></div>
+      <span class="tag tr">ATTORNEY REQUIRED</span>
+      <div class="sc-desc">Performance-based market sentiment modifier. 🔥 badge on ISOVault tiles post player performance. Decays 24–48hr. Informational only — NOT financial advice. Required ToS language locked. Gate: attorney coverage.</div>
+    </div>
+
+    <div class="sc" style="border-color:rgba(122,149,174,.15);opacity:.7">
+      <div class="sc-name"><span class="s">ISO</span><span class="s">/GRAIL</span></div>
+      <span class="tag tn">RESERVED</span>
+      <div class="sc-desc">Reserved name. Potential grading spinoff brand. Concept: standalone grading service built on ISO/GRADING system. No build scope set.</div>
+    </div>
+
+    <div class="sc" style="border-color:rgba(255,59,92,.15);opacity:.7">
+      <div class="sc-name" style="font-size:17px">ISO<span class="s">/KIDS</span></div>
+      <span class="tag tr">ATTORNEY + COPPA</span>
+      <div class="sc-desc">Kids-only virtual trading platform. No money — ISO credits only. Full COPPA compliance required. Attorney coverage required before any code written.</div>
+    </div>
+
+  </div>
+
+  <!-- Pricing table -->
+  <div class="div"></div>
+  <div class="card">
+    <div class="card-title">💰 Pricing — Locked (Partial)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;font-size:12px">
+      <div>
+        <div class="slabel mb">ISO POST</div>
+        <div style="font-size:22px;font-family:'Bebas Neue';color:var(--white)">$1</div>
+        <div style="color:var(--muted)">Per ISO · Paid by buyer<br>Deducted from ISO credits</div>
+      </div>
+      <div>
+        <div class="slabel mb">SINGLE GRADE</div>
+        <div style="font-size:22px;font-family:'Bebas Neue';color:var(--white)">$30</div>
+        <div style="color:var(--muted)">Per card · Paid by buyer<br>ISOCredits refund on fail</div>
+      </div>
+      <div>
+        <div class="slabel mb">BULK GRADE</div>
+        <div style="font-size:22px;font-family:'Bebas Neue';color:var(--white)">$20</div>
+        <div style="color:var(--muted)">Per card (20+ cards)<br>ISOCredits refund on fail</div>
+      </div>
+      <div>
+        <div class="slabel mb">BIOMETRICS</div>
+        <div style="font-size:22px;font-family:'Bebas Neue';color:var(--muted)">TBD</div>
+        <div style="color:var(--muted)">Paid by seller<br>Non-refundable (proposed)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Competitive positioning -->
+  <div class="div"></div>
+  <div class="card">
+    <div class="card-title">🏆 Competitive Positioning</div>
+    <div style="overflow-x:auto">
+      <table style="width:100%;font-size:12px;border-collapse:collapse">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:8px 12px;color:var(--muted);font-weight:500;border-bottom:1px solid var(--border)">Feature</th>
+            <th style="padding:8px 12px;color:var(--muted);font-weight:500;border-bottom:1px solid var(--border)">PSA</th>
+            <th style="padding:8px 12px;color:var(--muted);font-weight:500;border-bottom:1px solid var(--border)">BGS</th>
+            <th style="padding:8px 12px;color:var(--muted);font-weight:500;border-bottom:1px solid var(--border)">SGC</th>
+            <th style="padding:8px 12px;color:var(--blue);font-weight:600;border-bottom:1px solid var(--border)">GrailISO</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border2)">
+            <td style="padding:7px 12px;color:var(--muted)">Method</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--muted)">Human (black box)</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--muted)">Human (black box)</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--muted)">Human (black box)</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--green)">Machine + AI (published)</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border2)">
+            <td style="padding:7px 12px;color:var(--muted)">Scale</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--muted)">1–10 half pts</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--muted)">1–10 half pts</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--muted)">1–10</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--green)">1–10 two decimals</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border2)">
+            <td style="padding:7px 12px;color:var(--muted)">Transparency</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--muted)">Final # only</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--muted)">4 subgrades</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--muted)">Final # only</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--green)">All subgrades + weights public</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border2)">
+            <td style="padding:7px 12px;color:var(--muted)">Turnaround</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--muted)">2–6 weeks</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--muted)">3–8 weeks</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--muted)">1–3 weeks</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--green)">Days</td>
+          </tr>
+          <tr>
+            <td style="padding:7px 12px;color:var(--muted)">Biometrics</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--muted)">None</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--muted)">None</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--muted)">None</td>
+            <td style="padding:7px 12px;text-align:center;color:var(--green)">Semi-chip fingerprint</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 6 · PENDING / ROADMAP
+     ═══════════════════════════════════════════════════════ -->
+<div id="view-pending" class="view">
+
+  <div class="sec-title">Pending <span class="acc">/ Roadmap</span></div>
+  <div class="sec-sub">Session 25 status · v1.9.0 · Build 20260318</div>
+
+  <!-- Critical -->
+  <div style="margin-bottom:26px">
+    <div style="font-family:'Bebas Neue';font-size:17px;letter-spacing:2px;color:var(--red);margin-bottom:12px">🔴 Critical — Unresolved Bugs</div>
+    <div class="pending-grid">
+      <div class="pnode crit">
+        <span class="tag tr">BUG</span>
+        <div class="pnode-label">auth.html — seller_preferences table</div>
+        <div class="pnode-detail">Table does NOT exist. Throws on seller signups. Blocking user onboarding. Fix before any external testing.</div>
+      </div>
+      <div class="pnode crit">
+        <span class="tag tr">BUG</span>
+        <div class="pnode-label">"Unknown" card in vault</div>
+        <div class="pnode-detail">Vault row has no player name. Likely null insert or bad data state from early session. Needs investigation.</div>
+      </div>
+      <div class="pnode crit">
+        <span class="tag tr">DATA</span>
+        <div class="pnode-label">Ichiro T91-33 vault entry</div>
+        <div class="pnode-detail">Delete old 91C-25 entry. Re-add correctly as T91-33 from ISOVault catalog flow.</div>
+      </div>
+      <div class="pnode crit">
+        <span class="tag tr">PERF</span>
+        <div class="pnode-label">touchstart non-passive listener</div>
+        <div class="pnode-detail">In _cdInitRotation. Minor console violation. Fix before mobile polish pass.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Must run -->
+  <div style="margin-bottom:26px">
+    <div style="font-family:'Bebas Neue';font-size:17px;letter-spacing:2px;color:var(--red);margin-bottom:12px">🔴 Must Run Before Any End-to-End Testing</div>
+    <div class="pending-grid">
+      <div class="pnode crit">
+        <span class="tag tr">DB MIGRATION</span>
+        <div class="pnode-label">Vault entries migration</div>
+        <div class="pnode-detail">Add to vault_entries: status, sold_price, sold_venue, sold_date, remove_reason. Required for Sold/Remove flow.</div>
+      </div>
+      <div class="pnode crit">
+        <span class="tag tr">DB MIGRATION</span>
+        <div class="pnode-label">Profiles migration</div>
+        <div class="pnode-detail">Add to profiles: is_admin, username columns. Required for username display + admin panel access.</div>
+      </div>
+      <div class="pnode crit">
+        <span class="tag tr">RLS</span>
+        <div class="pnode-label">Missing RLS policies</div>
+        <div class="pnode-detail">2025_topps_bw and 2025_topps_stadium_club need RLS enable + public read policy. Or anon key can't read them.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Near term -->
+  <div style="margin-bottom:26px">
+    <div style="font-family:'Bebas Neue';font-size:17px;letter-spacing:2px;color:var(--gold);margin-bottom:12px">🟡 Near Term</div>
+    <div class="pending-grid">
+      <div class="pnode warn">
+        <span class="tag tp">TEST</span>
+        <div class="pnode-label">Pokémon ISOVault end-to-end</div>
+        <div class="pnode-detail">Verify _ivRealTable resolves all 17 era pseudo-table keys → pokemon_cards correctly. Test 5 patched call sites.</div>
+      </div>
+      <div class="pnode warn">
+        <span class="tag tp">TEST</span>
+        <div class="pnode-label">Player search (Griffey, Ichiro)</div>
+        <div class="pnode-detail">Test sport-scoped search end-to-end. Verify AbortController, debounce, autocomplete dropdown.</div>
+      </div>
+      <div class="pnode warn">
+        <span class="tag tp">TEST</span>
+        <div class="pnode-label">Username field end-to-end</div>
+        <div class="pnode-detail">Requires profiles migration. Test real-time uniqueness check on signup + display in sidebar + account panel.</div>
+      </div>
+      <div class="pnode warn">
+        <span class="tag tp">TEST</span>
+        <div class="pnode-label">Sold / Remove flow</div>
+        <div class="pnode-detail">Requires vault migration (status, sold columns). Full test: venue tiles, confirm, DELETE, splice local array, toast.</div>
+      </div>
+      <div class="pnode warn">
+        <span class="tag tp">FEATURE</span>
+        <div class="pnode-label">Market price in ISOVault list</div>
+        <div class="pnode-detail">Engine runs and writes to card_market_prices. The card list is not yet wired to display prices from that table.</div>
+      </div>
+      <div class="pnode warn">
+        <span class="tag tp">FEATURE</span>
+        <div class="pnode-label">Numbered card badge</div>
+        <div class="pnode-detail">/1, /5, /25 badge where print_run exists in card data. Quick win for UI polish.</div>
+      </div>
+      <div class="pnode warn">
+        <span class="tag tp">FEATURE</span>
+        <div class="pnode-label">Favorites "View All"</div>
+        <div class="pnode-detail">Rail-only currently. Full favorites grid panel not yet built. Low priority but visible gap.</div>
+      </div>
+      <div class="pnode warn">
+        <span class="tag tp">CODE</span>
+        <div class="pnode-label">_ivLoadMarketPrices SDK → REST</div>
+        <div class="pnode-detail">Remaining SDK call. Convert to _rGet before next data layer touch. Rule #3 compliance.</div>
+      </div>
+      <div class="pnode warn">
+        <span class="tag tp">CODE</span>
+        <div class="pnode-label">Admin clear image tool</div>
+        <div class="pnode-detail">Per-variation reset of wrong var_images. Needed to complete upload correction flow for non-admins.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOMO Engine highlight -->
+  <div class="fomo-box mb2">
+    <div class="fomo-title">🔥 ISO/FOMO ENGINE — POST-STABILITY FIRST PRIORITY</div>
+    <div style="font-size:13px;color:rgba(255,255,255,.8);line-height:1.7;margin-bottom:18px">
+      This is the revenue engine. Build immediately after the platform stabilizes and critical bugs are resolved.<br>
+      <b>Real data only. No fabricated urgency. Ever.</b> Three emotional states targeted:
+    </div>
+    <div class="g3">
+      <div>
+        <div style="font-size:11px;letter-spacing:1px;color:var(--red);margin-bottom:9px">BUYERS FEEL</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.8">
+          Supply appearing now<br>Windows are closing<br>Other buyers watching same cards<br>Every idle ISO = money lost
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;letter-spacing:1px;color:var(--red);margin-bottom:9px">SELLERS FEEL</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.8">
+          Demand sitting right now<br>Every unlisted day = money lost<br>The buyer already exists<br>Vault appreciation nudges
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;letter-spacing:1px;color:var(--red);margin-bottom:9px">ADMIN CONTROLS</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.8">
+          /admin/fomo dashboard<br>
+          <b style="color:var(--red)">DO NOT BUILD YET</b><br>
+          Awaits platform stability<br>
+          5 trigger stacks: Supply / Demand / Market / Collection / Timing
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Business milestones -->
+  <div class="card">
+    <div class="card-title">🏢 Business Milestones</div>
+    <div class="g3">
+      <div>
+        <div class="slabel mb">LEGAL STATUS</div>
+        <div style="font-size:13px;line-height:2;color:var(--muted)">
+          <span style="color:var(--green)">✅</span> Delaware LLC — complete<br>
+          <span style="color:var(--gold)">⚠</span> TN Foreign LLC — not filed<br>
+          <span style="color:var(--gold)">⚠</span> Attorney consult — pending<br>
+          <span style="color:var(--gold)">⚠</span> UPS Store mailbox — pending<br>
+          <span style="color:var(--green)">✅</span> DKIM — fixed<br>
+          TAPA Americas membership: Carrier cat.
+        </div>
+      </div>
+      <div>
+        <div class="slabel mb">KICKSTARTER</div>
+        <div style="font-size:13px;line-height:2;color:var(--muted)">
+          Goal: <b style="color:var(--white)">$700,000</b><br>
+          Rewards-based only (no equity)<br>
+          6 tiers: $25–$5,000<br>
+          Lifetime reduced fees as core hook<br>
+          Target: 1,000+ waitlist first<br>
+          Copy draft: <span style="color:var(--green)">✅ complete</span>
+        </div>
+      </div>
+      <div>
+        <div class="slabel mb">PLATFORM STATUS</div>
+        <div style="font-size:13px;line-height:2;color:var(--muted)">
+          Phase: <b style="color:var(--blue)">Private Alpha</b><br>
+          File: <b style="color:var(--white)">~7,098 lines</b><br>
+          Sessions completed: <b style="color:var(--white)">24</b><br>
+          PWA: <span style="color:var(--green)">✅ Android + iOS</span><br>
+          Site pass: <b style="color:var(--white)">grail2026</b><br>
+          Admin UUID: locked in PROJECT.md
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</div><!-- /content -->
+
+
+<!-- ═══════════════════ JAVASCRIPT ═══════════════════ -->
+<script>
+// Tab navigation
+function showView(id, el) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('view-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+// Panel detail data
+const PD = {
+  myvault:{
+    t:'MY VAULT', id:'panel-myvault', status:'LIVE · LANDING PAGE', sc:'green',
+    nav:"N('myvault', el) · default on login",
+    layout:'Two-column: 300px left / 1fr right. vault-active class. Fit-to-page.',
+    left:'Hero card (280×392px, crossfade 3.5s, auto-spin). Favorites rail (horizontal scroll). vaultIdleSpin empty state.',
+    right:'Active ISOs chip → myisos. Credits chip → buy toast. Notifications (2 rows). Recent Activity (3 rows). ISOTicker aggregate → isoticker. Vault stats bar.',
+    calls:'_rGet(vault_entries, user_id). _rGet(profiles). ISO count preloaded on login.',
+    notes:'Sport filter chips appear when user has 2+ sports. ☆/★ favorites stored in grail_favs localStorage. grail_hero_idx for hero card.',
+  },
+  library:{
+    t:'ISOVAULT', id:'panel-library', status:'LIVE', sc:'green',
+    nav:"N('library', el) · 🔍 ISOVault top-right button",
+    layout:'4-row pill nav: Category → Manufacturer → Year → Set. Scrollable (card results).',
+    left:'Sport tile grid (15 sports). Global search: client-side IV_SETS filter, instant, zero DB.',
+    right:'Card grid + checklist view. Player search: 250ms debounce, AbortController, autocomplete dropdown.',
+    calls:'direct fetch() per sport table. Sport-scoped player search. ivOpenCard() → panel-carddetail.',
+    notes:'_ivRealTable() resolves pokemon_cards__[Era] → pokemon_cards. noVarImages:true for basketball. ivOpenCard verifies activeTable === c._setTable.',
+  },
+  post:{
+    t:'POST ISO', id:'panel-post', status:'LIVE', sc:'green',
+    nav:"N('post', el)",
+    layout:'6-step wizard. Steps 1–3 auto-advance on click. No Next button.',
+    left:'Step 1: Sport grid. Step 2: Player search. Step 3: Series+Card+preview (214×300px).',
+    right:'Step 4: Variant tiles + FOMO badges. Step 5: Grade tiles + hover tooltips + min/max price. Step 6: Review + submit.',
+    calls:'_rPost(isos). _rPost(notifications) × up to 100 seller alerts. _rGet(profiles). _rGet(vault_entries) for FOMO counts.',
+    notes:'$1 ISO credit deducted. s5Next() validation gate. card_number + variation stored. JSON.stringify onclick → &quot; escape required.',
+  },
+  myisos:{
+    t:'MY ISOs', id:'panel-myisos', status:'LIVE', sc:'green',
+    nav:"N('myisos', el)",
+    layout:'List + filters. Nav badge count.',
+    left:'Active ISOs for current user. Filter controls.',
+    right:'Badge count preloaded silently on login via REST. Shown on My Vault Active ISOs chip.',
+    calls:'_rGet(isos, user_id filter, status=active).',
+    notes:'Count also shown on My Vault Active ISOs chip via updateActiveISOCount().',
+  },
+  market:{
+    t:'MARKET DATA', id:'panel-market', status:'LIVE', sc:'green',
+    nav:"N('market', el)",
+    layout:'Market price display. Scrollable.',
+    left:'Time-weighted average engine results.',
+    right:'Price history. card_market_prices read.',
+    calls:'_rGet(card_market_prices).',
+    notes:'ISOVault card list not yet wired to display prices — near-term pending item.',
+  },
+  leaderboard:{
+    t:'LEADERBOARD', id:'panel-leaderboard', status:'LIVE', sc:'green',
+    nav:"N('leaderboard', el)",
+    layout:'Rankings list.',
+    left:'ISO/RANK seller reputation scores.',
+    right:'Full ranking engine pending. Current: basic list.',
+    calls:'_rGet(profiles, order by).',
+    notes:'Full ISO/RANK ranking engine is planned, not yet built.',
+  },
+  carddetail:{
+    t:'CARD DETAIL', id:'panel-carddetail', status:'LIVE', sc:'green',
+    nav:'ivOpenCard(c, tbl) from ISOVault grid',
+    layout:'Grid: 300px left / 1fr right. carddetail-active class. Fit-to-page. cd-viewer-wrap must fully close before cd-info opens.',
+    left:'cd-viewer-wrap: 3D rotation on hover. Flip/Auto Spin/Reset (cd-ctrl-btn). Placeholder: base64 JPEG (window._GRAIL_PH).',
+    right:'cd-info: title (_cdCardTitle helper). Variation pills (JSON array {label,run}). Market data. Vault CTA. ★ fav star (My Vault context only).',
+    calls:'Card from _ivData. _cdCardTitle(year,brand,set,player). Vault insert → _rPost(vault_entries).',
+    notes:'Variation pill color palette index 0–8. Superfractor: .toLowerCase().includes(fractor). Both front+back placeholder contain base64 img tags — do not remove.',
+  },
+  myvaultcard:{
+    t:'MY VAULT CARD', id:'panel-myvaultcard', status:'LIVE', sc:'green',
+    nav:'openVaultCard(idx) from My Vault grid',
+    layout:'Dedicated screen. Zero ISOVault involvement. mvc-active class. Fit-to-page.',
+    left:'Card image. Player: 32px Bebas. Set/brand/year.',
+    right:'Variation + card#. Price paid + date. Est. value + gain/loss. Acquisition badge + source.',
+    calls:'_vaultData[idx] — from local vault array loaded on login. No DB call required.',
+    notes:'CTAs: 🧪 SLAB LAB (left, always visible when has front_image_url) · SOLD · REMOVE. Back → My Vault.',
+  },
+  isoticker:{
+    t:'ISO TICKER', id:'panel-isoticker', status:'LIVE', sc:'green',
+    nav:"N('isoticker', el) · My Vault ISOTicker block click",
+    layout:'Chart + aggregate stats.',
+    left:'Portfolio / Gain / Top Card aggregate.',
+    right:'Chart view. Redraws on window resize. updateTickerStats() synced from vault render.',
+    calls:'updateTickerStats() from vault render (no separate DB call).',
+    notes:'Hidden on mobile. Card ticker widget in fixed bottom bar (not sidebar).',
+  },
+  notifs:{
+    t:'NOTIFICATIONS', id:'panel-notifs', status:'LIVE', sc:'green',
+    nav:"N('notifs', null) · Bell icon top-right · 'View All →' from My Vault",
+    layout:'Notification list. Scrollable.',
+    left:'ISO match alerts. Seller nudges (you have what they want). System messages.',
+    right:'Unread badge. 2-row preview in My Vault. Full list here.',
+    calls:'_rGet(notifications, user_id). _rPatch(notifications) to mark read.',
+    notes:'Written by Post ISO flow. type: iso_match. Best-effort — never blocks ISO post.',
+  },
+  account:{
+    t:'ACCOUNT', id:'panel-account', status:'LIVE', sc:'green',
+    nav:"N('account', el) · bottom sidebar",
+    layout:'Settings. Scrollable.',
+    left:'@username (PUBLIC, displayed in sidebar). Email: PRIVATE, NEVER SHOWN.',
+    right:'Credits balance. Auth settings. Community link. Log Out.',
+    calls:'_rGet(profiles). signOut() from sidebar.',
+    notes:'Known bug: auth.html references seller_preferences table (does not exist).',
+  },
+  'admin-price':{
+    t:'ADMIN — PRICE FLAGS', id:'panel-admin-price', status:'LIVE · ADMIN ONLY', sc:'blue',
+    nav:"N('admin-price', el); loadPriceFlags()",
+    layout:'Review queue. Scrollable.',
+    left:'±40% auto-detection flags for review.',
+    right:'+1 credit for user who submitted correction. Admin review action.',
+    calls:'_rGet(price_flags). _rPatch(price_flags). Hidden from non-admins.',
+    notes:'Admin check: profiles.is_admin = true OR role = owner OR role = admin.',
+  },
+  'admin-market':{
+    t:'ADMIN — MARKET OVERRIDE', id:'panel-admin-market', status:'LIVE · ADMIN ONLY', sc:'blue',
+    nav:"N('admin-market', el); loadAdminMarket()",
+    layout:'Card search → price form → override.',
+    left:'Card search. Current price + entry count display.',
+    right:'Override form → PATCH card_market_prices. Recent overrides log at bottom.',
+    calls:'_rGet(card_market_prices). _rPatch(card_market_prices).',
+    notes:'Override sets new baseline. Real entries resume moving price normally after.',
+  },
+  slablab:{
+    t:'SLAB LAB — ISO/SLAB', id:'modal overlay', status:'LIVE', sc:'green',
+    nav:'🧪 SLAB LAB button in My Vault Card CTA row (visible when has front_image_url)',
+    layout:'Modal overlay. Light #E8EDF2 display-case background. Color-matched radial glow.',
+    left:'8 colors: Arctic · Onyx · Cobalt · Gold · Ruby · Emerald · Smoke · Amethyst',
+    right:'3 finishes: Matte (flat, desat) · Crystal (default, glass) · Vivid (saturated, electric). 24 total combos.',
+    calls:'No DB calls. Card image from _vaultData[idx].front_image_url.',
+    notes:'GRAILISO_slab.png base64 overlay (336×485px). Card window transparent rect (38-432 × 183-637). Entire 3D unit rotates. Card locked inside front/back faces. Flip/Auto Spin/Reset match ISOVault viewer.',
+  },
+  'vault-modal':{
+    t:'VAULT MODAL — ACQUISITION', id:'modal overlay', status:'LIVE', sc:'green',
+    nav:'openVaultModal() from Card Detail CTA',
+    layout:'4 acquisition types. Price paid mandatory all paths.',
+    left:'Primary tiles: Ripped (📦) / Purchased (💳) — vertical flex, icon + label + sub.',
+    right:'Secondary tiles: Trade · Other — inline row below. Conditional fields per type.',
+    calls:'_rPost(vault_entries). _rPost/PATCH(card_market_prices). After add → N(myvault).',
+    notes:'card_id NEVER in insert (FK constraint error). sport field stored. has_catalog_pic flags which vault path was used.',
+  },
+  'sold-modal':{
+    t:'SOLD / REMOVE MODAL', id:'modal overlay', status:'LIVE', sc:'green',
+    nav:'SOLD or REMOVE CTA from My Vault Card',
+    layout:'Two modes. Venue tiles 2×2 (SOLD) or reason dropdown (REMOVE).',
+    left:'SOLD venues: eBay · Facebook/Card Group · LCS · Individual. Price + date.',
+    right:'REMOVE: reason dropdown. Police tape warning. CONFIRM → hard DELETE. Splices _vaultData locally.',
+    calls:'_rDelete(vault_entries, id=eq.{id}). Toast. Grid reload.',
+    notes:'After delete: toasts success, splices local _vaultData array, reloads grid. Permanent — no undo.',
+  },
+  'upload-gate':{
+    t:'UPLOAD CONFIRMATION GATE', id:'modal overlay', status:'LIVE', sc:'green',
+    nav:'Triggered on image upload within vault flow',
+    layout:'2-screen review flow before save.',
+    left:'Screen 1: Preview uploaded image (front or back).',
+    right:'Screen 2: Confirm or re-upload.',
+    calls:'Supabase Storage bucket upload on confirm.',
+    notes:'Per-variation lock for non-admins. Report Issue → admin clears var_images → user re-uploads. Front/back panels independent sizing (landscape back no longer forced portrait).',
+  },
+  community:{
+    t:'COMMUNITY PANEL', id:'slide-in overlay', status:'LIVE', sc:'green',
+    nav:'openCommunityPanel() · bottom sidebar Community item',
+    layout:'Slide-in from right. Backdrop click closes.',
+    left:'Community features. openCommunityPanel() / closeCommunityPanel().',
+    right:'community-panel-backdrop.open class. Click outside closes.',
+    calls:'No DB calls currently.',
+    notes:'',
+  },
+};
+
+function showPanelDetail(id) {
+  const d = PD[id];
+  if (!d) return;
+  document.querySelectorAll('.pb').forEach(b => b.classList.remove('sel'));
+  const sel = document.getElementById('pb-' + id);
+  if (sel) sel.classList.add('sel');
+
+  const cm = {green:'var(--green)',blue:'var(--blue)',gold:'var(--gold)',red:'var(--red)'};
+  const c = cm[d.sc] || 'var(--muted)';
+
+  document.getElementById('dTitle').textContent = d.t;
+  document.getElementById('dId').textContent = d.id;
+  document.getElementById('dRows').innerHTML = `
+    <div class="dr"><div class="dk">Status</div><div class="dv" style="color:${c}">${d.status}</div></div>
+    <div class="dr"><div class="dk">Navigate</div><div class="dv mono">${d.nav}</div></div>
+    <div class="dr"><div class="dk">Layout</div><div class="dv">${d.layout}</div></div>
+    <div class="dr"><div class="dk">Left / Primary</div><div class="dv">${d.left}</div></div>
+    <div class="dr"><div class="dk">Right / Secondary</div><div class="dv">${d.right}</div></div>
+    <div class="dr"><div class="dk">Data Calls</div><div class="dv mono" style="font-size:10px">${d.calls}</div></div>
+    ${d.notes ? `<div class="dr"><div class="dk">Notes</div><div class="dv" style="color:var(--muted);font-size:11px">${d.notes}</div></div>` : ''}
+  `;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GrailISO — The Demand Market for Rare Cards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@200;300;400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --blue:#00AAFF;--blue-bright:#33CCFF;--blue-deep:#0055AA;
+      --blue-glow:rgba(0,170,255,0.35);
+      --deep1:#0D1F33;--deep2:#112840;--deep3:#143050;
+      --deep-border:rgba(0,170,255,0.15);
+      --green:#00E887;--gold:#FFB800;--red:#FF3B5C;
+      --muted:rgba(255,255,255,0.5)
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--deep1);color:#fff;font-family:'Barlow',sans-serif;overflow-x:hidden}
+
+    /* SCAN LINE */
+    .global-scan{position:fixed;left:0;width:100%;height:1.5px;z-index:9999;pointer-events:none;
+      background:linear-gradient(90deg,transparent,rgba(0,170,255,.6) 50%,transparent);
+      animation:globalScan 28s linear infinite}
+    @keyframes globalScan{0%{top:-2%;opacity:0}4%{opacity:1}96%{opacity:.6}100%{top:102%;opacity:0}}
+
+    /* NAV */
+    nav{position:fixed;top:0;width:100%;z-index:200;display:flex;align-items:center;
+      justify-content:space-between;padding:.8rem 2.5rem;
+      background:rgba(13,31,51,0);border-bottom:1px solid transparent;
+      transition:background .4s,border-color .4s,backdrop-filter .4s}
+    nav.scrolled{background:rgba(8,18,32,.97);border-bottom-color:var(--deep-border);backdrop-filter:blur(16px)}
+    .nav-logo{display:block;text-decoration:none;height:90px;width:auto;flex-shrink:0}
+    .nav-logo img{height:90px !important;width:auto !important;display:block;mix-blend-mode:screen}
+    nav ul{display:flex;gap:1.4rem;list-style:none}
+    nav ul a{font-family:'Barlow Condensed',sans-serif;font-size:.72rem;font-weight:700;
+      letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.65);
+      text-decoration:none;transition:color .2s}
+    nav ul a:hover{color:var(--blue)}
+    .nav-ctas{display:flex;gap:.6rem;align-items:center;flex-shrink:0}
+    .nav-waitlist{font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;
+      letter-spacing:.14em;text-transform:uppercase;color:var(--blue);
+      border:1px solid rgba(0,170,255,.4);padding:.4rem 1rem;text-decoration:none;transition:background .2s}
+    .nav-waitlist:hover{background:rgba(0,170,255,.1)}
+    .nav-ks{font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;
+      letter-spacing:.12em;text-transform:uppercase;color:#fff;
+      background:linear-gradient(135deg,var(--red),#CC0030);
+      padding:.4rem 1rem;text-decoration:none;box-shadow:0 2px 12px rgba(255,59,92,.3)}
+    .nav-ks:hover{opacity:.85}
+
+
+    /* COMMUNITY CARD DIRECTORY */
+    .community-section{background:var(--deep2);padding:6rem 2rem;position:relative}
+    .community-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+    .community-inner{max-width:1100px;margin:0 auto}
+    .community-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
+      background:rgba(255,184,0,.1);border:1px solid rgba(255,184,0,.1);margin-top:3rem}
+    .community-item{background:var(--deep1);padding:2.2rem 2rem;position:relative;overflow:hidden;transition:background .2s}
+    .community-item:hover{background:var(--deep3)}
+    .community-item::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,var(--gold),rgba(255,184,0,.2));opacity:.7;transition:opacity .3s}
+    .community-item:hover::before{opacity:1}
+    .community-icon{font-size:2rem;margin-bottom:.8rem}
+    .community-item h3{font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;
+      letter-spacing:.12em;text-transform:uppercase;color:#fff;margin-bottom:.6rem}
+    .community-item p{font-size:.84rem;color:rgba(255,255,255,.5);font-weight:300;line-height:1.75}
+    .community-cta{margin-top:2.5rem;border:1px solid rgba(255,184,0,.2);
+      background:rgba(255,184,0,.04);position:relative;overflow:hidden}
+    .community-cta::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+    .community-cta-inner{display:grid;grid-template-columns:1fr auto;gap:3rem;
+      align-items:center;padding:2.5rem 3rem}
+    .community-cta-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:.65rem;font-weight:700;
+      letter-spacing:.28em;text-transform:uppercase;color:rgba(255,184,0,.7);margin-bottom:.4rem}
+    .community-cta-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.5rem,3vw,2.5rem);
+      letter-spacing:.06em;color:#fff;margin-bottom:.6rem;line-height:1}
+    .community-cta p{font-size:.85rem;color:rgba(255,255,255,.5);font-weight:300;line-height:1.7;max-width:480px}
+    .community-cta-right{text-align:center;flex-shrink:0}
+
+    /* PHOTON BORDER */
+    @property --photon-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
+    .photon-border{position:relative;isolation:isolate}
+    .photon-border::after{content:'';position:absolute;inset:-1px;border-radius:inherit;padding:1px;
+      background:conic-gradient(from var(--photon-angle),transparent 0%,transparent 60%,var(--blue-bright) 70%,#fff 75%,var(--blue-bright) 80%,transparent 90%);
+      -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+      mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+      -webkit-mask-composite:xor;mask-composite:exclude;
+      pointer-events:none;opacity:0;transition:opacity .3s;
+      animation:photonSpin 2.5s linear infinite paused}
+    .photon-border:hover::after{opacity:1;animation-play-state:running}
+    @keyframes photonSpin{to{--photon-angle:360deg}}
+
+    /* SHARED */
+    .section-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;
+      letter-spacing:.35em;text-transform:uppercase;color:var(--blue);margin-bottom:.8rem;text-align:center}
+    .section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,5vw,4rem);
+      letter-spacing:.06em;line-height:1;text-align:center;margin-bottom:.6rem;color:#fff}
+    .section-sub{font-size:.92rem;color:var(--muted);font-weight:300;text-align:center;
+      margin-bottom:3rem;max-width:600px;margin-left:auto;margin-right:auto;line-height:1.75}
+    .section-divider{height:1px;background:linear-gradient(90deg,transparent,var(--blue),transparent)}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+    @keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+    /* ── SECTION 1: SPLASH ── */
+    .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+      justify-content:center;text-align:center;padding:8rem 2rem 5rem;
+      position:relative;overflow:hidden;
+      background:linear-gradient(180deg,#0A1830 0%,#0D2B55 30%,#1255A8 60%,#0D1F33 100%)}
+    .hero-grid{position:absolute;inset:0;
+      background-image:linear-gradient(rgba(0,170,255,.07) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(0,170,255,.07) 1px,transparent 1px);
+      background-size:56px 56px;
+      mask-image:linear-gradient(180deg,transparent,rgba(0,0,0,.3) 40%,rgba(0,0,0,.7));
+      pointer-events:none}
+    .hero-bloom{position:absolute;top:-8%;left:50%;transform:translateX(-50%);
+      width:800px;height:400px;
+      background:radial-gradient(ellipse,rgba(0,170,255,.18) 0%,transparent 65%);pointer-events:none}
+    .hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:700;
+      letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.75);
+      margin-bottom:1.2rem;opacity:0;animation:fadeUp .8s .15s forwards}
+    .hero-eyebrow::before,.hero-eyebrow::after{content:'—';margin:0 .7em;opacity:.4}
+    h1.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(4rem,12vw,9rem);
+      line-height:.88;letter-spacing:.05em;color:#fff;
+      opacity:0;animation:fadeUp .9s .3s forwards}
+    h1.hero-title .accent{display:block;
+      background:linear-gradient(135deg,var(--blue-bright),var(--blue),var(--blue-deep));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      filter:drop-shadow(0 0 28px rgba(0,170,255,.5))}
+    .hero-sub{font-size:clamp(.95rem,1.8vw,1.1rem);color:rgba(255,255,255,.75);
+      max-width:560px;margin:1.6rem auto 0;line-height:1.85;font-weight:300;
+      opacity:0;animation:fadeUp .9s .45s forwards}
+    .hero-sub strong{color:#fff;font-weight:600}
+    .ticker-wrap{width:100%;max-width:680px;margin-top:2.5rem;opacity:0;animation:fadeUp .9s .75s forwards}
+    .ticker-label{font-family:'Barlow Condensed',sans-serif;font-size:.6rem;font-weight:700;
+      letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.45);
+      margin-bottom:.4rem;display:flex;align-items:center;gap:.5rem}
+    .ticker-label::before{content:'';width:5px;height:5px;background:var(--green);border-radius:50%;
+      animation:pulse 1.5s infinite;box-shadow:0 0 5px var(--green)}
+    .ticker{background:rgba(8,18,32,.6);border:1px solid rgba(0,170,255,.2);
+      border-left:3px solid var(--blue);padding:.7rem 1rem;overflow:hidden;position:relative;backdrop-filter:blur(8px)}
+    .ticker::after{content:'';position:absolute;right:0;top:0;bottom:0;width:60px;
+      background:linear-gradient(to right,transparent,rgba(8,18,32,.7));pointer-events:none}
+    .ticker-track{display:flex;animation:tickerScroll 30s linear infinite;white-space:nowrap}
+    .ticker-track:hover{animation-play-state:paused}
+    .ticker-item{display:flex;align-items:center;gap:.5rem;padding-right:2.5rem;
+      font-family:'Barlow Condensed',sans-serif;font-size:.8rem;flex-shrink:0}
+    .t-card{color:rgba(255,255,255,.8)}.t-bid{color:var(--green);font-weight:700}.t-sep{color:rgba(0,170,255,.3)}
+
+    /* ── SECTION 2: HOBBY IS BROKEN ── */
+    .problem-section{background:var(--deep1);padding:6rem 2rem;position:relative}
+    .problem-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(255,59,92,.6),transparent)}
+    .problem-inner{max-width:1100px;margin:0 auto}
+    .problem-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
+      background:rgba(255,59,92,.1);border:1px solid rgba(255,59,92,.1);margin-top:3rem}
+    .problem-item{background:var(--deep2);padding:2rem;position:relative;overflow:hidden;transition:background .2s}
+    .problem-item:hover{background:var(--deep3)}
+    .problem-item::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,var(--red),rgba(255,59,92,.2))}
+    .problem-tag{font-family:'Barlow Condensed',sans-serif;font-size:.58rem;font-weight:700;
+      letter-spacing:.28em;text-transform:uppercase;color:rgba(255,59,92,.8);margin-bottom:.45rem}
+    .problem-item h3{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.06em;
+      color:#fff;margin-bottom:.5rem;line-height:1.1}
+    .problem-item p{font-size:.84rem;color:rgba(255,255,255,.55);font-weight:300;line-height:1.75}
+    .problem-item p strong{color:rgba(255,255,255,.85);font-weight:600}
+    .problem-pivot{text-align:center;padding:2.5rem 2rem;border:1px solid rgba(0,170,255,.2);
+      background:rgba(0,170,255,.04);margin-top:1px;position:relative}
+    .problem-pivot::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--blue),transparent)}
+    .problem-pivot-label{font-family:'Barlow Condensed',sans-serif;font-size:.65rem;font-weight:700;
+      letter-spacing:.35em;text-transform:uppercase;color:var(--blue);margin-bottom:.7rem}
+    .problem-pivot h3{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);
+      letter-spacing:.06em;color:#fff;line-height:1.1;margin-bottom:.7rem}
+    .problem-pivot h3 span{background:linear-gradient(135deg,var(--blue-bright),var(--blue));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .problem-pivot p{font-size:.9rem;color:rgba(255,255,255,.55);font-weight:300;max-width:500px;margin:0 auto;line-height:1.8}
+
+    /* ── SECTION 3: ISOVAULT INTRO ── */
+    /* ── SECTION 4: COLLECTION IN 3D ── */
+    .vault-demo-section{background:linear-gradient(180deg,var(--deep1),#0A1A2E 50%,var(--deep1));
+      padding:6rem 2rem;position:relative;overflow:hidden}
+    .vault-demo-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,var(--blue),transparent)}
+    .vault-demo-inner{max-width:1100px;margin:0 auto}
+    .vault-demo-layout{display:grid;grid-template-columns:1fr 260px 1fr;gap:2rem;align-items:start}
+    .card-selector{display:flex;flex-direction:column;gap:.8rem}
+    .card-selector-label{font-family:'Barlow Condensed',sans-serif;font-size:.62rem;font-weight:700;
+      letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.3rem}
+    .card-thumb{background:var(--deep2);border:1px solid var(--deep-border);padding:.75rem;
+      cursor:pointer;transition:border-color .25s,background .25s;display:flex;align-items:center;gap:.7rem}
+    .card-thumb:hover{border-color:rgba(0,170,255,.4);background:var(--deep3)}
+    .card-thumb.active{border-color:var(--blue);background:rgba(0,170,255,.08)}
+    .card-thumb-img{width:40px;height:56px;object-fit:cover;background:var(--deep3);flex-shrink:0}
+    .card-thumb-name{font-family:'Barlow Condensed',sans-serif;font-size:.78rem;font-weight:700;color:#fff;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .card-thumb-num{font-size:.65rem;color:var(--blue);font-family:'Barlow Condensed',sans-serif;letter-spacing:.1em}
+    .viewer-center{display:flex;flex-direction:column;align-items:center;gap:1.2rem}
+    .card-3d-scene{width:220px;height:308px;perspective:1200px;cursor:grab;position:relative}
+    .card-3d-scene:active{cursor:grabbing}
+    .card-3d{position:relative;transform-style:preserve-3d;transform:rotateX(-8deg) rotateY(15deg);
+      margin:22% 8% 2% 8%;width:86%;height:77%}
+    .card-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;
+      -webkit-backface-visibility:hidden;border-radius:8px;overflow:hidden;
+      box-shadow:0 20px 60px rgba(0,0,0,.7),0 0 0 1px rgba(0,170,255,.2)}
+    .card-face-back{transform:rotateY(180deg) translateZ(2px)}
+    .card-face img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+    .card-face-ph{width:100%;height:100%;background:linear-gradient(160deg,#112840,#1A3A5C,#0D1F33);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem}
+    .card-face-ph .ph-ico{font-size:2.5rem;opacity:.2}
+    .card-face-ph .ph-txt{font-family:'Barlow Condensed',sans-serif;font-size:.65rem;font-weight:700;
+      letter-spacing:.2em;text-transform:uppercase;color:rgba(0,170,255,.35);text-align:center;padding:0 .8rem}
+    .ctrl-row{display:flex;gap:.4rem}
+    .ctrl-btn{font-family:'Barlow Condensed',sans-serif;font-size:.62rem;font-weight:700;
+      letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.65);
+      background:var(--deep2);border:1px solid var(--deep-border);padding:.35rem .8rem;cursor:pointer;
+      transition:border-color .2s,color .2s}
+    .ctrl-btn:hover,.ctrl-btn.active{border-color:rgba(0,170,255,.5);color:var(--blue);background:rgba(0,170,255,.06)}
+    .viewer-hint{font-family:'Barlow Condensed',sans-serif;font-size:.58rem;font-weight:700;
+      letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.25)}
+    .card-info-col{padding-top:.5rem}
+    .info-player{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.06em;color:#fff;line-height:1;margin-bottom:.25rem}
+    .info-set{font-family:'Barlow Condensed',sans-serif;font-size:.72rem;font-weight:700;
+      letter-spacing:.15em;text-transform:uppercase;color:var(--blue);margin-bottom:1.2rem}
+    .info-section-lbl{font-family:'Barlow Condensed',sans-serif;font-size:.58rem;font-weight:700;
+      letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.4rem}
+    .variant-pills{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.2rem}
+    .variant-pill{font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;
+      letter-spacing:.1em;text-transform:uppercase;padding:.28rem .75rem;border:1px solid;
+      cursor:pointer;transition:opacity .2s,transform .15s;user-select:none}
+    .variant-pill:hover{transform:translateY(-1px)}
+    .variant-pill.active{box-shadow:0 0 8px rgba(0,170,255,.3)}
+    .market-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+      background:var(--deep-border);border:1px solid var(--deep-border);margin-bottom:.5rem}
+    .price-box{background:var(--deep2);padding:.8rem;text-align:center}
+    .price-lbl{font-family:'Barlow Condensed',sans-serif;font-size:.52rem;font-weight:700;
+      letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.25rem}
+    .price-val{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.04em}
+    .price-val.green{color:var(--green)}.price-val.red{color:var(--red)}
+    .price-val.blue{background:linear-gradient(135deg,var(--blue-bright),var(--blue));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .vault-loading{text-align:center;padding:3rem;font-family:'Barlow Condensed',sans-serif;
+      font-size:.78rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,170,255,.4)}
+
+    /* ── SECTION 5: ISO/GRADING TECH ── */
+    .isograding-section{background:var(--deep1);padding:7rem 2rem;position:relative}
+    .isograding-section::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--green),var(--blue),var(--green),transparent)}
+    .isograding-inner{max-width:1100px;margin:0 auto}
+    .isog-pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+      background:rgba(0,232,135,.1);border:1px solid rgba(0,232,135,.1);margin-bottom:4rem}
+    .isog-pillar{background:var(--deep2);padding:2.2rem 1.8rem;position:relative;overflow:hidden;transition:background .2s}
+    .isog-pillar:hover{background:var(--deep3)}
+    .isog-pillar::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,var(--green),transparent);opacity:.6}
+    .isog-pillar-icon{font-size:2.2rem;margin-bottom:.8rem}
+    .isog-pillar-title{font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;
+      letter-spacing:.12em;text-transform:uppercase;color:#fff;margin-bottom:.6rem}
+    .isog-pillar p{font-size:.84rem;color:rgba(255,255,255,.5);line-height:1.75;font-weight:300}
+    .isog-scale{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;
+      padding:3rem;background:var(--deep2);border:1px solid rgba(0,232,135,.1);position:relative}
+    .isog-scale::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,var(--green),transparent)}
+    .isog-weight-title{font-family:'Barlow Condensed',sans-serif;font-size:.65rem;font-weight:700;
+      letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:1.2rem}
+    .isog-weight-item{display:grid;grid-template-columns:80px 1fr 40px;gap:.8rem;align-items:center;margin-bottom:.8rem}
+    .isog-weight-label{font-family:'Barlow Condensed',sans-serif;font-size:.8rem;font-weight:700;
+      letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+    .isog-weight-bar-wrap{background:rgba(255,255,255,.06);height:8px;border-radius:4px;overflow:hidden}
+    .isog-weight-bar{height:100%;border-radius:4px}
+    .isog-weight-pct{font-family:'Bebas Neue',sans-serif;font-size:1rem;color:rgba(255,255,255,.5)}
+    .isog-weight-note{font-size:.76rem;color:rgba(255,255,255,.3);font-style:italic;margin-top:1rem;line-height:1.6}
+
+    /* ── SECTION 6: HOTSPOTS ── */
+    .hotspots-section{background:var(--deep2);padding:7rem 2rem;position:relative}
+    .hotspots-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,var(--green),transparent)}
+    .hotspots-inner{max-width:1100px;margin:0 auto}
+    .isog-card-demo{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;margin-top:3rem}
+    .isog-card-wrap{display:flex;flex-direction:column;align-items:center;gap:1rem}
+    .isog-card-face{width:280px;height:392px;background:linear-gradient(160deg,#112840,#143050);
+      border:1px solid rgba(0,170,255,.2);border-radius:8px;position:relative;overflow:visible;
+      box-shadow:0 20px 60px rgba(0,0,0,.6)}
+    .isog-card-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;gap:.5rem}
+    .isog-card-label{font-family:'Barlow Condensed',sans-serif;font-size:.62rem;font-weight:700;
+      letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.25);text-align:center}
+    .hotspot{position:absolute;width:32px;height:32px;cursor:pointer;transform:translate(-50%,-50%);z-index:5}
+    .hotspot-ring{position:absolute;inset:0;border-radius:50%;border:2px solid;animation:hotspotPulse 2s infinite}
+    .hotspot-dot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:10px;height:10px;border-radius:50%}
+    @keyframes hotspotPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.3}}
+    .hotspot-tooltip{position:absolute;bottom:130%;left:50%;transform:translateX(-50%);
+      background:rgba(8,18,32,.97);border:1px solid rgba(0,170,255,.3);
+      padding:.8rem 1rem;min-width:170px;pointer-events:none;opacity:0;transition:opacity .2s;z-index:10;
+      white-space:nowrap}
+    .hotspot:hover .hotspot-tooltip{opacity:1}
+    .ht-issue{font-family:'Barlow Condensed',sans-serif;font-size:.82rem;font-weight:700;
+      letter-spacing:.08em;color:#fff;margin-bottom:.3rem}
+    .ht-severity{font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;
+      letter-spacing:.12em;text-transform:uppercase;margin-bottom:.2rem}
+    .ht-impact{font-size:.75rem;color:rgba(255,255,255,.5)}
+    .isog-grade-panel{background:var(--deep1);border:1px solid rgba(0,232,135,.2);padding:2.2rem}
+    .isog-grade-header{margin-bottom:1.5rem;padding-bottom:1.2rem;border-bottom:1px solid rgba(255,255,255,.06)}
+    .isog-grade-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:.62rem;font-weight:700;
+      letter-spacing:.25em;text-transform:uppercase;color:rgba(0,232,135,.6);margin-bottom:.3rem}
+    .isog-grade-num{font-family:'Bebas Neue',sans-serif;font-size:5rem;line-height:1;letter-spacing:.04em;
+      background:linear-gradient(135deg,var(--green),var(--blue));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .isog-grade-sub{font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:700;
+      letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+    .isog-grade-row{display:grid;grid-template-columns:70px 1fr 70px;gap:.8rem;align-items:center;margin-bottom:.8rem}
+    .isog-grade-cat{font-family:'Barlow Condensed',sans-serif;font-size:.72rem;font-weight:700;
+      letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+    .isog-grade-bar-wrap{background:rgba(255,255,255,.06);height:6px;border-radius:3px;overflow:hidden}
+    .isog-grade-bar{height:100%;border-radius:3px}
+    .isog-grade-score{font-family:'Bebas Neue',sans-serif;font-size:.9rem;color:#fff;text-align:right}
+    .isog-grade-score span{color:rgba(255,255,255,.3);font-size:.75rem}
+    .isog-grade-footer{margin-top:1.2rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.06);
+      display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+    .isog-ai-badge{font-family:'Barlow Condensed',sans-serif;font-size:.62rem;font-weight:700;
+      letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35)}
+    .isog-risk-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+      background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.05);margin-top:4rem}
+    .isog-risk-item{background:var(--deep1);padding:2rem 1.8rem;position:relative;transition:background .2s}
+    .isog-risk-item:hover{background:var(--deep3)}
+    .isog-risk-badge{display:inline-flex;align-items:center;gap:.35rem;font-family:'Barlow Condensed',sans-serif;
+      font-size:.65rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+      padding:.3rem .8rem;border:1px solid;margin-bottom:.8rem}
+    .isog-risk-item p{font-size:.84rem;color:rgba(255,255,255,.5);line-height:1.75;font-weight:300}
+
+
+    /* ── FLOW MAP ── */
+    .flow-section{background:var(--deep1);padding:7rem 2rem;position:relative;overflow:hidden}
+    .flow-section::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--blue),var(--green),var(--blue),transparent)}
+    .flow-inner{max-width:1200px;margin:0 auto}
+
+    /* GUARANTEE BANNER */
+    .guarantee-banner{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+      background:rgba(0,232,135,.12);border:1px solid rgba(0,232,135,.12);
+      margin-bottom:5rem;position:relative}
+    .guarantee-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--green),transparent)}
+    .guarantee-item{background:var(--deep2);padding:1.5rem;text-align:center}
+    .guarantee-icon{font-size:1.8rem;margin-bottom:.5rem}
+    .guarantee-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;
+      color:var(--green);line-height:1;margin-bottom:.3rem}
+    .guarantee-desc{font-size:.75rem;color:rgba(255,255,255,.5);font-weight:300;line-height:1.5}
+
+    /* FLOW MAP CONTAINER */
+    .flow-map{position:relative;padding:2rem 0}
+
+    /* ACTOR LABELS */
+    .flow-actors{display:grid;grid-template-columns:1fr 2fr 1fr;gap:0;margin-bottom:2rem}
+    .flow-actor{text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:.65rem;
+      font-weight:700;letter-spacing:.25em;text-transform:uppercase;padding:.35rem .8rem;
+      border:1px solid}
+    .actor-buyer{color:var(--blue);border-color:rgba(0,170,255,.3);background:rgba(0,170,255,.06)}
+    .actor-hub{color:var(--green);border-color:rgba(0,232,135,.3);background:rgba(0,232,135,.06)}
+    .actor-seller{color:var(--gold);border-color:rgba(255,184,0,.3);background:rgba(255,184,0,.06)}
+
+    /* FLOW NODES */
+    .flow-nodes{display:flex;flex-direction:column;gap:0;position:relative}
+
+    /* VERTICAL SPINE */
+    .flow-nodes::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:2px;
+      background:linear-gradient(180deg,var(--blue),var(--green),var(--gold),var(--green),var(--blue));
+      transform:translateX(-50%);opacity:.3}
+
+    .flow-row{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:center;
+      position:relative;min-height:80px}
+
+    /* NODE BUBBLE */
+    .flow-node{display:flex;flex-direction:column;align-items:center;position:relative;
+      z-index:2;cursor:pointer}
+    .flow-node-circle{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;
+      justify-content:center;font-size:1.4rem;border:2px solid;position:relative;
+      transition:transform .25s,box-shadow .25s;background:var(--deep2)}
+    .flow-node:hover .flow-node-circle{transform:scale(1.15)}
+    .flow-node-label{font-family:'Barlow Condensed',sans-serif;font-size:.6rem;font-weight:700;
+      letter-spacing:.15em;text-transform:uppercase;text-align:center;margin-top:.4rem;
+      max-width:80px;line-height:1.3}
+
+    /* NODE COLORS */
+    .node-buyer .flow-node-circle{border-color:var(--blue);box-shadow:0 0 0 0 rgba(0,170,255,0)}
+    .node-buyer:hover .flow-node-circle{box-shadow:0 0 20px rgba(0,170,255,.4)}
+    .node-buyer .flow-node-label{color:var(--blue)}
+    .node-hub .flow-node-circle{border-color:var(--green);box-shadow:0 0 0 0 rgba(0,232,135,0)}
+    .node-hub:hover .flow-node-circle{box-shadow:0 0 20px rgba(0,232,135,.4)}
+    .node-hub .flow-node-label{color:var(--green)}
+    .node-seller .flow-node-circle{border-color:var(--gold);box-shadow:0 0 0 0 rgba(255,184,0,0)}
+    .node-seller:hover .flow-node-circle{box-shadow:0 0 20px rgba(255,184,0,.4)}
+    .node-seller .flow-node-label{color:var(--gold)}
+    .node-red .flow-node-circle{border-color:var(--red)}
+    .node-red:hover .flow-node-circle{box-shadow:0 0 20px rgba(255,59,92,.4)}
+    .node-red .flow-node-label{color:var(--red)}
+
+    /* CONNECTOR ARROWS */
+    .flow-connector{display:flex;align-items:center;justify-content:center;position:relative;
+      z-index:1;padding:0 .5rem}
+    .flow-connector-line{height:2px;background:linear-gradient(90deg,var(--c-from),var(--c-to));
+      flex:1;opacity:.4}
+    .flow-connector-arrow{font-size:.9rem;color:rgba(255,255,255,.3);flex-shrink:0;padding:0 .2rem}
+
+    /* SPACER for alignment */
+    .flow-empty{display:flex;align-items:center;justify-content:center;min-height:80px}
+
+    /* STEP LABEL in middle */
+    .flow-step-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;
+      text-align:center;padding:.5rem}
+    .flow-step-num{font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;
+      color:rgba(255,255,255,.2)}
+    .flow-step-name{font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;
+      letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-top:.1rem;
+      max-width:100px;line-height:1.3}
+
+    /* POPUP */
+    .flow-popup{display:none;position:absolute;z-index:100;width:280px;
+      background:rgba(6,15,28,.98);border:1px solid;padding:1.2rem;
+      box-shadow:0 12px 40px rgba(0,0,0,.7);pointer-events:none}
+    .flow-popup.popup-buyer{border-color:rgba(0,170,255,.4)}
+    .flow-popup.popup-hub{border-color:rgba(0,232,135,.4)}
+    .flow-popup.popup-seller{border-color:rgba(255,184,0,.4)}
+    .flow-popup.popup-red{border-color:rgba(255,59,92,.4)}
+    .flow-node:hover .flow-popup{display:block}
+
+    /* Position popups: left side nodes → popup on right, right side → left, center → above */
+    .col-left .flow-popup{left:calc(100% + 12px);top:50%;transform:translateY(-50%)}
+    .col-right .flow-popup{right:calc(100% + 12px);top:50%;transform:translateY(-50%)}
+    .col-center .flow-popup{left:50%;transform:translateX(-50%);bottom:calc(100% + 8px)}
+
+    .popup-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:.56rem;font-weight:700;
+      letter-spacing:.22em;text-transform:uppercase;margin-bottom:.4rem}
+    .popup-buyer .popup-eyebrow{color:rgba(0,170,255,.7)}
+    .popup-hub .popup-eyebrow{color:rgba(0,232,135,.7)}
+    .popup-seller .popup-eyebrow{color:rgba(255,184,0,.7)}
+    .popup-red .popup-eyebrow{color:rgba(255,59,92,.7)}
+    .popup-title{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;
+      color:#fff;margin-bottom:.5rem;line-height:1.1}
+    .popup-body{font-size:.78rem;color:rgba(255,255,255,.6);line-height:1.7;font-weight:300}
+    .popup-body strong{color:#fff;font-weight:600}
+    .popup-badges{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.6rem}
+    .popup-badge{font-family:'Barlow Condensed',sans-serif;font-size:.56rem;font-weight:700;
+      letter-spacing:.14em;text-transform:uppercase;padding:.2rem .5rem;border:1px solid}
+    .badge-green{color:var(--green);border-color:rgba(0,232,135,.3);background:rgba(0,232,135,.06)}
+    .badge-blue{color:var(--blue);border-color:rgba(0,170,255,.3);background:rgba(0,170,255,.06)}
+    .badge-red{color:var(--red);border-color:rgba(255,59,92,.3);background:rgba(255,59,92,.06)}
+    .badge-gold{color:var(--gold);border-color:rgba(255,184,0,.3);background:rgba(255,184,0,.06)}
+
+    /* NO-DIRECT-SHIP CALLOUT */
+    .no-direct-ship{display:flex;align-items:center;justify-content:center;gap:1rem;
+      margin:2rem auto;max-width:700px;padding:1.2rem 2rem;
+      background:rgba(255,59,92,.06);border:1px solid rgba(255,59,92,.25);position:relative}
+    .no-direct-ship::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--red),transparent)}
+    .no-direct-ship-icon{font-size:2rem;flex-shrink:0}
+    .no-direct-ship-text h4{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;
+      letter-spacing:.06em;color:var(--red);margin-bottom:.2rem}
+    .no-direct-ship-text p{font-size:.8rem;color:rgba(255,255,255,.55);font-weight:300;line-height:1.6}
+
+    @media(max-width:960px){
+      .guarantee-banner{grid-template-columns:repeat(2,1fr)}
+      .col-left .flow-popup{left:0;top:calc(100% + 8px);transform:none}
+      .col-right .flow-popup{right:0;top:calc(100% + 8px);transform:none}
+      .flow-popup{width:220px}
+    }
+    @media(max-width:640px){
+      .guarantee-banner{grid-template-columns:1fr 1fr}
+      .flow-popup{width:190px;font-size:.72rem}
+    }
+    /* ── SECTION 7: THE PROCESS ── */
+    .how-section{background:var(--deep1);padding:6rem 2rem;position:relative}
+    .how-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,var(--blue),transparent)}
+    .how-inner{max-width:1000px;margin:0 auto}
+    .roadmap{position:relative;display:flex;flex-direction:column;gap:0}
+    .roadmap::before{content:'';position:absolute;left:2.75rem;top:2.75rem;bottom:2.75rem;
+      width:2px;background:linear-gradient(180deg,var(--blue),var(--blue-bright),var(--blue));opacity:.2}
+    .roadmap-step{display:grid;grid-template-columns:5.5rem 1fr;gap:2rem;position:relative;padding-bottom:3rem}
+    .roadmap-step:last-child{padding-bottom:0}
+    .roadmap-node{width:5.5rem;height:5.5rem;border-radius:50%;border:2px solid var(--deep-border);
+      background:var(--deep2);display:flex;flex-direction:column;align-items:center;
+      justify-content:center;position:relative;z-index:2;flex-shrink:0;transition:border-color .3s,box-shadow .3s}
+    .roadmap-step:hover .roadmap-node{border-color:var(--blue);box-shadow:0 0 20px rgba(0,170,255,.2)}
+    .roadmap-node-num{font-family:'Bebas Neue',sans-serif;font-size:.72rem;letter-spacing:.1em;color:var(--blue);line-height:1}
+    .roadmap-node-icon{font-size:1.5rem;line-height:1}
+    .roadmap-content{background:var(--deep2);border:1px solid var(--deep-border);padding:1.8rem 2rem;
+      position:relative;overflow:hidden;transition:border-color .3s,box-shadow .3s;align-self:center}
+    .roadmap-content::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;
+      background:linear-gradient(180deg,var(--blue-bright),var(--blue));opacity:0;transition:opacity .3s}
+    .roadmap-step:hover .roadmap-content{border-color:rgba(0,170,255,.35);box-shadow:0 4px 30px rgba(0,0,0,.4)}
+    .roadmap-step:hover .roadmap-content::before{opacity:1}
+    .roadmap-content::after{content:'';position:absolute;left:-8px;top:50%;transform:translateY(-50%);
+      width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-right:8px solid var(--deep2)}
+    .roadmap-step-tag{font-family:'Barlow Condensed',sans-serif;font-size:.6rem;font-weight:700;
+      letter-spacing:.28em;text-transform:uppercase;color:var(--blue);margin-bottom:.4rem}
+    .roadmap-step h3{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:.06em;
+      color:#fff;margin-bottom:.5rem;line-height:1}
+    .roadmap-step p{font-size:.88rem;color:rgba(255,255,255,.55);font-weight:300;line-height:1.75;max-width:580px;margin-bottom:.6rem}
+    .roadmap-badge{display:inline-flex;align-items:center;gap:.4rem;font-family:'Barlow Condensed',sans-serif;
+      font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+      padding:.25rem .7rem;border:1px solid rgba(0,170,255,.25);color:var(--blue);background:rgba(0,170,255,.06);margin-right:.4rem}
+    .roadmap-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor}
+
+    /* ── PROCESS SECTION (Section 7) ── */
+    .process-section{background:var(--deep1);padding:7rem 2rem;position:relative;overflow:hidden}
+    .process-section::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--blue),var(--green),var(--blue),transparent)}
+    .process-inner{max-width:1200px;margin:0 auto}
+
+    /* GUARANTEE BADGES */
+    .guarantee-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+      background:rgba(0,232,135,.12);border:1px solid rgba(0,232,135,.12);
+      margin-bottom:4rem;position:relative}
+    .guarantee-row::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--green),transparent)}
+    .guarantee-badge{background:var(--deep2);padding:1.4rem 1.2rem;display:flex;
+      align-items:center;gap:.9rem}
+    .gb-icon{font-size:1.6rem;flex-shrink:0}
+    .gb-text{font-family:'Inter',sans-serif;font-size:.84rem;font-weight:500;
+      letter-spacing:0;color:#fff;line-height:1.4}
+    .gb-text span{display:block;font-size:.78rem;font-weight:400;color:rgba(255,255,255,.65);
+      margin-top:.15rem}
+
+    /* HORIZONTAL FLOW MAP */
+    .flow-map{display:flex;align-items:flex-start;justify-content:center;
+      position:relative;padding:3rem 0 1.5rem;gap:0;flex-wrap:nowrap}
+
+    /* NODE */
+    .flow-node{display:flex;flex-direction:column;align-items:center;position:relative;
+      cursor:pointer;flex-shrink:0;width:110px}
+    .fn-icon{font-size:2rem;width:64px;height:64px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      border:2px solid var(--deep-border);background:var(--deep2);
+      transition:transform .25s,box-shadow .25s,border-color .25s;position:relative;z-index:2}
+    .flow-node:hover .fn-icon{transform:scale(1.12)}
+    .fn-label{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.05em;
+      color:#fff;margin-top:.55rem;text-align:center;line-height:1}
+    .fn-sublabel{font-family:'Inter',sans-serif;font-size:.8rem;font-weight:500;
+      letter-spacing:0;text-transform:none;color:rgba(255,255,255,.75);
+      margin-top:.2rem;text-align:center;line-height:1.3}
+
+    /* NODE COLORS */
+    .node-buyer .fn-icon{border-color:rgba(0,170,255,.5);background:rgba(0,170,255,.08)}
+    .node-buyer:hover .fn-icon{box-shadow:0 0 22px rgba(0,170,255,.4);border-color:var(--blue)}
+    .node-buyer .fn-label{color:var(--blue)}
+    .node-seller .fn-icon{border-color:rgba(255,184,0,.5);background:rgba(255,184,0,.08)}
+    .node-seller:hover .fn-icon{box-shadow:0 0 22px rgba(255,184,0,.4);border-color:var(--gold)}
+    .node-seller .fn-label{color:var(--gold)}
+    .node-hub .fn-icon{width:76px;height:76px;font-size:2.2rem;
+      border-color:rgba(0,232,135,.5);background:rgba(0,232,135,.08)}
+    .node-hub:hover .fn-icon{box-shadow:0 0 28px rgba(0,232,135,.5);border-color:var(--green)}
+    .node-hub .fn-label{color:var(--green)}
+    .node-hub{width:130px}
+    .node-delivery .fn-icon{border-color:rgba(0,170,255,.35);background:rgba(0,170,255,.05)}
+    .node-delivery:hover .fn-icon{box-shadow:0 0 22px rgba(0,170,255,.3);border-color:var(--blue)}
+    .node-delivery .fn-label{color:var(--blue)}
+    .node-receive .fn-icon{border-color:rgba(255,184,0,.5);background:rgba(255,184,0,.08)}
+    .node-receive:hover .fn-icon{box-shadow:0 0 22px rgba(255,184,0,.4);border-color:var(--gold)}
+    .node-receive .fn-label{color:var(--gold)}
+
+    /* FLOW ARROWS */
+    .flow-arrow{display:flex;flex-direction:column;align-items:center;justify-content:center;
+      flex-shrink:0;width:80px;position:relative;top:-8px}
+    .fa-line{width:100%;height:2px;background:linear-gradient(90deg,rgba(0,170,255,.3),rgba(0,232,135,.3))}
+    .fa-label{font-family:'Inter',sans-serif;font-size:.72rem;font-weight:500;
+      letter-spacing:0;text-transform:none;color:rgba(255,255,255,.65);
+      margin-top:.35rem;text-align:center;white-space:nowrap}
+    .fa-arrow{font-size:.8rem;color:rgba(0,170,255,.4);margin-top:.2rem}
+
+    /* HOVER POPUP — appears ABOVE node */
+    .flow-popup{display:none;position:absolute;bottom:calc(100% + 14px);left:50%;
+      transform:translateX(-50%);width:280px;z-index:200;
+      background:rgba(6,15,28,.97);border:1px solid rgba(0,170,255,.3);
+      padding:1.2rem 1.4rem;box-shadow:0 12px 40px rgba(0,0,0,.8);pointer-events:none}
+    .flow-popup::after{content:'';position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);
+      width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;
+      border-top:7px solid rgba(0,170,255,.3)}
+    .flow-node:hover .flow-popup{display:block}
+    .fp-left{left:0;transform:none}
+    .fp-left::after{left:32px;transform:none}
+    .fp-wide{width:320px;left:50%;transform:translateX(-50%)}
+    .fp-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.06em;
+      color:#fff;margin-bottom:.6rem;line-height:1.1}
+    .flow-popup ul{padding-left:1.1rem;display:flex;flex-direction:column;gap:.3rem}
+    .flow-popup ul li{font-family:'Inter',sans-serif;font-size:.82rem;color:rgba(255,255,255,.8);font-weight:400;line-height:1.6}
+    .flow-popup ul li strong{color:#fff;font-weight:600}
+    .fp-guarantee{margin-top:.75rem;font-family:'Inter',sans-serif;font-size:.76rem;
+      font-weight:600;letter-spacing:0;text-transform:none;
+      padding:.35rem .75rem;background:rgba(0,170,255,.1);
+      border:1px solid rgba(0,170,255,.25);color:var(--blue)}
+
+    /* NEVER DIRECT CALLOUT */
+    .never-direct{display:flex;align-items:center;gap:1.2rem;margin:2.5rem auto 0;
+      max-width:760px;padding:1.4rem 2rem;
+      background:rgba(255,59,92,.06);border:1px solid rgba(255,59,92,.25);position:relative}
+    .never-direct::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--red),transparent)}
+    .nd-icon{font-size:2.2rem;flex-shrink:0}
+    .nd-title{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;
+      color:var(--red);margin-bottom:.25rem}
+    .nd-sub{font-family:'Inter',sans-serif;font-size:.85rem;color:rgba(255,255,255,.75);font-weight:400;line-height:1.65}
+
+    /* TRACKING ROW */
+    .tracking-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+      background:var(--deep-border);border:1px solid var(--deep-border);margin-top:3rem}
+    .tracking-item{background:var(--deep2);padding:1.6rem 1.4rem;position:relative;overflow:hidden}
+    .tracking-item::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,var(--blue),transparent);opacity:.5}
+    .ti-icon{font-size:1.8rem;margin-bottom:.65rem}
+    .ti-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.06em;
+      color:#fff;margin-bottom:.35rem}
+    .ti-desc{font-family:'Inter',sans-serif;font-size:.84rem;color:rgba(255,255,255,.75);font-weight:400;line-height:1.6}
+
+    @media(max-width:900px){
+      .flow-map{flex-wrap:wrap;gap:1.5rem;justify-content:center}
+      .flow-arrow{display:none}
+      .guarantee-row{grid-template-columns:repeat(2,1fr)}
+      .tracking-row{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:520px){
+      .guarantee-row{grid-template-columns:1fr}
+      .tracking-row{grid-template-columns:1fr}
+      .flow-popup{width:220px}
+    }
+
+    /* ── SECTION 8: GRAIL SUITES ── */
+    .slash-section{background:var(--deep2);padding:6rem 2rem;position:relative}
+    .slash-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,var(--blue),transparent)}
+    .slash-inner{max-width:1100px;margin:0 auto}
+    .slash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+      background:var(--deep-border);border:1px solid var(--deep-border);margin-top:3rem}
+    .slash-item{background:var(--deep1);padding:1.4rem 1.2rem;position:relative;
+      transition:background .2s;text-decoration:none;display:block}
+    .slash-item:hover{background:var(--deep3)}
+    .slash-item::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,var(--blue),transparent);opacity:0;transition:opacity .3s}
+    .slash-item:hover::before{opacity:1}
+    .slash-item::after{content:'→';position:absolute;top:1rem;right:1rem;
+      font-family:'Barlow Condensed',sans-serif;font-size:.85rem;color:rgba(0,170,255,0);transition:color .2s}
+    .slash-item:hover::after{color:var(--blue)}
+    .slash-name{font-family:'Barlow Condensed',sans-serif;font-size:.88rem;font-weight:700;
+      letter-spacing:.1em;color:#fff;margin-bottom:.35rem}
+    .slash-name span{color:var(--blue)}
+    .slash-desc{font-size:.78rem;color:rgba(255,255,255,.4);font-weight:300;line-height:1.55}
+    .slash-status{display:inline-flex;align-items:center;gap:.3rem;margin-top:.6rem;
+      font-family:'Barlow Condensed',sans-serif;font-size:.56rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase}
+    .status-live{color:var(--green)}.status-soon{color:var(--gold)}.status-future{color:rgba(255,255,255,.25)}
+    .status-dot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:pulse 1.5s infinite}
+
+    /* ── SECTION 9: WHAT WE BUILT ── */
+    .built-section{background:var(--deep1);padding:6rem 2rem;position:relative}
+    .built-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,var(--blue),transparent)}
+    .built-inner{max-width:1100px;margin:0 auto}
+    .built-market{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;margin-bottom:5rem}
+    .built-market-text .section-eyebrow,.built-market-text .section-title{text-align:left}
+    .built-market-text p{font-size:.88rem;color:rgba(255,255,255,.5);font-weight:300;line-height:1.85;margin-bottom:.8rem}
+    .market-ui{background:var(--deep2);border:1px solid var(--deep-border);position:relative;overflow:hidden}
+    .market-ui::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,var(--blue),transparent)}
+    .market-ui-header{display:flex;justify-content:space-between;align-items:center;
+      padding:1.1rem 1.4rem;border-bottom:1px solid var(--deep-border)}
+    .market-card-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem;color:#fff}
+    .market-card-sub{font-size:.68rem;color:rgba(255,255,255,.4);font-weight:300}
+    .live-badge{display:flex;align-items:center;gap:.3rem;background:rgba(0,232,135,.1);
+      border:1px solid rgba(0,232,135,.25);color:var(--green);font-family:'Barlow Condensed',sans-serif;
+      font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;padding:.2rem .6rem}
+    .live-badge::before{content:'';width:5px;height:5px;background:var(--green);border-radius:50%;animation:pulse 1.5s infinite}
+    .m-price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--deep-border)}
+    .m-price-box{background:var(--deep2);padding:1rem;text-align:center}
+    .m-price-lbl{font-family:'Barlow Condensed',sans-serif;font-size:.55rem;font-weight:700;
+      letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.3rem}
+    .m-price-val{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;line-height:1}
+    .m-price-val.bid{color:var(--green)}.m-price-val.ask{color:var(--red)}
+    .m-price-val.last{background:linear-gradient(135deg,var(--blue-bright),var(--blue));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .iso-rows{padding:.8rem 1.2rem;display:flex;flex-direction:column;gap:.4rem}
+    .iso-row{display:flex;justify-content:space-between;align-items:center;background:var(--deep3);padding:.5rem .8rem}
+    .iso-row-info{font-family:'Barlow Condensed',sans-serif;font-size:.78rem;color:rgba(255,255,255,.6)}
+    .iso-row-right{display:flex;gap:.5rem;align-items:center}
+    .iso-badge{font-family:'Barlow Condensed',sans-serif;font-size:.56rem;font-weight:700;
+      letter-spacing:.15em;text-transform:uppercase;color:var(--blue);border:1px solid rgba(0,170,255,.3);padding:.1rem .35rem}
+    .iso-price{font-family:'Barlow Condensed',sans-serif;font-size:.88rem;font-weight:700;
+      background:linear-gradient(135deg,var(--blue-bright),var(--blue));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .screens-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;margin-top:3rem}
+    .screen-frame{background:var(--deep2);border:1px solid var(--deep-border);
+      position:relative;overflow:hidden;aspect-ratio:16/10;display:flex;flex-direction:column}
+    .screen-frame::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,var(--blue),var(--blue-bright),var(--blue))}
+    .screen-chrome{display:flex;align-items:center;gap:.4rem;padding:.55rem .8rem;
+      border-bottom:1px solid var(--deep-border);background:rgba(0,0,0,.2)}
+    .chrome-dot{width:8px;height:8px;border-radius:50%}
+    .chrome-dot:nth-child(1){background:#FF5F56}.chrome-dot:nth-child(2){background:#FFBD2E}.chrome-dot:nth-child(3){background:#27C93F}
+    .chrome-bar{flex:1;background:rgba(255,255,255,.05);border-radius:3px;height:16px;margin:0 1rem}
+    .screen-body{flex:1;display:flex;align-items:center;justify-content:center;
+      flex-direction:column;gap:.7rem;padding:1.5rem}
+    .screen-icon{font-size:2.2rem;opacity:.2}
+    .screen-label{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;color:rgba(255,255,255,.3)}
+    .screen-sublabel{font-family:'Barlow Condensed',sans-serif;font-size:.6rem;font-weight:700;
+      letter-spacing:.2em;text-transform:uppercase;color:rgba(0,170,255,.3)}
+    .built-stats{display:flex;justify-content:space-around;flex-wrap:wrap;gap:2rem;
+      margin-top:4rem;padding-top:4rem;border-top:1px solid var(--deep-border)}
+    .stat-item{text-align:center}
+    .stat-num{font-family:'Bebas Neue',sans-serif;font-size:3rem;letter-spacing:.06em;
+      background:linear-gradient(135deg,var(--blue-bright),var(--blue));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+    .stat-label{font-family:'Barlow Condensed',sans-serif;font-size:.62rem;font-weight:700;
+      letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:.3rem}
+
+    /* ── SECTION 10: KICKSTARTER COMING SOON ── */
+    .ks-section{background:var(--deep2);padding:7rem 2rem;position:relative;overflow:hidden}
+    .ks-section::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--red),transparent)}
+    .ks-section-inner{max-width:1200px;margin:0 auto}
+    .ks-header{text-align:center;margin-bottom:3.5rem}
+    .ks-coming-badge{display:inline-flex;align-items:center;gap:.5rem;
+      font-family:'Barlow Condensed',sans-serif;font-size:.72rem;font-weight:700;
+      letter-spacing:.25em;text-transform:uppercase;color:var(--red);
+      border:1px solid rgba(255,59,92,.3);background:rgba(255,59,92,.08);
+      padding:.4rem 1.2rem;margin-bottom:1.2rem}
+    .ks-coming-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse 1.5s infinite}
+    .ks-tiers-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+      background:rgba(255,59,92,.15);border:1px solid rgba(255,59,92,.15)}
+    .ks-tier{background:var(--deep1);padding:1.8rem 1.4rem;position:relative;overflow:hidden;
+      transition:background .25s;display:flex;flex-direction:column}
+    .ks-tier:hover{background:var(--deep3)}
+    .ks-tier::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,var(--red),rgba(255,59,92,.2));opacity:.6}
+    .ks-tier.featured{background:rgba(255,59,92,.06)}.ks-tier.featured::before{opacity:1}
+    .ks-tier-badge{font-family:'Barlow Condensed',sans-serif;font-size:.58rem;font-weight:700;
+      letter-spacing:.25em;text-transform:uppercase;color:var(--red);margin-bottom:.45rem}
+    .ks-tier-name{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.08em;color:#fff;margin-bottom:.3rem;line-height:1}
+    .ks-tier-price{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.04em;
+      background:linear-gradient(135deg,#FF6B7A,var(--red));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:1rem}
+    .ks-tier-perks{list-style:none;flex:1;margin-bottom:1rem}
+    .ks-tier-perks li{font-family:'Barlow Condensed',sans-serif;font-size:.76rem;color:rgba(255,255,255,.55);
+      padding:.22rem 0;display:flex;align-items:flex-start;gap:.4rem;line-height:1.4}
+    .ks-tier-perks li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0}
+    .ks-tier-seats{font-family:'Barlow Condensed',sans-serif;font-size:.6rem;font-weight:700;
+      letter-spacing:.18em;text-transform:uppercase;color:rgba(255,59,92,.6);margin-top:auto}
+    .ks-board-tier{grid-column:1/-1;background:linear-gradient(135deg,rgba(255,59,92,.1),rgba(204,0,48,.06));
+      border:1px solid rgba(255,59,92,.3);padding:2rem 2.5rem;
+      display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:2rem;position:relative;margin-top:1px}
+    .ks-board-tier::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--red),transparent)}
+    .board-name{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.06em;color:#fff}
+    .board-price{font-family:'Bebas Neue',sans-serif;font-size:3rem;
+      background:linear-gradient(135deg,#FF6B7A,var(--red));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .board-desc{font-size:.84rem;color:rgba(255,255,255,.5);max-width:500px;line-height:1.7}
+    .board-seats{text-align:right}
+    .board-seats-num{font-family:'Bebas Neue',sans-serif;font-size:3rem;color:rgba(255,59,92,.5)}
+    .board-seats-label{font-family:'Barlow Condensed',sans-serif;font-size:.6rem;font-weight:700;
+      letter-spacing:.2em;text-transform:uppercase;color:rgba(255,59,92,.4)}
+
+    /* WAITLIST FORM */
+    .waitlist-section{background:var(--deep1);padding:5rem 2rem;display:flex;
+      flex-direction:column;align-items:center;position:relative}
+    .waitlist-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,var(--blue),transparent)}
+    .waitlist-card{background:var(--deep2);border:1px solid var(--deep-border);
+      border-top:2px solid var(--blue);padding:3rem;max-width:540px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+    .waitlist-card h2{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.06em;color:#fff;margin-bottom:.4rem}
+    .waitlist-card>div>p{font-size:.86rem;color:rgba(255,255,255,.4);margin-bottom:1.8rem;font-weight:300}
+    .form-group{margin-bottom:.9rem}
+    .form-group label{display:block;font-family:'Barlow Condensed',sans-serif;font-size:.65rem;font-weight:700;
+      letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.3rem}
+    .form-group input,.form-group select{width:100%;background:var(--deep1);
+      border:1px solid var(--deep-border);color:#fff;padding:.72rem .9rem;
+      font-family:'Barlow',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s;-webkit-appearance:none}
+    .form-group input:focus,.form-group select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,170,255,.1)}
+    .form-group input::placeholder{color:rgba(255,255,255,.2)}
+    .form-group select option{background:var(--deep2);color:#fff}
+    .submit-btn{width:100%;background:linear-gradient(135deg,var(--blue),var(--blue-deep));
+      color:#fff;border:none;padding:1rem;font-family:'Bebas Neue',sans-serif;font-size:1.15rem;
+      letter-spacing:.18em;cursor:pointer;margin-top:.5rem;box-shadow:0 4px 20px var(--blue-glow);transition:opacity .2s}
+    .submit-btn:hover{opacity:.88}
+    .form-note{font-size:.7rem;color:rgba(255,255,255,.2);text-align:center;margin-top:.8rem;font-style:italic}
+    .success-msg{display:none;text-align:center;padding:2rem 0}
+    .success-msg .check{font-size:3rem;margin-bottom:1rem}
+    .success-msg h3{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;
+      background:linear-gradient(135deg,var(--blue-bright),var(--blue));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      letter-spacing:.08em;margin-bottom:.5rem}
+    .success-msg p{font-size:.86rem;color:rgba(255,255,255,.35)}
+
+    /* BOTTOM CTA — stacked centered */
+    .cta-bottom{background:var(--deep2);padding:5rem 2rem;text-align:center;
+      border-top:1px solid var(--deep-border);position:relative}
+    .cta-bottom::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,var(--red),transparent)}
+    .cta-bottom-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;
+      letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:2rem}
+    .cta-btn-row{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.2rem}
+    .btn-primary{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.15em;
+      color:#fff;background:linear-gradient(135deg,var(--blue),var(--blue-deep));
+      padding:.85rem 2.5rem;text-decoration:none;box-shadow:0 4px 24px var(--blue-glow);transition:opacity .2s;display:inline-block}
+    .btn-primary:hover{opacity:.88}
+    .btn-ks{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.15em;
+      color:#fff;background:linear-gradient(135deg,var(--red),#CC0030);
+      padding:.85rem 2.5rem;text-decoration:none;box-shadow:0 4px 24px rgba(255,59,92,.4);transition:opacity .2s;display:inline-block}
+    .btn-ks:hover{opacity:.88}
+    .cta-ks-badge{display:inline-flex;align-items:center;gap:.4rem;
+      font-family:'Barlow Condensed',sans-serif;font-size:.72rem;font-weight:700;
+      letter-spacing:.2em;text-transform:uppercase;color:var(--red);
+      border:1px solid rgba(255,59,92,.35);background:rgba(255,59,92,.08);
+      padding:.3rem .9rem;margin-bottom:2.5rem}
+    .cta-ks-badge::before{content:'';width:6px;height:6px;background:var(--red);border-radius:50%;animation:pulse 1.5s infinite}
+    .alpha-block{background:#fff;padding:1.6rem 2rem;max-width:340px;margin:0 auto;
+      display:flex;flex-direction:column;gap:.7rem;text-align:left}
+    .alpha-block-label{font-family:'Barlow Condensed',sans-serif;font-size:.62rem;font-weight:700;
+      letter-spacing:.25em;text-transform:uppercase;color:var(--deep1);
+      display:flex;align-items:center;gap:.4rem}
+    .alpha-block-label::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0}
+    .alpha-block h4{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;color:var(--deep1);line-height:1.1}
+    .alpha-block p{font-size:.74rem;color:#3A5068;line-height:1.5}
+    .alpha-block input{width:100%;background:#F6F8FB;border:1px solid #E2E8F0;color:var(--deep1);
+      padding:.65rem .9rem;font-family:'Barlow',sans-serif;font-size:.88rem;outline:none;transition:border-color .2s}
+    .alpha-block input:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(255,59,92,.1)}
+    .alpha-block input::placeholder{color:#B0BEC5}
+    .alpha-submit{width:100%;background:linear-gradient(135deg,var(--red),#CC0030);
+      color:#fff;border:none;padding:.7rem;font-family:'Bebas Neue',sans-serif;
+      font-size:1.05rem;letter-spacing:.12em;cursor:pointer;transition:opacity .2s}
+    .alpha-submit:hover{opacity:.85}
+    .alpha-success{display:none;text-align:center;font-family:'Barlow Condensed',sans-serif;
+      font-size:.82rem;font-weight:700;letter-spacing:.15em;color:var(--deep1);padding:.5rem 0}
+
+    /* FOOTER */
+    footer{background:#060F1C;border-top:1px solid var(--deep-border);padding:2.5rem;
+      display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+    footer p{font-size:.72rem;color:rgba(255,255,255,.3)}
+    .build-stamp{font-family:'Courier New',monospace;font-size:.6rem;color:rgba(0,170,255,.3);letter-spacing:.08em;margin-top:.2rem}
+    footer .links{display:flex;gap:1.5rem}
+    footer .links a{font-size:.72rem;color:rgba(255,255,255,.3);text-decoration:none;
+      font-family:'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase;transition:color .2s}
+    footer .links a:hover{color:var(--blue)}
+
+    /* RESPONSIVE */
+    @media(max-width:960px){
+      .isovault-hero{grid-template-columns:1fr;gap:3rem}
+      .isovault-features{grid-template-columns:1fr 1fr}
+      .vault-demo-layout{grid-template-columns:1fr}
+      .isog-scale{grid-template-columns:1fr;gap:2rem}
+      .isog-pillars{grid-template-columns:1fr}
+      .isog-card-demo{grid-template-columns:1fr}
+      .isog-risk-row{grid-template-columns:1fr}
+      .slash-grid{grid-template-columns:repeat(2,1fr)}
+      .built-market{grid-template-columns:1fr;gap:2.5rem}
+      .screens-grid{grid-template-columns:1fr}
+      .ks-tiers-grid{grid-template-columns:repeat(2,1fr)}
+      .ks-board-tier{grid-template-columns:1fr}
+      .problem-grid{grid-template-columns:1fr}
+    }
+    @media(max-width:640px){
+      nav ul{display:none}
+      .isovault-features{grid-template-columns:1fr}
+      .ks-tiers-grid{grid-template-columns:1fr}
+      .slash-grid{grid-template-columns:1fr 1fr}
+      footer{flex-direction:column;text-align:center}
+    }
+  </style>
+</head>
+<body>
+  <div class="global-scan"></div>
+
+  <!-- NAV -->
+  <nav id="main-nav">
+    <a href="#" class="nav-logo"><img src="/images/grailiso-logo.png" alt="GrailISO"/></a>
+    <ul>
+      <li><a href="#community">Community</a></li>
+      <li><a href="#collection-3d">Collection in 3D</a></li>
+      <li><a href="#isograding">ISO/GRADING</a></li>
+      <li><a href="#process">The Process</a></li>
+      <li><a href="#suites">Suites</a></li>
+      <li><a href="#kickstarter">Kickstarter</a></li>
+    </ul>
+    <div class="nav-ctas">
+      <a href="#waitlist" class="nav-waitlist">Join Waitlist</a>
+      <a href="#kickstarter" class="nav-ks">Kickstarter — Coming Soon</a>
+    </div>
+  </nav>
+
+  <!-- ══ 1: SPLASH ══ -->
+  <section class="hero" id="splash">
+    <div class="hero-grid"></div>
+    <div class="hero-bloom"></div>
+    <div class="hero-eyebrow">Stop Searching. Start Demanding. Find Your Grail.</div>
+    <h1 class="hero-title">Post Your<br><span class="accent">Grail.</span></h1>
+    <p class="hero-sub">
+      <strong>You name the card. You name the price.</strong> Sellers who have it respond. No negotiation. No searching. No waiting for someone to decide to list it.<br><br>
+      GrailISO is the only demand-first marketplace in the hobby. Post your ISO — the card comes to you.
+    </p>
+    <div class="ticker-wrap">
+      <div class="ticker-label">Live ISO Board</div>
+      <div class="ticker">
+        <div class="ticker-track">
+          <div class="ticker-item"><span class="t-card">2025 Topps B&W Griffey Jr. #116</span><span class="t-sep">·</span><span class="t-bid">ISO $1,600</span></div>
+          <div class="ticker-item"><span class="t-card">2023 Topps Chrome Ohtani Gold /50</span><span class="t-sep">·</span><span class="t-bid">ISO $2,200</span></div>
+          <div class="ticker-item"><span class="t-card">1952 Topps Mantle PSA 4</span><span class="t-sep">·</span><span class="t-bid">ISO $18,500</span></div>
+          <div class="ticker-item"><span class="t-card">Luka Dončić NT RC /99</span><span class="t-sep">·</span><span class="t-bid">ISO $9,000</span></div>
+          <div class="ticker-item"><span class="t-card">Wander Franco Bowman Chrome /10</span><span class="t-sep">·</span><span class="t-bid">ISO $3,800</span></div>
+          <div class="ticker-item"><span class="t-card">Charizard PSA 10 Base Set</span><span class="t-sep">·</span><span class="t-bid">ISO $12,000</span></div>
+          <div class="ticker-item"><span class="t-card">2025 Topps B&W Griffey Jr. #116</span><span class="t-sep">·</span><span class="t-bid">ISO $1,600</span></div>
+          <div class="ticker-item"><span class="t-card">2023 Topps Chrome Ohtani Gold /50</span><span class="t-sep">·</span><span class="t-bid">ISO $2,200</span></div>
+          <div class="ticker-item"><span class="t-card">1952 Topps Mantle PSA 4</span><span class="t-sep">·</span><span class="t-bid">ISO $18,500</span></div>
+          <div class="ticker-item"><span class="t-card">Luka Dončić NT RC /99</span><span class="t-sep">·</span><span class="t-bid">ISO $9,000</span></div>
+          <div class="ticker-item"><span class="t-card">Wander Franco Bowman Chrome /10</span><span class="t-sep">·</span><span class="t-bid">ISO $3,800</span></div>
+          <div class="ticker-item"><span class="t-card">Charizard PSA 10 Base Set</span><span class="t-sep">·</span><span class="t-bid">ISO $12,000</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 2: HOBBY IS BROKEN ══ -->
+  <section class="problem-section" id="problem">
+    <div class="problem-inner">
+      <div class="section-eyebrow" style="color:var(--red);">The Problem</div>
+      <div class="section-title">The Hobby Is Broken.</div>
+      <p class="section-sub" style="color:rgba(255,255,255,.4);">You've felt it every time you got burned, outbid, or got a card that looked nothing like the listing.</p>
+      <div class="problem-grid">
+        <div class="problem-item photon-border"><div class="problem-tag">The Big Marketplace</div><h3>Scroll Forever. Still Get Burned.</h3><p>Double-digit fees. No real authentication. Dispute a fake and spend a month fighting support. <strong>Built to sell everything — which means it protects nothing.</strong></p></div>
+        <div class="problem-item photon-border"><div class="problem-tag">The Grading Industry</div><h3>Three Brands. One Owner.</h3><p>The top three grading companies are owned by the same private equity group — controlling ~80% of the market. <strong>You're not choosing between competitors. You're choosing between labels on the same shelf.</strong></p></div>
+        <div class="problem-item photon-border"><div class="problem-tag">Every Marketplace</div><h3>Supply First. You Wait.</h3><p>Every platform waits for a seller to decide to list. Your grail might be in someone's binder right now — and <strong>no platform on earth can tell them you want it.</strong></p></div>
+        <div class="problem-item photon-border"><div class="problem-tag">The Pricing Tools</div><h3>Yesterday's Price. Not Today's.</h3><p>Historical comps tell you what sold last quarter. They don't tell you what five serious collectors are willing to pay <strong>right now.</strong> That's not a market. That's an archive.</p></div>
+      </div>
+      <div class="problem-pivot">
+        <div class="problem-pivot-label">There Is A Better Way</div>
+        <h3>Demand First. <span>Always.</span></h3>
+        <p>GrailISO flips the entire model. You post what you want. The card finds you. Verified, graded, protected — and delivered like the trophy it is.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 3: COMMUNITY CARD DIRECTORY ══ -->
+  <section class="community-section" id="community">
+    <div class="community-inner">
+      <div class="section-eyebrow" style="color:var(--gold);">Community Catalog</div>
+      <div class="section-title">Build The Largest<br><span style="background:linear-gradient(135deg,var(--gold),#FF9500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Card Directory Ever Built.</span></div>
+      <p class="section-sub">We're building the most complete visual card catalog in the hobby — and every card image you upload earns you free ISO Credits and free grading. Your collection, your knowledge, your work. You get paid for it.</p>
+      <div class="community-grid">
+        <div class="community-item photon-border">
+          <div class="community-icon">📸</div>
+          <h3>Upload Card Images</h3>
+          <p>Photograph the front and back of any card in your collection. High resolution. Any condition. Every parallel. We want them all.</p>
+        </div>
+        <div class="community-item photon-border">
+          <div class="community-icon">✅</div>
+          <h3>We Verify &amp; Catalog</h3>
+          <p>Every upload is reviewed and matched to the card catalog. Accepted images become the official visual reference for that card on GrailISO — seen by every collector on the platform.</p>
+        </div>
+        <div class="community-item photon-border">
+          <div class="community-icon">💰</div>
+          <h3>You Earn Free Credits + Free Grading</h3>
+          <p>Every accepted card image earns you ISO Credits — the platform currency worth $1 each. High-volume contributors also earn <strong style="color:var(--gold);">free ISO/GRADING credits</strong> — submit your card for full verification and grading at zero cost. No cap. No limit.</p>
+        </div>
+        <div class="community-item photon-border">
+          <div class="community-icon">🏆</div>
+          <h3>Top Contributors Get More</h3>
+          <p>The collectors who build the catalog get recognized. Top contributors earn bonus credits, early access to new features, and a permanent Community Builder badge on their profile.</p>
+        </div>
+      </div>
+      <div class="community-cta">
+        <div class="community-cta-inner">
+          <div class="community-cta-left">
+            <div class="community-cta-eyebrow">20,000+ cards in catalog today</div>
+            <div class="community-cta-title">Help us get to 1,000,000.</div>
+            <p>Every set. Every year. Every parallel. The most complete visual card catalog in the hobby starts with collectors who care about it as much as we do.</p>
+          </div>
+          <div class="community-cta-right">
+            <a href="#waitlist" style="display:inline-block;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.15em;color:#fff;background:linear-gradient(135deg,var(--gold),#E08000);padding:.85rem 2.5rem;text-decoration:none;box-shadow:0 4px 24px rgba(255,184,0,.35);">Join &amp; Start Uploading</a>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,184,0,.6);margin-top:.7rem;">Free credits + free grading for top contributors</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 4: COLLECTION IN 3D ══ -->
+  <section class="vault-demo-section" id="collection-3d">
+    <div class="vault-demo-inner">
+      <div style="text-align:center;margin-bottom:3rem;">
+        <div class="section-eyebrow">ISO/VAULT — Live Demo</div>
+        <div class="section-title">Your Collection. In Full 3D.</div>
+        <p class="section-sub">Drag to rotate. Click any variant pill to switch parallels. This is what ISO/VAULT feels like.</p>
+      </div>
+      <div class="vault-demo-layout-single">
+        <div class="viewer-center">
+          <div class="card-3d-scene" id="card-scene">
+            <img id="slab-overlay" src="/images/slab-overlay.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:fill;z-index:10;pointer-events:none;opacity:1;"/>
+            <div class="card-3d" id="card-3d">
+              <div class="card-face card-face-front"><div class="card-face-ph"><div class="ph-ico">🃏</div><div class="ph-txt">Front</div></div></div>
+              <div class="card-face card-face-back"><div class="card-face-ph"><div class="ph-ico">🃏</div><div class="ph-txt">Back</div></div></div>
+            </div>
+          </div>
+          <div class="ctrl-row">
+            <button class="ctrl-btn" onclick="flipCard()">⇅ FLIP</button>
+            <button class="ctrl-btn" id="btn-spin" onclick="toggleSpin()">↻ AUTO SPIN</button>
+            <button class="ctrl-btn" onclick="resetView()">✕ RESET</button>
+          </div>
+          <div class="viewer-hint">DRAG TO ROTATE · TOUCH SUPPORTED</div>
+        </div>
+        <div class="card-info-col">
+          <div class="info-player">Shohei Ohtani</div>
+          <div class="info-set">2025 TOPPS B&W · #1</div>
+          <div class="info-section-lbl">VARIATIONS — CLICK TO SWITCH</div>
+          <div class="variant-pills" id="variant-pills"></div>
+          <div class="info-section-lbl" style="margin-bottom:.5rem;">MARKET PULSE</div>
+          <div class="market-row">
+            <div class="price-box"><div class="price-lbl">High ISO</div><div class="price-val green">$2,100</div></div>
+            <div class="price-box"><div class="price-lbl">Low Ask</div><div class="price-val red">$2,800</div></div>
+            <div class="price-box"><div class="price-lbl">Last Sale</div><div class="price-val blue">$2,450</div></div>
+          </div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-top:.5rem;">Demo data · Real prices in platform</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 5: ISO/GRADING ══ -->
+  <section class="isograding-section" id="isograding">
+    <div class="isograding-inner">
+      <div style="text-align:center;margin-bottom:4rem;">
+        <div class="section-eyebrow" style="color:var(--green);">ISO/GRADING Technology</div>
+        <div class="section-title">The Most Transparent<br><span style="background:linear-gradient(135deg,var(--green),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Grading System Ever Built.</span></div>
+        <p class="section-sub">Every other grading company hands you a number and tells you to trust them. GrailISO shows you exactly how we got there — AI analysis, professional review, and a public grading scale anyone can read.</p>
+      </div>
+      <div class="isog-pillars">
+        <div class="isog-pillar photon-border"><div class="isog-pillar-icon">🤖</div><div class="isog-pillar-title">AI Analysis First</div><p>Every card is scanned at high resolution and analyzed by our grading AI. Surface wear, print defects, centering deviation, corner sharpness, and edge integrity — all measured precisely, zero subjectivity.</p></div>
+        <div class="isog-pillar photon-border"><div class="isog-pillar-icon">👁️</div><div class="isog-pillar-title">Professional Review</div><p>A certified GrailISO grader reviews every AI result before a grade is issued. They confirm, adjust, or flag for re-scan. AI speeds the process — a professional signs off on every result.</p></div>
+        <div class="isog-pillar photon-border"><div class="isog-pillar-icon">📖</div><div class="isog-pillar-title">Public Grading Scale</div><p>Our grading rubric is published in full. Every sub-category weight, definition, and edge case — open to the public. You know exactly how your card will be evaluated before you submit it.</p></div>
+      </div>
+      <div class="isog-scale">
+        <div>
+          <div class="section-eyebrow" style="color:var(--green);text-align:left;">The ISOGrade Scale</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,4vw,3rem);letter-spacing:.06em;color:#fff;l  <!-- ══ 7: THE PROCESS ══ -->
+  <section class="process-section" id="process">
+    <div class="process-inner">
+
+      <div style="text-align:center;margin-bottom:1rem;">
+        <div class="section-eyebrow">The GrailISO Guarantee</div>
+        <div class="section-title">No Negotiation.<br><span style="background:linear-gradient(135deg,var(--green),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">100% Guaranteed.</span></div>
+        <p class="section-sub" style="max-width:700px;">Every card moves through the same locked route. Seller → Verification Hub → Buyer. No exceptions. No shortcuts. The card never goes directly from seller to buyer — ever.</p>
+      </div>
+
+      <!-- GUARANTEE BADGES -->
+      <div class="guarantee-row">
+        <div class="guarantee-badge photon-border">
+          <div class="gb-icon">🚫</div>
+          <div class="gb-text">No Negotiation<br><span>You set the price. Done.</span></div>
+        </div>
+        <div class="guarantee-badge photon-border">
+          <div class="gb-icon">🔒</div>
+          <div class="gb-text">Escrow Protected<br><span>Zero released until verified.</span></div>
+        </div>
+        <div class="guarantee-badge photon-border">
+          <div class="gb-icon">📍</div>
+          <div class="gb-text">Tracked Every Step<br><span>UPS/FedEx + GPS ISOcooler</span></div>
+        </div>
+        <div class="guarantee-badge photon-border">
+          <div class="gb-icon">🛡️</div>
+          <div class="gb-text">100% Fraud Free<br><span>Hub-verified before delivery.</span></div>
+        </div>
+      </div>
+
+      <!-- FLOW MAP -->
+      <div class="flow-map" id="flow-map">
+
+        <!-- NODE 1: BUYER -->
+        <div class="flow-node node-buyer" data-node="buyer">
+          <div class="fn-icon">🎯</div>
+          <div class="fn-label">BUYER</div>
+          <div class="fn-sublabel">Posts ISO</div>
+          <div class="flow-popup">
+            <div class="fp-title">Step 1 — Post Your ISO</div>
+            <ul>
+              <li>Name the exact card — set, year, parallel, condition</li>
+              <li>Set your price. <strong>That is your price. No negotiation.</strong></li>
+              <li>Funds move to escrow the moment a seller matches</li>
+              <li>Zero dollars released to seller until card clears the hub</li>
+            </ul>
+            <div class="fp-guarantee">🔒 Escrow Active Immediately</div>
+          </div>
+        </div>
+
+        <div class="flow-arrow flow-arrow-right">
+          <div class="fa-line"></div>
+          <div class="fa-label">Seller Accepts</div>
+          <div class="fa-arrow">▶</div>
+        </div>
+
+        <!-- NODE 2: SELLER -->
+        <div class="flow-node node-seller" data-node="seller">
+          <div class="fn-icon">📦</div>
+          <div class="fn-label">SELLER</div>
+          <div class="fn-sublabel">Ships to Hub</div>
+          <div class="flow-popup fp-left">
+            <div class="fp-title">Step 2 — Seller Ships to Hub</div>
+            <ul>
+              <li>GrailISO ships seller a <strong>prepaid ISO Kit</strong> — packaging, label, tracker</li>
+              <li>Card ships in an ISOcooler with embedded GPS tracker</li>
+              <li>UPS/FedEx tracking active from pickup</li>
+              <li><strong>Card goes to the verification hub — never to the buyer</strong></li>
+              <li>Buyer receives live tracking link the moment it ships</li>
+            </ul>
+            <div class="fp-guarantee">📍 GPS + Carrier Tracking Active</div>
+          </div>
+        </div>
+
+        <div class="flow-arrow flow-arrow-right">
+          <div class="fa-line"></div>
+          <div class="fa-label">ISO Kit Ships</div>
+          <div class="fa-arrow">▶</div>
+        </div>
+
+        <!-- NODE 3: HUB — CENTER HERO -->
+        <div class="flow-node node-hub" data-node="hub">
+          <div class="fn-icon">🔬</div>
+          <div class="fn-label">ISO/GRADING HUB</div>
+          <div class="fn-sublabel">Verification + Grading</div>
+          <div class="flow-popup fp-wide">
+            <div class="fp-title">Step 3 — The Hub. Nothing Gets Past This.</div>
+            <ul>
+              <li>AI scan: surface, edges, corners, centering — <strong>zero subjectivity</strong></li>
+              <li>Professional grader reviews and signs off every result</li>
+              <li>Trimming, corner alterations, surface manipulation — <strong>all detected</strong></li>
+              <li>Full 3D blemish map — every flaw pinned to exact location</li>
+              <li>ISOGrade assigned: 1–1000 scale, sub-grades documented</li>
+              <li>Chain of custody logged. Card Passport created</li>
+              <li>ISO/RFID chip embedded in slab before resealing</li>
+              <li><strong>If card fails — escrow returned to buyer. Full stop.</strong></li>
+            </ul>
+            <div class="fp-guarantee" style="background:rgba(0,232,135,.12);border-color:rgba(0,232,135,.3);color:var(--green);">🛡️ This Is Why No Fraud Reaches You</div>
+          </div>
+        </div>
+
+        <div class="flow-arrow flow-arrow-right">
+          <div class="fa-line"></div>
+          <div class="fa-label">Verified &amp; Sealed</div>
+          <div class="fa-arrow">▶</div>
+        </div>
+
+        <!-- NODE 4: DELIVERY -->
+        <div class="flow-node node-delivery" data-node="delivery">
+          <div class="fn-icon">🚚</div>
+          <div class="fn-label">DELIVERY</div>
+          <div class="fn-sublabel">Hub → Buyer</div>
+          <div class="flow-popup fp-left">
+            <div class="fp-title">Step 4 — Ships from Hub to Buyer</div>
+            <ul>
+              <li>ISOcooler resealed with GPS tracker active</li>
+              <li>UPS/FedEx insured shipping — buyer receives tracking immediately</li>
+              <li>White glove courier available for $2,500+ transactions</li>
+              <li>RFID chip in slab — tap to verify the moment it arrives</li>
+              <li>Seller paid only after buyer confirms delivery</li>
+            </ul>
+            <div class="fp-guarantee">📍 Dual Tracking: Carrier + GPS ISOcooler</div>
+          </div>
+        </div>
+
+        <div class="flow-arrow flow-arrow-right">
+          <div class="fa-line"></div>
+          <div class="fa-label">Delivered &amp; Verified</div>
+          <div class="fa-arrow">▶</div>
+        </div>
+
+        <!-- NODE 5: BUYER RECEIVES -->
+        <div class="flow-node node-receive" data-node="receive">
+          <div class="fn-icon">🏆</div>
+          <div class="fn-label">BUYER</div>
+          <div class="fn-sublabel">Receives Grail</div>
+          <div class="flow-popup fp-left">
+            <div class="fp-title">Step 5 — The Rip You Earned</div>
+            <ul>
+              <li>Card arrives in a sealed GrailISO pack — not a bubble mailer</li>
+              <li>Tap the ISO/RFID chip — full grade report instant on your phone</li>
+              <li>Seller receives escrow payment. Transaction complete</li>
+              <li><strong>You get exactly what you paid for. Guaranteed.</strong></li>
+            </ul>
+            <div class="fp-guarantee" style="background:rgba(0,232,135,.12);border-color:rgba(0,232,135,.3);color:var(--green);">✓ Your Grail. Verified. Delivered.</div>
+          </div>
+        </div>
+
+      </div><!-- /flow-map -->
+
+      <!-- NEVER DIRECT CALLOUT -->
+      <div class="never-direct">
+        <div class="nd-icon">⛔</div>
+        <div class="nd-text">
+          <div class="nd-title">The Card NEVER Goes Seller → Buyer.</div>
+          <div class="nd-sub">Every single transaction routes through the ISO/GRADING Hub first. No exceptions. No workarounds. No way around it. That's the whole point.</div>
+        </div>
+      </div>
+
+      <!-- TRACKING CALLOUT -->
+      <div class="tracking-row">
+        <div class="tracking-item photon-border">
+          <div class="ti-icon">📦</div>
+          <div class="ti-title">ISOcooler</div>
+          <div class="ti-desc">Temperature-controlled packaging with embedded GPS tracker. Real-time location from seller pickup to your door.</div>
+        </div>
+        <div class="tracking-item photon-border">
+          <div class="ti-icon">🚛</div>
+          <div class="ti-title">UPS / FedEx</div>
+          <div class="ti-desc">Full carrier tracking on every shipment. Insured. Buyer receives the tracking number the moment the card ships.</div>
+        </div>
+        <div class="tracking-item photon-border">
+          <div class="ti-icon">🚁</div>
+          <div class="ti-title">ISO/WHITEGLOVE</div>
+          <div class="ti-desc">Hand-delivered by vetted courier for $2,500+ transactions. Live GPS. Custody transfer logged at every handoff.</div>
+        </div>
+        <div class="tracking-item photon-border">
+          <div class="ti-icon">📡</div>
+          <div class="ti-title">ISO/RFID Slab</div>
+          <div class="ti-desc">Chip embedded in every GrailISO slab. Tap with any phone — instant grade report, chain of custody, ownership history.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ 8: THE GRAIL SUITES ══ -->
+  <section class="slash-section" id="suites">
+    <div class="slash-inner">
+      <div class="section-eyebrow">The Grail Suites</div>
+      <div class="section-title">One Platform. Every Tool.</div>
+      <p class="section-sub">GrailISO isn't a marketplace. It's a full product suite built for every stage of the card lifecycle. Click any suite to learn more.</p>
+      <div class="slash-grid">
+        <a href="grailiso-platform.html" class="slash-item photon-border"><div class="slash-name">GRAIL<span>/</span>ISO</div><div class="slash-desc">The core platform. Demand-first marketplace where buyers post ISOs and sellers respond.</div><div class="slash-status status-live"><div class="status-dot"></div>Live Alpha</div></a>
+        <a href="iso-vault.html" class="slash-item photon-border"><div class="slash-name">ISO<span>/</span>VAULT</div><div class="slash-desc">Personal collection manager. 3D viewer, live market value tracking, full acquisition history.</div><div class="slash-status status-live"><div class="status-dot"></div>Live Alpha</div></a>
+        <a href="iso-grading.html" class="slash-item photon-border"><div class="slash-name">ISO<span>/</span>GRADING</div><div class="slash-desc">Verification and grading. AI-assisted + expert review. Full blemish map, sub-grade breakdown, chain of custody.</div><div class="slash-status status-soon"><div class="status-dot"></div>Coming Soon</div></a>
+        <a href="iso-defender.html" class="slash-item photon-border"><div class="slash-name">ISO<span>/</span>DEFENDER</div><div class="slash-desc">Fraud intelligence. Real-time seller reputation, verified transaction history, buyer protection.</div><div class="slash-status status-soon"><div class="status-dot"></div>Coming Soon</div></a>
+        <a href="iso-biometrics.html" class="slash-item photon-border"><div class="slash-name">ISO<span>/</span>BIOMETRICS</div><div class="slash-desc">Card identity fingerprinting. Unique surface mapping creates a permanent digital identity for each card.</div><div class="slash-status status-soon"><div class="status-dot"></div>In Development</div></a>
+        <a href="iso-slab.html" class="slash-item photon-border"><div class="slash-name">ISO<span>/</span>SLAB</div><div class="slash-desc">Slab Lab — custom grading enclosure. 8 colors × 3 finishes. Live 3D preview before you order.</div><div class="slash-status status-live"><div class="status-dot"></div>Live Alpha</div></a>
+        <a href="iso-rfid.html" class="slash-item photon-border"><div class="slash-name">ISO<span>/</span>RFID</div><div class="slash-desc">RFID chip in every GrailISO slab. Tap any smartphone — verify grade, fingerprint, full provenance instantly.</div><div class="slash-status status-soon"><div class="status-dot"></div>In Development</div></a>
+        <a href="iso-whiteglove.html" class="slash-item photon-border"><div class="slash-name">ISO<span>/</span>WHITEGLOVE</div><div class="slash-desc">Hand-delivered with live GPS tracking. White glove courier service for high-value grails.</div><div class="slash-status status-soon"><div class="status-dot"></div>Coming Soon</div></a>
+        <a href="iso-blockchain.html" class="slash-item photon-border"><div class="slash-name">ISO<span>/</span>BLOCKCHAIN</div><div class="slash-desc">Decentralized provenance. Grading events and custody transfers anchored to a tamper-proof public ledger.</div><div class="slash-status status-future"><div class="status-dot"></div>Post-Funding</div></a>
+        <a href="iso-track.html" class="slash-item photon-border"><div class="slash-name">ISO<span>/</span>TRACK</div><div class="slash-desc">Provenance and chain of custody. Every card's full verified history — from first grade to latest sale.</div><div class="slash-status status-future"><div class="status-dot"></div>Post-Funding</div></a>
+        <a href="iso-market.html" class="slash-item photon-border"><div class="slash-name">ISO<span>/</span>MARKET</div><div class="slash-desc">Secondary marketplace built on real demand data. Prices driven by live buyer intent, not wishful listing prices.</div><div class="slash-status status-future"><div class="status-dot"></div>Post-Funding</div></a>
+        <a href="iso-demand.html" class="slash-item photon-border"><div class="slash-name">ISO<span>/</span>DEMAND</div><div class="slash-desc">B2B data licensing. Live demand signals for dealers, investors, and manufacturers.</div><div class="slash-status status-future"><div class="status-dot"></div>Post-Funding</div></a>
+        <a href="iso-scan.html" class="slash-item photon-border"><div class="slash-name">ISO<span>/</span>SCAN</div><div class="slash-desc">AI card recognition. Point your camera at any card — instant ID, comps, and vault add.</div><div class="slash-status status-future"><div class="status-dot"></div>Post-Funding</div></a>
+        <a href="iso-credits.html" class="slash-item photon-border"><div class="slash-name">ISO<span>/</span>CREDITS</div><div class="slash-desc">$1 per ISO post. Credits never expire. Kickstarter backers receive credits at launch.</div><div class="slash-status status-live"><div class="status-dot"></div>Live Alpha</div></a>
+        <a href="iso-rank.html" class="slash-item photon-border"><div class="slash-name">ISO<span>/</span>RANK</div><div class="slash-desc">Seller reputation system. Verified deal history, trust badges, buyer accountability on both sides.</div><div class="slash-status status-soon"><div class="status-dot"></div>Coming Soon</div></a>
+        <a href="iso-slab-lab.html" class="slash-item photon-border"><div class="slash-name">ISO<span>/</span>SLAB LAB</div><div class="slash-desc">Design your slab before grading. 8 colors, 3 finishes, live 3D preview. Because clear plastic isn't enough.</div><div class="slash-status status-live"><div class="status-dot"></div>Live Alpha</div></a>
+        <a href="iso-arts.html" class="slash-item photon-border"><div class="slash-name">ISO<span>/</span>ARTS</div><div class="slash-desc">The card art marketplace. Custom painted cards, 1/1 originals, commissions. Artists always free. 10% buyer fee funds scholarships.</div><div class="slash-status status-soon"><div class="status-dot"></div>Coming Soon</div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 9: WHAT WE BUILT ══ -->
+  <section class="built-section" id="built">
+    <div class="built-inner">
+      <div class="section-eyebrow">What We Built</div>
+      <div class="section-title">Real Demand. Real Prices.<br>Real Protection.</div>
+      <p class="section-sub">We're in private alpha. The platform is live. Here's what's working today.</p>
+      <div class="built-market">
+        <div class="built-market-text">
+          <div class="section-eyebrow" style="text-align:left;">Market Intelligence</div>
+          <div class="section-title" style="text-align:left;font-size:clamp(1.8rem,4vw,3rem);">Live Buyer Demand.<br>Not Yesterday's Comps.</div>
+          <p>Every other pricing tool shows you what sold last month. GrailISO shows you what buyers are willing to pay right now — live ISO demand, updated continuously. The most accurate price signal in the hobby.</p>
+          <p>Subscription data tiers for collectors, dealers, and investors. The demand layer we're building is a unique asset — not just for cards.</p>
+        </div>
+        <div class="market-ui photon-border">
+          <div class="market-ui-header">
+            <div><div class="market-card-name">2025 Topps B&W Griffey Jr.</div><div class="market-card-sub">Baseball · Parallel · /25</div></div>
+            <div class="live-badge">Live</div>
+          </div>
+          <div class="m-price-grid">
+            <div class="m-price-box"><div class="m-price-lbl">High ISO</div><div class="m-price-val bid">$1,600</div></div>
+            <div class="m-price-box"><div class="m-price-lbl">Low Ask</div><div class="m-price-val ask">$1,950</div></div>
+            <div class="m-price-box"><div class="m-price-lbl">Last Sale</div><div class="m-price-val last">$1,750</div></div>
+          </div>
+          <div class="iso-rows">
+            <div class="iso-row"><div class="iso-row-info">Griffey Jr — 1989 Upper Deck RC PSA 10</div><div class="iso-row-right"><div class="iso-badge">ISO</div><div class="iso-price">$4,200</div></div></div>
+            <div class="iso-row"><div class="iso-row-info">2024 Topps Finest Ohtani Auto /10</div><div class="iso-row-right"><div class="iso-badge">ISO</div><div class="iso-price">$11,000</div></div></div>
+            <div class="iso-row"><div class="iso-row-info">Wander Franco Bowman Chrome 1st /5</div><div class="iso-row-right"><div class="iso-badge">ISO</div><div class="iso-price">$8,500</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="section-eyebrow" style="margin-bottom:1rem;">Platform Preview</div>
+      <div class="section-title" style="font-size:clamp(1.5rem,3vw,2.5rem);margin-bottom:.5rem;">Screenshots Coming Soon</div>
+      <p class="section-sub" style="margin-bottom:2rem;">We're in private alpha — opening to founding members first. Here's what's already built.</p>
+      <div class="screens-grid">
+        <div class="screen-frame photon-border"><div class="screen-chrome"><div class="chrome-dot"></div><div class="chrome-dot"></div><div class="chrome-dot"></div><div class="chrome-bar"></div></div><div class="screen-body"><div class="screen-icon">🃏</div><div class="screen-label">ISO/VAULT — Card Browser</div><div class="screen-sublabel">Screenshot coming · Private Alpha</div></div></div>
+        <div class="screen-frame photon-border"><div class="screen-chrome"><div class="chrome-dot"></div><div class="chrome-dot"></div><div class="chrome-dot"></div><div class="chrome-bar"></div></div><div class="screen-body"><div class="screen-icon">🎯</div><div class="screen-label">Post ISO — 6-Step Flow</div><div class="screen-sublabel">Screenshot coming · Private Alpha</div></div></div>
+        <div class="screen-frame photon-border"><div class="screen-chrome"><div class="chrome-dot"></div><div class="chrome-dot"></div><div class="chrome-dot"></div><div class="chrome-bar"></div></div><div class="screen-body"><div class="screen-icon">🧪</div><div class="screen-label">ISO/SLAB — Slab Lab</div><div class="screen-sublabel">Screenshot coming · Private Alpha</div></div></div>
+        <div class="screen-frame photon-border"><div class="screen-chrome"><div class="chrome-dot"></div><div class="chrome-dot"></div><div class="chrome-dot"></div><div class="chrome-bar"></div></div><div class="screen-body"><div class="screen-icon">📊</div><div class="screen-label">My Vault — Dashboard</div><div class="screen-sublabel">Screenshot coming · Private Alpha</div></div></div>
+      </div>
+      <div class="built-stats">
+        <div class="stat-item photon-border"><div class="stat-num">$15B+</div><div class="stat-label">Annual Card Market</div></div>
+        <div class="stat-item photon-border"><div class="stat-num">$5B+</div><div class="stat-label">Secondary Market</div></div>
+        <div class="stat-item photon-border"><div class="stat-num">0</div><div class="stat-label">Demand-First Platforms</div></div>
+        <div class="stat-item photon-border"><div class="stat-num">∞</div><div class="stat-label">Grails Being Hunted</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 10: KICKSTARTER COMING SOON ══ -->
+  <section class="ks-section" id="kickstarter">
+    <div class="ks-section-inner">
+      <div class="ks-header">
+        <div class="ks-coming-badge">Kickstarter — Coming Soon</div>
+        <div class="section-eyebrow" style="color:var(--red);">Back The Hobby's Future</div>
+        <div class="section-title">Nine Tiers. One Mission.<br><span style="background:linear-gradient(135deg,#FF6B7A,var(--red));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Fund What The Hobby Needs.</span></div>
+        <p class="section-sub" style="color:rgba(255,255,255,.45);">Our Kickstarter campaign launches soon. Every tier benefit is permanent — what you earn as a founding backer stays with you forever.</p>
+      </div>
+      <div class="ks-tiers-grid">
+        <div class="ks-tier photon-border"><div class="ks-tier-badge">Tier 1</div><div class="ks-tier-name">THE FIRST PULL</div><div class="ks-tier-price">$10</div><ul class="ks-tier-perks"><li>15 ISO Credits</li><li>Platform access at launch</li></ul></div>
+        <div class="ks-tier photon-border"><div class="ks-tier-badge">Tier 2</div><div class="ks-tier-name">THE ROOKIE</div><div class="ks-tier-price">$25</div><ul class="ks-tier-perks"><li>40 ISO Credits</li><li>Platform access at launch</li></ul></div>
+        <div class="ks-tier photon-border"><div class="ks-tier-badge">Tier 3</div><div class="ks-tier-name">THE SET BUILDER</div><div class="ks-tier-price">$50</div><ul class="ks-tier-perks"><li>90 ISO Credits</li><li>Platform access at launch</li></ul></div>
+        <div class="ks-tier featured photon-border"><div class="ks-tier-badge">Tier 4 · Most Popular</div><div class="ks-tier-name">THE PLAYER COLLECTOR</div><div class="ks-tier-price">$100</div><ul class="ks-tier-perks"><li>210 ISO Credits</li><li>DAY ONE Badge</li><li>2 Free ISO/GRADING Credits</li></ul></div>
+        <div class="ks-tier featured photon-border"><div class="ks-tier-badge">Tier 5</div><div class="ks-tier-name">THE RAINBOW HUNTER</div><div class="ks-tier-price">$250</div><ul class="ks-tier-perks"><li>575 ISO Credits</li><li>DAY ONE Badge</li><li>Full Market Data Access</li><li>5 Free ISO/GRADING Credits</li></ul></div>
+        <div class="ks-tier featured photon-border"><div class="ks-tier-badge">Tier 6</div><div class="ks-tier-name">THE GRAIL SEEKER</div><div class="ks-tier-price">$500</div><ul class="ks-tier-perks"><li>1,500 ISO Credits</li><li>DAY ONE Badge</li><li>Full Market Data Access</li><li>10 Free ISO/GRADING Credits</li></ul></div>
+        <div class="ks-tier featured photon-border"><div class="ks-tier-badge">Tier 7</div><div class="ks-tier-name">THE VAULT</div><div class="ks-tier-price">$1,000</div><ul class="ks-tier-perks"><li>2,200 ISO Credits</li><li>DAY ONE Badge</li><li>Full Market Data Access</li><li>Community Advisory Team</li><li>Advisory Badge</li><li>25 Free ISO/GRADING Credits</li></ul></div>
+        <div class="ks-tier featured photon-border"><div class="ks-tier-badge">Tier 8 · 15 Seats</div><div class="ks-tier-name">THE FOUNDING COLLECTOR</div><div class="ks-tier-price">$5,000</div><ul class="ks-tier-perks"><li>Unlimited ISO Credits</li><li>DAY ONE Badge</li><li>Full Market Data Access</li><li>Board Advisor Seat</li><li>Board Advisor Badge</li><li>100 Free ISO/GRADING Credits</li></ul><div class="ks-tier-seats">⚡ 15 seats only</div></div>
+      </div>
+      <div class="ks-board-tier photon-border">
+        <div><div class="ks-tier-badge" style="color:var(--gold);">Tier 9 · Board Level</div><div class="board-name">THE BOARD</div></div>
+        <div class="board-desc">A seat on the GrailISO Board of Directors. Shape the platform that reshapes the hobby. Two seats. For founders who see the full vision.</div>
+        <div class="board-seats"><div class="board-seats-num">2</div><div class="board-seats-label">Seats Available</div></div>
+        <div class="board-price">$100K</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WAITLIST FORM -->
+  <section class="waitlist-section" id="waitlist">
+    <div class="waitlist-card photon-border">
+      <div id="waitlist-form-wrap">
+        <h2>Get Early Access</h2>
+        <p>Founding members get free ISO listings and reduced transaction fees for life.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="form-group"><label>First Name</label><input type="text" id="f-firstname" placeholder="First name"/></div>
+          <div class="form-group"><label>Last Name</label><input type="text" id="f-lastname" placeholder="Last name"/></div>
+        </div>
+        <div class="form-group"><label>Email Address</label><input type="email" id="f-email" placeholder="collector@example.com"/></div>
+        <div class="form-group"><label>I Collect Primarily</label>
+          <select id="f-sport">
+            <option value="">Select your main interest...</option>
+            <option>Baseball Cards</option><option>Basketball Cards</option>
+            <option>Football Cards</option><option>Hockey Cards</option>
+            <option>Pokemon / TCG</option><option>Multi-Sport</option><option>Other Collectibles</option>
+          </select>
+        </div>
+        <div class="form-group"><label>My Role</label>
+          <select id="f-role">
+            <option value="">Select your role...</option>
+            <option>Collector / Rainbow Hunter</option><option>Player Collector</option>
+            <option>Set Builder</option><option>Investor</option>
+            <option>Dealer / Breaker</option><option>Seller</option>
+          </select>
+        </div>
+        <button class="submit-btn" id="submit-btn">Secure My Spot</button>
+        <p class="form-note">No spam. No BS. Just a heads-up when we launch.</p>
+      </div>
+      <div class="success-msg" id="success-msg">
+        <div class="check">🎯</div><h3>You're on the List</h3>
+        <p>We'll reach out when early access opens.<br>Welcome to the hunt.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOTTOM CTA — stacked centered -->
+  <div class="cta-bottom">
+    <div class="cta-bottom-eyebrow">Join us. One of these is right for you.</div>
+    <div class="cta-btn-row">
+      <a href="#waitlist" class="btn-primary">Join the Waitlist</a>
+      <a href="#kickstarter" class="btn-ks">🚀 Back Us on Kickstarter</a>
+    </div>
+    <div class="cta-ks-badge">🔥 Kickstarter Launching Soon — 9 Collector Tiers</div>
+    <div class="alpha-block">
+      <div class="alpha-block-label">Limited Access</div>
+      <h4>Request Alpha Access</h4>
+      <p>Be among the first 100 collectors to test the live platform.</p>
+      <div id="alpha-form">
+        <input type="email" id="alpha-email" placeholder="your@email.com"/>
+        <button class="alpha-submit" onclick="submitAlpha()">Request Access →</button>
+      </div>
+      <div class="alpha-success" id="alpha-success">✓ Request received — we'll be in touch.</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <a href="#" class="nav-logo"><img src="/images/grailiso-logo.png" alt="GrailISO"/></a>
+    <div><p>&copy; 2026 GrailISO LLC. All rights reserved.</p><div class="build-stamp">[SYS] GrailISO_v3.0.0 :: BUILD 20260320 :: LOCAL PREVIEW</div></div>
+    <div class="links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#waitlist">Contact</a></div>
+  </footer>
+
+  <script>
+    // NAV
+    var nav=document.getElementById('main-nav');
+    window.addEventListener('scroll',function(){nav.classList.toggle('scrolled',window.scrollY>60);});
+
+    // SUPABASE
+    var _SURL='https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1';
+    var _SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+    var _SH={apikey:_SKEY,Authorization:'Bearer '+_SKEY};
+
+    // 3D VIEWER
+    var rotX=-8,rotY=15,isFlipped=false,isDragging=false,lastX=0,lastY=0,isSpinning=false,spinRAF=null;
+    var card3d=document.getElementById('card-3d');
+    var cardScene=document.getElementById('card-scene');
+    function applyRot(){var b=isFlipped?180:0;card3d.style.transform='rotateX('+rotX+'deg) rotateY('+(rotY+b)+'deg)';}
+    function startDrag(cx,cy){isDragging=true;lastX=cx;lastY=cy;stopSpin();}
+    function moveDrag(cx,cy){if(!isDragging)return;rotY+=(cx-lastX)*0.55;rotX-=(cy-lastY)*0.38;rotX=Math.max(-65,Math.min(65,rotX));lastX=cx;lastY=cy;applyRot();}
+    function endDrag(){isDragging=false;}
+    cardScene.addEventListener('mousedown',function(e){startDrag(e.clientX,e.clientY);});
+    document.addEventListener('mousemove',function(e){moveDrag(e.clientX,e.clientY);});
+    document.addEventListener('mouseup',endDrag);
+    cardScene.addEventListener('touchstart',function(e){if(e.touches.length===1)startDrag(e.touches[0].clientX,e.touches[0].clientY);},{passive:true});
+    document.addEventListener('touchmove',function(e){if(isDragging&&e.touches.length===1)moveDrag(e.touches[0].clientX,e.touches[0].clientY);},{passive:true});
+    document.addEventListener('touchend',endDrag);
+    function flipCard(){isFlipped=!isFlipped;applyRot();}
+    function stopSpin(){isSpinning=false;if(spinRAF){cancelAnimationFrame(spinRAF);spinRAF=null;}var b=document.getElementById('btn-spin');if(b){b.classList.remove('active');b.textContent='↻ AUTO SPIN';}}
+    function toggleSpin(){isSpinning=!isSpinning;var b=document.getElementById('btn-spin');if(isSpinning){b.classList.add('active');b.textContent='⏹ STOP';(function spin(){rotY+=0.5;applyRot();spinRAF=requestAnimationFrame(spin);})();}else{stopSpin();}}
+    function resetView(){rotX=-8;rotY=15;isFlipped=false;stopSpin();applyRot();}
+    function _ph(side){var d=document.createElement('div');d.className='card-face-ph';var i=document.createElement('div');i.className='ph-ico';i.textContent='🃏';var t=document.createElement('div');t.className='ph-txt';t.textContent=side.toUpperCase();d.appendChild(i);d.appendChild(t);return d;}
+    function setFace(side,url){var face=card3d.querySelector('.card-face-'+side);if(!face)return;face.innerHTML='';if(url){var img=document.createElement('img');img.src=url;img.alt='';img.style.cssText='width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;';img.onerror=function(){face.innerHTML='';face.appendChild(_ph(side));};face.appendChild(img);}else{face.appendChild(_ph(side));}}
+
+    // OHTANI #1 — hardcoded variants, always this card
+    var OHTANI_VARIANTS=[
+      {label:'Base',run:null,front:null,back:null},
+      {label:'Purple Parallel',run:'25',front:null,back:null},
+      {label:'Gold Parallel',run:'10',front:null,back:null},
+      {label:'Black Parallel',run:'5',front:null,back:null},
+      {label:'Blue Foil',run:'99',front:null,back:null},
+      {label:'Superfractor',run:'1',front:null,back:null}
+    ];
+    var PILL_COLORS=['#00AAFF','#CC66FF','#FFD700','#111','#4488FF','#FF8C00'];
+
+    function renderVariants(cardData){
+      var cont=document.getElementById('variant-pills');
+      cont.innerHTML='';
+      var variants=OHTANI_VARIANTS;
+      // Merge in any var_images from Supabase if available
+      if(cardData&&cardData.var_images){
+        try{
+          var vi=typeof cardData.var_images==='string'?JSON.parse(cardData.var_images):cardData.var_images;
+          variants=variants.map(function(v){
+            var vd=vi[v.label]||vi[v.label.toLowerCase()];
+            if(vd){return Object.assign({},v,{front:vd.front||vd.front_img||null,back:vd.back||vd.back_img||null});}
+            return v;
+          });
+        }catch(e){}
+      }
+      if(cardData){
+        variants=variants.map(function(v,i){
+          if(i===0){return Object.assign({},v,{front:cardData.front_img||null,back:cardData.back_img||null});}
+          return v;
+        });
+      }
+      variants.forEach(function(v,i){
+        var col=PILL_COLORS[i%PILL_COLORS.length];
+        var pill=document.createElement('div');
+        pill.className='variant-pill'+(i===0?' active':'');
+        pill.style.cssText='color:'+col+';border-color:'+col+';background:'+(i===0?'rgba(0,0,0,0.3)':'transparent');
+        pill.textContent=v.label+(v.run?' /'+v.run:'');
+        pill.onclick=(function(variant,p){return function(){
+          document.querySelectorAll('.variant-pill').forEach(function(x){x.classList.remove('active');x.style.background='transparent';});
+          p.classList.add('active');p.style.background='rgba(0,0,0,0.3)';
+          setFace('front',variant.front);
+          setFace('back',variant.back);
+        };})(v,pill);
+        cont.appendChild(pill);
+      });
+    }
+
+    // Load Ohtani #1 from Supabase, fall back to placeholder
+    (async function initViewer(){
+      var card=null;
+      try{
+        var r=await fetch('https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/2025_topps_bw?select=player,card_number,front_img,back_img,var_images&card_number=eq.1&limit=1',
+          {headers:{apikey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA',Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA'}});
+        if(r.ok){var rows=await r.json();if(rows&&rows.length)card=rows[0];}
+      }catch(e){}
+      renderVariants(card);
+      setFace('front',card&&card.front_img?card.front_img:null);
+      setFace('back',card&&card.back_img?card.back_img:null);
+      applyRot();
+    })();
+
+    // ALPHA SUBMIT
+    function submitAlpha(){var em=(document.getElementById('alpha-email').value||'').trim();if(!em||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){alert('Please enter a valid email.');return;}fetch('https://wqorfvumiljrbpjwsmal.supabase.co/rest/v1/waitlist',{method:'POST',headers:{'Content-Type':'application/json','apikey':'sb_publishable_-JI4Y3ImXzqRVkwx1yIL1g_rVJVx5bn','Authorization':'Bearer sb_publishable_-JI4Y3ImXzqRVkwx1yIL1g_rVJVx5bn','Prefer':'return=minimal'},body:JSON.stringify({email:em,role:'Alpha Tester',sport:'',firstname:'Alpha',lastname:'Request'})}).then(function(){document.getElementById('alpha-form').style.display='none';document.getElementById('alpha-success').style.display='block';}).catch(function(){document.getElementById('alpha-form').style.display='none';document.getElementById('alpha-success').style.display='block';});}
+
+    // WAITLIST SUBMIT
+    document.getElementById('submit-btn').addEventListener('click',function(){var fn=document.getElementById('f-firstname').value.trim();var ln=document.getElementById('f-lastname').value.trim();var em=document.getElementById('f-email').value.trim();if(!fn||!ln||!em){alert('Please enter your first name, last name, and email.');return;}if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){alert('Please enter a valid email address.');return;}fetch('https://wqorfvumiljrbpjwsmal.supabase.co/rest/v1/waitlist',{method:'POST',headers:{'Content-Type':'application/json','apikey':'sb_publishable_-JI4Y3ImXzqRVkwx1yIL1g_rVJVx5bn','Authorization':'Bearer sb_publishable_-JI4Y3ImXzqRVkwx1yIL1g_rVJVx5bn','Prefer':'return=minimal'},body:JSON.stringify({firstname:fn,lastname:ln,email:em,sport:document.getElementById('f-sport').value,role:document.getElementById('f-role').value})}).then(function(r){if(r.ok){document.getElementById('waitlist-form-wrap').style.display='none';document.getElementById('success-msg').style.display='block';}else{alert('Something went wrong. Please try again.');}}).catch(function(){alert('Something went wrong. Please try again.');});});
+
+    // SMOOTH SCROLL
+    document.querySelectorAll('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){var t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}});});
+  </script>
+</body>
+</html>

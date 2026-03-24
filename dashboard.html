@@ -2056,6 +2056,11 @@ async function logOut(){
           <div class="chip" onclick="ivCatFilter('Auto',this)">Autos</div>
           <div class="chip" onclick="ivCatFilter('Rookie',this)">Rookies</div>
         </div>
+        <div class="mv-img-filter" id="iv-img-filter">
+          <button class="active" onclick="ivSetImgFilter('all')">All</button>
+          <button onclick="ivSetImgFilter('with')">With Pics</button>
+          <button onclick="ivSetImgFilter('without')">No Pics</button>
+        </div>
         <div class="iv-view-toggle">
           <button class="iv-view-btn active" id="ivBtnList" onclick="ivSetView('list',this)">&#9776; Checklist</button>
           <button class="iv-view-btn" id="ivBtnGrid" onclick="ivSetView('grid',this)">&#8862; Grid</button>
@@ -6513,6 +6518,13 @@ async function ivSelectSet(table){
   _ivLoadMarketPrices(realTable).then(()=>_ivRenderCards());
 }
 
+var _ivImgFilter = 'all';
+function ivSetImgFilter(mode){
+  _ivImgFilter = mode;
+  const wrap = document.getElementById('iv-img-filter');
+  if(wrap)[...wrap.children].forEach(b=>b.classList.toggle('active', b.textContent.trim()==={all:'All',with:'With Pics',without:'No Pics'}[mode]));
+  _ivApplyCardFilters();
+}
 function _ivApplyCardFilters(){
   let rows = [..._ivData];
   if(_ivCat !== 'all'){
@@ -6528,6 +6540,8 @@ function _ivApplyCardFilters(){
       (r.team||'').toLowerCase().includes(q)
     );
   }
+  if(_ivImgFilter === 'with') rows = rows.filter(r=>r.var_images && Object.keys(r.var_images).length > 0);
+  else if(_ivImgFilter === 'without') rows = rows.filter(r=>!r.var_images || Object.keys(r.var_images).length === 0);
   _ivFiltered = rows;
   _ivRenderCards();
 }

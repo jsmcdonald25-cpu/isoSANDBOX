@@ -247,15 +247,34 @@
     }
     .sl-ctrl-btn:hover { background: rgba(0,170,255,0.16); }
 
-    /* ── CONTROL PANEL (right side, not flush) ── */
+    /* Choose Card button */
+    .sl-choose-btn {
+      width: 100%;
+      padding: 10px 12px;
+      background: linear-gradient(135deg, rgba(0,170,255,0.12), rgba(0,170,255,0.06));
+      border: 1px solid rgba(0,170,255,0.35);
+      border-radius: 8px;
+      color: var(--blue);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 14px;
+      letter-spacing: 2.5px;
+      cursor: pointer;
+      transition: all .2s;
+      text-align: center;
+    }
+    .sl-choose-btn:hover { background: rgba(0,170,255,0.22); }
+
+    /* ── PANELS (left + right) ── */
     .sl-panel {
-      width: 340px;
+      width: 280px;
       flex-shrink: 0;
       display: flex;
       flex-direction: column;
-      padding: 16px 24px 16px 0;
+      padding: 16px;
       overflow: hidden;
     }
+    .sl-panel-left { padding-left: 20px; padding-right: 8px; }
+    .sl-panel-right { padding-right: 20px; padding-left: 8px; }
     .sl-panel-inner {
       flex: 1;
       background: var(--panel-bg);
@@ -541,11 +560,17 @@
     @media (max-height: 580px) {
       #slabUnit { transform: scale(0.65); transform-origin: center center; }
     }
+    @media (max-width: 1024px) {
+      .sl-panel { width: 220px; }
+    }
     @media (max-width: 860px) {
       .sl-main { flex-direction: column; }
-      .sl-panel { width: 100%; padding: 0; max-height: 260px; }
+      .sl-panel { width: 100%; padding: 0; max-height: 200px; }
       .sl-panel-inner { border-radius: 0; border-left: none; border-right: none; }
       #slabSwatches { grid-template-columns: repeat(8, 1fr); }
+      .sl-panel-left { order: 2; }
+      .sl-viewer { order: 0; }
+      .sl-panel-right { order: 1; }
     }
   </style>
 </head>
@@ -577,67 +602,13 @@
 <!-- MAIN LAYOUT -->
 <div class="sl-main" id="slMain" style="display:none">
 
-  <!-- SLAB VIEWER -->
-  <div class="sl-viewer bg-grid" id="slViewer">
-    <div class="sl-spotlight-wrap">
-      <div id="slabSpotlight"></div>
-    </div>
-
-    <div id="slabScene">
-      <div id="slabUnit">
-        <!-- FRONT FACE -->
-        <div class="slab-face" id="slabFrontFace">
-          <img id="slabFrameF" class="slab-frame-img" src="GRAILISO_slab.png" style="z-index:1" alt="">
-          <div class="slab-card-wrap-front">
-            <img id="slabCardFront" alt="">
-          </div>
-        </div>
-        <!-- BACK FACE -->
-        <div class="slab-face slab-face-back" id="slabBackFace">
-          <img id="slabFrameB" class="slab-frame-img" src="GRAILISO_slab.png" style="transform:scaleX(-1);z-index:1" alt="">
-          <div class="slab-card-wrap-back">
-            <img id="slabCardBack" alt="">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="sl-viewer-controls">
-      <button class="sl-ctrl-btn" onclick="slabFlip()">Flip</button>
-      <button class="sl-ctrl-btn" id="slab-spin-btn" onclick="slabToggleSpin()">Auto Spin</button>
-      <button class="sl-ctrl-btn" onclick="slabReset()">Reset</button>
-    </div>
-  </div>
-
-  <!-- CONTROL PANEL -->
-  <div class="sl-panel">
+  <!-- LEFT PANEL — Controls -->
+  <div class="sl-panel sl-panel-left">
     <div class="sl-panel-inner">
 
-      <!-- Active color display -->
+      <!-- Choose Card -->
       <div class="sl-panel-section">
-        <div class="sl-active-color">
-          <div class="sl-active-swatch" id="slActiveSwatch"></div>
-          <div>
-            <div class="sl-active-name" id="slColorLabel">COBALT · CRYSTAL</div>
-            <div class="sl-active-desc" id="slColorDesc"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Finish -->
-      <div class="sl-panel-section">
-        <div class="sl-panel-label">FINISH</div>
-        <div class="sl-finish-row">
-          <button class="sl-finish-btn" id="finish-matte"   onclick="setSlabFinish('matte')">MATTE</button>
-          <button class="sl-finish-btn" id="finish-crystal" onclick="setSlabFinish('crystal')">CRYSTAL</button>
-          <button class="sl-finish-btn" id="finish-vivid"   onclick="setSlabFinish('vivid')">VIVID</button>
-        </div>
-      </div>
-
-      <!-- Colors -->
-      <div class="sl-panel-section">
-        <div class="sl-panel-label">SLAB COLOR</div>
-        <div id="slabSwatches"></div>
+        <button class="sl-choose-btn" onclick="chooseCard()">CHOOSE CARD</button>
       </div>
 
       <!-- Glow / Lighting -->
@@ -691,6 +662,72 @@
           <button class="sl-speed-btn" id="speed-fast"   onclick="setSpinSpeed('fast')">Fast</button>
           <button class="sl-speed-btn" id="speed-off"    onclick="setSpinSpeed('off')">Off</button>
         </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CENTER — Slab Viewer -->
+  <div class="sl-viewer bg-grid" id="slViewer">
+    <div class="sl-spotlight-wrap">
+      <div id="slabSpotlight"></div>
+    </div>
+
+    <div id="slabScene">
+      <div id="slabUnit">
+        <!-- FRONT FACE -->
+        <div class="slab-face" id="slabFrontFace">
+          <img id="slabFrameF" class="slab-frame-img" src="GRAILISO_slab.png" style="z-index:1" alt="">
+          <div class="slab-card-wrap-front">
+            <img id="slabCardFront" alt="">
+          </div>
+        </div>
+        <!-- BACK FACE -->
+        <div class="slab-face slab-face-back" id="slabBackFace">
+          <img id="slabFrameB" class="slab-frame-img" src="GRAILISO_slab.png" style="transform:scaleX(-1);z-index:1" alt="">
+          <div class="slab-card-wrap-back">
+            <img id="slabCardBack" alt="">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sl-viewer-controls">
+      <button class="sl-ctrl-btn" onclick="slabFlip()">Flip</button>
+      <button class="sl-ctrl-btn" id="slab-spin-btn" onclick="slabToggleSpin()">Auto Spin</button>
+      <button class="sl-ctrl-btn" onclick="slabReset()">Reset</button>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL — Colors -->
+  <div class="sl-panel sl-panel-right">
+    <div class="sl-panel-inner">
+
+      <!-- Active color display -->
+      <div class="sl-panel-section">
+        <div class="sl-active-color">
+          <div class="sl-active-swatch" id="slActiveSwatch"></div>
+          <div>
+            <div class="sl-active-name" id="slColorLabel">COBALT · CRYSTAL</div>
+            <div class="sl-active-desc" id="slColorDesc"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Finish -->
+      <div class="sl-panel-section">
+        <div class="sl-panel-label">FINISH</div>
+        <div class="sl-finish-row">
+          <button class="sl-finish-btn" id="finish-matte"   onclick="setSlabFinish('matte')">MATTE</button>
+          <button class="sl-finish-btn" id="finish-crystal" onclick="setSlabFinish('crystal')">CRYSTAL</button>
+          <button class="sl-finish-btn" id="finish-vivid"   onclick="setSlabFinish('vivid')">VIVID</button>
+        </div>
+      </div>
+
+      <!-- Colors -->
+      <div class="sl-panel-section">
+        <div class="sl-panel-label">SLAB COLOR</div>
+        <div id="slabSwatches"></div>
       </div>
 
     </div>
@@ -1320,6 +1357,11 @@ function goBack(){
   } else {
     window.location.href = 'dashboard.html#myvault';
   }
+}
+
+function chooseCard(){
+  stopSpin();
+  window.location.href = 'dashboard.html#myvault&slabpick=1';
 }
 
 // ═══════════════════════════════════════════════════════

@@ -7254,9 +7254,21 @@ function backToVault(){
 
 // Fire ticker + scores on load
 if(document.readyState === 'loading'){
-  document.addEventListener('DOMContentLoaded', function(){ initCardTicker(); initScoresBar(); });
+  document.addEventListener('DOMContentLoaded', function(){ initCardTicker(); initScoresBar(); _checkSlabPick(); });
 } else {
-  initCardTicker(); initScoresBar();
+  initCardTicker(); initScoresBar(); _checkSlabPick();
+}
+
+// If arriving from Slab Lab "Choose Card", enter pick mode
+function _checkSlabPick(){
+  if(window.location.hash && window.location.hash.includes('slabpick=1')){
+    window.location.hash = '#myvault';
+    setTimeout(function(){
+      window._slabPickMode = true;
+      var banner = document.getElementById('slabPickBanner');
+      if(banner) banner.style.display = 'block';
+    }, 500);
+  }
 }
 
 // &#9472;&#9472; Nav Reorder Toggle &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;

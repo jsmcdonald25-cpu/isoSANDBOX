@@ -140,6 +140,7 @@
       <button class="sl-ctrl-btn" id="slab-spin-btn" onclick="slabToggleSpin()">Auto Spin</button>
       <button class="sl-ctrl-btn" onclick="slabReset()">Reset</button>
     </div>
+    <div style="margin-top:10px;font-size:11px;letter-spacing:1px;color:var(--muted);text-align:center">CLICK &amp; DRAG TO ROTATE &nbsp;·&nbsp; FLIP TO SEE BACK</div>
   </div>
 
   <!-- RIGHT PANEL — Colors -->
@@ -289,7 +290,6 @@ function init(){
   _applyColor(_activeIdx);
   _updateFinishBtns();
   _initRotation();
-  startSpin(_spinSpeed);
   // If vault_id, load that card async
   var p=new URLSearchParams(window.location.search);
   var vid=p.get('vault_id');

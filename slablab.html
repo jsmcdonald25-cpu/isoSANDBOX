@@ -983,16 +983,15 @@ async function init(){
   }
 
   // ── CARD OF THE DAY MODE ──
-  try {
-    await loadCardOfTheDay();
-  } catch(e){
-    // Fallback: load default Ohtani card
-    loadCard({
-      front_image_url: 'https://jyfaegmnzkarlcximxjo.supabase.co/storage/v1/object/public/card-images/catalog/2025_topps_bw/001/base_front.jpg',
-      back_image_url:  'https://jyfaegmnzkarlcximxjo.supabase.co/storage/v1/object/public/card-images/catalog/2025_topps_bw/001/base_back.jpg',
-      player: 'Shohei Ohtani', year: '2025', brand: 'Topps', set_name: 'B&W', card_number: '001'
-    }, true);
-  }
+  loadCardOfTheDay();
+}
+
+function _cotdFallback(){
+  loadCard({
+    front_image_url: 'https://jyfaegmnzkarlcximxjo.supabase.co/storage/v1/object/public/card-images/catalog/2025_topps_bw/001/base_front.jpg',
+    back_image_url:  'https://jyfaegmnzkarlcximxjo.supabase.co/storage/v1/object/public/card-images/catalog/2025_topps_bw/001/base_back.jpg',
+    player: 'Shohei Ohtani', year: '2025', brand: 'Topps', set_name: 'B&W', card_number: '001'
+  }, true);
 }
 
 async function loadCardOfTheDay(){
@@ -1002,30 +1001,26 @@ async function loadCardOfTheDay(){
   const tableIdx = seed % COTD_TABLES.length;
   const table = COTD_TABLES[tableIdx];
 
-  // Get row count first
-  const countRes = await fetch(
-    `${SB_REST}/${table}?select=card_number`,
-    { headers:{ 'apikey': SB_KEY, 'Accept': 'application/json', 'Prefer': 'count=exact' } }
-  );
-  const total = parseInt(countRes.headers.get('content-range')?.split('/')[1] || '0');
-  if(!total) throw new Error('empty table');
+  try {
+    // Fetch a small batch and pick one by seed
+    const r = await fetch(
+      `${SB_REST}/${table}?select=front_img,back_img,player,year,brand,set_name,card_number,parallel&limit=50`,
+      { headers:{ 'apikey': SB_KEY, 'Accept': 'application/json' } }
+    );
+    if(!r.ok){ _cotdFallback(); return; }
+    const rows = await r.json();
+    if(!rows || !rows.length){ _cotdFallback(); return; }
 
-  const offset = seed % total;
-  const r = await fetch(
-    `${SB_REST}/${table}?select=front_img,back_img,player,year,brand,set_name,card_number,parallel&limit=1&offset=${offset}`,
-    { headers:{ 'apikey': SB_KEY, 'Accept': 'application/json' } }
-  );
-  if(!r.ok) throw new Error('fetch failed');
-  const rows = await r.json();
-  if(!rows || !rows.length) throw new Error('no rows');
-
-  const row = rows[0];
-  loadCard({
-    front_image_url: row.front_img || null,
-    back_image_url:  row.back_img  || null,
-    player: row.player, year: row.year, brand: row.brand,
-    set_name: row.set_name, card_number: row.card_number, parallel: row.parallel
-  }, true);
+    const row = rows[seed % rows.length];
+    loadCard({
+      front_image_url: row.front_img || null,
+      back_image_url:  row.back_img  || null,
+      player: row.player, year: row.year, brand: row.brand,
+      set_name: row.set_name, card_number: row.card_number, parallel: row.parallel
+    }, true);
+  } catch(e){
+    _cotdFallback();
+  }
 }
 
 function loadCard(row, isCotd){

@@ -167,8 +167,8 @@
       transform-style: preserve-3d;
       will-change: transform;
       position: relative;
-      width: 336px;
-      height: 485px;
+      width: 346px;
+      height: 500px;
     }
     .slab-face {
       position: absolute;
@@ -179,14 +179,40 @@
       -webkit-backface-visibility: hidden;
     }
     .slab-face-back { transform: rotateY(180deg); }
-    .slab-card-img {
+    .slab-card-wrap-front {
       position: absolute;
-      left: 27px;
-      top: 130px;
-      width: 280px;
-      height: 323px;
-      object-fit: cover;
+      left: 19px;
+      top: 129px;
+      width: 299px;
+      height: 345px;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .slab-card-wrap-front img {
+      width: 100%;
+      height: 100%;
       display: block;
+      border-radius: 9px;
+      object-fit: fill;
+    }
+    .slab-card-wrap-back {
+      position: absolute;
+      left: -20.5px;
+      top: 127px;
+      width: 387px;
+      height: 348px;
+      z-index: 2;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .slab-card-wrap-back img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: 8px;
+      object-fit: contain;
     }
     .slab-frame-img {
       position: absolute;
@@ -558,13 +584,19 @@
 
     <div id="slabScene">
       <div id="slabUnit">
+        <!-- FRONT FACE -->
         <div class="slab-face">
-          <img id="slabCardFront" class="slab-card-img" alt="">
-          <img id="slabFrameF"    class="slab-frame-img" src="images/slab-frame-front.png" alt="">
+          <img id="slabFrameF" class="slab-frame-img" src="GRAILISO_slab.png" style="z-index:1" alt="">
+          <div class="slab-card-wrap-front">
+            <img id="slabCardFront" alt="">
+          </div>
         </div>
+        <!-- BACK FACE -->
         <div class="slab-face slab-face-back">
-          <img id="slabCardBack" class="slab-card-img"  style="transform:scaleX(-1)" alt="">
-          <img id="slabFrameB"   class="slab-frame-img" style="transform:scaleX(-1)" src="images/slab-frame-back.png" alt="">
+          <img id="slabFrameB" class="slab-frame-img" src="GRAILISO_slab.png" style="transform:scaleX(-1);z-index:1" alt="">
+          <div class="slab-card-wrap-back">
+            <img id="slabCardBack" alt="">
+          </div>
         </div>
       </div>
     </div>

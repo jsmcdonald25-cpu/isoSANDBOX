@@ -374,9 +374,13 @@ function _applyColor(idx){
     var spot=document.getElementById('slabSpotlight');
     if(spot){spot.style.opacity='0';spot.style.background='transparent'}
   } else {
-    var glow=(_edgeLight&&s.glow!=='transparent')?'0 0 40px 8px '+s.glow:'none';
+    // Edge light glow — scaled by glow slider
+    var edgeSpread=Math.round(40*_glowMult);
+    var edgeBlur=Math.round(8*_glowMult);
+    var glow=(_edgeLight&&s.glow!=='transparent'&&_glowMult>0)?'0 0 '+edgeSpread+'px '+edgeBlur+'px '+s.glow:'none';
     if(front) front.style.boxShadow=glow;
     if(back) back.style.boxShadow='none';
+    // Spotlight — ambient glow behind slab
     var spot=document.getElementById('slabSpotlight');
     if(spot){
       if(_glowMult===0){spot.style.opacity='0';spot.style.background='transparent'}

@@ -595,7 +595,7 @@
         <div class="slab-face slab-face-back" id="slabBackFace">
           <img id="slabFrameB" class="slab-frame-img" src="GRAILISO_slab.png" style="transform:scaleX(-1);z-index:1" alt="">
           <div class="slab-card-wrap-back">
-            <img id="slabCardBack" style="transform:scaleX(-1)" alt="">
+            <img id="slabCardBack" alt="">
           </div>
         </div>
       </div>
@@ -1028,6 +1028,24 @@ function loadCard(row, isCotd){
   const cb = document.getElementById('slabCardBack');
   if(cf) cf.src = row.front_image_url || 'images/grail-placeholder.jpg';
   if(cb) cb.src = row.back_image_url  || 'images/grail-placeholder.jpg';
+
+  // Detect landscape orientation on both images and rotate face accordingly
+  if(cf){
+    cf.onload = function(){
+      const landscape = this.naturalWidth > this.naturalHeight;
+      const ff = document.getElementById('slabFrontFace');
+      if(ff) ff.style.transform = landscape ? 'rotateZ(90deg)' : '';
+      if(landscape) this.style.transform = 'rotate(-90deg)';
+    };
+  }
+  if(cb){
+    cb.onload = function(){
+      const landscape = this.naturalWidth > this.naturalHeight;
+      const bf = document.getElementById('slabBackFace');
+      if(bf) bf.style.transform = landscape ? 'rotateY(180deg) rotateZ(90deg)' : 'rotateY(180deg)';
+      if(landscape) this.style.transform = 'rotate(-90deg)';
+    };
+  }
 
   const name   = row.player || '—';
   const detail = [row.year, row.brand, row.set_name, row.parallel, row.card_number ? '#' + row.card_number : null]

@@ -128,7 +128,7 @@
         </div>
         <!-- BACK — exact copy of dashboard HTML -->
         <div id="slabBackFace" style="position:absolute;inset:0;border-radius:12px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg)">
-          <img id="slabFrameB" src="images/slab-frame-back.png" style="position:absolute;inset:0;width:100%;height:100%;display:block;transition:filter .35s;z-index:1" alt="">
+          <img id="slabFrameB" src="GRAILISO_slab.png" style="position:absolute;inset:0;width:100%;height:100%;display:block;transform:scaleX(-1);transition:filter .35s;z-index:1" alt="">
           <div style="position:absolute;left:-20.5px;top:127px;width:387px;height:348px;z-index:2;border-radius:8px;overflow:hidden;box-shadow:none">
             <img id="slabCardBack" style="width:100%;height:100%;object-fit:contain;display:block;border-radius:8px;box-shadow:none" alt="">
           </div>
@@ -271,21 +271,37 @@ var _finish='crystal',_activeIdx=2,_rotX=0,_rotY=0,_flipped=false;
 var _dragging=false,_lastX=0,_lastY=0,_spinner=null,_spinning=false,_listenersAttached=false;
 var _glowMult=1.0,_edgeLight=true,_shadowOn=true,_cardVisible=true,_spinSpeed=0.38;
 
-function init(){
+// Shared slab image setter — matches dashboard _slabSetImages exactly
+function _slabSetImages(frontUrl, backUrl, frontLandscape, backLandscape){
   var cf=document.getElementById('slabCardFront');
   var cb=document.getElementById('slabCardBack');
-  // Load default card immediately
-  if(cf) cf.src=DEFAULT_FRONT;
-  if(cb){
-    cb.src=DEFAULT_BACK;
-    // Default back is landscape — rotate back face to horizontal
-    cb.onload=function(){
-      if(this.naturalWidth>this.naturalHeight){
-        document.getElementById('slabBackFace').style.transform='rotateY(180deg) rotateZ(90deg)';
-        this.style.transform='rotate(-90deg)';
-      }
-    };
-  }
+  if(cf) cf.src=frontUrl||DEFAULT_FRONT;
+  if(cb) cb.src=backUrl||DEFAULT_BACK;
+  // Front face orientation
+  var ff=document.getElementById('slabFrontFace');
+  if(ff) ff.style.transform=frontLandscape?'rotateZ(90deg)':'';
+  if(cf) cf.style.transform=frontLandscape?'rotate(-90deg)':'';
+  // Back face orientation
+  var bf=document.getElementById('slabBackFace');
+  if(bf) bf.style.transform=backLandscape?'rotateY(180deg) rotateZ(90deg)':'rotateY(180deg)';
+  if(cb) cb.style.transform=backLandscape?'rotate(-90deg)':'';
+}
+
+function _detectAndSetImages(frontUrl, backUrl){
+  // Load images, detect orientation on load, then apply
+  var fImg=new Image(), bImg=new Image();
+  var fLand=false, bLand=false, fLoaded=false, bLoaded=false;
+  function apply(){ if(fLoaded&&bLoaded) _slabSetImages(frontUrl,backUrl,fLand,bLand); }
+  fImg.onload=function(){ fLand=this.naturalWidth>this.naturalHeight; fLoaded=true; apply(); };
+  fImg.onerror=function(){ fLoaded=true; apply(); };
+  bImg.onload=function(){ bLand=this.naturalWidth>this.naturalHeight; bLoaded=true; apply(); };
+  bImg.onerror=function(){ bLoaded=true; apply(); };
+  fImg.src=frontUrl||DEFAULT_FRONT;
+  bImg.src=backUrl||DEFAULT_BACK;
+}
+
+function init(){
+  _detectAndSetImages(DEFAULT_FRONT, DEFAULT_BACK);
   _buildSwatches();
   _applyColor(_activeIdx);
   _updateFinishBtns();
@@ -308,24 +324,7 @@ async function _loadVaultCard(vid){
     var rows=await r.json();
     if(!rows||!rows.length) return;
     var row=rows[0];
-    var cf=document.getElementById('slabCardFront');
-    var cb=document.getElementById('slabCardBack');
-    if(cf){
-      cf.src=row.front_image_url||DEFAULT_FRONT;
-      cf.onload=function(){
-        var ff=document.getElementById('slabFrontFace');
-        if(this.naturalWidth>this.naturalHeight){ff.style.transform='rotateZ(90deg)';this.style.transform='rotate(-90deg)';}
-        else{ff.style.transform='';this.style.transform='';}
-      };
-    }
-    if(cb){
-      cb.src=row.back_image_url||DEFAULT_BACK;
-      cb.onload=function(){
-        var bf=document.getElementById('slabBackFace');
-        if(this.naturalWidth>this.naturalHeight){bf.style.transform='rotateY(180deg) rotateZ(90deg)';this.style.transform='rotate(-90deg)';}
-        else{bf.style.transform='rotateY(180deg)';this.style.transform='';}
-      };
-    }
+    _detectAndSetImages(row.front_image_url, row.back_image_url);
     document.getElementById('slCardName').textContent=row.player||'—';
     document.getElementById('slCardDetail').textContent=[row.year,row.brand,row.set_name,row.parallel,row.card_number?'#'+row.card_number:null].filter(Boolean).join(' · ');
   }catch(e){}

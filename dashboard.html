@@ -6559,13 +6559,13 @@ function _ivRenderChecklist(){
   if(!el) return;
   if(!_ivFiltered.length){ el.innerHTML='<div class="iv-empty">No cards match</div>'; return; }
 
-  const header = `<div class="iv-row" style="cursor:default;border-bottom:1px solid rgba(0,170,255,.15);padding-bottom:6px;margin-bottom:2px;grid-template-columns:60px 1fr 120px 80px 80px 60px">
+  const header = `<div class="iv-row" style="cursor:default;border-bottom:1px solid rgba(0,170,255,.15);padding-bottom:6px;margin-bottom:2px;grid-template-columns:56px 1fr 1fr 80px 80px 56px">
     <div class="iv-row-num" style="color:var(--muted-text);font-size:10px;letter-spacing:1px">CARD #</div>
     <div class="iv-row-player" style="font-size:10px;letter-spacing:1px;color:var(--muted-text)">PLAYER</div>
     <div class="iv-row-team" style="font-size:10px;letter-spacing:1px;color:var(--muted-text)">TEAM</div>
     <div class="iv-row-cat" style="font-size:10px;letter-spacing:1px;color:var(--muted-text)">CATEGORY</div>
     <div class="iv-row-price" style="font-size:10px;letter-spacing:1px;color:var(--muted-text)">MKT AVG</div>
-    <div style="font-size:10px;letter-spacing:1px;color:var(--muted-text);font-family:Barlow Condensed,sans-serif">IMG</div>
+    <div style="font-size:10px;letter-spacing:1px;color:var(--muted-text);font-family:Barlow Condensed,sans-serif;text-align:center">PIC</div>
   </div>`;
 
   window._ivRowCache = {};
@@ -6581,13 +6581,13 @@ function _ivRenderChecklist(){
     const priceHtml = mktPrice
       ? `<div class="iv-row-price">$${Number(mktPrice).toFixed(2)}</div>`
       : `<div class="iv-row-price no-data">—</div>`;
-    return `<div class="iv-row" style="grid-template-columns:60px 1fr 120px 80px 80px 60px;cursor:pointer" data-rowidx="${idx}">
+    return `<div class="iv-row" style="grid-template-columns:56px 1fr 1fr 80px 80px 56px;cursor:pointer" data-rowidx="${idx}">
       <div class="iv-row-num">${r.card_number||'—'}</div>
       <div><div class="iv-row-player">${r.player||'—'}</div>${sub}</div>
       <div class="iv-row-team">${r.team||'—'}</div>
       <div class="iv-row-cat"><span class="iv-row-cat-badge ${catClass}">${catLabel}</span></div>
       ${priceHtml}
-      <div style="font-size:16px">${hasImg ? '&#128444;&#65039;' : '<span style="color:rgba(122,149,174,0.3)">—</span>'}</div>
+      <div style="text-align:center">${hasImg ? '<span style="color:var(--green);font-size:11px;font-family:Barlow Condensed,sans-serif;letter-spacing:.5px">YES</span>' : '<span style="color:rgba(122,149,174,0.3);font-size:11px;font-family:Barlow Condensed,sans-serif">—</span>'}</div>
     </div>`;
   }).join('');
 

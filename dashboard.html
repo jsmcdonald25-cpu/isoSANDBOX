@@ -818,6 +818,10 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv-gsearch::placeholder{color:rgba(122,149,174,0.3)}.mv-gsearch:focus{border-color:rgba(0,170,255,0.5)}
 .mv-gsort{background:rgba(0,0,0,0.4);border:1px solid var(--deep-border);border-radius:8px;padding:8px 10px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted-text);outline:none;cursor:pointer}
 .mv-gsort option{background:#0d1f33;color:var(--white)}
+.mv-img-filter{display:flex;border:1px solid var(--deep-border);border-radius:8px;overflow:hidden;flex-shrink:0}
+.mv-img-filter button{background:rgba(0,0,0,0.4);border:none;padding:7px 10px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted-text);cursor:pointer;transition:all .15s;white-space:nowrap}
+.mv-img-filter button+button{border-left:1px solid var(--deep-border)}
+.mv-img-filter button.active{background:rgba(0,170,255,0.18);color:#00AAFF}
 /* Card tiles */
 .mv3-card{background:var(--deep2);border:1px solid rgba(0,170,255,0.14);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .22s;position:relative}
 .mv3-card:hover{border-color:rgba(0,170,255,0.5);transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,0.6),0 0 0 1px rgba(0,170,255,0.08)}
@@ -1904,6 +1908,11 @@ async function logOut(){
           <div class="mv-gsearch-wrap">
             <span class="mv-gsearch-icon">&#128269;</span>
             <input class="mv-gsearch" id="mv3-search-input" type="text" placeholder="Search player, set, year&hellip;" oninput="filterVaultGrid(this.value)">
+          </div>
+          <div class="mv-img-filter" id="mv3-img-filter">
+            <button class="active" onclick="setVaultImgFilter('all')">All</button>
+            <button onclick="setVaultImgFilter('with')">📷 Pics</button>
+            <button onclick="setVaultImgFilter('without')">No Pics</button>
           </div>
           <select class="mv-gsort" id="mv3-sort-sel" onchange="sortVaultGrid(this.value)">
             <option value="date_desc">Newest First</option>
@@ -4971,24 +4980,40 @@ function _toggleMvCustomize(btn){
 }
 
 // ── Search / Sort ─────────────────────────────────────────────────────────────
+window._vaultImgFilter='all';
+function setVaultImgFilter(mode){
+  window._vaultImgFilter=mode;
+  const wrap=document.getElementById('mv3-img-filter');
+  if(wrap)[...wrap.children].forEach(b=>b.classList.toggle('active',b.textContent.trim()==={all:'All',with:'📷 Pics',without:'No Pics'}[mode]));
+  const si=document.getElementById('mv3-search-input');
+  filterVaultGrid(si?si.value:'');
+}
+function _applyImgFilter(data){
+  const m=window._vaultImgFilter||'all';
+  if(m==='with')  return data.filter(c=>!!c.front_image_url);
+  if(m==='without')return data.filter(c=>!c.front_image_url);
+  return data;
+}
 function filterVaultGrid(q){
-  const data=window._vaultData||[];
-  if(!q||!q.trim()){_renderVaultGrid(data);_patchVaultThumbnails(data);_updateStarVisuals();return;}
-  const ql=q.toLowerCase();
-  const filtered=data.filter(c=>
-    (c.player||'').toLowerCase().includes(ql)||
-    (c.set_name||'').toLowerCase().includes(ql)||
-    (c.brand||'').toLowerCase().includes(ql)||
-    String(c.year||'').includes(ql)||
-    (c.parallel||'').toLowerCase().includes(ql)||
-    (c.card_number||'').toLowerCase().includes(ql)
-  );
-  _renderVaultGrid(filtered);
+  let data=_applyImgFilter(window._vaultData||[]);
+  if(q&&q.trim()){
+    const ql=q.toLowerCase();
+    data=data.filter(c=>
+      (c.player||'').toLowerCase().includes(ql)||
+      (c.set_name||'').toLowerCase().includes(ql)||
+      (c.brand||'').toLowerCase().includes(ql)||
+      String(c.year||'').includes(ql)||
+      (c.parallel||'').toLowerCase().includes(ql)||
+      (c.card_number||'').toLowerCase().includes(ql)
+    );
+  }
+  _renderVaultGrid(data);
+  _patchVaultThumbnails(data);
   _updateStarVisuals();
 }
 
 function sortVaultGrid(mode){
-  const data=[...(window._vaultData||[])];
+  const data=[..._applyImgFilter(window._vaultData||[])];
   if(mode==='date_desc')  data.sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
   else if(mode==='date_asc')  data.sort((a,b)=>new Date(a.created_at||0)-new Date(b.created_at||0));
   else if(mode==='paid_desc') data.sort((a,b)=>(parseFloat(b.price_paid)||0)-(parseFloat(a.price_paid)||0));

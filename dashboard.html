@@ -6013,7 +6013,8 @@ let _ivSetsReady = (async function _ivLoadSets(){
       label:        r.label,
       pokemonCols:  r.col_schema === 'pokemon',
       legacyCols:   r.col_schema === 'legacy',
-      noVarImages:  r.no_var_images || r.col_schema === 'legacy' || r.col_schema === 'pokemon',
+      paniniCols:   r.col_schema === 'panini',
+      noVarImages:  r.no_var_images || r.col_schema === 'legacy' || r.col_schema === 'pokemon' || r.col_schema === 'panini',
       seriesFilter:     r.series_filter || null,
       defaultParallels: Array.isArray(r.default_parallels) ? r.default_parallels : [],
     }));
@@ -6425,6 +6426,44 @@ async function ivSelectSet(table){
     }));
   }
 
+  // Remap Panini columns (e.g. 2025 Donruss Optic: player_name, card_set, program, position)
+  // Collapses many parallel rows into one row per player+card_number;
+  // variation pills are built automatically by SOURCE 1b from _ivData.
+  if(setDef.paniniCols){
+    // First remap all rows to standard column names
+    all = all.map(r=>({
+      ...r,
+      player:      r.player_name || '',
+      card_number: String(r.card_number || ''),
+      team:        r.team || '',
+      category:    r.card_set || 'Base',
+      set_name:    setDef.label,
+      year:        r.year || setDef.year,
+      sport:       r.sport || setDef.sport,
+      insert_name: (r.card_set && r.card_set !== 'Base') ? r.card_set : null,
+      is_rookie:   (r.card_set||'').toLowerCase().includes('rookie') || (r.position||'').toLowerCase().includes('rookie'),
+      var_images:  {}
+    }));
+    // Store full expanded rows so variation pill builder (SOURCE 1b) can find all parallels
+    window._ivPaniniAllRows = all;
+    // Deduplicate: keep one row per player + card_number (prefer Base row)
+    const _seen = {};
+    const _deduped = [];
+    all.forEach(r=>{
+      const key = r.player + '||' + r.card_number;
+      if(!_seen[key]){
+        _seen[key] = r;
+        _deduped.push(r);
+      } else if(r.category === 'Base' && _seen[key].category !== 'Base'){
+        // Swap in the Base row as the representative
+        const idx = _deduped.indexOf(_seen[key]);
+        _deduped[idx] = r;
+        _seen[key] = r;
+      }
+    });
+    all = _deduped;
+  }
+
   // Remap legacy columns (e.g. 1987 Topps: "Player Name", "Card #", "Team", "Type")
   if(setDef.legacyCols){
     all = all.map(r=>({
@@ -6659,8 +6698,10 @@ function ivOpenCard(row){
       }
 
       // SOURCE 1b: Multiple DB rows for same card_number (one row per parallel — legacy import style)
+      // For Panini sets, use the full unexpanded row set (before dedup) so all parallels appear as pills
       if(!vars.length){
-        const allRows = (_ivData||[]).filter(x=>
+        const _searchPool = window._ivPaniniAllRows || _ivData || [];
+        const allRows = _searchPool.filter(x=>
           x.card_number === row.card_number && x.player === row.player
         );
         allRows.forEach(x=>{

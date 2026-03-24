@@ -7262,11 +7262,14 @@ if(document.readyState === 'loading'){
 // If arriving from Slab Lab "Choose Card", enter pick mode
 function _checkSlabPick(){
   if(window.location.hash && window.location.hash.includes('slabpick=1')){
-    window.location.hash = '#myvault';
+    window.location.hash = '';
     setTimeout(function(){
       window._slabPickMode = true;
       var banner = document.getElementById('slabPickBanner');
       if(banner) banner.style.display = 'block';
+      // Navigate to ISO Vault / library section
+      var navLib = document.getElementById('nav-library');
+      if(navLib && typeof N === 'function') N('library', navLib);
     }, 500);
   }
 }

@@ -177,7 +177,6 @@
       overflow: hidden;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
-      transform-style: flat;
     }
     .slab-face-back { transform: rotateY(180deg); }
     .slab-card-wrap-front {
@@ -186,7 +185,6 @@
       top: 129px;
       width: 299px;
       height: 345px;
-      z-index: 0;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -204,7 +202,6 @@
       top: 129px;
       width: 290px;
       height: 340px;
-      z-index: 0;
       border-radius: 8px;
       overflow: hidden;
     }
@@ -675,19 +672,19 @@
 
     <div id="slabScene">
       <div id="slabUnit">
-        <!-- FRONT FACE -->
+        <!-- FRONT FACE — card first, frame on top by DOM order -->
         <div class="slab-face" id="slabFrontFace">
-          <img id="slabFrameF" class="slab-frame-img" src="GRAILISO_slab.png" style="z-index:1" alt="">
           <div class="slab-card-wrap-front">
             <img id="slabCardFront" alt="">
           </div>
+          <img id="slabFrameF" class="slab-frame-img" src="GRAILISO_slab.png" alt="">
         </div>
-        <!-- BACK FACE -->
+        <!-- BACK FACE — card first, frame on top by DOM order -->
         <div class="slab-face slab-face-back" id="slabBackFace">
-          <img id="slabFrameB" class="slab-frame-img" src="GRAILISO_slab.png" style="transform:scaleX(-1);z-index:1" alt="">
           <div class="slab-card-wrap-back">
             <img id="slabCardBack" alt="">
           </div>
+          <img id="slabFrameB" class="slab-frame-img" src="GRAILISO_slab.png" style="transform:scaleX(-1)" alt="">
         </div>
       </div>
     </div>
@@ -1021,6 +1018,8 @@ async function init(){
   }
 
   // ── CARD OF THE DAY MODE ──
+  // Load default immediately, then try to replace with COTD
+  _cotdFallback();
   loadCardOfTheDay();
 }
 
@@ -1361,7 +1360,7 @@ function goBack(){
 
 function chooseCard(){
   stopSpin();
-  window.location.href = 'dashboard.html#myvault&slabpick=1';
+  window.location.href = 'dashboard.html#isovault&slabpick=1';
 }
 
 // ═══════════════════════════════════════════════════════

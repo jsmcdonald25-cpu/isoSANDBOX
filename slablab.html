@@ -355,7 +355,15 @@ function _buildSwatches(){var w=document.getElementById('slabSwatches');if(!w)re
 function _applyColor(idx){
   var c=SLAB_COLORS[idx];if(!c)return;_activeIdx=idx;
   var s=c[_finish];if(!s)return;
-  var f='hue-rotate('+s.hue+'deg) saturate('+s.sat+') brightness('+s.bri+') contrast('+s.con+')';
+  var f;
+  if(_finish==='matte'){
+    // Matte: crush specular highlights baked into the PNG
+    // Lower brightness kills bright streaks, high contrast flattens tonal range,
+    // low saturate removes color glow, sepia deadens remaining shine
+    f='hue-rotate('+s.hue+'deg) saturate('+s.sat+') brightness('+(s.bri*0.7)+') contrast('+(s.con*1.15)+') sepia(0.12)';
+  } else {
+    f='hue-rotate('+s.hue+'deg) saturate('+s.sat+') brightness('+s.bri+') contrast('+s.con+')';
+  }
   ['slabFrameF','slabFrameB'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.filter=f});
   // Edge glow — apply to FRONT FACE only (backface-visibility hides it on back)
   var front=document.getElementById('slabFrontFace');

@@ -389,12 +389,28 @@ let _spinSpeed=0.38, _currentBg='grid';
 // ═══════════════════════════════════════════════════════
 // INIT — load default card immediately, then try vault or COTD
 // ═══════════════════════════════════════════════════════
+function _detectLandscape(imgEl, faceId, isBack){
+  imgEl.onload = function(){
+    var land = this.naturalWidth > this.naturalHeight;
+    var face = document.getElementById(faceId);
+    if(face){
+      if(isBack){
+        face.style.transform = land ? 'rotateY(180deg) rotateZ(90deg)' : 'rotateY(180deg)';
+      } else {
+        face.style.transform = land ? 'rotateZ(90deg)' : '';
+      }
+    }
+    if(land) this.style.transform = 'rotate(-90deg)';
+    else this.style.transform = '';
+  };
+}
+
 function init(){
   // Set default card images right away
   var cf = document.getElementById('slabCardFront');
   var cb = document.getElementById('slabCardBack');
-  if(cf) cf.src = DEFAULT_FRONT;
-  if(cb) cb.src = DEFAULT_BACK;
+  if(cf){ cf.src = DEFAULT_FRONT; _detectLandscape(cf, 'slabFrontFace', false); }
+  if(cb){ cb.src = DEFAULT_BACK;  _detectLandscape(cb, 'slabBackFace', true); }
   document.getElementById('slCardName').textContent = 'Shohei Ohtani';
   document.getElementById('slCardDetail').textContent = 'CARD OF THE DAY · 2025 · Topps · B&W · #001';
 
@@ -427,8 +443,8 @@ async function _loadVaultCard(vaultId){
     var row = rows[0];
     var cf = document.getElementById('slabCardFront');
     var cb = document.getElementById('slabCardBack');
-    if(cf) cf.src = row.front_image_url || DEFAULT_FRONT;
-    if(cb) cb.src = row.back_image_url  || DEFAULT_BACK;
+    if(cf){ cf.src = row.front_image_url || DEFAULT_FRONT; _detectLandscape(cf, 'slabFrontFace', false); }
+    if(cb){ cb.src = row.back_image_url  || DEFAULT_BACK;  _detectLandscape(cb, 'slabBackFace', true); }
     var name = row.player||'—';
     var detail = [row.year,row.brand,row.set_name,row.parallel,row.card_number?'#'+row.card_number:null].filter(Boolean).join(' · ');
     document.getElementById('slCardName').textContent = name;

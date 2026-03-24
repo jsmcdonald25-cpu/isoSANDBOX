@@ -56,11 +56,7 @@
     #slabScene:active{cursor:grabbing}
     #slabUnit{transform-style:preserve-3d;will-change:transform;position:relative;width:346px;height:500px}
 
-    /* Each face is a flat stacking context — backface-visibility works on the whole thing */
-    .slab-face{position:absolute;inset:0;border-radius:12px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden}
-
-    /* Frame img covers the face, card sits behind it */
-    .slab-frame-img{position:absolute;inset:0;width:100%;height:100%;display:block;transition:filter .35s;pointer-events:none}
+    /* no .slab-face or .slab-frame-img class — all inline to match dashboard */
 
     /* Viewer controls */
     .sl-viewer-controls{display:flex;gap:8px;margin-top:14px;flex-shrink:0;z-index:1}
@@ -210,16 +206,16 @@
 
     <div id="slabScene">
       <div id="slabUnit">
-        <!-- FRONT — identical structure to dashboard -->
-        <div class="slab-face" id="slabFrontFace" style="backface-visibility:hidden;-webkit-backface-visibility:hidden">
-          <img id="slabFrameF" class="slab-frame-img" src="GRAILISO_slab.png" style="z-index:1" alt="">
+        <!-- FRONT — exact dashboard markup -->
+        <div id="slabFrontFace" style="position:absolute;inset:0;border-radius:12px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden">
+          <img id="slabFrameF" src="GRAILISO_slab.png" style="position:absolute;inset:0;width:100%;height:100%;display:block;transition:filter .35s;z-index:1" alt="">
           <div style="position:absolute;left:19px;top:129px;width:299px;height:345px;z-index:2;display:flex;align-items:center;justify-content:center">
             <img id="slabCardFront" style="width:100%;height:100%;display:block;border-radius:9px;object-fit:fill" alt="">
           </div>
         </div>
-        <!-- BACK — identical structure to dashboard -->
-        <div class="slab-face" id="slabBackFace" style="backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg)">
-          <img id="slabFrameB" class="slab-frame-img" src="GRAILISO_slab.png" style="transform:scaleX(-1);z-index:1" alt="">
+        <!-- BACK — exact dashboard markup -->
+        <div id="slabBackFace" style="position:absolute;inset:0;border-radius:12px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg)">
+          <img id="slabFrameB" src="GRAILISO_slab.png" style="position:absolute;inset:0;width:100%;height:100%;display:block;transform:scaleX(-1);transition:filter .35s;z-index:1" alt="">
           <div style="position:absolute;left:-20.5px;top:127px;width:387px;height:348px;z-index:2;border-radius:8px;overflow:hidden">
             <img id="slabCardBack" style="width:100%;height:100%;object-fit:contain;display:block;border-radius:8px" alt="">
           </div>
@@ -280,99 +276,99 @@ const DEFAULT_BACK  = 'https://jyfaegmnzkarlcximxjo.supabase.co/storage/v1/objec
 // ═══════════════════════════════════════════════════════
 const SLAB_COLORS = [
   {id:'arctic',label:'Arctic',swatchBg:'linear-gradient(135deg,#d0e8ff,#8ab8d8)',swatchBorder:'rgba(180,220,255,0.85)',
-   matte:{hue:0,sat:0.18,bri:0.58,con:0.76,glow:'transparent',desc:'Arctic Matte — frosted white, dead flat'},
+   matte:{hue:0,sat:0.28,bri:0.62,con:0.82,glow:'rgba(140,175,205,0.3)',desc:'Arctic Matte — frosted white, dead flat'},
    crystal:{hue:0,sat:1.40,bri:1.10,con:1.10,glow:'rgba(180,220,255,0.72)',desc:'Arctic Crystal — ice-clear mirror'},
    vivid:{hue:0,sat:2.85,bri:1.22,con:1.28,glow:'rgba(80,200,255,0.88)',desc:'Arctic Vivid — electric ice'}},
   {id:'onyx',label:'Onyx',swatchBg:'linear-gradient(135deg,#2a2a3a,#111118)',swatchBorder:'rgba(120,120,145,0.85)',
-   matte:{hue:0,sat:0.0,bri:0.26,con:0.73,glow:'transparent',desc:'Onyx Matte — pure black, total absorption'},
+   matte:{hue:0,sat:0.0,bri:0.3,con:0.8,glow:'rgba(15,15,25,0.25)',desc:'Onyx Matte — pure black, zero reflection'},
    crystal:{hue:0,sat:0.22,bri:0.52,con:1.08,glow:'rgba(80,80,140,0.48)',desc:'Onyx Crystal — black glass, obsidian depth'},
    vivid:{hue:50,sat:0.58,bri:0.60,con:1.24,glow:'rgba(55,55,205,0.58)',desc:'Onyx Vivid — black with electric edge'}},
   {id:'cobalt',label:'Cobalt',swatchBg:'linear-gradient(135deg,#0a3a5c,#041828)',swatchBorder:'rgba(0,170,255,0.90)',
-   matte:{hue:-15,sat:0.20,bri:0.50,con:0.76,glow:'transparent',desc:'Cobalt Matte — deep navy, velvet flat'},
+   matte:{hue:-15,sat:0.28,bri:0.58,con:0.82,glow:'rgba(0,75,140,0.25)',desc:'Cobalt Matte — deep navy, flat finish'},
    crystal:{hue:-15,sat:1.60,bri:1.02,con:1.12,glow:'rgba(0,190,255,0.78)',desc:'Cobalt Crystal — GrailISO signature glass'},
    vivid:{hue:-15,sat:2.85,bri:1.08,con:1.28,glow:'rgba(0,170,255,0.92)',desc:'Cobalt Vivid — max blue, full broadcast'}},
   {id:'gold',label:'Gold',swatchBg:'linear-gradient(135deg,#b8860b,#6b4c00)',swatchBorder:'rgba(255,200,50,0.88)',
-   matte:{hue:-170,sat:0.26,bri:0.58,con:0.76,glow:'transparent',desc:'Gold Matte — brushed brass, tactile flat'},
+   matte:{hue:-170,sat:0.38,bri:0.68,con:0.82,glow:'rgba(130,95,0,0.25)',desc:'Gold Matte — brushed brass, no shine'},
    crystal:{hue:-170,sat:2.10,bri:1.16,con:1.12,glow:'rgba(255,200,50,0.78)',desc:'Gold Crystal — mirror gold, trophy finish'},
    vivid:{hue:-170,sat:2.85,bri:1.22,con:1.28,glow:'rgba(255,170,0,0.92)',desc:'Gold Vivid — blazing championship gold'}},
   {id:'ruby',label:'Ruby',swatchBg:'linear-gradient(135deg,#8b0020,#3a0010)',swatchBorder:'rgba(255,50,80,0.88)',
-   matte:{hue:145,sat:0.22,bri:0.50,con:0.76,glow:'transparent',desc:'Ruby Matte — dark crimson, flat satin'},
+   matte:{hue:145,sat:0.32,bri:0.58,con:0.82,glow:'rgba(130,0,18,0.25)',desc:'Ruby Matte — dark crimson, flat satin'},
    crystal:{hue:145,sat:2.10,bri:1.06,con:1.12,glow:'rgba(255,50,75,0.78)',desc:'Ruby Crystal — blood red glass'},
    vivid:{hue:145,sat:2.85,bri:1.12,con:1.28,glow:'rgba(255,12,42,0.92)',desc:'Ruby Vivid — scorching red'}},
   {id:'emerald',label:'Emerald',swatchBg:'linear-gradient(135deg,#006630,#002810)',swatchBorder:'rgba(0,220,120,0.82)',
-   matte:{hue:-105,sat:0.20,bri:0.50,con:0.76,glow:'transparent',desc:'Emerald Matte — forest green, dead flat'},
+   matte:{hue:-105,sat:0.32,bri:0.58,con:0.82,glow:'rgba(0,95,38,0.25)',desc:'Emerald Matte — forest green, flat finish'},
    crystal:{hue:-105,sat:2.10,bri:1.06,con:1.12,glow:'rgba(0,218,108,0.78)',desc:'Emerald Crystal — vivid gem, polished glass'},
    vivid:{hue:-105,sat:2.85,bri:1.12,con:1.28,glow:'rgba(0,208,88,0.92)',desc:'Emerald Vivid — neon green'}},
   {id:'smoke',label:'Smoke',swatchBg:'linear-gradient(135deg,#3a4050,#181e26)',swatchBorder:'rgba(160,175,192,0.72)',
-   matte:{hue:0,sat:0.05,bri:0.46,con:0.73,glow:'transparent',desc:'Smoke Matte — dead grey, raw tactile'},
+   matte:{hue:0,sat:0.08,bri:0.52,con:0.8,glow:'rgba(55,65,75,0.2)',desc:'Smoke Matte — dead grey, tactile flat'},
    crystal:{hue:0,sat:0.34,bri:0.80,con:1.08,glow:'rgba(128,148,172,0.52)',desc:'Smoke Crystal — charcoal glass'},
    vivid:{hue:10,sat:0.88,bri:0.88,con:1.24,glow:'rgba(108,138,182,0.62)',desc:'Smoke Vivid — steel blue-grey'}},
   {id:'amethyst',label:'Amethyst',swatchBg:'linear-gradient(135deg,#4a1080,#1a0530)',swatchBorder:'rgba(160,80,255,0.88)',
-   matte:{hue:55,sat:0.20,bri:0.50,con:0.76,glow:'transparent',desc:'Amethyst Matte — deep plum'},
+   matte:{hue:55,sat:0.32,bri:0.58,con:0.82,glow:'rgba(75,0,125,0.25)',desc:'Amethyst Matte — deep plum, no shimmer'},
    crystal:{hue:55,sat:2.10,bri:1.02,con:1.12,glow:'rgba(172,62,252,0.78)',desc:'Amethyst Crystal — purple glass'},
    vivid:{hue:55,sat:2.85,bri:1.08,con:1.28,glow:'rgba(152,28,252,0.92)',desc:'Amethyst Vivid — ultraviolet pulse'}},
   {id:'teal',label:'Teal',swatchBg:'linear-gradient(135deg,#007a7a,#003838)',swatchBorder:'rgba(0,220,210,0.88)',
-   matte:{hue:-35,sat:0.20,bri:0.50,con:0.76,glow:'transparent',desc:'Teal Matte — deep cyan, flat'},
+   matte:{hue:-35,sat:0.32,bri:0.58,con:0.82,glow:'rgba(0,90,85,0.25)',desc:'Teal Matte — deep cyan, flat'},
    crystal:{hue:-35,sat:2.10,bri:1.06,con:1.12,glow:'rgba(0,220,210,0.78)',desc:'Teal Crystal — glass cyan, lagoon depth'},
    vivid:{hue:-35,sat:2.85,bri:1.12,con:1.28,glow:'rgba(0,255,220,0.92)',desc:'Teal Vivid — electric cyan'}},
   {id:'sunset',label:'Sunset',swatchBg:'linear-gradient(135deg,#c84800,#5c2000)',swatchBorder:'rgba(255,140,30,0.88)',
-   matte:{hue:-185,sat:0.26,bri:0.52,con:0.76,glow:'transparent',desc:'Sunset Matte — burnt orange'},
+   matte:{hue:-185,sat:0.38,bri:0.62,con:0.82,glow:'rgba(130,60,0,0.25)',desc:'Sunset Matte — burnt orange'},
    crystal:{hue:-185,sat:2.10,bri:1.12,con:1.12,glow:'rgba(255,140,30,0.78)',desc:'Sunset Crystal — molten orange glass'},
    vivid:{hue:-185,sat:2.85,bri:1.20,con:1.28,glow:'rgba(255,100,0,0.92)',desc:'Sunset Vivid — blazing orange'}},
   {id:'platinum',label:'Platinum',swatchBg:'linear-gradient(135deg,#c8cdd4,#8a9098)',swatchBorder:'rgba(220,228,238,0.92)',
-   matte:{hue:0,sat:0.07,bri:0.76,con:0.78,glow:'transparent',desc:'Platinum Matte — brushed silver'},
+   matte:{hue:0,sat:0.12,bri:0.78,con:0.82,glow:'rgba(160,168,178,0.25)',desc:'Platinum Matte — brushed silver'},
    crystal:{hue:0,sat:0.32,bri:1.28,con:1.12,glow:'rgba(220,228,238,0.72)',desc:'Platinum Crystal — mirror silver'},
    vivid:{hue:0,sat:0.58,bri:1.45,con:1.28,glow:'rgba(200,220,242,0.88)',desc:'Platinum Vivid — chrome blast'}},
   {id:'rose',label:'Rose',swatchBg:'linear-gradient(135deg,#8b1a50,#400020)',swatchBorder:'rgba(255,100,162,0.88)',
-   matte:{hue:120,sat:0.22,bri:0.50,con:0.76,glow:'transparent',desc:'Rose Matte — dusty pink'},
+   matte:{hue:120,sat:0.32,bri:0.58,con:0.82,glow:'rgba(130,20,60,0.25)',desc:'Rose Matte — dusty pink'},
    crystal:{hue:120,sat:2.10,bri:1.06,con:1.12,glow:'rgba(255,100,162,0.78)',desc:'Rose Crystal — glass pink'},
    vivid:{hue:120,sat:2.85,bri:1.12,con:1.28,glow:'rgba(255,60,142,0.92)',desc:'Rose Vivid — neon pink'}},
   {id:'copper',label:'Copper',swatchBg:'linear-gradient(135deg,#8b4513,#4a2208)',swatchBorder:'rgba(200,120,60,0.88)',
-   matte:{hue:-160,sat:0.28,bri:0.52,con:0.76,glow:'transparent',desc:'Copper Matte — aged copper'},
+   matte:{hue:-160,sat:0.38,bri:0.58,con:0.82,glow:'rgba(100,60,30,0.25)',desc:'Copper Matte — aged copper'},
    crystal:{hue:-160,sat:1.90,bri:1.06,con:1.12,glow:'rgba(200,120,60,0.78)',desc:'Copper Crystal — burnished copper glass'},
    vivid:{hue:-160,sat:2.85,bri:1.14,con:1.28,glow:'rgba(220,100,40,0.92)',desc:'Copper Vivid — molten copper'}},
   {id:'carolina',label:'Carolina',swatchBg:'linear-gradient(135deg,#3a7fc1,#1a4878)',swatchBorder:'rgba(100,180,255,0.88)',
-   matte:{hue:-8,sat:0.20,bri:0.66,con:0.76,glow:'transparent',desc:'Carolina Matte — soft sky blue'},
+   matte:{hue:-8,sat:0.28,bri:0.68,con:0.82,glow:'rgba(50,90,140,0.25)',desc:'Carolina Matte — soft sky blue'},
    crystal:{hue:-8,sat:1.65,bri:1.18,con:1.12,glow:'rgba(100,180,255,0.78)',desc:'Carolina Crystal — sky glass'},
    vivid:{hue:-8,sat:2.85,bri:1.25,con:1.28,glow:'rgba(80,180,255,0.92)',desc:'Carolina Vivid — electric sky'}},
   {id:'white',label:'White',swatchBg:'linear-gradient(135deg,#ffffff,#c8d2dc)',swatchBorder:'rgba(255,255,255,0.95)',
-   matte:{hue:0,sat:0.0,bri:0.88,con:0.73,glow:'transparent',desc:'White Matte — pure white, flat chalk'},
+   matte:{hue:0,sat:0.05,bri:0.88,con:0.8,glow:'rgba(200,200,210,0.2)',desc:'White Matte — pure white, flat chalk'},
    crystal:{hue:0,sat:0.18,bri:1.52,con:1.12,glow:'rgba(255,255,255,0.82)',desc:'White Crystal — blinding white glass'},
    vivid:{hue:0,sat:0.42,bri:1.68,con:1.28,glow:'rgba(230,240,255,0.96)',desc:'White Vivid — overexposed, pure light'}},
   {id:'crystal_emerald',label:'Crystal Emerald',swatchBg:'linear-gradient(135deg,#00aa55,#004422)',swatchBorder:'rgba(0,255,128,0.92)',
-   matte:{hue:-95,sat:0.20,bri:0.55,con:0.76,glow:'transparent',desc:'Crystal Emerald Matte — deep jade'},
+   matte:{hue:-95,sat:0.32,bri:0.58,con:0.82,glow:'rgba(0,85,40,0.25)',desc:'Crystal Emerald Matte — deep jade'},
    crystal:{hue:-95,sat:2.60,bri:1.22,con:1.18,glow:'rgba(0,255,128,0.88)',desc:'Crystal Emerald Crystal — max gem saturation'},
    vivid:{hue:-95,sat:3.00,bri:1.32,con:1.32,glow:'rgba(0,235,108,0.96)',desc:'Crystal Emerald Vivid — neon emerald'}},
   {id:'sapphire',label:'Sapphire',swatchBg:'linear-gradient(135deg,#1a3a8c,#0a1844)',swatchBorder:'rgba(60,100,255,0.90)',
-   matte:{hue:25,sat:0.22,bri:0.42,con:0.76,glow:'transparent',desc:'Sapphire Matte — deep royal blue'},
+   matte:{hue:25,sat:0.32,bri:0.52,con:0.82,glow:'rgba(30,50,130,0.25)',desc:'Sapphire Matte — deep royal blue'},
    crystal:{hue:25,sat:2.20,bri:0.92,con:1.14,glow:'rgba(60,100,255,0.80)',desc:'Sapphire Crystal — royal blue glass'},
    vivid:{hue:25,sat:2.85,bri:1.04,con:1.30,glow:'rgba(40,80,255,0.94)',desc:'Sapphire Vivid — electric royal'}},
   {id:'midnight',label:'Midnight',swatchBg:'linear-gradient(135deg,#0f1a2e,#050a14)',swatchBorder:'rgba(30,50,100,0.85)',
-   matte:{hue:10,sat:0.04,bri:0.18,con:0.73,glow:'transparent',desc:'Midnight Matte — near-black blue'},
+   matte:{hue:10,sat:0.08,bri:0.28,con:0.8,glow:'rgba(10,15,35,0.2)',desc:'Midnight Matte — near-black blue'},
    crystal:{hue:10,sat:0.42,bri:0.38,con:1.08,glow:'rgba(20,40,100,0.42)',desc:'Midnight Crystal — deep space glass'},
    vivid:{hue:10,sat:0.78,bri:0.48,con:1.22,glow:'rgba(20,50,140,0.58)',desc:'Midnight Vivid — dark matter'}},
   {id:'ivory',label:'Ivory',swatchBg:'linear-gradient(135deg,#f5e8d0,#c8b898)',swatchBorder:'rgba(245,232,208,0.92)',
-   matte:{hue:-155,sat:0.12,bri:0.82,con:0.76,glow:'transparent',desc:'Ivory Matte — warm cream'},
+   matte:{hue:-155,sat:0.18,bri:0.82,con:0.82,glow:'rgba(180,170,140,0.2)',desc:'Ivory Matte — warm cream'},
    crystal:{hue:-155,sat:0.52,bri:1.22,con:1.08,glow:'rgba(245,232,208,0.68)',desc:'Ivory Crystal — warm glass'},
    vivid:{hue:-155,sat:0.88,bri:1.38,con:1.22,glow:'rgba(255,240,200,0.82)',desc:'Ivory Vivid — sunlit warmth'}},
   {id:'bronze',label:'Bronze',swatchBg:'linear-gradient(135deg,#8b6914,#4a3508)',swatchBorder:'rgba(180,130,40,0.88)',
-   matte:{hue:-168,sat:0.30,bri:0.48,con:0.76,glow:'transparent',desc:'Bronze Matte — aged bronze'},
+   matte:{hue:-168,sat:0.38,bri:0.58,con:0.82,glow:'rgba(90,65,20,0.25)',desc:'Bronze Matte — aged bronze'},
    crystal:{hue:-168,sat:1.80,bri:1.02,con:1.12,glow:'rgba(180,130,40,0.72)',desc:'Bronze Crystal — polished bronze glass'},
    vivid:{hue:-168,sat:2.60,bri:1.14,con:1.28,glow:'rgba(200,140,20,0.88)',desc:'Bronze Vivid — molten bronze'}},
   {id:'ocean',label:'Ocean',swatchBg:'linear-gradient(135deg,#0a5a6e,#022a38)',swatchBorder:'rgba(0,180,200,0.88)',
-   matte:{hue:-28,sat:0.20,bri:0.48,con:0.76,glow:'transparent',desc:'Ocean Matte — deep sea'},
+   matte:{hue:-28,sat:0.32,bri:0.58,con:0.82,glow:'rgba(0,80,90,0.25)',desc:'Ocean Matte — deep sea'},
    crystal:{hue:-28,sat:2.00,bri:1.04,con:1.12,glow:'rgba(0,180,200,0.78)',desc:'Ocean Crystal — deep water glass'},
    vivid:{hue:-28,sat:2.85,bri:1.12,con:1.28,glow:'rgba(0,200,220,0.92)',desc:'Ocean Vivid — bioluminescent'}},
   {id:'slate',label:'Slate',swatchBg:'linear-gradient(135deg,#4a5568,#2d3748)',swatchBorder:'rgba(120,140,160,0.80)',
-   matte:{hue:5,sat:0.06,bri:0.52,con:0.74,glow:'transparent',desc:'Slate Matte — blue-grey stone'},
+   matte:{hue:5,sat:0.12,bri:0.56,con:0.82,glow:'rgba(60,70,80,0.2)',desc:'Slate Matte — blue-grey stone'},
    crystal:{hue:5,sat:0.40,bri:0.88,con:1.08,glow:'rgba(120,140,170,0.52)',desc:'Slate Crystal — polished stone glass'},
    vivid:{hue:5,sat:0.82,bri:0.96,con:1.24,glow:'rgba(100,130,180,0.65)',desc:'Slate Vivid — steel storm'}},
   {id:'lime',label:'Lime',swatchBg:'linear-gradient(135deg,#4a8c00,#2a5000)',swatchBorder:'rgba(140,255,0,0.88)',
-   matte:{hue:-78,sat:0.22,bri:0.52,con:0.76,glow:'transparent',desc:'Lime Matte — muted citrus'},
+   matte:{hue:-78,sat:0.32,bri:0.58,con:0.82,glow:'rgba(50,90,0,0.25)',desc:'Lime Matte — muted citrus'},
    crystal:{hue:-78,sat:2.10,bri:1.08,con:1.12,glow:'rgba(140,255,0,0.72)',desc:'Lime Crystal — acid green glass'},
    vivid:{hue:-78,sat:2.85,bri:1.18,con:1.28,glow:'rgba(120,255,0,0.92)',desc:'Lime Vivid — radioactive glow'}},
   {id:'magenta',label:'Magenta',swatchBg:'linear-gradient(135deg,#8c0060,#440030)',swatchBorder:'rgba(255,0,160,0.90)',
-   matte:{hue:88,sat:0.22,bri:0.48,con:0.76,glow:'transparent',desc:'Magenta Matte — deep fuchsia'},
+   matte:{hue:88,sat:0.32,bri:0.58,con:0.82,glow:'rgba(130,0,80,0.25)',desc:'Magenta Matte — deep fuchsia'},
    crystal:{hue:88,sat:2.20,bri:1.04,con:1.14,glow:'rgba(255,0,160,0.78)',desc:'Magenta Crystal — hot pink glass'},
    vivid:{hue:88,sat:2.85,bri:1.12,con:1.30,glow:'rgba(255,0,140,0.94)',desc:'Magenta Vivid — electric fuchsia'}},
 ];
@@ -504,8 +500,8 @@ function _applyColor(idx){
   // Spotlight
   var spot=document.getElementById('slabSpotlight');
   if(spot){
-    if(_finish==='matte'||_glowMult===0){spot.style.opacity='0';spot.style.background='transparent'}
-    else{spot.style.background='radial-gradient(circle,'+s.glow+' 0%,transparent 68%)';spot.style.opacity=String((_finish==='vivid'?0.62:0.42)*_glowMult)}
+    if(_glowMult===0){spot.style.opacity='0';spot.style.background='transparent'}
+    else{var intensity=_finish==='vivid'?0.62:_finish==='matte'?0.22:0.42;spot.style.background='radial-gradient(circle,'+s.glow+' 0%,transparent 68%)';spot.style.opacity=String(intensity*_glowMult)}
   }
   // Shadow
   var scene=document.getElementById('slabScene');
@@ -536,7 +532,7 @@ function setSpinSpeed(m){var sp={slow:0.18,med:0.38,fast:1.0,off:0};_spinSpeed=s
 // NAV
 // ═══════════════════════════════════════════════════════
 function goBack(){stopSpin();window.location.href='dashboard.html'}
-function chooseCard(){stopSpin();window.location.href='dashboard.html#isovault&slabpick=1'}
+function chooseCard(){stopSpin();window.location.href='dashboard.html#library&slabpick=1'}
 
 // ── START ──
 init();

@@ -3018,14 +3018,14 @@ function _slabLoadDefault(){
 }
 
 function openSlabLab(opts){
-  // If a vault card is selected, go directly to standalone Slab Lab
+  // If a vault card is selected, go with that card
   const row=window._vaultData&&window._vaultData[window._cdMyVaultIdx];
   if(row && row.id){
     window.location.href = 'slablab.html?vault_id=' + encodeURIComponent(row.id);
     return;
   }
-  // Otherwise enter pick mode — user must choose a card first
-  slabChooseCard();
+  // Otherwise open Slab Lab with Card of the Day
+  window.location.href = 'slablab.html';
 }
 
 // Navigate to ISOVault in "pick for Slab Lab" mode

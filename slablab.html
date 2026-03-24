@@ -900,49 +900,103 @@ let _currentBg    = 'grid';
 // ═══════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════
+// ── Card of the Day catalog tables to pull from ──
+const COTD_TABLES = [
+  '2025_topps_bw',
+  '2024_topps_chrome',
+  '2024_bowman_chrome',
+  '2024_topps_series1',
+  '2024_topps_series2'
+];
+
 async function init(){
   const params  = new URLSearchParams(window.location.search);
   const vaultId = params.get('vault_id');
-  if(!vaultId){
-    showError('No vault ID provided.<br>Launch Slab Lab from a card in My Vault.');
-    return;
-  }
 
-  let token = null;
-  try {
-    const _sb = supabase.createClient(SB_URL, SB_KEY);
-    const { data:{ session } } = await _sb.auth.getSession();
-    if(!session){
-      showError('Not signed in. Return to the Dashboard and sign in first.');
+  // ── VAULT CARD MODE ──
+  if(vaultId){
+    let token = null;
+    try {
+      const _sb = supabase.createClient(SB_URL, SB_KEY);
+      const { data:{ session } } = await _sb.auth.getSession();
+      if(!session){
+        showError('Not signed in. Return to the Dashboard and sign in first.');
+        return;
+      }
+      token = session.access_token;
+    } catch(e){
+      showError('Auth error: ' + e.message);
       return;
     }
-    token = session.access_token;
-  } catch(e){
-    showError('Auth error: ' + e.message);
+
+    try {
+      const r = await fetch(
+        `${SB_REST}/vault?id=eq.${encodeURIComponent(vaultId)}&select=front_image_url,back_image_url,player,year,brand,set_name,parallel,card_number&limit=1`,
+        {
+          headers:{
+            'apikey':        SB_KEY,
+            'Authorization': 'Bearer ' + token,
+            'Accept':        'application/json'
+          }
+        }
+      );
+      if(!r.ok){ showError('Failed to load card (HTTP ' + r.status + ')'); return; }
+      const rows = await r.json();
+      if(!rows || !rows.length){ showError('Card not found in My Vault.'); return; }
+      loadCard(rows[0]);
+    } catch(e){
+      showError('Network error: ' + e.message);
+    }
     return;
   }
 
+  // ── CARD OF THE DAY MODE ──
   try {
-    const r = await fetch(
-      `${SB_REST}/vault?id=eq.${encodeURIComponent(vaultId)}&select=front_image_url,back_image_url,player,year,brand,set_name,parallel,card_number&limit=1`,
-      {
-        headers:{
-          'apikey':        SB_KEY,
-          'Authorization': 'Bearer ' + token,
-          'Accept':        'application/json'
-        }
-      }
-    );
-    if(!r.ok){ showError('Failed to load card (HTTP ' + r.status + ')'); return; }
-    const rows = await r.json();
-    if(!rows || !rows.length){ showError('Card not found in My Vault.'); return; }
-    loadCard(rows[0]);
+    await loadCardOfTheDay();
   } catch(e){
-    showError('Network error: ' + e.message);
+    // Fallback: load default Ohtani card
+    loadCard({
+      front_image_url: 'https://jyfaegmnzkarlcximxjo.supabase.co/storage/v1/object/public/card-images/catalog/2025_topps_bw/001/base_front.jpg',
+      back_image_url:  'https://jyfaegmnzkarlcximxjo.supabase.co/storage/v1/object/public/card-images/catalog/2025_topps_bw/001/base_back.jpg',
+      player: 'Shohei Ohtani', year: '2025', brand: 'Topps', set_name: 'B&W', card_number: '001'
+    }, true);
   }
 }
 
-function loadCard(row){
+async function loadCardOfTheDay(){
+  // Use today's date as a seed so the card stays consistent all day
+  const today = new Date();
+  const seed = today.getFullYear() * 10000 + (today.getMonth()+1) * 100 + today.getDate();
+  const tableIdx = seed % COTD_TABLES.length;
+  const table = COTD_TABLES[tableIdx];
+
+  // Get row count first
+  const countRes = await fetch(
+    `${SB_REST}/${table}?select=card_number`,
+    { headers:{ 'apikey': SB_KEY, 'Accept': 'application/json', 'Prefer': 'count=exact' } }
+  );
+  const total = parseInt(countRes.headers.get('content-range')?.split('/')[1] || '0');
+  if(!total) throw new Error('empty table');
+
+  const offset = seed % total;
+  const r = await fetch(
+    `${SB_REST}/${table}?select=front_img,back_img,player,year,brand,set_name,card_number,parallel&limit=1&offset=${offset}`,
+    { headers:{ 'apikey': SB_KEY, 'Accept': 'application/json' } }
+  );
+  if(!r.ok) throw new Error('fetch failed');
+  const rows = await r.json();
+  if(!rows || !rows.length) throw new Error('no rows');
+
+  const row = rows[0];
+  loadCard({
+    front_image_url: row.front_img || null,
+    back_image_url:  row.back_img  || null,
+    player: row.player, year: row.year, brand: row.brand,
+    set_name: row.set_name, card_number: row.card_number, parallel: row.parallel
+  }, true);
+}
+
+function loadCard(row, isCotd){
   const cf = document.getElementById('slabCardFront');
   const cb = document.getElementById('slabCardBack');
   if(cf) cf.src = row.front_image_url || 'images/grail-placeholder.jpg';
@@ -952,7 +1006,7 @@ function loadCard(row){
   const detail = [row.year, row.brand, row.set_name, row.parallel, row.card_number ? '#' + row.card_number : null]
                    .filter(Boolean).join(' · ');
   document.getElementById('slCardName').textContent   = name;
-  document.getElementById('slCardDetail').textContent = detail;
+  document.getElementById('slCardDetail').textContent = isCotd ? 'CARD OF THE DAY · ' + detail : detail;
 
   document.getElementById('slLoading').style.display = 'none';
   document.getElementById('slMain').style.display    = 'flex';

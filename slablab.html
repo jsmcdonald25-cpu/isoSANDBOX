@@ -365,21 +365,22 @@ function _applyColor(idx){
     f='hue-rotate('+s.hue+'deg) saturate('+s.sat+') brightness('+s.bri+') contrast('+s.con+')';
   }
   ['slabFrameF','slabFrameB'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.filter=f});
-  // Edge glow — apply to FRONT FACE only (backface-visibility hides it on back)
+  // All shadow/glow applied to front face only (backface-visibility hides it on back)
   var front=document.getElementById('slabFrontFace');
   var back=document.getElementById('slabBackFace');
+  if(back) back.style.boxShadow='none';
+  var shadows=[];
   if(_finish==='matte'){
-    if(front) front.style.boxShadow='none';
-    if(back) back.style.boxShadow='none';
+    // Matte: no edge glow, no spotlight
     var spot=document.getElementById('slabSpotlight');
     if(spot){spot.style.opacity='0';spot.style.background='transparent'}
   } else {
     // Edge light glow — scaled by glow slider
-    var edgeSpread=Math.round(40*_glowMult);
-    var edgeBlur=Math.round(8*_glowMult);
-    var glow=(_edgeLight&&s.glow!=='transparent'&&_glowMult>0)?'0 0 '+edgeSpread+'px '+edgeBlur+'px '+s.glow:'none';
-    if(front) front.style.boxShadow=glow;
-    if(back) back.style.boxShadow='none';
+    if(_edgeLight&&s.glow!=='transparent'&&_glowMult>0){
+      var edgeSpread=Math.round(40*_glowMult);
+      var edgeBlur=Math.round(8*_glowMult);
+      shadows.push('0 0 '+edgeSpread+'px '+edgeBlur+'px '+s.glow);
+    }
     // Spotlight — ambient glow behind slab
     var spot=document.getElementById('slabSpotlight');
     if(spot){
@@ -387,7 +388,10 @@ function _applyColor(idx){
       else{var intensity=_finish==='vivid'?0.62:0.42;spot.style.background='radial-gradient(circle,'+s.glow+' 0%,transparent 68%)';spot.style.opacity=String(intensity*_glowMult)}
     }
   }
-  // Drop shadow on scene — off completely (was bleeding onto back face)
+  // Slab shadow — dark drop shadow beneath the slab
+  if(_shadowOn) shadows.push('0 20px 40px rgba(0,0,0,0.5)');
+  if(front) front.style.boxShadow=shadows.length?shadows.join(','):'none';
+  // Scene filter off (drop-shadow was bleeding onto back)
   var scene=document.getElementById('slabScene');
   if(scene) scene.style.filter='none';
   var lbl=document.getElementById('slColorLabel'),desc=document.getElementById('slColorDesc');

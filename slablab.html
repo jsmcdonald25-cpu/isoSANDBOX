@@ -585,17 +585,17 @@
     <div id="slabScene">
       <div id="slabUnit">
         <!-- FRONT FACE -->
-        <div class="slab-face">
+        <div class="slab-face" id="slabFrontFace">
           <img id="slabFrameF" class="slab-frame-img" src="GRAILISO_slab.png" style="z-index:1" alt="">
           <div class="slab-card-wrap-front">
             <img id="slabCardFront" alt="">
           </div>
         </div>
         <!-- BACK FACE -->
-        <div class="slab-face slab-face-back">
+        <div class="slab-face slab-face-back" id="slabBackFace">
           <img id="slabFrameB" class="slab-frame-img" src="GRAILISO_slab.png" style="transform:scaleX(-1);z-index:1" alt="">
           <div class="slab-card-wrap-back">
-            <img id="slabCardBack" alt="">
+            <img id="slabCardBack" style="transform:scaleX(-1)" alt="">
           </div>
         </div>
       </div>

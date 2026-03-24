@@ -128,7 +128,7 @@
         </div>
         <!-- BACK — exact copy of dashboard HTML -->
         <div id="slabBackFace" style="position:absolute;inset:0;border-radius:12px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg)">
-          <img id="slabFrameB" src="GRAILISO_slab.png" style="position:absolute;inset:0;width:100%;height:100%;display:block;transform:scaleX(-1);transition:filter .35s;z-index:1" alt="">
+          <img id="slabFrameB" src="images/slab-frame-back.png" style="position:absolute;inset:0;width:100%;height:100%;display:block;transition:filter .35s;z-index:1" alt="">
           <div style="position:absolute;left:-20.5px;top:127px;width:387px;height:348px;z-index:2;border-radius:8px;overflow:hidden;box-shadow:none">
             <img id="slabCardBack" style="width:100%;height:100%;object-fit:contain;display:block;border-radius:8px;box-shadow:none" alt="">
           </div>
@@ -358,14 +358,22 @@ function _applyColor(idx){
   var f='hue-rotate('+s.hue+'deg) saturate('+s.sat+') brightness('+s.bri+') contrast('+s.con+')';
   ['slabFrameF','slabFrameB'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.filter=f});
   var unit=document.getElementById('slabUnit');
-  if(unit) unit.style.boxShadow=(_edgeLight&&s.glow!=='transparent')?'0 0 40px 8px '+s.glow:'none';
-  var spot=document.getElementById('slabSpotlight');
-  if(spot){
-    if(_glowMult===0){spot.style.opacity='0';spot.style.background='transparent'}
-    else{var intensity=_finish==='vivid'?0.62:_finish==='matte'?0.22:0.42;spot.style.background='radial-gradient(circle,'+s.glow+' 0%,transparent 68%)';spot.style.opacity=String(intensity*_glowMult)}
+  if(_finish==='matte'){
+    if(unit) unit.style.boxShadow='none';
+    var spot=document.getElementById('slabSpotlight');
+    if(spot){spot.style.opacity='0';spot.style.background='transparent'}
+    var scene=document.getElementById('slabScene');
+    if(scene) scene.style.filter='none';
+  } else {
+    if(unit) unit.style.boxShadow=(_edgeLight&&s.glow!=='transparent')?'0 0 40px 8px '+s.glow:'none';
+    var spot=document.getElementById('slabSpotlight');
+    if(spot){
+      if(_glowMult===0){spot.style.opacity='0';spot.style.background='transparent'}
+      else{var intensity=_finish==='vivid'?0.62:0.42;spot.style.background='radial-gradient(circle,'+s.glow+' 0%,transparent 68%)';spot.style.opacity=String(intensity*_glowMult)}
+    }
+    var scene=document.getElementById('slabScene');
+    if(scene) scene.style.filter=_shadowOn?'drop-shadow(0 20px 40px rgba(0,0,0,0.5))':'none';
   }
-  var scene=document.getElementById('slabScene');
-  if(scene) scene.style.filter=_shadowOn?'drop-shadow(0 20px 40px rgba(0,0,0,0.5))':'none';
   var lbl=document.getElementById('slColorLabel'),desc=document.getElementById('slColorDesc');
   if(lbl) lbl.textContent=c.label.toUpperCase()+' \u00B7 '+_finish.toUpperCase();
   if(desc) desc.textContent=s.desc;

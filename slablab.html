@@ -48,7 +48,7 @@
     .sl-active-desc{font-size:11px;color:var(--muted);letter-spacing:.3px;line-height:1.4;margin-top:2px}
     .sl-finish-row{display:flex;gap:4px;background:rgba(0,0,0,0.30);border-radius:10px;padding:3px;border:1px solid var(--border)}
     .sl-finish-btn{flex:1;padding:7px 10px;border-radius:7px;border:none;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2.5px;cursor:pointer;transition:all .2s;background:transparent;color:var(--muted);text-align:center}
-    #slabSwatches{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;justify-items:center}
+    #slabSwatches{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;justify-items:center}
     .swatch{width:34px;height:34px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .18s,box-shadow .18s}
     .swatch:hover{transform:scale(1.15)}
     .swatch.active{transform:scale(1.22);box-shadow:0 0 0 2px rgba(5,16,28,0.9),0 0 0 4px rgba(255,255,255,0.65)}
@@ -74,7 +74,7 @@
     @media(max-height:700px){#slabUnit{transform:scale(0.80);transform-origin:center center}#slabScene{perspective:720px}}
     @media(max-height:580px){#slabUnit{transform:scale(0.65);transform-origin:center center}}
     @media(max-width:1024px){.sl-panel{width:220px}}
-    @media(max-width:860px){.sl-main{flex-direction:column}.sl-panel{width:100%;padding:0;max-height:200px}.sl-panel-inner{border-radius:0;border-left:none;border-right:none}#slabSwatches{grid-template-columns:repeat(8,1fr)}.sl-panel-left{order:2}.sl-viewer{order:0}.sl-panel-right{order:1}}
+    @media(max-width:860px){.sl-main{flex-direction:column}.sl-panel{width:100%;padding:0;max-height:200px}.sl-panel-inner{border-radius:0;border-left:none;border-right:none}#slabSwatches{grid-template-columns:repeat(6,1fr)}.sl-panel-left{order:2}.sl-viewer{order:0}.sl-panel-right{order:1}}
   </style>
 </head>
 <body>

@@ -2814,12 +2814,13 @@ async function logOut(){
       <div class="vm-error" id="mcPhotoError">Both front and back photos are required.</div>
     </div>
 
-    <!-- Serial Number (optional for missing cards) -->
-    <div class="vm-section" id="mcSerialSection" style="display:none">
-      <div class="vm-label">Your Serial Number <span style="color:rgba(0,170,255,0.5);font-size:10px">(if numbered)</span></div>
-      <div class="vm-serial-row">
-        <input class="vm-input" type="number" id="mcSerialNum" min="1" placeholder="e.g. 47">
-        <div class="vm-serial-of" id="mcSerialOf">/ &#8212;</div>
+    <!-- Print Run Total (how many were made?) -->
+    <div class="vm-section" id="mcSerialSection">
+      <div class="vm-label">Print Run <span style="color:rgba(0,170,255,0.5);font-size:10px">&#8212; How many exist? (if numbered)</span></div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--muted-text)">/</span>
+        <input class="vm-input" type="number" id="mcPrintRun" min="1" placeholder="e.g. 25, 50, 99" style="max-width:160px;font-size:16px;font-family:Bebas Neue,sans-serif;letter-spacing:1px;color:var(--blue)">
+        <span style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text)">Leave blank for open edition</span>
       </div>
     </div>
 
@@ -4846,7 +4847,7 @@ function openMissingCardModal(){
   document.getElementById('mcFrontFile').value='';
   document.getElementById('mcBackFile').value='';
   document.getElementById('mcVariationName').value='';
-  document.getElementById('mcSerialNum').value='';
+  document.getElementById('mcPrintRun').value='';
   document.getElementById('mcSourceSection').style.display='none';
   document.getElementById('mcRipSection').style.display='none';
   document.getElementById('mcPriceSection').style.display='none';
@@ -4881,8 +4882,7 @@ function openMissingCardModal(){
     document.getElementById('mcCardInfo').style.display='none';
   }
 
-  // Serial section — show by default for missing cards (user may have a numbered variant)
-  document.getElementById('mcSerialSection').style.display='block';
+  // Print run section — always visible
 
   document.getElementById('missingCardOverlay').style.display='flex';
   document.body.style.overflow='hidden';
@@ -5011,7 +5011,7 @@ async function submitMissingCard(){
     btn.textContent = 'SUBMITTING...';
     const dateVal = document.getElementById('mcDateAcquired').value;
     const packType = (_mcAcq === 'pulled') ? (document.getElementById('mcPackType').value || null) : null;
-    const serialNum = document.getElementById('mcSerialNum').value ? parseInt(document.getElementById('mcSerialNum').value) : null;
+    const printRun = document.getElementById('mcPrintRun').value ? parseInt(document.getElementById('mcPrintRun').value) : null;
 
     const row = {
       user_id:           user.id,
@@ -5029,8 +5029,8 @@ async function submitMissingCard(){
       pack_type:         packType,
       price_paid:        pricePaid,
       date_acquired:     dateVal || null,
-      serial_number:     serialNum,
-      serial_total:      null,
+      serial_number:     null,
+      serial_total:      printRun,
       status:            'pending',
     };
 

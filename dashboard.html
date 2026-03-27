@@ -7189,9 +7189,10 @@ function ivOpenCard(row){
   const activeTable = _ivSet ? _ivSet.table : null;
   const known = CARDS.find(c=>{
     if(!c) return false;
-    // Card number match is precise — only allow if set table also agrees
+    // Card number match — must also match set table AND player name
     if(c._cardNumber === row.card_number){
       if(activeTable && c._setTable && c._setTable !== activeTable) return false;
+      if(c.player !== row.player) return false;
       return true;
     }
     // Player+year match — ONLY use if set table matches, otherwise fall through to ad-hoc build

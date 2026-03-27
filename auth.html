@@ -724,6 +724,63 @@
       <div class="signin-link">
         Already have an account? <a href="#" onclick="showSignIn()">Sign in</a>
       </div>
+
+      <div style="text-align:center;margin-top:14px;padding-top:14px;border-top:1px solid var(--deep-border)">
+        <div style="font-size:0.78rem;color:var(--muted-text);margin-bottom:6px">Looking for alpha access?</div>
+        <a href="#" onclick="showAlphaSignup();return false" style="display:inline-flex;align-items:center;gap:6px;font-family:'Barlow Condensed',sans-serif;font-size:0.9rem;font-weight:700;letter-spacing:0.5px;color:var(--gold);text-decoration:none;padding:8px 20px;border:1.5px dashed var(--gold);border-radius:20px;transition:all 0.25s;background:rgba(255,184,0,0.06)" onmouseover="this.style.background='rgba(255,184,0,0.15)';this.style.boxShadow='0 0 12px rgba(255,184,0,0.25)'" onmouseout="this.style.background='rgba(255,184,0,0.06)';this.style.boxShadow='none'">&#127942; REQUEST ALPHA ACCESS</a>
+      </div>
+    </div>
+
+    <!-- ============================================================
+    ALPHA SIGNUP — Request Access (pre-auth, no account needed)
+    ============================================================ -->
+    <div class="step-panel" id="panel-alpha" style="display:none">
+      <div class="panel-title" style="color:var(--gold)">&#127942; Request <span style="color:var(--gold)">Alpha Access</span></div>
+      <div class="panel-sub">GrailISO is currently in closed alpha. Submit your info below and we'll send you a magic link when you're approved.</div>
+
+      <div id="msg-alpha" class="msg error"></div>
+      <div id="msg-alpha-success" class="msg" style="display:none;background:rgba(0,232,135,0.08);border:1px solid rgba(0,232,135,0.2);color:var(--green);border-radius:8px;padding:14px;text-align:center;margin-bottom:16px"></div>
+
+      <div class="form-row">
+        <div class="form-group no-mb">
+          <label for="alpha-first">First Name *</label>
+          <input type="text" id="alpha-first" placeholder="Jordan" autocomplete="given-name">
+        </div>
+        <div class="form-group no-mb">
+          <label for="alpha-last">Last Name *</label>
+          <input type="text" id="alpha-last" placeholder="Smith" autocomplete="family-name">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="alpha-email">Email Address *</label>
+        <input type="email" id="alpha-email" placeholder="you@example.com" autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label>What do you collect?</label>
+        <div class="sport-chips" id="alpha-sport-chips">
+          <div class="chip" data-sport="baseball" onclick="alphaSelectSport(this)">&#9918; Baseball</div>
+          <div class="chip" data-sport="basketball" onclick="alphaSelectSport(this)">&#127936; Basketball</div>
+          <div class="chip" data-sport="football" onclick="alphaSelectSport(this)">&#127944; Football</div>
+          <div class="chip" data-sport="hockey" onclick="alphaSelectSport(this)">&#127954; Hockey</div>
+          <div class="chip" data-sport="pokemon" onclick="alphaSelectSport(this)">&#127183; Pok&eacute;mon/TCG</div>
+          <div class="chip" data-sport="other" onclick="alphaSelectSport(this)">+ Other</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="alpha-note">Anything else? <span style="color:var(--muted-text);font-size:0.75rem">(optional)</span></label>
+        <input type="text" id="alpha-note" placeholder="e.g. I collect vintage Topps, looking for a vault tool...">
+      </div>
+
+      <button class="btn-primary" id="btn-alpha" onclick="submitAlphaSignup()" style="background:var(--gold);border-color:var(--gold)">
+        SUBMIT REQUEST
+      </button>
+
+      <div class="signin-link" style="margin-top:16px">
+        <a href="#" onclick="hideAlphaSignup();return false">&larr; Back to Create Account</a>
+      </div>
     </div>
 
     <!-- ============================================================
@@ -1523,6 +1580,92 @@ async function signIn() {
     showMsg('msg-signin', err.message || 'Sign in failed. Please check your credentials.');
     btn.disabled    = false;
     btn.textContent = 'SIGN IN';
+  }
+}
+
+// ============================================================
+// ALPHA SIGNUP — Request Access
+// ============================================================
+let _alphaSport = null;
+
+function showAlphaSignup() {
+  document.getElementById('panel-1').style.display = 'none';
+  document.getElementById('panel-alpha').style.display = 'block';
+  // Hide stepper
+  document.querySelector('.stepper').style.display = 'none';
+}
+
+function hideAlphaSignup() {
+  document.getElementById('panel-alpha').style.display = 'none';
+  document.getElementById('panel-1').style.display = 'block';
+  document.querySelector('.stepper').style.display = 'flex';
+}
+
+function alphaSelectSport(el) {
+  document.querySelectorAll('#alpha-sport-chips .chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  _alphaSport = el.getAttribute('data-sport');
+}
+
+async function submitAlphaSignup() {
+  const first = document.getElementById('alpha-first').value.trim();
+  const last  = document.getElementById('alpha-last').value.trim();
+  const email = document.getElementById('alpha-email').value.trim();
+  const note  = document.getElementById('alpha-note').value.trim();
+
+  if (!first || !last) return showMsg('msg-alpha', 'Please enter your first and last name.');
+  if (!email || !email.includes('@')) return showMsg('msg-alpha', 'Please enter a valid email address.');
+
+  const btn = document.getElementById('btn-alpha');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Submitting...';
+  document.getElementById('msg-alpha').style.display = 'none';
+
+  try {
+    // Insert directly into alpha_signups — no auth needed (RLS allows public insert)
+    const res = await fetch(SUPABASE_URL + '/rest/v1/alpha_signups', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Prefer': 'return=representation',
+      },
+      body: JSON.stringify({
+        email: email.toLowerCase(),
+        first_name: first,
+        last_name: last,
+        note: note || null,
+        favorite_sport: _alphaSport || null,
+        status: 'pending',
+      }),
+    });
+
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      // Duplicate email
+      if (res.status === 409 || (errBody.message || '').includes('duplicate') || (errBody.code === '23505')) {
+        throw new Error('This email has already been submitted. We\'ll be in touch!');
+      }
+      throw new Error(errBody.message || 'Submission failed. Please try again.');
+    }
+
+    // Success
+    document.getElementById('msg-alpha-success').innerHTML =
+      '<div style="font-size:1.1rem;font-weight:700;margin-bottom:4px">&#10003; You\'re on the list!</div>' +
+      '<div style="font-size:0.85rem;color:var(--muted-text)">We\'ll send a magic link to <strong>' + email + '</strong> once you\'re approved. Check your inbox soon.</div>';
+    document.getElementById('msg-alpha-success').style.display = 'block';
+    btn.textContent = 'SUBMITTED!';
+    btn.style.background = 'var(--green)';
+    btn.style.borderColor = 'var(--green)';
+
+    // Hide the form fields
+    document.querySelectorAll('#panel-alpha .form-group, #panel-alpha .form-row').forEach(el => el.style.display = 'none');
+
+  } catch (err) {
+    showMsg('msg-alpha', err.message);
+    btn.disabled = false;
+    btn.textContent = 'SUBMIT REQUEST';
   }
 }
 </script>

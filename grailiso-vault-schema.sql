@@ -273,9 +273,84 @@ CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
+-- ── PENDING CARDS (missing-card submissions awaiting admin approval) ──
+CREATE TABLE IF NOT EXISTS public.pending_cards (
+  id              BIGSERIAL PRIMARY KEY,
+  user_id         UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+
+  -- Card identity (user-supplied)
+  player          TEXT NOT NULL,
+  year            INT,
+  brand           TEXT,
+  set_name        TEXT,
+  card_number     TEXT,
+  team            TEXT,
+  variation       TEXT NOT NULL,          -- the missing parallel / variation name
+
+  -- Images (user-uploaded via Supabase Storage)
+  front_image_url TEXT,
+  back_image_url  TEXT,
+
+  -- Acquisition details (same fields as vault modal)
+  acquisition_type  TEXT,                 -- bought_single, pulled, trade, other
+  purchase_source   TEXT,                 -- ebay, lcs, facebook, other_source
+  pack_type         TEXT,                 -- hobby_box, blaster, etc.
+  price_paid        NUMERIC(10,2),
+  date_acquired     DATE,
+  serial_number     INT,
+  serial_total      INT,
+
+  -- Admin workflow
+  status          TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved','rejected')),
+  admin_note      TEXT,
+  reviewed_by     UUID REFERENCES public.profiles(id),
+  reviewed_at     TIMESTAMPTZ,
+
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_pending_user   ON public.pending_cards (user_id);
+CREATE INDEX IF NOT EXISTS idx_pending_status ON public.pending_cards (status);
+
+ALTER TABLE public.pending_cards ENABLE ROW LEVEL SECURITY;
+
+-- Anyone can insert (submit), users can read their own, admins read all via service key
+CREATE POLICY "pending_cards_insert" ON public.pending_cards FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "pending_cards_read_own" ON public.pending_cards FOR SELECT USING (auth.uid() = user_id);
+
+-- ── ALPHA SIGNUPS (waitlist for alpha testers) ───────────────
+CREATE TABLE IF NOT EXISTS public.alpha_signups (
+  id              BIGSERIAL PRIMARY KEY,
+  email           TEXT NOT NULL UNIQUE,
+  first_name      TEXT,
+  last_name       TEXT,
+  note            TEXT,                   -- optional message from applicant
+  favorite_sport  TEXT,                   -- what they collect
+
+  -- Admin workflow
+  status          TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved','rejected','invited')),
+  invite_sent_at  TIMESTAMPTZ,           -- when magic link was emailed
+  admin_note      TEXT,
+  reviewed_by     UUID REFERENCES public.profiles(id),
+  reviewed_at     TIMESTAMPTZ,
+
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_alpha_email  ON public.alpha_signups (email);
+CREATE INDEX IF NOT EXISTS idx_alpha_status ON public.alpha_signups (status);
+
+ALTER TABLE public.alpha_signups ENABLE ROW LEVEL SECURITY;
+
+-- Public insert (no auth needed — this is a pre-signup form)
+CREATE POLICY "alpha_signups_insert" ON public.alpha_signups FOR INSERT WITH CHECK (true);
+-- Only service role (admin) can read/update
+CREATE POLICY "alpha_signups_service" ON public.alpha_signups FOR ALL USING (auth.role() = 'service_role');
+
 -- ============================================================
 -- SCHEMA COMPLETE
 -- Tables:  profiles · cards · vault · isos · matches
---          notifications · credit_events
+--          notifications · credit_events · pending_cards
+--          alpha_signups
 -- Triggers: vault→ISO match · ISO→vault match · signup bonus
 -- ============================================================

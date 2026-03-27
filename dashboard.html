@@ -5113,6 +5113,8 @@ function openVaultCard(idx){
     hasCatalogPic:!!(row.var_images&&Object.keys(row.var_images).length),
     _setTable:'card-images',_cardNumber:(row.card_number||'').replace(/^#/,''),
     _varImages:row.var_images||{},
+    _vaultFrontUrl:row.front_image_url||null,
+    _vaultBackUrl:row.back_image_url||null,
     variations:(function(){
       const lbl=row.parallel||row.category||'Base';
       const clr=_varPillColor(lbl);
@@ -5799,8 +5801,15 @@ async function _cdLoadCatalogImages(c){
     }
 
     if(!data || !data.var_images || !Object.keys(data.var_images).length){
-      if(statusEl){ statusEl.textContent='No catalog images yet'; statusEl.style.color='rgba(122,149,174,0.5)';
-        setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
+      // Fall back to vault row images if available (user-uploaded photos stored on the vault entry)
+      if(c._vaultFrontUrl || c._vaultBackUrl){
+        _cdSetViewerImages(c._vaultFrontUrl, c._vaultBackUrl);
+        if(statusEl){ statusEl.textContent='Showing your vault photo'; statusEl.style.color='rgba(0,170,255,0.5)';
+          setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
+      } else {
+        if(statusEl){ statusEl.textContent='No catalog images yet'; statusEl.style.color='rgba(122,149,174,0.5)';
+          setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
+      }
       return;
     }
 
@@ -5832,9 +5841,16 @@ async function _cdLoadCatalogImages(c){
       if(_pm2) _pm2.innerHTML = '<strong>This card has a catalog image.</strong> Confirm how you acquired it and the price you paid — no photo upload needed.';
     } else {
       const hasAny = Object.keys(data.var_images).length > 0;
-      if(statusEl){ statusEl.textContent = hasAny ? 'No image for this variation' : 'No catalog images yet';
-        statusEl.style.color='rgba(122,149,174,0.5)';
-        setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
+      // Fall back to vault row images if available
+      if(!hasAny && (c._vaultFrontUrl || c._vaultBackUrl)){
+        _cdSetViewerImages(c._vaultFrontUrl, c._vaultBackUrl);
+        if(statusEl){ statusEl.textContent='Showing your vault photo'; statusEl.style.color='rgba(0,170,255,0.5)';
+          setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
+      } else {
+        if(statusEl){ statusEl.textContent = hasAny ? 'No image for this variation' : 'No catalog images yet';
+          statusEl.style.color='rgba(122,149,174,0.5)';
+          setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
+      }
     }
 
   } catch(e) {

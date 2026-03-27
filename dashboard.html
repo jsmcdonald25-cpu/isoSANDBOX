@@ -3217,6 +3217,29 @@ function openSlabLab(opts){
     window.location.href = 'slablab.html?vault_id=' + encodeURIComponent(row.id);
     return;
   }
+  // If viewing a card in ISOVault card detail, pass its images to Slab Lab
+  const card = window._cdCard;
+  if(card){
+    const activeVar = (window._cdVars||[])[window._cdActiveVar||0];
+    const varLabel = activeVar ? activeVar.label : 'Base';
+    const varImages = card._varImages || {};
+    const imgs = varImages[varLabel] || {};
+    const frontUrl = imgs.front || document.getElementById('cd-img-front')?.src || '';
+    const backUrl  = imgs.back  || document.getElementById('cd-img-back')?.src || '';
+    const label = `${card.player || ''} · ${card.year || ''} ${card.brand || ''} ${card.set || ''} ${card.cardNum || ''}`.trim();
+    const frontLand = imgs.frontLandscape != null ? imgs.frontLandscape : (window._cdFrontLandscape || false);
+    const backLand  = imgs.backLandscape  != null ? imgs.backLandscape  : (window._cdBackLandscape  || false);
+    if(frontUrl && !frontUrl.includes('grail-placeholder')){
+      const params = new URLSearchParams();
+      params.set('front', frontUrl);
+      if(backUrl && !backUrl.includes('grail-placeholder')) params.set('back', backUrl);
+      params.set('label', label);
+      if(frontLand) params.set('fl', '1');
+      if(backLand)  params.set('bl', '1');
+      window.location.href = 'slablab.html?' + params.toString();
+      return;
+    }
+  }
   // Otherwise open Slab Lab with Card of the Day
   window.location.href = 'slablab.html';
 }
@@ -5103,7 +5126,7 @@ function openVaultCard(idx){
   document.getElementById('cd-bc-brand').textContent=card.brand;
   document.getElementById('cd-bc-year').textContent=card.year;
   document.getElementById('cd-bc-set').textContent=card.set||card.parallel;
-  document.getElementById('cd-title').textContent=`${card.year} ${card.brand} ${card.set||''} — ${card.player}`.toUpperCase();
+  document.getElementById('cd-title').textContent=_cdCardTitle(card.year, card.brand, card.set||'', card.player);
   document.getElementById('cd-sub').textContent=`Baseball · ${card.year} · ${card.brand}`;
   document.getElementById('cd-num').textContent=card.cardNum;
   const pm=document.getElementById('cd-path-msg');
@@ -5276,7 +5299,8 @@ function _renderActivityFeed(data){
     const acqColor=isRipped?'var(--green)':'rgba(0,170,255,0.55)';
     const acqLabel=isRipped?'⚡ RIPPED':'BOUGHT';
     const priceStr=paid?'$'+paid.toLocaleString():'—';
-    html+='<div class="mv-act2-item">'
+    const vaultIdx=(window._vaultData||[]).indexOf(c);
+    html+='<div class="mv-act2-item" style="cursor:pointer" onclick="openVaultCard('+vaultIdx+')">'
       +'<div class="mv-act2-thumb"><img src="'+img+'" alt="" loading="lazy"></div>'
       +'<div class="mv-act2-body">'
         +'<div class="mv-act2-title">'+(c.player||'Unknown')+'</div>'
@@ -5676,7 +5700,7 @@ async function openCardDetail(cardId){
   document.getElementById('cd-bc-set').textContent   = c.set;
 
   // Title block
-  document.getElementById('cd-title').textContent = `${c.year} ${c.brand} ${c.set} — ${c.player}`.toUpperCase();
+  document.getElementById('cd-title').textContent = _cdCardTitle(c.year, c.brand, c.set, c.player);
   document.getElementById('cd-sub').textContent   = `Baseball · ${c.year} · ${c.brand} · ${c.set}`;
   document.getElementById('cd-num').textContent   = c.cardNum || '';
 
@@ -7189,15 +7213,15 @@ function ivOpenCard(row){
   const activeTable = _ivSet ? _ivSet.table : null;
   const known = CARDS.find(c=>{
     if(!c) return false;
-    // Card number match — must also match set table AND player name
+    // When we know the active set table, ONLY match CARDS entries from the same table
+    if(activeTable && c._setTable !== activeTable) return false;
+    // Card number match — must also match player name
     if(c._cardNumber === row.card_number){
-      if(activeTable && c._setTable && c._setTable !== activeTable) return false;
       if(c.player !== row.player) return false;
       return true;
     }
-    // Player+year match — ONLY use if set table matches, otherwise fall through to ad-hoc build
+    // Player+year match
     if(c.player === row.player && String(c.year) === String((row.year||'').toString().slice(0,4))){
-      if(activeTable && c._setTable && c._setTable !== activeTable) return false;
       return true;
     }
     return false;
@@ -7320,7 +7344,7 @@ function ivOpenCard(row){
   document.getElementById('cd-bc-brand').textContent = card.brand;
   document.getElementById('cd-bc-year').textContent  = card.year;
   document.getElementById('cd-bc-set').textContent   = card.set || card.parallel;
-  document.getElementById('cd-title').textContent    = `${card.year} ${card.brand} ${card.set||''} — ${card.player}`.toUpperCase();
+  document.getElementById('cd-title').textContent    = _cdCardTitle(card.year, card.brand, card.set||'', card.player);
   document.getElementById('cd-sub').textContent      = `${_cdSportLabel} · ${card.year} · ${card.brand}`;
   document.getElementById('cd-num').textContent      = card.cardNum;
   const pm = document.getElementById('cd-path-msg');

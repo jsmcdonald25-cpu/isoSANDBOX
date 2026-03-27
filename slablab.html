@@ -288,8 +288,13 @@ function _slabSetImages(frontUrl, backUrl, frontLandscape, backLandscape){
   if(cb) cb.style.transform=backLandscape?'rotate(-90deg)':'';
 }
 
-function _detectAndSetImages(frontUrl, backUrl){
-  // Load images, detect orientation on load, then apply
+function _detectAndSetImages(frontUrl, backUrl, knownFrontLand, knownBackLand){
+  // If orientations are pre-known (passed from dashboard), skip probe
+  if(typeof knownFrontLand === 'boolean' && typeof knownBackLand === 'boolean'){
+    _slabSetImages(frontUrl||DEFAULT_FRONT, backUrl||DEFAULT_BACK, knownFrontLand, knownBackLand);
+    return;
+  }
+  // Otherwise load images, detect orientation on load, then apply
   var fImg=new Image(), bImg=new Image();
   var fLand=false, bLand=false, fLoaded=false, bLoaded=false;
   function apply(){ if(fLoaded&&bLoaded) _slabSetImages(frontUrl,backUrl,fLand,bLand); }
@@ -307,10 +312,27 @@ function init(){
   _applyColor(_activeIdx);
   _updateFinishBtns();
   _initRotation();
-  // If vault_id, load that card async
+  // Check query params for card data
   var p=new URLSearchParams(window.location.search);
   var vid=p.get('vault_id');
-  if(vid) _loadVaultCard(vid);
+  var frontParam=p.get('front');
+  if(vid){
+    _loadVaultCard(vid);
+  } else if(frontParam){
+    // Card images passed directly from ISOVault card detail
+    var backParam=p.get('back');
+    var labelParam=p.get('label')||'';
+    var frontLand=p.get('fl')==='1';
+    var backLand=p.get('bl')==='1';
+    _detectAndSetImages(frontParam, backParam||DEFAULT_BACK, frontLand, backLand);
+    if(labelParam){
+      var parts=labelParam.split('·').map(function(s){return s.trim()});
+      var nameEl=document.getElementById('slCardName');
+      var detailEl=document.getElementById('slCardDetail');
+      if(nameEl) nameEl.textContent=parts[0]||'—';
+      if(detailEl) detailEl.textContent=parts.slice(1).join(' · ')||'';
+    }
+  }
 }
 
 async function _loadVaultCard(vid){

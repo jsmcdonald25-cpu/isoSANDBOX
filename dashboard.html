@@ -531,8 +531,11 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-pill.superfractor{animation:superPulse 2.5s ease-in-out infinite}
 @keyframes superPulse{0%,100%{box-shadow:0 0 8px rgba(255,215,0,0.4)}50%{box-shadow:0 0 18px rgba(255,215,0,0.8),0 0 30px rgba(255,215,0,0.3)}}
 .cd-pill .pill-run{font-size:10px;opacity:.8;margin-left:4px}
-.cd-missing-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.5px;cursor:pointer;border:1.5px dashed var(--red);background:rgba(255,59,48,0.08);color:var(--red);transition:all .25s;user-select:none;animation:missingPulse 3s ease-in-out infinite}
+.cd-missing-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.5px;cursor:pointer;border:1.5px dashed var(--red);background:rgba(255,59,48,0.08);color:var(--red);transition:all .25s;user-select:none;animation:missingPulse 3s ease-in-out infinite;position:relative}
 .cd-missing-btn:hover{background:rgba(255,59,48,0.18);box-shadow:0 0 12px rgba(255,59,48,0.3);border-color:#ff6b6b}
+.cd-missing-btn .missing-tooltip{position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);background:var(--deep3);border:1px solid var(--red);border-radius:8px;padding:8px 14px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:.5px;color:var(--white);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s;z-index:20;text-align:center;line-height:1.5;box-shadow:0 4px 16px rgba(0,0,0,0.4)}
+.cd-missing-btn .missing-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--red)}
+.cd-missing-btn:hover .missing-tooltip{opacity:1}
 @keyframes missingPulse{0%,100%{box-shadow:0 0 4px rgba(255,59,48,0.15)}50%{box-shadow:0 0 12px rgba(255,59,48,0.35)}}
 @keyframes shimmerSlide{0%{transform:translateX(-150%) rotate(20deg)}100%{transform:translateX(250%) rotate(20deg)}}
 .cd-shimmer{position:absolute;top:0;left:0;width:60%;height:200%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);pointer-events:none;z-index:3;border-radius:10px;animation:shimmerSlide 1.2s ease forwards}
@@ -2514,6 +2517,15 @@ async function logOut(){
         </div>
       </div>
     </div>
+    <!-- Top Catalog Contributors -->
+    <div style="margin-top:18px" class="card-block">
+      <div class="card-block-title"><div class="dot" style="background:var(--green)"></div> Top Catalog Contributors <span style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--green);font-weight:400;margin-left:8px">&#127873; EARN CREDITS</span></div>
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-bottom:12px;line-height:1.5">Users who upload the most missing card images. Milestone rewards: <strong style="color:var(--green)">+2 per upload</strong> &#183; <strong style="color:var(--gold)">+10 bonus at 25 uploads</strong> &#183; <strong style="color:var(--gold)">+25 bonus at 100 uploads</strong></div>
+      <div id="lb-contributors">
+        <div class="loading" style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);padding:12px 0">Loading contributors...</div>
+      </div>
+    </div>
+
     <div style="margin-top:18px" class="card-block">
       <div class="card-block-title"><div class="dot"></div> Top Sellers This Week</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:4px">
@@ -3469,6 +3481,7 @@ function N(id,el){
   if(id==='market')renderMkt();
   if(id==='post'){curStep=1;gS(1);isoRenderSportGrid();}
   if(id==='isoticker')initISOTicker();
+  if(id==='leaderboard')loadContributorLeaderboard();
   // Push panel state into browser history so mouse back button steps through panels
   if(!_navSuppressHistory){
     history.pushState({panel:id}, '', window.location.href);
@@ -6044,7 +6057,7 @@ function _buildVariationPills(c){
     return `<div class="cd-pill ${i===0?'active':''} ${sfClass}" id="cd-pill-${i}"
       style="${i===0?`background:${v.color};border-color:${v.color};box-shadow:0 0 10px ${v.glow}`:''}"
       onclick="cdSelectVar(${i})">${v.label}${runLabel}</div>`;
-  }).join('') + `<div class="cd-missing-btn" onclick="openMissingCardModal()" title="Submit a variation not listed here">&#10133; Missing Card</div>`;
+  }).join('') + `<div class="cd-missing-btn" onclick="openMissingCardModal()">&#10133; Missing Card<span class="missing-tooltip">&#127873; Help build ISOVault — earn free credits!<br><span style="font-size:10px;color:var(--muted-text)">Submit cards we don't have yet</span></span></div>`;
   cdSelectVar(0, true);
   // If pill 0 has no image but another pill does, auto-select the first pill with an image
   const _varImgs = window._cdCard && window._cdCard._varImages;
@@ -8180,6 +8193,62 @@ async function _updateMarketPrice(card, variation, newPrice, acqType, sbHeaders,
       headers: { ...sbHeaders, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
       body: JSON.stringify(payload)
     });
+  }
+}
+
+// ── Contributor Leaderboard ──────────────────────────────────────────────────
+async function loadContributorLeaderboard(){
+  const el = document.getElementById('lb-contributors');
+  if(!el) return;
+  el.innerHTML = '<div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);padding:12px 0">Loading contributors...</div>';
+  try {
+    // Query vault table — count distinct card uploads per user (where user uploaded front image)
+    const rows = await _rGet('vault','select=user_id,front_image_url&front_image_url=not.is.null&has_catalog_pic=eq.false&limit=2000');
+    if(!rows || !rows.length){
+      el.innerHTML = '<div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);padding:12px 0">No contributions yet — be the first!</div>';
+      return;
+    }
+    // Count uploads per user
+    const counts = {};
+    rows.forEach(r => { if(r.user_id) counts[r.user_id] = (counts[r.user_id]||0) + 1; });
+    // Also count catalog uploads (pending_cards approved)
+    try {
+      const pending = await _rGet('pending_cards','select=user_id&status=eq.approved&limit=2000');
+      if(pending) pending.forEach(r => { if(r.user_id) counts[r.user_id] = (counts[r.user_id]||0) + 1; });
+    } catch(e){}
+    // Sort by count desc
+    const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, 10);
+    if(!sorted.length){
+      el.innerHTML = '<div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);padding:12px 0">No contributions yet</div>';
+      return;
+    }
+    // Fetch usernames
+    const userIds = sorted.map(s => s[0]);
+    let profiles = {};
+    try {
+      const pRows = await _rGet('profiles','select=id,username&id=in.('+userIds.join(',')+')');
+      if(pRows) pRows.forEach(p => { profiles[p.id] = p.username || p.id.slice(0,8); });
+    } catch(e){}
+    // Milestones
+    const MILESTONES = [{threshold:100,bonus:25,label:'&#127942; 100 Club'},{threshold:50,bonus:15,label:'&#11088; 50 Club'},{threshold:25,bonus:10,label:'&#128293; 25 Club'},{threshold:10,bonus:5,label:'&#127775; 10 Club'}];
+    const rankColors = ['var(--blue)','var(--chrome)','#CD7F32'];
+    el.innerHTML = sorted.map(([uid, count], i) => {
+      const username = profiles[uid] || uid.slice(0,8);
+      const rankColor = i < 3 ? rankColors[i] : 'var(--muted-text)';
+      const milestone = MILESTONES.find(m => count >= m.threshold);
+      const badge = milestone ? `<span style="font-size:9px;background:rgba(255,200,60,0.12);color:#FFC83C;border:1px solid rgba(255,200,60,0.25);border-radius:3px;padding:1px 5px;margin-left:6px">${milestone.label}</span>` : '';
+      const credits = count * 2 + (count >= 100 ? 25 : 0) + (count >= 50 ? 15 : 0) + (count >= 25 ? 10 : 0) + (count >= 10 ? 5 : 0);
+      return `<div style="display:flex;align-items:center;gap:10px;padding:9px 0;${i<sorted.length-1?'border-bottom:1px solid var(--deep-border)':''}">
+        <span style="font-family:Bebas Neue,sans-serif;font-size:${i<3?18:16}px;color:${rankColor};min-width:24px">${i+1}</span>
+        <div style="flex:1">
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:600;color:var(--white)">@${username}${badge}</div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text)">${count} card${count!==1?'s':''} uploaded &#183; ${credits} credits earned</div>
+        </div>
+        <span style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--green)">+${credits}</span>
+      </div>`;
+    }).join('');
+  } catch(e){
+    el.innerHTML = '<div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);padding:12px 0">Could not load contributors</div>';
   }
 }
 

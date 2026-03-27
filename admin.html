@@ -355,6 +355,10 @@ tr:hover td { background: var(--bg); }
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
       ISO Manager
     </div>
+    <div class="nav-item" onclick="nav('milestones',this);loadMilestones()">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15 8.5L22 9.5L17 14.5L18 22L12 18.5L6 22L7 14.5L2 9.5L9 8.5Z"/></svg>
+      Upload Milestones
+    </div>
     <div class="nav-item" onclick="nav('credits',this)">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       Credit Events
@@ -865,6 +869,49 @@ tr:hover td { background: var(--bg); }
               <th style="width:120px">Actions</th>
             </tr></thead>
             <tbody id="iso-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── UPLOAD MILESTONES ── -->
+    <div class="panel" id="panel-milestones">
+      <div class="panel-header">
+        <div class="panel-eyebrow">Platform</div>
+        <div class="panel-title">Upload Milestones &amp; Auto-Credits</div>
+        <div class="panel-sub">Track card image uploads per user. Award bonus credits when they hit milestones. Credits: +2 per upload, +5 at 10, +10 at 25, +15 at 50, +25 at 100.</div>
+      </div>
+
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-val" id="ms-stat-total">&#8212;</div><div class="stat-lab">Total Uploads</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--green)" id="ms-stat-users">&#8212;</div><div class="stat-lab">Contributors</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--gold)" id="ms-stat-milestones">&#8212;</div><div class="stat-lab">Milestones Hit</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--blue)" id="ms-stat-credited">&#8212;</div><div class="stat-lab">Credits Awarded</div></div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+          <input class="input" id="ms-search" placeholder="Search username&#8230;" oninput="msRender()" style="flex:1;min-width:180px;max-width:340px">
+          <button class="btn btn-ghost" onclick="loadMilestones()">&#8635; Refresh</button>
+          <button class="btn btn-success" onclick="msAutoAwardAll()" style="font-size:11px">&#127873; Auto-Award All Pending Milestones</button>
+        </div>
+
+        <div class="loading" id="ms-loading" style="display:none">Loading upload data&#8230;</div>
+        <div id="ms-empty" class="empty" style="display:none">
+          <div class="empty-icon">&#128248;</div>
+          <div>No uploads yet.</div>
+        </div>
+        <div class="table-wrap" id="ms-table-wrap">
+          <table>
+            <thead><tr>
+              <th style="width:90px">User</th>
+              <th style="width:80px">Uploads</th>
+              <th style="width:100px">Credits Earned</th>
+              <th style="width:120px">Next Milestone</th>
+              <th style="width:80px">Status</th>
+              <th style="width:200px">Actions</th>
+            </tr></thead>
+            <tbody id="ms-tbody"></tbody>
           </table>
         </div>
       </div>
@@ -2346,6 +2393,164 @@ function _alphaUpdateStats() {
   document.getElementById('alpha-stat-rejected').textContent = rejected;
   const navBadge = document.getElementById('alpha-nav-badge');
   if (navBadge) { navBadge.textContent = pending; navBadge.style.display = pending ? 'inline-block' : 'none'; }
+}
+
+// ── UPLOAD MILESTONES ─────────────────────────────────────────────
+const MS_TIERS = [
+  {threshold:100, bonus:25, label:'🏆 100 Club'},
+  {threshold:50,  bonus:15, label:'⭐ 50 Club'},
+  {threshold:25,  bonus:10, label:'🔥 25 Club'},
+  {threshold:10,  bonus:5,  label:'🌟 10 Club'},
+];
+let _allMilestones = [];
+
+async function loadMilestones(){
+  document.getElementById('ms-loading').style.display = 'block';
+  document.getElementById('ms-table-wrap').style.display = 'none';
+  document.getElementById('ms-empty').style.display = 'none';
+  try {
+    // Count uploads per user from vault (user-uploaded images, not catalog)
+    const vaultRows = await _get('vault','select=user_id,front_image_url&front_image_url=not.is.null&has_catalog_pic=eq.false&limit=5000');
+    const counts = {};
+    (vaultRows||[]).forEach(r => { if(r.user_id) counts[r.user_id] = (counts[r.user_id]||0) + 1; });
+    // Also count approved pending_cards submissions
+    try {
+      const pendRows = await _get('pending_cards','select=user_id&status=eq.approved&limit=5000');
+      (pendRows||[]).forEach(r => { if(r.user_id) counts[r.user_id] = (counts[r.user_id]||0) + 1; });
+    } catch(e){}
+    // Fetch usernames
+    const userIds = Object.keys(counts);
+    let profiles = {};
+    if(userIds.length){
+      try {
+        const pRows = await _get('profiles','select=id,username,credits&id=in.('+userIds.join(',')+')');
+        (pRows||[]).forEach(p => { profiles[p.id] = p; });
+      } catch(e){}
+    }
+    // Fetch existing milestone awards from credit_events
+    let awarded = {};
+    try {
+      const ceRows = await _get('credit_events','select=user_id,reason,note&reason=eq.upload_milestone&limit=5000');
+      (ceRows||[]).forEach(r => {
+        if(!awarded[r.user_id]) awarded[r.user_id] = [];
+        awarded[r.user_id].push(r.note||'');
+      });
+    } catch(e){}
+    // Build milestone data
+    _allMilestones = Object.entries(counts).map(([uid, count]) => {
+      const profile = profiles[uid] || {};
+      const username = profile.username || uid.slice(0,8);
+      const credits = profile.credits || 0;
+      const perUpload = count * 2;
+      let bonusEarned = 0, bonusPending = 0, nextMilestone = null;
+      const userAwards = awarded[uid] || [];
+      MS_TIERS.forEach(t => {
+        if(count >= t.threshold){
+          if(userAwards.includes('milestone_'+t.threshold)){
+            bonusEarned += t.bonus;
+          } else {
+            bonusPending += t.bonus;
+          }
+        }
+      });
+      // Find next milestone
+      const sortedTiers = [...MS_TIERS].sort((a,b) => a.threshold - b.threshold);
+      nextMilestone = sortedTiers.find(t => count < t.threshold);
+      return { uid, username, count, credits, perUpload, bonusEarned, bonusPending, nextMilestone, userAwards };
+    }).sort((a,b) => b.count - a.count);
+
+    // Stats
+    const totalUploads = Object.values(counts).reduce((a,b) => a+b, 0);
+    const totalUsers = userIds.length;
+    const totalMilestones = _allMilestones.reduce((s,m) => s + MS_TIERS.filter(t => m.count >= t.threshold && m.userAwards.includes('milestone_'+t.threshold)).length, 0);
+    const totalCredited = _allMilestones.reduce((s,m) => s + m.perUpload + m.bonusEarned, 0);
+    document.getElementById('ms-stat-total').textContent = totalUploads;
+    document.getElementById('ms-stat-users').textContent = totalUsers;
+    document.getElementById('ms-stat-milestones').textContent = totalMilestones;
+    document.getElementById('ms-stat-credited').textContent = totalCredited;
+
+    document.getElementById('ms-loading').style.display = 'none';
+    msRender();
+  } catch(e){
+    document.getElementById('ms-loading').style.display = 'none';
+    toast('Failed to load milestones: ' + e.message, 'error');
+  }
+}
+
+function msRender(){
+  const q = (document.getElementById('ms-search')?.value || '').toLowerCase();
+  const wrap = document.getElementById('ms-table-wrap');
+  let rows = _allMilestones;
+  if(q) rows = rows.filter(r => r.username.toLowerCase().includes(q));
+  if(!rows.length){
+    document.getElementById('ms-empty').style.display = 'flex';
+    wrap.style.display = 'none';
+    return;
+  }
+  document.getElementById('ms-empty').style.display = 'none';
+  wrap.style.display = 'block';
+  document.getElementById('ms-tbody').innerHTML = rows.map(r => {
+    const totalCredits = r.perUpload + r.bonusEarned;
+    const nextLabel = r.nextMilestone ? `${r.nextMilestone.threshold} uploads (+${r.nextMilestone.bonus})` : 'All reached ✓';
+    const hasPending = r.bonusPending > 0;
+    const statusBadge = hasPending
+      ? `<span class="badge badge-yellow">+${r.bonusPending} pending</span>`
+      : `<span class="badge badge-green">Up to date</span>`;
+    return `<tr>
+      <td style="font-size:12px;font-weight:600">@${r.username}</td>
+      <td style="font-size:14px;font-family:Bebas Neue,sans-serif;color:var(--blue)">${r.count}</td>
+      <td style="font-size:12px;color:var(--green);font-weight:700">+${totalCredits}</td>
+      <td style="font-size:11px;color:var(--text2)">${nextLabel}</td>
+      <td>${statusBadge}</td>
+      <td>
+        <div style="display:flex;gap:4px;flex-wrap:wrap">
+          ${hasPending ? `<button class="btn btn-sm btn-success" onclick="msAwardMilestone('${r.uid}')" style="font-size:10px">&#127873; Award +${r.bonusPending}</button>` : ''}
+          <button class="btn btn-sm" onclick="msgOpenCredits('profiles','','${r.uid}')" style="background:var(--yellow-light);color:var(--yellow);border:1px solid var(--yellow);font-size:10px">+ Manual</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function msAwardMilestone(uid){
+  const row = _allMilestones.find(r => r.uid === uid);
+  if(!row || row.bonusPending <= 0) return;
+  if(!confirm(`Award +${row.bonusPending} milestone bonus credits to @${row.username}?`)) return;
+  try {
+    // Award each pending milestone
+    const sortedTiers = [...MS_TIERS].sort((a,b) => a.threshold - b.threshold);
+    for(const t of sortedTiers){
+      if(row.count >= t.threshold && !row.userAwards.includes('milestone_'+t.threshold)){
+        await _post('credit_events', {
+          user_id: uid,
+          amount: t.bonus,
+          reason: 'upload_milestone',
+          note: 'milestone_'+t.threshold,
+          created_at: new Date().toISOString()
+        });
+        // Update user credits
+        const profile = await _get('profiles','select=credits&id=eq.'+uid+'&limit=1');
+        const currentCredits = (profile && profile[0]) ? (profile[0].credits||0) : 0;
+        await _patch('profiles','id=eq.'+uid, { credits: currentCredits + t.bonus });
+      }
+    }
+    toast(`Milestone credits awarded to @${row.username}`, 'success');
+    loadMilestones();
+  } catch(e){
+    toast('Award failed: ' + e.message, 'error');
+  }
+}
+
+async function msAutoAwardAll(){
+  const pending = _allMilestones.filter(r => r.bonusPending > 0);
+  if(!pending.length){ toast('No pending milestones to award', 'success'); return; }
+  if(!confirm(`Auto-award milestone bonuses to ${pending.length} user${pending.length!==1?'s':''}?`)) return;
+  let awarded = 0;
+  for(const row of pending){
+    try { await msAwardMilestone(row.uid); awarded++; } catch(e){}
+  }
+  toast(`${awarded} user${awarded!==1?'s':''} awarded milestone credits`, 'success');
+  loadMilestones();
 }
 
 // ── ISO MANAGER ──

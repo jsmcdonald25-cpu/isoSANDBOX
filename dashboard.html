@@ -7831,6 +7831,26 @@ function _cdSetMyVaultContext(fromMyVault){
   _cdUpdateTickerBtn();
 }
 
+function cdUpdateFavBtn(){
+  const btn = document.getElementById('cd-fav-star');
+  if(!btn) return;
+  const idx = window._cdMyVaultIdx;
+  const data = window._vaultData;
+  const isFav = idx != null && data && data[idx] && data[idx].is_favorite;
+  btn.textContent = isFav ? '★ Favorited' : '☆ Add to Favorites';
+  btn.style.borderColor = isFav ? 'rgba(255,215,0,0.6)' : 'rgba(255,215,0,0.25)';
+  btn.style.color = isFav ? '#FFD700' : 'rgba(255,215,0,0.7)';
+  btn.style.background = isFav ? 'rgba(255,215,0,0.1)' : 'rgba(0,0,0,0.2)';
+}
+
+function cdToggleFav(){
+  const idx = window._cdMyVaultIdx;
+  const data = window._vaultData;
+  if(idx == null || !data || !data[idx]) return;
+  data[idx].is_favorite = !data[idx].is_favorite;
+  cdUpdateFavBtn();
+}
+
 function _cdToggleTicker(){
   const card = window._cdCard;
   if(!card) return;

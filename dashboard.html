@@ -7225,30 +7225,10 @@ function ivOpenCard(row){
     slabPickCard(row, _ivSet ? _ivSet.table : null);
     return;
   }
-  // Check if there's a known CARDS entry — must match set table if active set is known
-  const activeTable = _ivSet ? _ivSet.table : null;
-  const known = CARDS.find(c=>{
-    if(!c) return false;
-    // When we know the active set table, ONLY match CARDS entries from the same table
-    if(activeTable && c._setTable !== activeTable) return false;
-    // Card number match — must also match player name
-    if(c._cardNumber === row.card_number){
-      if(c.player !== row.player) return false;
-      return true;
-    }
-    // Player+year match
-    if(c.player === row.player && String(c.year) === String((row.year||'').toString().slice(0,4))){
-      return true;
-    }
-    return false;
-  });
-  if(known){
-    // Store actual DB card_number for the whole card detail session
-    window._cdDbCardNum = row.card_number || null;
-    window._cdPreloadVarImages = row.var_images || null;
-    openCardDetail(known.id);
-    return;
-  }
+  // Skip the CARDS lookup entirely — always build the ad-hoc card from the actual
+  // Supabase row data. The CARDS array is unreliable (entries from card-images table
+  // can collide on card_number with real set data, causing wrong player to display).
+  // The ad-hoc builder below uses row.player directly, which is always correct.
 
   // Build ad-hoc card object
   const card = {

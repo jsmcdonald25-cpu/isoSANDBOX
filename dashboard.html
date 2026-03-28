@@ -1532,6 +1532,13 @@ async function logOut(){
       <span class="nav-badge" id="navBadge-myisos">3</span>
     </div>
 
+    <div class="nav-item" id="nav-mytxns" onclick="N('mytxns',this)">
+      <div class="nav-drag-handle">&#10303;</div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><polyline points="12 6 12 12 16 14"/></svg></div>
+      <span class="nav-label">My Transactions</span>
+      <span class="nav-badge" id="navBadge-mytxns" style="display:none">0</span>
+    </div>
+
     <div class="nav-item" id="nav-sellermatches" onclick="N('sellermatches',this)">
       <div class="nav-drag-handle">&#10303;</div>
       <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
@@ -1770,6 +1777,21 @@ async function logOut(){
     <div class="iso-list" id="myIsosList" style="display:none"></div>
   </div>
 
+  <!-- MY TRANSACTIONS -->
+  <div class="panel" id="panel-mytxns">
+    <div id="txnLoading" style="text-align:center;padding:60px 20px;color:var(--muted-text)">
+      <div style="font-size:28px;margin-bottom:12px">&#8987;</div>
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;letter-spacing:1px">Loading transactions&#8230;</div>
+    </div>
+    <div id="txnEmpty" style="display:none;text-align:center;padding:60px 20px;color:var(--muted-text)">
+      <div style="font-size:40px;margin-bottom:12px">&#128176;</div>
+      <div style="font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--white);margin-bottom:8px">No transactions yet</div>
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;margin-bottom:20px">When you accept a seller's offer, your transaction will appear here with live status updates.</div>
+      <button class="btn btn-primary" onclick="N('myisos',document.querySelector('[onclick*=myisos]'))">View My ISOs</button>
+    </div>
+    <div id="txnList" style="display:none"></div>
+  </div>
+
   <!-- SELLER MATCHES -->
   <div class="panel" id="panel-sellermatches">
     <div class="filter-row" id="sellerMatchFilters">
@@ -1789,6 +1811,58 @@ async function logOut(){
       <button class="btn btn-ghost" onclick="N('account',document.getElementById('nav-account'))">Open Seller Settings</button>
     </div>
     <div class="iso-list" id="smList" style="display:none"></div>
+
+    <!-- Pending Shipments -->
+    <div id="smShipSection" style="display:none;margin-top:20px">
+      <div style="font-family:Bebas Neue,sans-serif;font-size:17px;letter-spacing:2px;color:var(--white);margin-bottom:10px;display:flex;align-items:center;gap:8px">&#128230; PENDING SHIPMENTS</div>
+      <div id="smShipList"></div>
+    </div>
+  </div>
+
+  <!-- SELLER SHIPPING INSTRUCTIONS MODAL -->
+  <div class="vault-modal-overlay" id="shipInstructOverlay" style="display:none" onclick="void(0)">
+    <div class="vault-modal" style="max-width:460px">
+      <button class="vm-close" onclick="closeShipInstruct()">&times;</button>
+      <div class="vm-title" style="color:var(--blue)">&#128230; SHIP YOUR CARD</div>
+      <div class="vm-sub">Send the card to the GrailISO Verification Hub. We'll inspect, verify, and forward to the buyer.</div>
+
+      <div style="background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.15);border-radius:8px;padding:14px;margin-bottom:14px">
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;color:var(--blue);margin-bottom:6px">SHIP TO</div>
+        <div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--white)">GrailISO Verification Hub</div>
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--chrome);line-height:1.6;margin-top:4px">
+          Attn: GrailISO Card Verification<br>
+          123 Main Street, Suite 100<br>
+          Dallas, TX 75201
+        </div>
+        <div style="margin-top:6px;font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text)">Include Transaction # <strong style="color:var(--white)" id="siTxnId"></strong> on a note inside the package.</div>
+      </div>
+
+      <div style="background:rgba(255,200,60,0.06);border:1px solid rgba(255,200,60,0.2);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--gold);line-height:1.5">
+        &#9888;&#65039; <strong>SHIPPING TIPS:</strong> Use a padded mailer or small box. Include a penny sleeve + toploader (or ship in the slab). We recommend USPS Priority Mail with tracking.
+      </div>
+
+      <div style="margin-bottom:14px">
+        <div class="vm-label" style="margin-bottom:5px;font-size:10px">Tracking Number <span class="req">*</span></div>
+        <input class="vm-input" type="text" id="siTrackingNum" placeholder="e.g. 9400111899223100012345">
+      </div>
+
+      <div style="margin-bottom:14px">
+        <div class="vm-label" style="margin-bottom:5px;font-size:10px">Carrier</div>
+        <div class="vm-source-grid" style="grid-template-columns:repeat(4,1fr);gap:4px">
+          <div class="vm-source-btn" id="siUsps" onclick="siSelectCarrier('USPS')">USPS</div>
+          <div class="vm-source-btn" id="siUps" onclick="siSelectCarrier('UPS')">UPS</div>
+          <div class="vm-source-btn" id="siFedex" onclick="siSelectCarrier('FedEx')">FedEx</div>
+          <div class="vm-source-btn" id="siOther" onclick="siSelectCarrier('Other')">Other</div>
+        </div>
+      </div>
+
+      <div class="vm-error" id="siError" style="display:none"></div>
+
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" style="flex:1" id="siShipBtn" onclick="siMarkShipped()">&#128230; MARK AS SHIPPED</button>
+        <button class="btn btn-ghost" onclick="closeShipInstruct()">Cancel</button>
+      </div>
+    </div>
   </div>
 
   <!-- SELLER MATCH RESPONSE MODAL -->
@@ -3828,6 +3902,7 @@ const PM={
   notifs:{t:'NOTIFICATIONS',s:'2 unread'},
   account:{t:'ACCOUNT',s:'Verified buyer'},
   isoticker:{t:'ISOTICKER',s:'Your collection — value since purchase'},
+  mytxns:{t:'MY TRANSACTIONS',s:'Track your purchases from offer to delivery'},
   sellermatches:{t:'SELLER MATCHES',s:'Cards buyers are looking for in your vault'},
   leaderboard:{t:'LEADERBOARD',s:'Top buyers · sellers · most wanted cards'},
   carddetail:{t:'ISOVAULT',s:'Card detail'},
@@ -3866,6 +3941,7 @@ function N(id,el){
   if(id==='isoticker')initISOTicker();
   if(id==='leaderboard')loadContributorLeaderboard();
   if(id==='account')loadSellerPrefs();
+  if(id==='mytxns')loadMyTransactions();
   if(id==='sellermatches')loadSellerMatches();
   // Push panel state into browser history so mouse back button steps through panels
   if(!_navSuppressHistory){
@@ -8795,6 +8871,7 @@ async function loadSellerMatches(){
 
     document.getElementById('sellerMatchFilters').style.display = 'flex';
     _renderSellerMatches();
+    loadPendingShipments();
   } catch(e){
     if(loading) loading.style.display = 'none';
     if(list){ list.style.display='block'; list.innerHTML='<div style="padding:20px;color:var(--red)">Error: '+e.message+'</div>'; }
@@ -8980,6 +9057,307 @@ async function srDecline(){
     T('Marked as not selling');
     loadSellerMatches();
   } catch(e){ T('Failed: '+e.message); }
+}
+
+// ── My Transactions (buyer tracker) ─────────────────────────────────────────
+const TXN_STEPS = [
+  {status:'payment_pending',   label:'Payment Pending',    icon:'&#128179;'},
+  {status:'payment_held',      label:'Payment Held',       icon:'&#128274;'},
+  {status:'service_selected',  label:'Service Selected',   icon:'&#128300;'},
+  {status:'awaiting_shipment', label:'Awaiting Shipment',  icon:'&#128230;'},
+  {status:'shipped_to_hub',    label:'Shipped to Hub',     icon:'&#128666;'},
+  {status:'received_at_hub',   label:'Received at Hub',    icon:'&#127969;'},
+  {status:'verification_in_progress', label:'Verifying',   icon:'&#128269;'},
+  {status:'submitted_for_grading',    label:'At Grader',   icon:'&#127942;'},
+  {status:'grading_complete',  label:'Grading Complete',   icon:'&#10003;'},
+  {status:'shipping_to_buyer', label:'Shipping to You',    icon:'&#128230;'},
+  {status:'delivered',         label:'Delivered',          icon:'&#127881;'},
+  {status:'completed',         label:'Complete',           icon:'&#11088;'},
+];
+
+async function loadMyTransactions(){
+  const loading = document.getElementById('txnLoading');
+  const empty = document.getElementById('txnEmpty');
+  const list = document.getElementById('txnList');
+  if(loading) loading.style.display = 'block';
+  if(empty) empty.style.display = 'none';
+  if(list){ list.style.display = 'none'; list.innerHTML = ''; }
+
+  const user = window._authUser;
+  if(!user){ if(loading) loading.style.display='none'; if(empty) empty.style.display='block'; return; }
+
+  try {
+    const txns = await _rGet('transactions','select=*,isos(player,parallel,grade,card_name),grading_orders(service_type,grading_company,grading_tier,grade_received),shipping(tracking_number,carrier,leg,status)&buyer_id=eq.'+user.id+'&order=created_at.desc&limit=50');
+    if(loading) loading.style.display = 'none';
+    if(!txns || !txns.length){ if(empty) empty.style.display = 'block'; return; }
+
+    // Badge
+    const active = txns.filter(t => t.status !== 'completed' && t.status !== 'cancelled' && t.status !== 'refunded').length;
+    const badge = document.getElementById('navBadge-mytxns');
+    if(badge){ badge.textContent = active; badge.style.display = active ? '' : 'none'; }
+
+    list.style.display = 'block';
+    list.innerHTML = txns.map(txn => {
+      const iso = txn.isos || {};
+      const gradeOrder = Array.isArray(txn.grading_orders) ? txn.grading_orders[0] : (txn.grading_orders||{});
+      const shipRows = Array.isArray(txn.shipping) ? txn.shipping : (txn.shipping ? [txn.shipping] : []);
+      const buyerShip = shipRows.find(s => s.leg === 'hub_to_buyer') || {};
+
+      const player = iso.player || iso.card_name || 'Card';
+      const price = '$'+parseFloat(txn.agreed_price||0).toFixed(2);
+      const total = '$'+parseFloat(txn.total_amount||0).toFixed(2);
+      const svcLabel = gradeOrder.service_type === 'grading'
+        ? (gradeOrder.grading_company||'')+' '+(gradeOrder.grading_tier||'')
+        : (gradeOrder.service_type||'').replace(/_/g,' ');
+      const gradeResult = gradeOrder.grade_received || '';
+
+      // Build timeline
+      const currentIdx = TXN_STEPS.findIndex(s => s.status === txn.status);
+      const isFailed = txn.status === 'verification_failed' || txn.status === 'cancelled' || txn.status === 'refunded';
+      const isComplete = txn.status === 'completed';
+
+      let timeline = '<div style="display:flex;gap:0;margin:12px 0;overflow-x:auto">';
+      // Show simplified steps — not all 12, just key milestones
+      const keySteps = [
+        {status:'payment_held',label:'Paid',icon:'&#128274;'},
+        {status:'service_selected',label:'Service',icon:'&#128300;'},
+        {status:'shipped_to_hub',label:'Shipped',icon:'&#128666;'},
+        {status:'received_at_hub',label:'At Hub',icon:'&#127969;'},
+        {status:'grading_complete',label:'Verified',icon:'&#10003;'},
+        {status:'shipping_to_buyer',label:'Shipping',icon:'&#128230;'},
+        {status:'completed',label:'Done',icon:'&#11088;'},
+      ];
+      const currentKeyIdx = keySteps.findIndex(s => {
+        const realIdx = TXN_STEPS.findIndex(t => t.status === s.status);
+        return realIdx >= currentIdx;
+      });
+
+      keySteps.forEach((step, i) => {
+        const realIdx = TXN_STEPS.findIndex(t => t.status === step.status);
+        const done = currentIdx >= realIdx;
+        const active = (i === currentKeyIdx);
+        const dotColor = isFailed ? 'var(--red)' : done ? 'var(--green)' : active ? 'var(--blue)' : 'var(--deep-border)';
+        const textColor = done ? 'var(--green)' : active ? 'var(--blue)' : 'var(--muted-text)';
+        const lineColor = done ? 'var(--green)' : 'var(--deep-border)';
+        timeline += `<div style="display:flex;flex-direction:column;align-items:center;min-width:52px;flex:1;position:relative">`;
+        if(i > 0) timeline += `<div style="position:absolute;top:10px;right:50%;width:100%;height:2px;background:${lineColor};z-index:0"></div>`;
+        timeline += `<div style="width:20px;height:20px;border-radius:50%;background:${dotColor};display:flex;align-items:center;justify-content:center;font-size:10px;z-index:1;${active?'box-shadow:0 0 8px '+dotColor:''}">${done?'&#10003;':''}</div>`;
+        timeline += `<div style="font-family:Barlow Condensed,sans-serif;font-size:9px;color:${textColor};margin-top:4px;text-align:center;letter-spacing:.5px">${step.label}</div>`;
+        timeline += `</div>`;
+      });
+      timeline += '</div>';
+
+      // Status message
+      const statusMessages = {
+        payment_pending:'Waiting for payment authorization.',
+        payment_held:'Payment held securely. Choose your service.',
+        service_selected:'Seller has been notified to ship card to hub.',
+        awaiting_shipment:'Waiting for seller to ship.',
+        shipped_to_hub:'Card is in transit to GrailISO hub.',
+        received_at_hub:'Card received — inspection starting.',
+        verification_in_progress:'Our team is verifying the card.',
+        verification_failed:'Verification FAILED — refund in progress.',
+        submitted_for_grading:'Card submitted to '+(gradeOrder.grading_company||'grader')+'.',
+        grading_complete:'Grading complete'+(gradeResult?' — '+gradeResult:'')+'. Preparing to ship.',
+        shipping_to_buyer:'Your card is on its way! '+(buyerShip.tracking_number?'Tracking: '+buyerShip.tracking_number:''),
+        delivered:'Card delivered. Please confirm receipt below.',
+        completed:'Transaction complete. &#11088;',
+        cancelled:'Transaction cancelled.',
+        refunded:'Refunded to your payment method.',
+      };
+      const statusMsg = statusMessages[txn.status] || txn.status;
+
+      // Action buttons
+      let actions = '';
+      if(txn.status === 'delivered'){
+        actions = `<div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn btn-primary btn-sm" style="flex:1;background:var(--green);border-color:var(--green)" onclick="txnConfirmReceipt(${txn.id})">&#10003; Confirm Receipt</button>
+          <button class="btn btn-ghost btn-sm" style="flex:1;color:var(--red);border-color:rgba(255,59,92,0.3)" onclick="txnOpenDispute(${txn.id})">&#9888; Open Dispute</button>
+        </div>`;
+      } else if(txn.status === 'shipping_to_buyer' && buyerShip.tracking_number){
+        actions = `<div style="margin-top:8px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--blue)">&#128230; Tracking: <strong>${buyerShip.tracking_number}</strong> via ${buyerShip.carrier||'USPS'}</div>`;
+      } else if(txn.status === 'payment_held'){
+        actions = `<div style="margin-top:8px"><button class="btn btn-primary btn-sm" onclick="openServiceSelect(${txn.id},${txn.agreed_price},'${player.replace(/'/g,"\\'")}')">Choose Service &#8594;</button></div>`;
+      }
+
+      return `<div style="background:var(--deep2);border:1px solid ${isFailed?'rgba(255,59,92,0.3)':isComplete?'rgba(0,232,135,0.2)':'var(--deep-border)'};border-radius:10px;padding:16px;margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+          <div>
+            <div style="font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--white);letter-spacing:1px">${player}</div>
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text)">${iso.parallel||''} ${iso.grade?'· '+iso.grade:''} ${svcLabel?'· '+svcLabel:''}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--green)">${price}</div>
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text)">Total: ${total}</div>
+          </div>
+        </div>
+        ${timeline}
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--chrome);text-align:center;padding:4px 0">${statusMsg}</div>
+        ${gradeResult?`<div style="text-align:center;font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--gold);margin-top:4px">&#127942; ${gradeResult}</div>`:''}
+        ${actions}
+      </div>`;
+    }).join('');
+  } catch(e){
+    if(loading) loading.style.display = 'none';
+    if(list){ list.style.display='block'; list.innerHTML='<div style="padding:20px;color:var(--red)">Error: '+e.message+'</div>'; }
+  }
+}
+
+async function txnConfirmReceipt(txnId){
+  if(!confirm('Confirm you received the card in the condition described? This will finalize the transaction and charge your card.')) return;
+  try {
+    // Capture payment
+    const payRows = await _rGet('payments','select=stripe_payment_intent_id,amount_held&transaction_id=eq.'+txnId+'&status=eq.held&limit=1');
+    if(payRows && payRows[0] && payRows[0].stripe_payment_intent_id){
+      await fetch('/.netlify/functions/capture-payment', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ transactionId:txnId, paymentIntentId:payRows[0].stripe_payment_intent_id })
+      });
+    }
+    await _rPatch('transactions','id=eq.'+txnId, { status:'completed', updated_at:new Date().toISOString() });
+    T('Transaction complete! Card is yours. Payment captured.');
+    loadMyTransactions();
+    // TODO: Prompt for review/rating
+  } catch(e){ T('Failed: '+e.message); }
+}
+
+async function txnOpenDispute(txnId){
+  const reason = prompt('What went wrong? Describe the issue:');
+  if(!reason) return;
+  const user = window._authUser;
+  try {
+    await _rPost('disputes', {
+      transaction_id: txnId,
+      opened_by: user.id,
+      reason: reason,
+      status: 'open',
+      created_at: new Date().toISOString()
+    }, 'return=minimal');
+    await _rPatch('transactions','id=eq.'+txnId, { status:'disputed', updated_at:new Date().toISOString() });
+    T('Dispute opened — our team will review within 48 hours.');
+    loadMyTransactions();
+  } catch(e){ T('Failed: '+e.message); }
+}
+
+// ── Seller Shipping ──────────────────────────────────────────────────────────
+let _siTxnId = null;
+let _siCarrier = null;
+
+async function loadPendingShipments(){
+  const user = window._authUser;
+  if(!user) return;
+  const section = document.getElementById('smShipSection');
+  const list = document.getElementById('smShipList');
+  if(!section || !list) return;
+
+  try {
+    const txns = await _rGet('transactions','select=*,offers(*),isos(*)&seller_id=eq.'+user.id+'&status=in.(service_selected,awaiting_shipment)&order=updated_at.desc&limit=50');
+    if(!txns || !txns.length){ section.style.display = 'none'; return; }
+
+    section.style.display = 'block';
+    list.innerHTML = txns.map(txn => {
+      const iso = txn.isos || {};
+      const offer = txn.offers || {};
+      const player = iso.player || iso.card_name || 'Card';
+      const price = '$'+parseFloat(txn.agreed_price||0).toFixed(2);
+      return `<div class="iso-item" style="cursor:pointer;border-left:3px solid var(--green)" onclick="openShipInstruct(${txn.id})">
+        <div class="iso-img" style="background:rgba(0,232,135,0.1);display:flex;align-items:center;justify-content:center;font-size:22px">&#128230;</div>
+        <div class="iso-info">
+          <div class="iso-player">${player}</div>
+          <div class="iso-detail">Buyer accepted at ${price} — ship to hub now</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+          <span class="status-pill active">SHIP NOW</span>
+          <span class="ni-action">Enter Tracking &#8594;</span>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e){ section.style.display = 'none'; }
+}
+
+function openShipInstruct(txnId){
+  _siTxnId = txnId;
+  _siCarrier = null;
+  document.getElementById('siTxnId').textContent = '#'+txnId;
+  document.getElementById('siTrackingNum').value = '';
+  ['siUsps','siUps','siFedex','siOther'].forEach(id => document.getElementById(id).classList.remove('selected'));
+  document.getElementById('siError').style.display = 'none';
+  document.getElementById('siShipBtn').disabled = false;
+  document.getElementById('siShipBtn').textContent = '📦 MARK AS SHIPPED';
+  document.getElementById('shipInstructOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeShipInstruct(){
+  document.getElementById('shipInstructOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function siSelectCarrier(carrier){
+  _siCarrier = carrier;
+  ['siUsps','siUps','siFedex','siOther'].forEach(id => document.getElementById(id).classList.remove('selected'));
+  const map = {USPS:'siUsps',UPS:'siUps',FedEx:'siFedex',Other:'siOther'};
+  if(map[carrier]) document.getElementById(map[carrier]).classList.add('selected');
+}
+
+async function siMarkShipped(){
+  const tracking = document.getElementById('siTrackingNum').value.trim();
+  if(!tracking){
+    document.getElementById('siError').textContent = 'Please enter a tracking number.';
+    document.getElementById('siError').style.display = 'block'; return;
+  }
+  document.getElementById('siError').style.display = 'none';
+
+  const btn = document.getElementById('siShipBtn');
+  btn.disabled = true; btn.textContent = 'SAVING...';
+
+  try {
+    // Create shipping record
+    await _rPost('shipping', {
+      transaction_id: _siTxnId,
+      leg:            'seller_to_hub',
+      carrier:        _siCarrier || 'Unknown',
+      tracking_number: tracking,
+      to_name:        'GrailISO Verification Hub',
+      to_address:     '123 Main Street, Suite 100, Dallas, TX 75201',
+      status:         'shipped',
+      shipped_at:     new Date().toISOString(),
+      created_at:     new Date().toISOString()
+    }, 'return=minimal');
+
+    // Update transaction status
+    await _rPatch('transactions', 'id=eq.'+_siTxnId, {
+      status: 'shipped_to_hub',
+      updated_at: new Date().toISOString()
+    });
+
+    // Notify buyer
+    const txnRows = await _rGet('transactions','select=buyer_id,isos(player)&id=eq.'+_siTxnId+'&limit=1');
+    if(txnRows && txnRows[0]){
+      const buyerId = txnRows[0].buyer_id;
+      const player = txnRows[0].isos ? txnRows[0].isos.player : 'your card';
+      await _rPost('notifications', {
+        user_id: buyerId,
+        type: 'card_shipped',
+        title: 'Card Shipped to Hub — '+player,
+        body: 'The seller has shipped '+player+' to the GrailISO hub. Tracking: '+tracking,
+        data: JSON.stringify({ transaction_id: _siTxnId, tracking }),
+        is_read: false,
+        created_at: new Date().toISOString()
+      }, 'return=minimal');
+    }
+
+    btn.textContent = '✓ SHIPPED!';
+    T('Card marked as shipped — tracking: '+tracking);
+    setTimeout(() => {
+      closeShipInstruct();
+      loadSellerMatches();
+    }, 1200);
+  } catch(e){
+    document.getElementById('siError').textContent = 'Failed: '+(e.message||'try again');
+    document.getElementById('siError').style.display = 'block';
+    btn.disabled = false; btn.textContent = '📦 MARK AS SHIPPED';
+  }
 }
 
 // ── Buyer Offer Review ──────────────────────────────────────────────────────

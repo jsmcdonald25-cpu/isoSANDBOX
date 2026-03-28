@@ -355,6 +355,11 @@ tr:hover td { background: var(--bg); }
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
       ISO Manager
     </div>
+    <div class="nav-item" onclick="nav('hubqueue',this);loadHubQueue()">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+      Hub Queue
+      <span id="hub-nav-badge" style="margin-left:auto;background:var(--green);color:#000;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;display:none">0</span>
+    </div>
     <div class="nav-item" onclick="nav('milestones',this);loadMilestones()">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15 8.5L22 9.5L17 14.5L18 22L12 18.5L6 22L7 14.5L2 9.5L9 8.5Z"/></svg>
       Upload Milestones
@@ -869,6 +874,57 @@ tr:hover td { background: var(--bg); }
               <th style="width:120px">Actions</th>
             </tr></thead>
             <tbody id="iso-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── HUB QUEUE ── -->
+    <div class="panel" id="panel-hubqueue">
+      <div class="panel-header">
+        <div class="panel-eyebrow">Operations</div>
+        <div class="panel-title">Hub Queue</div>
+        <div class="panel-sub">Cards shipped to the GrailISO hub. Receive, inspect, verify, grade, and ship to buyers.</div>
+      </div>
+
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-val" id="hq-stat-incoming">&#8212;</div><div class="stat-lab">In Transit</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--blue)" id="hq-stat-received">&#8212;</div><div class="stat-lab">At Hub</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--gold)" id="hq-stat-grading">&#8212;</div><div class="stat-lab">At Grader</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--green)" id="hq-stat-ready">&#8212;</div><div class="stat-lab">Ready to Ship</div></div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-sm" id="hqf-all" onclick="hqSetFilter('all')" style="background:var(--blue);color:#fff">All</button>
+            <button class="btn btn-sm btn-ghost" id="hqf-shipped" onclick="hqSetFilter('shipped_to_hub')">In Transit</button>
+            <button class="btn btn-sm btn-ghost" id="hqf-received" onclick="hqSetFilter('received_at_hub')">At Hub</button>
+            <button class="btn btn-sm btn-ghost" id="hqf-verifying" onclick="hqSetFilter('verification_in_progress')">Verifying</button>
+            <button class="btn btn-sm btn-ghost" id="hqf-grading" onclick="hqSetFilter('submitted_for_grading')">At Grader</button>
+            <button class="btn btn-sm btn-ghost" id="hqf-ready" onclick="hqSetFilter('grading_complete')">Ready</button>
+          </div>
+          <button class="btn btn-ghost" onclick="loadHubQueue()">&#8635; Refresh</button>
+        </div>
+
+        <div class="loading" id="hq-loading" style="display:none">Loading hub queue&#8230;</div>
+        <div id="hq-empty" class="empty" style="display:none">
+          <div class="empty-icon">&#128230;</div>
+          <div>No cards in the queue.</div>
+        </div>
+        <div class="table-wrap" id="hq-table-wrap">
+          <table>
+            <thead><tr>
+              <th style="width:50px">Txn #</th>
+              <th style="width:120px">Card</th>
+              <th style="width:80px">Seller</th>
+              <th style="width:80px">Buyer</th>
+              <th style="width:80px">Service</th>
+              <th style="width:80px">Tracking</th>
+              <th style="width:70px">Status</th>
+              <th style="width:220px">Actions</th>
+            </tr></thead>
+            <tbody id="hq-tbody"></tbody>
           </table>
         </div>
       </div>
@@ -2393,6 +2449,192 @@ function _alphaUpdateStats() {
   document.getElementById('alpha-stat-rejected').textContent = rejected;
   const navBadge = document.getElementById('alpha-nav-badge');
   if (navBadge) { navBadge.textContent = pending; navBadge.style.display = pending ? 'inline-block' : 'none'; }
+}
+
+// ── HUB QUEUE ─────────────────────────────────────────────────────
+let _allHubItems = [];
+let _hqFilter = 'all';
+const HQ_STATUSES = ['shipped_to_hub','received_at_hub','verification_in_progress','submitted_for_grading','grading_complete','shipping_to_buyer'];
+
+async function loadHubQueue(){
+  document.getElementById('hq-loading').style.display = 'block';
+  document.getElementById('hq-table-wrap').style.display = 'none';
+  document.getElementById('hq-empty').style.display = 'none';
+  try {
+    const statusFilter = HQ_STATUSES.map(s => encodeURIComponent(s)).join(',');
+    const rows = await _get('transactions', 'select=*,isos(player,parallel,grade),offers(grade_company,grade_number,cert_number),grading_orders(service_type,grading_company,grading_tier,status),shipping(tracking_number,carrier,status,leg)&status=in.('+statusFilter+')&order=updated_at.desc&limit=200');
+    _allHubItems = rows || [];
+
+    const incoming = _allHubItems.filter(r => r.status === 'shipped_to_hub').length;
+    const atHub = _allHubItems.filter(r => r.status === 'received_at_hub' || r.status === 'verification_in_progress').length;
+    const atGrader = _allHubItems.filter(r => r.status === 'submitted_for_grading').length;
+    const ready = _allHubItems.filter(r => r.status === 'grading_complete' || r.status === 'shipping_to_buyer').length;
+
+    document.getElementById('hq-stat-incoming').textContent = incoming;
+    document.getElementById('hq-stat-received').textContent = atHub;
+    document.getElementById('hq-stat-grading').textContent = atGrader;
+    document.getElementById('hq-stat-ready').textContent = ready;
+
+    const badge = document.getElementById('hub-nav-badge');
+    if(badge){ badge.textContent = incoming + atHub; badge.style.display = (incoming + atHub) ? 'inline-block' : 'none'; }
+
+    document.getElementById('hq-loading').style.display = 'none';
+    hqRender();
+  } catch(e){
+    document.getElementById('hq-loading').style.display = 'none';
+    toast('Failed to load hub queue: ' + e.message, 'error');
+  }
+}
+
+function hqSetFilter(f){
+  _hqFilter = f;
+  ['all','shipped_to_hub','received_at_hub','verification_in_progress','submitted_for_grading','grading_complete'].forEach(k => {
+    const btn = document.getElementById('hqf-' + k.replace(/_/g,''));
+    if(!btn) return;
+    // Match by data
+  });
+  document.querySelectorAll('[id^="hqf-"]').forEach(b => {
+    b.className = 'btn btn-sm btn-ghost'; b.style.background = ''; b.style.color = '';
+  });
+  const activeBtn = document.querySelector('[onclick*="hqSetFilter(\''+f+'\')"]');
+  if(activeBtn){ activeBtn.className = 'btn btn-sm'; activeBtn.style.background = 'var(--blue)'; activeBtn.style.color = '#fff'; }
+  hqRender();
+}
+
+function hqRender(){
+  const wrap = document.getElementById('hq-table-wrap');
+  let rows = _allHubItems;
+  if(_hqFilter !== 'all') rows = rows.filter(r => r.status === _hqFilter);
+
+  if(!rows.length){
+    document.getElementById('hq-empty').style.display = 'flex';
+    wrap.style.display = 'none'; return;
+  }
+  document.getElementById('hq-empty').style.display = 'none';
+  wrap.style.display = 'block';
+
+  const statusLabels = {
+    shipped_to_hub:'In Transit', received_at_hub:'At Hub', verification_in_progress:'Verifying',
+    verification_failed:'FAILED', submitted_for_grading:'At Grader', grading_complete:'Graded',
+    shipping_to_buyer:'Shipping'
+  };
+  const statusColors = {
+    shipped_to_hub:'badge-yellow', received_at_hub:'badge-blue', verification_in_progress:'badge-blue',
+    verification_failed:'badge-red', submitted_for_grading:'badge-yellow', grading_complete:'badge-green',
+    shipping_to_buyer:'badge-green'
+  };
+
+  document.getElementById('hq-tbody').innerHTML = rows.map(r => {
+    const iso = r.isos || {};
+    const offer = Array.isArray(r.offers) ? r.offers[0] : (r.offers||{});
+    const gradeOrder = Array.isArray(r.grading_orders) ? r.grading_orders[0] : (r.grading_orders||{});
+    const shipRows = Array.isArray(r.shipping) ? r.shipping : (r.shipping ? [r.shipping] : []);
+    const sellerShip = shipRows.find(s => s.leg === 'seller_to_hub') || {};
+
+    const player = iso.player || '—';
+    const svcLabel = gradeOrder.service_type === 'grading' ? (gradeOrder.grading_company||'')+' '+(gradeOrder.grading_tier||'') : (gradeOrder.service_type||'—').replace(/_/g,' ');
+    const tracking = sellerShip.tracking_number || '—';
+    const statusBadge = statusColors[r.status] || 'badge-gray';
+    const statusText = statusLabels[r.status] || r.status;
+
+    // Actions based on status
+    let actions = '';
+    if(r.status === 'shipped_to_hub'){
+      actions = `<button class="btn btn-sm btn-success" onclick="hqMarkReceived(${r.id})" style="font-size:10px">&#128230; Mark Received</button>`;
+    } else if(r.status === 'received_at_hub'){
+      actions = `<button class="btn btn-sm" onclick="hqStartVerify(${r.id})" style="background:var(--blue);color:#fff;font-size:10px">&#128269; Start Verify</button>`;
+    } else if(r.status === 'verification_in_progress'){
+      actions = `<button class="btn btn-sm btn-success" onclick="hqPassVerify(${r.id})" style="font-size:10px">&#10003; Pass</button>`
+        + `<button class="btn btn-sm" onclick="hqFailVerify(${r.id})" style="background:var(--red);color:#fff;font-size:10px">&#10007; Fail</button>`;
+    } else if(r.status === 'grading_complete' || (r.status === 'received_at_hub' && gradeOrder.service_type !== 'grading')){
+      actions = `<button class="btn btn-sm btn-success" onclick="hqShipToBuyer(${r.id})" style="font-size:10px">&#128230; Ship to Buyer</button>`;
+    } else if(r.status === 'submitted_for_grading'){
+      actions = `<button class="btn btn-sm" onclick="hqGradeComplete(${r.id})" style="background:var(--gold);color:#000;font-size:10px">&#127942; Grade Returned</button>`;
+    }
+
+    return `<tr>
+      <td style="font-size:12px;font-weight:700;color:var(--blue)">#${r.id}</td>
+      <td style="font-size:12px;font-weight:600">${player}<div style="font-size:10px;color:var(--text3)">${iso.parallel||''} ${iso.grade||''}</div></td>
+      <td style="font-size:11px">${(r.seller_id||'').slice(0,8)}&#8230;</td>
+      <td style="font-size:11px">${(r.buyer_id||'').slice(0,8)}&#8230;</td>
+      <td style="font-size:10px;text-transform:capitalize">${svcLabel}</td>
+      <td style="font-size:10px;font-family:var(--font);word-break:break-all">${tracking.slice(0,12)}${tracking.length>12?'&#8230;':''}</td>
+      <td><span class="badge ${statusBadge}">${statusText}</span></td>
+      <td><div style="display:flex;gap:4px;flex-wrap:wrap">${actions}</div></td>
+    </tr>`;
+  }).join('');
+}
+
+async function hqMarkReceived(txnId){
+  try {
+    await _patch('transactions', 'id=eq.'+txnId, { status:'received_at_hub', updated_at:new Date().toISOString() });
+    await _post('hub_inspections', { transaction_id:txnId, result:'pending', created_at:new Date().toISOString() });
+    toast('Card marked as received at hub', 'success');
+    loadHubQueue();
+  } catch(e){ toast('Failed: '+e.message, 'error'); }
+}
+
+async function hqStartVerify(txnId){
+  try {
+    await _patch('transactions', 'id=eq.'+txnId, { status:'verification_in_progress', updated_at:new Date().toISOString() });
+    await _patch('hub_inspections', 'transaction_id=eq.'+txnId, { inspected_at:new Date().toISOString() });
+    toast('Verification started', 'success');
+    loadHubQueue();
+  } catch(e){ toast('Failed: '+e.message, 'error'); }
+}
+
+async function hqPassVerify(txnId){
+  try {
+    await _patch('hub_inspections', 'transaction_id=eq.'+txnId, { authenticity:'pass', grade_confirmed:true, result:'passed' });
+    // Check if grading is needed
+    const gradeRows = await _get('grading_orders', 'select=service_type&transaction_id=eq.'+txnId+'&limit=1');
+    const needsGrading = gradeRows && gradeRows[0] && gradeRows[0].service_type === 'grading';
+    const newStatus = needsGrading ? 'submitted_for_grading' : 'grading_complete';
+    await _patch('transactions', 'id=eq.'+txnId, { status:newStatus, updated_at:new Date().toISOString() });
+    if(needsGrading) await _patch('grading_orders', 'transaction_id=eq.'+txnId, { status:'submitted' });
+    toast('Verification passed' + (needsGrading ? ' — sent to grader' : ' — ready to ship'), 'success');
+    loadHubQueue();
+  } catch(e){ toast('Failed: '+e.message, 'error'); }
+}
+
+async function hqFailVerify(txnId){
+  const reason = prompt('Verification failed. Reason:');
+  if(!reason) return;
+  try {
+    await _patch('hub_inspections', 'transaction_id=eq.'+txnId, { authenticity:'fail', result:'failed', failure_reason:reason });
+    await _patch('transactions', 'id=eq.'+txnId, { status:'verification_failed', updated_at:new Date().toISOString() });
+    // TODO: Cancel Stripe hold, notify buyer of refund, ship back to seller
+    toast('Verification FAILED — transaction cancelled', 'error');
+    loadHubQueue();
+  } catch(e){ toast('Failed: '+e.message, 'error'); }
+}
+
+async function hqGradeComplete(txnId){
+  const grade = prompt('Enter grade received (e.g. "PSA 10", "BGS 9.5"):');
+  if(!grade) return;
+  const cert = prompt('Enter cert number (if applicable):') || null;
+  try {
+    await _patch('grading_orders', 'transaction_id=eq.'+txnId, { grade_received:grade, cert_number:cert, status:'completed', updated_at:new Date().toISOString() });
+    await _patch('transactions', 'id=eq.'+txnId, { status:'grading_complete', updated_at:new Date().toISOString() });
+    toast('Grade recorded: '+grade+' — ready to ship to buyer', 'success');
+    loadHubQueue();
+  } catch(e){ toast('Failed: '+e.message, 'error'); }
+}
+
+async function hqShipToBuyer(txnId){
+  const tracking = prompt('Enter tracking number for shipment to buyer:');
+  if(!tracking) return;
+  try {
+    await _post('shipping', { transaction_id:txnId, leg:'hub_to_buyer', tracking_number:tracking, carrier:'USPS', status:'shipped', shipped_at:new Date().toISOString(), created_at:new Date().toISOString() });
+    await _patch('transactions', 'id=eq.'+txnId, { status:'shipping_to_buyer', updated_at:new Date().toISOString() });
+    // Notify buyer
+    const txnRows = await _get('transactions', 'select=buyer_id&id=eq.'+txnId+'&limit=1');
+    if(txnRows && txnRows[0]){
+      await _post('notifications', { user_id:txnRows[0].buyer_id, type:'card_shipped_to_buyer', title:'Your Card Has Shipped!', body:'Your card has cleared verification and is on its way. Tracking: '+tracking, data:JSON.stringify({transaction_id:txnId,tracking}), is_read:false, created_at:new Date().toISOString() });
+    }
+    toast('Shipped to buyer — tracking: '+tracking, 'success');
+    loadHubQueue();
+  } catch(e){ toast('Failed: '+e.message, 'error'); }
 }
 
 // ── UPLOAD MILESTONES ─────────────────────────────────────────────

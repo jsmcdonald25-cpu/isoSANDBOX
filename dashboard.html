@@ -1532,6 +1532,13 @@ async function logOut(){
       <span class="nav-badge" id="navBadge-myisos">3</span>
     </div>
 
+    <div class="nav-item" id="nav-sellermatches" onclick="N('sellermatches',this)">
+      <div class="nav-drag-handle">&#10303;</div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+      <span class="nav-label">Seller Matches</span>
+      <span class="nav-badge red" id="navBadge-sellermatches" style="display:none">0</span>
+    </div>
+
     <div class="nav-item" id="nav-market" onclick="N('market',this)">
       <div class="nav-drag-handle">&#10303;</div>
       <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
@@ -1761,6 +1768,152 @@ async function logOut(){
       <button class="btn btn-primary" onclick="N('post',document.querySelector('[onclick*=post]'))">Post Your First ISO</button>
     </div>
     <div class="iso-list" id="myIsosList" style="display:none"></div>
+  </div>
+
+  <!-- SELLER MATCHES -->
+  <div class="panel" id="panel-sellermatches">
+    <div class="filter-row" id="sellerMatchFilters">
+      <div class="chip active" onclick="filterSellerMatches('all',this)">All</div>
+      <div class="chip" onclick="filterSellerMatches('pending',this)">Pending</div>
+      <div class="chip" onclick="filterSellerMatches('offered',this)">Offered</div>
+      <div class="chip" onclick="filterSellerMatches('declined',this)">Declined</div>
+    </div>
+    <div id="smLoading" style="text-align:center;padding:60px 20px;color:var(--muted-text)">
+      <div style="font-size:28px;margin-bottom:12px">&#8987;</div>
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;letter-spacing:1px">Loading matches&#8230;</div>
+    </div>
+    <div id="smEmpty" style="display:none;text-align:center;padding:60px 20px;color:var(--muted-text)">
+      <div style="font-size:40px;margin-bottom:12px">&#128176;</div>
+      <div style="font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--white);margin-bottom:8px">No matches yet</div>
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;margin-bottom:20px">When a buyer posts an ISO that matches a card in your vault, it will appear here.<br>Make sure <strong>Seller Mode</strong> is on in Account settings.</div>
+      <button class="btn btn-ghost" onclick="N('account',document.getElementById('nav-account'))">Open Seller Settings</button>
+    </div>
+    <div class="iso-list" id="smList" style="display:none"></div>
+  </div>
+
+  <!-- SELLER MATCH RESPONSE MODAL -->
+  <div class="vault-modal-overlay" id="sellerResponseOverlay" style="display:none" onclick="void(0)">
+    <div class="vault-modal" style="max-width:520px">
+      <button class="vm-close" onclick="closeSellerResponse()">&times;</button>
+      <div class="vm-title" style="color:var(--green)">&#127919; ISO MATCH &#8212; Someone wants your card!</div>
+      <div class="vm-sub">A buyer is looking for a card you own. Review the ISO and decide if you want to sell.</div>
+
+      <!-- ISO Details (what the buyer wants) -->
+      <div style="background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.2);border-radius:8px;padding:14px;margin-bottom:14px">
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:6px">BUYER'S ISO</div>
+        <div style="font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--white);letter-spacing:1px" id="srCardName"></div>
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-top:2px" id="srCardDetail"></div>
+        <div style="display:flex;gap:16px;margin-top:10px">
+          <div><div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;color:var(--muted-text)">WANTS</div><div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--blue)" id="srWantGrade"></div></div>
+          <div><div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;color:var(--muted-text)">MAX BID</div><div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--green)" id="srMaxBid"></div></div>
+          <div><div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;color:var(--muted-text)">VARIATION</div><div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--white)" id="srVariation"></div></div>
+        </div>
+        <div id="srBuyerNotes" style="display:none;margin-top:8px;font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);font-style:italic"></div>
+      </div>
+
+      <!-- Your Card Details -->
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:8px">YOUR CARD</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div>
+          <div class="vm-label" style="margin-bottom:5px;font-size:10px">Grading Company</div>
+          <div class="vm-source-grid" style="grid-template-columns:repeat(2,1fr);gap:4px">
+            <div class="vm-source-btn" id="srGcPsa" onclick="srSelectGrader('PSA')">PSA</div>
+            <div class="vm-source-btn" id="srGcBgs" onclick="srSelectGrader('BGS')">BGS</div>
+            <div class="vm-source-btn" id="srGcSgc" onclick="srSelectGrader('SGC')">SGC</div>
+            <div class="vm-source-btn" id="srGcRaw" onclick="srSelectGrader('RAW')">Raw</div>
+          </div>
+        </div>
+        <div>
+          <div class="vm-label" style="margin-bottom:5px;font-size:10px">Grade</div>
+          <select class="vm-input" id="srGradeNum" style="cursor:pointer">
+            <option value="">Select...</option>
+            <option value="10">10 (Gem Mint)</option>
+            <option value="9.5">9.5</option>
+            <option value="9">9 (Mint)</option>
+            <option value="8.5">8.5</option>
+            <option value="8">8 (NM-MT)</option>
+            <option value="7">7</option>
+            <option value="6">6</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div>
+          <div class="vm-label" style="margin-bottom:5px;font-size:10px">Cert Number <span style="color:var(--muted-text)">(if graded)</span></div>
+          <input class="vm-input" type="text" id="srCertNum" placeholder="e.g. 12345678">
+        </div>
+        <div>
+          <div class="vm-label" style="margin-bottom:5px;font-size:10px">Your Asking Price (USD) <span class="req">*</span></div>
+          <input class="vm-input" type="number" id="srAskingPrice" min="1" step="0.01" placeholder="0.00" style="font-size:16px;font-family:Bebas Neue,sans-serif;color:var(--green)">
+        </div>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <div class="vm-label" style="margin-bottom:5px;font-size:10px">Condition Notes <span style="color:var(--muted-text)">(optional)</span></div>
+        <input class="vm-input" type="text" id="srConditionNotes" placeholder="e.g. Perfect centering, no surface issues...">
+      </div>
+
+      <div class="vm-error" id="srError" style="display:none"></div>
+
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="btn btn-primary" style="flex:2;background:var(--green);border-color:var(--green)" id="srSendBtn" onclick="srSendOffer()">&#128176; INTERESTED &#8212; Send Offer</button>
+        <button class="btn btn-ghost" style="flex:1;border-color:rgba(255,59,92,0.3);color:rgba(255,59,92,0.7)" onclick="srDecline()">Not Selling</button>
+        <button class="btn btn-ghost" style="flex:1" onclick="closeSellerResponse()">Ignore</button>
+      </div>
+      <div style="text-align:center;margin-top:8px;font-size:10px;color:var(--muted-text)">&#128274; Your identity is never revealed to the buyer until a transaction is confirmed.</div>
+    </div>
+  </div>
+
+  <!-- OFFER REVIEW MODAL (Buyer reviews seller's offer) -->
+  <div class="vault-modal-overlay" id="offerReviewOverlay" style="display:none" onclick="void(0)">
+    <div class="vault-modal" style="max-width:520px">
+      <button class="vm-close" onclick="closeOfferReview()">&times;</button>
+      <div class="vm-title" style="color:var(--blue)">&#128176; OFFERS FOR YOUR ISO</div>
+      <div class="vm-sub" id="orSub">Review offers from anonymous sellers. Accept to proceed to payment.</div>
+
+      <!-- ISO summary -->
+      <div style="background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.15);border-radius:8px;padding:12px;margin-bottom:14px">
+        <div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--white);letter-spacing:1px" id="orIsoName"></div>
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text)" id="orIsoDetail"></div>
+      </div>
+
+      <!-- Offer list -->
+      <div id="orOfferList"></div>
+
+      <div style="text-align:center;margin-top:12px">
+        <button class="btn btn-ghost" onclick="closeOfferReview()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- COUNTER OFFER MODAL -->
+  <div class="vault-modal-overlay" id="counterOfferOverlay" style="display:none" onclick="void(0)">
+    <div class="vault-modal" style="max-width:400px">
+      <button class="vm-close" onclick="closeCounterOffer()">&times;</button>
+      <div class="vm-title">&#128172; COUNTER-OFFER</div>
+      <div class="vm-sub">Suggest a different price. The seller can accept, decline, or counter back (max 3 rounds).</div>
+
+      <div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-bottom:8px">
+          <span>Seller asking: <strong style="color:var(--white)" id="coSellerPrice"></strong></span>
+          <span>Your max: <strong style="color:var(--blue)" id="coYourMax"></strong></span>
+        </div>
+        <div class="vm-label" style="margin-bottom:5px;font-size:10px">Your Counter Price (USD) <span class="req">*</span></div>
+        <input class="vm-input" type="number" id="coPrice" min="1" step="0.01" placeholder="0.00" style="font-size:20px;font-family:Bebas Neue,sans-serif;letter-spacing:1px;color:var(--blue)">
+      </div>
+      <div style="margin-bottom:14px">
+        <div class="vm-label" style="margin-bottom:5px;font-size:10px">Message <span style="color:var(--muted-text)">(optional)</span></div>
+        <input class="vm-input" type="text" id="coMessage" placeholder="e.g. Would you take $120?">
+      </div>
+      <div class="vm-error" id="coError" style="display:none"></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" style="flex:1" id="coSendBtn" onclick="sendCounterOffer()">SEND COUNTER</button>
+        <button class="btn btn-ghost" onclick="closeCounterOffer()">Cancel</button>
+      </div>
+    </div>
   </div>
 
   <!-- MARKET DATA -->
@@ -3573,6 +3726,7 @@ const PM={
   notifs:{t:'NOTIFICATIONS',s:'2 unread'},
   account:{t:'ACCOUNT',s:'Verified buyer'},
   isoticker:{t:'ISOTICKER',s:'Your collection — value since purchase'},
+  sellermatches:{t:'SELLER MATCHES',s:'Cards buyers are looking for in your vault'},
   leaderboard:{t:'LEADERBOARD',s:'Top buyers · sellers · most wanted cards'},
   carddetail:{t:'ISOVAULT',s:'Card detail'},
 };
@@ -3610,6 +3764,7 @@ function N(id,el){
   if(id==='isoticker')initISOTicker();
   if(id==='leaderboard')loadContributorLeaderboard();
   if(id==='account')loadSellerPrefs();
+  if(id==='sellermatches')loadSellerMatches();
   // Push panel state into browser history so mouse back button steps through panels
   if(!_navSuppressHistory){
     history.pushState({panel:id}, '', window.location.href);
@@ -8260,9 +8415,17 @@ async function renderMyISOs(){
     }
     if(!data || !data.length){ if(empty) empty.style.display='block'; return; }
     _myIsosData = data;
+    // Fetch pending offers for buyer's ISOs
+    window._myIsoOffers = [];
+    try {
+      const offerRows = await _rGet('offers','select=*&buyer_id=eq.'+user.id+'&status=in.(pending,countered)&order=created_at.desc&limit=200');
+      if(offerRows) window._myIsoOffers = offerRows;
+    } catch(e){}
+    const offerCount = (window._myIsoOffers||[]).filter(o=>o.status==='pending').length;
     const activeCount = data.filter(i=>i.status==='active'||i.status==='matched').length;
+    const totalBadge = offerCount || activeCount;
     const badge = document.getElementById('navBadge-myisos');
-    if(badge){ badge.textContent=activeCount||''; badge.style.display=activeCount?'':'none'; }
+    if(badge){ badge.textContent=offerCount?offerCount+' offer'+(offerCount>1?'s':''):(activeCount||''); badge.style.display=totalBadge?'':'none'; if(offerCount) badge.classList.add('red'); else badge.classList.remove('red'); }
     const mvIso = document.getElementById('mv-active-isos'); if(mvIso) mvIso.textContent = activeCount||'0';
     if(filters) filters.style.display='flex';
     _renderISOList();
@@ -8290,7 +8453,16 @@ function _renderISOList(){
     return;
   }
   list.style.display='block';
-  list.innerHTML = rows.map(iso=>{
+  // Check for pending offers on each ISO
+  const isoIds = rows.map(i=>i.id).filter(Boolean);
+  let offerCounts = {};
+  if(isoIds.length && window._myIsoOffers){
+    window._myIsoOffers.forEach(o => {
+      if(o.status === 'pending') offerCounts[o.iso_id] = (offerCounts[o.iso_id]||0)+1;
+    });
+  }
+
+  list.innerHTML = rows.map((iso, idx)=>{
     const posted   = iso.created_at ? _isoTimeAgo(iso.created_at) : '';
     const maxPrice = iso.max_price ? '$'+parseFloat(iso.max_price).toLocaleString() : '—';
     const player   = iso.player || iso.card_name || 'Unknown Card';
@@ -8298,18 +8470,25 @@ function _renderISOList(){
     const grade    = iso.grade ? ' · '+iso.grade : '';
     const sport    = iso.sport || '';
     const isExpired = iso.expires_at && new Date(iso.expires_at) < new Date();
-    const statusClass = iso.status==='matched'?'matched':iso.status==='completed'?'':'active';
-    const statusLabel = isExpired ? 'EXPIRED' : (iso.status||'active').toUpperCase();
+    const offerCount = offerCounts[iso.id] || 0;
+    const hasOffers = offerCount > 0;
+    const statusClass = hasOffers ? 'matched' : iso.status==='matched'?'matched':iso.status==='completed'?'':'active';
+    const statusLabel = hasOffers ? offerCount+' OFFER'+(offerCount>1?'S':'') : (isExpired ? 'EXPIRED' : (iso.status||'active').toUpperCase());
     const sportIcon = sport==='Baseball'?'&#9918;':sport==='Basketball'?'&#127936;':sport==='Football'?'&#127944;':'&#127944;';
+    const clickable = hasOffers || iso.status === 'active';
+    const action = hasOffers ? `<span class="ni-action" onclick="event.stopPropagation();openOfferReview(${idx})">Review Offers &#8594;</span>` : '';
     return `
-    <div class="iso-item" style="flex-wrap:wrap;gap:9px;${iso.status==='completed'||isExpired?'opacity:.55':''}">
-      <div class="iso-img" style="background:rgba(0,170,255,0.06);display:flex;align-items:center;justify-content:center;font-size:22px">${sportIcon}</div>
+    <div class="iso-item" style="flex-wrap:wrap;gap:9px;cursor:${clickable?'pointer':'default'};${iso.status==='completed'||isExpired?'opacity:.55':''}" ${hasOffers?`onclick="openOfferReview(${idx})"`:''}>
+      <div class="iso-img" style="background:${hasOffers?'rgba(255,59,92,0.12)':'rgba(0,170,255,0.06)'};display:flex;align-items:center;justify-content:center;font-size:22px">${hasOffers?'&#128176;':sportIcon}</div>
       <div class="iso-info">
         <div class="iso-player">${player}</div>
         <div class="iso-detail">${parallel}${grade}${posted?' · Posted '+posted:''}</div>
       </div>
       <div><div class="iso-price">${maxPrice}</div><div class="iso-price-sub">MAX BID</div></div>
-      <span class="status-pill ${statusClass}">${statusLabel}</span>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <span class="status-pill ${statusClass}">${statusLabel}</span>
+        ${action}
+      </div>
     </div>`;
   }).join('');
 }
@@ -8464,6 +8643,477 @@ async function saveSellerPrefs(){
   const _origN = window.N;
   // Seller prefs load on account panel open — handled in the nav function
 })();
+
+// ── Seller Matches ──────────────────────────────────────────────────────────
+let _sellerMatchData = [];
+let _sellerMatchFilter = 'all';
+let _srCurrentMatch = null;
+
+async function loadSellerMatches(){
+  const loading = document.getElementById('smLoading');
+  const empty = document.getElementById('smEmpty');
+  const list = document.getElementById('smList');
+  if(loading) loading.style.display = 'block';
+  if(empty) empty.style.display = 'none';
+  if(list) { list.style.display = 'none'; list.innerHTML = ''; }
+
+  const user = window._authUser;
+  if(!user){ if(loading) loading.style.display='none'; if(empty) empty.style.display='block'; return; }
+
+  try {
+    // Fetch matches where current user is the seller
+    const matches = await _rGet('matches','select=*,isos(*)&seller_id=eq.'+user.id+'&order=created_at.desc&limit=100');
+    if(loading) loading.style.display = 'none';
+    if(!matches || !matches.length){ if(empty) empty.style.display='block'; return; }
+
+    // Check which matches already have offers
+    let offerMap = {};
+    try {
+      const offers = await _rGet('offers','select=match_id,status&seller_id=eq.'+user.id+'&limit=500');
+      if(offers) offers.forEach(o => { offerMap[o.match_id] = o.status; });
+    } catch(e){}
+
+    _sellerMatchData = matches.map(m => {
+      const iso = m.isos || {};
+      const offerStatus = offerMap[m.id] || null;
+      const responded = m.seller_responded || null;
+      let displayStatus = 'pending';
+      if(offerStatus === 'accepted') displayStatus = 'accepted';
+      else if(offerStatus === 'pending' || offerStatus === 'countered') displayStatus = 'offered';
+      else if(responded === 'not_selling') displayStatus = 'declined';
+      else if(responded === 'ignored') displayStatus = 'declined';
+      else if(offerStatus === 'declined') displayStatus = 'declined';
+      return { ...m, iso, offerStatus, displayStatus };
+    });
+
+    // Update badge
+    const pendingCount = _sellerMatchData.filter(m => m.displayStatus === 'pending').length;
+    const badge = document.getElementById('navBadge-sellermatches');
+    if(badge){ badge.textContent = pendingCount; badge.style.display = pendingCount ? '' : 'none'; }
+
+    document.getElementById('sellerMatchFilters').style.display = 'flex';
+    _renderSellerMatches();
+  } catch(e){
+    if(loading) loading.style.display = 'none';
+    if(list){ list.style.display='block'; list.innerHTML='<div style="padding:20px;color:var(--red)">Error: '+e.message+'</div>'; }
+  }
+}
+
+function filterSellerMatches(filter, el){
+  _sellerMatchFilter = filter;
+  document.querySelectorAll('#sellerMatchFilters .chip').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  _renderSellerMatches();
+}
+
+function _renderSellerMatches(){
+  const list = document.getElementById('smList');
+  const empty = document.getElementById('smEmpty');
+  if(!list) return;
+  let rows = _sellerMatchData;
+  if(_sellerMatchFilter !== 'all') rows = rows.filter(m => m.displayStatus === _sellerMatchFilter);
+  if(!rows.length){
+    list.style.display = 'none';
+    if(empty) empty.style.display = 'block';
+    return;
+  }
+  if(empty) empty.style.display = 'none';
+  list.style.display = 'block';
+  list.innerHTML = rows.map((m, idx) => {
+    const iso = m.iso || {};
+    const player = iso.player || iso.card_name || 'Unknown';
+    const grade = iso.grade || 'Any';
+    const maxPrice = iso.max_price ? '$'+parseFloat(iso.max_price).toLocaleString() : '—';
+    const parallel = iso.parallel || '';
+    const posted = iso.created_at ? _isoTimeAgo(iso.created_at) : '';
+    const statusMap = {pending:'PENDING',offered:'OFFER SENT',accepted:'ACCEPTED',declined:'DECLINED'};
+    const statusClass = m.displayStatus === 'pending' ? 'active' : m.displayStatus === 'offered' ? 'pending' : m.displayStatus === 'accepted' ? 'active' : '';
+    const statusLabel = statusMap[m.displayStatus] || m.displayStatus.toUpperCase();
+    const actionBtn = m.displayStatus === 'pending'
+      ? `<span class="ni-action" onclick="openSellerResponse(${idx})">Respond &#8594;</span>`
+      : m.displayStatus === 'offered'
+        ? `<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--blue)">Waiting for buyer</span>`
+        : '';
+    return `<div class="iso-item" style="flex-wrap:wrap;gap:9px;${m.displayStatus==='declined'?'opacity:.5':''}">
+      <div class="iso-img" style="background:rgba(0,232,135,0.08);display:flex;align-items:center;justify-content:center;font-size:22px">&#127919;</div>
+      <div class="iso-info">
+        <div class="iso-player">${player}</div>
+        <div class="iso-detail">${parallel} &#183; Wants: ${grade} &#183; ${posted?'Posted '+posted:''}</div>
+      </div>
+      <div><div class="iso-price">${maxPrice}</div><div class="iso-price-sub">BUYER'S MAX</div></div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <span class="status-pill ${statusClass}">${statusLabel}</span>
+        ${actionBtn}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Seller Response Modal ────────────────────────────────────
+let _srGrader = null;
+
+function srSelectGrader(company){
+  _srGrader = company;
+  ['srGcPsa','srGcBgs','srGcSgc','srGcRaw'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.classList.toggle('selected', el.textContent === company);
+  });
+}
+
+function openSellerResponse(idx){
+  const match = _sellerMatchData[idx];
+  if(!match) return;
+  _srCurrentMatch = match;
+  _srGrader = null;
+
+  const iso = match.iso || {};
+  document.getElementById('srCardName').textContent = iso.player || iso.card_name || 'Unknown';
+  document.getElementById('srCardDetail').textContent = iso.card_name || '';
+  document.getElementById('srWantGrade').textContent = iso.grade || 'Any';
+  document.getElementById('srMaxBid').textContent = iso.max_price ? '$'+parseFloat(iso.max_price).toLocaleString() : '—';
+  document.getElementById('srVariation').textContent = iso.parallel || 'Base';
+  const notesEl = document.getElementById('srBuyerNotes');
+  if(iso.notes){ notesEl.textContent = '"'+iso.notes+'"'; notesEl.style.display = 'block'; }
+  else { notesEl.style.display = 'none'; }
+
+  // Reset form
+  ['srGcPsa','srGcBgs','srGcSgc','srGcRaw'].forEach(id => document.getElementById(id).classList.remove('selected'));
+  document.getElementById('srGradeNum').value = '';
+  document.getElementById('srCertNum').value = '';
+  document.getElementById('srAskingPrice').value = '';
+  document.getElementById('srConditionNotes').value = '';
+  document.getElementById('srError').style.display = 'none';
+  document.getElementById('srSendBtn').disabled = false;
+  document.getElementById('srSendBtn').textContent = '💰 INTERESTED — Send Offer';
+
+  document.getElementById('sellerResponseOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSellerResponse(){
+  document.getElementById('sellerResponseOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+  _srCurrentMatch = null;
+}
+
+async function srSendOffer(){
+  const match = _srCurrentMatch;
+  if(!match) return;
+  const errEl = document.getElementById('srError');
+
+  // Validate
+  const askingPrice = parseFloat(document.getElementById('srAskingPrice').value);
+  if(!document.getElementById('srAskingPrice').value || isNaN(askingPrice) || askingPrice <= 0){
+    errEl.textContent = 'Please enter your asking price.'; errEl.style.display = 'block'; return;
+  }
+  errEl.style.display = 'none';
+
+  const btn = document.getElementById('srSendBtn');
+  btn.disabled = true; btn.textContent = 'SENDING...';
+
+  const user = window._authUser;
+  const iso = match.iso || {};
+  const gradeNum = document.getElementById('srGradeNum').value;
+  const gradeCompany = _srGrader || 'RAW';
+  const certNum = document.getElementById('srCertNum').value.trim() || null;
+  const condNotes = document.getElementById('srConditionNotes').value.trim() || null;
+
+  try {
+    // Create offer
+    await _rPost('offers', {
+      match_id:        match.id,
+      iso_id:          iso.id,
+      seller_id:       user.id,
+      buyer_id:        match.buyer_id,
+      grade_company:   gradeCompany,
+      grade_number:    gradeNum || null,
+      cert_number:     certNum,
+      condition_notes: condNotes,
+      asking_price:    askingPrice,
+      status:          'pending',
+      created_at:      new Date().toISOString(),
+    }, 'return=minimal');
+
+    // Update match status
+    await _rPatch('matches', 'id=eq.'+match.id, {
+      seller_responded: 'interested',
+      seller_responded_at: new Date().toISOString()
+    });
+
+    // Create notification for buyer
+    await _rPost('notifications', {
+      user_id: match.buyer_id,
+      type: 'offer_received',
+      title: 'Offer Received — ' + (iso.player || 'Your ISO'),
+      body: 'A seller has responded to your ISO for ' + (iso.player||'') + ' ' + (iso.parallel||'') + ' at $' + askingPrice.toFixed(2),
+      data: JSON.stringify({ match_id: match.id, iso_id: iso.id }),
+      is_read: false,
+      created_at: new Date().toISOString()
+    }, 'return=minimal');
+
+    btn.textContent = '✓ OFFER SENT!';
+    btn.style.background = 'var(--green)';
+    T('Offer sent to buyer — $' + askingPrice.toFixed(2));
+    setTimeout(() => {
+      closeSellerResponse();
+      btn.style.background = '';
+      loadSellerMatches();
+    }, 1200);
+  } catch(e){
+    errEl.textContent = 'Failed: ' + (e.message||'try again'); errEl.style.display = 'block';
+    btn.disabled = false; btn.textContent = '💰 INTERESTED — Send Offer';
+  }
+}
+
+async function srDecline(){
+  const match = _srCurrentMatch;
+  if(!match) return;
+  if(!confirm('Mark this card as not for sale? The buyer will not be notified of your identity.')) return;
+  try {
+    await _rPatch('matches', 'id=eq.'+match.id, {
+      seller_responded: 'not_selling',
+      seller_responded_at: new Date().toISOString()
+    });
+    closeSellerResponse();
+    T('Marked as not selling');
+    loadSellerMatches();
+  } catch(e){ T('Failed: '+e.message); }
+}
+
+// ── Buyer Offer Review ──────────────────────────────────────────────────────
+let _orCurrentIsoIdx = null;
+let _orCurrentOfferId = null;
+
+function openOfferReview(isoIdx){
+  const iso = _myIsosData[isoIdx];
+  if(!iso) return;
+  _orCurrentIsoIdx = isoIdx;
+
+  const player = iso.player || iso.card_name || 'Unknown';
+  document.getElementById('orIsoName').textContent = player;
+  document.getElementById('orIsoDetail').textContent = [iso.parallel, iso.grade, iso.max_price ? 'Max $'+parseFloat(iso.max_price).toLocaleString() : ''].filter(Boolean).join(' · ');
+
+  // Get offers for this ISO
+  const offers = (window._myIsoOffers||[]).filter(o => String(o.iso_id) === String(iso.id) && (o.status === 'pending' || o.status === 'countered'));
+
+  const listEl = document.getElementById('orOfferList');
+  if(!offers.length){
+    listEl.innerHTML = '<div style="text-align:center;padding:20px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)">No pending offers yet. Sellers will be notified of your ISO.</div>';
+  } else {
+    listEl.innerHTML = offers.map((o, i) => {
+      const gradeStr = o.grade_company && o.grade_company !== 'RAW'
+        ? o.grade_company + ' ' + (o.grade_number||'')
+        : 'Raw';
+      const certStr = o.cert_number ? ' · Cert #'+o.cert_number : '';
+      const priceStr = '$'+parseFloat(o.asking_price).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+      const condStr = o.condition_notes ? '<div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-top:4px;font-style:italic">"'+o.condition_notes+'"</div>' : '';
+      return `<div style="background:var(--deep2);border:1px solid rgba(0,232,135,0.2);border-radius:10px;padding:14px;margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div>
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;color:var(--muted-text)">ANONYMOUS SELLER #${i+1}</div>
+            <div style="font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--green);margin-top:2px">${priceStr}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--white);font-weight:600">${gradeStr}${certStr}</div>
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);margin-top:2px">${_isoTimeAgo(o.created_at)}</div>
+          </div>
+        </div>
+        ${condStr}
+        <div style="display:flex;gap:6px;margin-top:10px">
+          <button class="btn btn-primary btn-sm" style="flex:2;background:var(--green);border-color:var(--green);font-size:11px" onclick="acceptOffer('${o.id}')">&#10003; Accept &amp; Pay ${priceStr}</button>
+          <button class="btn btn-ghost btn-sm" style="flex:1;font-size:11px;color:var(--blue);border-color:rgba(0,170,255,0.3)" onclick="openCounterOffer('${o.id}',${o.asking_price},${iso.max_price||0})">&#128172; Counter</button>
+          <button class="btn btn-ghost btn-sm" style="flex:1;font-size:11px;color:rgba(255,59,92,0.7);border-color:rgba(255,59,92,0.2)" onclick="declineOffer('${o.id}')">&#10007; Decline</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  document.getElementById('offerReviewOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeOfferReview(){
+  document.getElementById('offerReviewOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+async function acceptOffer(offerId){
+  if(!confirm('Accept this offer? You will proceed to payment. Funds will be held (not charged) until the card is verified.')) return;
+
+  try {
+    const user = window._authUser;
+    if(!user) throw new Error('Not signed in');
+
+    // Get the offer details
+    const offerRows = await _rGet('offers','select=*&id=eq.'+offerId+'&limit=1');
+    const offer = offerRows && offerRows[0];
+    if(!offer) throw new Error('Offer not found');
+
+    // Update offer status
+    await _rPatch('offers','id=eq.'+offerId, { status:'accepted', updated_at: new Date().toISOString() });
+
+    // Update ISO status
+    await _rPatch('isos','id=eq.'+offer.iso_id, { status:'matched' });
+
+    // Calculate fees
+    const agreedPrice = parseFloat(offer.asking_price);
+    const platformFee = parseFloat((agreedPrice * 0.08).toFixed(2)); // 8% platform fee
+    const shippingFee = 8.00; // flat rate
+    const totalAmount = agreedPrice + platformFee + shippingFee;
+
+    // Create transaction record
+    await _rPost('transactions', {
+      iso_id:       offer.iso_id,
+      match_id:     offer.match_id,
+      offer_id:     parseInt(offerId),
+      buyer_id:     user.id,
+      seller_id:    offer.seller_id,
+      agreed_price: agreedPrice,
+      platform_fee: platformFee,
+      shipping_fee: shippingFee,
+      grading_fee:  0, // set later when buyer selects service
+      total_amount: totalAmount,
+      status:       'payment_pending',
+      created_at:   new Date().toISOString(),
+    }, 'return=minimal');
+
+    // Notify seller
+    await _rPost('notifications', {
+      user_id:    offer.seller_id,
+      type:       'offer_accepted',
+      title:      'Offer Accepted!',
+      body:       'A buyer accepted your offer of $'+agreedPrice.toFixed(2)+'. Prepare to ship your card.',
+      data:       JSON.stringify({ offer_id: offerId }),
+      is_read:    false,
+      created_at: new Date().toISOString()
+    }, 'return=minimal');
+
+    closeOfferReview();
+    T('Offer accepted! $'+agreedPrice.toFixed(2)+' + $'+platformFee.toFixed(2)+' fee + $'+shippingFee.toFixed(2)+' shipping = $'+totalAmount.toFixed(2)+' total');
+    renderMyISOs();
+
+    // TODO: Phase 3 — trigger Stripe payment hold here
+    // For now, transaction is created with status 'payment_pending'
+    // Phase 3B will add the grading/verification service selection modal
+
+  } catch(e){
+    T('Accept failed: '+(e.message||'try again'));
+  }
+}
+
+async function declineOffer(offerId){
+  if(!confirm('Decline this offer? The seller will not be notified of your identity.')) return;
+  try {
+    await _rPatch('offers','id=eq.'+offerId, { status:'declined', updated_at: new Date().toISOString() });
+    // Remove from local cache
+    window._myIsoOffers = (window._myIsoOffers||[]).filter(o => String(o.id) !== String(offerId));
+    closeOfferReview();
+    T('Offer declined');
+    renderMyISOs();
+  } catch(e){ T('Failed: '+e.message); }
+}
+
+// ── Counter Offer ────────────────────────────────────────────
+function openCounterOffer(offerId, sellerPrice, buyerMax){
+  _orCurrentOfferId = offerId;
+  document.getElementById('coSellerPrice').textContent = '$'+parseFloat(sellerPrice).toLocaleString(undefined,{minimumFractionDigits:2});
+  document.getElementById('coYourMax').textContent = buyerMax ? '$'+parseFloat(buyerMax).toLocaleString() : '—';
+  document.getElementById('coPrice').value = '';
+  document.getElementById('coMessage').value = '';
+  document.getElementById('coError').style.display = 'none';
+  document.getElementById('coSendBtn').disabled = false;
+  document.getElementById('coSendBtn').textContent = 'SEND COUNTER';
+
+  // Close offer review, open counter
+  document.getElementById('offerReviewOverlay').style.display = 'none';
+  document.getElementById('counterOfferOverlay').style.display = 'flex';
+}
+
+function closeCounterOffer(){
+  document.getElementById('counterOfferOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+  // Reopen offer review if we came from there
+  if(_orCurrentIsoIdx !== null){
+    document.getElementById('offerReviewOverlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+async function sendCounterOffer(){
+  const offerId = _orCurrentOfferId;
+  if(!offerId) return;
+  const errEl = document.getElementById('coError');
+  const price = parseFloat(document.getElementById('coPrice').value);
+  if(!document.getElementById('coPrice').value || isNaN(price) || price <= 0){
+    errEl.textContent = 'Please enter a counter price.'; errEl.style.display = 'block'; return;
+  }
+  errEl.style.display = 'none';
+
+  const btn = document.getElementById('coSendBtn');
+  btn.disabled = true; btn.textContent = 'SENDING...';
+
+  const user = window._authUser;
+  const message = document.getElementById('coMessage').value.trim() || null;
+
+  try {
+    // Get the offer to find seller
+    const offerRows = await _rGet('offers','select=*&id=eq.'+offerId+'&limit=1');
+    const offer = offerRows && offerRows[0];
+    if(!offer) throw new Error('Offer not found');
+
+    // Check round count
+    let existingCounters = [];
+    try {
+      existingCounters = await _rGet('counter_offers','select=round_number&offer_id=eq.'+offerId+'&order=round_number.desc&limit=1');
+    } catch(e){}
+    const currentRound = (existingCounters && existingCounters[0]) ? existingCounters[0].round_number : 0;
+    if(currentRound >= 3){
+      errEl.textContent = 'Maximum 3 counter-offer rounds reached. Accept or decline.';
+      errEl.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'SEND COUNTER';
+      return;
+    }
+
+    // Create counter offer
+    await _rPost('counter_offers', {
+      offer_id:     parseInt(offerId),
+      from_user_id: user.id,
+      to_user_id:   offer.seller_id,
+      price:        price,
+      message:      message,
+      round_number: currentRound + 1,
+      status:       'pending',
+      created_at:   new Date().toISOString()
+    }, 'return=minimal');
+
+    // Update offer status
+    await _rPatch('offers','id=eq.'+offerId, { status:'countered', updated_at: new Date().toISOString() });
+
+    // Notify seller
+    await _rPost('notifications', {
+      user_id:    offer.seller_id,
+      type:       'counter_offer',
+      title:      'Counter-Offer Received — $'+price.toFixed(2),
+      body:       'The buyer countered your offer with $'+price.toFixed(2)+(message?' — "'+message+'"':''),
+      data:       JSON.stringify({ offer_id: offerId }),
+      is_read:    false,
+      created_at: new Date().toISOString()
+    }, 'return=minimal');
+
+    btn.textContent = '✓ SENT!';
+    T('Counter-offer of $'+price.toFixed(2)+' sent to seller');
+    setTimeout(() => {
+      _orCurrentOfferId = null;
+      document.getElementById('counterOfferOverlay').style.display = 'none';
+      closeOfferReview();
+      renderMyISOs();
+    }, 1000);
+
+  } catch(e){
+    errEl.textContent = 'Failed: '+(e.message||'try again'); errEl.style.display = 'block';
+    btn.disabled = false; btn.textContent = 'SEND COUNTER';
+  }
+}
 
 // ── Contributor Leaderboard ──────────────────────────────────────────────────
 async function loadContributorLeaderboard(){

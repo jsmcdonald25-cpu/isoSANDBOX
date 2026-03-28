@@ -347,10 +347,325 @@ CREATE POLICY "alpha_signups_insert" ON public.alpha_signups FOR INSERT WITH CHE
 -- Only service role (admin) can read/update
 CREATE POLICY "alpha_signups_service" ON public.alpha_signups FOR ALL USING (auth.role() = 'service_role');
 
+-- ══════════════════════════════════════════════════════════════
+-- TRANSACTION ARCHITECTURE — Full ISO → Match → Offer → Pay →
+-- Grade/Verify → Ship → Complete flow
+-- ══════════════════════════════════════════════════════════════
+
+-- ── SELLER PREFERENCES ──────────────────────────────────────
+-- Users opt in as sellers + configure what they're willing to sell
+CREATE TABLE IF NOT EXISTS public.seller_preferences (
+  id              BIGSERIAL PRIMARY KEY,
+  user_id         UUID NOT NULL UNIQUE REFERENCES public.profiles(id) ON DELETE CASCADE,
+
+  is_seller       BOOLEAN NOT NULL DEFAULT false,
+  sports          TEXT[] DEFAULT '{}',            -- e.g. {'baseball','basketball'}
+  card_types      TEXT[] DEFAULT '{}',            -- e.g. {'rc','auto','base'}
+  min_price       NUMERIC(10,2) DEFAULT 0,        -- don't notify below this
+  notify_email    BOOLEAN NOT NULL DEFAULT true,
+  notify_push     BOOLEAN NOT NULL DEFAULT true,
+  auto_respond    BOOLEAN NOT NULL DEFAULT false,  -- future: auto-accept if price >= asking
+
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_seller_user ON public.seller_preferences (user_id);
+ALTER TABLE public.seller_preferences ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "seller_prefs_own" ON public.seller_preferences FOR ALL USING (auth.uid() = user_id);
+
+-- ── OFFERS ──────────────────────────────────────────────────
+-- Seller responds to a match with their price/grade/cert
+CREATE TABLE IF NOT EXISTS public.offers (
+  id              BIGSERIAL PRIMARY KEY,
+  match_id        BIGINT NOT NULL REFERENCES public.matches(id) ON DELETE CASCADE,
+  iso_id          BIGINT NOT NULL REFERENCES public.isos(id),
+  seller_id       UUID NOT NULL REFERENCES public.profiles(id),
+  buyer_id        UUID NOT NULL REFERENCES public.profiles(id),
+
+  -- Seller's card details
+  grade_company   TEXT,                           -- PSA, BGS, SGC, CGC, RAW
+  grade_number    TEXT,                           -- 10, 9.5, 9, etc.
+  cert_number     TEXT,                           -- grading cert number
+  condition_notes TEXT,                           -- seller's description
+  asking_price    NUMERIC(10,2) NOT NULL,
+
+  -- Photos (seller can add/update at offer time)
+  front_image_url TEXT,
+  back_image_url  TEXT,
+
+  -- Status
+  status          TEXT NOT NULL DEFAULT 'pending'
+                  CHECK (status IN ('pending','accepted','declined','countered','expired','withdrawn')),
+
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_offer_match  ON public.offers (match_id);
+CREATE INDEX IF NOT EXISTS idx_offer_buyer  ON public.offers (buyer_id);
+CREATE INDEX IF NOT EXISTS idx_offer_seller ON public.offers (seller_id);
+CREATE INDEX IF NOT EXISTS idx_offer_status ON public.offers (status);
+ALTER TABLE public.offers ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "offers_parties" ON public.offers FOR ALL
+  USING (auth.uid() = buyer_id OR auth.uid() = seller_id);
+
+-- ── COUNTER OFFERS ──────────────────────────────────────────
+-- Back-and-forth negotiation (max 3 rounds enforced in app)
+CREATE TABLE IF NOT EXISTS public.counter_offers (
+  id              BIGSERIAL PRIMARY KEY,
+  offer_id        BIGINT NOT NULL REFERENCES public.offers(id) ON DELETE CASCADE,
+  from_user_id    UUID NOT NULL REFERENCES public.profiles(id),
+  to_user_id      UUID NOT NULL REFERENCES public.profiles(id),
+
+  price           NUMERIC(10,2) NOT NULL,
+  message         TEXT,
+  round_number    INT NOT NULL DEFAULT 1,         -- 1, 2, or 3
+
+  status          TEXT NOT NULL DEFAULT 'pending'
+                  CHECK (status IN ('pending','accepted','declined','expired')),
+
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_counter_offer ON public.counter_offers (offer_id);
+ALTER TABLE public.counter_offers ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "counter_parties" ON public.counter_offers FOR ALL
+  USING (auth.uid() = from_user_id OR auth.uid() = to_user_id);
+
+-- ── TRANSACTIONS ────────────────────────────────────────────
+-- Master record linking everything together
+CREATE TABLE IF NOT EXISTS public.transactions (
+  id              BIGSERIAL PRIMARY KEY,
+  iso_id          BIGINT REFERENCES public.isos(id),
+  match_id        BIGINT REFERENCES public.matches(id),
+  offer_id        BIGINT REFERENCES public.offers(id),
+  buyer_id        UUID NOT NULL REFERENCES public.profiles(id),
+  seller_id       UUID NOT NULL REFERENCES public.profiles(id),
+
+  -- Agreed terms
+  agreed_price    NUMERIC(10,2) NOT NULL,
+  platform_fee    NUMERIC(10,2) NOT NULL DEFAULT 0,
+  grading_fee     NUMERIC(10,2) DEFAULT 0,
+  shipping_fee    NUMERIC(10,2) DEFAULT 0,
+  total_amount    NUMERIC(10,2) NOT NULL,          -- agreed + fees
+
+  -- Status workflow
+  status          TEXT NOT NULL DEFAULT 'payment_pending'
+                  CHECK (status IN (
+                    'payment_pending',              -- waiting for buyer to pay
+                    'payment_held',                 -- Stripe hold active
+                    'service_selected',             -- buyer chose grading/verification
+                    'awaiting_shipment',            -- seller needs to ship to hub
+                    'shipped_to_hub',               -- seller shipped, in transit
+                    'received_at_hub',              -- hub received card
+                    'verification_in_progress',     -- hub inspecting
+                    'verification_failed',          -- authenticity/grade failed
+                    'submitted_for_grading',        -- sent to PSA/BGS/etc
+                    'grading_complete',             -- grade returned
+                    'shipping_to_buyer',            -- card on way to buyer
+                    'delivered',                    -- carrier confirmed delivery
+                    'completed',                    -- buyer confirmed, payment captured
+                    'cancelled',                    -- cancelled before completion
+                    'disputed',                     -- dispute opened
+                    'refunded'                      -- refunded to buyer
+                  )),
+
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_txn_buyer    ON public.transactions (buyer_id);
+CREATE INDEX IF NOT EXISTS idx_txn_seller   ON public.transactions (seller_id);
+CREATE INDEX IF NOT EXISTS idx_txn_status   ON public.transactions (status);
+ALTER TABLE public.transactions ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "txn_parties" ON public.transactions FOR ALL
+  USING (auth.uid() = buyer_id OR auth.uid() = seller_id);
+
+-- ── PAYMENTS ────────────────────────────────────────────────
+-- Stripe payment intents and capture tracking
+CREATE TABLE IF NOT EXISTS public.payments (
+  id                  BIGSERIAL PRIMARY KEY,
+  transaction_id      BIGINT NOT NULL REFERENCES public.transactions(id),
+  stripe_payment_intent_id TEXT UNIQUE,
+  stripe_customer_id  TEXT,
+
+  amount_held         NUMERIC(10,2),              -- initial hold amount
+  amount_captured     NUMERIC(10,2),              -- final captured amount (may differ)
+  currency            TEXT NOT NULL DEFAULT 'usd',
+
+  status              TEXT NOT NULL DEFAULT 'pending'
+                      CHECK (status IN ('pending','held','captured','cancelled','refunded','failed')),
+
+  held_at             TIMESTAMPTZ,
+  captured_at         TIMESTAMPTZ,
+  refunded_at         TIMESTAMPTZ,
+
+  created_at          TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_pay_txn    ON public.payments (transaction_id);
+CREATE INDEX IF NOT EXISTS idx_pay_stripe ON public.payments (stripe_payment_intent_id);
+ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "pay_service" ON public.payments FOR ALL USING (auth.role() = 'service_role');
+
+-- ── GRADING ORDERS ──────────────────────────────────────────
+-- When buyer selects grading service after payment hold
+CREATE TABLE IF NOT EXISTS public.grading_orders (
+  id              BIGSERIAL PRIMARY KEY,
+  transaction_id  BIGINT NOT NULL REFERENCES public.transactions(id),
+
+  -- Service selection
+  service_type    TEXT NOT NULL DEFAULT 'verification_only'
+                  CHECK (service_type IN ('verification_only','grading','already_graded')),
+  grading_company TEXT,                           -- PSA, BGS, SGC, CGC (null if verification_only)
+  grading_tier    TEXT,                           -- standard, express, premium
+  fee             NUMERIC(10,2) NOT NULL DEFAULT 0,
+  estimated_turnaround_days INT,
+
+  -- Results (filled by admin after grading returns)
+  grade_received  TEXT,                           -- e.g. "PSA 10", "BGS 9.5"
+  cert_number     TEXT,
+  grade_notes     TEXT,
+
+  status          TEXT NOT NULL DEFAULT 'pending'
+                  CHECK (status IN ('pending','submitted','in_progress','completed','failed')),
+
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_grade_txn ON public.grading_orders (transaction_id);
+ALTER TABLE public.grading_orders ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "grade_service" ON public.grading_orders FOR ALL USING (auth.role() = 'service_role');
+
+-- ── SHIPPING ────────────────────────────────────────────────
+-- Tracks both seller→hub and hub→buyer shipments
+CREATE TABLE IF NOT EXISTS public.shipping (
+  id              BIGSERIAL PRIMARY KEY,
+  transaction_id  BIGINT NOT NULL REFERENCES public.transactions(id),
+
+  leg             TEXT NOT NULL CHECK (leg IN ('seller_to_hub','hub_to_buyer')),
+  carrier         TEXT,                           -- USPS, UPS, FedEx, etc.
+  tracking_number TEXT,
+  label_url       TEXT,                           -- prepaid label download URL
+
+  -- Addresses
+  from_name       TEXT,
+  from_address    TEXT,
+  to_name         TEXT,
+  to_address      TEXT,
+
+  status          TEXT NOT NULL DEFAULT 'pending'
+                  CHECK (status IN ('pending','label_created','shipped','in_transit','delivered','returned')),
+
+  shipped_at      TIMESTAMPTZ,
+  delivered_at    TIMESTAMPTZ,
+
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_ship_txn ON public.shipping (transaction_id);
+ALTER TABLE public.shipping ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "ship_parties" ON public.shipping FOR ALL
+  USING (auth.role() = 'service_role');  -- only admin manages shipping
+
+-- ── HUB INSPECTIONS ─────────────────────────────────────────
+-- Admin verification results when card arrives at hub
+CREATE TABLE IF NOT EXISTS public.hub_inspections (
+  id              BIGSERIAL PRIMARY KEY,
+  transaction_id  BIGINT NOT NULL REFERENCES public.transactions(id),
+  inspector_id    UUID REFERENCES public.profiles(id),
+
+  -- Verification
+  authenticity    TEXT CHECK (authenticity IN ('pass','fail','inconclusive')),
+  grade_confirmed BOOLEAN,                        -- does grade match seller's claim?
+  condition_notes TEXT,
+  inspection_photos TEXT[],                       -- array of Storage URLs
+
+  -- Overall result
+  result          TEXT NOT NULL DEFAULT 'pending'
+                  CHECK (result IN ('pending','passed','failed')),
+  failure_reason  TEXT,                           -- if failed
+
+  inspected_at    TIMESTAMPTZ,
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_hub_txn ON public.hub_inspections (transaction_id);
+ALTER TABLE public.hub_inspections ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "hub_service" ON public.hub_inspections FOR ALL USING (auth.role() = 'service_role');
+
+-- ── DISPUTES ────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS public.disputes (
+  id              BIGSERIAL PRIMARY KEY,
+  transaction_id  BIGINT NOT NULL REFERENCES public.transactions(id),
+  opened_by       UUID NOT NULL REFERENCES public.profiles(id),
+
+  reason          TEXT NOT NULL,
+  description     TEXT,
+  evidence_urls   TEXT[],                         -- photos, screenshots
+
+  status          TEXT NOT NULL DEFAULT 'open'
+                  CHECK (status IN ('open','under_review','resolved_buyer','resolved_seller','closed')),
+  resolution_note TEXT,
+  resolved_by     UUID REFERENCES public.profiles(id),
+  resolved_at     TIMESTAMPTZ,
+
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_dispute_txn ON public.disputes (transaction_id);
+ALTER TABLE public.disputes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "dispute_parties" ON public.disputes FOR ALL
+  USING (auth.uid() = opened_by OR auth.role() = 'service_role');
+
+-- ── REVIEWS ─────────────────────────────────────────────────
+-- Post-transaction ratings from both parties
+CREATE TABLE IF NOT EXISTS public.reviews (
+  id              BIGSERIAL PRIMARY KEY,
+  transaction_id  BIGINT NOT NULL REFERENCES public.transactions(id),
+  reviewer_id     UUID NOT NULL REFERENCES public.profiles(id),
+  reviewee_id     UUID NOT NULL REFERENCES public.profiles(id),
+
+  rating          INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+  comment         TEXT,
+  role            TEXT NOT NULL CHECK (role IN ('buyer','seller')),
+
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (transaction_id, reviewer_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_review_txn      ON public.reviews (transaction_id);
+CREATE INDEX IF NOT EXISTS idx_review_reviewee ON public.reviews (reviewee_id);
+ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "review_own" ON public.reviews FOR INSERT WITH CHECK (auth.uid() = reviewer_id);
+CREATE POLICY "review_read" ON public.reviews FOR SELECT USING (true);
+
+-- ── UPLOAD CREDIT EVENTS (milestone tracking) ───────────────
+-- Track upload milestone awards separately for clean accounting
+CREATE TABLE IF NOT EXISTS public.upload_milestones (
+  id              BIGSERIAL PRIMARY KEY,
+  user_id         UUID NOT NULL REFERENCES public.profiles(id),
+  threshold       INT NOT NULL,                   -- 10, 25, 50, 100
+  bonus_credits   INT NOT NULL,
+  awarded_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+  awarded_by      UUID REFERENCES public.profiles(id),
+  UNIQUE (user_id, threshold)
+);
+
+CREATE INDEX IF NOT EXISTS idx_ulmile_user ON public.upload_milestones (user_id);
+ALTER TABLE public.upload_milestones ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "ulmile_read_own" ON public.upload_milestones FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "ulmile_service" ON public.upload_milestones FOR INSERT USING (auth.role() = 'service_role');
+
 -- ============================================================
 -- SCHEMA COMPLETE
 -- Tables:  profiles · cards · vault · isos · matches
 --          notifications · credit_events · pending_cards
---          alpha_signups
+--          alpha_signups · seller_preferences · offers
+--          counter_offers · transactions · payments
+--          grading_orders · shipping · hub_inspections
+--          disputes · reviews · upload_milestones
 -- Triggers: vault→ISO match · ISO→vault match · signup bonus
 -- ============================================================

@@ -2560,6 +2560,56 @@ async function logOut(){
         </div>
       </div>
     </div>
+    <!-- SELLER SETTINGS -->
+    <div class="card-block" style="grid-column:1/-1;margin-top:18px">
+      <div class="card-block-title"><div class="dot" style="background:var(--green)"></div> Seller Settings</div>
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:14px;line-height:1.5">Enable selling to receive anonymous match notifications when a buyer's ISO matches a card in your vault. Your identity is never revealed until a transaction is confirmed.</div>
+
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;padding:14px;background:rgba(0,232,135,0.06);border:1px solid rgba(0,232,135,0.2);border-radius:8px">
+        <label class="theme-switch" style="flex-shrink:0">
+          <input type="checkbox" id="sellerToggle" onchange="toggleSellerMode(this.checked)">
+          <span class="theme-slider" style="background:var(--deep3)"></span>
+        </label>
+        <div>
+          <div style="font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:1.5px;color:var(--white)">&#128176; I WANT TO SELL</div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text)">Turn on to be matched with buyers looking for your cards</div>
+        </div>
+      </div>
+
+      <div id="sellerPrefsPanel" style="display:none">
+        <div style="margin-bottom:14px">
+          <div class="af-label">Sports I Sell</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px" id="sellerSportChips">
+            <div class="chip" data-sport="baseball" onclick="toggleSellerSport(this)">&#9918; Baseball</div>
+            <div class="chip" data-sport="basketball" onclick="toggleSellerSport(this)">&#127936; Basketball</div>
+            <div class="chip" data-sport="football" onclick="toggleSellerSport(this)">&#127944; Football</div>
+            <div class="chip" data-sport="hockey" onclick="toggleSellerSport(this)">&#127954; Hockey</div>
+            <div class="chip" data-sport="pokemon" onclick="toggleSellerSport(this)">&#9889; Pok&#233;mon</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+          <div>
+            <div class="af-label">Minimum Sale Price</div>
+            <input class="vm-input" type="number" id="sellerMinPrice" min="0" step="1" placeholder="$0 — no minimum" style="margin-top:6px">
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);margin-top:3px">Don't notify me for ISOs below this amount</div>
+          </div>
+          <div>
+            <div class="af-label">Notifications</div>
+            <div style="margin-top:6px">
+              <label style="display:flex;align-items:center;gap:8px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--white);cursor:pointer;margin-bottom:6px">
+                <input type="checkbox" id="sellerNotifyEmail" checked style="accent-color:var(--blue)"> Email alerts
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--white);cursor:pointer">
+                <input type="checkbox" id="sellerNotifyPush" checked style="accent-color:var(--blue)"> In-app notifications
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="sellerSaveBtn" onclick="saveSellerPrefs()" style="margin-top:8px">SAVE SELLER SETTINGS</button>
+      </div>
+    </div>
   </div>
 
   </div><!-- /content -->
@@ -2772,6 +2822,83 @@ async function logOut(){
         </div>
       </div>
       <div class="vm-error" id="priceError">This field is required.</div>
+    </div>
+
+    <!-- Grading / Condition -->
+    <div class="vm-section" id="vmGradeSection" style="display:none">
+      <div class="vm-label">Card Condition <span style="color:rgba(0,170,255,0.5);font-size:10px">&#8212; Is this card graded?</span></div>
+      <div class="vm-acq-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:10px">
+        <div class="vm-acq-btn" id="vmGradeRaw" onclick="vmSelectGradeType('raw')">
+          <div class="vm-acq-icon">&#128196;</div>
+          <div class="vm-acq-label">Raw</div>
+        </div>
+        <div class="vm-acq-btn" id="vmGradeSlabbed" onclick="vmSelectGradeType('graded')">
+          <div class="vm-acq-icon">&#129514;</div>
+          <div class="vm-acq-label">Graded / Slabbed</div>
+        </div>
+      </div>
+      <!-- Grading details (shown only when "Graded" selected) -->
+      <div id="vmGradeDetails" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <div>
+            <div class="vm-label" style="margin-bottom:5px;font-size:10px">Grading Company <span class="req">*</span></div>
+            <div class="vm-source-grid" style="grid-template-columns:repeat(2,1fr);gap:4px">
+              <div class="vm-source-btn" id="vmGcPsa" onclick="vmSelectGrader('PSA')">PSA</div>
+              <div class="vm-source-btn" id="vmGcBgs" onclick="vmSelectGrader('BGS')">BGS</div>
+              <div class="vm-source-btn" id="vmGcSgc" onclick="vmSelectGrader('SGC')">SGC</div>
+              <div class="vm-source-btn" id="vmGcCgc" onclick="vmSelectGrader('CGC')">CGC</div>
+            </div>
+          </div>
+          <div>
+            <div class="vm-label" style="margin-bottom:5px;font-size:10px">Grade <span class="req">*</span></div>
+            <select class="vm-input" id="vmGradeNum" style="cursor:pointer">
+              <option value="">Select grade...</option>
+              <option value="10">10 (Gem Mint)</option>
+              <option value="9.5">9.5</option>
+              <option value="9">9 (Mint)</option>
+              <option value="8.5">8.5</option>
+              <option value="8">8 (NM-MT)</option>
+              <option value="7">7 (NM)</option>
+              <option value="6">6 (EX-MT)</option>
+              <option value="5">5 (EX)</option>
+              <option value="4">4 (VG-EX)</option>
+              <option value="3">3 (VG)</option>
+              <option value="2">2 (Good)</option>
+              <option value="1">1 (Poor)</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <div class="vm-label" style="margin-bottom:5px;font-size:10px">Cert Number <span style="color:rgba(0,170,255,0.5)">(optional)</span></div>
+          <input class="vm-input" type="text" id="vmCertNum" placeholder="e.g. 12345678" style="font-family:Barlow Condensed,sans-serif">
+        </div>
+      </div>
+      <div class="vm-error" id="vmGradeError" style="display:none">Please select a grading company and grade.</div>
+    </div>
+
+    <!-- Condition Notes -->
+    <div class="vm-section" id="vmConditionSection" style="display:none">
+      <div class="vm-label">Condition Notes <span style="color:rgba(0,170,255,0.5);font-size:10px">&#8212; optional</span></div>
+      <input class="vm-input" type="text" id="vmConditionNotes" placeholder="e.g. Perfect centering, no surface issues...">
+    </div>
+
+    <!-- List for Sale Toggle -->
+    <div class="vm-section" id="vmSaleSection" style="display:none">
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(0,232,135,0.06);border:1px solid rgba(0,232,135,0.2);border-radius:8px">
+        <label class="theme-switch" style="flex-shrink:0">
+          <input type="checkbox" id="vmForSale" onchange="vmToggleForSale(this.checked)">
+          <span class="theme-slider" style="background:var(--deep3)"></span>
+        </label>
+        <div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:700;color:var(--white)">&#128176; List for Sale</div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text)">Make this card visible to ISO buyers. You'll be notified when someone wants it.</div>
+        </div>
+      </div>
+      <div id="vmAskingPriceWrap" style="display:none;margin-top:10px">
+        <div class="vm-label" style="margin-bottom:5px;font-size:10px">Asking Price (USD) <span class="req">*</span></div>
+        <input class="vm-input" type="number" id="vmAskingPrice" min="1" step="0.01" placeholder="Your minimum acceptable price" style="font-size:16px;font-family:Bebas Neue,sans-serif;letter-spacing:1px;color:var(--green)">
+        <div class="vm-error" id="vmAskingError" style="display:none">Please enter an asking price to list for sale.</div>
+      </div>
     </div>
 
     <!-- Progress + Submit -->
@@ -3482,6 +3609,7 @@ function N(id,el){
   if(id==='post'){curStep=1;gS(1);isoRenderSportGrid();}
   if(id==='isoticker')initISOTicker();
   if(id==='leaderboard')loadContributorLeaderboard();
+  if(id==='account')loadSellerPrefs();
   // Push panel state into browser history so mouse back button steps through panels
   if(!_navSuppressHistory){
     history.pushState({panel:id}, '', window.location.href);
@@ -4283,6 +4411,24 @@ function openVaultModal(card){
   if(packTypeEl) packTypeEl.value='';
   document.getElementById('vmPricePaid').value='';
   document.getElementById('vmDateAcquired').value='';
+  // Reset grading fields
+  vmGradeType = null; vmGrader = null;
+  ['vmGradeRaw','vmGradeSlabbed'].forEach(id=>document.getElementById(id).classList.remove('selected'));
+  document.getElementById('vmGradeDetails').style.display='none';
+  ['vmGcPsa','vmGcBgs','vmGcSgc','vmGcCgc'].forEach(id=>document.getElementById(id).classList.remove('selected'));
+  document.getElementById('vmGradeNum').value='';
+  document.getElementById('vmCertNum').value='';
+  document.getElementById('vmConditionNotes').value='';
+  document.getElementById('vmGradeError').style.display='none';
+  // Reset sale fields
+  document.getElementById('vmForSale').checked=false;
+  document.getElementById('vmAskingPriceWrap').style.display='none';
+  document.getElementById('vmAskingPrice').value='';
+  document.getElementById('vmAskingError').style.display='none';
+  // Show grading/condition/sale sections (they appear after acq type is selected)
+  document.getElementById('vmGradeSection').style.display='none';
+  document.getElementById('vmConditionSection').style.display='none';
+  document.getElementById('vmSaleSection').style.display='none';
   document.getElementById('vmSubmitBtn').textContent='ADD TO MY VAULT';
   document.getElementById('vmSubmitBtn').disabled=false;
 
@@ -4578,6 +4724,33 @@ function validateSerial(){
 let vmRipSource  = null;  // source for rip path
 let vmPackType   = null;  // pack type for rip path
 
+// ── Vault modal: grade/condition/sale fields ────────────────────────────────
+let vmGradeType = null;   // 'raw' or 'graded'
+let vmGrader = null;      // 'PSA','BGS','SGC','CGC'
+
+function vmSelectGradeType(type){
+  vmGradeType = type;
+  ['vmGradeRaw','vmGradeSlabbed'].forEach(id => document.getElementById(id).classList.remove('selected'));
+  document.getElementById(type === 'raw' ? 'vmGradeRaw' : 'vmGradeSlabbed').classList.add('selected');
+  document.getElementById('vmGradeDetails').style.display = type === 'graded' ? 'block' : 'none';
+  document.getElementById('vmGradeError').style.display = 'none';
+  // Reset grader selection when switching types
+  if(type === 'raw'){ vmGrader = null; ['vmGcPsa','vmGcBgs','vmGcSgc','vmGcCgc'].forEach(id => document.getElementById(id).classList.remove('selected')); document.getElementById('vmGradeNum').value=''; document.getElementById('vmCertNum').value=''; }
+}
+
+function vmSelectGrader(company){
+  vmGrader = company;
+  ['vmGcPsa','vmGcBgs','vmGcSgc','vmGcCgc'].forEach(id => document.getElementById(id).classList.remove('selected'));
+  const map = {PSA:'vmGcPsa',BGS:'vmGcBgs',SGC:'vmGcSgc',CGC:'vmGcCgc'};
+  if(map[company]) document.getElementById(map[company]).classList.add('selected');
+  document.getElementById('vmGradeError').style.display = 'none';
+}
+
+function vmToggleForSale(checked){
+  document.getElementById('vmAskingPriceWrap').style.display = checked ? 'block' : 'none';
+  if(!checked){ document.getElementById('vmAskingPrice').value = ''; document.getElementById('vmAskingError').style.display = 'none'; }
+}
+
 function selectAcqType(type){
   vmAcq = type;
   vmSource = null;
@@ -4615,6 +4788,10 @@ function selectAcqType(type){
   if(noteEl)     noteEl.innerHTML     = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> ' + lbl.note;
 
   document.getElementById('acqError').style.display='none';
+  // Show grading/condition/sale sections after acq type selected
+  document.getElementById('vmGradeSection').style.display='block';
+  document.getElementById('vmConditionSection').style.display='block';
+  document.getElementById('vmSaleSection').style.display='block';
 }
 
 // ── Source button (Bought Single path) ──────────────────────────────────────
@@ -4687,6 +4864,19 @@ async function submitVault(){
   const pricePaid = parseFloat(document.getElementById('vmPricePaid').value);
   if(!document.getElementById('vmPricePaid').value || isNaN(pricePaid) || pricePaid < 0){
     document.getElementById('priceError').style.display='block'; valid=false;
+  }
+  // Grading validation — if "graded" selected, must have company + grade
+  if(vmGradeType === 'graded'){
+    if(!vmGrader || !document.getElementById('vmGradeNum').value){
+      document.getElementById('vmGradeError').style.display='block'; valid=false;
+    }
+  }
+  // Sale validation — if listed for sale, must have asking price
+  if(document.getElementById('vmForSale').checked){
+    const askingPrice = parseFloat(document.getElementById('vmAskingPrice').value);
+    if(!document.getElementById('vmAskingPrice').value || isNaN(askingPrice) || askingPrice <= 0){
+      document.getElementById('vmAskingError').style.display='block'; valid=false;
+    }
   }
   if(!valid) return;
 
@@ -4793,6 +4983,14 @@ async function submitVault(){
       card_number:       vmCard ? (vmCard._cardNumber||(vmCard.cardNum||"").replace(/^#/,"")||null) : null,
       team:              vmCard ? (vmCard._team || null) : null,
       variation:         document.getElementById('vmVariationSelect').value || (vmCard ? (vmCard.parallel || 'Base') : 'Base'),
+      // Grading fields
+      grade_company:     vmGradeType === 'graded' ? vmGrader : (vmGradeType === 'raw' ? 'RAW' : null),
+      grade:             vmGradeType === 'graded' ? (vmGrader + ' ' + (document.getElementById('vmGradeNum').value||'')) : (vmGradeType === 'raw' ? 'Raw' : null),
+      grade_cert_num:    vmGradeType === 'graded' ? (document.getElementById('vmCertNum').value||null) : null,
+      condition_notes:   document.getElementById('vmConditionNotes').value||null,
+      // Sale fields
+      is_for_sale:       document.getElementById('vmForSale').checked || false,
+      asking_price:      document.getElementById('vmForSale').checked ? (parseFloat(document.getElementById('vmAskingPrice').value)||null) : null,
     };
 
     const vaultRes = await fetch(`${SB_REST}/rest/v1/vault`, {
@@ -8195,6 +8393,77 @@ async function _updateMarketPrice(card, variation, newPrice, acqType, sbHeaders,
     });
   }
 }
+
+// ── Seller Preferences ──────────────────────────────────────────────────────
+let _sellerSports = [];
+
+function toggleSellerMode(on){
+  document.getElementById('sellerPrefsPanel').style.display = on ? 'block' : 'none';
+  if(on) loadSellerPrefs();
+}
+
+function toggleSellerSport(el){
+  el.classList.toggle('active');
+  _sellerSports = [...document.querySelectorAll('#sellerSportChips .chip.active')].map(c=>c.dataset.sport);
+}
+
+async function loadSellerPrefs(){
+  const user = window._authUser;
+  if(!user) return;
+  try {
+    const rows = await _rGet('seller_preferences','select=*&user_id=eq.'+user.id+'&limit=1');
+    if(rows && rows[0]){
+      const p = rows[0];
+      document.getElementById('sellerToggle').checked = p.is_seller;
+      document.getElementById('sellerPrefsPanel').style.display = p.is_seller ? 'block' : 'none';
+      _sellerSports = p.sports || [];
+      document.querySelectorAll('#sellerSportChips .chip').forEach(c=>{
+        c.classList.toggle('active', _sellerSports.includes(c.dataset.sport));
+      });
+      document.getElementById('sellerMinPrice').value = p.min_price || '';
+      document.getElementById('sellerNotifyEmail').checked = p.notify_email !== false;
+      document.getElementById('sellerNotifyPush').checked = p.notify_push !== false;
+    }
+  } catch(e){ /* first time — no prefs yet */ }
+}
+
+async function saveSellerPrefs(){
+  const user = window._authUser;
+  if(!user){ T('Please sign in first'); return; }
+  const btn = document.getElementById('sellerSaveBtn');
+  btn.disabled = true; btn.textContent = 'SAVING...';
+  const prefs = {
+    user_id:      user.id,
+    is_seller:    document.getElementById('sellerToggle').checked,
+    sports:       _sellerSports,
+    min_price:    parseFloat(document.getElementById('sellerMinPrice').value) || 0,
+    notify_email: document.getElementById('sellerNotifyEmail').checked,
+    notify_push:  document.getElementById('sellerNotifyPush').checked,
+    updated_at:   new Date().toISOString(),
+  };
+  try {
+    // Upsert — insert or update
+    await fetch(_SURL+'/seller_preferences', {
+      method: 'POST',
+      headers: { ..._sbH(), 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify(prefs)
+    });
+    T('Seller settings saved ✓');
+    // Update role display
+    const roleEl = document.getElementById('acct-role');
+    if(roleEl && prefs.is_seller) roleEl.textContent = 'Collector / Buyer / Seller';
+  } catch(e){
+    T('Failed to save: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = 'SAVE SELLER SETTINGS';
+  }
+}
+
+// Load seller prefs when account panel opens
+(function(){
+  const _origN = window.N;
+  // Seller prefs load on account panel open — handled in the nav function
+})();
 
 // ── Contributor Leaderboard ──────────────────────────────────────────────────
 async function loadContributorLeaderboard(){

@@ -1916,6 +1916,108 @@ async function logOut(){
     </div>
   </div>
 
+  <!-- SERVICE SELECTION MODAL (after payment hold) -->
+  <div class="vault-modal-overlay" id="serviceSelectOverlay" style="display:none" onclick="void(0)">
+    <div class="vault-modal" style="max-width:540px">
+      <button class="vm-close" onclick="closeServiceSelect()">&times;</button>
+      <div class="vm-title" style="color:var(--blue)">&#128300; CHOOSE YOUR SERVICE</div>
+      <div class="vm-sub">Your payment is held securely. Choose what happens when the card arrives at our hub.</div>
+
+      <!-- Transaction summary -->
+      <div style="background:rgba(0,232,135,0.06);border:1px solid rgba(0,232,135,0.2);border-radius:8px;padding:10px 14px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;color:var(--muted-text)">CARD</div>
+          <div style="font-family:Bebas Neue,sans-serif;font-size:15px;color:var(--white)" id="ssCardName"></div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;color:var(--muted-text)">AGREED PRICE</div>
+          <div style="font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--green)" id="ssPrice"></div>
+        </div>
+      </div>
+
+      <!-- Service options -->
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px" id="ssOptions">
+        <!-- Verification Only -->
+        <div class="vm-acq-btn" id="ssOptVerify" onclick="ssSelectService('verification_only')" style="padding:14px;flex-direction:column;align-items:flex-start;gap:6px">
+          <div style="display:flex;justify-content:space-between;width:100%;align-items:center">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:20px">&#128269;</span>
+              <div style="font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:1.5px;color:var(--white)">VERIFICATION ONLY</div>
+            </div>
+            <div style="font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--blue)">$15</div>
+          </div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);line-height:1.5">We inspect, authenticate, and confirm grade matches the seller's listing. Card ships to you as-is.</div>
+        </div>
+
+        <!-- Grading + Verification -->
+        <div class="vm-acq-btn" id="ssOptGrade" onclick="ssSelectService('grading')" style="padding:14px;flex-direction:column;align-items:flex-start;gap:6px">
+          <div style="display:flex;justify-content:space-between;width:100%;align-items:center">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:20px">&#127942;</span>
+              <div style="font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:1.5px;color:var(--white)">GRADING + VERIFICATION</div>
+            </div>
+            <div style="font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--gold)">from $30</div>
+          </div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);line-height:1.5">We submit to your chosen grader before shipping. Card arrives in a fresh slab.</div>
+        </div>
+
+        <!-- Already Graded -->
+        <div class="vm-acq-btn" id="ssOptShip" onclick="ssSelectService('already_graded')" style="padding:14px;flex-direction:column;align-items:flex-start;gap:6px">
+          <div style="display:flex;justify-content:space-between;width:100%;align-items:center">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:20px">&#9889;</span>
+              <div style="font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:1.5px;color:var(--white)">ALREADY GRADED &#8212; SHIP IT</div>
+            </div>
+            <div style="font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--green)">$8</div>
+          </div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);line-height:1.5">Card is already slabbed. We verify authenticity of the slab and ship direct to you.</div>
+        </div>
+      </div>
+
+      <!-- Grading options (shown when "grading" selected) -->
+      <div id="ssGradingDetails" style="display:none;margin-bottom:16px">
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;color:var(--blue);margin-bottom:8px">GRADING OPTIONS</div>
+
+        <div style="margin-bottom:10px">
+          <div class="vm-label" style="margin-bottom:5px;font-size:10px">Grading Company <span class="req">*</span></div>
+          <div class="vm-source-grid" style="grid-template-columns:repeat(4,1fr);gap:4px">
+            <div class="vm-source-btn" id="ssGrPsa" onclick="ssSelectGrader('PSA')">PSA</div>
+            <div class="vm-source-btn" id="ssGrBgs" onclick="ssSelectGrader('BGS')">BGS</div>
+            <div class="vm-source-btn" id="ssGrSgc" onclick="ssSelectGrader('SGC')">SGC</div>
+            <div class="vm-source-btn" id="ssGrCgc" onclick="ssSelectGrader('CGC')">CGC</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="vm-label" style="margin-bottom:5px;font-size:10px">Service Tier</div>
+          <div class="vm-source-grid" style="grid-template-columns:repeat(3,1fr);gap:4px">
+            <div class="vm-source-btn" id="ssGrStd" onclick="ssSelectTier('standard')">Standard<div style="font-size:9px;color:var(--muted-text);margin-top:2px">~30 days · $30</div></div>
+            <div class="vm-source-btn" id="ssGrExp" onclick="ssSelectTier('express')">Express<div style="font-size:9px;color:var(--muted-text);margin-top:2px">~15 days · $60</div></div>
+            <div class="vm-source-btn" id="ssGrPrem" onclick="ssSelectTier('premium')">Premium<div style="font-size:9px;color:var(--muted-text);margin-top:2px">~5 days · $150</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cost breakdown -->
+      <div style="background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;padding:12px;margin-bottom:14px">
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;color:var(--muted-text);margin-bottom:8px">COST BREAKDOWN</div>
+        <div style="display:flex;justify-content:space-between;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--chrome);padding:3px 0" id="ssCostCard"><span>Card price</span><span id="ssCostCardVal">$0.00</span></div>
+        <div style="display:flex;justify-content:space-between;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--chrome);padding:3px 0"><span>Platform fee (8%)</span><span id="ssCostFeeVal">$0.00</span></div>
+        <div style="display:flex;justify-content:space-between;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--chrome);padding:3px 0"><span>Shipping</span><span>$8.00</span></div>
+        <div style="display:flex;justify-content:space-between;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--blue);padding:3px 0" id="ssCostService"><span>Service fee</span><span id="ssCostServiceVal">$0.00</span></div>
+        <div style="display:flex;justify-content:space-between;font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--white);padding:6px 0;border-top:1px solid var(--deep-border);margin-top:6px"><span>TOTAL</span><span id="ssCostTotal">$0.00</span></div>
+      </div>
+
+      <div class="vm-error" id="ssError" style="display:none"></div>
+
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" style="flex:1" id="ssConfirmBtn" onclick="ssConfirm()" disabled>SELECT A SERVICE ABOVE</button>
+        <button class="btn btn-ghost" onclick="closeServiceSelect()">Cancel</button>
+      </div>
+      <div style="text-align:center;margin-top:8px;font-size:10px;color:var(--muted-text)">&#128274; Your card is not charged until verified and delivered.</div>
+    </div>
+  </div>
+
   <!-- MARKET DATA -->
   <div class="panel" id="panel-market">
     <div class="ticker-wrap"><div class="ticker-label">LIVE</div><div class="ticker-scroll"><div class="ticker-inner" id="ticker"></div></div></div>
@@ -8989,12 +9091,48 @@ async function acceptOffer(offerId){
     }, 'return=minimal');
 
     closeOfferReview();
-    T('Offer accepted! $'+agreedPrice.toFixed(2)+' + $'+platformFee.toFixed(2)+' fee + $'+shippingFee.toFixed(2)+' shipping = $'+totalAmount.toFixed(2)+' total');
-    renderMyISOs();
 
-    // TODO: Phase 3 — trigger Stripe payment hold here
-    // For now, transaction is created with status 'payment_pending'
-    // Phase 3B will add the grading/verification service selection modal
+    // Get the transaction ID we just created
+    const txnRows = await _rGet('transactions','select=id&offer_id=eq.'+offerId+'&buyer_id=eq.'+user.id+'&order=created_at.desc&limit=1');
+    const txnId = txnRows && txnRows[0] ? txnRows[0].id : null;
+
+    // Trigger Stripe payment hold via Netlify function
+    try {
+      const iso = _myIsosData[_orCurrentIsoIdx] || {};
+      const holdDesc = 'GrailISO: '+(iso.player||'Card')+' '+(iso.parallel||'')+' — Transaction #'+(txnId||'');
+      const profile = await _rGet('profiles','select=stripe_customer_id&id=eq.'+user.id+'&limit=1');
+      const stripeCust = (profile&&profile[0]) ? profile[0].stripe_customer_id : null;
+
+      const holdRes = await fetch('/.netlify/functions/create-payment-hold', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          transactionId: txnId,
+          buyerId: user.id,
+          amount: totalAmount,
+          description: holdDesc,
+          stripeCustomerId: stripeCust || null,
+        })
+      });
+      const holdData = await holdRes.json();
+      if(holdRes.ok && holdData.success){
+        T('Payment of $'+totalAmount.toFixed(2)+' held securely. Now choose your service.');
+      } else {
+        T('Offer accepted — payment hold pending. Choose your service below.');
+      }
+    } catch(holdErr){
+      console.warn('Payment hold (non-critical):', holdErr);
+      T('Offer accepted! Choose your verification/grading service.');
+    }
+
+    // Open service selection modal
+    const isoData = _myIsosData[_orCurrentIsoIdx] || {};
+    const cardLabel = (isoData.player||'Card')+' · '+(isoData.parallel||'')+(isoData.grade?' · '+isoData.grade:'');
+    if(txnId){
+      openServiceSelect(txnId, agreedPrice, cardLabel);
+    }
+
+    renderMyISOs();
 
   } catch(e){
     T('Accept failed: '+(e.message||'try again'));
@@ -9112,6 +9250,167 @@ async function sendCounterOffer(){
   } catch(e){
     errEl.textContent = 'Failed: '+(e.message||'try again'); errEl.style.display = 'block';
     btn.disabled = false; btn.textContent = 'SEND COUNTER';
+  }
+}
+
+// ── Service Selection (after payment hold) ──────────────────────────────────
+let _ssTransactionId = null;
+let _ssAgreedPrice = 0;
+let _ssServiceType = null;
+let _ssGrader = null;
+let _ssTier = null;
+
+const SS_FEES = {
+  verification_only: 15,
+  already_graded: 8,
+  grading: { standard: 30, express: 60, premium: 150 }
+};
+const SS_TURNAROUND = { standard: 30, express: 15, premium: 5 };
+
+function openServiceSelect(transactionId, agreedPrice, cardName){
+  _ssTransactionId = transactionId;
+  _ssAgreedPrice = parseFloat(agreedPrice) || 0;
+  _ssServiceType = null;
+  _ssGrader = null;
+  _ssTier = null;
+
+  document.getElementById('ssCardName').textContent = cardName || '—';
+  document.getElementById('ssPrice').textContent = '$'+_ssAgreedPrice.toFixed(2);
+
+  // Reset selections
+  ['ssOptVerify','ssOptGrade','ssOptShip'].forEach(id => document.getElementById(id).classList.remove('selected'));
+  ['ssGrPsa','ssGrBgs','ssGrSgc','ssGrCgc'].forEach(id => document.getElementById(id).classList.remove('selected'));
+  ['ssGrStd','ssGrExp','ssGrPrem'].forEach(id => document.getElementById(id).classList.remove('selected'));
+  document.getElementById('ssGradingDetails').style.display = 'none';
+  document.getElementById('ssError').style.display = 'none';
+
+  const btn = document.getElementById('ssConfirmBtn');
+  btn.disabled = true; btn.textContent = 'SELECT A SERVICE ABOVE';
+
+  _ssUpdateCost();
+
+  document.getElementById('serviceSelectOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeServiceSelect(){
+  document.getElementById('serviceSelectOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function ssSelectService(type){
+  _ssServiceType = type;
+  ['ssOptVerify','ssOptGrade','ssOptShip'].forEach(id => document.getElementById(id).classList.remove('selected'));
+  const map = { verification_only:'ssOptVerify', grading:'ssOptGrade', already_graded:'ssOptShip' };
+  if(map[type]) document.getElementById(map[type]).classList.add('selected');
+
+  document.getElementById('ssGradingDetails').style.display = type === 'grading' ? 'block' : 'none';
+
+  if(type !== 'grading'){ _ssGrader = null; _ssTier = null; }
+
+  const btn = document.getElementById('ssConfirmBtn');
+  if(type === 'grading' && (!_ssGrader || !_ssTier)){
+    btn.disabled = true; btn.textContent = 'SELECT GRADER & TIER';
+  } else {
+    btn.disabled = false; btn.textContent = 'CONFIRM SERVICE &#8594;';
+  }
+  _ssUpdateCost();
+}
+
+function ssSelectGrader(company){
+  _ssGrader = company;
+  ['ssGrPsa','ssGrBgs','ssGrSgc','ssGrCgc'].forEach(id => document.getElementById(id).classList.remove('selected'));
+  const map = {PSA:'ssGrPsa',BGS:'ssGrBgs',SGC:'ssGrSgc',CGC:'ssGrCgc'};
+  if(map[company]) document.getElementById(map[company]).classList.add('selected');
+  if(_ssTier){ document.getElementById('ssConfirmBtn').disabled = false; document.getElementById('ssConfirmBtn').textContent = 'CONFIRM SERVICE &#8594;'; }
+  _ssUpdateCost();
+}
+
+function ssSelectTier(tier){
+  _ssTier = tier;
+  ['ssGrStd','ssGrExp','ssGrPrem'].forEach(id => document.getElementById(id).classList.remove('selected'));
+  const map = {standard:'ssGrStd',express:'ssGrExp',premium:'ssGrPrem'};
+  if(map[tier]) document.getElementById(map[tier]).classList.add('selected');
+  if(_ssGrader){ document.getElementById('ssConfirmBtn').disabled = false; document.getElementById('ssConfirmBtn').textContent = 'CONFIRM SERVICE &#8594;'; }
+  _ssUpdateCost();
+}
+
+function _ssUpdateCost(){
+  const cardPrice = _ssAgreedPrice;
+  const platformFee = parseFloat((cardPrice * 0.08).toFixed(2));
+  const shipping = 8;
+  let serviceFee = 0;
+
+  if(_ssServiceType === 'verification_only') serviceFee = SS_FEES.verification_only;
+  else if(_ssServiceType === 'already_graded') serviceFee = SS_FEES.already_graded;
+  else if(_ssServiceType === 'grading' && _ssTier) serviceFee = SS_FEES.grading[_ssTier] || 0;
+
+  const total = cardPrice + platformFee + shipping + serviceFee;
+
+  document.getElementById('ssCostCardVal').textContent = '$'+cardPrice.toFixed(2);
+  document.getElementById('ssCostFeeVal').textContent = '$'+platformFee.toFixed(2);
+  document.getElementById('ssCostServiceVal').textContent = '$'+serviceFee.toFixed(2);
+  document.getElementById('ssCostTotal').textContent = '$'+total.toFixed(2);
+
+  const serviceLabel = document.getElementById('ssCostService');
+  if(serviceLabel){
+    const nameMap = {verification_only:'Verification',grading:'Grading ('+(_ssTier||'...')+')',already_graded:'Slab check'};
+    serviceLabel.querySelector('span:first-child').textContent = _ssServiceType ? nameMap[_ssServiceType]||'Service' : 'Service fee';
+  }
+}
+
+async function ssConfirm(){
+  if(!_ssServiceType) return;
+  if(_ssServiceType === 'grading' && (!_ssGrader || !_ssTier)){
+    document.getElementById('ssError').textContent = 'Please select a grading company and tier.';
+    document.getElementById('ssError').style.display = 'block'; return;
+  }
+  document.getElementById('ssError').style.display = 'none';
+
+  const btn = document.getElementById('ssConfirmBtn');
+  btn.disabled = true; btn.textContent = 'SAVING...';
+
+  let serviceFee = 0;
+  let turnaround = null;
+  if(_ssServiceType === 'verification_only') serviceFee = SS_FEES.verification_only;
+  else if(_ssServiceType === 'already_graded') serviceFee = SS_FEES.already_graded;
+  else if(_ssServiceType === 'grading' && _ssTier){ serviceFee = SS_FEES.grading[_ssTier]; turnaround = SS_TURNAROUND[_ssTier]; }
+
+  try {
+    // Create grading order
+    await _rPost('grading_orders', {
+      transaction_id: _ssTransactionId,
+      service_type:   _ssServiceType,
+      grading_company: _ssGrader || null,
+      grading_tier:   _ssTier || null,
+      fee:            serviceFee,
+      estimated_turnaround_days: turnaround,
+      status:         'pending',
+      created_at:     new Date().toISOString()
+    }, 'return=minimal');
+
+    // Update transaction with grading fee and new status
+    const newTotal = _ssAgreedPrice + parseFloat((_ssAgreedPrice * 0.08).toFixed(2)) + 8 + serviceFee;
+    await _rPatch('transactions', 'id=eq.'+_ssTransactionId, {
+      grading_fee:  serviceFee,
+      total_amount: newTotal,
+      status:       'service_selected',
+      updated_at:   new Date().toISOString()
+    });
+
+    btn.textContent = '✓ CONFIRMED!';
+    const labels = {verification_only:'Verification only',grading:(_ssGrader||'')+' '+(_ssTier||''),already_graded:'Slab check + ship'};
+    T('Service selected: '+(labels[_ssServiceType]||_ssServiceType)+' — seller will be notified to ship');
+
+    setTimeout(() => {
+      closeServiceSelect();
+      renderMyISOs();
+    }, 1200);
+
+  } catch(e){
+    document.getElementById('ssError').textContent = 'Failed: '+(e.message||'try again');
+    document.getElementById('ssError').style.display = 'block';
+    btn.disabled = false; btn.textContent = 'CONFIRM SERVICE &#8594;';
   }
 }
 

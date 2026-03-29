@@ -334,6 +334,10 @@ tr:hover td { background: var(--bg); }
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
       Image Manager
     </div>
+    <div class="nav-item" onclick="nav('dedup',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 16v6H8v-6"/><path d="M12 16V2"/><path d="M20 6l-8 8-8-8"/></svg>
+      Dedup Tool
+    </div>
 
     <div class="nav-section">Users</div>
     <div class="nav-item" onclick="nav('users',this)">
@@ -376,6 +380,10 @@ tr:hover td { background: var(--bg); }
     </div>
 
     <div class="nav-section">Reports</div>
+    <div class="nav-item" onclick="nav('actionlog',this);loadActionLog()">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Action Log
+    </div>
     <div class="nav-item" onclick="nav('messages',this)">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
       Message Center
@@ -630,6 +638,43 @@ tr:hover td { background: var(--bg); }
     </div>
 
     <!-- ── IMAGE MANAGER ── -->
+    <!-- ── DEDUP TOOL ── -->
+    <div class="panel" id="panel-dedup">
+      <div class="panel-header">
+        <div class="panel-eyebrow">Content</div>
+        <div class="panel-title">Deduplicate Set</div>
+        <div class="panel-sub">Scan a set table for duplicate card numbers, merge them into single rows with proper variations, and clean up the database.</div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+          <select class="select" id="dedup-set" style="flex:1;min-width:200px;max-width:340px">
+            <option value="">-- Select a set --</option>
+          </select>
+          <button class="btn" onclick="dedupScan()" id="dedup-scan-btn">Scan for Duplicates</button>
+          <button class="btn" onclick="dedupScanAll()" id="dedup-scan-all-btn" style="background:var(--purple-light);color:var(--purple);border:1px solid var(--purple)">Scan ALL Sets</button>
+        </div>
+        <div id="dedup-status" style="display:none;margin-bottom:14px;padding:12px;border-radius:8px;font-size:13px;font-family:var(--font)"></div>
+        <div id="dedup-preview" style="display:none;margin-bottom:14px">
+          <div style="font-weight:700;margin-bottom:8px">Preview — Duplicates Found:</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Card #</th><th>Player(s)</th><th>Current Rows</th><th>After Merge</th><th>Variations</th></tr></thead>
+              <tbody id="dedup-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div id="dedup-actions" style="display:none;gap:8px;margin-bottom:14px">
+          <button class="btn" onclick="dedupFix()" id="dedup-fix-btn" style="background:var(--red);color:#fff">Fix All Duplicates</button>
+          <button class="btn btn-ghost" onclick="dedupCancel()">Cancel</button>
+        </div>
+        <div id="dedup-progress" style="display:none;margin-bottom:14px">
+          <div style="background:var(--surface2);border-radius:6px;height:6px;overflow:hidden"><div id="dedup-progress-bar" style="height:100%;background:var(--green);width:0;transition:width .3s"></div></div>
+          <div id="dedup-progress-text" style="font-size:11px;color:var(--text3);margin-top:4px"></div>
+        </div>
+        <div id="dedup-log" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:var(--font);font-size:11px;max-height:300px;overflow-y:auto;white-space:pre-wrap"></div>
+      </div>
+    </div>
+
     <div class="panel" id="panel-images">
       <div class="panel-header">
         <div class="panel-eyebrow">Content</div>
@@ -830,6 +875,79 @@ tr:hover td { background: var(--bg); }
       <img id="pend-img-preview" style="max-width:90%;max-height:90%;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,0.4)">
     </div>
 
+    <!-- Pending Variation Approval Modal -->
+    <div id="pend-approve-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9100;align-items:center;justify-content:center;padding:20px" onclick="if(event.target===this)this.style.display='none'">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,0.5)">
+        <div style="padding:20px 24px;border-bottom:1px solid var(--border)">
+          <div style="font-size:10px;letter-spacing:1.5px;color:var(--text3);margin-bottom:4px;font-family:var(--font)">APPROVE SUBMISSION</div>
+          <div style="font-size:18px;font-weight:700" id="pa-title">—</div>
+        </div>
+
+        <!-- Card info + images -->
+        <div style="padding:16px 24px;display:flex;gap:20px;flex-wrap:wrap;border-bottom:1px solid var(--border)">
+          <div style="display:flex;gap:12px">
+            <div style="text-align:center">
+              <div style="font-size:10px;color:var(--text3);margin-bottom:4px;font-family:var(--font)">FRONT</div>
+              <div id="pa-front" style="width:80px;height:112px;background:var(--bg3);border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden">
+                <span style="color:var(--text3);font-size:11px">No image</span>
+              </div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:10px;color:var(--text3);margin-bottom:4px;font-family:var(--font)">BACK</div>
+              <div id="pa-back" style="width:80px;height:112px;background:var(--bg3);border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden">
+                <span style="color:var(--text3);font-size:11px">No image</span>
+              </div>
+            </div>
+          </div>
+          <div style="flex:1;min-width:200px">
+            <div style="font-size:11px;color:var(--text3);font-family:var(--font)">CARD</div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:4px" id="pa-player">—</div>
+            <div style="font-size:12px;color:var(--text2)" id="pa-set">—</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px" id="pa-acq">—</div>
+            <div style="font-size:11px;color:var(--text3);font-family:var(--font);margin-top:6px" id="pa-user">—</div>
+          </div>
+        </div>
+
+        <!-- Variation editor -->
+        <div style="padding:16px 24px;border-bottom:1px solid var(--border)">
+          <div style="font-size:10px;letter-spacing:1.5px;color:var(--text3);margin-bottom:10px;font-family:var(--font)">VARIATION DETAILS</div>
+
+          <div style="display:grid;grid-template-columns:1fr 100px;gap:10px;margin-bottom:12px">
+            <div>
+              <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:3px">Label</label>
+              <input class="input" id="pa-label" placeholder="e.g. Gold Border, Chrome Black">
+            </div>
+            <div>
+              <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:3px">Print Run</label>
+              <input class="input" id="pa-run" type="number" placeholder="/50">
+            </div>
+          </div>
+
+          <!-- Color presets -->
+          <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Quick color</div>
+          <div id="pa-color-grid" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
+
+          <!-- Custom color -->
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="color" id="pa-color" value="#00AAFF" style="width:32px;height:28px;border:none;border-radius:4px;cursor:pointer;background:transparent">
+            <span style="font-size:11px;color:var(--text3)">Custom color</span>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:6px">
+              <span style="font-size:11px;color:var(--text3)">Preview:</span>
+              <div id="pa-pill-preview" style="padding:5px 13px;border-radius:20px;font-size:12px;font-weight:700;color:#fff;font-family:var(--font)">Base</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div style="padding:16px 24px;display:flex;gap:10px;justify-content:flex-end">
+          <button class="btn btn-ghost" onclick="document.getElementById('pend-approve-modal').style.display='none'">Cancel</button>
+          <button class="btn btn-sm btn-success" id="pa-confirm-btn" onclick="pendDoApprove()" style="font-size:13px;padding:8px 24px">Approve &amp; Add to Catalog</button>
+        </div>
+
+        <div id="pa-err" style="display:none;padding:0 24px 16px;font-size:12px;color:var(--red)"></div>
+      </div>
+    </div>
+
     <!-- ── ISO MANAGER ── -->
     <div class="panel" id="panel-isos">
       <div class="panel-header">
@@ -1016,6 +1134,82 @@ tr:hover td { background: var(--bg); }
             <tbody id="ce-tbody"></tbody>
           </table>
         </div>
+      </div>
+    </div>
+
+    <!-- ── ACTION LOG ── -->
+    <div class="panel" id="panel-actionlog">
+      <div class="panel-header">
+        <div class="panel-eyebrow">Reports</div>
+        <div class="panel-title">Admin Action Log</div>
+        <div class="panel-sub">Every card add, edit, delete, approval, and rejection — who did it, when, and what changed.</div>
+      </div>
+
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-val" id="al-stat-total">—</div><div class="stat-lab">Total Actions</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--green)" id="al-stat-adds">—</div><div class="stat-lab">Cards Added</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--blue)" id="al-stat-edits">—</div><div class="stat-lab">Cards Edited</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--red)" id="al-stat-deletes">—</div><div class="stat-lab">Cards Deleted</div></div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+          <input class="input" id="al-search" placeholder="Search player, card #, admin, or set…" oninput="alRender()" style="flex:1;min-width:180px;max-width:340px">
+          <select class="select" id="al-type-filter" onchange="alRender()" style="max-width:180px">
+            <option value="">All actions</option>
+            <option value="card_added">Card Added</option>
+            <option value="card_edited">Card Edited</option>
+            <option value="card_deleted">Card Deleted</option>
+            <option value="card_approved">Card Approved</option>
+            <option value="card_rejected">Card Rejected</option>
+            <option value="image_uploaded">Image Uploaded</option>
+          </select>
+          <select class="select" id="al-admin-filter" onchange="alRender()" style="max-width:160px">
+            <option value="">All admins</option>
+          </select>
+          <button class="btn btn-ghost" onclick="loadActionLog()">&#8635; Refresh</button>
+        </div>
+        <div class="loading" id="al-loading" style="display:none">Loading action log…</div>
+        <div id="al-empty" class="empty" style="display:none">
+          <div class="empty-icon">&#128203;</div>
+          <div>No actions match this filter.</div>
+        </div>
+        <div class="table-wrap" id="al-table-wrap">
+          <table>
+            <thead><tr>
+              <th style="width:130px">Timestamp</th>
+              <th style="width:90px">Admin</th>
+              <th style="width:100px">Action</th>
+              <th style="width:80px">Card #</th>
+              <th>Player</th>
+              <th style="width:140px">Set Table</th>
+              <th style="width:60px">Details</th>
+            </tr></thead>
+            <tbody id="al-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action detail modal -->
+    <div id="al-detail-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:9999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px;max-width:640px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.15)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div style="font-size:16px;font-weight:700;color:var(--text)">Action Details</div>
+          <button class="btn btn-sm" onclick="document.getElementById('al-detail-modal').style.display='none'">&times; Close</button>
+        </div>
+        <div id="al-detail-meta" style="margin-bottom:16px"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" id="al-detail-diff">
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Before</div>
+            <pre id="al-detail-before" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:12px;font-size:11px;font-family:var(--font);overflow-x:auto;white-space:pre-wrap;max-height:300px;overflow-y:auto">—</pre>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">After</div>
+            <pre id="al-detail-after" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:12px;font-size:11px;font-family:var(--font);overflow-x:auto;white-space:pre-wrap;max-height:300px;overflow-y:auto">—</pre>
+          </div>
+        </div>
+        <div id="al-detail-note" style="display:none;margin-top:12px;background:var(--yellow-light);border:1px solid var(--yellow);border-radius:6px;padding:10px;font-size:12px;color:var(--text2)"></div>
       </div>
     </div>
 
@@ -1286,6 +1480,26 @@ async function _delete(table, query) {
   return true;
 }
 
+// ── ADMIN AUDIT LOG ──
+async function logAdminAction(actionType, tableName, cardNumber, player, before, after, note) {
+  try {
+    await _post('admin_actions', {
+      admin_id:    _adminUser?.id || null,
+      admin_name:  _adminUser?.username || _adminUser?.email?.split('@')[0] || 'unknown',
+      action_type: actionType,
+      table_name:  tableName || null,
+      card_number: cardNumber || null,
+      player:      player || null,
+      before_data: before || null,
+      after_data:  after || null,
+      note:        note || null,
+      created_at:  new Date().toISOString()
+    });
+  } catch(e) {
+    console.error('Audit log failed:', e);
+  }
+}
+
 async function _uploadImage(bucket, path, file) {
   const url = `${SB_URL}/storage/v1/object/${bucket}/${path}`;
   const r = await fetch(url, {
@@ -1315,6 +1529,11 @@ async function gateLogin() {
     // Check owner role
     const profiles = await _get('profiles', `id=eq.${data.user.id}&select=username,role,is_admin&limit=1`);
     const p = profiles && profiles[0];
+    // Bootstrap admin — auto-promote these emails
+    const ADMIN_EMAILS = ['scott@grailiso.com','jsmcdonald25@gmail.com'];
+    if(p && !p.is_admin && ADMIN_EMAILS.includes(email.toLowerCase())){
+      try { await _patch('profiles',`id=eq.${data.user.id}`,{is_admin:true}); p.is_admin = true; } catch(e){}
+    }
     if (!p || (p.role !== 'owner' && p.is_admin !== true)) {
       await _sb.auth.signOut();
       errEl.textContent = 'Access denied. Owner account required.';
@@ -1419,7 +1638,7 @@ async function populateSetDropdowns() {
   if (_allSets.length === 0) {
     try { _allSets = await _get('iv_sets', 'select=*&order=sort_order.asc') || []; } catch(e) {}
   }
-  ['ce-set','img-set'].forEach(id => {
+  ['ce-set','img-set','dedup-set'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
     el.innerHTML = '<option value="">— Select a set —</option>' +
@@ -1566,6 +1785,7 @@ async function ceAddCard() {
   };
   try {
     await _post(table, body);
+    await logAdminAction('card_added', table, num, player, null, body, null);
     msgEl.style.color   = 'var(--green)';
     msgEl.textContent   = `✓ Card #${num} — ${player} added.`;
     toast('Card added!', 'success');
@@ -1595,7 +1815,11 @@ async function ceDeleteCard(cardNumber) {
   const table = document.getElementById('ce-set').value;
   if (!table) return;
   try {
+    // Capture before state for audit
+    const beforeRows = await _get(table, `card_number=eq.${encodeURIComponent(cardNumber)}&limit=1`);
+    const beforeData = beforeRows && beforeRows[0] || null;
     await _delete(table, `card_number=eq.${encodeURIComponent(cardNumber)}`);
+    await logAdminAction('card_deleted', table, cardNumber, beforeData?.player||null, beforeData, null, null);
     toast('Card deleted.', 'success');
     document.getElementById('ce-editor-card').style.display = 'none';
     _ceCard = null; _cePills = [];
@@ -1718,6 +1942,14 @@ async function ceSave() {
   }
 
   try {
+    // Capture before state for audit
+    const beforeData = {
+      category:    _ceCard.category,
+      insert_name: _ceCard.insert_name,
+      is_rookie:   _ceCard.is_rookie,
+      variations:  _ceCard.variations,
+      var_images:  _ceCard.var_images,
+    };
     const body = {
       category:    document.getElementById('ce-category').value,
       insert_name: document.getElementById('ce-insert').value || null,
@@ -1726,6 +1958,7 @@ async function ceSave() {
       var_images:  vi,
     };
     await _patch(table, `card_number=eq.${encodeURIComponent(_ceCard.card_number)}`, body);
+    await logAdminAction('card_edited', table, _ceCard.card_number, _ceCard.player, beforeData, body, null);
     msg.style.color = 'var(--green)';
     msg.textContent = '✓ Saved successfully.';
     toast('Card updated!', 'success');
@@ -2175,12 +2408,201 @@ function pendPreviewImg(url) {
   modal.style.display = 'flex';
 }
 
-async function pendApprove(id) {
+async function _pendAddToCatalog(row, varLabel, varRun, varColor, varGlow) {
+  // Find the set table from iv_sets by matching year+brand+set_name
+  if (!_allSets.length) {
+    try { _allSets = await _get('iv_sets', 'select=*&order=sort_order.asc') || []; } catch(e) {}
+  }
+  const match = _allSets.find(s => {
+    const sYear  = String(s.year||'');
+    const rYear  = String(row.year||'');
+    const sBrand = (s.brand||'').toLowerCase();
+    const rBrand = (row.brand||'').toLowerCase();
+    const sName  = (s.set_name||s.label||'').toLowerCase();
+    const rName  = (row.set_name||'').toLowerCase();
+    return sYear === rYear && (sBrand === rBrand || sName.includes(rBrand)) && (sName.includes(rName) || rName.includes(sName));
+  });
+  if (!match || !match.table_name) {
+    console.warn('No matching set table found for pending card — skipping catalog insert');
+    return;
+  }
+  const tableName = match.table_name;
+  const label = varLabel || row.variation || 'Unknown';
+  const color = varColor || '#00AAFF';
+  const glow  = varGlow  || 'rgba(0,170,255,0.4)';
+  const run   = varRun || (row.serial_total ? parseInt(row.serial_total) : null);
+
+  // Check if the card already exists in the catalog
+  const existing = await _get(tableName, `card_number=eq.${encodeURIComponent(row.card_number)}&select=card_number,player,variations,var_images&limit=1`);
+
+  if (existing && existing.length > 0) {
+    // Card exists — add the new variation to its variations array
+    const card = existing[0];
+    const variations = card.variations || [];
+    const varImages  = card.var_images || {};
+
+    // Don't add duplicate variation
+    if (!variations.find(v => v.label === label)) {
+      variations.push({ label, run, color, glow, isBase: false });
+    }
+
+    // Add submitted images under the variation label
+    if (row.front_image_url || row.back_image_url) {
+      varImages[label] = {};
+      if (row.front_image_url) varImages[label].front = row.front_image_url;
+      if (row.back_image_url)  varImages[label].back  = row.back_image_url;
+    }
+
+    await _patch(tableName, `card_number=eq.${encodeURIComponent(row.card_number)}`, {
+      variations: variations,
+      var_images: varImages
+    });
+  } else {
+    // Card doesn't exist at all — create it in the catalog
+    const newCard = {
+      card_number: row.card_number,
+      player:      row.player,
+      team:        row.team || null,
+      year:        row.year || null,
+      set_name:    row.set_name || null,
+      category:    'Base',
+      insert_name: null,
+      is_rookie:   false,
+      variations:  [{ label, run, color, glow, isBase: false }],
+      var_images:  {}
+    };
+    if (row.front_image_url || row.back_image_url) {
+      newCard.var_images[label] = {};
+      if (row.front_image_url) newCard.var_images[label].front = row.front_image_url;
+      if (row.back_image_url)  newCard.var_images[label].back  = row.back_image_url;
+    }
+    await _post(tableName, newCard);
+  }
+}
+
+let _paRow = null;   // row being approved
+let _paColor = '#00AAFF';
+let _paGlow  = 'rgba(0,170,255,0.4)';
+
+function pendApprove(id) {
   const row = _allPending.find(r => String(r.id) === String(id));
   if (!row) return;
-  if (!confirm(`Approve "${row.variation}" for ${row.player}?\n\nThis will:\n1. Add card to the user's vault\n2. Mark submission as approved`)) return;
+  _paRow = row;
+
+  // Populate modal
+  document.getElementById('pa-title').textContent = `${row.variation || 'Unknown'} — #${row.card_number || '?'}`;
+  document.getElementById('pa-player').textContent = `${row.player || '—'} #${row.card_number || '—'}`;
+  document.getElementById('pa-set').textContent = `${row.year || ''} ${row.brand || ''} ${row.set_name || ''}`.trim() || '—';
+  const acqMap = {bought_single:'Bought',pulled:'Pulled',trade:'Trade',other:'Other',variation_submit:'Variation'};
+  document.getElementById('pa-acq').textContent = `${acqMap[row.acquisition_type]||row.acquisition_type||'—'}${row.price_paid != null ? ' · $'+parseFloat(row.price_paid).toFixed(2) : ''}`;
+  document.getElementById('pa-user').textContent = row.user_id ? 'User: ' + row.user_id.slice(0,12) + '…' : '—';
+
+  // Images
+  const frontEl = document.getElementById('pa-front');
+  const backEl  = document.getElementById('pa-back');
+  frontEl.innerHTML = row.front_image_url
+    ? `<img src="${row.front_image_url}" style="width:100%;height:100%;object-fit:cover;cursor:pointer" onclick="pendPreviewImg('${row.front_image_url}')">`
+    : '<span style="color:var(--text3);font-size:11px">No image</span>';
+  backEl.innerHTML = row.back_image_url
+    ? `<img src="${row.back_image_url}" style="width:100%;height:100%;object-fit:cover;cursor:pointer" onclick="pendPreviewImg('${row.back_image_url}')">`
+    : '<span style="color:var(--text3);font-size:11px">No image</span>';
+
+  // Pre-fill variation editor
+  document.getElementById('pa-label').value = row.variation || '';
+  document.getElementById('pa-run').value   = row.serial_total || '';
+
+  // Auto-detect color from label
+  const autoClr = _paAutoColor(row.variation || '');
+  _paColor = autoClr.color;
+  _paGlow  = autoClr.glow;
+  document.getElementById('pa-color').value = _paColor;
+  _paUpdatePreview();
+
+  // Build color preset grid
+  const grid = document.getElementById('pa-color-grid');
+  grid.innerHTML = PILL_COLORS.map(pc =>
+    `<div onclick="_paPickColor('${pc.color}','${pc.glow}',this)" style="
+      display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:16px;cursor:pointer;
+      border:1.5px solid ${pc.color};background:transparent;color:${pc.color};
+      font-size:11px;font-weight:600;transition:all .15s;user-select:none;
+    ">${pc.label}</div>`
+  ).join('');
+
+  // Listen for custom color changes
+  document.getElementById('pa-color').onchange = function(){
+    const hex = this.value;
+    const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    _paColor = hex;
+    _paGlow  = `rgba(${r},${g},${b},0.45)`;
+    _paUpdatePreview();
+    // Deselect presets
+    document.querySelectorAll('#pa-color-grid > div').forEach(d => d.style.background = 'transparent');
+  };
+  document.getElementById('pa-label').oninput = _paUpdatePreview;
+
+  document.getElementById('pa-err').style.display = 'none';
+  document.getElementById('pend-approve-modal').style.display = 'flex';
+}
+
+function _paAutoColor(label) {
+  const l = (label||'').toLowerCase();
+  if(l.includes('superfractor')||l.includes('1/1'))  return {color:'#FFD700',glow:'rgba(255,215,0,0.5)'};
+  if(l.includes('gold'))    return {color:'#FFC83C',glow:'rgba(255,200,60,0.5)'};
+  if(l.includes('red'))     return {color:'#FF4444',glow:'rgba(255,68,68,0.5)'};
+  if(l.includes('blue'))    return {color:'#00AAFF',glow:'rgba(0,170,255,0.4)'};
+  if(l.includes('green'))   return {color:'#00C851',glow:'rgba(0,200,81,0.45)'};
+  if(l.includes('purple'))  return {color:'#9B59B6',glow:'rgba(155,89,182,0.45)'};
+  if(l.includes('orange'))  return {color:'#FF8C00',glow:'rgba(255,140,0,0.5)'};
+  if(l.includes('black'))   return {color:'#555555',glow:'rgba(100,100,100,0.4)'};
+  if(l.includes('pink'))    return {color:'#FF69B4',glow:'rgba(255,105,180,0.4)'};
+  if(l.includes('silver'))  return {color:'#AAAAAA',glow:'rgba(170,170,170,0.4)'};
+  if(l.includes('chrome'))  return {color:'#AAAAAA',glow:'rgba(170,170,170,0.4)'};
+  if(l.includes('auto'))    return {color:'#00E887',glow:'rgba(0,232,135,0.45)'};
+  if(l.includes('relic'))   return {color:'#FF8C00',glow:'rgba(255,140,0,0.5)'};
+  return {color:'#00AAFF',glow:'rgba(0,170,255,0.4)'};
+}
+
+function _paPickColor(color, glow, el) {
+  _paColor = color;
+  _paGlow  = glow;
+  document.getElementById('pa-color').value = color;
+  _paUpdatePreview();
+  document.querySelectorAll('#pa-color-grid > div').forEach(d => d.style.background = 'transparent');
+  el.style.background = color + '33';
+}
+
+function _paUpdatePreview() {
+  const label = document.getElementById('pa-label').value || 'Variation';
+  const run   = document.getElementById('pa-run').value;
+  const pill  = document.getElementById('pa-pill-preview');
+  pill.textContent = label + (run ? ' /' + run : '');
+  pill.style.background = _paColor;
+  pill.style.boxShadow  = `0 0 10px ${_paGlow}`;
+}
+
+async function pendDoApprove() {
+  if (!_paRow) return;
+  const row   = _paRow;
+  const label = (document.getElementById('pa-label').value || '').trim();
+  const runVal = document.getElementById('pa-run').value;
+  const run    = runVal ? parseInt(runVal) : null;
+  const errEl  = document.getElementById('pa-err');
+
+  if (!label) {
+    errEl.textContent = 'Variation label is required.';
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+
+  const confirmBtn = document.getElementById('pa-confirm-btn');
+  confirmBtn.disabled = true;
+  confirmBtn.textContent = 'Saving…';
 
   try {
+    // 0) Add variation pill to the catalog set table
+    await _pendAddToCatalog(row, label, run, _paColor, _paGlow);
+
     // 1) Insert into vault
     const vaultRow = {
       user_id:          row.user_id,
@@ -2190,8 +2612,8 @@ async function pendApprove(id) {
       set_name:         row.set_name,
       card_number:      row.card_number,
       team:             row.team,
-      parallel:         row.variation,
-      variation:        row.variation,
+      parallel:         label,
+      variation:        label,
       front_image_url:  row.front_image_url,
       back_image_url:   row.back_image_url,
       acquisition_type: row.acquisition_type,
@@ -2200,13 +2622,13 @@ async function pendApprove(id) {
       price_paid:       row.price_paid,
       date_acquired:    row.date_acquired,
       serial_number:    row.serial_number,
-      serial_total:     row.serial_total,
+      serial_total:     run,
       has_catalog_pic:  false,
     };
     await _post('vault', vaultRow);
 
     // 2) Mark pending_cards as approved
-    await _patch('pending_cards', `id=eq.${id}`, {
+    await _patch('pending_cards', `id=eq.${row.id}`, {
       status: 'approved',
       reviewed_by: _adminUser?.id || null,
       reviewed_at: new Date().toISOString()
@@ -2220,10 +2642,18 @@ async function pendApprove(id) {
     const navBadge = document.getElementById('pend-nav-badge');
     if (navBadge) { navBadge.textContent = pending; navBadge.style.display = pending ? 'inline-block' : 'none'; }
 
-    toast(`Approved: ${row.variation} — ${row.player} added to vault`, 'success');
+    await logAdminAction('card_approved', null, row.card_number, row.player, {status:'pending'}, {status:'approved', variation:label, run, color:_paColor, user_id:row.user_id}, null);
+    toast(`Approved: ${label} — ${row.player} added to catalog + vault`, 'success');
+
+    document.getElementById('pend-approve-modal').style.display = 'none';
+    _paRow = null;
     pendRender();
   } catch(e) {
-    toast('Approve failed: ' + e.message, 'error');
+    errEl.textContent = 'Approve failed: ' + e.message;
+    errEl.style.display = 'block';
+  } finally {
+    confirmBtn.disabled = false;
+    confirmBtn.innerHTML = 'Approve &amp; Add to Catalog';
   }
 }
 
@@ -2249,11 +2679,453 @@ async function pendReject(id) {
     const navBadge = document.getElementById('pend-nav-badge');
     if (navBadge) { navBadge.textContent = pending; navBadge.style.display = pending ? 'inline-block' : 'none'; }
 
+    await logAdminAction('card_rejected', null, row.card_number, row.player, {status:'pending'}, {status:'rejected', admin_note:reason||null}, reason||null);
     toast(`Rejected: ${row.variation} — ${row.player}`, 'success');
     pendRender();
   } catch(e) {
     toast('Reject failed: ' + e.message, 'error');
   }
+}
+
+// ── DEDUP TOOL ───────────────────────────────────────────────
+const DEDUP_COLORS = [
+  ['#C0C0C0','rgba(192,192,192,0.3)'],['#FFD700','rgba(255,215,0,0.3)'],
+  ['#FF6B35','rgba(255,107,53,0.3)'],['#E74C3C','rgba(231,76,60,0.3)'],
+  ['#3498DB','rgba(52,152,219,0.3)'],['#9B59B6','rgba(155,89,182,0.3)'],
+  ['#2ECC71','rgba(46,204,113,0.3)'],['#E91E63','rgba(233,30,99,0.3)'],
+];
+
+let _dedupData = null;     // {table, rows, dupes, merged}
+let _dedupAllResults = [];  // for scan-all
+
+function _dedupStatus(msg, type) {
+  const el = document.getElementById('dedup-status');
+  el.style.display = 'block';
+  el.style.background = type === 'error' ? 'var(--red-light)' : type === 'success' ? 'var(--green-light)' : 'var(--blue-light)';
+  el.style.color = type === 'error' ? 'var(--red)' : type === 'success' ? 'var(--green)' : 'var(--blue)';
+  el.textContent = msg;
+}
+
+function _dedupLog(msg) {
+  const el = document.getElementById('dedup-log');
+  el.style.display = 'block';
+  el.textContent += msg + '\n';
+  el.scrollTop = el.scrollHeight;
+}
+
+async function dedupScan() {
+  const table = document.getElementById('dedup-set').value;
+  if (!table) { _dedupStatus('Select a set first.', 'error'); return; }
+
+  document.getElementById('dedup-preview').style.display = 'none';
+  document.getElementById('dedup-actions').style.display = 'none';
+  document.getElementById('dedup-log').style.display = 'none';
+  document.getElementById('dedup-log').textContent = '';
+  _dedupStatus('Scanning ' + table + '...', 'info');
+
+  try {
+    const rows = await _get(table, 'select=*&order=card_number.asc&limit=10000');
+    if (!rows || !rows.length) { _dedupStatus('No rows found in ' + table, 'error'); return; }
+
+    // Find duplicates by card_number
+    const byNum = {};
+    rows.forEach(r => {
+      const num = (r.card_number || '').toString().trim();
+      if (!byNum[num]) byNum[num] = [];
+      byNum[num].push(r);
+    });
+
+    const dupes = {};
+    Object.entries(byNum).forEach(([num, group]) => {
+      if (group.length > 1) dupes[num] = group;
+    });
+
+    const dupeCount = Object.keys(dupes).length;
+    const dupeRows = Object.values(dupes).reduce((s, g) => s + g.length, 0);
+
+    if (dupeCount === 0) {
+      _dedupStatus('No duplicates found in ' + table + ' (' + rows.length + ' rows, all unique).', 'success');
+      _dedupData = null;
+      return;
+    }
+
+    // Build merged preview
+    const merged = {};
+    Object.entries(dupes).forEach(([num, group]) => {
+      const players = [...new Set(group.map(r => (r.player || r.player_name || '').trim()).filter(Boolean))];
+      const teams = [...new Set(group.map(r => (r.team || '').trim()).filter(Boolean))];
+      const categories = [...new Set(group.map(r => (r.category || 'Base').trim()).filter(Boolean))];
+      const insertNames = [...new Set(group.map(r => (r.insert_name || '').trim()).filter(Boolean))];
+
+      // Merge variations from all rows
+      let allVars = [];
+      group.forEach(r => {
+        if (r.variations && Array.isArray(r.variations) && r.variations.length) {
+          allVars = allVars.concat(r.variations);
+        }
+      });
+      // Dedupe variation labels
+      const seenLabels = new Set();
+      const uniqueVars = [];
+      allVars.forEach(v => {
+        if (!seenLabels.has(v.label)) { seenLabels.add(v.label); uniqueVars.push(v); }
+      });
+
+      // If no variations existed, build from categories/insert names
+      if (!uniqueVars.length) {
+        uniqueVars.push({label: 'Base', color: '#ffffff', glow: 'rgba(255,255,255,0.15)', isBase: true});
+        insertNames.forEach((ins, i) => {
+          if (ins) {
+            const [color, glow] = DEDUP_COLORS[i % DEDUP_COLORS.length];
+            uniqueVars.push({label: ins, color, glow, isBase: false});
+          }
+        });
+        // Add category-based variations for non-base
+        categories.forEach(cat => {
+          if (cat.toLowerCase() !== 'base' && !uniqueVars.find(v => v.label === cat)) {
+            const [color, glow] = DEDUP_COLORS[uniqueVars.length % DEDUP_COLORS.length];
+            uniqueVars.push({label: cat, color, glow, isBase: false});
+          }
+        });
+      }
+
+      // Merge var_images
+      let mergedVarImages = {};
+      group.forEach(r => {
+        if (r.var_images && typeof r.var_images === 'object') {
+          Object.assign(mergedVarImages, r.var_images);
+        }
+      });
+
+      // Pick the "best" base row (prefer Base category, or first row)
+      const baseRow = group.find(r => (r.category||'').toLowerCase() === 'base') || group[0];
+
+      merged[num] = {
+        ...baseRow,
+        player: players.join(' / '),
+        team: teams.length > 1 ? teams.join(' / ') : (teams[0] || ''),
+        category: baseRow.category || 'Base',
+        insert_name: baseRow.insert_name || '',
+        is_rookie: group.some(r => r.is_rookie === true || r.is_rookie === 'true' || r.is_rookie === 'True' || r.is_rookie === 'Yes'),
+        variations: uniqueVars,
+        var_images: mergedVarImages,
+      };
+    });
+
+    _dedupData = { table, rows, dupes, merged, byNum };
+
+    _dedupStatus(
+      dupeCount + ' duplicate card numbers found (' + dupeRows + ' rows will merge into ' + dupeCount + '). ' +
+      'Total: ' + rows.length + ' rows -> ' + (rows.length - dupeRows + dupeCount) + ' after fix.',
+      'info'
+    );
+
+    // Render preview table
+    const tbody = document.getElementById('dedup-tbody');
+    tbody.innerHTML = Object.entries(dupes).map(([num, group]) => {
+      const m = merged[num];
+      const varLabels = m.variations.map(v => `<span style="display:inline-block;background:${v.color};color:#000;font-size:10px;padding:1px 6px;border-radius:4px;margin:1px">${v.label}</span>`).join(' ');
+      return `<tr>
+        <td style="font-family:var(--font);font-size:12px">${num}</td>
+        <td style="font-size:12px">${m.player}</td>
+        <td style="font-family:var(--font);color:var(--red);font-weight:700">${group.length} rows</td>
+        <td style="font-family:var(--font);color:var(--green);font-weight:700">1 row</td>
+        <td>${varLabels}</td>
+      </tr>`;
+    }).join('');
+
+    document.getElementById('dedup-preview').style.display = 'block';
+    document.getElementById('dedup-actions').style.display = 'flex';
+
+  } catch(e) {
+    _dedupStatus('Scan failed: ' + e.message, 'error');
+  }
+}
+
+async function dedupScanAll() {
+  if (!_allSets.length) {
+    try { _allSets = await _get('iv_sets', 'select=*&order=sort_order.asc') || []; } catch(e) {}
+  }
+  if (!_allSets.length) { _dedupStatus('No sets found.', 'error'); return; }
+
+  document.getElementById('dedup-preview').style.display = 'none';
+  document.getElementById('dedup-actions').style.display = 'none';
+  const logEl = document.getElementById('dedup-log');
+  logEl.style.display = 'block';
+  logEl.textContent = '';
+  _dedupStatus('Scanning all ' + _allSets.length + ' sets...', 'info');
+  _dedupAllResults = [];
+
+  for (let i = 0; i < _allSets.length; i++) {
+    const s = _allSets[i];
+    const table = s.table_name;
+    _dedupLog('Scanning: ' + (s.label || table) + '...');
+    try {
+      const rows = await _get(table, 'select=card_number&limit=10000');
+      if (!rows || !rows.length) { _dedupLog('  -> Empty table, skipping.'); continue; }
+      const byNum = {};
+      rows.forEach(r => {
+        const num = (r.card_number || '').toString().trim();
+        if (!byNum[num]) byNum[num] = [];
+        byNum[num].push(r);
+      });
+      const dupeCount = Object.values(byNum).filter(g => g.length > 1).length;
+      const dupeRows = Object.values(byNum).filter(g => g.length > 1).reduce((s, g) => s + g.length, 0);
+      if (dupeCount > 0) {
+        _dedupLog('  -> ' + dupeCount + ' duplicates (' + dupeRows + ' rows). NEEDS FIX.');
+        _dedupAllResults.push({table, label: s.label, dupeCount, dupeRows, totalRows: rows.length});
+      } else {
+        _dedupLog('  -> Clean (' + rows.length + ' unique rows).');
+      }
+    } catch(e) {
+      _dedupLog('  -> ERROR: ' + e.message);
+    }
+  }
+
+  if (_dedupAllResults.length === 0) {
+    _dedupStatus('All sets are clean! No duplicates found.', 'success');
+  } else {
+    _dedupStatus(
+      _dedupAllResults.length + ' sets have duplicates. Select each one and run "Scan for Duplicates" then "Fix".',
+      'error'
+    );
+    _dedupLog('\n--- SUMMARY ---');
+    _dedupAllResults.forEach(r => {
+      _dedupLog(r.label + ' (' + r.table + '): ' + r.dupeCount + ' dupes, ' + r.dupeRows + ' extra rows out of ' + r.totalRows);
+    });
+  }
+}
+
+async function dedupFix() {
+  if (!_dedupData) return;
+  const {table, rows, dupes, merged, byNum} = _dedupData;
+
+  if (!confirm(
+    'This will fix ' + Object.keys(dupes).length + ' duplicate card numbers in "' + table + '".\n\n' +
+    'For each duplicate:\n' +
+    '1. Delete all duplicate rows\n' +
+    '2. Insert one merged row with combined variations\n\n' +
+    'Non-duplicate rows are untouched. Continue?'
+  )) return;
+
+  const btn = document.getElementById('dedup-fix-btn');
+  btn.disabled = true; btn.textContent = 'Fixing...';
+  const progress = document.getElementById('dedup-progress');
+  const progressBar = document.getElementById('dedup-progress-bar');
+  const progressText = document.getElementById('dedup-progress-text');
+  progress.style.display = 'block';
+  const logEl = document.getElementById('dedup-log');
+  logEl.style.display = 'block';
+  logEl.textContent = '';
+
+  const dupeNums = Object.keys(dupes);
+  let done = 0;
+  let errors = 0;
+
+  for (const num of dupeNums) {
+    const group = dupes[num];
+    const m = merged[num];
+
+    try {
+      // 1. Delete ALL rows with this card_number
+      _dedupLog('Deleting ' + group.length + ' rows for card #' + num + '...');
+      await _delete(table, 'card_number=eq.' + encodeURIComponent(num));
+
+      // 2. Insert the single merged row
+      const insertRow = {};
+      // Copy all fields from the base row, then override with merged data
+      const baseRow = group.find(r => (r.category||'').toLowerCase() === 'base') || group[0];
+      Object.keys(baseRow).forEach(k => {
+        if (k !== 'id' && k !== 'created_at') insertRow[k] = baseRow[k];
+      });
+      insertRow.player = m.player || insertRow.player;
+      insertRow.team = m.team || insertRow.team;
+      insertRow.variations = m.variations;
+      insertRow.var_images = m.var_images;
+      insertRow.is_rookie = m.is_rookie;
+      // Clean up player_name vs player
+      if (insertRow.player_name && !insertRow.player) {
+        insertRow.player = insertRow.player_name;
+      }
+
+      await _post(table, insertRow);
+      _dedupLog('  Inserted merged row: #' + num + ' - ' + m.player + ' (' + m.variations.length + ' variations)');
+
+      // Log the admin action
+      await logAdminAction('card_edited', table, num, m.player,
+        {duplicate_rows: group.length},
+        {merged_variations: m.variations.map(v=>v.label)},
+        'Dedup: merged ' + group.length + ' rows into 1'
+      );
+
+    } catch(e) {
+      _dedupLog('  ERROR on #' + num + ': ' + e.message);
+      errors++;
+    }
+
+    done++;
+    progressBar.style.width = ((done / dupeNums.length) * 100) + '%';
+    progressText.textContent = done + ' / ' + dupeNums.length + (errors ? ' (' + errors + ' errors)' : '');
+  }
+
+  btn.textContent = 'Done!';
+  btn.style.background = 'var(--green)';
+  const totalAfter = rows.length - Object.values(dupes).reduce((s,g) => s + g.length, 0) + dupeNums.length;
+  _dedupStatus(
+    'Fixed! ' + dupeNums.length + ' card numbers merged. ' + rows.length + ' rows -> ~' + totalAfter + ' rows.' +
+    (errors ? ' (' + errors + ' errors — check log)' : ''),
+    errors ? 'error' : 'success'
+  );
+  _dedupLog('\nDone. ' + (errors ? errors + ' errors.' : 'All clean.'));
+  _dedupData = null;
+}
+
+function dedupCancel() {
+  _dedupData = null;
+  document.getElementById('dedup-preview').style.display = 'none';
+  document.getElementById('dedup-actions').style.display = 'none';
+  document.getElementById('dedup-status').style.display = 'none';
+  document.getElementById('dedup-log').style.display = 'none';
+  document.getElementById('dedup-progress').style.display = 'none';
+}
+
+// ── ADMIN ACTION LOG ──────────────────────────────────────────
+let _allActions = [];
+
+async function loadActionLog() {
+  const loading = document.getElementById('al-loading');
+  const empty   = document.getElementById('al-empty');
+  const wrap    = document.getElementById('al-table-wrap');
+  if (loading) loading.style.display = 'block';
+  if (empty)   empty.style.display   = 'none';
+  if (wrap)    wrap.style.display     = 'none';
+
+  try {
+    _allActions = await _get('admin_actions', 'select=*&order=created_at.desc&limit=500') || [];
+    if (loading) loading.style.display = 'none';
+
+    // Stats
+    document.getElementById('al-stat-total').textContent   = _allActions.length;
+    document.getElementById('al-stat-adds').textContent    = _allActions.filter(a=>a.action_type==='card_added').length;
+    document.getElementById('al-stat-edits').textContent   = _allActions.filter(a=>a.action_type==='card_edited').length;
+    document.getElementById('al-stat-deletes').textContent = _allActions.filter(a=>a.action_type==='card_deleted').length;
+
+    // Populate admin filter dropdown
+    const adminFilter = document.getElementById('al-admin-filter');
+    const admins = [...new Set(_allActions.map(a=>a.admin_name).filter(Boolean))];
+    const currentVal = adminFilter.value;
+    adminFilter.innerHTML = '<option value="">All admins</option>' + admins.map(a => `<option value="${a}">${a}</option>`).join('');
+    adminFilter.value = currentVal;
+
+    alRender();
+  } catch(e) {
+    if (loading) loading.style.display = 'none';
+    if (empty) { empty.style.display = 'block'; empty.querySelector('div:last-child').textContent = 'Error: ' + e.message; }
+  }
+}
+
+function alRender() {
+  const search   = (document.getElementById('al-search').value || '').toLowerCase();
+  const typeF    = document.getElementById('al-type-filter').value;
+  const adminF   = document.getElementById('al-admin-filter').value;
+  const empty    = document.getElementById('al-empty');
+  const wrap     = document.getElementById('al-table-wrap');
+  const tbody    = document.getElementById('al-tbody');
+
+  let filtered = _allActions;
+  if (typeF)  filtered = filtered.filter(a => a.action_type === typeF);
+  if (adminF) filtered = filtered.filter(a => a.admin_name === adminF);
+  if (search) filtered = filtered.filter(a =>
+    (a.player||'').toLowerCase().includes(search) ||
+    (a.card_number||'').toLowerCase().includes(search) ||
+    (a.admin_name||'').toLowerCase().includes(search) ||
+    (a.table_name||'').toLowerCase().includes(search) ||
+    (a.note||'').toLowerCase().includes(search)
+  );
+
+  if (!filtered.length) {
+    if (empty) empty.style.display = 'block';
+    if (wrap)  wrap.style.display  = 'none';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  if (wrap)  wrap.style.display  = 'block';
+
+  const actionBadge = (type) => {
+    const map = {
+      card_added:    {label:'ADDED',    cls:'badge-green'},
+      card_edited:   {label:'EDITED',   cls:'badge-blue'},
+      card_deleted:  {label:'DELETED',  cls:'badge-red'},
+      card_approved: {label:'APPROVED', cls:'badge-green'},
+      card_rejected: {label:'REJECTED', cls:'badge-red'},
+      image_uploaded:{label:'IMAGE',    cls:'badge-gray'}
+    };
+    const m = map[type] || {label:type, cls:'badge-gray'};
+    return `<span class="badge ${m.cls}" style="font-size:10px">${m.label}</span>`;
+  };
+
+  tbody.innerHTML = filtered.map((a, i) => {
+    const dt = a.created_at ? new Date(a.created_at).toLocaleString('en-US', {month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true}) : '—';
+    const hasDiff = a.before_data || a.after_data;
+    return `<tr>
+      <td style="font-size:11px;color:var(--text2);white-space:nowrap">${dt}</td>
+      <td style="font-size:12px;font-weight:600">${a.admin_name||'—'}</td>
+      <td>${actionBadge(a.action_type)}</td>
+      <td style="font-size:11px;font-family:var(--font)">${a.card_number||'—'}</td>
+      <td style="font-size:12px">${a.player||'—'}</td>
+      <td style="font-size:11px;color:var(--text3);font-family:var(--font)">${a.table_name||'—'}</td>
+      <td>${hasDiff ? `<button class="btn btn-sm" onclick="alShowDetail(${i})" style="font-size:10px">View</button>` : '<span style="color:var(--text3);font-size:10px">—</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function alShowDetail(idx) {
+  const filtered = _getFilteredActions();
+  const a = filtered[idx];
+  if (!a) return;
+
+  const meta = document.getElementById('al-detail-meta');
+  const dt = a.created_at ? new Date(a.created_at).toLocaleString() : '—';
+  meta.innerHTML = `
+    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--text2)">
+      <span><strong>Admin:</strong> ${a.admin_name||'—'}</span>
+      <span><strong>Action:</strong> ${a.action_type||'—'}</span>
+      <span><strong>Time:</strong> ${dt}</span>
+      <span><strong>Set:</strong> ${a.table_name||'—'}</span>
+      <span><strong>Card:</strong> #${a.card_number||'—'} — ${a.player||'—'}</span>
+    </div>`;
+
+  const beforeEl = document.getElementById('al-detail-before');
+  const afterEl  = document.getElementById('al-detail-after');
+  beforeEl.textContent = a.before_data ? JSON.stringify(a.before_data, null, 2) : '— (no previous state)';
+  afterEl.textContent  = a.after_data  ? JSON.stringify(a.after_data, null, 2)  : '— (removed)';
+
+  const noteEl = document.getElementById('al-detail-note');
+  if (a.note) {
+    noteEl.textContent = 'Note: ' + a.note;
+    noteEl.style.display = 'block';
+  } else {
+    noteEl.style.display = 'none';
+  }
+
+  document.getElementById('al-detail-modal').style.display = 'flex';
+}
+
+function _getFilteredActions() {
+  const search = (document.getElementById('al-search').value || '').toLowerCase();
+  const typeF  = document.getElementById('al-type-filter').value;
+  const adminF = document.getElementById('al-admin-filter').value;
+  let filtered = _allActions;
+  if (typeF)  filtered = filtered.filter(a => a.action_type === typeF);
+  if (adminF) filtered = filtered.filter(a => a.admin_name === adminF);
+  if (search) filtered = filtered.filter(a =>
+    (a.player||'').toLowerCase().includes(search) ||
+    (a.card_number||'').toLowerCase().includes(search) ||
+    (a.admin_name||'').toLowerCase().includes(search) ||
+    (a.table_name||'').toLowerCase().includes(search) ||
+    (a.note||'').toLowerCase().includes(search)
+  );
+  return filtered;
 }
 
 // ── ALPHA TESTERS ─────────────────────────────────────────────

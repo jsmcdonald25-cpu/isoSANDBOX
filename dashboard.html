@@ -866,6 +866,12 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv3-card:hover{border-color:rgba(0,170,255,0.5);transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,0.6),0 0 0 1px rgba(0,170,255,0.08)}
 .mv3-card-img{height:156px;background:#071828;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center}
 .mv3-card-img img{width:100%;height:100%;object-fit:contain;display:block}
+.bulk-check-overlay{position:absolute;inset:0;z-index:5;cursor:pointer;border-radius:10px;border:2px solid transparent;transition:all .2s}
+.bulk-check-overlay:hover{border-color:rgba(0,232,135,0.4)}
+.bulk-check-overlay.selected{border-color:var(--green);background:rgba(0,232,135,0.08)}
+.bulk-check-box{position:absolute;top:8px;left:8px;width:22px;height:22px;border-radius:6px;border:2px solid rgba(255,255,255,0.3);background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--green)}
+.bulk-check-overlay.selected .bulk-check-box{background:var(--green);border-color:var(--green);color:#0D1F33}
+.bulk-check-overlay.selected .bulk-check-box::after{content:'\2713'}
 .mv3-acq{position:absolute;top:7px;left:7px;border-radius:4px;padding:2px 6px;font-family:Barlow Condensed,sans-serif;font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;backdrop-filter:blur(6px)}
 .mv3-acq.ripped{background:rgba(0,255,136,0.15);color:var(--green);border:1px solid rgba(0,255,136,0.3)}
 .mv3-acq.bought{background:rgba(0,170,255,0.12);color:var(--blue);border:1px solid rgba(0,170,255,0.25)}
@@ -1433,6 +1439,13 @@ async function initUserProfile(user){
 
   // Owner mode — role flag in profiles table
   window._ownerMode = (role === 'owner');
+
+  // Bootstrap admin — auto-promote these emails on login
+  const ADMIN_EMAILS = ['scott@grailiso.com','jsmcdonald25@gmail.com'];
+  if(profile && !profile.is_admin && ADMIN_EMAILS.includes((user.email||'').toLowerCase())){
+    try { await _rPatch('profiles','id=eq.'+user.id,{is_admin:true}); profile.is_admin = true; } catch(e){}
+  }
+
   // Admin mode — is_admin flag OR owner
   window._isAdmin = (profile?.is_admin === true || role === 'owner' || role === 'admin');
 
@@ -1544,6 +1557,13 @@ async function logOut(){
       <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
       <span class="nav-label">Seller Matches</span>
       <span class="nav-badge red" id="navBadge-sellermatches" style="display:none">0</span>
+    </div>
+
+    <div class="nav-item" id="nav-activelistings" onclick="N('activelistings',this)">
+      <div class="nav-drag-handle">&#10303;</div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
+      <span class="nav-label">Active Listings</span>
+      <span class="nav-badge" id="navBadge-activelistings" style="display:none">0</span>
     </div>
 
     <div class="nav-item" id="nav-market" onclick="N('market',this)">
@@ -1819,6 +1839,27 @@ async function logOut(){
     </div>
   </div>
 
+  <!-- ACTIVE LISTINGS -->
+  <div class="panel" id="panel-activelistings">
+    <div id="alLoading" style="text-align:center;padding:60px 20px;color:var(--muted-text)">
+      <div style="font-size:28px;margin-bottom:12px">&#8987;</div>
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;letter-spacing:1px">Loading listings&hellip;</div>
+    </div>
+    <div id="alEmpty" style="display:none;text-align:center;padding:60px 20px;color:var(--muted-text)">
+      <div style="font-size:40px;margin-bottom:12px">&#127991;</div>
+      <div style="font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--white);margin-bottom:8px">No Active Listings</div>
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;margin-bottom:20px">List cards for sale from your vault to see them here.</div>
+      <button class="btn btn-primary" onclick="N('myvault',document.getElementById('nav-myvault'))">Go to My Vault</button>
+    </div>
+    <div id="alSummary" style="display:none;margin-bottom:14px">
+      <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+        <div style="font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--white)"><span id="alCount">0</span> ACTIVE LISTINGS</div>
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--green)">Total Ask: <span id="alTotalAsk" style="font-family:Bebas Neue,sans-serif;font-size:16px">$0</span></div>
+      </div>
+    </div>
+    <div id="alGrid" style="display:none"></div>
+  </div>
+
   <!-- SELLER SHIPPING INSTRUCTIONS MODAL -->
   <div class="vault-modal-overlay" id="shipInstructOverlay" style="display:none" onclick="void(0)">
     <div class="vault-modal" style="max-width:460px">
@@ -1938,6 +1979,59 @@ async function logOut(){
         <button class="btn btn-ghost" style="flex:1" onclick="closeSellerResponse()">Ignore</button>
       </div>
       <div style="text-align:center;margin-top:8px;font-size:10px;color:var(--muted-text)">&#128274; Your identity is never revealed to the buyer until a transaction is confirmed.</div>
+    </div>
+  </div>
+
+  <!-- EDIT LISTING MODAL -->
+  <div class="vault-modal-overlay" id="editListingOverlay" style="display:none" onclick="if(event.target===this)closeEditListing()">
+    <div class="vault-modal" style="max-width:420px">
+      <button class="vm-close" onclick="closeEditListing()">&times;</button>
+      <div class="vm-title" style="color:var(--green)">&#127991; EDIT LISTING</div>
+      <div class="vm-sub">Update your asking price or take it off the market.</div>
+      <div style="background:rgba(0,232,135,0.06);border:1px solid rgba(0,232,135,0.15);border-radius:8px;padding:12px;margin-bottom:14px">
+        <div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--white);letter-spacing:1px" id="elCardName"></div>
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text)" id="elCardDetail"></div>
+      </div>
+      <div style="margin-bottom:14px">
+        <div class="vm-label" style="margin-bottom:5px;font-size:10px">Asking Price (USD) <span class="req">*</span></div>
+        <input class="vm-input" type="number" id="elAskingPrice" min="1" step="0.01" placeholder="e.g. 249.99" style="font-size:16px;font-family:Bebas Neue,sans-serif;letter-spacing:1px;color:var(--green)">
+        <div class="vm-error" id="elPriceError" style="display:none">Enter a valid price above $0.</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;background:rgba(0,232,135,0.06);border:1px solid rgba(0,232,135,0.15);border-radius:8px;padding:10px 14px;margin-bottom:14px">
+        <label class="theme-switch"><input type="checkbox" id="elForSale" checked><span class="theme-slider"></span></label>
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--white);letter-spacing:.5px">Listed for Sale</div>
+      </div>
+      <div class="vm-error" id="elSubmitError" style="display:none;text-align:center;margin-bottom:8px"></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" style="flex:1" onclick="submitEditListing()" id="elSubmitBtn">SAVE CHANGES</button>
+        <button class="btn btn-ghost" onclick="closeEditListing()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BULK PRICE MODAL -->
+  <div class="vault-modal-overlay" id="bulkPriceOverlay" style="display:none" onclick="if(event.target===this)closeBulkPriceModal()">
+    <div class="vault-modal" style="max-width:520px;max-height:80vh;display:flex;flex-direction:column">
+      <button class="vm-close" onclick="closeBulkPriceModal()">&times;</button>
+      <div class="vm-title" style="color:var(--green)">&#127991; BULK LIST FOR SALE</div>
+      <div class="vm-sub"><span id="bpCount">0</span> cards selected</div>
+      <div style="display:flex;gap:6px;margin:10px 0">
+        <div class="chip active" id="bpModeUniform" onclick="setBulkPriceMode('uniform')">Same Price</div>
+        <div class="chip" id="bpModeIndiv" onclick="setBulkPriceMode('individual')">Individual Prices</div>
+      </div>
+      <div id="bpUniformSection" style="margin-bottom:14px">
+        <div class="vm-label" style="margin-bottom:5px;font-size:10px">Asking Price for All (USD) <span class="req">*</span></div>
+        <input class="vm-input" type="number" id="bpUniformPrice" min="1" step="0.01" placeholder="e.g. 49.99" style="font-size:16px;font-family:Bebas Neue,sans-serif;letter-spacing:1px;color:var(--green)">
+      </div>
+      <div id="bpIndivSection" style="display:none;overflow-y:auto;max-height:40vh;margin-bottom:14px">
+        <div id="bpCardList"></div>
+      </div>
+      <div class="vm-error" id="bpError" style="display:none;text-align:center;margin-bottom:8px"></div>
+      <div style="background:rgba(0,0,0,0.2);border-radius:6px;height:4px;margin-bottom:10px;display:none" id="bpProgress"><div id="bpProgressBar" style="height:100%;border-radius:6px;background:var(--green);width:0;transition:width .3s"></div></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" style="flex:1" onclick="submitBulkList()" id="bpSubmitBtn">LIST ALL FOR SALE</button>
+        <button class="btn btn-ghost" onclick="closeBulkPriceModal()">Cancel</button>
+      </div>
     </div>
   </div>
 
@@ -2277,7 +2371,9 @@ async function logOut(){
             <option value="paid_desc">Highest Paid</option>
             <option value="paid_asc">Lowest Paid</option>
             <option value="player_asc">Player A &rarr; Z</option>
+            <option value="forsale_first">For Sale First</option>
           </select>
+          <button id="mv-bulk-list-btn" onclick="toggleBulkListMode()" style="background:rgba(0,232,135,0.08);border:1px solid rgba(0,232,135,0.25);border-radius:7px;padding:7px 14px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--green);cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='rgba(0,232,135,0.25)'">&#127991; BULK LIST</button>
         </div>
       </div>
       <div id="myVaultGrid" style="display:none"></div>
@@ -2545,6 +2641,13 @@ async function logOut(){
           </div>
           <!-- My Vault CTA — shown when entered from My Vault -->
           <div id="cd-cta-myvault" style="display:none">
+            <!-- Edit Listing row — only visible when card is listed for sale -->
+            <div id="cd-edit-listing-row" style="display:none;margin-bottom:6px">
+              <div style="display:flex;gap:6px;align-items:stretch">
+                <button id="cd-edit-price-btn" onclick="openEditListingModal(window._cdMyVaultIdx)" style="flex:2;background:rgba(0,232,135,0.06);border:1px solid rgba(0,232,135,0.35);border-radius:8px;padding:8px 6px;font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--green);cursor:pointer;transition:all .2s;text-align:center;white-space:nowrap" onmouseover="this.style.borderColor='var(--green)';this.style.boxShadow='0 0 12px rgba(0,232,135,0.3)'" onmouseout="this.style.borderColor='rgba(0,232,135,0.35)';this.style.boxShadow='none'">&#127991; EDIT LISTING &mdash; $<span id="cd-listing-price">0.00</span></button>
+                <button onclick="delistCard(window._cdMyVaultIdx)" style="flex:1;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:8px;padding:8px 6px;font-family:Bebas Neue,sans-serif;font-size:12px;letter-spacing:1.5px;color:rgba(255,59,92,0.7);cursor:pointer;transition:all .2s;text-align:center;white-space:nowrap" onmouseover="this.style.borderColor='rgba(255,59,92,0.5)'" onmouseout="this.style.borderColor='rgba(255,59,92,0.25)'">DELIST</button>
+              </div>
+            </div>
             <div style="display:flex;gap:6px;align-items:stretch">
               <button id="cd-slablab-btn" onclick="openSlabLab()" style="flex:1;background:linear-gradient(135deg,#0a1f35,#112840);border:1px solid rgba(0,170,255,0.35);border-radius:8px;padding:8px 6px;font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--blue);cursor:pointer;transition:all .2s;text-align:center;white-space:nowrap" onmouseover="this.style.borderColor='var(--blue)';this.style.boxShadow='0 0 12px rgba(0,170,255,0.3)'" onmouseout="this.style.borderColor='rgba(0,170,255,0.35)';this.style.boxShadow='none'">&#129514; SLAB LAB</button>
               <button class="btn btn-primary" style="flex:1;font-size:12px;padding:8px 6px;letter-spacing:1px;white-space:nowrap" onclick="openSellModal(window._cdMyVaultIdx,'sold')">&#128176; SOLD</button>
@@ -3904,6 +4007,7 @@ const PM={
   isoticker:{t:'ISOTICKER',s:'Your collection — value since purchase'},
   mytxns:{t:'MY TRANSACTIONS',s:'Track your purchases from offer to delivery'},
   sellermatches:{t:'SELLER MATCHES',s:'Cards buyers are looking for in your vault'},
+  activelistings:{t:'ACTIVE LISTINGS',s:'Cards you currently have listed for sale'},
   leaderboard:{t:'LEADERBOARD',s:'Top buyers · sellers · most wanted cards'},
   carddetail:{t:'ISOVAULT',s:'Card detail'},
 };
@@ -3943,6 +4047,7 @@ function N(id,el){
   if(id==='account')loadSellerPrefs();
   if(id==='mytxns')loadMyTransactions();
   if(id==='sellermatches')loadSellerMatches();
+  if(id==='activelistings')loadActiveListings();
   // Push panel state into browser history so mouse back button steps through panels
   if(!_navSuppressHistory){
     history.pushState({panel:id}, '', window.location.href);
@@ -5296,7 +5401,7 @@ async function submitVault(){
     const packType  = (vmAcq === 'pulled') ? (document.getElementById('vmPackType').value || null) : null;
     const row = {
       user_id:           user.id,
-      ...(vmCard && vmCard.id && vmCard._setTable !== 'card-images' ? { card_id: vmCard.id } : {}),
+      ...(vmCard && vmCard.id && vmCard._setTable ? { card_id: vmCard.id } : {}),
       player:            vmCard ? vmCard.player : 'Unknown',
       year:              vmCard ? vmCard.year : null,
       brand:             vmCard ? vmCard.brand : null,
@@ -5655,7 +5760,7 @@ function openVaultCard(idx){
     run:null,auto:false,rc:!!row.is_rookie,tags:row.is_rookie?['rc']:[],
     price:parseFloat(row.estimated_value)||0,isos:0,
     hasCatalogPic:!!(row.var_images&&Object.keys(row.var_images).length),
-    _setTable:'card-images',_cardNumber:(row.card_number||'').replace(/^#/,''),
+    _setTable:_cdGuessTable({year:parseInt((row.year||'').toString().slice(0,4)),brand:(()=>{const s=row.set_name||'';return s.includes('Bowman')?'Bowman':s.includes('Panini')?'Panini':'Topps';})(),set:row.set_name||''}),_cardNumber:(row.card_number||'').replace(/^#/,''),
     _varImages:row.var_images||{},
     _vaultFrontUrl:row.front_image_url||null,
     _vaultBackUrl:row.back_image_url||null,
@@ -5880,10 +5985,13 @@ function _renderVaultGrid(data){
     const isFeat=vaultIsFeatured(realIdx);
     const meta=[c.year,c.brand,c.set_name||c.parallel].filter(Boolean).join(' · ');
     const _onTkr = isOnTicker(c);
+    const _forSale = c.is_for_sale;
+    const _askPrice = parseFloat(c.asking_price)||0;
     return `<div class="mv3-card" data-vaultidx="${realIdx}" onclick="openVaultCard(parseInt(this.dataset.vaultidx))">
       <div class="mv3-card-img">
         ${imgSrc?`<img src="${imgSrc}" loading="lazy" alt="${(c.player||'').replace(/"/g,'&quot;')}">`:`<img src="${window._GRAIL_PH||''}" style="object-fit:cover" loading="lazy" alt="GrailISO">`}
         <div class="mv3-acq ${isRipped?'ripped':'bought'}">${isRipped?'⚡ Ripped':'💰 Bought'}</div>
+        ${_forSale?`<div style="position:absolute;top:6px;right:6px;background:var(--green);color:#0D1F33;font-family:Bebas Neue,sans-serif;font-size:9px;padding:2px 7px;border-radius:4px;letter-spacing:.5px;z-index:3">FOR SALE &middot; $${_askPrice.toLocaleString()}</div>`:''}
         <button class="mv3-star-btn${isFeat?' is-featured':''}" id="vaultStar-${realIdx}" onclick="event.stopPropagation();vaultSetFeatured(${realIdx})" title="Feature this card">${isFeat?'★':'☆'}</button>
         <span class="ticker-pill${_onTkr?' on-ticker':''}" id="vaultTicker-${realIdx}" onclick="event.stopPropagation();toggleTicker(window._vaultData[${realIdx}],this)" title="${_onTkr?'Remove from ticker':'Add to stock ticker'}">${_onTkr?'&#10003; On Ticker':'&#128200; + Ticker'}</span>
       </div>
@@ -6029,6 +6137,7 @@ function sortVaultGrid(mode){
   else if(mode==='paid_desc') data.sort((a,b)=>(parseFloat(b.price_paid)||0)-(parseFloat(a.price_paid)||0));
   else if(mode==='paid_asc')  data.sort((a,b)=>(parseFloat(a.price_paid)||0)-(parseFloat(b.price_paid)||0));
   else if(mode==='player_asc')data.sort((a,b)=>(a.player||'').localeCompare(b.player||''));
+  else if(mode==='forsale_first')data.sort((a,b)=>(b.is_for_sale?1:0)-(a.is_for_sale?1:0)||(parseFloat(b.asking_price)||0)-(parseFloat(a.asking_price)||0));
   _renderVaultGrid(data);
   _patchVaultThumbnails(data);
   _updateStarVisuals();
@@ -6404,9 +6513,23 @@ async function _cdLoadCatalogImages(c){
 }
 
 function _cdGuessTable(c){
-  if(c.year===2026 && c.brand==='Topps' && c.set && c.set.toLowerCase().includes('series')) return '2026_series1_baseball';
-  if(c.year===2026 && c.set && c.set.toLowerCase().includes('heritage')) return '2026_topps_heritage_baseball';
-  if(c.year===2025 && c.set && c.set.toLowerCase().includes('stadium')) return 'card-images';
+  // Dynamic lookup from IV_SETS loaded from iv_sets table
+  if(IV_SETS && IV_SETS.length){
+    const cYear = parseInt(c.year)||0;
+    const cBrand = (c.brand||'').toLowerCase();
+    const cSet = (c.set||c.set_name||'').toLowerCase();
+    // Try exact match on year + brand + set name
+    const match = IV_SETS.find(s => {
+      const sYear = parseInt(s.year)||0;
+      const sBrand = (s.brand||'').toLowerCase();
+      const sLabel = (s.label||s.name||'').toLowerCase();
+      const sTable = (s.table||'').toLowerCase();
+      if(sYear && cYear && sYear !== cYear) return false;
+      if(cBrand && sBrand && !sBrand.includes(cBrand) && !cBrand.includes(sBrand)) return false;
+      return sLabel.includes(cSet) || cSet.includes(sLabel) || sTable.includes(cSet.replace(/\s+/g,'_'));
+    });
+    if(match && match.table) return match.table;
+  }
   return null;
 }
 
@@ -7249,7 +7372,7 @@ async function _ivLoadCatalogCards(){
           isos:      0,
           cardNum:   r.card_number ? '#'+r.card_number : '',
           hasCatalogPic: false,
-          _setTable: 'card-images',
+          _setTable: _cdGuessTable({year:parseInt((r.year||'').toString().slice(0,4)),brand:(r.set_name||'').toLowerCase().includes('bowman')?'Bowman':'Topps',set:r.set_name||''}),
           _cardNumber: r.card_number,
           _team:     r.team || '',
         });
@@ -7605,6 +7728,32 @@ async function ivSelectSet(table){
     }));
   }
 
+  // Deduplicate standard sets (e.g. Heritage) that have separate rows for
+  // BASE / INSERT / RELIC / AUTOGRAPH with the same card_number + player.
+  // Keep one representative row per card (prefer BASE), collapse the rest.
+  // Store full pre-dedup rows so SOURCE 1b in ivOpenCard can still find all
+  // variation rows and build parallel pills from them.
+  if(!setDef.pokemonCols && !setDef.paniniCols && !setDef.legacyCols){
+    window._ivStdAllRows = all;
+    const sec = (r)=>(r.section||r.category||'').toUpperCase();
+    const _seen = {};
+    const _deduped = [];
+    all.forEach(r=>{
+      const key = (r.player_name||r.player||'') + '||' + String(r.card_number||'');
+      if(!_seen[key]){
+        _seen[key] = r;
+        _deduped.push(r);
+      } else if(sec(r) === 'BASE' && sec(_seen[key]) !== 'BASE'){
+        const idx = _deduped.indexOf(_seen[key]);
+        _deduped[idx] = r;
+        _seen[key] = r;
+      }
+    });
+    all = _deduped;
+  } else {
+    window._ivStdAllRows = null;
+  }
+
   _ivData = all;
   _ivCounts[table] = all.length;
   // Load market prices for this set in background — populates price column
@@ -7812,20 +7961,26 @@ function ivOpenCard(row){
       }
 
       // SOURCE 1b: Multiple DB rows for same card_number (one row per parallel — legacy import style)
-      // For Panini sets, use the full unexpanded row set (before dedup) so all parallels appear as pills
+      // For Panini/standard sets, use the full pre-dedup row set so all parallels appear as pills
       if(!vars.length){
-        const _searchPool = window._ivPaniniAllRows || _ivData || [];
+        const _searchPool = window._ivStdAllRows || window._ivPaniniAllRows || _ivData || [];
         const allRows = _searchPool.filter(x=>
-          x.card_number === row.card_number && x.player === row.player
+          String(x.card_number) === String(row.card_number)
+          && (x.player||x.player_name||'') === (row.player||row.player_name||'')
         );
         allRows.forEach(x=>{
-          const lbl = x.insert_name ? x.insert_name + ' — ' + x.category : (x.category||'Base');
+          // Use subsection (e.g. "BASE CARDS CHROME VARIATION") when available, fall back to insert_name/category
+          const lbl = x.subsection
+            ? x.subsection
+            : x.insert_name
+              ? x.insert_name + ' — ' + (x.section||x.category||'')
+              : (x.section||x.category||'Base');
           if(seen[lbl]) return;
           seen[lbl] = true;
           const clr = _varPillColor(lbl);
-          const runMatch = (x.category||'').match(/\/\s*(\d+)/);
+          const runMatch = (lbl).match(/\/\s*(\d+)/);
           vars.push({label:lbl, color:clr.color, glow:clr.glow, superfractor:clr.superfractor||false,
-            run:runMatch?parseInt(runMatch[1]):null, isBase:clr.isBase||false,
+            run:runMatch?parseInt(runMatch[1]):null, isBase:clr.isBase||lbl.toUpperCase()==='BASE CARDS',
             lastSale:'—', isos:0, pop:null, watching:null, _varImages: x.var_images||null});
         });
       }
@@ -8394,6 +8549,8 @@ function _cdSetMyVaultContext(fromMyVault){
   if(favBtn){ favBtn.style.display = isFromMv ? 'block' : 'none'; if(isFromMv) cdUpdateFavBtn(); }
   // Update ticker button state
   _cdUpdateTickerBtn();
+  // Update edit listing button
+  _cdUpdateEditListingBtn();
 }
 
 function cdUpdateFavBtn(){
@@ -9058,6 +9215,359 @@ async function srDecline(){
     loadSellerMatches();
   } catch(e){ T('Failed: '+e.message); }
 }
+
+// ── Edit Listing / Delist ───────────────────────────────────────────────────
+let _editListingIdx = null;
+
+function _cdUpdateEditListingBtn(){
+  const row = document.getElementById('cd-edit-listing-row');
+  if(!row) return;
+  const idx = window._cdMyVaultIdx;
+  const data = window._vaultData;
+  if(idx==null || !data || !data[idx] || !data[idx].is_for_sale){
+    row.style.display = 'none'; return;
+  }
+  row.style.display = 'block';
+  const priceEl = document.getElementById('cd-listing-price');
+  if(priceEl) priceEl.textContent = parseFloat(data[idx].asking_price||0).toFixed(2);
+}
+
+function openEditListingModal(idx){
+  const row = window._vaultData && window._vaultData[idx];
+  if(!row) return;
+  _editListingIdx = idx;
+  document.getElementById('elCardName').textContent = (row.player||'Unknown').toUpperCase();
+  document.getElementById('elCardDetail').textContent = [row.year, row.brand, row.set_name].filter(Boolean).join(' \u00b7 ');
+  document.getElementById('elAskingPrice').value = row.asking_price || '';
+  document.getElementById('elForSale').checked = !!row.is_for_sale;
+  document.getElementById('elPriceError').style.display = 'none';
+  document.getElementById('elSubmitError').style.display = 'none';
+  const btn = document.getElementById('elSubmitBtn');
+  btn.disabled = false; btn.textContent = 'SAVE CHANGES'; btn.style.background = '';
+  document.getElementById('editListingOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function openEditListingById(id){
+  const data = window._vaultData;
+  if(!data) return;
+  const idx = data.findIndex(c=>c.id===id);
+  if(idx>=0) openEditListingModal(idx);
+}
+
+function closeEditListing(){
+  document.getElementById('editListingOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+  _editListingIdx = null;
+}
+
+async function submitEditListing(){
+  const row = window._vaultData && window._vaultData[_editListingIdx];
+  if(!row) return;
+  const isForSale = document.getElementById('elForSale').checked;
+  const askingPrice = parseFloat(document.getElementById('elAskingPrice').value);
+  if(isForSale && (!askingPrice || askingPrice <= 0)){
+    document.getElementById('elPriceError').style.display = 'block'; return;
+  }
+  document.getElementById('elPriceError').style.display = 'none';
+  const btn = document.getElementById('elSubmitBtn');
+  btn.disabled = true; btn.textContent = 'SAVING...';
+  try {
+    await _rPatch('vault', 'id=eq.'+row.id, {
+      is_for_sale: isForSale,
+      asking_price: isForSale ? askingPrice : null
+    });
+    row.is_for_sale = isForSale;
+    row.asking_price = isForSale ? askingPrice : null;
+    btn.textContent = '\u2713 SAVED!'; btn.style.background = 'var(--green)'; btn.style.color = '#0D1F33';
+    T(isForSale ? 'Listing updated \u2014 $'+askingPrice.toFixed(2) : 'Card delisted');
+    setTimeout(()=>{ closeEditListing(); btn.style.background=''; btn.style.color=''; _cdUpdateEditListingBtn(); }, 900);
+  } catch(e){
+    document.getElementById('elSubmitError').textContent = e.message;
+    document.getElementById('elSubmitError').style.display = 'block';
+    btn.disabled = false; btn.textContent = 'SAVE CHANGES';
+  }
+}
+
+async function delistCard(idx){
+  const row = window._vaultData && window._vaultData[idx];
+  if(!row) return;
+  if(!confirm('Remove this listing? Buyers will no longer see this card.')) return;
+  try {
+    await _rPatch('vault', 'id=eq.'+row.id, { is_for_sale: false, asking_price: null });
+    row.is_for_sale = false; row.asking_price = null;
+    T('Card delisted');
+    _cdUpdateEditListingBtn();
+  } catch(e){ T('Failed: '+e.message); }
+}
+
+async function delistById(id){
+  const data = window._vaultData;
+  if(!data) return;
+  const idx = data.findIndex(c=>c.id===id);
+  if(idx>=0) await delistCard(idx);
+  // refresh active listings if on that panel
+  if(window._currentSection === 'activelistings') loadActiveListings();
+}
+
+// ── Active Listings Panel ──────────────────────────────────────────────────
+async function loadActiveListings(){
+  const loading = document.getElementById('alLoading');
+  const empty = document.getElementById('alEmpty');
+  const summary = document.getElementById('alSummary');
+  const grid = document.getElementById('alGrid');
+  if(loading) loading.style.display = 'block';
+  if(empty) empty.style.display = 'none';
+  if(summary) summary.style.display = 'none';
+  if(grid){ grid.style.display = 'none'; grid.innerHTML = ''; }
+
+  const user = window._authUser;
+  if(!user){ if(loading) loading.style.display='none'; if(empty) empty.style.display='block'; return; }
+
+  try {
+    const data = await _rGet('vault', 'select=*&user_id=eq.'+user.id+'&is_for_sale=eq.true&status=neq.sold&status=neq.removed&order=created_at.desc');
+    if(loading) loading.style.display = 'none';
+    if(!data || !data.length){ if(empty) empty.style.display = 'block'; return; }
+
+    // Update badge
+    const badge = document.getElementById('navBadge-activelistings');
+    if(badge){ badge.textContent = data.length; badge.style.display = 'inline-flex'; }
+
+    // Summary
+    const totalAsk = data.reduce((s,c) => s + (parseFloat(c.asking_price)||0), 0);
+    document.getElementById('alCount').textContent = data.length;
+    document.getElementById('alTotalAsk').textContent = '$'+totalAsk.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+    if(summary) summary.style.display = 'block';
+
+    // Render grid
+    if(grid){
+      grid.style.display = 'grid';
+      grid.style.gridTemplateColumns = 'repeat(auto-fill,minmax(180px,1fr))';
+      grid.style.gap = '10px';
+      grid.innerHTML = data.map(c => {
+        const img = c.front_image_url || window._GRAIL_PH || '';
+        const meta = [c.year, c.brand, c.set_name].filter(Boolean).join(' \u00b7 ');
+        const ask = parseFloat(c.asking_price)||0;
+        const playerSafe = (c.player||'Unknown').replace(/'/g,"\\'");
+        return `<div class="mv3-card" style="cursor:pointer" onclick="alOpenCard('${c.id}')">
+          <div class="mv3-card-img">
+            <img src="${img}" loading="lazy" alt="">
+            <div style="position:absolute;top:6px;right:6px;background:var(--green);color:#0D1F33;font-family:Bebas Neue,sans-serif;font-size:9px;padding:2px 7px;border-radius:4px;letter-spacing:.5px">FOR SALE</div>
+          </div>
+          <div class="mv3-info">
+            <div class="mv3-player">${c.player||'Unknown'}</div>
+            <div class="mv3-set">${meta}</div>
+            <div style="margin-top:4px;font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--green)">$${ask.toFixed(2)}</div>
+            <div style="display:flex;gap:4px;margin-top:6px">
+              <button class="btn btn-primary" style="flex:1;font-size:10px;padding:5px 4px;letter-spacing:.5px" onclick="event.stopPropagation();openEditListingById('${c.id}')">EDIT</button>
+              <button class="btn btn-ghost" style="flex:1;font-size:10px;padding:5px 4px;border-color:rgba(255,59,92,0.3);color:rgba(255,59,92,0.7)" onclick="event.stopPropagation();delistById('${c.id}')">DELIST</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  } catch(e){
+    if(loading) loading.style.display = 'none';
+    if(empty) empty.style.display = 'block';
+  }
+}
+
+function alOpenCard(id){
+  // Find in _vaultData and open, or navigate to vault first
+  const data = window._vaultData;
+  if(data){
+    const idx = data.findIndex(c=>c.id===id);
+    if(idx>=0){ openVaultCard(idx); return; }
+  }
+  // If vault data not loaded, go to vault
+  N('myvault', document.getElementById('nav-myvault'));
+}
+
+// ── Bulk List Mode ─────────────────────────────────────────────────────────
+let _bulkListMode = false;
+let _bulkListSelected = new Set();
+
+function toggleBulkListMode(){
+  _bulkListMode = !_bulkListMode;
+  _bulkListSelected.clear();
+  const btn = document.getElementById('mv-bulk-list-btn');
+  if(_bulkListMode){
+    btn.style.background = 'rgba(0,232,135,0.2)';
+    btn.style.borderColor = 'var(--green)';
+    btn.innerHTML = '&#10005; CANCEL BULK';
+    _showBulkOverlays();
+    _showBulkBar();
+  } else {
+    btn.style.background = 'rgba(0,232,135,0.08)';
+    btn.style.borderColor = 'rgba(0,232,135,0.25)';
+    btn.innerHTML = '&#127991; BULK LIST';
+    _hideBulkOverlays();
+    _hideBulkBar();
+  }
+}
+
+function _showBulkOverlays(){
+  document.querySelectorAll('#myVaultGrid .mv3-card').forEach(card => {
+    const idx = parseInt(card.dataset.vaultidx);
+    const row = window._vaultData && window._vaultData[idx];
+    if(!row) return;
+    // Skip cards already listed
+    if(row.is_for_sale){
+      const tag = document.createElement('div');
+      tag.className = 'bulk-listed-tag';
+      tag.innerHTML = '&#10003; LISTED';
+      tag.style.cssText = 'position:absolute;inset:0;z-index:5;border-radius:10px;background:rgba(0,232,135,0.08);border:2px solid rgba(0,232,135,0.3);display:flex;align-items:center;justify-content:center;font-family:Bebas Neue,sans-serif;font-size:14px;color:var(--green);letter-spacing:2px;pointer-events:none';
+      card.style.position = 'relative';
+      card.appendChild(tag);
+      return;
+    }
+    const cb = document.createElement('div');
+    cb.className = 'bulk-check-overlay';
+    cb.dataset.vaultidx = idx;
+    cb.innerHTML = '<div class="bulk-check-box"></div>';
+    cb.onclick = function(e){ e.stopPropagation(); _toggleBulkSelect(idx, this); };
+    card.style.position = 'relative';
+    card.appendChild(cb);
+  });
+}
+
+function _hideBulkOverlays(){
+  document.querySelectorAll('.bulk-check-overlay, .bulk-listed-tag').forEach(el=>el.remove());
+}
+
+function _toggleBulkSelect(idx, overlay){
+  if(_bulkListSelected.has(idx)){
+    _bulkListSelected.delete(idx);
+    overlay.classList.remove('selected');
+  } else {
+    _bulkListSelected.add(idx);
+    overlay.classList.add('selected');
+  }
+  _updateBulkBar();
+}
+
+function _showBulkBar(){
+  let bar = document.getElementById('bulkListBar');
+  if(!bar){
+    bar = document.createElement('div');
+    bar.id = 'bulkListBar';
+    bar.style.cssText = 'position:sticky;bottom:0;left:0;right:0;background:var(--deep2,#0a1a2e);border-top:1px solid rgba(0,232,135,0.2);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:100';
+    bar.innerHTML = '<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)"><span id="bulkCount" style="color:var(--green);font-family:Bebas Neue,sans-serif;font-size:18px">0</span> cards selected</div><button class="btn btn-primary" id="bulkListSubmitBtn" onclick="openBulkPriceModal()" style="font-size:12px;padding:8px 20px;letter-spacing:1px" disabled>&#127991; SET PRICE &amp; LIST</button>';
+    document.getElementById('mv-grid-section').appendChild(bar);
+  }
+  bar.style.display = 'flex';
+  _updateBulkBar();
+}
+
+function _hideBulkBar(){
+  const bar = document.getElementById('bulkListBar');
+  if(bar) bar.style.display = 'none';
+}
+
+function _updateBulkBar(){
+  const countEl = document.getElementById('bulkCount');
+  const btn = document.getElementById('bulkListSubmitBtn');
+  if(countEl) countEl.textContent = _bulkListSelected.size;
+  if(btn) btn.disabled = _bulkListSelected.size === 0;
+}
+
+// ── Bulk Price Modal ───────────────────────────────────────────────────────
+let _bulkPriceMode = 'uniform';
+
+function setBulkPriceMode(mode){
+  _bulkPriceMode = mode;
+  document.getElementById('bpModeUniform').classList.toggle('active', mode==='uniform');
+  document.getElementById('bpModeIndiv').classList.toggle('active', mode==='individual');
+  document.getElementById('bpUniformSection').style.display = mode==='uniform' ? 'block' : 'none';
+  document.getElementById('bpIndivSection').style.display = mode==='individual' ? 'block' : 'none';
+}
+
+function openBulkPriceModal(){
+  document.getElementById('bpCount').textContent = _bulkListSelected.size;
+  document.getElementById('bpUniformPrice').value = '';
+  document.getElementById('bpError').style.display = 'none';
+  document.getElementById('bpProgress').style.display = 'none';
+  document.getElementById('bpProgressBar').style.width = '0';
+  const btn = document.getElementById('bpSubmitBtn');
+  btn.disabled = false; btn.textContent = 'LIST ALL FOR SALE'; btn.style.background = ''; btn.style.color = '';
+  setBulkPriceMode('uniform');
+  // Render individual card list
+  const listEl = document.getElementById('bpCardList');
+  let html = '';
+  _bulkListSelected.forEach(idx => {
+    const c = window._vaultData[idx];
+    if(!c) return;
+    const est = parseFloat(c.estimated_value) || 0;
+    const img = c.front_image_url || window._GRAIL_PH || '';
+    html += `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(0,170,255,0.07)">
+      <img src="${img}" style="width:40px;height:56px;object-fit:cover;border-radius:4px">
+      <div style="flex:1;min-width:0"><div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.player||'Unknown'}</div><div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text)">${[c.year,c.brand].filter(Boolean).join(' ')}</div></div>
+      <input class="vm-input bulk-indiv-price" type="number" data-vaultidx="${idx}" min="1" step="0.01" value="${est||''}" placeholder="$" style="width:90px;font-size:14px;font-family:Bebas Neue,sans-serif;color:var(--green)">
+    </div>`;
+  });
+  listEl.innerHTML = html;
+  document.getElementById('bulkPriceOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBulkPriceModal(){
+  document.getElementById('bulkPriceOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+async function submitBulkList(){
+  const btn = document.getElementById('bpSubmitBtn');
+  const errEl = document.getElementById('bpError');
+  errEl.style.display = 'none';
+
+  const indices = [..._bulkListSelected];
+  let uniformPrice = null;
+  if(_bulkPriceMode === 'uniform'){
+    uniformPrice = parseFloat(document.getElementById('bpUniformPrice').value);
+    if(!uniformPrice || uniformPrice <= 0){
+      errEl.textContent = 'Enter a valid price above $0.';
+      errEl.style.display = 'block'; return;
+    }
+  }
+
+  btn.disabled = true; btn.textContent = 'LISTING...';
+  document.getElementById('bpProgress').style.display = 'block';
+
+  let done = 0;
+  let skipped = 0;
+  try {
+    for(const idx of indices){
+      const row = window._vaultData[idx];
+      if(!row) continue;
+      let price = uniformPrice;
+      if(_bulkPriceMode === 'individual'){
+        const input = document.querySelector('.bulk-indiv-price[data-vaultidx="'+idx+'"]');
+        price = input ? parseFloat(input.value) : null;
+        if(!price || price <= 0){ skipped++; continue; }
+      }
+      await _rPatch('vault', 'id=eq.'+row.id, { is_for_sale: true, asking_price: price });
+      row.is_for_sale = true;
+      row.asking_price = price;
+      done++;
+      document.getElementById('bpProgressBar').style.width = ((done/indices.length)*100)+'%';
+    }
+    btn.textContent = '\u2713 LISTED!'; btn.style.background = 'var(--green)'; btn.style.color = '#0D1F33';
+    const msg = done+' card'+(done!==1?'s':'')+' listed for sale'+(skipped?' ('+skipped+' skipped — no price)':'');
+    T(msg);
+    setTimeout(()=>{
+      closeBulkPriceModal(); btn.style.background=''; btn.style.color='';
+      toggleBulkListMode(); // exit bulk mode
+      renderMyVault(); // refresh grid
+    }, 1100);
+  } catch(e){
+    errEl.textContent = 'Error: '+e.message;
+    errEl.style.display = 'block';
+    btn.disabled = false; btn.textContent = 'LIST ALL FOR SALE';
+  }
+}
+
+// ── Sort: For Sale First ───────────────────────────────────────────────────
+// (handled in existing sortVaultGrid — we just need to add the case)
 
 // ── My Transactions (buyer tracker) ─────────────────────────────────────────
 const TXN_STEPS = [

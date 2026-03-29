@@ -1,4 +1,4 @@
-const CACHE_NAME = 'grailiso-shell-v2';
+const CACHE_NAME = 'grailiso-shell-v3';
 const SHELL_ASSETS = ['/dashboard.html', '/manifest.json', '/icons/icon-192.png', '/icons/icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -17,6 +17,12 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   const u = new URL(e.request.url);
+
+  // Supabase storage uploads (POST/PUT with binary body) — let the browser handle
+  // directly so the SW doesn't break large-body requests (causes false "offline" errors)
+  if (u.hostname.endsWith('.supabase.co') && (e.request.method === 'POST' || e.request.method === 'PUT') && u.pathname.includes('/storage/')) {
+    return; // don't call e.respondWith — browser handles natively
+  }
 
   // Supabase API calls — always network, offline fallback
   if (u.hostname.endsWith('.supabase.co')) {

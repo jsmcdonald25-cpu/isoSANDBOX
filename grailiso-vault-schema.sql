@@ -659,6 +659,32 @@ ALTER TABLE public.upload_milestones ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "ulmile_read_own" ON public.upload_milestones FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "ulmile_service" ON public.upload_milestones FOR INSERT USING (auth.role() = 'service_role');
 
+-- ── ADMIN ACTIONS (audit log) ─────────────────────────────────
+-- Every card add, edit, delete, approval, rejection by any admin
+CREATE TABLE IF NOT EXISTS public.admin_actions (
+  id              BIGSERIAL PRIMARY KEY,
+  admin_id        UUID REFERENCES public.profiles(id),
+  admin_name      TEXT,
+  action_type     TEXT NOT NULL CHECK (action_type IN (
+                    'card_added','card_edited','card_deleted',
+                    'card_approved','card_rejected','image_uploaded'
+                  )),
+  table_name      TEXT,                              -- which set table was affected
+  card_number     TEXT,
+  player          TEXT,
+  before_data     JSONB,                             -- snapshot before change
+  after_data      JSONB,                             -- snapshot after change
+  note            TEXT,
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_admin_actions_admin ON public.admin_actions (admin_id);
+CREATE INDEX IF NOT EXISTS idx_admin_actions_type  ON public.admin_actions (action_type);
+CREATE INDEX IF NOT EXISTS idx_admin_actions_date  ON public.admin_actions (created_at DESC);
+ALTER TABLE public.admin_actions ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "admin_actions_read" ON public.admin_actions FOR SELECT USING (true);
+CREATE POLICY "admin_actions_insert" ON public.admin_actions FOR INSERT WITH CHECK (true);
+
 -- ============================================================
 -- SCHEMA COMPLETE
 -- Tables:  profiles · cards · vault · isos · matches
@@ -667,5 +693,6 @@ CREATE POLICY "ulmile_service" ON public.upload_milestones FOR INSERT USING (aut
 --          counter_offers · transactions · payments
 --          grading_orders · shipping · hub_inspections
 --          disputes · reviews · upload_milestones
+--          admin_actions
 -- Triggers: vault→ISO match · ISO→vault match · signup bonus
 -- ============================================================

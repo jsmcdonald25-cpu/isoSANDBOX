@@ -2664,6 +2664,14 @@ async function logOut(){
             <div class="cd-report-badge">+5 CREDITS</div>
           </div>
         </div>
+        <!-- Admin tools — only visible to admins, always shown regardless of vault/isovault context -->
+        <div id="cd-admin-tools" style="display:none;margin-top:8px">
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;color:rgba(255,59,92,0.5);text-transform:uppercase;margin-bottom:6px">Admin Tools</div>
+          <div style="display:flex;gap:6px">
+            <button id="cd-admin-edit-btn" onclick="cdAdminEditCard()" style="flex:1;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:8px;padding:8px 6px;font-family:Bebas Neue,sans-serif;font-size:12px;letter-spacing:1.5px;color:rgba(255,59,92,0.8);cursor:pointer;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='rgba(255,59,92,0.5)';this.style.background='rgba(255,59,92,0.12)'" onmouseout="this.style.borderColor='rgba(255,59,92,0.25)';this.style.background='rgba(255,59,92,0.06)'">&#9998; EDIT CARD</button>
+            <button id="cd-admin-delete-btn" onclick="cdAdminDeleteCard()" style="flex:1;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:8px;padding:8px 6px;font-family:Bebas Neue,sans-serif;font-size:12px;letter-spacing:1.5px;color:rgba(255,59,92,0.8);cursor:pointer;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='rgba(255,59,92,0.5)';this.style.background='rgba(255,59,92,0.12)'" onmouseout="this.style.borderColor='rgba(255,59,92,0.25)';this.style.background='rgba(255,59,92,0.06)'">&#128465; DELETE CARD</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -8551,6 +8559,8 @@ function _cdSetMyVaultContext(fromMyVault){
   _cdUpdateTickerBtn();
   // Update edit listing button
   _cdUpdateEditListingBtn();
+  // Show admin tools if admin
+  _cdShowAdminTools();
 }
 
 function cdUpdateFavBtn(){
@@ -9214,6 +9224,59 @@ async function srDecline(){
     T('Marked as not selling');
     loadSellerMatches();
   } catch(e){ T('Failed: '+e.message); }
+}
+
+// ── Admin Card Tools (dashboard side) ───────────────────────────────────────
+function _cdShowAdminTools(){
+  const el = document.getElementById('cd-admin-tools');
+  if(el) el.style.display = window._isAdmin ? 'block' : 'none';
+}
+
+function cdAdminEditCard(){
+  const c = window._cdCard;
+  if(!c) return;
+  const table = c._setTable || _cdGuessTable(c);
+  const cardNum = window._cdDbCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber||''));
+  if(!table || !cardNum){ T('Cannot identify set table for this card.'); return; }
+  // Open admin.html with params so it can auto-navigate to the card editor
+  const url = 'admin.html?action=edit&table='+encodeURIComponent(table)+'&card='+encodeURIComponent(cardNum);
+  window.open(url, '_blank');
+}
+
+async function cdAdminDeleteCard(){
+  const c = window._cdCard;
+  if(!c) return;
+  const table = c._setTable || _cdGuessTable(c);
+  const cardNum = window._cdDbCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber||''));
+  if(!table || !cardNum){ T('Cannot identify set table for this card.'); return; }
+  if(!confirm('ADMIN: Delete card #'+cardNum+' — '+(c.player||'Unknown')+' from '+table+'?\n\nThis removes the card from the catalog for ALL users. This cannot be undone.')) return;
+  try {
+    // Fetch before state for audit
+    let beforeData = null;
+    try { const rows = await _rGet(table,'select=*&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1'); beforeData = rows&&rows[0]||null; } catch(e){}
+    // Delete
+    await fetch(_SURL+'/'+table+'?card_number=eq.'+encodeURIComponent(cardNum),{method:'DELETE',headers:_sbH()});
+    // Audit log
+    try {
+      await _rPost('admin_actions',{
+        admin_id: window._authUser?.id||null,
+        admin_name: window._authUser?.username||window._authUser?.email?.split('@')[0]||'unknown',
+        action_type:'card_deleted',
+        table_name:table,
+        card_number:cardNum,
+        player:c.player||null,
+        before_data:beforeData,
+        after_data:null,
+        note:'Deleted from dashboard admin tools',
+        created_at:new Date().toISOString()
+      },null);
+    } catch(e){}
+    T('Card #'+cardNum+' deleted from '+table);
+    // Go back to ISOVault
+    setTimeout(()=>{ N('library',document.getElementById('nav-library')); },800);
+  } catch(e){
+    T('Delete failed: '+e.message);
+  }
 }
 
 // ── Edit Listing / Delist ───────────────────────────────────────────────────

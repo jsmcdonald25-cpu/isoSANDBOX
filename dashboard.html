@@ -2809,7 +2809,7 @@ async function logOut(){
 
         <div class="vm-error" id="cdUploadError" style="display:none">Both front and back are required.</div>
         <div style="display:flex;gap:10px;margin-top:4px">
-          <button class="btn btn-primary" style="flex:1" id="cdReviewBtn" onclick="cdUploadDirect()">UPLOAD &amp; SAVE</button>
+          <button class="btn btn-primary" style="flex:1" id="cdReviewBtn" onclick="cdUploadShowConfirm()">REVIEW BEFORE SAVING &#8594;</button>
           <button class="btn btn-ghost" onclick="closeCatalogUpload()">Cancel</button>
         </div>
       </div>
@@ -6985,20 +6985,6 @@ function cdUploadShowConfirm(){
   document.getElementById('cdUploadSubmitBtn').disabled=false;
   document.getElementById('cdUploadScreen1').style.display='none';
   document.getElementById('cdUploadScreen2').style.display='block';
-}
-
-function cdUploadDirect(){
-  if(!_cdCatalogFrontBlob||!_cdCatalogBackBlob){
-    document.getElementById('cdUploadError').style.display='block'; return;
-  }
-  document.getElementById('cdUploadError').style.display='none';
-  // Skip confirm screen — go straight to upload
-  document.getElementById('cdUploadScreen1').style.display='none';
-  document.getElementById('cdUploadScreen2').style.display='block';
-  // Show progress immediately
-  document.getElementById('cdUploadProgress').style.display='block';
-  document.getElementById('cdUploadProgressBar').style.width='5%';
-  submitCatalogUpload();
 }
 
 function cdUploadBackToUpload(){

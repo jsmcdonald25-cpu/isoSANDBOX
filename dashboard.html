@@ -8159,6 +8159,7 @@ function ivOpenCard(row){
   _buildVariationPills(card);
   N('carddetail', null);
   _cdInitRotation();
+  _cdSetMyVaultContext(false);
   _cdLoadCatalogImages(card);
   } catch(err) {
     T('❌ ' + err.message);

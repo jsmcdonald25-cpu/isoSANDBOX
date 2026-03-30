@@ -173,6 +173,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .ct-item .ct-price{color:var(--blue);font-weight:700}
 .ct-item .ct-chg.up{color:var(--green)}.ct-item .ct-chg.dn{color:var(--red)}
 .ct-item .ct-sep{color:rgba(0,170,255,0.25)}
+.ct-item[onclick]:hover{opacity:0.75;text-decoration:underline;text-underline-offset:3px}
 .btn{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:8px 18px;border-radius:6px;border:none;cursor:pointer;transition:all .2s}
 .btn-primary{background:var(--blue);color:white}
 .btn-primary:hover{background:var(--blue-bright);box-shadow:0 0 20px var(--blue-glow)}
@@ -6202,8 +6203,14 @@ function toggleTicker(card, el){
     const paid = parseFloat(card.price_paid) || parseFloat(card.price) || 0;
     const est  = parseFloat(card.estimated_value) || paid;
     const chgPct = paid > 0 ? (((est - paid) / paid) * 100) : 0;
+    // Resolve CARDS id for navigation
+    const _match = CARDS.find(x => x && (
+      x._cardNumber === (card.card_number||'').replace(/^#/,'') ||
+      (x.player === (card.player||card.name) && String(x.year) === String((card.year||'').toString().slice(0,4)))
+    ));
     list.push({
       _tid: id,
+      cardId: _match ? _match.id : null,
       name: (card.player || card.name || 'Unknown') + (card.variation && card.variation !== 'Base' ? ' ' + card.variation : '') + (card.serial_total ? ' /' + card.serial_total : ''),
       grade: card.grade || card.grade_company || 'Raw',
       price: est || paid,
@@ -6237,6 +6244,7 @@ function initCardTicker(){
         price: '$' + (p >= 1000 ? p.toLocaleString() : p.toFixed(p % 1 === 0 ? 0 : 2)),
         chg: (chg >= 0 ? '+' : '') + chg.toFixed(1) + '%',
         dir: chg >= 0 ? 'up' : 'dn',
+        cardId: w.cardId || null,
       };
     });
   } else {
@@ -6256,7 +6264,8 @@ function initCardTicker(){
 
   let items = '';
   [...cards, ...cards].forEach(c => {
-    items += `<span class="ct-item"><span class="ct-name">${c.name}</span><span class="ct-sep">·</span><span>${c.grade}</span><span class="ct-sep">·</span><span class="ct-price">${c.price}</span><span class="ct-chg ${c.dir}">${c.chg}</span><span class="ct-sep" style="margin-left:8px">&#11045;</span></span>`;
+    const clickAttr = c.cardId ? ` onclick="openCardDetail(${c.cardId})" style="cursor:pointer"` : '';
+    items += `<span class="ct-item"${clickAttr}><span class="ct-name">${c.name}</span><span class="ct-sep">·</span><span>${c.grade}</span><span class="ct-sep">·</span><span class="ct-price">${c.price}</span><span class="ct-chg ${c.dir}">${c.chg}</span><span class="ct-sep" style="margin-left:8px">&#11045;</span></span>`;
   });
   inner.innerHTML = items;
   // Scale animation speed by number of items (min 20s, max 60s)
@@ -7989,7 +7998,7 @@ function ivOpenCard(row){
     rc:      !!row.is_rookie, tags: row.is_rookie?['rc']:[],
     price: 0, isos: 0,
     hasCatalogPic: !!(row.var_images && Object.keys(row.var_images).length),
-    _setTable:   _ivSet ? _ivSet.table : 'card-images',
+    _setTable:   _ivSet ? _ivSet.table : _cdGuessTable({year:parseInt((row.year||'').toString().slice(0,4)),brand:(row.set_name||'').toLowerCase().includes('bowman')?'Bowman':'Topps',set:row.set_name||''}),
     _cardNumber: row.card_number,
     _team:       row.team,
     _category:   row.category,
@@ -8008,6 +8017,7 @@ function ivOpenCard(row){
           vars.push({label:lbl, color:clr.color, glow:clr.glow,
             superfractor:p.superfractor||clr.superfractor||false,
             run:p.run||null, isBase:p.isBase||clr.isBase||false,
+            group:p.group||null, tooltip:p.tooltip||null,
             lastSale:'—', isos:0, pop:null, watching:null,
             _varImages: row.var_images||null});
         });

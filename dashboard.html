@@ -497,7 +497,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-crumb-sep{color:rgba(0,170,255,0.3);font-size:11px}
 .cd-back-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(0,170,255,0.08);border:1px solid var(--deep-border);border-radius:6px;padding:6px 12px;font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);cursor:pointer;transition:all .2s;margin-bottom:18px}
 .cd-back-btn:hover{background:rgba(0,170,255,0.15);border-color:var(--blue)}
-.cd-layout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:40px;align-items:start;min-width:0;padding-left:120px}
+.cd-layout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;align-items:start;min-width:0;padding-left:10px}
 .cd-viewer-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;background:#0D1F33;width:fit-content;min-width:0;max-width:420px}
 .cd-scene-wrap{position:relative;width:240px;height:336px;max-width:100%}
 .cd-shadow{position:absolute;inset:0;border-radius:10px;pointer-events:none;z-index:0;transition:box-shadow .4s}
@@ -515,7 +515,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-ctrl-btn.upload{color:var(--green);border-color:rgba(0,232,135,0.3);background:rgba(0,232,135,0.06)}
 .cd-ctrl-btn.upload:hover{background:rgba(0,232,135,0.14);border-color:var(--green)}
 .cd-side-label{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)}
-.cd-info{display:flex;flex-direction:column;gap:18px}
+.cd-info{display:flex;flex-direction:column;gap:10px}
 .cd-card-title{font-family:Bebas Neue,sans-serif;font-size:26px;letter-spacing:2px;color:var(--white);line-height:1.1}
 .cd-card-sub{font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);margin-top:3px;letter-spacing:.5px}
 .cd-card-num{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:rgba(0,170,255,0.6);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
@@ -531,12 +531,12 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-pill-group-head .pg-arrow{font-size:8px;transition:transform .2s;display:inline-block}
 .cd-pill-group-head.open .pg-arrow{transform:rotate(90deg)}
 .cd-pill-group-head .pg-count{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted-text);font-weight:400}
-.cd-pill-group-body{display:flex;flex-wrap:wrap;gap:4px}
+.cd-pill-group-body{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
 .cd-pill-group-body.collapsed{display:none}
 .cd-pill .pill-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--deep3);border:1px solid rgba(0,170,255,0.3);border-radius:6px;padding:5px 10px;font-size:10px;font-weight:400;letter-spacing:0;color:var(--chrome);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s;z-index:20;box-shadow:0 4px 12px rgba(0,0,0,0.4)}
 .cd-pill .pill-tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:rgba(0,170,255,0.3)}
 .cd-pill:hover .pill-tip{opacity:1}
-.cd-pill{padding:6px 14px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .25s;border:1.5px solid transparent;user-select:none;position:relative;overflow:hidden}
+.cd-pill{padding:5px 8px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.3px;cursor:pointer;transition:all .25s;border:1.5px solid transparent;user-select:none;position:relative;overflow:hidden;text-align:center;white-space:nowrap;text-overflow:ellipsis}
 .cd-pill.active{color:#fff}
 .cd-pill:not(.active){background:rgba(0,0,0,0.2);color:var(--muted-text);border-color:var(--deep-border)}
 .cd-pill:not(.active):hover{border-color:rgba(0,170,255,0.4);color:var(--white)}
@@ -561,7 +561,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-mkt-val.blue{color:var(--blue)}.cd-mkt-val.green{color:var(--green)}.cd-mkt-val.gold{color:#FFC83C}
 .cd-watching{font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-top:10px;padding-top:10px;border-top:1px solid var(--deep-border);display:flex;align-items:center;gap:6px}
 .cd-watching strong{color:var(--white)}
-.cd-vault-cta{background:rgba(0,170,255,0.06);border:1px solid var(--deep-border);border-radius:10px;padding:16px}
+.cd-vault-cta{background:rgba(0,170,255,0.06);border:1px solid var(--deep-border);border-radius:10px;padding:10px}
 .cd-vault-path-msg{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--chrome);line-height:1.5;margin-bottom:14px}
 .cd-vault-path-msg strong{color:var(--white)}
 /* Catalog upload mini-modal */
@@ -2694,9 +2694,11 @@ async function logOut(){
         <!-- Admin tools — only visible to admins, always shown regardless of vault/isovault context -->
         <div id="cd-admin-tools" style="display:none;margin-top:8px">
           <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;color:rgba(255,59,92,0.5);text-transform:uppercase;margin-bottom:6px">Admin Tools</div>
-          <div style="display:flex;gap:6px">
-            <button id="cd-admin-edit-btn" onclick="cdAdminEditCard()" style="flex:1;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:8px;padding:8px 6px;font-family:Bebas Neue,sans-serif;font-size:12px;letter-spacing:1.5px;color:rgba(255,59,92,0.8);cursor:pointer;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='rgba(255,59,92,0.5)';this.style.background='rgba(255,59,92,0.12)'" onmouseout="this.style.borderColor='rgba(255,59,92,0.25)';this.style.background='rgba(255,59,92,0.06)'">&#9998; EDIT CARD</button>
-            <button id="cd-admin-delete-btn" onclick="cdAdminDeleteCard()" style="flex:1;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:8px;padding:8px 6px;font-family:Bebas Neue,sans-serif;font-size:12px;letter-spacing:1.5px;color:rgba(255,59,92,0.8);cursor:pointer;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='rgba(255,59,92,0.5)';this.style.background='rgba(255,59,92,0.12)'" onmouseout="this.style.borderColor='rgba(255,59,92,0.25)';this.style.background='rgba(255,59,92,0.06)'">&#128465; DELETE CARD</button>
+          <div style="display:flex;gap:4px;flex-wrap:wrap">
+            <button onclick="cdAdminEditCard()" style="flex:1;min-width:70px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:6px 4px;font-family:Bebas Neue,sans-serif;font-size:11px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#9998; EDIT</button>
+            <button onclick="cdAdminDeleteCard()" style="flex:1;min-width:70px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:6px 4px;font-family:Bebas Neue,sans-serif;font-size:11px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128465; DELETE</button>
+            <button onclick="cdAdminDeleteImage()" style="flex:1;min-width:70px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:6px 4px;font-family:Bebas Neue,sans-serif;font-size:11px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128247; DEL IMAGE</button>
+            <button onclick="cdAdminDeleteVariation()" style="flex:1;min-width:70px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:6px 4px;font-family:Bebas Neue,sans-serif;font-size:11px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128308; DEL VARIANT</button>
           </div>
         </div>
       </div>
@@ -9370,6 +9372,69 @@ async function cdAdminDeleteCard(){
   } catch(e){
     T('Delete failed: '+e.message);
   }
+}
+
+async function cdAdminDeleteImage(){
+  const c = window._cdCard;
+  if(!c) return;
+  const table = c._setTable || _cdGuessTable(c);
+  const cardNum = window._cdDbCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber||''));
+  if(!table || !cardNum){ T('Cannot identify set table.'); return; }
+  const vars = window._cdVars || [];
+  const activeVar = vars[window._cdActiveVar||0];
+  const varLabel = activeVar ? activeVar.label : 'Base';
+  if(!confirm('ADMIN: Delete images for "'+varLabel+'" on card #'+cardNum+'?\n\nThis removes front/back images for this variation.')) return;
+  try {
+    // Fetch current var_images
+    const rows = await _rGet(table,'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
+    const vi = (rows && rows[0] && rows[0].var_images) || {};
+    // Remove the variation's images
+    delete vi[varLabel];
+    // Also remove top-level front/back if this is the base variation
+    if(varLabel === 'Base' || varLabel === 'base'){ delete vi.front; delete vi.back; }
+    await _rPatch(table,'card_number=eq.'+encodeURIComponent(cardNum),{var_images:vi});
+    // Update local state
+    if(c._varImages) delete c._varImages[varLabel];
+    _cdSetViewerImages(null, null);
+    T('Images deleted for '+varLabel);
+    const uploadBtn = document.getElementById('cd-upload-btn');
+    if(uploadBtn){ uploadBtn.textContent = '\uD83D\uDCF7 Upload Image'; }
+  } catch(e){ T('Failed: '+e.message); }
+}
+
+async function cdAdminDeleteVariation(){
+  const c = window._cdCard;
+  if(!c) return;
+  const table = c._setTable || _cdGuessTable(c);
+  const cardNum = window._cdDbCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber||''));
+  if(!table || !cardNum){ T('Cannot identify set table.'); return; }
+  const vars = window._cdVars || [];
+  const activeVar = vars[window._cdActiveVar||0];
+  if(!activeVar){ T('No variation selected.'); return; }
+  const varLabel = activeVar.label;
+  if(activeVar.isBase){ T('Cannot delete the base variation.'); return; }
+  if(!confirm('ADMIN: Delete variation "'+varLabel+'" from card #'+cardNum+'?\n\nThis removes it from the variation list for ALL users.')) return;
+  try {
+    // Fetch current variations
+    const rows = await _rGet(table,'select=variations,var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
+    if(!rows || !rows[0]){ T('Card not found in DB.'); return; }
+    const dbVars = rows[0].variations || [];
+    const vi = rows[0].var_images || {};
+    // Remove the variation
+    const newVars = dbVars.filter(v => v.label !== varLabel);
+    delete vi[varLabel];
+    await _rPatch(table,'card_number=eq.'+encodeURIComponent(cardNum),{variations:newVars, var_images:vi});
+    // Update local state and rebuild pills
+    c.variations = newVars.map(v => ({
+      label:v.label, color:v.color, glow:v.glow,
+      superfractor:v.superfractor||false, run:v.run||null,
+      isBase:v.isBase||false, group:v.group||null, tooltip:v.tooltip||null,
+      lastSale:'—', isos:0, pop:null, watching:null,
+      _varImages: c._varImages||null
+    }));
+    _buildVariationPills(c);
+    T('Variation "'+varLabel+'" deleted');
+  } catch(e){ T('Failed: '+e.message); }
 }
 
 // ── Edit Listing / Delist ───────────────────────────────────────────────────

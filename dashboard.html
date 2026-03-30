@@ -523,7 +523,18 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-currently-val{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--white);display:flex;align-items:center;gap:8px}
 .cd-currently-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;transition:background .3s,box-shadow .3s}
 .cd-var-label{font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:8px}
-.cd-var-pills{display:flex;flex-wrap:wrap;gap:6px;max-width:100%}
+.cd-var-pills{max-width:100%}
+.cd-pill-group{margin-bottom:6px}
+.cd-pill-group-head{display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 0;border-bottom:1px solid rgba(0,170,255,0.08);margin-bottom:5px;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:1.5px;color:var(--muted-text);user-select:none}
+.cd-pill-group-head:hover{color:var(--chrome)}
+.cd-pill-group-head .pg-arrow{font-size:8px;transition:transform .2s;display:inline-block}
+.cd-pill-group-head.open .pg-arrow{transform:rotate(90deg)}
+.cd-pill-group-head .pg-count{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted-text);font-weight:400}
+.cd-pill-group-body{display:flex;flex-wrap:wrap;gap:4px}
+.cd-pill-group-body.collapsed{display:none}
+.cd-pill .pill-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--deep3);border:1px solid rgba(0,170,255,0.3);border-radius:6px;padding:5px 10px;font-size:10px;font-weight:400;letter-spacing:0;color:var(--chrome);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s;z-index:20;box-shadow:0 4px 12px rgba(0,0,0,0.4)}
+.cd-pill .pill-tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:rgba(0,170,255,0.3)}
+.cd-pill:hover .pill-tip{opacity:1}
 .cd-pill{padding:6px 14px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .25s;border:1.5px solid transparent;user-select:none;position:relative;overflow:hidden}
 .cd-pill.active{color:#fff}
 .cd-pill:not(.active){background:rgba(0,0,0,0.2);color:var(--muted-text);border-color:var(--deep-border)}
@@ -6708,21 +6719,60 @@ function _buildVariationPills(c){
     run: c.run, isBase:true, lastSale:'$'+c.price, isos:c.isos, pop:null, watching:null
   }];
   window._cdVars = vars;
-  pillsEl.innerHTML = vars.map((v,i)=>{
-    const runLabel = v.run ? `<span class="pill-run">/${v.run}</span>` : '';
-    const sfClass  = v.superfractor ? 'superfractor' : '';
-    return `<div class="cd-pill ${i===0?'active':''} ${sfClass}" id="cd-pill-${i}"
-      style="${i===0?`background:${v.color};border-color:${v.color};box-shadow:0 0 10px ${v.glow}`:''}"
-      onclick="cdSelectVar(${i})">${v.label}${runLabel}</div>`;
-  }).join('') + `<div class="cd-missing-btn" onclick="openMissingCardModal()">&#10133; Missing Card<span class="missing-tooltip">&#127873; Help build ISOVault — earn free credits!<br><span style="font-size:10px;color:var(--muted-text)">Submit cards we don't have yet</span></span></div>`;
+
+  // Group variations by their group field (default: ungrouped)
+  const groups = {};
+  const groupOrder = [];
+  vars.forEach((v,i)=>{
+    const g = v.group || 'Variations';
+    if(!groups[g]){ groups[g] = []; groupOrder.push(g); }
+    groups[g].push({v,i});
+  });
+
+  const hasMultipleGroups = groupOrder.length > 1;
+  let html = '';
+
+  groupOrder.forEach((g,gi)=>{
+    const items = groups[g];
+    const isFirst = gi === 0;
+    if(hasMultipleGroups){
+      html += `<div class="cd-pill-group">`;
+      html += `<div class="cd-pill-group-head ${isFirst?'open':''}" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('collapsed')">`;
+      html += `<span class="pg-arrow">&#9654;</span> ${g.toUpperCase()} <span class="pg-count">(${items.length})</span>`;
+      html += `</div>`;
+      html += `<div class="cd-pill-group-body ${isFirst?'':'collapsed'}">`;
+    } else {
+      html += `<div class="cd-pill-group"><div class="cd-pill-group-body">`;
+    }
+
+    items.forEach(({v,i})=>{
+      const runLabel = v.run ? `<span class="pill-run">/${v.run}</span>` : '';
+      const sfClass  = v.superfractor ? 'superfractor' : '';
+      const tipHtml  = v.tooltip ? `<span class="pill-tip">${v.tooltip}</span>` : '';
+      html += `<div class="cd-pill ${i===0?'active':''} ${sfClass}" id="cd-pill-${i}"
+        style="${i===0?`background:${v.color};border-color:${v.color};box-shadow:0 0 10px ${v.glow}`:''}"
+        onclick="cdSelectVar(${i})">${v.label}${runLabel}${tipHtml}</div>`;
+    });
+
+    if(hasMultipleGroups){
+      html += `</div></div>`;
+    } else {
+      html += `</div></div>`;
+    }
+  });
+
+  html += `<div style="margin-top:4px"><div class="cd-missing-btn" onclick="openMissingCardModal()">&#10133; Missing Variant<span class="missing-tooltip">Help build ISOVault — earn +1 credit!<br><span style="font-size:10px;color:var(--muted-text)">Submit cards we don't have yet</span></span></div></div>`;
+
+  pillsEl.innerHTML = html;
   cdSelectVar(0, true);
+
   // If pill 0 has no image but another pill does, auto-select the first pill with an image
   const _varImgs = window._cdCard && window._cdCard._varImages;
   if(_varImgs && Object.keys(_varImgs).length){
-    const vars = window._cdVars || [];
-    const hasImg0 = vars[0] && _varImgs[vars[0].label] && (_varImgs[vars[0].label].front || _varImgs[vars[0].label].back);
+    const allVars = window._cdVars || [];
+    const hasImg0 = allVars[0] && _varImgs[allVars[0].label] && (_varImgs[allVars[0].label].front || _varImgs[allVars[0].label].back);
     if(!hasImg0){
-      const firstWithImg = vars.findIndex(v => _varImgs[v.label] && (_varImgs[v.label].front || _varImgs[v.label].back));
+      const firstWithImg = allVars.findIndex(v => _varImgs[v.label] && (_varImgs[v.label].front || _varImgs[v.label].back));
       if(firstWithImg > 0) cdSelectVar(firstWithImg, true);
     }
   }
@@ -8008,15 +8058,21 @@ function ivOpenCard(row){
       }
 
       // SOURCE 3: var_images keys (uploaded parallels not yet in checklist rows)
+      // Only treat keys whose value is an object with front/back — skip raw URL strings like "front","back"
       if(row.var_images && Object.keys(row.var_images).length){
         Object.keys(row.var_images).forEach(lbl=>{
           if(seen[lbl]) return;
+          const val = row.var_images[lbl];
+          // Skip if value is a string (raw URL, not a variation object)
+          if(typeof val === 'string') return;
+          // Skip generic keys that are not variation names
+          if(!val || typeof val !== 'object') return;
           seen[lbl] = true;
           const clr = _varPillColor(lbl);
           vars.push({label:lbl, color:clr.color, glow:clr.glow, superfractor:clr.superfractor||false,
             run:null, isBase:clr.isBase||false,
             lastSale:'—', isos:0, pop:null, watching:null,
-            _varImages: {[lbl]: row.var_images[lbl]}});
+            _varImages: {[lbl]: val}});
         });
       }
 

@@ -654,6 +654,10 @@ tr:hover td { background: var(--bg); }
           <button class="btn" onclick="dedupScanAll()" id="dedup-scan-all-btn" style="background:var(--purple-light);color:var(--purple);border:1px solid var(--purple)">Scan ALL Sets</button>
         </div>
         <div id="dedup-status" style="display:none;margin-bottom:14px;padding:12px;border-radius:8px;font-size:13px;font-family:var(--font)"></div>
+        <div id="dedup-actions" style="display:none;gap:8px;margin-bottom:14px">
+          <button class="btn" onclick="dedupFix()" id="dedup-fix-btn" style="background:var(--red);color:#fff">Fix All Duplicates</button>
+          <button class="btn btn-ghost" onclick="dedupCancel()">Cancel</button>
+        </div>
         <div id="dedup-preview" style="display:none;margin-bottom:14px">
           <div style="font-weight:700;margin-bottom:8px">Preview — Duplicates Found:</div>
           <div class="table-wrap">
@@ -662,10 +666,6 @@ tr:hover td { background: var(--bg); }
               <tbody id="dedup-tbody"></tbody>
             </table>
           </div>
-        </div>
-        <div id="dedup-actions" style="display:none;gap:8px;margin-bottom:14px">
-          <button class="btn" onclick="dedupFix()" id="dedup-fix-btn" style="background:var(--red);color:#fff">Fix All Duplicates</button>
-          <button class="btn btn-ghost" onclick="dedupCancel()">Cancel</button>
         </div>
         <div id="dedup-progress" style="display:none;margin-bottom:14px">
           <div style="background:var(--surface2);border-radius:6px;height:6px;overflow:hidden"><div id="dedup-progress-bar" style="height:100%;background:var(--green);width:0;transition:width .3s"></div></div>

@@ -2794,30 +2794,22 @@ async function logOut(){
           </div>
         </div>
 
-        <!-- Orientation — always visible, selects are source of truth, canvas detection pre-fills -->
-        <div id="cdOrientSection" style="background:rgba(0,170,255,0.05);border:1px solid rgba(0,170,255,0.15);border-radius:8px;padding:10px 12px;margin-bottom:10px;font-family:Barlow Condensed,sans-serif;font-size:12px">
-          <div style="color:var(--chrome);letter-spacing:.5px;margin-bottom:8px;font-size:11px">CONFIRM ORIENTATION &mdash; <span id="cdOrientAutoLabel" style="color:var(--muted-text)">upload images to detect</span></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="cdOrientPickers">
-            <div>
-              <div style="color:var(--muted-text);font-size:11px;letter-spacing:1px;margin-bottom:4px">FRONT</div>
-              <select id="cdOrientFront" style="width:100%;background:var(--deep3);border:1px solid var(--deep-border);border-radius:6px;padding:5px 8px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--white)">
-                <option value="portrait">Portrait (tall ↕)</option>
-                <option value="landscape">Landscape (wide ↔)</option>
-              </select>
-            </div>
-            <div>
-              <div style="color:var(--muted-text);font-size:11px;letter-spacing:1px;margin-bottom:4px">BACK</div>
-              <select id="cdOrientBack" style="width:100%;background:var(--deep3);border:1px solid var(--deep-border);border-radius:6px;padding:5px 8px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--white)">
-                <option value="portrait">Portrait (tall ↕)</option>
-                <option value="landscape">Landscape (wide ↔)</option>
-              </select>
-            </div>
-          </div>
+        <!-- Orientation — hidden, auto-detected from canvas dimensions -->
+        <div id="cdOrientSection" style="display:none">
+          <span id="cdOrientAutoLabel"></span>
+          <select id="cdOrientFront" style="display:none">
+            <option value="portrait">Portrait</option>
+            <option value="landscape">Landscape</option>
+          </select>
+          <select id="cdOrientBack" style="display:none">
+            <option value="portrait">Portrait</option>
+            <option value="landscape">Landscape</option>
+          </select>
         </div>
 
         <div class="vm-error" id="cdUploadError" style="display:none">Both front and back are required.</div>
         <div style="display:flex;gap:10px;margin-top:4px">
-          <button class="btn btn-primary" style="flex:1" id="cdReviewBtn" onclick="cdUploadShowConfirm()">REVIEW BEFORE SAVING &#8594;</button>
+          <button class="btn btn-primary" style="flex:1" id="cdReviewBtn" onclick="cdUploadDirect()">UPLOAD &amp; SAVE</button>
           <button class="btn btn-ghost" onclick="closeCatalogUpload()">Cancel</button>
         </div>
       </div>
@@ -6993,6 +6985,20 @@ function cdUploadShowConfirm(){
   document.getElementById('cdUploadSubmitBtn').disabled=false;
   document.getElementById('cdUploadScreen1').style.display='none';
   document.getElementById('cdUploadScreen2').style.display='block';
+}
+
+function cdUploadDirect(){
+  if(!_cdCatalogFrontBlob||!_cdCatalogBackBlob){
+    document.getElementById('cdUploadError').style.display='block'; return;
+  }
+  document.getElementById('cdUploadError').style.display='none';
+  // Skip confirm screen — go straight to upload
+  document.getElementById('cdUploadScreen1').style.display='none';
+  document.getElementById('cdUploadScreen2').style.display='block';
+  // Show progress immediately
+  document.getElementById('cdUploadProgress').style.display='block';
+  document.getElementById('cdUploadProgressBar').style.width='5%';
+  submitCatalogUpload();
 }
 
 function cdUploadBackToUpload(){

@@ -297,7 +297,10 @@ tr:hover td { background: var(--bg); }
     <label class="gate-label">EMAIL</label>
     <input class="gate-input" id="gateEmail" type="email" placeholder="admin@grailiso.com" autocomplete="email">
     <label class="gate-label">PASSWORD</label>
-    <input class="gate-input" id="gatePass" type="password" placeholder="••••••••••" autocomplete="current-password">
+    <div style="position:relative">
+      <input class="gate-input" id="gatePass" type="password" placeholder="••••••••••" autocomplete="current-password" style="padding-right:40px">
+      <button type="button" onclick="var i=document.getElementById('gatePass');var s=i.type==='text';i.type=s?'password':'text';this.style.color=s?'var(--text3)':'var(--blue)'" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:4px" title="Show password">&#128065;</button>
+    </div>
     <button class="gate-btn" onclick="gateLogin()">Sign In to Admin</button>
     <div class="gate-err" id="gateErr"></div>
   </div>

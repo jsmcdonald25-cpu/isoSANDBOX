@@ -5734,11 +5734,15 @@ async function submitMissingCard(){
     }, 1200);
 
   } catch(err){
-    document.getElementById('mcSubmitError').textContent = err.message || 'Submission failed. Try again.';
+    const errMsg = err.message || 'Submission failed. Try again.';
+    document.getElementById('mcSubmitError').textContent = errMsg;
     document.getElementById('mcSubmitError').style.display='block';
+    document.getElementById('mcSubmitError').scrollIntoView({behavior:'smooth',block:'center'});
     btn.disabled=false; btn.textContent='SUBMIT FOR REVIEW';
     btn.style.background='var(--red)';
     document.getElementById('mcProgressBar').style.width='0';
+    T('Error: ' + errMsg);
+    console.error('[Missing Card Submit]', errMsg, err);
   }
 }
 

@@ -2743,6 +2743,15 @@ async function dedupScan() {
       if (group.length > 1) dupes[num] = group;
     });
 
+    // Filter out false dupes — same card_number but different players (e.g. CPA-SM = two different players)
+    Object.keys(dupes).forEach(num => {
+      const group = dupes[num];
+      const players = [...new Set(group.map(r => (r.player || r.player_name || '').trim().toLowerCase()).filter(Boolean))];
+      if (players.length > 1 && !group.some(r => (r.category||'').toUpperCase() === 'INSERT' || (r.section||'').toUpperCase() === 'INSERT')) {
+        delete dupes[num]; // different players, not insert dupes — skip
+      }
+    });
+
     const dupeCount = Object.keys(dupes).length;
     const dupeRows = Object.values(dupes).reduce((s, g) => s + g.length, 0);
 
@@ -2981,6 +2990,16 @@ async function dedupFix() {
   );
   _dedupLog('\nDone. ' + (errors ? errors + ' errors.' : 'All clean.'));
   _dedupData = null;
+
+  // Reset UI back to scan screen after 2 seconds
+  setTimeout(function(){
+    document.getElementById('dedup-preview').style.display = 'none';
+    document.getElementById('dedup-actions').style.display = 'none';
+    document.getElementById('dedup-log').style.display = 'none';
+    document.getElementById('dedup-progress').style.display = 'none';
+    var btn2 = document.getElementById('dedup-fix-btn');
+    if(btn2){ btn2.disabled = false; btn2.textContent = 'Fix All Duplicates'; btn2.style.background = 'var(--red)'; }
+  }, 2000);
 }
 
 function dedupCancel() {

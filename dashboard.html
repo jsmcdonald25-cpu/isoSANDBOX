@@ -1512,6 +1512,10 @@ async function initUserProfile(user){
   // My Vault is the landing page — ONLY on first login, not on token refresh
   if(!window._currentSection){
     N('myvault', document.getElementById('nav-myvault'));
+    // Show welcome tour for first-time users
+    if(profile && profile.tour_completed !== true){
+      setTimeout(startTour, 500);
+    }
   }
   // Preload ISO count for the chip — silent, no nav side effects
   (async()=>{ try{ const r=await _rGet('isos','select=id,status&user_id=eq.'+user.id+'&status=in.(active,matched)&limit=100'); const n=(r||[]).length; const el=document.getElementById('mv-active-isos'); if(el) el.textContent=n||'0'; const b=document.getElementById('navBadge-myisos'); if(b){b.textContent=n||'';b.style.display=n?'':'none';} }catch(e){} })();
@@ -10779,6 +10783,121 @@ async function submitBugReport(){
   dismissBtn.addEventListener('click', hideBanner);
   window.addEventListener('appinstalled',function(){hideBanner();_prompt=null;});
 })();
+
+// ── Welcome Tour ────────────────────────────────────────────────────────────
+const TOUR_STEPS = [
+  {
+    title: 'WELCOME TO GRAILISO',
+    text: 'The world\'s most complete sports card platform — built by collectors, for collectors. Let us show you around.',
+    target: null,
+    icon: '&#127942;'
+  },
+  {
+    title: 'ISOVAULT — YOUR HOME BASE',
+    text: 'Everything starts here. Browse every card from every set — search by player, set, or year. ISOVault is the world\'s most complete sports card search engine.',
+    target: '#nav-library',
+    icon: '&#128218;'
+  },
+  {
+    title: 'CARD DETAIL',
+    text: 'Click any card in ISOVault to see every parallel, upload images, check market prices, and add it to your vault — all from one screen.',
+    target: '#nav-library',
+    icon: '&#127183;'
+  },
+  {
+    title: 'MY VAULT',
+    text: 'Cards you add from ISOVault land here. Track what you own, what you paid, and your profit/loss — your personal card portfolio.',
+    target: '#nav-myvault',
+    icon: '&#128188;'
+  },
+  {
+    title: 'POST ISO',
+    text: 'Can\'t find a card in ISOVault? Post an ISO (In Search Of) and sellers with that card will be notified automatically.',
+    target: '#nav-post',
+    icon: '&#128276;'
+  },
+  {
+    title: 'MISSING VARIANT',
+    text: 'Found a parallel that\'s not in ISOVault yet? Submit it with photos. You help build the database, you earn credits. Every contribution makes ISOVault better for everyone.',
+    target: null,
+    icon: '&#10133;'
+  },
+  {
+    title: 'YOU\'RE ALL SET!',
+    text: 'Start by browsing ISOVault — find your cards, build your vault, and join the community.',
+    target: '#nav-library',
+    icon: '&#127919;',
+    isFinal: true
+  }
+];
+
+let _tourStep = 0;
+
+function _tourShow() {
+  const overlay = document.getElementById('tour-overlay');
+  if (!overlay) return;
+  const step = TOUR_STEPS[_tourStep];
+  if (!step) { _tourEnd(); return; }
+
+  // Highlight target
+  document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+  if (step.target) {
+    const el = document.querySelector(step.target);
+    if (el) { el.classList.add('tour-highlight'); el.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
+  }
+
+  document.getElementById('tour-icon').innerHTML = step.icon;
+  document.getElementById('tour-title').textContent = step.title;
+  document.getElementById('tour-text').textContent = step.text;
+  document.getElementById('tour-counter').textContent = (_tourStep + 1) + ' / ' + TOUR_STEPS.length;
+  document.getElementById('tour-next-btn').textContent = step.isFinal ? 'GO TO ISOVAULT' : 'NEXT';
+  overlay.style.display = 'flex';
+}
+
+function _tourNext() {
+  const step = TOUR_STEPS[_tourStep];
+  if (step && step.isFinal) {
+    _tourEnd();
+    N('library', document.getElementById('nav-library'));
+    return;
+  }
+  _tourStep++;
+  _tourShow();
+}
+
+function _tourEnd() {
+  const overlay = document.getElementById('tour-overlay');
+  if (overlay) overlay.style.display = 'none';
+  document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+  // Mark tour as completed
+  const user = window._authUser;
+  if (user) {
+    try { _rPatch('profiles', 'id=eq.' + user.id, { tour_completed: true }); } catch(e) {}
+  }
+}
+
+function startTour() {
+  _tourStep = 0;
+  _tourShow();
+}
 </script>
+
+<!-- Welcome Tour Overlay -->
+<div id="tour-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.7);backdrop-filter:blur(3px);align-items:center;justify-content:center">
+  <div style="background:linear-gradient(135deg,#0a1f35,#0d2a4a);border:2px solid rgba(0,170,255,0.4);border-radius:16px;padding:32px 36px;max-width:480px;width:90%;text-align:center;box-shadow:0 0 40px rgba(0,170,255,0.2),0 20px 60px rgba(0,0,0,0.5)">
+    <div id="tour-icon" style="font-size:48px;margin-bottom:12px"></div>
+    <div id="tour-title" style="font-family:Bebas Neue,sans-serif;font-size:26px;letter-spacing:3px;color:#E8EDF2;margin-bottom:8px"></div>
+    <div id="tour-text" style="font-family:Barlow Condensed,sans-serif;font-size:15px;color:#7A95AE;line-height:1.6;margin-bottom:20px"></div>
+    <div style="display:flex;gap:10px;justify-content:center;align-items:center">
+      <button onclick="_tourNext()" id="tour-next-btn" style="background:#00AAFF;border:none;border-radius:8px;padding:10px 28px;font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:2px;color:white;cursor:pointer;transition:all .2s" onmouseover="this.style.background='#33CCFF';this.style.boxShadow='0 0 20px rgba(0,170,255,0.4)'" onmouseout="this.style.background='#00AAFF';this.style.boxShadow='none'">NEXT</button>
+      <button onclick="_tourEnd()" style="background:none;border:1px solid rgba(122,149,174,0.3);border-radius:8px;padding:10px 20px;font-family:Barlow Condensed,sans-serif;font-size:13px;letter-spacing:1px;color:#7A95AE;cursor:pointer">SKIP TOUR</button>
+    </div>
+    <div id="tour-counter" style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:rgba(122,149,174,0.5);margin-top:14px;letter-spacing:1px"></div>
+  </div>
+</div>
+
+<style>
+.tour-highlight{position:relative;z-index:100000;box-shadow:0 0 0 4px #00AAFF,0 0 20px rgba(0,170,255,0.5)!important;border-radius:8px;transition:box-shadow .3s}
+</style>
 </body>
 </html>

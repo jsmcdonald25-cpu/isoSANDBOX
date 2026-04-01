@@ -682,16 +682,67 @@ tr:hover td { background: var(--bg); }
       <div class="panel-header">
         <div class="panel-eyebrow">Content</div>
         <div class="panel-title">Image Manager</div>
-        <div class="panel-sub">Find cards missing catalog images and track upload coverage.</div>
+        <div class="panel-sub">Upload card images and track coverage across all sets.</div>
       </div>
 
-      <div class="card">
-        <div class="card-title">Check a Set for Missing Images</div>
-        <div class="search-bar">
-          <select class="select" id="img-set" style="max-width:320px">
+      <!-- Upload Section -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-title">Upload Card Images</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+          <select class="select" id="img-set" style="flex:1;min-width:200px;max-width:320px">
             <option value="">— Select a set —</option>
           </select>
-          <button class="btn" onclick="imgCheck()">Check Coverage</button>
+          <input class="input" id="img-search" type="text" placeholder="Search player or card #..." style="flex:1;min-width:180px;max-width:280px">
+          <button class="btn" onclick="imgSearch()">Search</button>
+        </div>
+        <div id="img-search-results"></div>
+
+        <!-- Upload area — shown when a card is selected -->
+        <div id="img-upload-area" style="display:none;margin-top:14px;border:1px solid var(--border);border-radius:8px;padding:14px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div>
+              <div style="font-weight:700;font-size:14px" id="img-upload-card-name"></div>
+              <div style="font-size:12px;color:var(--text2)" id="img-upload-card-detail"></div>
+            </div>
+            <button class="btn btn-sm btn-ghost" onclick="imgCloseUpload()">Close</button>
+          </div>
+          <div style="margin-bottom:10px">
+            <label class="gate-label" style="font-size:11px">Variation</label>
+            <select class="select" id="img-upload-variation" style="max-width:240px">
+              <option value="Base">Base</option>
+            </select>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div>
+              <label class="gate-label" style="font-size:11px">Front Image</label>
+              <div id="img-front-preview" style="width:100%;height:160px;background:var(--surface2);border:1px dashed var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;overflow:hidden;cursor:pointer" onclick="document.getElementById('img-front-input').click()">
+                <span style="color:var(--text3);font-size:12px" id="img-front-label">Click to select</span>
+                <img id="img-front-thumb" style="display:none;width:100%;height:100%;object-fit:contain">
+              </div>
+              <input type="file" id="img-front-input" accept="image/*" style="display:none" onchange="imgPreview('front',this)">
+            </div>
+            <div>
+              <label class="gate-label" style="font-size:11px">Back Image</label>
+              <div id="img-back-preview" style="width:100%;height:160px;background:var(--surface2);border:1px dashed var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;overflow:hidden;cursor:pointer" onclick="document.getElementById('img-back-input').click()">
+                <span style="color:var(--text3);font-size:12px" id="img-back-label">Click to select</span>
+                <img id="img-back-thumb" style="display:none;width:100%;height:100%;object-fit:contain">
+              </div>
+              <input type="file" id="img-back-input" accept="image/*" style="display:none" onchange="imgPreview('back',this)">
+            </div>
+          </div>
+          <div id="img-upload-status" style="display:none;font-size:12px;margin-bottom:8px"></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn" onclick="imgUploadSave()" id="img-upload-btn">Upload &amp; Save</button>
+            <button class="btn btn-ghost" onclick="imgCloseUpload()">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coverage Check Section -->
+      <div class="card">
+        <div class="card-title">Check Coverage</div>
+        <div class="search-bar">
+          <button class="btn" onclick="imgCheck()">Check Coverage for Selected Set</button>
         </div>
         <div id="img-results"></div>
       </div>
@@ -1981,6 +2032,172 @@ function ceCancel() {
 }
 
 // ── IMAGE MANAGER ──
+// ── Image Manager: Search + Upload ────────────────────────────
+let _imgUploadCard = null;
+let _imgUploadTable = null;
+let _imgFrontFile = null;
+let _imgBackFile = null;
+
+async function imgSearch() {
+  const table = document.getElementById('img-set').value;
+  const q = document.getElementById('img-search').value.trim();
+  if (!table) { toast('Select a set first.', 'error'); return; }
+  if (!q) { toast('Enter a player name or card number.', 'error'); return; }
+  const resultsEl = document.getElementById('img-search-results');
+  resultsEl.innerHTML = '<div class="loading">Searching...</div>';
+  document.getElementById('img-upload-area').style.display = 'none';
+
+  try {
+    const byNum = await _get(table, 'card_number=ilike.*' + encodeURIComponent(q) + '*&select=card_number,player,player_name,team,variations,var_images&limit=20');
+    const byName = await _get(table, 'player=ilike.*' + encodeURIComponent(q) + '*&select=card_number,player,player_name,team,variations,var_images&limit=20');
+    // Also try player_name for sets that use that column
+    let byName2 = [];
+    try { byName2 = await _get(table, 'player_name=ilike.*' + encodeURIComponent(q) + '*&select=card_number,player,player_name,team,variations,var_images&limit=20'); } catch(e){}
+
+    const seen = new Set();
+    const rows = [...(byNum||[]), ...(byName||[]), ...(byName2||[])].filter(r => {
+      const k = r.card_number; if (seen.has(k)) return false; seen.add(k); return true;
+    });
+
+    if (!rows.length) { resultsEl.innerHTML = '<div class="empty"><div class="empty-icon">&#128269;</div>No cards found.</div>'; return; }
+
+    resultsEl.innerHTML = '<div class="table-wrap"><table><thead><tr><th>#</th><th>Player</th><th>Front</th><th>Back</th><th>Actions</th></tr></thead><tbody>' +
+      rows.map((r, i) => {
+        const name = r.player || r.player_name || '—';
+        const vi = r.var_images || {};
+        const frontUrl = vi.front || (vi.Base && vi.Base.front) || (vi.base && vi.base.front) || null;
+        const backUrl = vi.back || (vi.Base && vi.Base.back) || (vi.base && vi.base.back) || null;
+        const frontThumb = frontUrl ? '<img src="' + frontUrl + '" style="width:40px;height:56px;object-fit:cover;border-radius:3px;border:1px solid var(--border)">' : '<span class="badge badge-red" style="font-size:9px">No Image</span>';
+        const backThumb = backUrl ? '<img src="' + backUrl + '" style="width:40px;height:56px;object-fit:cover;border-radius:3px;border:1px solid var(--border)">' : '<span class="badge badge-red" style="font-size:9px">No Image</span>';
+        return '<tr><td style="font-family:var(--font);font-size:11px">' + r.card_number + '</td><td>' + name + '</td><td>' + frontThumb + '</td><td>' + backThumb + '</td><td><button class="btn btn-sm" onclick=\'imgSelectCard(' + JSON.stringify(r).replace(/'/g, "&#39;") + ')\'>Upload</button></td></tr>';
+      }).join('') + '</tbody></table></div>';
+    _imgUploadTable = table;
+  } catch(e) {
+    resultsEl.innerHTML = '<div style="color:var(--red);font-size:12px">Error: ' + e.message + '</div>';
+  }
+}
+
+function imgSelectCard(row) {
+  _imgUploadCard = row;
+  _imgFrontFile = null;
+  _imgBackFile = null;
+  const name = row.player || row.player_name || 'Unknown';
+  document.getElementById('img-upload-card-name').textContent = '#' + row.card_number + ' — ' + name;
+  document.getElementById('img-upload-card-detail').textContent = row.team || '';
+
+  // Populate variation dropdown
+  const varSel = document.getElementById('img-upload-variation');
+  varSel.innerHTML = '<option value="Base">Base</option>';
+  if (row.variations && Array.isArray(row.variations) && row.variations.length) {
+    varSel.innerHTML = row.variations.map(v => '<option value="' + (v.label||'Base') + '">' + (v.label||'Base') + '</option>').join('');
+  }
+
+  // Reset previews
+  ['front','back'].forEach(side => {
+    document.getElementById('img-' + side + '-thumb').style.display = 'none';
+    document.getElementById('img-' + side + '-thumb').src = '';
+    document.getElementById('img-' + side + '-label').style.display = 'block';
+    document.getElementById('img-' + side + '-label').textContent = 'Click to select';
+    document.getElementById('img-' + side + '-input').value = '';
+  });
+  document.getElementById('img-upload-status').style.display = 'none';
+  document.getElementById('img-upload-btn').disabled = false;
+  document.getElementById('img-upload-btn').textContent = 'Upload & Save';
+  document.getElementById('img-upload-area').style.display = 'block';
+}
+
+function imgPreview(side, input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (side === 'front') _imgFrontFile = file;
+  else _imgBackFile = file;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const thumb = document.getElementById('img-' + side + '-thumb');
+    thumb.src = e.target.result;
+    thumb.style.display = 'block';
+    document.getElementById('img-' + side + '-label').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function imgCloseUpload() {
+  document.getElementById('img-upload-area').style.display = 'none';
+  _imgUploadCard = null;
+  _imgFrontFile = null;
+  _imgBackFile = null;
+}
+
+async function imgUploadSave() {
+  if (!_imgUploadCard || !_imgUploadTable) return;
+  if (!_imgFrontFile && !_imgBackFile) { toast('Select at least one image.', 'error'); return; }
+
+  const btn = document.getElementById('img-upload-btn');
+  const status = document.getElementById('img-upload-status');
+  btn.disabled = true; btn.textContent = 'Uploading...';
+  status.style.display = 'block'; status.style.color = 'var(--text2)';
+
+  const BUCKET = 'card-images';
+  const table = _imgUploadTable;
+  const cardNum = _imgUploadCard.card_number;
+  const varLabel = document.getElementById('img-upload-variation').value || 'Base';
+  const safeName = (s) => (s || '').replace(/[^a-zA-Z0-9_\-]/g, '_').toLowerCase();
+  const varSlug = safeName(varLabel);
+
+  try {
+    // Fetch existing var_images
+    const existing = await _get(table, 'select=var_images&card_number=eq.' + encodeURIComponent(cardNum) + '&limit=1');
+    let vi = (existing && existing[0] && existing[0].var_images) || {};
+    if (typeof vi === 'string') { try { vi = JSON.parse(vi); } catch(e) { vi = {}; } }
+    if (!vi[varLabel]) vi[varLabel] = {};
+
+    // Upload front
+    if (_imgFrontFile) {
+      status.textContent = 'Uploading front image...';
+      const ext = _imgFrontFile.name.split('.').pop() || 'jpg';
+      const path = 'catalog/' + safeName(table) + '/' + safeName(cardNum) + '/' + varSlug + '_front.' + ext;
+      const url = await _uploadImage(BUCKET, path, _imgFrontFile);
+      vi[varLabel].front = url;
+    }
+
+    // Upload back
+    if (_imgBackFile) {
+      status.textContent = 'Uploading back image...';
+      const ext = _imgBackFile.name.split('.').pop() || 'jpg';
+      const path = 'catalog/' + safeName(table) + '/' + safeName(cardNum) + '/' + varSlug + '_back.' + ext;
+      const url = await _uploadImage(BUCKET, path, _imgBackFile);
+      vi[varLabel].back = url;
+    }
+
+    // Save to DB
+    status.textContent = 'Saving to database...';
+    await _patch(table, 'card_number=eq.' + encodeURIComponent(cardNum), { var_images: vi });
+
+    // Audit log
+    await logAdminAction('image_uploaded', table, cardNum, _imgUploadCard.player || _imgUploadCard.player_name || null, null, { variation: varLabel, front: !!_imgFrontFile, back: !!_imgBackFile }, null);
+
+    status.style.color = 'var(--green)';
+    status.textContent = '✓ Images saved for #' + cardNum + ' — ' + varLabel;
+    btn.textContent = '✓ Saved!';
+    btn.style.background = 'var(--green)';
+    toast('Images uploaded for #' + cardNum, 'success');
+
+    // Refresh the search results
+    setTimeout(function() {
+      btn.style.background = '';
+      imgSearch();
+      imgCloseUpload();
+    }, 1500);
+
+  } catch(e) {
+    status.style.color = 'var(--red)';
+    status.textContent = 'Error: ' + e.message;
+    btn.disabled = false;
+    btn.textContent = 'Upload & Save';
+    toast('Upload failed: ' + e.message, 'error');
+  }
+}
+
 async function imgCheck() {
   const table = document.getElementById('img-set').value;
   if (!table) { toast('Select a set first.', 'error'); return; }

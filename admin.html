@@ -2719,6 +2719,9 @@ function _dedupLog(msg) {
 async function dedupScan() {
   const table = document.getElementById('dedup-set').value;
   if (!table) { _dedupStatus('Select a set first.', 'error'); return; }
+  if (table.startsWith('pokemon_cards__') || table === 'card-images') {
+    _dedupStatus('This is a virtual table — cannot dedup.', 'error'); return;
+  }
 
   document.getElementById('dedup-preview').style.display = 'none';
   document.getElementById('dedup-actions').style.display = 'none';
@@ -2871,6 +2874,11 @@ async function dedupScanAll() {
   for (let i = 0; i < _allSets.length; i++) {
     const s = _allSets[i];
     const table = s.table_name;
+    // Skip Pokemon virtual tables and card-images
+    if (table.startsWith('pokemon_cards__') || table === 'card-images') {
+      _dedupLog('Skipping: ' + (s.label || table) + ' (virtual table)');
+      continue;
+    }
     _dedupLog('Scanning: ' + (s.label || table) + '...');
     try {
       const rows = await _get(table, 'select=card_number&limit=10000');

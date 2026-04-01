@@ -1644,8 +1644,9 @@ async function populateSetDropdowns() {
   ['ce-set','img-set','dedup-set'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
-    el.innerHTML = '<option value="">— Select a set —</option>' +
-      _allSets.map(s => `<option value="${s.table_name}">${s.label||s.table_name}</option>`).join('');
+    let opts = _allSets.map(s => `<option value="${s.table_name}">${s.label||s.table_name}</option>`).join('');
+    if (id === 'dedup-set') opts += '<option value="pokemon_cards">Pokemon Cards (all sets — 20k cards)</option>';
+    el.innerHTML = '<option value="">— Select a set —</option>' + opts;
   });
 }
 
@@ -2730,15 +2731,25 @@ async function dedupScan() {
   _dedupStatus('Scanning ' + table + '...', 'info');
 
   try {
-    const rows = await _get(table, 'select=*&order=card_number.asc&limit=10000');
-    if (!rows || !rows.length) { _dedupStatus('No rows found in ' + table, 'error'); return; }
+    let rows = [], _from = 0;
+    while (true) {
+      const batch = await _get(table, 'select=*&order=card_number.asc&limit=1000&offset=' + _from);
+      if (!batch || !batch.length) break;
+      rows = rows.concat(batch);
+      if (batch.length < 1000) break;
+      _from += 1000;
+      _dedupStatus('Scanning ' + table + '... (' + rows.length + ' rows loaded)', 'info');
+    }
+    if (!rows.length) { _dedupStatus('No rows found in ' + table, 'error'); return; }
 
-    // Find duplicates by card_number
+    // Find duplicates by card_number (or card_number+set_name for pokemon)
+    const isPokemon = table === 'pokemon_cards';
     const byNum = {};
     rows.forEach(r => {
       const num = (r.card_number || '').toString().trim();
-      if (!byNum[num]) byNum[num] = [];
-      byNum[num].push(r);
+      const key = isPokemon ? num + '||' + (r.set_name || '') : num;
+      if (!byNum[key]) byNum[key] = [];
+      byNum[key].push(r);
     });
 
     const dupes = {};

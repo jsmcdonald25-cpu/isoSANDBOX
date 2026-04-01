@@ -2632,7 +2632,7 @@ async function logOut(){
               <span id="cd-curr-name">&#8212;</span>
             </div>
           </div>
-          <div style="text-align:right">
+          <div style="text-align:right" id="cd-print-run-wrap">
             <div class="cd-currently-label">Print Run</div>
             <div style="font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--blue)" id="cd-curr-run">&#8212;</div>
           </div>
@@ -2688,7 +2688,7 @@ async function logOut(){
               <div class="cd-report-btn-label">Report an Error</div>
               <div class="cd-report-btn-sub">Wrong info, missing variation, bad image?</div>
             </div>
-            <div class="cd-report-badge">+5 CREDITS</div>
+            <div class="cd-report-badge">+1 CREDIT</div>
           </div>
         </div>
         <!-- Admin tools — only visible to admins, always shown regardless of vault/isovault context -->
@@ -6850,7 +6850,13 @@ function cdSelectVar(idx, skipShimmer){
   const run  = document.getElementById('cd-curr-run');
   if(dot)  { dot.style.background = v.color; dot.style.boxShadow = `0 0 8px ${v.glow}`; }
   if(name)   name.textContent = v.label;
-  if(run)    run.textContent  = v.run ? `/${v.run}` : 'Open Edition';
+  const runWrap = document.getElementById('cd-print-run-wrap');
+  if(v.run){
+    if(run) run.textContent = `/${v.run}`;
+    if(runWrap) runWrap.style.display = 'block';
+  } else {
+    if(runWrap) runWrap.style.display = 'none';
+  }
 
   // Shadow glow
   const shadow = document.getElementById('cd-shadow');

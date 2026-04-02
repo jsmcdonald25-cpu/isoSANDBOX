@@ -7923,12 +7923,17 @@ function _ivApplySortAndRender(){
   _ivFiltered.sort((a,b)=>{
     let va, vb;
     if(col === 'card_number'){
-      // Numeric sort — extract leading number, fall back to string
-      const na = parseInt((a.card_number||'').replace(/\D/g,'')) || 99999;
-      const nb = parseInt((b.card_number||'').replace(/\D/g,'')) || 99999;
-      if(na !== nb) return dir === 'asc' ? na - nb : nb - na;
-      va = (a.card_number||'').toLowerCase();
-      vb = (b.card_number||'').toLowerCase();
+      // Pure numeric cards first (1,2,3...), then letter-prefix cards (CBA-AF, DAM-1...)
+      const ca = (a.card_number||'').toString();
+      const cb = (b.card_number||'').toString();
+      const aIsNum = /^\d+$/.test(ca);
+      const bIsNum = /^\d+$/.test(cb);
+      if(aIsNum && bIsNum) return dir === 'asc' ? parseInt(ca) - parseInt(cb) : parseInt(cb) - parseInt(ca);
+      if(aIsNum && !bIsNum) return dir === 'asc' ? -1 : 1;
+      if(!aIsNum && bIsNum) return dir === 'asc' ? 1 : -1;
+      // Both are letter-prefix — sort alphabetically
+      va = ca.toLowerCase();
+      vb = cb.toLowerCase();
     } else if(col === 'player'){
       va = (a.player||a.player_name||'').toLowerCase();
       vb = (b.player||b.player_name||'').toLowerCase();

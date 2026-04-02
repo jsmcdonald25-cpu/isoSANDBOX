@@ -1515,7 +1515,7 @@ async function initUserProfile(user){
   if(!window._currentSection){
     N('myvault', document.getElementById('nav-myvault'));
     // Show welcome tour for first-time users
-    if(profile && profile.tour_completed !== true){
+    if(profile && profile.tour_completed !== true && !localStorage.getItem('grailiso-tour-done')){
       setTimeout(startTour, 500);
     }
   }
@@ -10876,6 +10876,7 @@ function _tourEnd() {
   // Mark tour as completed
   const user = window._authUser;
   if (user) {
+    localStorage.setItem('grailiso-tour-done', '1');
     try { _rPatch('profiles', 'id=eq.' + user.id, { tour_completed: true }); } catch(e) {}
   }
 }

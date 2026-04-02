@@ -7897,7 +7897,7 @@ function _ivApplyCardFilters(){
   if(_ivImgFilter === 'with') rows = rows.filter(r=>r.var_images && Object.keys(r.var_images).length > 0);
   else if(_ivImgFilter === 'without') rows = rows.filter(r=>!r.var_images || Object.keys(r.var_images).length === 0);
   _ivFiltered = rows;
-  _ivRenderCards();
+  _ivApplySortAndRender();
 }
 
 function _ivRenderCards(){
@@ -7908,17 +7908,64 @@ function _ivRenderCards(){
   else _ivRenderGrid();
 }
 
+let _ivSortCol = 'card_number';
+let _ivSortDir = 'asc';
+
+function _ivSortBy(col){
+  if(_ivSortCol === col) _ivSortDir = _ivSortDir === 'asc' ? 'desc' : 'asc';
+  else { _ivSortCol = col; _ivSortDir = 'asc'; }
+  _ivApplySortAndRender();
+}
+
+function _ivApplySortAndRender(){
+  const col = _ivSortCol;
+  const dir = _ivSortDir;
+  _ivFiltered.sort((a,b)=>{
+    let va, vb;
+    if(col === 'card_number'){
+      // Numeric sort — extract leading number, fall back to string
+      const na = parseInt((a.card_number||'').replace(/\D/g,'')) || 99999;
+      const nb = parseInt((b.card_number||'').replace(/\D/g,'')) || 99999;
+      if(na !== nb) return dir === 'asc' ? na - nb : nb - na;
+      va = (a.card_number||'').toLowerCase();
+      vb = (b.card_number||'').toLowerCase();
+    } else if(col === 'player'){
+      va = (a.player||a.player_name||'').toLowerCase();
+      vb = (b.player||b.player_name||'').toLowerCase();
+    } else if(col === 'team'){
+      va = (a.team||'').toLowerCase();
+      vb = (b.team||'').toLowerCase();
+    } else if(col === 'category'){
+      va = (a.category||'').toLowerCase();
+      vb = (b.category||'').toLowerCase();
+    } else if(col === 'mkt'){
+      const mc = window._ivMarketCache||{};
+      va = parseFloat(mc[(a.card_number||'').toString()])||0;
+      vb = parseFloat(mc[(b.card_number||'').toString()])||0;
+      return dir === 'asc' ? va - vb : vb - va;
+    }
+    if(va < vb) return dir === 'asc' ? -1 : 1;
+    if(va > vb) return dir === 'asc' ? 1 : -1;
+    return 0;
+  });
+  _ivRenderCards();
+}
+
 function _ivRenderChecklist(){
   const el = document.getElementById('ivCardList');
   if(!el) return;
   if(!_ivFiltered.length){ el.innerHTML='<div class="iv-empty">No cards match</div>'; return; }
 
+  const arrow = (col) => _ivSortCol === col ? (_ivSortDir === 'asc' ? ' &#9650;' : ' &#9660;') : '';
+  const hStyle = 'cursor:pointer;color:var(--muted-text);font-size:10px;letter-spacing:1px;user-select:none';
+  const activeStyle = (col) => _ivSortCol === col ? ';color:var(--blue)' : '';
+
   const header = `<div class="iv-row" style="cursor:default;border-bottom:1px solid rgba(0,170,255,.15);padding-bottom:6px;margin-bottom:2px;grid-template-columns:56px 1fr 1fr 80px 80px 56px">
-    <div class="iv-row-num" style="color:var(--muted-text);font-size:10px;letter-spacing:1px">CARD #</div>
-    <div class="iv-row-player" style="font-size:10px;letter-spacing:1px;color:var(--muted-text)">PLAYER</div>
-    <div class="iv-row-team" style="font-size:10px;letter-spacing:1px;color:var(--muted-text)">TEAM</div>
-    <div class="iv-row-cat" style="font-size:10px;letter-spacing:1px;color:var(--muted-text)">CATEGORY</div>
-    <div class="iv-row-price" style="font-size:10px;letter-spacing:1px;color:var(--muted-text)">MKT AVG</div>
+    <div onclick="_ivSortBy('card_number')" style="${hStyle}${activeStyle('card_number')}">CARD #${arrow('card_number')}</div>
+    <div onclick="_ivSortBy('player')" style="${hStyle}${activeStyle('player')}">PLAYER${arrow('player')}</div>
+    <div onclick="_ivSortBy('team')" style="${hStyle}${activeStyle('team')}">TEAM${arrow('team')}</div>
+    <div onclick="_ivSortBy('category')" style="${hStyle}${activeStyle('category')}">CATEGORY${arrow('category')}</div>
+    <div onclick="_ivSortBy('mkt')" style="${hStyle}${activeStyle('mkt')}">MKT AVG${arrow('mkt')}</div>
     <div style="font-size:10px;letter-spacing:1px;color:var(--muted-text);font-family:Barlow Condensed,sans-serif;text-align:center">PIC</div>
   </div>`;
 

@@ -2829,6 +2829,12 @@ async function logOut(){
             <img class="vm-preview" id="cdBackPreview">
           </div>
         </div>
+        <div style="display:flex;gap:8px;margin-bottom:14px">
+          <input type="file" accept="image/*" capture="environment" id="cdCameraFront" onchange="handleCatalogUpload(this,'front')" style="display:none">
+          <input type="file" accept="image/*" capture="environment" id="cdCameraBack" onchange="handleCatalogUpload(this,'back')" style="display:none">
+          <button onclick="document.getElementById('cdCameraFront').click()" style="flex:1;background:rgba(0,232,135,0.08);border:1px solid rgba(0,232,135,0.25);border-radius:8px;padding:8px;font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:1px;color:var(--green);cursor:pointer;text-align:center">&#128247; TAKE PHOTO — FRONT</button>
+          <button onclick="document.getElementById('cdCameraBack').click()" style="flex:1;background:rgba(0,232,135,0.08);border:1px solid rgba(0,232,135,0.25);border-radius:8px;padding:8px;font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:1px;color:var(--green);cursor:pointer;text-align:center">&#128247; TAKE PHOTO — BACK</button>
+        </div>
 
         <!-- Orientation — hidden, auto-detected from canvas dimensions -->
         <div id="cdOrientSection" style="display:none">
@@ -3425,6 +3431,12 @@ async function logOut(){
           <div class="vm-upload-name" id="mcBackName"></div>
           <img class="vm-preview" id="mcBackPreview">
         </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input type="file" accept="image/*" capture="environment" id="mcCameraFront" onchange="handleMcUpload(this,'front')" style="display:none">
+        <input type="file" accept="image/*" capture="environment" id="mcCameraBack" onchange="handleMcUpload(this,'back')" style="display:none">
+        <button onclick="document.getElementById('mcCameraFront').click()" style="flex:1;background:rgba(0,232,135,0.08);border:1px solid rgba(0,232,135,0.25);border-radius:8px;padding:7px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;color:var(--green);cursor:pointer;text-align:center">&#128247; TAKE PHOTO — FRONT</button>
+        <button onclick="document.getElementById('mcCameraBack').click()" style="flex:1;background:rgba(0,232,135,0.08);border:1px solid rgba(0,232,135,0.25);border-radius:8px;padding:7px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;color:var(--green);cursor:pointer;text-align:center">&#128247; TAKE PHOTO — BACK</button>
       </div>
       <div class="vm-error" id="mcPhotoError">Both front and back photos are required.</div>
     </div>

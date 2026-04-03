@@ -2860,14 +2860,20 @@ async function logOut(){
             <div id="cdConfirmFrontWrap" style="height:240px;background:#0a1929;border:1px solid rgba(0,170,255,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden">
               <img id="cdConfirmFront" style="display:block;border-radius:8px;object-fit:contain;max-width:100%;max-height:100%">
             </div>
-            <button onclick="cdRotateConfirm('front')" style="width:100%;margin-top:6px;background:rgba(0,170,255,0.08);border:1px solid rgba(0,170,255,0.25);border-radius:6px;padding:6px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;color:var(--blue);cursor:pointer">&#8635; ROTATE FRONT</button>
+            <div style="display:flex;gap:4px;margin-top:6px">
+              <button onclick="cdRotateConfirm('front')" style="flex:1;background:rgba(0,170,255,0.08);border:1px solid rgba(0,170,255,0.25);border-radius:6px;padding:6px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;color:var(--blue);cursor:pointer">&#8635; ROTATE</button>
+              <button onclick="cdFlipConfirm('front')" style="flex:1;background:rgba(0,170,255,0.08);border:1px solid rgba(0,170,255,0.25);border-radius:6px;padding:6px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;color:var(--blue);cursor:pointer">&#8596; FLIP</button>
+            </div>
           </div>
           <div>
             <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:6px">BACK</div>
             <div id="cdConfirmBackWrap" style="height:240px;background:#0a1929;border:1px solid rgba(0,170,255,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden">
               <img id="cdConfirmBack" style="display:block;border-radius:8px;object-fit:contain;max-width:100%;max-height:100%">
             </div>
-            <button onclick="cdRotateConfirm('back')" style="width:100%;margin-top:6px;background:rgba(0,170,255,0.08);border:1px solid rgba(0,170,255,0.25);border-radius:6px;padding:6px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;color:var(--blue);cursor:pointer">&#8635; ROTATE BACK</button>
+            <div style="display:flex;gap:4px;margin-top:6px">
+              <button onclick="cdRotateConfirm('back')" style="flex:1;background:rgba(0,170,255,0.08);border:1px solid rgba(0,170,255,0.25);border-radius:6px;padding:6px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;color:var(--blue);cursor:pointer">&#8635; ROTATE</button>
+              <button onclick="cdFlipConfirm('back')" style="flex:1;background:rgba(0,170,255,0.08);border:1px solid rgba(0,170,255,0.25);border-radius:6px;padding:6px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;color:var(--blue);cursor:pointer">&#8596; FLIP</button>
+            </div>
           </div>
         </div>
         <div class="vm-progress" id="cdUploadProgress" style="display:none"><div class="vm-progress-bar" id="cdUploadProgressBar"></div></div>
@@ -7049,6 +7055,9 @@ function cdUploadShowConfirm(){
     document.getElementById('cdUploadError').style.display='block'; return;
   }
   document.getElementById('cdUploadError').style.display='none';
+  // Reset rotation/flip state
+  window._cdConfirmRotation = { front: 0, back: 0 };
+  window._cdConfirmFlipped = { front: false, back: false };
   const _isFrontLand = (document.getElementById('cdOrientFront').value === 'landscape');
   const _isBackLand  = (document.getElementById('cdOrientBack').value  === 'landscape');
   const fp = document.getElementById('cdFrontPreview');
@@ -7099,50 +7108,60 @@ function cdUploadBackToUpload(){
   document.getElementById('cdUploadScreen1').style.display='block';
 }
 
+// Track rotation (0, 90, 180, 270) and flip state per side
+window._cdConfirmRotation = { front: 0, back: 0 };
+window._cdConfirmFlipped = { front: false, back: false };
+
 function cdRotateConfirm(side){
-  // Toggle the orientation for this side
+  window._cdConfirmRotation[side] = (window._cdConfirmRotation[side] + 90) % 360;
+  _cdApplyConfirmTransform(side);
+  // Update the orientation select for the upload
+  const deg = window._cdConfirmRotation[side];
   const selId = side === 'front' ? 'cdOrientFront' : 'cdOrientBack';
   const sel = document.getElementById(selId);
-  if(!sel) return;
-  const wasLandscape = sel.value === 'landscape';
-  sel.value = wasLandscape ? 'portrait' : 'landscape';
-  const isLand = !wasLandscape;
+  if(sel){
+    // 90 or 270 = orientation flipped from original
+    const imgEl = document.getElementById(side === 'front' ? 'cdConfirmFront' : 'cdConfirmBack');
+    if(imgEl && imgEl.naturalWidth){
+      const origIsLand = imgEl.naturalWidth > imgEl.naturalHeight;
+      const rotatedIsLand = (deg === 90 || deg === 270) ? !origIsLand : origIsLand;
+      sel.value = rotatedIsLand ? 'landscape' : 'portrait';
+    }
+  }
+}
 
-  // Re-apply rotation on the confirm image
+function cdFlipConfirm(side){
+  window._cdConfirmFlipped[side] = !window._cdConfirmFlipped[side];
+  _cdApplyConfirmTransform(side);
+}
+
+function _cdApplyConfirmTransform(side){
   const imgEl = document.getElementById(side === 'front' ? 'cdConfirmFront' : 'cdConfirmBack');
   const wrapEl = document.getElementById(side === 'front' ? 'cdConfirmFrontWrap' : 'cdConfirmBackWrap');
   if(!imgEl || !wrapEl) return;
 
-  // Reset styles first
-  imgEl.style.width = '';
-  imgEl.style.height = '';
-  imgEl.style.transform = '';
-  imgEl.style.objectFit = 'contain';
+  const deg = window._cdConfirmRotation[side];
+  const flipped = window._cdConfirmFlipped[side];
+  const flipStr = flipped ? ' scaleX(-1)' : '';
+
+  // Reset styles
   imgEl.style.maxWidth = '100%';
   imgEl.style.maxHeight = '100%';
+  imgEl.style.objectFit = 'contain';
+  imgEl.style.width = '';
+  imgEl.style.height = '';
 
-  function doRotate(){
-    const imgIsLand = imgEl.naturalWidth > imgEl.naturalHeight;
-    if(isLand && !imgIsLand){
-      wrapEl.style.height = '130px';
-      imgEl.style.width = '185px'; imgEl.style.height = '130px';
-      imgEl.style.transform = 'rotate(-90deg)';
-      imgEl.style.objectFit = 'cover'; imgEl.style.maxWidth = 'none'; imgEl.style.maxHeight = 'none';
-    } else if(!isLand && imgIsLand){
-      wrapEl.style.height = '240px';
-      imgEl.style.width = '168px'; imgEl.style.height = '240px';
-      imgEl.style.transform = 'rotate(90deg)';
-      imgEl.style.objectFit = 'cover'; imgEl.style.maxWidth = 'none'; imgEl.style.maxHeight = 'none';
-    } else {
-      wrapEl.style.height = isLand ? '130px' : '240px';
-      imgEl.style.width = ''; imgEl.style.height = '';
-      imgEl.style.transform = ''; imgEl.style.objectFit = 'contain';
-      imgEl.style.maxWidth = '100%'; imgEl.style.maxHeight = '100%';
-    }
+  // For 90/270 rotation, the image needs to be scaled to fit the container
+  if(deg === 90 || deg === 270){
+    // Swap container aspect — make it shorter/wider
+    wrapEl.style.height = '180px';
+    imgEl.style.maxWidth = '240px';
+    imgEl.style.maxHeight = '180px';
+  } else {
+    wrapEl.style.height = '240px';
   }
 
-  if(imgEl.complete && imgEl.naturalWidth) doRotate();
-  else imgEl.onload = doRotate;
+  imgEl.style.transform = 'rotate(' + deg + 'deg)' + flipStr;
 }
 
 function closeCatalogUpload(){

@@ -5800,7 +5800,7 @@ async function submitMissingCard(){
   }
 }
 
-function openVaultCard(idx){
+async function openVaultCard(idx){
   const row=window._vaultData&&window._vaultData[idx];
   if(!row)return;
   window._cdFromMyVault = true;
@@ -5812,7 +5812,22 @@ function openVaultCard(idx){
   window._cdDbCardNum=(row.card_number||'').replace(/^#/,'')||null;
   window._cdPreloadVarImages=row.var_images||null;
   if(known){
-    openCardDetail(known.id);
+    // Carry vault user-uploaded images so they survive openCardDetail's reset
+    known._vaultFrontUrl = row.front_image_url || null;
+    known._vaultBackUrl  = row.back_image_url  || null;
+    await openCardDetail(known.id);
+    // Select the correct variation pill matching the vault row's parallel
+    const vaultParallel = row.variation || row.parallel || row.category || 'Base';
+    const vars = window._cdVars || [];
+    const matchIdx = vars.findIndex(v => v.label === vaultParallel);
+    if(matchIdx > 0) cdSelectVar(matchIdx);
+    // If user has uploaded vault photos and no catalog image loaded, show them
+    if(row.front_image_url || row.back_image_url){
+      const imgF = document.getElementById('cd-img-front');
+      if(!imgF || imgF.style.display === 'none'){
+        _cdSetViewerImages(row.front_image_url || null, row.back_image_url || null);
+      }
+    }
     _cdSetMyVaultContext(true);
     _cdUpdateSlabLabBtn();
     return;
@@ -5821,7 +5836,7 @@ function openVaultCard(idx){
     id:null,player:row.player,
     year:parseInt((row.year||'').toString().slice(0,4))||2026,
     brand:(()=>{const s=row.set_name||'';return s.includes('Bowman')?'Bowman':s.includes('Panini')?'Panini':'Topps';})(),
-    set:row.set_name||row.parallel||'',parallel:row.parallel||row.category||'Base',
+    set:row.set_name||row.variation||row.parallel||'',parallel:row.variation||row.parallel||row.category||'Base',
     cardNum:row.card_number?'#'+row.card_number:'',
     run:null,auto:false,rc:!!row.is_rookie,tags:row.is_rookie?['rc']:[],
     price:parseFloat(row.estimated_value)||0,isos:0,
@@ -5831,7 +5846,7 @@ function openVaultCard(idx){
     _vaultFrontUrl:row.front_image_url||null,
     _vaultBackUrl:row.back_image_url||null,
     variations:(function(){
-      const lbl=row.parallel||row.category||'Base';
+      const lbl=row.variation||row.parallel||row.category||'Base';
       const clr=_varPillColor(lbl);
       return [{label:lbl,color:clr.color,glow:clr.glow,superfractor:clr.superfractor||false,
         run:null,isBase:clr.isBase||false,lastSale:'—',isos:0,pop:null,watching:null,
@@ -6483,6 +6498,7 @@ async function _cdLoadCatalogImages(c){
   const uploadBtn = document.getElementById('cd-upload-btn');
 
   const table = c._setTable || _cdGuessTable(c);
+  if(table && !c._setTable) c._setTable = table;
   if(!table){
     if(statusEl){ statusEl.style.display='block'; statusEl.textContent='No set table found'; statusEl.style.color='rgba(122,149,174,0.5)'; }
     return;
@@ -6490,6 +6506,7 @@ async function _cdLoadCatalogImages(c){
 
   // _cdDbCardNum = actual DB card_number from ISOVault row (may differ from card's _cardNumber)
   const cardNum = window._cdDbCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber || null));
+  if(cardNum && !c._cardNumber) c._cardNumber = cardNum;
   if(!cardNum){
     if(statusEl){ statusEl.style.display='block'; statusEl.textContent='No card number'; statusEl.style.color='rgba(122,149,174,0.5)'; }
     return;

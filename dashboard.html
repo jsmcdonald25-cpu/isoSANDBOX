@@ -2259,8 +2259,7 @@ async function logOut(){
         </div>
       </div>
       <div style="font-family:Bebas Neue,sans-serif;font-size:26px;letter-spacing:2px;color:var(--white);margin-bottom:8px">YOUR VAULT IS EMPTY</div>
-      <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:22px;line-height:1.7">Add cards from ISOVault to start<br>tracking your collection's value.</div>
-      <button class="btn btn-primary" onclick="N('library',document.querySelector('[onclick*=library]'))" style="padding:10px 28px;font-size:13px;letter-spacing:1.5px">Browse ISOVault &rarr;</button>
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:22px;line-height:1.7">Click <strong>+ ADD CARD</strong> above to browse ISOVault<br>and start tracking your collection's value.</div>
     </div>
 
     <!-- MODULAR DASHBOARD -->
@@ -2669,13 +2668,14 @@ async function logOut(){
         </div>
         <div class="cd-vault-cta">
           <div class="cd-vault-path-msg" id="cd-path-msg"></div>
-          <!-- Favorites star — shown when opened from My Vault -->
-          <div id="cd-fav-btn" style="display:none;margin-bottom:10px">
-            <button id="cd-fav-star" onclick="cdToggleFav()" style="width:100%;background:rgba(0,0,0,0.2);border:1px solid rgba(255,215,0,0.25);border-radius:8px;padding:9px;font-family:Barlow Condensed,sans-serif;font-size:13px;letter-spacing:1.5px;color:rgba(255,215,0,0.7);cursor:pointer;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='rgba(255,215,0,0.6)';this.style.color='#FFD700'" onmouseout="cdUpdateFavBtn()">☆ Add to Favorites</button>
+          <!-- Add to Vault + Favorites — always visible -->
+          <div style="display:flex;gap:6px;margin-bottom:8px">
+            <button class="btn btn-primary" style="flex:2;font-size:13px;padding:10px" onclick="openVaultModal(window._cdCard)">+ Add to My Vault</button>
+            <button id="cd-fav-star" onclick="cdToggleFav()" style="flex:1;background:rgba(0,0,0,0.2);border:1px solid rgba(255,215,0,0.25);border-radius:8px;padding:9px;font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:1px;color:rgba(255,215,0,0.7);cursor:pointer;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='rgba(255,215,0,0.6)';this.style.color='#FFD700'" onmouseout="cdUpdateFavBtn()">&#9734; Favorite</button>
           </div>
+          <div id="cd-fav-btn" style="display:none"></div>
           <!-- Normal ISOVault CTA -->
           <div id="cd-cta-isovault">
-            <button class="btn btn-primary" style="width:100%;font-size:14px;padding:12px" onclick="openVaultModal(window._cdCard)">+ Add This Variation to My Vault</button>
             <button id="cd-ticker-btn" onclick="_cdToggleTicker()" style="width:100%;margin-top:6px;background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.25);border-radius:8px;padding:9px;font-family:Barlow Condensed,sans-serif;font-size:13px;letter-spacing:1px;color:var(--blue);cursor:pointer;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='var(--blue)';this.style.background='rgba(0,170,255,0.12)'" onmouseout="_cdUpdateTickerBtn()">&#128200; Add to Ticker</button>
           </div>
           <!-- My Vault CTA — shown when entered from My Vault -->
@@ -8802,7 +8802,7 @@ function _cdSetMyVaultContext(fromMyVault){
   if(pathMsg&&isFromMv) pathMsg.innerHTML = '';
   // Fav button — only shown when from My Vault
   const favBtn = document.getElementById('cd-fav-btn');
-  if(favBtn){ favBtn.style.display = isFromMv ? 'block' : 'none'; if(isFromMv) cdUpdateFavBtn(); }
+  cdUpdateFavBtn();
   // Update ticker button state
   _cdUpdateTickerBtn();
   // Update edit listing button
@@ -8817,7 +8817,7 @@ function cdUpdateFavBtn(){
   const idx = window._cdMyVaultIdx;
   const data = window._vaultData;
   const isFav = idx != null && data && data[idx] && data[idx].is_favorite;
-  btn.textContent = isFav ? '★ Favorited' : '☆ Add to Favorites';
+  btn.textContent = isFav ? '\u2605 Favorited' : '\u2606 Favorite';
   btn.style.borderColor = isFav ? 'rgba(255,215,0,0.6)' : 'rgba(255,215,0,0.25)';
   btn.style.color = isFav ? '#FFD700' : 'rgba(255,215,0,0.7)';
   btn.style.background = isFav ? 'rgba(255,215,0,0.1)' : 'rgba(0,0,0,0.2)';

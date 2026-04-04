@@ -6650,11 +6650,12 @@ function _cdStripSetPrefix(label, setName){
 
 // Find matching IV_SETS entry for a card — returns the full entry or null
 function _cdFindIvSet(c){
-  if(!IV_SETS || !IV_SETS.length) return null;
+  if(!IV_SETS || !IV_SETS.length){ console.warn('[_cdFindIvSet] IV_SETS empty/not loaded'); return null; }
   const cYear = parseInt(c.year)||0;
   const cBrand = (c.brand||'').toLowerCase();
   const cSet = (c.set||c.set_name||'').toLowerCase();
-  return IV_SETS.find(s => {
+  if(!cSet){ console.warn('[_cdFindIvSet] no set to match'); return null; }
+  const result = IV_SETS.find(s => {
     const sYear = parseInt(s.year)||0;
     const sBrand = (s.brand||'').toLowerCase();
     const sLabel = (s.label||s.name||'').toLowerCase();
@@ -6663,14 +6664,16 @@ function _cdFindIvSet(c){
     if(cBrand && sBrand && !sBrand.includes(cBrand) && !cBrand.includes(sBrand)) return false;
     return sLabel.includes(cSet) || cSet.includes(sLabel) || sTable.includes(cSet.replace(/\s+/g,'_'));
   }) || null;
+  console.log('[_cdFindIvSet]', {search:cSet, year:cYear, brand:cBrand, found:result?result.name:'NONE', table:result?result.table:'—'});
+  return result;
 }
 
 // Single function for breadcrumbs + title used by ALL card detail paths
 // opts: { sport, year, brand, setName, subsetName, cardNum, player, ivSetEntry }
 function _cdSetBreadcrumbsAndTitle(opts){
   const ivEntry = opts.ivSetEntry || _cdFindIvSet({year:opts.year, brand:opts.brand, set:opts.setName||opts.subsetName});
-  const parentSet = ivEntry ? ivEntry.name : (opts.setName || '');
-  const subset = opts.subsetName || '';
+  const parentSet = ivEntry ? ivEntry.name : (opts.setName || opts.subsetName || '');
+  const subset = ivEntry ? (opts.subsetName || '') : '';
   // If parentSet and subset are the same, no subset
   const hasSubset = subset && subset.toLowerCase() !== parentSet.toLowerCase();
   // Breadcrumbs: Page › Sport › Year › Brand › Set › Subset › Card#, Player

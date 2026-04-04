@@ -497,7 +497,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-crumb-sep{color:rgba(0,170,255,0.3);font-size:11px}
 .cd-back-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(0,170,255,0.08);border:1px solid var(--deep-border);border-radius:6px;padding:6px 12px;font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);cursor:pointer;transition:all .2s;margin-bottom:18px}
 .cd-back-btn:hover{background:rgba(0,170,255,0.15);border-color:var(--blue)}
-.cd-layout{display:flex;gap:80px;align-items:start;min-width:0;padding-left:110px}
+.cd-layout{display:flex;gap:30px;align-items:start;min-width:0;padding-left:110px}
 .cd-viewer-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;background:#0D1F33;width:fit-content;min-width:0;max-width:420px}
 .cd-scene-wrap{position:relative;width:240px;height:336px;max-width:100%}
 .cd-shadow{position:absolute;inset:0;border-radius:10px;pointer-events:none;z-index:0;transition:box-shadow .4s}
@@ -515,7 +515,8 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-ctrl-btn.upload{color:var(--green);border-color:rgba(0,232,135,0.3);background:rgba(0,232,135,0.06)}
 .cd-ctrl-btn.upload:hover{background:rgba(0,232,135,0.14);border-color:var(--green)}
 .cd-side-label{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)}
-.cd-info{display:flex;flex-direction:column;gap:10px;max-width:480px}
+.cd-info{display:flex;flex-direction:column;gap:10px;max-width:320px;min-width:260px}
+.cd-actions{display:flex;flex-direction:column;gap:8px;min-width:220px;max-width:280px}
 .cd-vault-info-title{font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--blue);margin-bottom:8px}
 .cd-vi-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px}
 .cd-vi-item{background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:6px;padding:6px 8px}
@@ -915,6 +916,9 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .content.carddetail-active .cd-info{overflow-y:auto;min-height:0}
 .content.carddetail-active .cd-info::-webkit-scrollbar{width:2px}
 .content.carddetail-active .cd-info::-webkit-scrollbar-thumb{background:var(--deep-border)}
+.content.carddetail-active .cd-actions{overflow-y:auto;min-height:0}
+.content.carddetail-active .cd-actions::-webkit-scrollbar{width:2px}
+.content.carddetail-active .cd-actions::-webkit-scrollbar-thumb{background:var(--deep-border)}
 .content.mvc-active{overflow:hidden;display:flex;flex-direction:column}
 .content.mvc-active #panel-myvaultcard{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
 .content.mvc-active .mvc-layout{flex:1;min-height:0;overflow:hidden}
@@ -2671,6 +2675,9 @@ async function logOut(){
           <div class="cd-watching" id="cd-watching-row"><span>&#128065;</span>&nbsp;<strong id="cd-watching-ct">&#8212;</strong>&nbsp;collectors watching this variation right now</div>
           <div id="cd-mkt-tagline" style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:rgba(122,149,174,0.4);letter-spacing:.5px;margin-top:8px">Market price built from collector vault submissions &#183; Built by collectors, for collectors</div>
         </div>
+      </div>
+      <!-- RIGHT: Actions Panel -->
+      <div class="cd-actions" id="cd-actions">
         <div class="cd-vault-cta">
           <div class="cd-vault-path-msg" id="cd-path-msg"></div>
           <!-- Vault purchase details — shown when from My Vault -->

@@ -2600,13 +2600,13 @@ async function logOut(){
     <div class="cd-breadcrumb">
       <span class="cd-crumb" id="cd-bc-home" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnState='home';backToVault(true);}">ISOVault</span>
       <span class="cd-crumb-sep">&#8250;</span>
-      <span class="cd-crumb" id="cd-bc-sport" onclick="window._ivReturnState='sets';backToVault(true);">Baseball</span>
+      <span class="cd-crumb" id="cd-bc-sport" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnState='sets';backToVault(true);}">Baseball</span>
       <span class="cd-crumb-sep">&#8250;</span>
-      <span class="cd-crumb" id="cd-bc-brand" onclick="window._ivReturnBrand=document.getElementById('cd-bc-brand').textContent;window._ivReturnState='sets-brand';backToVault(true);">Topps</span>
+      <span class="cd-crumb" id="cd-bc-brand" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnBrand=document.getElementById('cd-bc-brand').textContent;window._ivReturnState='sets-brand';backToVault(true);}">Topps</span>
       <span class="cd-crumb-sep">&#8250;</span>
-      <span class="cd-crumb" id="cd-bc-year" onclick="window._ivReturnYear=document.getElementById('cd-bc-year').textContent;window._ivReturnState='sets-year';backToVault(true);">2026</span>
+      <span class="cd-crumb" id="cd-bc-year" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnYear=document.getElementById('cd-bc-year').textContent;window._ivReturnState='sets-year';backToVault(true);}">2026</span>
       <span class="cd-crumb-sep">&#8250;</span>
-      <span class="cd-crumb active" id="cd-bc-set" onclick="window._ivReturnState='cards';backToVault(true);" style="cursor:pointer">Series 1 Mojo</span>
+      <span class="cd-crumb active" id="cd-bc-set" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnState='cards';backToVault(true);}" style="cursor:pointer">Series 1 Mojo</span>
     </div>
     <div class="cd-layout">
       <!-- LEFT: 3D Card Viewer -->

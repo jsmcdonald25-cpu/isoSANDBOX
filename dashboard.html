@@ -2606,7 +2606,9 @@ async function logOut(){
       <span class="cd-crumb-sep">&#8250;</span>
       <span class="cd-crumb" id="cd-bc-brand" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnBrand=document.getElementById('cd-bc-brand').textContent;window._ivReturnState='sets-brand';backToVault(true);}">Topps</span>
       <span class="cd-crumb-sep">&#8250;</span>
-      <span class="cd-crumb active" id="cd-bc-set" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnState='cards';backToVault(true);}" style="cursor:pointer">Series 1 Mojo</span>
+      <span class="cd-crumb" id="cd-bc-set" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnState='cards';backToVault(true);}" style="cursor:pointer">Set</span>
+      <span class="cd-crumb-sep">&#8250;</span>
+      <span class="cd-crumb active" id="cd-bc-card">Card</span>
     </div>
     <div class="cd-layout">
       <!-- LEFT: 3D Card Viewer -->
@@ -5868,12 +5870,16 @@ async function openVaultCard(idx){
     })()
   };
   window._cdCard=card;
+  // Breadcrumb — Page › Sport › Year › Brand › Set › Card
   document.getElementById('cd-bc-sport').textContent='Baseball';
-  document.getElementById('cd-bc-brand').textContent=card.brand;
   document.getElementById('cd-bc-year').textContent=card.year;
+  document.getElementById('cd-bc-brand').textContent=card.brand;
   document.getElementById('cd-bc-set').textContent=card.set||card.parallel;
-  document.getElementById('cd-title').textContent=_cdCardTitle(card.year, card.brand, card.set||'', '');
-  document.getElementById('cd-sub').textContent=(card.player||'') + (card.cardNum ? ' · ' + card.cardNum : '');
+  document.getElementById('cd-bc-card').textContent=card.player||'';
+  // Title — line 1: year brand set, line 2: card# player
+  document.getElementById('cd-title').textContent=`${card.year} ${card.brand} ${card.set||''}`.trim();
+  const _subParts=[card.cardNum,card.player].filter(Boolean);
+  document.getElementById('cd-sub').textContent=_subParts.join(' · ');
   document.getElementById('cd-num').textContent='';
   const pm=document.getElementById('cd-path-msg');
   if(pm)pm.innerHTML='';
@@ -6468,15 +6474,17 @@ async function openCardDetail(cardId){
   if(!window._cdDbCardNum) window._cdDbCardNum = null;
   window._cdCard = c;
 
-  // Breadcrumb
+  // Breadcrumb — Page › Sport › Year › Brand › Set › Card
   document.getElementById('cd-bc-sport').textContent = 'Baseball';
-  document.getElementById('cd-bc-brand').textContent = c.brand;
   document.getElementById('cd-bc-year').textContent  = c.year;
+  document.getElementById('cd-bc-brand').textContent = c.brand;
   document.getElementById('cd-bc-set').textContent   = c.set;
+  document.getElementById('cd-bc-card').textContent  = c.player || '';
 
-  // Title block — line 1: year brand set, line 2: player + card num
-  document.getElementById('cd-title').textContent = _cdCardTitle(c.year, c.brand, c.set, '');
-  document.getElementById('cd-sub').textContent   = (c.player || '') + (c.cardNum ? ' · ' + c.cardNum : '');
+  // Title block — line 1: year brand set, line 2: card# player insert
+  document.getElementById('cd-title').textContent = `${c.year} ${c.brand} ${c.set||''}`.trim();
+  const subParts = [c.cardNum, c.player].filter(Boolean);
+  document.getElementById('cd-sub').textContent   = subParts.join(' · ');
   document.getElementById('cd-num').textContent   = '';
 
   // Vault CTA path message

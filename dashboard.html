@@ -6706,10 +6706,10 @@ function _cdSetBreadcrumbsAndTitle(opts){
   document.getElementById('cd-bc-card').textContent = [opts.cardNum, opts.player].filter(Boolean).join(', ');
   // Title line 1: Year Brand ParentSet (e.g. "2026 Topps Heritage")
   document.getElementById('cd-title').textContent = [opts.year, opts.brand, parentSet].filter(Boolean).join(' ');
-  // Title line 2: Subset · Card# · Player (e.g. "Turn Back The Clock · #337 · Ichiro")
+  // Title line 2: Insert · Player · Card# (e.g. "Turn Back The Clock · Ichiro · #337")
   const sub = hasSubset
-    ? [subset, opts.cardNum, opts.player].filter(Boolean).join(' · ')
-    : [opts.cardNum, opts.player].filter(Boolean).join(' · ');
+    ? [subset, opts.player, opts.cardNum].filter(Boolean).join(' · ')
+    : [opts.player, opts.cardNum].filter(Boolean).join(' · ');
   document.getElementById('cd-sub').textContent = sub;
   document.getElementById('cd-num').textContent = '';
 }

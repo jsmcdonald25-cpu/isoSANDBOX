@@ -497,7 +497,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-crumb-sep{color:rgba(0,170,255,0.3);font-size:11px}
 .cd-back-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(0,170,255,0.08);border:1px solid var(--deep-border);border-radius:6px;padding:6px 12px;font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);cursor:pointer;transition:all .2s;margin-bottom:18px}
 .cd-back-btn:hover{background:rgba(0,170,255,0.15);border-color:var(--blue)}
-.cd-layout{display:flex;gap:16px;align-items:start;min-width:0;padding-left:110px}
+.cd-layout{display:flex;gap:80px;align-items:start;min-width:0;padding-left:110px}
 .cd-viewer-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;background:#0D1F33;width:fit-content;min-width:0;max-width:420px}
 .cd-scene-wrap{position:relative;width:240px;height:336px;max-width:100%}
 .cd-shadow{position:absolute;inset:0;border-radius:10px;pointer-events:none;z-index:0;transition:box-shadow .4s}
@@ -6695,12 +6695,20 @@ function _cdApplyOrientationBoth(frontLandscape, backLandscape){
   const back  = document.getElementById('cd-back');
   if(wrap){  wrap.style.width  = sceneDim.w+'px'; wrap.style.height = sceneDim.h+'px'; }
   if(vwrap){ vwrap.style.width = sceneDim.w+'px'; }
-  if(front){ front.style.width = frontDim.w+'px'; front.style.height = frontDim.h+'px'; }
+  // Center each face within the scene — when front/back have different dimensions
+  // (e.g. portrait front + landscape back), each face is centered so the card
+  // doesn't hang off one side when flipping between orientations.
+  if(front){
+    front.style.width  = frontDim.w+'px';
+    front.style.height = frontDim.h+'px';
+    front.style.left   = ((sceneDim.w - frontDim.w) / 2) + 'px';
+    front.style.top    = ((sceneDim.h - frontDim.h) / 2) + 'px';
+  }
   if(back){
     back.style.width  = backDim.w+'px';
     back.style.height = backDim.h+'px';
-    back.style.top  = '0';
-    back.style.left = '0';
+    back.style.left   = ((sceneDim.w - backDim.w) / 2) + 'px';
+    back.style.top    = ((sceneDim.h - backDim.h) / 2) + 'px';
   }
 }
 

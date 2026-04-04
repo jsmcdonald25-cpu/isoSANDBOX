@@ -5870,10 +5870,11 @@ async function openVaultCard(idx){
   document.getElementById('cd-num').textContent=card.cardNum;
   const pm=document.getElementById('cd-path-msg');
   if(pm)pm.innerHTML='';
-  _cdSetViewerImages(row.front_image_url||null,row.back_image_url||null);
   const ub=document.getElementById('cd-upload-btn');
   if(ub){ub.style.display='none';}
   _cdReset3D();_buildVariationPills(card);N('carddetail',null);_cdInitRotation();
+  // Set vault images AFTER _buildVariationPills (which calls cdSelectVar and wipes images)
+  _cdSetViewerImages(row.front_image_url||null,row.back_image_url||null);
   _cdLoadCatalogImages(card);
   _cdSetMyVaultContext(true);
   _cdUpdateSlabLabBtn();
@@ -6504,10 +6505,20 @@ async function _cdLoadCatalogImages(c){
   const statusEl  = document.getElementById('cd-img-status');
   const uploadBtn = document.getElementById('cd-upload-btn');
 
+  // Helper: fall back to vault user-uploaded images when catalog lookup fails
+  function _vaultFallback(){
+    if(c._vaultFrontUrl || c._vaultBackUrl){
+      _cdSetViewerImages(c._vaultFrontUrl, c._vaultBackUrl);
+      if(statusEl){ statusEl.textContent='Showing your vault photo'; statusEl.style.color='rgba(0,170,255,0.5)';
+        setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
+    }
+  }
+
   const table = c._setTable || _cdGuessTable(c);
   if(table && !c._setTable) c._setTable = table;
   if(!table){
     if(statusEl){ statusEl.style.display='block'; statusEl.textContent='No set table found'; statusEl.style.color='rgba(122,149,174,0.5)'; }
+    _vaultFallback();
     return;
   }
 
@@ -6516,6 +6527,7 @@ async function _cdLoadCatalogImages(c){
   if(cardNum && !c._cardNumber) c._cardNumber = cardNum;
   if(!cardNum){
     if(statusEl){ statusEl.style.display='block'; statusEl.textContent='No card number'; statusEl.style.color='rgba(122,149,174,0.5)'; }
+    _vaultFallback();
     return;
   }
 
@@ -6607,13 +6619,13 @@ async function _cdLoadCatalogImages(c){
       const _pm2 = document.getElementById('cd-path-msg');
       if(_pm2) _pm2.innerHTML = '<strong>This card has a catalog image.</strong> Confirm how you acquired it and the price you paid — no photo upload needed.';
     } else {
-      const hasAny = Object.keys(data.var_images).length > 0;
-      // Fall back to vault row images if available
-      if(!hasAny && (c._vaultFrontUrl || c._vaultBackUrl)){
+      // No catalog image for this specific variation — fall back to vault images
+      if(c._vaultFrontUrl || c._vaultBackUrl){
         _cdSetViewerImages(c._vaultFrontUrl, c._vaultBackUrl);
         if(statusEl){ statusEl.textContent='Showing your vault photo'; statusEl.style.color='rgba(0,170,255,0.5)';
           setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
       } else {
+        const hasAny = Object.keys(data.var_images).length > 0;
         if(statusEl){ statusEl.textContent = hasAny ? 'No image for this variation' : 'No catalog images yet';
           statusEl.style.color='rgba(122,149,174,0.5)';
           setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
@@ -6621,6 +6633,7 @@ async function _cdLoadCatalogImages(c){
     }
 
   } catch(e) {
+    _vaultFallback();
     if(statusEl){ statusEl.textContent='Could not load images'; statusEl.style.color='rgba(122,149,174,0.5)';
       setTimeout(()=>{ statusEl.style.display='none'; }, 2000); }
   }

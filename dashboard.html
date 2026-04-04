@@ -2602,9 +2602,9 @@ async function logOut(){
       <span class="cd-crumb-sep">&#8250;</span>
       <span class="cd-crumb" id="cd-bc-sport" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnState='sets';backToVault(true);}">Baseball</span>
       <span class="cd-crumb-sep">&#8250;</span>
-      <span class="cd-crumb" id="cd-bc-brand" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnBrand=document.getElementById('cd-bc-brand').textContent;window._ivReturnState='sets-brand';backToVault(true);}">Topps</span>
-      <span class="cd-crumb-sep">&#8250;</span>
       <span class="cd-crumb" id="cd-bc-year" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnYear=document.getElementById('cd-bc-year').textContent;window._ivReturnState='sets-year';backToVault(true);}">2026</span>
+      <span class="cd-crumb-sep">&#8250;</span>
+      <span class="cd-crumb" id="cd-bc-brand" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnBrand=document.getElementById('cd-bc-brand').textContent;window._ivReturnState='sets-brand';backToVault(true);}">Topps</span>
       <span class="cd-crumb-sep">&#8250;</span>
       <span class="cd-crumb active" id="cd-bc-set" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnState='cards';backToVault(true);}" style="cursor:pointer">Series 1 Mojo</span>
     </div>
@@ -2637,6 +2637,17 @@ async function logOut(){
         <div class="cd-side-label" id="cd-side-label">FRONT &#183; Drag to rotate</div>
         <!-- Image status indicator -->
         <div id="cd-img-status" style="display:none;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;text-align:center;margin-top:4px"></div>
+        <!-- Admin tools — only visible to admins -->
+        <div id="cd-admin-tools" style="display:none;margin-top:12px;width:100%">
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;color:rgba(255,59,92,0.5);text-transform:uppercase;margin-bottom:6px;text-align:center">Admin Tools</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center">
+            <button onclick="cdAdminEditCard()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#9998; EDIT</button>
+            <button onclick="cdAdminDeleteCard()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128465; DELETE</button>
+            <button onclick="cdAdminDeleteImage()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128247; DEL IMG</button>
+            <button onclick="cdAdminDeleteVariation()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128308; DEL VAR</button>
+            <button onclick="cdAdminRenameVariation()" style="flex:1;min-width:60px;background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(0,170,255,0.8);cursor:pointer;text-align:center">&#9998; RENAME</button>
+          </div>
+        </div>
       </div>
       <!-- RIGHT: Info -->
       <div class="cd-info">
@@ -2715,17 +2726,6 @@ async function logOut(){
               <div class="cd-report-btn-sub">Wrong info, missing variation, bad image?</div>
             </div>
             <div class="cd-report-badge">+1 CREDIT</div>
-          </div>
-        </div>
-        <!-- Admin tools — only visible to admins, always shown regardless of vault/isovault context -->
-        <div id="cd-admin-tools" style="display:none;margin-top:8px">
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;color:rgba(255,59,92,0.5);text-transform:uppercase;margin-bottom:6px">Admin Tools</div>
-          <div style="display:flex;gap:4px;flex-wrap:wrap">
-            <button onclick="cdAdminEditCard()" style="flex:1;min-width:70px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:6px 4px;font-family:Bebas Neue,sans-serif;font-size:11px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#9998; EDIT</button>
-            <button onclick="cdAdminDeleteCard()" style="flex:1;min-width:70px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:6px 4px;font-family:Bebas Neue,sans-serif;font-size:11px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128465; DELETE</button>
-            <button onclick="cdAdminDeleteImage()" style="flex:1;min-width:70px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:6px 4px;font-family:Bebas Neue,sans-serif;font-size:11px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128247; DEL IMAGE</button>
-            <button onclick="cdAdminDeleteVariation()" style="flex:1;min-width:70px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:6px 4px;font-family:Bebas Neue,sans-serif;font-size:11px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128308; DEL VARIANT</button>
-            <button onclick="cdAdminRenameVariation()" style="flex:1;min-width:70px;background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.25);border-radius:6px;padding:6px 4px;font-family:Bebas Neue,sans-serif;font-size:11px;letter-spacing:1px;color:rgba(0,170,255,0.8);cursor:pointer;text-align:center">&#9998; RENAME</button>
           </div>
         </div>
       </div>
@@ -5872,9 +5872,9 @@ async function openVaultCard(idx){
   document.getElementById('cd-bc-brand').textContent=card.brand;
   document.getElementById('cd-bc-year').textContent=card.year;
   document.getElementById('cd-bc-set').textContent=card.set||card.parallel;
-  document.getElementById('cd-title').textContent=_cdCardTitle(card.year, card.brand, card.set||'', card.player);
-  document.getElementById('cd-sub').textContent=`Baseball · ${card.year} · ${card.brand}`;
-  document.getElementById('cd-num').textContent=card.cardNum;
+  document.getElementById('cd-title').textContent=_cdCardTitle(card.year, card.brand, card.set||'', '');
+  document.getElementById('cd-sub').textContent=(card.player||'') + (card.cardNum ? ' · ' + card.cardNum : '');
+  document.getElementById('cd-num').textContent='';
   const pm=document.getElementById('cd-path-msg');
   if(pm)pm.innerHTML='';
   const ub=document.getElementById('cd-upload-btn');
@@ -6474,10 +6474,10 @@ async function openCardDetail(cardId){
   document.getElementById('cd-bc-year').textContent  = c.year;
   document.getElementById('cd-bc-set').textContent   = c.set;
 
-  // Title block
-  document.getElementById('cd-title').textContent = _cdCardTitle(c.year, c.brand, c.set, c.player);
-  document.getElementById('cd-sub').textContent   = `Baseball · ${c.year} · ${c.brand} · ${c.set}`;
-  document.getElementById('cd-num').textContent   = c.cardNum || '';
+  // Title block — line 1: year brand set, line 2: player + card num
+  document.getElementById('cd-title').textContent = _cdCardTitle(c.year, c.brand, c.set, '');
+  document.getElementById('cd-sub').textContent   = (c.player || '') + (c.cardNum ? ' · ' + c.cardNum : '');
+  document.getElementById('cd-num').textContent   = '';
 
   // Vault CTA path message
   const pathMsg = document.getElementById('cd-path-msg');

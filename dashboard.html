@@ -8240,7 +8240,7 @@ function ivOpenCard(row){
     year:    parseInt((row.year||'').toString().slice(0,4)) || 2026,
     brand:   (_ivSet&&_ivSet.pokemonCols) ? 'Pokémon TCG' : (()=>{ const s=row.set_name||''; return s.includes('Bowman')?'Bowman':s.includes('Panini')?'Panini':'Topps'; })(),
     set:     row.insert_name || (_ivSet ? _ivSet.name : '') || row.set_name || '',
-    parallel: row.category + (row.insert_name ? ' — '+row.insert_name : ''),
+    parallel: (function(){ let cat=row.category||'Base'; const pn=_ivSet?_ivSet.name:''; if(pn&&cat.startsWith(pn+' '))cat=cat.slice(pn.length+1); return cat; })(),
     cardNum: row.card_number ? '#'+row.card_number : '',
     run:     null, auto: (row.category||'').toLowerCase().includes('auto'),
     rc:      !!row.is_rookie, tags: row.is_rookie?['rc']:[],
@@ -8352,13 +8352,20 @@ function ivOpenCard(row){
   // Resolve sport label from active set context
   const _cdSportDef = _ivSet ? IV_SPORTS.find(s=>s.id===_ivSet.sport) : null;
   const _cdSportLabel = _cdSportDef ? _cdSportDef.label : 'Baseball';
+  // Breadcrumb — Page › Sport › Year › Brand › Set › Card
+  const _parentSet = _ivSet ? _ivSet.name : '';
+  const _insertName = row.insert_name || '';
+  const _bcSet = _parentSet || card.set || card.parallel || '';
   document.getElementById('cd-bc-sport').textContent = _cdSportLabel;
-  document.getElementById('cd-bc-brand').textContent = card.brand;
   document.getElementById('cd-bc-year').textContent  = card.year;
-  document.getElementById('cd-bc-set').textContent   = card.set || card.parallel;
-  document.getElementById('cd-title').textContent    = _cdCardTitle(card.year, card.brand, card.set||'', card.player);
-  document.getElementById('cd-sub').textContent      = `${_cdSportLabel} · ${card.year} · ${card.brand}`;
-  document.getElementById('cd-num').textContent      = card.cardNum;
+  document.getElementById('cd-bc-brand').textContent = card.brand;
+  document.getElementById('cd-bc-set').textContent   = _bcSet;
+  document.getElementById('cd-bc-card').textContent  = (_insertName ? _insertName + ' ' : '') + (card.cardNum||'') + ' ' + (card.player||'');
+  // Title — line 1: year brand set, line 2: insert card# player
+  document.getElementById('cd-title').textContent    = `${card.year} ${card.brand} ${_parentSet || card.set || ''}`.trim();
+  const _subLine = [_insertName, card.cardNum, card.player].filter(Boolean).join(' · ');
+  document.getElementById('cd-sub').textContent      = _subLine;
+  document.getElementById('cd-num').textContent      = '';
   const pm = document.getElementById('cd-path-msg');
   if(pm) pm.innerHTML = card.hasCatalogPic
     ? '<strong>This card has a catalog image.</strong> Confirm how you acquired it and the price paid — no photo upload needed.'

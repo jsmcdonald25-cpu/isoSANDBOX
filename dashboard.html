@@ -6674,10 +6674,17 @@ function _cdFindIvSet(c){
 // Single function for breadcrumbs + title used by ALL card detail paths
 // opts: { sport, year, brand, setName, subsetName, cardNum, player, ivSetEntry }
 function _cdSetBreadcrumbsAndTitle(opts){
-  // Look up IV_SETS: first by exact table name (reliable), then fuzzy label match
-  const ivEntry = opts.ivSetEntry
+  // Look up IV_SETS: by table name, then fuzzy, then async card_number search
+  let ivEntry = opts.ivSetEntry
     || (opts.setTable && IV_SETS ? IV_SETS.find(s=>s.table===opts.setTable) : null)
     || _cdFindIvSet({year:opts.year, brand:opts.brand, set:opts.setName||opts.subsetName});
+  // If no entry found and we have a card number, search IV_SETS tables async
+  if(!ivEntry && opts.cardNum && IV_SETS && IV_SETS.length){
+    const cn = (opts.cardNum||'').replace(/^#/,'');
+    if(cn) _cdFindIvSetByCard(cn, opts.player||'', opts.year).then(found=>{
+      if(found) _cdSetBreadcrumbsAndTitle({...opts, ivSetEntry:found});
+    });
+  }
   const parentSet = ivEntry ? (ivEntry.name||'') : (opts.setName || opts.subsetName || '');
   const subset = (ivEntry && opts.subsetName && opts.subsetName.toLowerCase()!==(ivEntry.name||'').toLowerCase()) ? opts.subsetName : '';
   // If parentSet and subset are the same, no subset
@@ -6705,6 +6712,27 @@ function _cdSetBreadcrumbsAndTitle(opts){
     : [opts.cardNum, opts.player].filter(Boolean).join(' · ');
   document.getElementById('cd-sub').textContent = sub;
   document.getElementById('cd-num').textContent = '';
+}
+
+// Search IV_SETS tables by card_number+player to find which set a card belongs to
+async function _cdFindIvSetByCard(cardNum, player, year){
+  if(!IV_SETS || !IV_SETS.length || !cardNum) return null;
+  const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+  const hdrs={'apikey':SKEY,'Authorization':'Bearer '+SKEY};
+  const cYear=parseInt(year)||0;
+  // Filter to same year + brand candidates
+  const candidates=IV_SETS.filter(s=>{
+    if(cYear && parseInt(s.year) && parseInt(s.year)!==cYear) return false;
+    return true;
+  });
+  for(const s of candidates){
+    try{
+      const url=`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/${s.table}?select=card_number&card_number=eq.${encodeURIComponent(cardNum)}&limit=1`;
+      const r=await fetch(url,{headers:hdrs});
+      if(r.ok){const d=await r.json();if(d&&d.length) return s;}
+    }catch(e){}
+  }
+  return null;
 }
 
 function _cdGuessTable(c){

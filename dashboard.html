@@ -2654,7 +2654,7 @@ async function logOut(){
           </div>
         </div>
         <div>
-          <div class="cd-var-label">Variations &#8212; Click to Switch View</div>
+          <div class="cd-var-label" id="cd-var-label">Variations &#8212; Click to Switch View</div>
           <div class="cd-var-pills" id="cd-pills"></div>
         </div>
         <div class="cd-market-block">
@@ -8847,6 +8847,8 @@ function _cdSetMyVaultContext(fromMyVault){
   const ctaMv     = document.getElementById('cd-cta-myvault');
   const pathMsg   = document.getElementById('cd-path-msg');
   const addBtn    = document.getElementById('cd-add-vault-row');
+  const varLabel  = document.getElementById('cd-var-label');
+  if(varLabel)  varLabel.style.display = isFromMv ? 'none' : 'block';
   if(backLabel) backLabel.textContent = isFromMv ? 'Back to My Vault' : 'Back to ISOVault';
   if(bcHome)    bcHome.textContent    = isFromMv ? 'My Vault'         : 'ISOVault';
   if(ctaIso)    ctaIso.style.display  = isFromMv ? 'none'             : 'block';

@@ -2672,14 +2672,14 @@ async function logOut(){
             <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;color:rgba(0,170,255,0.4);margin-bottom:6px">RECENT SUBMISSIONS</div>
             <div id="cd-mkt-sales-rows"></div>
           </div>
-          <div class="cd-watching" id="cd-watching-row"><span>&#128065;</span>&nbsp;<strong id="cd-watching-ct">&#8212;</strong>&nbsp;collectors watching this variation right now</div>
-          <div id="cd-mkt-tagline" style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:rgba(122,149,174,0.4);letter-spacing:.5px;margin-top:8px">Market price built from collector vault submissions &#183; Built by collectors, for collectors</div>
+          <div class="cd-watching" id="cd-watching-row" style="display:none"><span>&#128065;</span>&nbsp;<strong id="cd-watching-ct">&#8212;</strong>&nbsp;collectors watching this variation right now</div>
+          <div id="cd-mkt-tagline" style="display:none;font-family:'Barlow Condensed',sans-serif;font-size:10px;color:rgba(122,149,174,0.4);letter-spacing:.5px;margin-top:8px">Market price built from collector vault submissions &#183; Built by collectors, for collectors</div>
         </div>
       </div>
       <!-- RIGHT: Actions Panel -->
       <div class="cd-actions" id="cd-actions">
         <div class="cd-vault-cta">
-          <div class="cd-vault-path-msg" id="cd-path-msg"></div>
+          <div class="cd-vault-path-msg" id="cd-path-msg" style="display:none"></div>
           <!-- Vault purchase details — shown when from My Vault -->
           <div id="cd-vault-info" style="display:none;margin-bottom:10px"></div>
           <!-- Add to Vault + Favorites — hidden when from My Vault -->
@@ -8855,11 +8855,7 @@ function _cdSetMyVaultContext(fromMyVault){
   const pathMsg   = document.getElementById('cd-path-msg');
   const addBtn    = document.getElementById('cd-add-vault-row');
   const varLabel   = document.getElementById('cd-var-label');
-  const watchRow   = document.getElementById('cd-watching-row');
-  const mktTagline = document.getElementById('cd-mkt-tagline');
   if(varLabel)   varLabel.style.display   = isFromMv ? 'none' : 'block';
-  if(watchRow)   watchRow.style.display   = isFromMv ? 'none' : 'flex';
-  if(mktTagline) mktTagline.style.display = isFromMv ? 'none' : 'block';
   if(backLabel) backLabel.textContent = isFromMv ? 'Back to My Vault' : 'Back to ISOVault';
   if(bcHome)    bcHome.textContent    = isFromMv ? 'My Vault'         : 'ISOVault';
   if(ctaIso)    ctaIso.style.display  = isFromMv ? 'none'             : 'block';

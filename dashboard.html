@@ -6874,7 +6874,9 @@ function _buildVariationPills(c){
     }
   });
 
-  html += `<div style="margin-top:4px"><div class="cd-missing-btn" onclick="openMissingCardModal()">&#10133; Missing Variant<span class="missing-tooltip">Help build ISOVault — earn +1 credit!<br><span style="font-size:10px;color:var(--muted-text)">Submit cards we don't have yet</span></span></div></div>`;
+  if(!window._cdFromMyVault){
+    html += `<div style="margin-top:4px"><div class="cd-missing-btn" onclick="openMissingCardModal()">&#10133; Missing Variant<span class="missing-tooltip">Help build ISOVault — earn +1 credit!<br><span style="font-size:10px;color:var(--muted-text)">Submit cards we don't have yet</span></span></div></div>`;
+  }
 
   pillsEl.innerHTML = html;
   cdSelectVar(0, true);

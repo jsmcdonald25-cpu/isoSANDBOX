@@ -497,7 +497,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-crumb-sep{color:rgba(0,170,255,0.3);font-size:11px}
 .cd-back-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(0,170,255,0.08);border:1px solid var(--deep-border);border-radius:6px;padding:6px 12px;font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);cursor:pointer;transition:all .2s;margin-bottom:18px}
 .cd-back-btn:hover{background:rgba(0,170,255,0.15);border-color:var(--blue)}
-.cd-layout{display:flex;gap:16px;align-items:start;min-width:0;padding-left:10px}
+.cd-layout{display:flex;gap:16px;align-items:start;min-width:0;padding-left:110px}
 .cd-viewer-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;background:#0D1F33;width:fit-content;min-width:0;max-width:420px}
 .cd-scene-wrap{position:relative;width:240px;height:336px;max-width:100%}
 .cd-shadow{position:absolute;inset:0;border-radius:10px;pointer-events:none;z-index:0;transition:box-shadow .4s}
@@ -516,6 +516,11 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-ctrl-btn.upload:hover{background:rgba(0,232,135,0.14);border-color:var(--green)}
 .cd-side-label{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)}
 .cd-info{display:flex;flex-direction:column;gap:10px;max-width:480px}
+.cd-vault-info-title{font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--blue);margin-bottom:8px}
+.cd-vi-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px}
+.cd-vi-item{background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:6px;padding:6px 8px}
+.cd-vi-lbl{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)}
+.cd-vi-val{font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--white);margin-top:1px}
 .cd-card-title{font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:1.5px;color:var(--white);line-height:1.1}
 .cd-card-sub{font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);margin-top:3px;letter-spacing:.5px}
 .cd-card-num{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:rgba(0,170,255,0.6);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
@@ -2668,8 +2673,10 @@ async function logOut(){
         </div>
         <div class="cd-vault-cta">
           <div class="cd-vault-path-msg" id="cd-path-msg"></div>
-          <!-- Add to Vault + Favorites — always visible -->
-          <div style="display:flex;gap:6px;margin-bottom:8px">
+          <!-- Vault purchase details — shown when from My Vault -->
+          <div id="cd-vault-info" style="display:none;margin-bottom:10px"></div>
+          <!-- Add to Vault + Favorites — hidden when from My Vault -->
+          <div id="cd-add-vault-row" style="display:flex;gap:6px;margin-bottom:8px">
             <button class="btn btn-primary" style="flex:2;font-size:13px;padding:10px" onclick="openVaultModal(window._cdCard)">+ Add to My Vault</button>
             <button id="cd-fav-star" onclick="cdToggleFav()" style="flex:1;background:rgba(0,0,0,0.2);border:1px solid rgba(255,215,0,0.25);border-radius:8px;padding:9px;font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:1px;color:rgba(255,215,0,0.7);cursor:pointer;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='rgba(255,215,0,0.6)';this.style.color='#FFD700'" onmouseout="cdUpdateFavBtn()">&#9734; Favorite</button>
           </div>
@@ -2689,7 +2696,7 @@ async function logOut(){
             </div>
             <div style="display:flex;gap:6px;align-items:stretch">
               <button id="cd-slablab-btn" onclick="openSlabLab()" style="flex:1;background:linear-gradient(135deg,#0a1f35,#112840);border:1px solid rgba(0,170,255,0.35);border-radius:8px;padding:8px 6px;font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--blue);cursor:pointer;transition:all .2s;text-align:center;white-space:nowrap" onmouseover="this.style.borderColor='var(--blue)';this.style.boxShadow='0 0 12px rgba(0,170,255,0.3)'" onmouseout="this.style.borderColor='rgba(0,170,255,0.35)';this.style.boxShadow='none'">&#129514; SLAB LAB</button>
-              <button class="btn btn-primary" style="flex:1;font-size:12px;padding:8px 6px;letter-spacing:1px;white-space:nowrap" onclick="openSellModal(window._cdMyVaultIdx,'sold')">&#128176; SOLD</button>
+              <button class="btn btn-primary" style="flex:1;font-size:12px;padding:8px 6px;letter-spacing:1px;white-space:nowrap" onclick="openSellModal(window._cdMyVaultIdx,'sold')">&#128176; SELL</button>
               <button class="btn btn-ghost" style="flex:1;font-size:12px;padding:8px 6px;letter-spacing:1px;border-color:rgba(255,59,92,0.3);color:rgba(255,59,92,0.7);white-space:nowrap" onclick="openSellModal(window._cdMyVaultIdx,'removed')">&#128465; REMOVE</button>
             </div>
             <button id="cd-ticker-btn-mv" onclick="_cdToggleTicker()" style="width:100%;margin-top:6px;background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.25);border-radius:8px;padding:9px;font-family:Barlow Condensed,sans-serif;font-size:13px;letter-spacing:1px;color:var(--blue);cursor:pointer;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='var(--blue)';this.style.background='rgba(0,170,255,0.12)'" onmouseout="_cdUpdateTickerBtn()">&#128200; Add to Ticker</button>
@@ -8805,18 +8812,54 @@ async function _cdLoadLiveMarket(card, variationLabel){
 // &#9472;&#9472; Back to Vault from Card Detail &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 function _cdSetMyVaultContext(fromMyVault){
   window._cdFromMyVault = !!fromMyVault;
-  const prev = window._prevSection || (fromMyVault ? 'myvault' : 'library');
+  const isFromMv = !!fromMyVault;
   const backLabel = document.getElementById('cd-back-label');
   const bcHome    = document.getElementById('cd-bc-home');
   const ctaIso    = document.getElementById('cd-cta-isovault');
   const ctaMv     = document.getElementById('cd-cta-myvault');
   const pathMsg   = document.getElementById('cd-path-msg');
-  const isFromMv  = prev === 'myvault';
+  const addBtn    = document.getElementById('cd-add-vault-row');
   if(backLabel) backLabel.textContent = isFromMv ? 'Back to My Vault' : 'Back to ISOVault';
   if(bcHome)    bcHome.textContent    = isFromMv ? 'My Vault'         : 'ISOVault';
   if(ctaIso)    ctaIso.style.display  = isFromMv ? 'none'             : 'block';
   if(ctaMv)     ctaMv.style.display   = isFromMv ? 'block'            : 'none';
+  if(addBtn)    addBtn.style.display  = isFromMv ? 'none'             : 'flex';
   if(pathMsg&&isFromMv) pathMsg.innerHTML = '';
+  // Show vault purchase details when from My Vault
+  const vaultInfo = document.getElementById('cd-vault-info');
+  if(vaultInfo){
+    if(isFromMv){
+      const row = (window._vaultData||[])[window._cdMyVaultIdx];
+      if(row){
+        const paid = parseFloat(row.price_paid)||0;
+        const est  = parseFloat(row.estimated_value)||0;
+        const gl   = est - paid;
+        const acqMap = {bought_single:'Bought Single',pulled:'Pulled from Pack',ripped:'Ripped',traded:'Traded'};
+        const acqLabel = acqMap[row.acquisition_type] || row.acquisition_type || '—';
+        const src  = row.purchase_source || '—';
+        const date = row.date_acquired ? new Date(row.date_acquired).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+        const grade = row.grade || 'Raw';
+        const variation = row.variation || row.parallel || 'Base';
+        let html = '<div class="cd-vault-info-title">MY VAULT DETAILS</div>';
+        html += '<div class="cd-vi-grid">';
+        html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Variation</div><div class="cd-vi-val" style="color:var(--blue)">${variation}</div></div>`;
+        html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Grade</div><div class="cd-vi-val">${grade}</div></div>`;
+        html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Acquired</div><div class="cd-vi-val">${acqLabel}</div></div>`;
+        html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Source</div><div class="cd-vi-val">${src}</div></div>`;
+        html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Date</div><div class="cd-vi-val">${date}</div></div>`;
+        html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Price Paid</div><div class="cd-vi-val" style="color:var(--green)">$${paid.toFixed(2)}</div></div>`;
+        if(est){ html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Est. Value</div><div class="cd-vi-val" style="color:var(--blue)">$${est.toFixed(2)}</div></div>`; }
+        if(paid){ html += `<div class="cd-vi-item"><div class="cd-vi-lbl">G/L</div><div class="cd-vi-val" style="color:${gl>=0?'var(--green)':'var(--red)'}">${ gl>=0?'+':''}${gl.toFixed(2)}</div></div>`; }
+        if(row.serial_number){ html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Serial</div><div class="cd-vi-val">#${row.serial_number}${row.serial_total?'/'+row.serial_total:''}</div></div>`; }
+        html += '</div>';
+        vaultInfo.innerHTML = html;
+        vaultInfo.style.display = 'block';
+      }
+    } else {
+      vaultInfo.style.display = 'none';
+      vaultInfo.innerHTML = '';
+    }
+  }
   // Fav button — only shown when from My Vault
   const favBtn = document.getElementById('cd-fav-btn');
   cdUpdateFavBtn();

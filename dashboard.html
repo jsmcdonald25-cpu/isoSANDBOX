@@ -5834,6 +5834,9 @@ async function openVaultCard(idx){
     known._vaultFrontUrl = row.front_image_url || null;
     known._vaultBackUrl  = row.back_image_url  || null;
     await openCardDetail(known.id);
+    // Re-set breadcrumbs with vault row data (openCardDetail doesn't have insert info)
+    _cdSetBreadcrumbsAndTitle({sport:'Baseball', year:known.year||row.year, brand:known.brand||row.brand,
+      setName:'', subsetName:row.set_name||known.set, cardNum:known.cardNum||('#'+row.card_number), player:known.player||row.player});
     // Select the correct variation pill matching the vault row's parallel
     const vaultParallel = row.variation || row.parallel || row.category || 'Base';
     const vars = window._cdVars || [];
@@ -5873,7 +5876,7 @@ async function openVaultCard(idx){
   };
   window._cdCard=card;
   _cdSetBreadcrumbsAndTitle({sport:'Baseball', year:card.year, brand:card.brand,
-    setName:row.set_name||card.set, subsetName:'', cardNum:card.cardNum, player:card.player});
+    setName:'', subsetName:row.set_name||card.set, cardNum:card.cardNum, player:card.player});
   const pm=document.getElementById('cd-path-msg');
   if(pm)pm.innerHTML='';
   const ub=document.getElementById('cd-upload-btn');
@@ -6468,7 +6471,7 @@ async function openCardDetail(cardId){
   window._cdCard = c;
 
   _cdSetBreadcrumbsAndTitle({sport:'Baseball', year:c.year, brand:c.brand,
-    setName:c.set, subsetName:c._insertName||'', cardNum:c.cardNum, player:c.player});
+    setName:'', subsetName:c.set, cardNum:c.cardNum, player:c.player});
 
   // Vault CTA path message
   const pathMsg = document.getElementById('cd-path-msg');

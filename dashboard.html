@@ -8772,7 +8772,7 @@ async function _cdLoadLiveMarket(card, variationLabel){
   document.getElementById('cd-mkt-count').textContent = '...';
   document.getElementById('cd-mkt-sales-list').style.display = 'none';
 
-  if(!card._setTable || !card._cardNumber) return;
+  if(!card._cardNumber) return;
 
   try {
     // Query vault for all submissions of this card + variation

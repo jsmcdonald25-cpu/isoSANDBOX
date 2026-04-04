@@ -8840,7 +8840,7 @@ function _cdSetMyVaultContext(fromMyVault){
   const pgTitle = document.getElementById('pgTitle');
   const pgSub   = document.getElementById('pgSub');
   if(pgTitle) pgTitle.textContent = isFromMv ? 'MY VAULT' : 'ISOVAULT';
-  if(pgSub)   pgSub.textContent   = isFromMv ? 'Card detail' : 'Card detail';
+  if(pgSub)   pgSub.textContent   = isFromMv ? '' : 'Card detail';
   const backLabel = document.getElementById('cd-back-label');
   const bcHome    = document.getElementById('cd-bc-home');
   const ctaIso    = document.getElementById('cd-cta-isovault');

@@ -491,7 +491,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 /* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
    ISOVAULT CARD DETAIL
 &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
-.cd-breadcrumb{display:flex;align-items:center;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.cd-breadcrumb{display:flex;align-items:center;gap:6px;margin-bottom:20px;flex-wrap:nowrap;white-space:nowrap}
 .cd-crumb{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);cursor:pointer;transition:color .15s}
 .cd-crumb:hover{color:var(--blue)}.cd-crumb.active{color:var(--white)}
 .cd-crumb-sep{color:rgba(0,170,255,0.3);font-size:11px}
@@ -2668,8 +2668,8 @@ async function logOut(){
             <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;color:rgba(0,170,255,0.4);margin-bottom:6px">RECENT SUBMISSIONS</div>
             <div id="cd-mkt-sales-rows"></div>
           </div>
-          <div class="cd-watching"><span>&#128065;</span>&nbsp;<strong id="cd-watching-ct">&#8212;</strong>&nbsp;collectors watching this variation right now</div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:rgba(122,149,174,0.4);letter-spacing:.5px;margin-top:8px">Market price built from collector vault submissions &#183; Built by collectors, for collectors</div>
+          <div class="cd-watching" id="cd-watching-row"><span>&#128065;</span>&nbsp;<strong id="cd-watching-ct">&#8212;</strong>&nbsp;collectors watching this variation right now</div>
+          <div id="cd-mkt-tagline" style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:rgba(122,149,174,0.4);letter-spacing:.5px;margin-top:8px">Market price built from collector vault submissions &#183; Built by collectors, for collectors</div>
         </div>
         <div class="cd-vault-cta">
           <div class="cd-vault-path-msg" id="cd-path-msg"></div>
@@ -8847,8 +8847,12 @@ function _cdSetMyVaultContext(fromMyVault){
   const ctaMv     = document.getElementById('cd-cta-myvault');
   const pathMsg   = document.getElementById('cd-path-msg');
   const addBtn    = document.getElementById('cd-add-vault-row');
-  const varLabel  = document.getElementById('cd-var-label');
-  if(varLabel)  varLabel.style.display = isFromMv ? 'none' : 'block';
+  const varLabel   = document.getElementById('cd-var-label');
+  const watchRow   = document.getElementById('cd-watching-row');
+  const mktTagline = document.getElementById('cd-mkt-tagline');
+  if(varLabel)   varLabel.style.display   = isFromMv ? 'none' : 'block';
+  if(watchRow)   watchRow.style.display   = isFromMv ? 'none' : 'flex';
+  if(mktTagline) mktTagline.style.display = isFromMv ? 'none' : 'block';
   if(backLabel) backLabel.textContent = isFromMv ? 'Back to My Vault' : 'Back to ISOVault';
   if(bcHome)    bcHome.textContent    = isFromMv ? 'My Vault'         : 'ISOVault';
   if(ctaIso)    ctaIso.style.display  = isFromMv ? 'none'             : 'block';

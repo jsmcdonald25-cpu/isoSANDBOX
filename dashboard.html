@@ -4078,7 +4078,7 @@ const PM={
   sellermatches:{t:'SELLER MATCHES',s:'Cards buyers are looking for in your vault'},
   activelistings:{t:'ACTIVE LISTINGS',s:'Cards you currently have listed for sale'},
   leaderboard:{t:'LEADERBOARD',s:'Top buyers · sellers · most wanted cards'},
-  carddetail:{t:'ISOVAULT',s:'Card detail'},
+  carddetail:{t:'ISOVAULT',s:'Card detail'},  // overridden by _cdSetMyVaultContext when from vault
 };
 function toggleTheme(isLight){
   document.documentElement.classList.toggle('light', isLight);
@@ -8836,6 +8836,11 @@ async function _cdLoadLiveMarket(card, variationLabel){
 function _cdSetMyVaultContext(fromMyVault){
   window._cdFromMyVault = !!fromMyVault;
   const isFromMv = !!fromMyVault;
+  // Page title bar
+  const pgTitle = document.getElementById('pgTitle');
+  const pgSub   = document.getElementById('pgSub');
+  if(pgTitle) pgTitle.textContent = isFromMv ? 'MY VAULT' : 'ISOVAULT';
+  if(pgSub)   pgSub.textContent   = isFromMv ? 'Card detail' : 'Card detail';
   const backLabel = document.getElementById('cd-back-label');
   const bcHome    = document.getElementById('cd-bc-home');
   const ctaIso    = document.getElementById('cd-cta-isovault');

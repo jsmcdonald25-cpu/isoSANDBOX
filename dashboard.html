@@ -6682,7 +6682,25 @@ function _cdSetBreadcrumbsAndTitle(opts){
   if(!ivEntry && opts.cardNum && IV_SETS && IV_SETS.length){
     const cn = (opts.cardNum||'').replace(/^#/,'');
     if(cn) _cdFindIvSetByCard(cn, opts.player||'', opts.year).then(found=>{
-      if(found) _cdSetBreadcrumbsAndTitle({...opts, ivSetEntry:found});
+      if(found){
+        _cdSetBreadcrumbsAndTitle({...opts, ivSetEntry:found});
+        // Strip parent set prefix from variation pills and market label
+        const setName = found.name||'';
+        if(setName && window._cdVars){
+          window._cdVars.forEach((v,i)=>{
+            const stripped = _cdStripSetPrefix(v.label, setName);
+            if(stripped !== v.label){
+              v.label = stripped;
+              const pill = document.getElementById('cd-pill-'+i);
+              if(pill) pill.childNodes[0].textContent = stripped;
+            }
+          });
+          const currName = document.getElementById('cd-curr-name');
+          if(currName) currName.textContent = _cdStripSetPrefix(currName.textContent, setName);
+          const mktVar = document.getElementById('cd-mkt-var-name');
+          if(mktVar) mktVar.textContent = _cdStripSetPrefix(mktVar.textContent, setName);
+        }
+      }
     });
   }
   const parentSet = ivEntry ? (ivEntry.name||'') : (opts.setName || opts.subsetName || '');
@@ -6727,7 +6745,8 @@ async function _cdFindIvSetByCard(cardNum, player, year){
   });
   for(const s of candidates){
     try{
-      const url=`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/${s.table}?select=card_number&card_number=eq.${encodeURIComponent(cardNum)}&limit=1`;
+      const pq = player ? '&player=eq.'+encodeURIComponent(player) : '';
+      const url=`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/${s.table}?select=card_number&card_number=eq.${encodeURIComponent(cardNum)}${pq}&limit=1`;
       const r=await fetch(url,{headers:hdrs});
       if(r.ok){const d=await r.json();if(d&&d.length) return s;}
     }catch(e){}

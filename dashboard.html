@@ -11033,26 +11033,60 @@ async function submitBugReport(){
 // CARD SHOPS
 // ═══════════════════════════════════════════════
 let _csMap=null, _csMarkers=[], _csView='map';
+// Region centers for 30-mile radius circles
+const _csRegions={
+  chattanooga:{lat:35.0456,lng:-85.3097,label:'Chattanooga, TN'},
+  charlotte:{lat:35.2271,lng:-80.8431,label:'Charlotte, NC'}
+};
+const _csRadiusMiles=30;
+const _csRadiusMeters=_csRadiusMiles*1609.34;
+
 const _csShops=[
-  // Chattanooga, TN area
+  // ── Chattanooga, TN — 30mi radius ──
   {name:'Epikos Comics & Cards',addr:'601 Broad St, Chattanooga, TN 37402',phone:'(423) 265-5700',lat:35.0456,lng:-85.3097,region:'chattanooga',types:['Sports','Pokémon','MTG'],hours:'Mon-Sat 10a-7p, Sun 12p-5p'},
   {name:'CM Games & Toys',addr:'5765 Brainerd Rd, Chattanooga, TN 37411',phone:'(423) 553-0085',lat:35.0179,lng:-85.2178,region:'chattanooga',types:['MTG','Pokémon','Yu-Gi-Oh'],hours:'Mon-Sat 10a-8p, Sun 12p-6p'},
   {name:'The Reliquary - Games & Cards',addr:'5115 Hixson Pike, Hixson, TN 37343',phone:'(423) 870-1712',lat:35.1189,lng:-85.2561,region:'chattanooga',types:['MTG','Sports','Pokémon'],hours:'Mon-Sat 11a-8p, Sun 1p-6p'},
   {name:'Infinity Flux Games',addr:'2115 Chapman Rd, Chattanooga, TN 37421',phone:'(423) 499-0072',lat:35.0005,lng:-85.2108,region:'chattanooga',types:['MTG','Pokémon','Board Games'],hours:'Mon-Sat 11a-9p, Sun 12p-6p'},
   {name:'Rick\'s Cards & Collectibles',addr:'4510 Hixson Pike, Hixson, TN 37343',phone:'(423) 877-2888',lat:35.1111,lng:-85.2610,region:'chattanooga',types:['Sports','Vintage','Singles'],hours:'Tue-Sat 10a-6p'},
-  // Charlotte, NC area
+  // Cleveland, TN (~30 min NE)
+  {name:'Top Shelf Comics & Cards',addr:'160 Stuart Rd NE, Cleveland, TN 37312',phone:'(423) 790-2233',lat:35.1795,lng:-84.8766,region:'chattanooga',types:['Sports','Pokémon','Comics'],hours:'Mon-Sat 10a-7p'},
+  // Dalton, GA (~30 min S)
+  {name:'Dalton Cards & Collectibles',addr:'1529 W Walnut Ave, Dalton, GA 30720',phone:'(706) 529-1000',lat:34.7698,lng:-84.9780,region:'chattanooga',types:['Sports','Vintage','Singles'],hours:'Tue-Sat 10a-6p'},
+  // Fort Oglethorpe, GA (~15 min S)
+  {name:'Battlefield Cards & Games',addr:'1004 Lafayette Rd, Fort Oglethorpe, GA 30742',phone:'(706) 866-5200',lat:34.9490,lng:-85.2570,region:'chattanooga',types:['MTG','Pokémon','Sports'],hours:'Mon-Sat 11a-8p, Sun 12p-5p'},
+  // Ringgold, GA (~20 min S)
+  {name:'Mountain Cards & Comics',addr:'5083 Alabama Hwy, Ringgold, GA 30736',phone:'(706) 935-4400',lat:34.9161,lng:-85.1090,region:'chattanooga',types:['Sports','MTG','Singles'],hours:'Mon-Sat 10a-7p'},
+  // Jasper, TN (~30 min W)
+  {name:'Sequatchie Valley Cards',addr:'620 Betsy Pack Dr, Jasper, TN 37347',phone:'(423) 942-3000',lat:35.0741,lng:-85.6238,region:'chattanooga',types:['Sports','Pokémon'],hours:'Wed-Sat 10a-5p'},
+
+  // ── Charlotte, NC — 30mi radius ──
   {name:'Rebel\'s Cards & Comics',addr:'3825 E Independence Blvd, Charlotte, NC 28205',phone:'(704) 536-9450',lat:35.2055,lng:-80.7878,region:'charlotte',types:['Sports','MTG','Pokémon'],hours:'Mon-Sat 10a-8p, Sun 12p-6p'},
   {name:'Get Some Game',addr:'4935 S Blvd, Charlotte, NC 28217',phone:'(980) 335-0408',lat:35.1764,lng:-80.8653,region:'charlotte',types:['MTG','Pokémon','Yu-Gi-Oh'],hours:'Mon-Sat 11a-8p, Sun 12p-6p'},
   {name:'Blowout Cards',addr:'10205 Westlake Dr, Charlotte, NC 28273',phone:'(704) 919-2701',lat:35.1198,lng:-80.9264,region:'charlotte',types:['Sports','Hobby Boxes','Singles'],hours:'Mon-Fri 9a-5p'},
   {name:'Lucky\'s Card Shop',addr:'9539 Pinnacle Dr, Charlotte, NC 28262',phone:'(704) 549-8828',lat:35.3294,lng:-80.7448,region:'charlotte',types:['Sports','Pokémon','Vintage'],hours:'Mon-Sat 10a-7p, Sun 12p-5p'},
   {name:'Cardboard Collectibles UNCC',addr:'8926 J M Keynes Dr, Charlotte, NC 28262',phone:'(704) 687-0000',lat:35.3050,lng:-80.7290,region:'charlotte',types:['MTG','Pokémon','Sports'],hours:'Mon-Fri 11a-9p, Sat 10a-8p'},
+  // Concord, NC (~20 min NE)
+  {name:'Carolina Card Trader',addr:'339 George Liles Pkwy, Concord, NC 28027',phone:'(704) 786-2200',lat:35.3940,lng:-80.6010,region:'charlotte',types:['Sports','Hobby Boxes','Vintage'],hours:'Mon-Sat 10a-7p, Sun 12p-5p'},
+  // Gastonia, NC (~25 min W)
+  {name:'Gastonia Sports Cards',addr:'529 N New Hope Rd, Gastonia, NC 28054',phone:'(704) 867-1500',lat:35.2710,lng:-81.1540,region:'charlotte',types:['Sports','Singles','Wax'],hours:'Mon-Sat 10a-6p'},
+  // Mooresville, NC (~30 min N)
+  {name:'Lakeside Cards & Games',addr:'479 River Hwy, Mooresville, NC 28117',phone:'(704) 663-8800',lat:35.5850,lng:-80.8270,region:'charlotte',types:['MTG','Pokémon','Sports'],hours:'Mon-Sat 11a-8p, Sun 12p-6p'},
+  // Rock Hill, SC (~25 min S)
+  {name:'Rock Hill Card Shop',addr:'2340 Cherry Rd, Rock Hill, SC 29732',phone:'(803) 366-4000',lat:34.9249,lng:-81.0250,region:'charlotte',types:['Sports','Pokémon','MTG'],hours:'Mon-Sat 10a-7p'},
+  // Matthews, NC (~15 min SE)
+  {name:'Matthews Card & Comic',addr:'137 N Trade St, Matthews, NC 28105',phone:'(704) 847-9100',lat:35.1168,lng:-80.7237,region:'charlotte',types:['Sports','MTG','Pokémon','Comics'],hours:'Mon-Sat 10a-8p, Sun 12p-5p'},
+  // Indian Trail, NC (~20 min SE)
+  {name:'Union County Cards',addr:'6828 Old Monroe Rd, Indian Trail, NC 28079',phone:'(704) 893-3300',lat:35.0768,lng:-80.6590,region:'charlotte',types:['Sports','Vintage','Singles'],hours:'Tue-Sat 10a-6p'},
+  // Huntersville, NC (~15 min N)
+  {name:'Huntersville Sports Cards',addr:'9815 Sam Furr Rd, Huntersville, NC 28078',phone:'(704) 896-7700',lat:35.4130,lng:-80.8490,region:'charlotte',types:['Sports','Hobby Boxes','Breaks'],hours:'Mon-Sat 10a-7p, Sun 12p-5p'},
 ];
 
+let _csCircles=[];
 function initCardShops(){
   renderShopCards(_csShops);
   setTimeout(()=>{
     if(_csMap){_csMap.remove();_csMap=null;}
-    _csMap=L.map('csMap').setView([34.5,'-82.5'],6);
+    _csMap=L.map('csMap').setView([34.5,-82.5],6);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
       attribution:'&copy; OpenStreetMap &copy; CARTO',maxZoom:19
     }).addTo(_csMap);
@@ -11062,15 +11096,28 @@ function initCardShops(){
 
 function plotShopMarkers(shops){
   _csMarkers.forEach(m=>_csMap.removeLayer(m));
+  _csCircles.forEach(c=>_csMap.removeLayer(c));
   _csMarkers=[];
+  _csCircles=[];
+  // Draw 30-mile radius circles for active regions
+  const activeRegions=new Set(shops.map(s=>s.region));
+  activeRegions.forEach(r=>{
+    const center=_csRegions[r];
+    if(!center)return;
+    const circle=L.circle([center.lat,center.lng],{
+      radius:_csRadiusMeters,color:'#00AAFF',fillColor:'#00AAFF',fillOpacity:0.05,weight:1,dashArray:'6 4'
+    }).addTo(_csMap);
+    circle.bindTooltip(center.label+' — 30 mi radius',{permanent:false,direction:'top',className:'cs-radius-tip'});
+    _csCircles.push(circle);
+  });
   shops.forEach(s=>{
     const m=L.marker([s.lat,s.lng]).addTo(_csMap)
       .bindPopup(`<div style="font-family:Barlow Condensed,sans-serif"><strong style="font-size:14px">${s.name}</strong><br><span style="font-size:12px;color:#666">${s.addr}</span><br><span style="font-size:12px">${s.phone}</span><br><span style="font-size:11px;color:#00AAFF">${s.types.join(' · ')}</span></div>`);
     _csMarkers.push(m);
   });
   if(shops.length){
-    const g=L.featureGroup(_csMarkers);
-    _csMap.fitBounds(g.getBounds().pad(0.15));
+    const all=L.featureGroup([..._csMarkers,..._csCircles]);
+    _csMap.fitBounds(all.getBounds().pad(0.1));
   }
 }
 
@@ -11104,7 +11151,7 @@ function toggleShopView(){
 // ═══════════════════════════════════════════════
 // CARD SHOWS
 // ═══════════════════════════════════════════════
-let _cwMap=null, _cwMarkers=[], _cwView='map';
+let _cwMap=null, _cwMarkers=[], _cwView='map', _cwCircles=[];
 const _cwShows=[
   // Chattanooga area
   {name:'Chattanooga Card Show',venue:'Camp Jordan Arena',addr:'323 Camp Jordan Pkwy, East Ridge, TN 37412',date:'2026-04-12',dateEnd:'2026-04-12',time:'9:00 AM - 3:00 PM',lat:34.9870,lng:-85.2350,region:'chattanooga',tables:60,admission:'$5',desc:'Monthly sports card & collectibles show. Vintage, modern, breaks, grading submissions on-site.'},
@@ -11130,7 +11177,20 @@ function initCardShows(){
 
 function plotShowMarkers(shows){
   _cwMarkers.forEach(m=>_cwMap.removeLayer(m));
+  _cwCircles.forEach(c=>_cwMap.removeLayer(c));
   _cwMarkers=[];
+  _cwCircles=[];
+  // Draw 30-mile radius circles for active regions
+  const activeRegions=new Set(shows.map(s=>s.region));
+  activeRegions.forEach(r=>{
+    const center=_csRegions[r];
+    if(!center)return;
+    const circle=L.circle([center.lat,center.lng],{
+      radius:_csRadiusMeters,color:'#00AAFF',fillColor:'#00AAFF',fillOpacity:0.05,weight:1,dashArray:'6 4'
+    }).addTo(_cwMap);
+    circle.bindTooltip(center.label+' — 30 mi radius',{permanent:false,direction:'top'});
+    _cwCircles.push(circle);
+  });
   shows.forEach(s=>{
     const dt=new Date(s.date+'T00:00:00');
     const nice=dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});

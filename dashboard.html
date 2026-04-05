@@ -3475,91 +3475,7 @@ async function logOut(){
       </div>
     </div>
 
-    <!-- How did you get it -->
-    <div class="vm-section">
-      <div class="vm-label">How did you get it? <span class="req">*</span></div>
-      <div class="vm-acq-grid" style="grid-template-columns:repeat(2,1fr)">
-        <div class="vm-acq-btn" id="mcAcqBought" onclick="mcSelectAcq('bought_single')">
-          <div class="vm-acq-icon">&#128179;</div>
-          <div class="vm-acq-label">Bought Single</div>
-          <div class="vm-acq-sub">Purchased a single card</div>
-        </div>
-        <div class="vm-acq-btn" id="mcAcqPulled" onclick="mcSelectAcq('pulled')">
-          <div class="vm-acq-icon">&#128230;</div>
-          <div class="vm-acq-label">Pulled It</div>
-          <div class="vm-acq-sub">Pack / Box pull</div>
-        </div>
-        <div class="vm-acq-btn" id="mcAcqTrade" onclick="mcSelectAcq('trade')">
-          <div class="vm-acq-icon">&#129309;</div>
-          <div class="vm-acq-label">Trade</div>
-          <div class="vm-acq-sub">Traded for this card</div>
-        </div>
-        <div class="vm-acq-btn" id="mcAcqOther" onclick="mcSelectAcq('other')">
-          <div class="vm-acq-icon">&#127873;</div>
-          <div class="vm-acq-label">Other</div>
-          <div class="vm-acq-sub">Gift, win, etc.</div>
-        </div>
-      </div>
-      <div class="vm-error" id="mcAcqError">Please select how you obtained this card.</div>
-    </div>
-
-    <!-- Source (Bought Single only) -->
-    <div class="vm-section" id="mcSourceSection" style="display:none;position:relative;z-index:5">
-      <div class="vm-label">Where did you buy it? <span class="req">*</span></div>
-      <div class="vm-source-grid">
-        <div class="vm-source-btn" id="mcSrcEbay"     onclick="mcSelectSource('ebay')">eBay</div>
-        <div class="vm-source-btn" id="mcSrcLcs"      onclick="mcSelectSource('lcs')">LCS</div>
-        <div class="vm-source-btn" id="mcSrcFacebook" onclick="mcSelectSource('facebook')">Facebook</div>
-        <div class="vm-source-btn" id="mcSrcOther"    onclick="mcSelectSource('other_source')">Other</div>
-      </div>
-      <div class="vm-error" id="mcSourceError" style="display:none">Please select where you purchased it.</div>
-    </div>
-
-    <!-- Rip source + pack type (Pulled It only) -->
-    <div class="vm-section" id="mcRipSection" style="display:none;position:relative;z-index:5">
-      <div class="vm-label">Where did you buy the pack/box? <span class="req">*</span></div>
-      <div class="vm-source-grid" style="grid-template-columns:repeat(2,1fr)">
-        <div class="vm-source-btn" id="mcRipEbay"     onclick="mcSelectRipSource('ebay')">eBay</div>
-        <div class="vm-source-btn" id="mcRipLcs"      onclick="mcSelectRipSource('lcs')">LCS</div>
-        <div class="vm-source-btn" id="mcRipRetail"   onclick="mcSelectRipSource('retail')">Retail</div>
-        <div class="vm-source-btn" id="mcRipMfg"      onclick="mcSelectRipSource('manufacturer')">Manufacturer</div>
-        <div class="vm-source-btn" id="mcRipOther"    onclick="mcSelectRipSource('other_source')" style="grid-column:1/-1">Other</div>
-      </div>
-      <div style="margin-top:12px">
-        <div class="vm-label" style="margin-bottom:5px;font-size:10px">Pack / Box Type <span class="req">*</span></div>
-        <select class="vm-input" id="mcPackType" style="cursor:pointer">
-          <option value="">Select type...</option>
-          <option value="hobby_box">Hobby Box</option>
-          <option value="hobby_pack">Hobby Pack (single)</option>
-          <option value="blaster">Blaster Box</option>
-          <option value="hanger">Hanger Pack</option>
-          <option value="retail_pack">Retail Pack</option>
-        </select>
-      </div>
-      <div class="vm-error" id="mcRipError" style="display:none">Please select where you got the pack/box.</div>
-    </div>
-
-    <!-- Price — mandatory -->
-    <div class="vm-section" id="mcPriceSection" style="display:none">
-      <div class="vm-price-wrap">
-        <div class="vm-label" style="margin-bottom:10px" id="mcPriceLabel">Price Paid <span class="req">*</span></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div>
-            <div class="vm-label" style="margin-bottom:5px;font-size:10px">Amount (USD) <span class="req">*</span></div>
-            <input class="vm-input" type="number" id="mcPricePaid" min="0" step="0.01" placeholder="0.00" style="font-size:18px;font-family:Bebas Neue,sans-serif;letter-spacing:1px;color:var(--blue)" oninput="document.getElementById('mcPriceError').style.display='none'"/>
-          </div>
-          <div>
-            <div class="vm-label" style="margin-bottom:5px;font-size:10px">Date Acquired</div>
-            <input class="vm-input" type="date" id="mcDateAcquired" style="color-scheme:dark"/>
-          </div>
-        </div>
-        <div class="vm-price-required">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          Price paid feeds the market value engine &#8212; required to track ROI
-        </div>
-      </div>
-      <div class="vm-error" id="mcPriceError">This field is required.</div>
-    </div>
+    <!-- Acquisition/price sections removed — missing card submissions are for catalog only, not vault -->
 
     <!-- Progress + Submit -->
     <div class="vm-progress" id="mcProgress"><div class="vm-progress-bar" id="mcProgressBar"></div></div>
@@ -5705,23 +5621,7 @@ async function submitMissingCard(){
   // Photos always required
   if(!_mcFrontFile || !_mcBackFile){ document.getElementById('mcPhotoError').style.display='block'; valid=false; }
 
-  // Acquisition type
-  if(!_mcAcq){ document.getElementById('mcAcqError').style.display='block'; valid=false; }
-
-  // Source for bought_single
-  if(_mcAcq==='bought_single' && !_mcSource){
-    document.getElementById('mcSourceError').style.display='block'; valid=false;
-  }
-  // Rip source for pulled
-  if(_mcAcq==='pulled' && !_mcRipSource){
-    document.getElementById('mcRipError').style.display='block'; valid=false;
-  }
-
-  // Price mandatory
-  const pricePaid = parseFloat(document.getElementById('mcPricePaid').value);
-  if(!document.getElementById('mcPricePaid').value || isNaN(pricePaid) || pricePaid < 0){
-    document.getElementById('mcPriceError').style.display='block'; valid=false;
-  }
+  // No acquisition/price validation — missing card is catalog-only
 
   if(!valid) return;
 
@@ -5761,8 +5661,6 @@ async function submitMissingCard(){
     document.getElementById('mcProgressBar').style.width='75%';
 
     btn.textContent = 'SUBMITTING...';
-    const dateVal = document.getElementById('mcDateAcquired').value;
-    const packType = (_mcAcq === 'pulled') ? (document.getElementById('mcPackType').value || null) : null;
     const printRun = document.getElementById('mcPrintRun').value ? parseInt(document.getElementById('mcPrintRun').value) : null;
 
     const row = {
@@ -5776,12 +5674,6 @@ async function submitMissingCard(){
       variation:         varName,
       front_image_url:   frontURL,
       back_image_url:    backURL,
-      acquisition_type:  _mcAcq,
-      purchase_source:   _mcAcq === 'bought_single' ? _mcSource : (_mcAcq === 'pulled' ? _mcRipSource : null),
-      pack_type:         packType,
-      price_paid:        pricePaid,
-      date_acquired:     dateVal || null,
-      serial_number:     null,
       serial_total:      printRun,
       status:            'pending',
     };

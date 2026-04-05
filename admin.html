@@ -2629,9 +2629,7 @@ function pendPreviewImg(url) {
 
 async function _pendAddToCatalog(row, varLabel, varRun, varColor, varGlow) {
   // Find the set table from iv_sets by matching year+brand+set_name
-  if (!_allSets.length) {
-    try { _allSets = await _get('iv_sets', 'select=*&order=sort_order.asc') || []; } catch(e) {}
-  }
+  try { _allSets = await _get('iv_sets', 'select=*&order=sort_order.asc') || []; } catch(e) {}
   const match = _allSets.find(s => {
     const sYear  = String(s.year||'');
     const rYear  = String(row.year||'');
@@ -3084,9 +3082,7 @@ async function dedupScan() {
 }
 
 async function dedupScanAll() {
-  if (!_allSets.length) {
-    try { _allSets = await _get('iv_sets', 'select=*&order=sort_order.asc') || []; } catch(e) {}
-  }
+  try { _allSets = await _get('iv_sets', 'select=*&order=sort_order.asc') || []; } catch(e) {}
   if (!_allSets.length) { _dedupStatus('No sets found.', 'error'); return; }
 
   document.getElementById('dedup-preview').style.display = 'none';

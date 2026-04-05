@@ -1601,7 +1601,6 @@ async function gateLogin() {
     populateSetDropdowns();
     loadUsers();
     loadPendingCards();
-    loadAlphaSignups();
   } catch(e) {
     errEl.textContent = e.message || 'Login failed.';
   }

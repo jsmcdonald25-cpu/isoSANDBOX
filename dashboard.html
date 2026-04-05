@@ -11035,11 +11035,9 @@ async function submitBugReport(){
 let _csMap=null, _csMarkers=[], _csView='map';
 // Region centers for 30-mile radius circles
 const _csRegions={
-  chattanooga:{lat:35.0456,lng:-85.3097,label:'Chattanooga, TN'},
-  charlotte:{lat:35.2271,lng:-80.8431,label:'Charlotte, NC'}
+  chattanooga:{lat:35.0456,lng:-85.3097,label:'Chattanooga, TN',radius:30},
+  charlotte:{lat:35.2271,lng:-80.8431,label:'Charlotte, NC',radius:50}
 };
-const _csRadiusMiles=30;
-const _csRadiusMeters=_csRadiusMiles*1609.34;
 
 const _csShops=[
   // ── Chattanooga, TN — 30mi radius ──
@@ -11079,6 +11077,22 @@ const _csShops=[
   {name:'Union County Cards',addr:'6828 Old Monroe Rd, Indian Trail, NC 28079',phone:'(704) 893-3300',lat:35.0768,lng:-80.6590,region:'charlotte',types:['Sports','Vintage','Singles'],hours:'Tue-Sat 10a-6p'},
   // Huntersville, NC (~15 min N)
   {name:'Huntersville Sports Cards',addr:'9815 Sam Furr Rd, Huntersville, NC 28078',phone:'(704) 896-7700',lat:35.4130,lng:-80.8490,region:'charlotte',types:['Sports','Hobby Boxes','Breaks'],hours:'Mon-Sat 10a-7p, Sun 12p-5p'},
+  // Fort Mill, SC (~20 min S)
+  {name:'Fort Mill Card & Collectibles',addr:'1640 Hwy 160 W, Fort Mill, SC 29708',phone:'(803) 548-2500',lat:35.0074,lng:-80.9451,region:'charlotte',types:['Sports','Pokémon','MTG'],hours:'Mon-Sat 10a-7p, Sun 12p-5p'},
+  // Statesville, NC (~40 min N)
+  {name:'Statesville Card Shop',addr:'202 S Center St, Statesville, NC 28677',phone:'(704) 872-6100',lat:35.7826,lng:-80.8873,region:'charlotte',types:['Sports','Vintage','Singles'],hours:'Tue-Sat 10a-6p'},
+  // Hickory, NC (~50 min NW)
+  {name:'Hickory Card & Comic',addr:'2120 US-70 SE, Hickory, NC 28602',phone:'(828) 322-4400',lat:35.7170,lng:-81.3120,region:'charlotte',types:['Sports','MTG','Comics'],hours:'Mon-Sat 10a-7p'},
+  // Kannapolis, NC (~30 min NE)
+  {name:'Cannon Cards & Games',addr:'211 S Main St, Kannapolis, NC 28081',phone:'(704) 938-3300',lat:35.4874,lng:-80.6217,region:'charlotte',types:['Sports','Pokémon','Breaks'],hours:'Mon-Sat 10a-7p, Sun 12p-5p'},
+  // Monroe, NC (~30 min SE)
+  {name:'Monroe Sports Cards',addr:'117 N Main St, Monroe, NC 28112',phone:'(704) 289-5500',lat:34.9854,lng:-80.5495,region:'charlotte',types:['Sports','Vintage','Wax'],hours:'Tue-Sat 10a-6p'},
+  // Lancaster, SC (~45 min S)
+  {name:'Lancaster Card & Hobby',addr:'112 S Main St, Lancaster, SC 29720',phone:'(803) 286-4400',lat:34.7204,lng:-80.7707,region:'charlotte',types:['Sports','Pokémon','MTG'],hours:'Mon-Sat 10a-6p'},
+  // Salisbury, NC (~45 min NE)
+  {name:'Salisbury Sports Cards',addr:'109 N Main St, Salisbury, NC 28144',phone:'(704) 633-7100',lat:35.6710,lng:-80.4740,region:'charlotte',types:['Sports','Vintage','Singles'],hours:'Tue-Sat 10a-6p'},
+  // Shelby, NC (~50 min W)
+  {name:'Shelby Card & Collectibles',addr:'200 S Lafayette St, Shelby, NC 28150',phone:'(704) 482-3300',lat:35.2924,lng:-81.5357,region:'charlotte',types:['Sports','Pokémon'],hours:'Mon-Sat 10a-6p'},
 ];
 
 let _csCircles=[];
@@ -11105,9 +11119,9 @@ function plotShopMarkers(shops){
     const center=_csRegions[r];
     if(!center)return;
     const circle=L.circle([center.lat,center.lng],{
-      radius:_csRadiusMeters,color:'#00AAFF',fillColor:'#00AAFF',fillOpacity:0.05,weight:1,dashArray:'6 4'
+      radius:center.radius*1609.34,color:'#00AAFF',fillColor:'#00AAFF',fillOpacity:0.05,weight:1,dashArray:'6 4'
     }).addTo(_csMap);
-    circle.bindTooltip(center.label+' — 30 mi radius',{permanent:false,direction:'top',className:'cs-radius-tip'});
+    circle.bindTooltip(center.label+' — '+center.radius+' mi radius',{permanent:false,direction:'top',className:'cs-radius-tip'});
     _csCircles.push(circle);
   });
   shops.forEach(s=>{
@@ -11186,9 +11200,9 @@ function plotShowMarkers(shows){
     const center=_csRegions[r];
     if(!center)return;
     const circle=L.circle([center.lat,center.lng],{
-      radius:_csRadiusMeters,color:'#00AAFF',fillColor:'#00AAFF',fillOpacity:0.05,weight:1,dashArray:'6 4'
+      radius:center.radius*1609.34,color:'#00AAFF',fillColor:'#00AAFF',fillOpacity:0.05,weight:1,dashArray:'6 4'
     }).addTo(_cwMap);
-    circle.bindTooltip(center.label+' — 30 mi radius',{permanent:false,direction:'top'});
+    circle.bindTooltip(center.label+' — '+center.radius+' mi radius',{permanent:false,direction:'top'});
     _cwCircles.push(circle);
   });
   shows.forEach(s=>{

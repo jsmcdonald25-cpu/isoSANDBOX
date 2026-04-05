@@ -87,8 +87,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
   display: flex; flex-direction: column; z-index: 100;
 }
 .sidebar-logo {
-  padding: 20px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
 }
 .logo-mark {
   background: var(--blue); color: #fff; font-family: var(--font);
@@ -97,11 +97,11 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 }
 .logo-label { font-size: 12px; font-weight: 700; color: var(--text2); }
 .logo-admin { font-size: 10px; color: var(--red); font-weight: 700; letter-spacing: 1px; }
-.nav-section { padding: 16px 12px 4px; font-size: 10px; font-weight: 700; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; }
+.nav-section { padding: 10px 12px 2px; font-size: 9px; font-weight: 700; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; }
 .nav-item {
-  margin: 1px 8px; padding: 9px 12px; cursor: pointer;
-  font-size: 13px; color: var(--text2); border-radius: 6px;
-  display: flex; align-items: center; gap: 10px; transition: all .1s;
+  margin: 1px 6px; padding: 5px 10px; cursor: pointer;
+  font-size: 12px; color: var(--text2); border-radius: 6px;
+  display: flex; align-items: center; gap: 8px; transition: all .1s;
   font-weight: 500;
 }
 .nav-item:hover { background: var(--bg); color: var(--text); }
@@ -133,69 +133,69 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 .logout-btn:hover { border-color: var(--red); color: var(--red); }
 
 /* ── MAIN ── */
-.main { margin-left: var(--sidebar-w); padding: 32px; min-height: 100vh; }
+.main { margin-left: var(--sidebar-w); padding: 16px 20px; min-height: 100vh; }
 .panel { display: none; }
 .panel.active { display: block; }
-.panel-header { margin-bottom: 28px; }
-.panel-eyebrow { font-size: 11px; font-weight: 700; color: var(--blue); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
-.panel-title { font-size: 26px; font-weight: 800; }
-.panel-sub { font-size: 13px; color: var(--text2); margin-top: 4px; }
+.panel-header { margin-bottom: 12px; }
+.panel-eyebrow { font-size: 10px; font-weight: 700; color: var(--blue); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 2px; }
+.panel-title { font-size: 20px; font-weight: 800; }
+.panel-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
 
 /* ── STATS ROW ── */
-.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
 .stat-card {
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 20px;
+  border-radius: var(--radius); padding: 10px 12px;
 }
-.stat-val { font-size: 32px; font-weight: 800; color: var(--blue); }
-.stat-lab { font-size: 11px; font-weight: 600; color: var(--text2); margin-top: 4px; text-transform: uppercase; letter-spacing: .5px; }
-.stat-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.stat-val { font-size: 22px; font-weight: 800; color: var(--blue); }
+.stat-lab { font-size: 10px; font-weight: 600; color: var(--text2); margin-top: 2px; text-transform: uppercase; letter-spacing: .5px; }
+.stat-sub { font-size: 10px; color: var(--text3); margin-top: 1px; }
 
 /* ── CARDS ── */
 .card {
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
+  border-radius: var(--radius); padding: 12px; margin-bottom: 10px;
 }
-.card-title { font-size: 13px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
-.card-title small { font-weight: 400; color: var(--text3); font-size: 12px; margin-left: 6px; }
+.card-title { font-size: 12px; font-weight: 700; margin-bottom: 10px; color: var(--text); }
+.card-title small { font-weight: 400; color: var(--text3); font-size: 11px; margin-left: 6px; }
 
 /* ── INPUTS ── */
-.field { margin-bottom: 16px; }
-.field label { display: block; font-size: 11px; font-weight: 700; color: var(--text2); margin-bottom: 5px; letter-spacing: .3px; }
+.field { margin-bottom: 10px; }
+.field label { display: block; font-size: 10px; font-weight: 700; color: var(--text2); margin-bottom: 3px; letter-spacing: .3px; }
 .input, .select, .textarea {
   width: 100%; background: var(--bg); border: 1px solid var(--border2);
-  color: var(--text); font-family: var(--sans); font-size: 13px;
-  padding: 9px 12px; border-radius: 6px; outline: none; transition: border-color .15s;
+  color: var(--text); font-family: var(--sans); font-size: 12px;
+  padding: 6px 10px; border-radius: 6px; outline: none; transition: border-color .15s;
 }
 .input:focus, .select:focus, .textarea:focus {
   border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,102,204,0.08);
 }
 .select option { background: #fff; }
-.textarea { resize: vertical; min-height: 100px; font-family: var(--font); font-size: 12px; }
+.textarea { resize: vertical; min-height: 80px; font-family: var(--font); font-size: 11px; }
 
 /* ── BUTTONS ── */
 .btn {
-  display: inline-flex; align-items: center; gap: 6px;
+  display: inline-flex; align-items: center; gap: 5px;
   background: var(--blue); color: #fff; border: none;
-  font-family: var(--sans); font-size: 13px; font-weight: 600;
-  padding: 9px 18px; border-radius: 6px; cursor: pointer; transition: background .15s;
+  font-family: var(--sans); font-size: 12px; font-weight: 600;
+  padding: 6px 14px; border-radius: 6px; cursor: pointer; transition: background .15s;
 }
 .btn:hover { background: var(--blue-hover); }
-.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-sm { padding: 4px 10px; font-size: 11px; }
 .btn-ghost { background: none; border: 1px solid var(--border2); color: var(--text2); }
 .btn-ghost:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
 .btn-danger { background: var(--red); }
 .btn-danger:hover { background: #b91c1c; }
 .btn-success { background: var(--green); }
 .btn-success:hover { background: #047857; }
-.btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-row { display: flex; gap: 6px; flex-wrap: wrap; }
 
 /* ── TABLE ── */
 .table-wrap { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
 thead { background: var(--bg); }
-th { padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 700; color: var(--text2); letter-spacing: .5px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
-td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
+th { padding: 6px 10px; text-align: left; font-size: 10px; font-weight: 700; color: var(--text2); letter-spacing: .5px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+td { padding: 6px 10px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: var(--bg); }
 .badge {
@@ -783,7 +783,7 @@ tr:hover td { background: var(--bg); }
         <div class="panel-sub">Review all bug and card error reports from testers. Award credits for valid findings.</div>
       </div>
 
-      <div class="stats-grid" style="margin-bottom:20px">
+      <div class="stats-grid" style="margin-bottom:10px">
         <div class="stat-card"><div class="stat-val" id="msg-stat-total">—</div><div class="stat-lab">Total Reports</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--yellow)" id="msg-stat-pending">—</div><div class="stat-lab">Pending</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--blue)" id="msg-stat-reviewed">—</div><div class="stat-lab">Reviewed</div></div>
@@ -879,7 +879,7 @@ tr:hover td { background: var(--bg); }
         <div class="panel-sub">Review cards submitted by users that aren't in the database yet. Approve to add to vault + catalog, or reject.</div>
       </div>
 
-      <div class="stats-grid" style="margin-bottom:20px">
+      <div class="stats-grid" style="margin-bottom:10px">
         <div class="stat-card"><div class="stat-val" id="pend-stat-total">—</div><div class="stat-lab">Total</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--yellow)" id="pend-stat-pending">—</div><div class="stat-lab">Pending</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--green)" id="pend-stat-approved">—</div><div class="stat-lab">Approved</div></div>
@@ -1010,7 +1010,7 @@ tr:hover td { background: var(--bg); }
         <div class="panel-sub">View, search, and remove any ISO posted platform-wide.</div>
       </div>
 
-      <div class="stats-grid" style="margin-bottom:20px">
+      <div class="stats-grid" style="margin-bottom:10px">
         <div class="stat-card"><div class="stat-val" id="iso-stat-total">—</div><div class="stat-lab">Total ISOs</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--green)" id="iso-stat-active">—</div><div class="stat-lab">Active</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--blue)" id="iso-stat-matched">—</div><div class="stat-lab">Matched</div></div>
@@ -1059,7 +1059,7 @@ tr:hover td { background: var(--bg); }
         <div class="panel-sub">Cards shipped to the GrailISO hub. Receive, inspect, verify, grade, and ship to buyers.</div>
       </div>
 
-      <div class="stats-grid" style="margin-bottom:20px">
+      <div class="stats-grid" style="margin-bottom:10px">
         <div class="stat-card"><div class="stat-val" id="hq-stat-incoming">&#8212;</div><div class="stat-lab">In Transit</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--blue)" id="hq-stat-received">&#8212;</div><div class="stat-lab">At Hub</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--gold)" id="hq-stat-grading">&#8212;</div><div class="stat-lab">At Grader</div></div>
@@ -1110,7 +1110,7 @@ tr:hover td { background: var(--bg); }
         <div class="panel-sub">Track card image uploads per user. Award bonus credits when they hit milestones. Credits: +2 per upload, +5 at 10, +10 at 25, +15 at 50, +25 at 100.</div>
       </div>
 
-      <div class="stats-grid" style="margin-bottom:20px">
+      <div class="stats-grid" style="margin-bottom:10px">
         <div class="stat-card"><div class="stat-val" id="ms-stat-total">&#8212;</div><div class="stat-lab">Total Uploads</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--green)" id="ms-stat-users">&#8212;</div><div class="stat-lab">Contributors</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--gold)" id="ms-stat-milestones">&#8212;</div><div class="stat-lab">Milestones Hit</div></div>
@@ -1153,7 +1153,7 @@ tr:hover td { background: var(--bg); }
         <div class="panel-sub">Full audit log of every credit awarded or deducted across the platform.</div>
       </div>
 
-      <div class="stats-grid" style="margin-bottom:20px">
+      <div class="stats-grid" style="margin-bottom:10px">
         <div class="stat-card"><div class="stat-val" id="ce-stat-total">—</div><div class="stat-lab">Total Events</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--green)" id="ce-stat-awarded">—</div><div class="stat-lab">Credits Awarded</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--red)" id="ce-stat-deducted">—</div><div class="stat-lab">Credits Deducted</div></div>
@@ -1199,7 +1199,7 @@ tr:hover td { background: var(--bg); }
         <div class="panel-sub">Every card add, edit, delete, approval, and rejection — who did it, when, and what changed.</div>
       </div>
 
-      <div class="stats-grid" style="margin-bottom:20px">
+      <div class="stats-grid" style="margin-bottom:10px">
         <div class="stat-card"><div class="stat-val" id="al-stat-total">—</div><div class="stat-lab">Total Actions</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--green)" id="al-stat-adds">—</div><div class="stat-lab">Cards Added</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--blue)" id="al-stat-edits">—</div><div class="stat-lab">Cards Edited</div></div>
@@ -1275,7 +1275,7 @@ tr:hover td { background: var(--bg); }
         <div class="panel-sub">Review alpha access requests. Approve to send a magic link login email to the applicant.</div>
       </div>
 
-      <div class="stats-grid" style="margin-bottom:20px">
+      <div class="stats-grid" style="margin-bottom:10px">
         <div class="stat-card"><div class="stat-val" id="alpha-stat-total">&#8212;</div><div class="stat-lab">Total</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--gold)" id="alpha-stat-pending">&#8212;</div><div class="stat-lab">Pending</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--green)" id="alpha-stat-approved">&#8212;</div><div class="stat-lab">Approved</div></div>

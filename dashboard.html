@@ -31,8 +31,8 @@ const _SURL='https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1';
 const _SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
 function _sbH(){return{apikey:_SKEY,Authorization:'Bearer '+(window._userAccessToken||_SKEY)};}
 async function _rGet(tb,q){const r=await fetch(_SURL+'/'+tb+'?'+q,{headers:_sbH()});if(!r.ok)throw new Error('GET '+tb+' '+r.status);return r.json();}
-// Resolve pseudo-table key (e.g. pokemon_cards__Base) to real Supabase table name
-function _ivRealTable(t){const s=IV_SETS&&IV_SETS.find(x=>x.table===t);return(s&&s.pokemonCols)?'pokemon_cards':t;}
+// Resolve pseudo-table key (e.g. pokemon_cards__Base, mtg_lorwyn_eclipsed__commander) to real Supabase table name
+function _ivRealTable(t){const s=IV_SETS&&IV_SETS.find(x=>x.table===t);if(s&&s.pokemonCols) return 'pokemon_cards'; return t.includes('__')?t.split('__')[0]:t;}
 // Build card title without duplicating year/brand when set name already contains them
 function _cdCardTitle(year,brand,set,player){
   const s=set||'';
@@ -2507,7 +2507,9 @@ async function logOut(){
       <span class="iv-sep iv-sep-year" style="display:none">&#8250;</span>
       <span class="iv-crumb" id="ivCrumbYear" style="display:none" onclick="ivGoYear()"></span>
       <span class="iv-sep iv-sep2" style="display:none">&#8250;</span>
-      <span class="iv-crumb iv-crumb-active" id="ivCrumbSet" style="display:none"></span>
+      <span class="iv-crumb" id="ivCrumbSet" style="display:none"></span>
+      <span class="iv-sep iv-sep-series" style="display:none">&#8250;</span>
+      <span class="iv-crumb iv-crumb-active" id="ivCrumbSeries" style="display:none"></span>
     </div>
     <!-- STATE 1: SPORT SELECTOR -->
     <div id="iv-home">
@@ -2558,6 +2560,11 @@ async function logOut(){
       </div>
       <div class="iv-section-label" id="ivSetSectionLabel">SETS</div>
       <div class="iv-set-grid" id="ivSetGrid"></div>
+    </div>
+    <!-- STATE 2.5: SERIES PICKER (MTG) -->
+    <div id="iv-series" style="display:none">
+      <div class="iv-section-label">SELECT A SERIES</div>
+      <div class="iv-set-grid" id="ivSeriesGrid"></div>
     </div>
     <!-- STATE 3: CARD LIST -->
     <div id="iv-cards" style="display:none">
@@ -3137,19 +3144,19 @@ async function logOut(){
   <!-- ═══════════════ CARD SHOPS ═══════════════ -->
   <div class="panel" id="panel-cardshops">
     <div class="section-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
-      <div><div class="section-title">CARD SHOPS</div><span class="section-sub" style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);letter-spacing:1px">FIND LOCAL CARD SHOPS NEAR YOU</span></div>
+      <div>
+        <div class="section-title">CARD SHOPS</div>
+        <div id="csBreadcrumb" style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);letter-spacing:.5px;margin-top:2px">
+          <span style="color:var(--blue);cursor:pointer" onclick="csGoNational()">UNITED STATES</span>
+        </div>
+      </div>
       <div style="display:flex;gap:8px;align-items:center">
-        <select id="csRegionFilter" onchange="filterShopsByRegion(this.value)" style="background:var(--deep2);border:1px solid var(--deep-border);border-radius:6px;padding:7px 12px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--white);cursor:pointer">
-          <option value="all">All Regions</option>
-          <option value="chattanooga">Chattanooga, TN</option>
-          <option value="charlotte">Charlotte, NC</option>
-        </select>
-        <button class="btn btn-ghost btn-sm" onclick="toggleShopView()" id="csViewToggle" style="font-size:12px;padding:7px 14px">MAP VIEW</button>
+        <button class="btn btn-ghost btn-sm" id="csBackBtn" onclick="csGoBack()" style="font-size:12px;padding:7px 14px;display:none">BACK</button>
       </div>
     </div>
 
     <!-- Map -->
-    <div id="csMapWrap" style="width:100%;height:380px;border-radius:10px;overflow:hidden;border:1px solid var(--deep-border);margin-bottom:18px;position:relative">
+    <div id="csMapWrap" style="width:100%;height:420px;border-radius:10px;overflow:hidden;border:1px solid var(--deep-border);margin-bottom:18px;position:relative">
       <div id="csMap" style="width:100%;height:100%;z-index:1"></div>
     </div>
 
@@ -3160,19 +3167,19 @@ async function logOut(){
   <!-- ═══════════════ CARD SHOWS ═══════════════ -->
   <div class="panel" id="panel-cardshows">
     <div class="section-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
-      <div><div class="section-title">CARD SHOWS</div><span class="section-sub" style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);letter-spacing:1px">UPCOMING CARD SHOWS & EVENTS</span></div>
+      <div>
+        <div class="section-title">CARD SHOWS</div>
+        <div id="cwBreadcrumb" style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);letter-spacing:.5px;margin-top:2px">
+          <span style="color:var(--blue);cursor:pointer" onclick="cwGoNational()">UNITED STATES</span>
+        </div>
+      </div>
       <div style="display:flex;gap:8px;align-items:center">
-        <select id="cwRegionFilter" onchange="filterShowsByRegion(this.value)" style="background:var(--deep2);border:1px solid var(--deep-border);border-radius:6px;padding:7px 12px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--white);cursor:pointer">
-          <option value="all">All Regions</option>
-          <option value="chattanooga">Chattanooga, TN</option>
-          <option value="charlotte">Charlotte, NC</option>
-        </select>
-        <button class="btn btn-ghost btn-sm" onclick="toggleShowView()" id="cwViewToggle" style="font-size:12px;padding:7px 14px">MAP VIEW</button>
+        <button class="btn btn-ghost btn-sm" id="cwBackBtn" onclick="cwGoBack()" style="font-size:12px;padding:7px 14px;display:none">BACK</button>
       </div>
     </div>
 
     <!-- Map -->
-    <div id="cwMapWrap" style="width:100%;height:380px;border-radius:10px;overflow:hidden;border:1px solid var(--deep-border);margin-bottom:18px;position:relative">
+    <div id="cwMapWrap" style="width:100%;height:420px;border-radius:10px;overflow:hidden;border:1px solid var(--deep-border);margin-bottom:18px;position:relative">
       <div id="cwMap" style="width:100%;height:100%;z-index:1"></div>
     </div>
 
@@ -7556,7 +7563,7 @@ const IV_SPORTS = [
   { id:'soccer',    label:'Soccer',       emoji:'&#9917;', active:false },
   { id:'golf',      label:'Golf',         emoji:'&#9971;', active:false },
   { id:'ufc',       label:'UFC / MMA',    emoji:'&#129354;', active:false },
-  { id:'tennis',    label:'Tennis',       emoji:'&#127934;', active:false },
+  { id:'mtg',       label:'Magic The Gathering', emoji:'&#129668;', active:true  },
   { id:'nascar',    label:'NASCAR',       emoji:'&#127950;&#65039;', active:false },
   { id:'wrestling', label:'Wrestling',    emoji:'&#129340;', active:false },
   { id:'pokemon',   label:'Pok&#233;mon',      emoji:'&#9889;', active:true  },
@@ -7599,9 +7606,17 @@ let _ivSetsReady = (async function _ivLoadSets(){
   }
 })();
 
+// ── MTG Series helpers ──────────────────────────────────────────────────────
+function _ivBaseTable(t){ return t.includes('__') ? t.split('__')[0] : t; }
+function _ivGetSeriesGroup(table){
+  const base = _ivBaseTable(table);
+  return IV_SETS.filter(s => s.sport==='mtg' && _ivBaseTable(s.table)===base);
+}
+
 // State
 let _ivSport    = null;   // selected sport id
 let _ivSet      = null;   // selected IV_SETS entry
+let _ivSeriesEntry = null; // selected series within a grouped MTG set
 let _ivData     = [];     // all rows for active set
 let _ivFiltered = [];     // after category + search filter
 let _ivCat      = 'all';
@@ -7628,7 +7643,7 @@ async function ivInit(){
       return;
     } else if(rs === 'cards'){
       _ivShowState('cards');
-      _ivBreadcrumb(true, true);
+      _ivBreadcrumb(true, true, !!_ivSeriesEntry);
       ivRenderSports();
       return;
     } else if(rs === 'sets'){
@@ -7714,7 +7729,7 @@ function _ivPrefetchCounts(){
   const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
   IV_SETS.forEach(s=>{
     // Pokémon sets share one table — resolve real table and append series filter
-    const realTable   = s.pokemonCols ? 'pokemon_cards' : s.table;
+    const realTable   = _ivRealTable(s.table);
     const extraFilter = s.seriesFilter ? '&'+s.seriesFilter : '';
     fetch(SUPA_URL+'/rest/v1/'+realTable+'?select=card_number&limit=1'+extraFilter,{
       headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Prefer':'count=exact','Range-Unit':'items','Range':'0-0'}
@@ -7738,7 +7753,7 @@ function _ivPrefetchCounts(){
 
 // &#9472;&#9472; Navigation &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 function ivGoHome(){
-  _ivSport = null; _ivSet = null;
+  _ivSport = null; _ivSet = null; _ivSeriesEntry = null;
   _ivData = []; _ivFiltered = [];
   _ivShowState('home');
   _ivBreadcrumb(false, false);
@@ -7746,7 +7761,7 @@ function ivGoHome(){
 
 function ivGoSport(){
   if(!_ivSport) return;
-  _ivSet = null; _ivData = []; _ivFiltered = [];
+  _ivSet = null; _ivSeriesEntry = null; _ivData = []; _ivFiltered = [];
   // Clear player search
   const inp = document.getElementById('ivPlayerSearchInput');
   if(inp) inp.value='';
@@ -7759,7 +7774,7 @@ function ivGoSport(){
 }
 
 function _ivShowState(state){
-  ['iv-home','iv-sets','iv-cards','iv-global-results','iv-player-results'].forEach(id=>{
+  ['iv-home','iv-sets','iv-series','iv-cards','iv-global-results','iv-player-results'].forEach(id=>{
     const el = document.getElementById(id);
     if(el) el.style.display = (id === 'iv-'+state) ? '' : 'none';
   });
@@ -7767,14 +7782,16 @@ function _ivShowState(state){
   if(bc) bc.style.display = state === 'home' ? 'none' : 'flex';
 }
 
-function _ivBreadcrumb(showSport, showSet){
-  const sport    = document.getElementById('ivCrumbSport');
-  const sepBrand = document.querySelector('.iv-sep-brand');
-  const brand    = document.getElementById('ivCrumbBrand');
-  const sepYear  = document.querySelector('.iv-sep-year');
-  const yearEl   = document.getElementById('ivCrumbYear');
-  const sep2     = document.querySelector('.iv-sep2');
-  const setEl    = document.getElementById('ivCrumbSet');
+function _ivBreadcrumb(showSport, showSet, showSeries){
+  const sport      = document.getElementById('ivCrumbSport');
+  const sepBrand   = document.querySelector('.iv-sep-brand');
+  const brand      = document.getElementById('ivCrumbBrand');
+  const sepYear    = document.querySelector('.iv-sep-year');
+  const yearEl     = document.getElementById('ivCrumbYear');
+  const sep2       = document.querySelector('.iv-sep2');
+  const setEl      = document.getElementById('ivCrumbSet');
+  const sepSeries  = document.querySelector('.iv-sep-series');
+  const seriesEl   = document.getElementById('ivCrumbSeries');
 
   if(sport)    sport.style.display    = showSport ? '' : 'none';
   if(sepBrand) sepBrand.style.display = showSet   ? '' : 'none';
@@ -7783,18 +7800,41 @@ function _ivBreadcrumb(showSport, showSet){
   if(yearEl)   yearEl.style.display   = showSet   ? '' : 'none';
   if(sep2)     sep2.style.display     = showSet   ? '' : 'none';
   if(setEl)    setEl.style.display    = showSet   ? '' : 'none';
+  if(sepSeries)  sepSeries.style.display = showSeries ? '' : 'none';
+  if(seriesEl)   seriesEl.style.display  = showSeries ? '' : 'none';
 
   const sportDef = IV_SPORTS.find(s=>s.id===_ivSport);
   if(sport && sportDef) sport.innerHTML = sportDef.emoji+' '+sportDef.label;
   if(brand && _ivSet)   brand.textContent = _ivSet.brand;
   if(yearEl && _ivSet)  yearEl.textContent = _ivSet.year;
-  if(setEl && _ivSet)   setEl.textContent  = _ivSet.label;
+
+  // When series is active, set crumb shows the parent set name and is clickable
+  if(showSeries && _ivSeriesEntry){
+    const parentSet = _ivGetSeriesGroup(_ivSeriesEntry.table).find(s=>!s.table.includes('__'));
+    if(setEl){
+      setEl.textContent = parentSet ? parentSet.label : _ivSet.label;
+      setEl.onclick = ivGoSet;
+      setEl.classList.remove('iv-crumb-active');
+      setEl.style.cursor = 'pointer';
+    }
+    if(seriesEl){
+      seriesEl.textContent = _ivSeriesEntry.label;
+      seriesEl.classList.add('iv-crumb-active');
+    }
+  } else {
+    if(setEl && _ivSet){
+      setEl.textContent = _ivSet.label;
+      setEl.onclick = null;
+      setEl.classList.add('iv-crumb-active');
+      setEl.style.cursor = '';
+    }
+  }
 }
 
 function ivGoBrand(){
   if(!_ivSport) return;
   const b = _ivSet ? _ivSet.brand : 'all';
-  _ivSet = null; _ivData = []; _ivFiltered = [];
+  _ivSet = null; _ivSeriesEntry = null; _ivData = []; _ivFiltered = [];
   _ivBrandFilter = b;
   _ivYearFilter  = 'all';
   _ivShowState('sets');
@@ -7810,7 +7850,7 @@ function ivGoBrand(){
 function ivGoYear(){
   if(!_ivSport) return;
   const y = _ivSet ? _ivSet.year : 'all';
-  _ivSet = null; _ivData = []; _ivFiltered = [];
+  _ivSet = null; _ivSeriesEntry = null; _ivData = []; _ivFiltered = [];
   _ivYearFilter  = y;
   _ivBrandFilter = 'all';
   _ivShowState('sets');
@@ -7907,9 +7947,34 @@ function _ivRenderSetTiles(sets){
   if(!sets.length){
     g.innerHTML = '<div class="iv-empty">No sets match this filter</div>'; return;
   }
+
+  // For MTG: deduplicate series entries that share a base table into one tile
+  const seen = {};
+  const deduped = [];
   sets.forEach(function(s){
-    const count = _ivCounts[s.table];
-    const countStr = count != null ? count.toLocaleString()+' cards' : 'Loading...';
+    if(s.sport==='mtg'){
+      const base = _ivBaseTable(s.table);
+      if(seen[base]) return; // skip duplicate series entries
+      seen[base] = true;
+      // Use the entry without __ as the representative
+      const group = _ivGetSeriesGroup(s.table);
+      const rep = group.find(x=>!x.table.includes('__')) || s;
+      deduped.push({...rep, _seriesGroup: group});
+    } else {
+      deduped.push(s);
+    }
+  });
+
+  deduped.forEach(function(s){
+    // For grouped MTG sets, sum counts across all series
+    let totalCount = null;
+    if(s._seriesGroup && s._seriesGroup.length > 1){
+      totalCount = 0;
+      s._seriesGroup.forEach(function(gs){ totalCount += (_ivCounts[gs.table]||0); });
+    } else {
+      totalCount = _ivCounts[s.table];
+    }
+    const countStr = totalCount != null ? totalCount.toLocaleString()+' cards' : 'Loading...';
     const tile = document.createElement('div');
     tile.className = 'iv-set-tile';
     tile.id = 'ivSetTile-'+s.table;
@@ -7929,14 +7994,77 @@ async function ivSelectSet(table){
   const setDef = IV_SETS.find(s=>s.table===table);
   if(!setDef) return;
 
+  // MTG series check: does this base table have multiple iv_sets entries?
+  if(setDef.sport==='mtg'){
+    const group = _ivGetSeriesGroup(table);
+    if(group.length > 1){
+      // Store the set context (use the entry without __ as representative)
+      _ivSet = group.find(s=>!s.table.includes('__')) || group[0];
+      _ivSeriesEntry = null;
+      _ivShowSeriesPicker(group);
+      return;
+    }
+  }
+
+  _ivSeriesEntry = null;
+  _ivLoadAndShowCards(setDef);
+}
+
+// ── Series picker (MTG) ─────────────────────────────────────────────────────
+function _ivShowSeriesPicker(seriesGroup){
+  _ivShowState('series');
+  _ivBreadcrumb(true, true, false);
+
+  const grid = document.getElementById('ivSeriesGrid');
+  if(!grid) return;
+  grid.innerHTML = '';
+
+  seriesGroup.forEach(s=>{
+    const count = _ivCounts[s.table];
+    const countStr = count != null ? count.toLocaleString()+' cards' : '';
+    const tile = document.createElement('div');
+    tile.className = 'iv-set-tile';
+    tile.style.cursor = 'pointer';
+    tile.innerHTML =
+      (s.isNew ? '<div class="iv-set-new-badge">NEW</div>' : '')
+      +'<div class="iv-set-name">'+s.label+'</div>'
+      +'<div class="iv-set-count">'+countStr+'</div>';
+    tile.addEventListener('click', (function(tbl){ return function(){ ivSelectSeries(tbl); }; })(s.table));
+    grid.appendChild(tile);
+  });
+}
+
+async function ivSelectSeries(table){
+  const setDef = IV_SETS.find(s=>s.table===table);
+  if(!setDef) return;
+  _ivSeriesEntry = setDef;
+  _ivLoadAndShowCards(setDef);
+}
+
+function ivGoSet(){
+  if(!_ivSet) return;
+  _ivSeriesEntry = null;
+  _ivData = []; _ivFiltered = [];
+  const group = _ivGetSeriesGroup(_ivSet.table);
+  if(group.length > 1){
+    _ivShowSeriesPicker(group);
+  } else {
+    ivGoSport();
+  }
+}
+
+// ── Load and show cards (shared by ivSelectSet + ivSelectSeries) ─────────────
+async function _ivLoadAndShowCards(setDef){
+  const table = setDef.table;
+
   // If same set is already loaded, skip the full Supabase re-fetch — just re-render
-  // This preserves any in-memory var_images updates made since last fetch
   if(_ivSet && _ivSet.table === table && _ivData && _ivData.length){
     _ivCat = 'all'; _ivSearch = '';
     const cs = document.getElementById('ivCardSearch'); if(cs) cs.value='';
     document.querySelectorAll('#ivCatPills .chip').forEach((c,i)=>{c.classList.toggle('active',i===0);});
     _ivShowState('cards');
-    _ivBreadcrumb(true, true);
+    _ivBreadcrumb(true, true, !!_ivSeriesEntry);
+    _ivSetCatPills(setDef);
     _ivApplyCardFilters();
     return;
   }
@@ -7953,13 +8081,14 @@ async function ivSelectSet(table){
   document.getElementById('ivBtnGrid')&&document.getElementById('ivBtnGrid').classList.remove('active');
 
   _ivShowState('cards');
-  _ivBreadcrumb(true, true);
+  _ivBreadcrumb(true, true, !!_ivSeriesEntry);
+  _ivSetCatPills(setDef);
 
   const listEl = document.getElementById('ivCardList');
   if(listEl) listEl.innerHTML = '<div class="iv-loading">LOADING '+setDef.label.toUpperCase()+'...</div>';
 
-  // Pokémon sets share one Supabase table — resolve real table + series filter
-  const realTable   = setDef.pokemonCols ? 'pokemon_cards' : table;
+  // Resolve pseudo-table to real Supabase table + append series filter
+  const realTable   = _ivRealTable(table);
   const extraFilter = setDef.seriesFilter ? '&'+setDef.seriesFilter : '';
 
   // Pokémon columns differ from baseball columns
@@ -8088,6 +8217,27 @@ async function ivSelectSet(table){
   // Load market prices for this set in background — populates price column
   _ivApplyCardFilters();
   _ivLoadMarketPrices(realTable).then(()=>_ivRenderCards());
+}
+
+// ── MTG category pills ──────────────────────────────────────────────────────
+function _ivSetCatPills(setDef){
+  const pills = document.getElementById('ivCatPills');
+  if(!pills) return;
+  if(setDef.sport==='mtg'){
+    pills.innerHTML =
+      '<div class="chip active" onclick="ivCatFilter(\'all\',this)">All</div>'
+      +'<div class="chip" onclick="ivCatFilter(\'Common\',this)">Common</div>'
+      +'<div class="chip" onclick="ivCatFilter(\'Uncommon\',this)">Uncommon</div>'
+      +'<div class="chip" onclick="ivCatFilter(\'Rare\',this)">Rare</div>'
+      +'<div class="chip" onclick="ivCatFilter(\'Mythic\',this)">Mythic</div>';
+  } else {
+    pills.innerHTML =
+      '<div class="chip active" onclick="ivCatFilter(\'all\',this)">All</div>'
+      +'<div class="chip" onclick="ivCatFilter(\'Base\',this)">Base</div>'
+      +'<div class="chip" onclick="ivCatFilter(\'Insert\',this)">Insert</div>'
+      +'<div class="chip" onclick="ivCatFilter(\'Auto\',this)">Auto</div>'
+      +'<div class="chip" onclick="ivCatFilter(\'Rookie\',this)">Rookie</div>';
+  }
 }
 
 var _ivImgFilter = 'all';
@@ -8487,14 +8637,26 @@ function ivSearchSets(q){
     _ivShowState('home');
     return;
   }
+  if(q.length < 2) return;
 
   const ql = q.toLowerCase();
-  const matched = IV_SETS.filter(s=>{
+  let matched = IV_SETS.filter(s=>{
     return s.label.toLowerCase().includes(ql)
       || s.name.toLowerCase().includes(ql)
       || String(s.year).includes(ql)
       || s.brand.toLowerCase().includes(ql)
       || s.sport.toLowerCase().includes(ql);
+  });
+
+  // Deduplicate MTG series entries that share a base table
+  const seenBase = {};
+  matched = matched.filter(s=>{
+    if(s.sport==='mtg'){
+      const base = _ivBaseTable(s.table);
+      if(seenBase[base]) return false;
+      seenBase[base] = true;
+    }
+    return true;
   });
 
   _ivShowState('global-results');
@@ -11030,232 +11192,320 @@ async function submitBugReport(){
 }
 
 // ═══════════════════════════════════════════════
-// CARD SHOPS
+// SHARED MAP UTILITIES
 // ═══════════════════════════════════════════════
-let _csMap=null, _csMarkers=[], _csView='map';
-// Region centers for 30-mile radius circles
-const _csRegions={
-  chattanooga:{lat:35.0456,lng:-85.3097,label:'Chattanooga, TN',radius:30},
-  charlotte:{lat:35.2271,lng:-80.8431,label:'Charlotte, NC',radius:50}
-};
-
-const _csShops=[
-  // ── Chattanooga, TN — 30mi radius ──
-  {name:'Epikos Comics & Cards',addr:'601 Broad St, Chattanooga, TN 37402',phone:'(423) 265-5700',lat:35.0456,lng:-85.3097,region:'chattanooga',types:['Sports','Pokémon','MTG'],hours:'Mon-Sat 10a-7p, Sun 12p-5p'},
-  {name:'CM Games & Toys',addr:'5765 Brainerd Rd, Chattanooga, TN 37411',phone:'(423) 553-0085',lat:35.0179,lng:-85.2178,region:'chattanooga',types:['MTG','Pokémon','Yu-Gi-Oh'],hours:'Mon-Sat 10a-8p, Sun 12p-6p'},
-  {name:'The Reliquary - Games & Cards',addr:'5115 Hixson Pike, Hixson, TN 37343',phone:'(423) 870-1712',lat:35.1189,lng:-85.2561,region:'chattanooga',types:['MTG','Sports','Pokémon'],hours:'Mon-Sat 11a-8p, Sun 1p-6p'},
-  {name:'Infinity Flux Games',addr:'2115 Chapman Rd, Chattanooga, TN 37421',phone:'(423) 499-0072',lat:35.0005,lng:-85.2108,region:'chattanooga',types:['MTG','Pokémon','Board Games'],hours:'Mon-Sat 11a-9p, Sun 12p-6p'},
-  {name:'Rick\'s Cards & Collectibles',addr:'4510 Hixson Pike, Hixson, TN 37343',phone:'(423) 877-2888',lat:35.1111,lng:-85.2610,region:'chattanooga',types:['Sports','Vintage','Singles'],hours:'Tue-Sat 10a-6p'},
-  // Cleveland, TN (~30 min NE)
-  {name:'Top Shelf Comics & Cards',addr:'160 Stuart Rd NE, Cleveland, TN 37312',phone:'(423) 790-2233',lat:35.1795,lng:-84.8766,region:'chattanooga',types:['Sports','Pokémon','Comics'],hours:'Mon-Sat 10a-7p'},
-  // Dalton, GA (~30 min S)
-  {name:'Dalton Cards & Collectibles',addr:'1529 W Walnut Ave, Dalton, GA 30720',phone:'(706) 529-1000',lat:34.7698,lng:-84.9780,region:'chattanooga',types:['Sports','Vintage','Singles'],hours:'Tue-Sat 10a-6p'},
-  // Fort Oglethorpe, GA (~15 min S)
-  {name:'Battlefield Cards & Games',addr:'1004 Lafayette Rd, Fort Oglethorpe, GA 30742',phone:'(706) 866-5200',lat:34.9490,lng:-85.2570,region:'chattanooga',types:['MTG','Pokémon','Sports'],hours:'Mon-Sat 11a-8p, Sun 12p-5p'},
-  // Ringgold, GA (~20 min S)
-  {name:'Mountain Cards & Comics',addr:'5083 Alabama Hwy, Ringgold, GA 30736',phone:'(706) 935-4400',lat:34.9161,lng:-85.1090,region:'chattanooga',types:['Sports','MTG','Singles'],hours:'Mon-Sat 10a-7p'},
-  // Jasper, TN (~30 min W)
-  {name:'Sequatchie Valley Cards',addr:'620 Betsy Pack Dr, Jasper, TN 37347',phone:'(423) 942-3000',lat:35.0741,lng:-85.6238,region:'chattanooga',types:['Sports','Pokémon'],hours:'Wed-Sat 10a-5p'},
-
-  // ── Charlotte, NC — 30mi radius ──
-  {name:'Rebel\'s Cards & Comics',addr:'3825 E Independence Blvd, Charlotte, NC 28205',phone:'(704) 536-9450',lat:35.2055,lng:-80.7878,region:'charlotte',types:['Sports','MTG','Pokémon'],hours:'Mon-Sat 10a-8p, Sun 12p-6p'},
-  {name:'Get Some Game',addr:'4935 S Blvd, Charlotte, NC 28217',phone:'(980) 335-0408',lat:35.1764,lng:-80.8653,region:'charlotte',types:['MTG','Pokémon','Yu-Gi-Oh'],hours:'Mon-Sat 11a-8p, Sun 12p-6p'},
-  {name:'Blowout Cards',addr:'10205 Westlake Dr, Charlotte, NC 28273',phone:'(704) 919-2701',lat:35.1198,lng:-80.9264,region:'charlotte',types:['Sports','Hobby Boxes','Singles'],hours:'Mon-Fri 9a-5p'},
-  {name:'Lucky\'s Card Shop',addr:'9539 Pinnacle Dr, Charlotte, NC 28262',phone:'(704) 549-8828',lat:35.3294,lng:-80.7448,region:'charlotte',types:['Sports','Pokémon','Vintage'],hours:'Mon-Sat 10a-7p, Sun 12p-5p'},
-  {name:'Cardboard Collectibles UNCC',addr:'8926 J M Keynes Dr, Charlotte, NC 28262',phone:'(704) 687-0000',lat:35.3050,lng:-80.7290,region:'charlotte',types:['MTG','Pokémon','Sports'],hours:'Mon-Fri 11a-9p, Sat 10a-8p'},
-  // Concord, NC (~20 min NE)
-  {name:'Carolina Card Trader',addr:'339 George Liles Pkwy, Concord, NC 28027',phone:'(704) 786-2200',lat:35.3940,lng:-80.6010,region:'charlotte',types:['Sports','Hobby Boxes','Vintage'],hours:'Mon-Sat 10a-7p, Sun 12p-5p'},
-  // Gastonia, NC (~25 min W)
-  {name:'Gastonia Sports Cards',addr:'529 N New Hope Rd, Gastonia, NC 28054',phone:'(704) 867-1500',lat:35.2710,lng:-81.1540,region:'charlotte',types:['Sports','Singles','Wax'],hours:'Mon-Sat 10a-6p'},
-  // Mooresville, NC (~30 min N)
-  {name:'Lakeside Cards & Games',addr:'479 River Hwy, Mooresville, NC 28117',phone:'(704) 663-8800',lat:35.5850,lng:-80.8270,region:'charlotte',types:['MTG','Pokémon','Sports'],hours:'Mon-Sat 11a-8p, Sun 12p-6p'},
-  // Rock Hill, SC (~25 min S)
-  {name:'Rock Hill Card Shop',addr:'2340 Cherry Rd, Rock Hill, SC 29732',phone:'(803) 366-4000',lat:34.9249,lng:-81.0250,region:'charlotte',types:['Sports','Pokémon','MTG'],hours:'Mon-Sat 10a-7p'},
-  // Matthews, NC (~15 min SE)
-  {name:'Matthews Card & Comic',addr:'137 N Trade St, Matthews, NC 28105',phone:'(704) 847-9100',lat:35.1168,lng:-80.7237,region:'charlotte',types:['Sports','MTG','Pokémon','Comics'],hours:'Mon-Sat 10a-8p, Sun 12p-5p'},
-  // Indian Trail, NC (~20 min SE)
-  {name:'Union County Cards',addr:'6828 Old Monroe Rd, Indian Trail, NC 28079',phone:'(704) 893-3300',lat:35.0768,lng:-80.6590,region:'charlotte',types:['Sports','Vintage','Singles'],hours:'Tue-Sat 10a-6p'},
-  // Huntersville, NC (~15 min N)
-  {name:'Huntersville Sports Cards',addr:'9815 Sam Furr Rd, Huntersville, NC 28078',phone:'(704) 896-7700',lat:35.4130,lng:-80.8490,region:'charlotte',types:['Sports','Hobby Boxes','Breaks'],hours:'Mon-Sat 10a-7p, Sun 12p-5p'},
-  // Fort Mill, SC (~20 min S)
-  {name:'Fort Mill Card & Collectibles',addr:'1640 Hwy 160 W, Fort Mill, SC 29708',phone:'(803) 548-2500',lat:35.0074,lng:-80.9451,region:'charlotte',types:['Sports','Pokémon','MTG'],hours:'Mon-Sat 10a-7p, Sun 12p-5p'},
-  // Statesville, NC (~40 min N)
-  {name:'Statesville Card Shop',addr:'202 S Center St, Statesville, NC 28677',phone:'(704) 872-6100',lat:35.7826,lng:-80.8873,region:'charlotte',types:['Sports','Vintage','Singles'],hours:'Tue-Sat 10a-6p'},
-  // Hickory, NC (~50 min NW)
-  {name:'Hickory Card & Comic',addr:'2120 US-70 SE, Hickory, NC 28602',phone:'(828) 322-4400',lat:35.7170,lng:-81.3120,region:'charlotte',types:['Sports','MTG','Comics'],hours:'Mon-Sat 10a-7p'},
-  // Kannapolis, NC (~30 min NE)
-  {name:'Cannon Cards & Games',addr:'211 S Main St, Kannapolis, NC 28081',phone:'(704) 938-3300',lat:35.4874,lng:-80.6217,region:'charlotte',types:['Sports','Pokémon','Breaks'],hours:'Mon-Sat 10a-7p, Sun 12p-5p'},
-  // Monroe, NC (~30 min SE)
-  {name:'Monroe Sports Cards',addr:'117 N Main St, Monroe, NC 28112',phone:'(704) 289-5500',lat:34.9854,lng:-80.5495,region:'charlotte',types:['Sports','Vintage','Wax'],hours:'Tue-Sat 10a-6p'},
-  // Lancaster, SC (~45 min S)
-  {name:'Lancaster Card & Hobby',addr:'112 S Main St, Lancaster, SC 29720',phone:'(803) 286-4400',lat:34.7204,lng:-80.7707,region:'charlotte',types:['Sports','Pokémon','MTG'],hours:'Mon-Sat 10a-6p'},
-  // Salisbury, NC (~45 min NE)
-  {name:'Salisbury Sports Cards',addr:'109 N Main St, Salisbury, NC 28144',phone:'(704) 633-7100',lat:35.6710,lng:-80.4740,region:'charlotte',types:['Sports','Vintage','Singles'],hours:'Tue-Sat 10a-6p'},
-  // Shelby, NC (~50 min W)
-  {name:'Shelby Card & Collectibles',addr:'200 S Lafayette St, Shelby, NC 28150',phone:'(704) 482-3300',lat:35.2924,lng:-81.5357,region:'charlotte',types:['Sports','Pokémon'],hours:'Mon-Sat 10a-6p'},
-];
-
-let _csCircles=[];
-
-// Haversine distance in miles
-function _csDist(lat1,lng1,lat2,lng2){
+const _mapTile='https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+const _mapAttr='&copy; OpenStreetMap &copy; CARTO';
+function _geoDist(lat1,lng1,lat2,lng2){
   const R=3958.8,dLat=(lat2-lat1)*Math.PI/180,dLng=(lng2-lng1)*Math.PI/180;
   const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
   return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
+const _usStates={
+  AL:{name:'Alabama',lat:32.806671,lng:-86.791130},AZ:{name:'Arizona',lat:34.048927,lng:-111.093735},
+  AR:{name:'Arkansas',lat:34.969704,lng:-92.373123},CA:{name:'California',lat:36.116203,lng:-119.681564},
+  CO:{name:'Colorado',lat:39.059811,lng:-105.311104},CT:{name:'Connecticut',lat:41.597782,lng:-72.755371},
+  DE:{name:'Delaware',lat:39.318523,lng:-75.507141},FL:{name:'Florida',lat:27.766279,lng:-81.686783},
+  GA:{name:'Georgia',lat:33.040619,lng:-83.643074},ID:{name:'Idaho',lat:44.240459,lng:-114.478828},
+  IL:{name:'Illinois',lat:40.349457,lng:-88.986137},IN:{name:'Indiana',lat:39.849426,lng:-86.258278},
+  IA:{name:'Iowa',lat:42.011539,lng:-93.210526},KS:{name:'Kansas',lat:38.526600,lng:-96.726486},
+  KY:{name:'Kentucky',lat:37.668140,lng:-84.670067},LA:{name:'Louisiana',lat:31.169546,lng:-91.867805},
+  ME:{name:'Maine',lat:44.693947,lng:-69.381927},MD:{name:'Maryland',lat:39.063946,lng:-76.802101},
+  MA:{name:'Massachusetts',lat:42.230171,lng:-71.530106},MI:{name:'Michigan',lat:43.326618,lng:-84.536095},
+  MN:{name:'Minnesota',lat:45.694454,lng:-93.900192},MS:{name:'Mississippi',lat:32.741646,lng:-89.678696},
+  MO:{name:'Missouri',lat:38.456085,lng:-92.288368},MT:{name:'Montana',lat:46.921925,lng:-110.454353},
+  NE:{name:'Nebraska',lat:41.125370,lng:-98.268082},NV:{name:'Nevada',lat:38.313515,lng:-117.055374},
+  NH:{name:'New Hampshire',lat:43.452492,lng:-71.563896},NJ:{name:'New Jersey',lat:40.298904,lng:-74.521011},
+  NM:{name:'New Mexico',lat:34.840515,lng:-106.248482},NY:{name:'New York',lat:42.165726,lng:-74.948051},
+  NC:{name:'North Carolina',lat:35.630066,lng:-79.806419},ND:{name:'North Dakota',lat:47.528912,lng:-99.784012},
+  OH:{name:'Ohio',lat:40.388783,lng:-82.764915},OK:{name:'Oklahoma',lat:35.565342,lng:-96.928917},
+  OR:{name:'Oregon',lat:44.572021,lng:-122.070938},PA:{name:'Pennsylvania',lat:40.590752,lng:-77.209755},
+  RI:{name:'Rhode Island',lat:41.680893,lng:-71.511780},SC:{name:'South Carolina',lat:33.856892,lng:-80.945007},
+  SD:{name:'South Dakota',lat:44.299782,lng:-99.438828},TN:{name:'Tennessee',lat:35.747845,lng:-86.692345},
+  TX:{name:'Texas',lat:31.054487,lng:-97.563461},UT:{name:'Utah',lat:40.150032,lng:-111.862434},
+  VT:{name:'Vermont',lat:44.045876,lng:-72.710686},VA:{name:'Virginia',lat:37.769337,lng:-78.169968},
+  WA:{name:'Washington',lat:47.400902,lng:-121.490494},WV:{name:'West Virginia',lat:38.491226,lng:-80.954453},
+  WI:{name:'Wisconsin',lat:44.268543,lng:-89.616508},WY:{name:'Wyoming',lat:42.755966,lng:-107.302490}
+};
+const _regions={
+  chattanooga:{lat:35.0456,lng:-85.3097,label:'Chattanooga, TN',radius:30,state:'TN'},
+  charlotte:{lat:35.2271,lng:-80.8431,label:'Charlotte, NC',radius:50,state:'NC'}
+};
 
-// Assign pin numbers by distance from region center, per region
-function _csAssignPins(shops){
-  const byRegion={};
-  shops.forEach(s=>{
-    if(!byRegion[s.region])byRegion[s.region]=[];
-    const center=_csRegions[s.region];
-    const dist=center?_csDist(center.lat,center.lng,s.lat,s.lng):9999;
-    byRegion[s.region].push({...s,_dist:dist});
-  });
-  const result=[];
-  Object.keys(byRegion).forEach(r=>{
-    byRegion[r].sort((a,b)=>a._dist-b._dist);
-    byRegion[r].forEach((s,i)=>{s._pin=i+1;result.push(s);});
-  });
-  return result;
+// ═══════════════════════════════════════════════
+// CARD SHOPS
+// ═══════════════════════════════════════════════
+let _csMap=null,_csMarkers=[],_csCircles=[],_csLevel='national';
+
+const _csShops=[
+  // ── Chattanooga, TN — 30mi radius ──
+  {name:'Epikos Comics & Cards',addr:'601 Broad St, Chattanooga, TN 37402',phone:'(423) 265-5700',lat:35.0456,lng:-85.3097,region:'chattanooga',state:'TN',types:['Sports','Pokémon','MTG'],hours:'Mon-Sat 10a-7p, Sun 12p-5p'},
+  {name:'CM Games & Toys',addr:'5765 Brainerd Rd, Chattanooga, TN 37411',phone:'(423) 553-0085',lat:35.0179,lng:-85.2178,region:'chattanooga',state:'TN',types:['MTG','Pokémon','Yu-Gi-Oh'],hours:'Mon-Sat 10a-8p, Sun 12p-6p'},
+  {name:'The Reliquary - Games & Cards',addr:'5115 Hixson Pike, Hixson, TN 37343',phone:'(423) 870-1712',lat:35.1189,lng:-85.2561,region:'chattanooga',state:'TN',types:['MTG','Sports','Pokémon'],hours:'Mon-Sat 11a-8p, Sun 1p-6p'},
+  {name:'Infinity Flux Games',addr:'2115 Chapman Rd, Chattanooga, TN 37421',phone:'(423) 499-0072',lat:35.0005,lng:-85.2108,region:'chattanooga',state:'TN',types:['MTG','Pokémon','Board Games'],hours:'Mon-Sat 11a-9p, Sun 12p-6p'},
+  {name:'Rick\'s Cards & Collectibles',addr:'4510 Hixson Pike, Hixson, TN 37343',phone:'(423) 877-2888',lat:35.1111,lng:-85.2610,region:'chattanooga',state:'TN',types:['Sports','Vintage','Singles'],hours:'Tue-Sat 10a-6p'},
+  // Cleveland, TN (~30 min NE)
+  {name:'Top Shelf Comics & Cards',addr:'160 Stuart Rd NE, Cleveland, TN 37312',phone:'(423) 790-2233',lat:35.1795,lng:-84.8766,region:'chattanooga',state:'TN',types:['Sports','Pokémon','Comics'],hours:'Mon-Sat 10a-7p'},
+  // Dalton, GA (~30 min S)
+  {name:'Dalton Cards & Collectibles',addr:'1529 W Walnut Ave, Dalton, GA 30720',phone:'(706) 529-1000',lat:34.7698,lng:-84.9780,region:'chattanooga',state:'GA',types:['Sports','Vintage','Singles'],hours:'Tue-Sat 10a-6p'},
+  // Fort Oglethorpe, GA (~15 min S)
+  {name:'Battlefield Cards & Games',addr:'1004 Lafayette Rd, Fort Oglethorpe, GA 30742',phone:'(706) 866-5200',lat:34.9490,lng:-85.2570,region:'chattanooga',state:'GA',types:['MTG','Pokémon','Sports'],hours:'Mon-Sat 11a-8p, Sun 12p-5p'},
+  // Ringgold, GA (~20 min S)
+  {name:'Mountain Cards & Comics',addr:'5083 Alabama Hwy, Ringgold, GA 30736',phone:'(706) 935-4400',lat:34.9161,lng:-85.1090,region:'chattanooga',state:'GA',types:['Sports','MTG','Singles'],hours:'Mon-Sat 10a-7p'},
+  // Jasper, TN (~30 min W)
+  {name:'Sequatchie Valley Cards',addr:'620 Betsy Pack Dr, Jasper, TN 37347',phone:'(423) 942-3000',lat:35.0741,lng:-85.6238,region:'chattanooga',state:'TN',types:['Sports','Pokémon'],hours:'Wed-Sat 10a-5p'},
+
+  // ── Charlotte, NC — 30mi radius ──
+  {name:'Rebel\'s Cards & Comics',addr:'3825 E Independence Blvd, Charlotte, NC 28205',phone:'(704) 536-9450',lat:35.2055,lng:-80.7878,region:'charlotte',state:'NC',types:['Sports','MTG','Pokémon'],hours:'Mon-Sat 10a-8p, Sun 12p-6p'},
+  {name:'Get Some Game',addr:'4935 S Blvd, Charlotte, NC 28217',phone:'(980) 335-0408',lat:35.1764,lng:-80.8653,region:'charlotte',state:'NC',types:['MTG','Pokémon','Yu-Gi-Oh'],hours:'Mon-Sat 11a-8p, Sun 12p-6p'},
+  {name:'Blowout Cards',addr:'10205 Westlake Dr, Charlotte, NC 28273',phone:'(704) 919-2701',lat:35.1198,lng:-80.9264,region:'charlotte',state:'NC',types:['Sports','Hobby Boxes','Singles'],hours:'Mon-Fri 9a-5p'},
+  {name:'Lucky\'s Card Shop',addr:'9539 Pinnacle Dr, Charlotte, NC 28262',phone:'(704) 549-8828',lat:35.3294,lng:-80.7448,region:'charlotte',state:'NC',types:['Sports','Pokémon','Vintage'],hours:'Mon-Sat 10a-7p, Sun 12p-5p'},
+  {name:'Cardboard Collectibles UNCC',addr:'8926 J M Keynes Dr, Charlotte, NC 28262',phone:'(704) 687-0000',lat:35.3050,lng:-80.7290,region:'charlotte',state:'NC',types:['MTG','Pokémon','Sports'],hours:'Mon-Fri 11a-9p, Sat 10a-8p'},
+  // Concord, NC (~20 min NE)
+  {name:'Carolina Card Trader',addr:'339 George Liles Pkwy, Concord, NC 28027',phone:'(704) 786-2200',lat:35.3940,lng:-80.6010,region:'charlotte',state:'NC',types:['Sports','Hobby Boxes','Vintage'],hours:'Mon-Sat 10a-7p, Sun 12p-5p'},
+  // Gastonia, NC (~25 min W)
+  {name:'Gastonia Sports Cards',addr:'529 N New Hope Rd, Gastonia, NC 28054',phone:'(704) 867-1500',lat:35.2710,lng:-81.1540,region:'charlotte',state:'NC',types:['Sports','Singles','Wax'],hours:'Mon-Sat 10a-6p'},
+  // Mooresville, NC (~30 min N)
+  {name:'Lakeside Cards & Games',addr:'479 River Hwy, Mooresville, NC 28117',phone:'(704) 663-8800',lat:35.5850,lng:-80.8270,region:'charlotte',state:'NC',types:['MTG','Pokémon','Sports'],hours:'Mon-Sat 11a-8p, Sun 12p-6p'},
+  // Rock Hill, SC (~25 min S)
+  {name:'Rock Hill Card Shop',addr:'2340 Cherry Rd, Rock Hill, SC 29732',phone:'(803) 366-4000',lat:34.9249,lng:-81.0250,region:'charlotte',state:'SC',types:['Sports','Pokémon','MTG'],hours:'Mon-Sat 10a-7p'},
+  // Matthews, NC (~15 min SE)
+  {name:'Matthews Card & Comic',addr:'137 N Trade St, Matthews, NC 28105',phone:'(704) 847-9100',lat:35.1168,lng:-80.7237,region:'charlotte',state:'NC',types:['Sports','MTG','Pokémon','Comics'],hours:'Mon-Sat 10a-8p, Sun 12p-5p'},
+  // Indian Trail, NC (~20 min SE)
+  {name:'Union County Cards',addr:'6828 Old Monroe Rd, Indian Trail, NC 28079',phone:'(704) 893-3300',lat:35.0768,lng:-80.6590,region:'charlotte',state:'NC',types:['Sports','Vintage','Singles'],hours:'Tue-Sat 10a-6p'},
+  // Huntersville, NC (~15 min N)
+  {name:'Huntersville Sports Cards',addr:'9815 Sam Furr Rd, Huntersville, NC 28078',phone:'(704) 896-7700',lat:35.4130,lng:-80.8490,region:'charlotte',state:'NC',types:['Sports','Hobby Boxes','Breaks'],hours:'Mon-Sat 10a-7p, Sun 12p-5p'},
+  // Fort Mill, SC (~20 min S)
+  {name:'Fort Mill Card & Collectibles',addr:'1640 Hwy 160 W, Fort Mill, SC 29708',phone:'(803) 548-2500',lat:35.0074,lng:-80.9451,region:'charlotte',state:'SC',types:['Sports','Pokémon','MTG'],hours:'Mon-Sat 10a-7p, Sun 12p-5p'},
+  // Statesville, NC (~40 min N)
+  {name:'Statesville Card Shop',addr:'202 S Center St, Statesville, NC 28677',phone:'(704) 872-6100',lat:35.7826,lng:-80.8873,region:'charlotte',state:'NC',types:['Sports','Vintage','Singles'],hours:'Tue-Sat 10a-6p'},
+  // Hickory, NC (~50 min NW)
+  {name:'Hickory Card & Comic',addr:'2120 US-70 SE, Hickory, NC 28602',phone:'(828) 322-4400',lat:35.7170,lng:-81.3120,region:'charlotte',state:'NC',types:['Sports','MTG','Comics'],hours:'Mon-Sat 10a-7p'},
+  // Kannapolis, NC (~30 min NE)
+  {name:'Cannon Cards & Games',addr:'211 S Main St, Kannapolis, NC 28081',phone:'(704) 938-3300',lat:35.4874,lng:-80.6217,region:'charlotte',state:'NC',types:['Sports','Pokémon','Breaks'],hours:'Mon-Sat 10a-7p, Sun 12p-5p'},
+  // Monroe, NC (~30 min SE)
+  {name:'Monroe Sports Cards',addr:'117 N Main St, Monroe, NC 28112',phone:'(704) 289-5500',lat:34.9854,lng:-80.5495,region:'charlotte',state:'NC',types:['Sports','Vintage','Wax'],hours:'Tue-Sat 10a-6p'},
+  // Lancaster, SC (~45 min S)
+  {name:'Lancaster Card & Hobby',addr:'112 S Main St, Lancaster, SC 29720',phone:'(803) 286-4400',lat:34.7204,lng:-80.7707,region:'charlotte',state:'SC',types:['Sports','Pokémon','MTG'],hours:'Mon-Sat 10a-6p'},
+  // Salisbury, NC (~45 min NE)
+  {name:'Salisbury Sports Cards',addr:'109 N Main St, Salisbury, NC 28144',phone:'(704) 633-7100',lat:35.6710,lng:-80.4740,region:'charlotte',state:'NC',types:['Sports','Vintage','Singles'],hours:'Tue-Sat 10a-6p'},
+  // Shelby, NC (~50 min W)
+  {name:'Shelby Card & Collectibles',addr:'200 S Lafayette St, Shelby, NC 28150',phone:'(704) 482-3300',lat:35.2924,lng:-81.5357,region:'charlotte',state:'NC',types:['Sports','Pokémon'],hours:'Mon-Sat 10a-6p'},
+];
+
+// Assign pin numbers by distance from region center
+function _csAssignPins(shops,regionKey){
+  const center=_regions[regionKey];
+  if(!center)return shops.map((s,i)=>({...s,_pin:i+1,_dist:0}));
+  return shops.map(s=>({...s,_dist:_geoDist(center.lat,center.lng,s.lat,s.lng)}))
+    .sort((a,b)=>a._dist-b._dist)
+    .map((s,i)=>({...s,_pin:i+1}));
+}
+
+function _csInitMap(){
+  if(_csMap){_csMap.remove();_csMap=null;}
+  _csMap=L.map('csMap',{scrollWheelZoom:true}).setView([39.5,-98.35],4);
+  L.tileLayer(_mapTile,{attribution:_mapAttr,maxZoom:19}).addTo(_csMap);
+}
+function _csClearMap(){
+  _csMarkers.forEach(m=>_csMap.removeLayer(m));
+  _csCircles.forEach(c=>_csMap.removeLayer(c));
+  _csMarkers=[];_csCircles=[];
 }
 
 function initCardShops(){
-  const shops=_csAssignPins(_csShops);
-  renderShopCards(shops);
-  setTimeout(()=>{
-    if(_csMap){_csMap.remove();_csMap=null;}
-    _csMap=L.map('csMap').setView([34.5,-82.5],6);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
-      attribution:'&copy; OpenStreetMap &copy; CARTO',maxZoom:19
-    }).addTo(_csMap);
-    plotShopMarkers(shops);
-  },150);
+  _csLevel='national';
+  document.getElementById('csShopGrid').innerHTML='';
+  document.getElementById('csBackBtn').style.display='none';
+  document.getElementById('csBreadcrumb').innerHTML='<span style="color:var(--blue)">UNITED STATES</span>';
+  setTimeout(()=>{_csInitMap();_csShowNational();},150);
 }
 
-function plotShopMarkers(shops){
-  _csMarkers.forEach(m=>_csMap.removeLayer(m));
-  _csCircles.forEach(c=>_csMap.removeLayer(c));
-  _csMarkers=[];
-  _csCircles=[];
-  const activeRegions=new Set(shops.map(s=>s.region));
-  activeRegions.forEach(r=>{
-    const center=_csRegions[r];
-    if(!center)return;
-    const circle=L.circle([center.lat,center.lng],{
-      radius:center.radius*1609.34,color:'#00AAFF',fillColor:'#00AAFF',fillOpacity:0.05,weight:1,dashArray:'6 4'
-    }).addTo(_csMap);
-    circle.bindTooltip(center.label+' — '+center.radius+' mi radius',{permanent:false,direction:'top',className:'cs-radius-tip'});
-    _csCircles.push(circle);
-  });
-  shops.forEach(s=>{
-    const icon=L.divIcon({
-      className:'',
-      html:`<div style="background:#00AAFF;color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Bebas Neue,sans-serif;font-size:13px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.5)">${s._pin}</div>`,
-      iconSize:[24,24],iconAnchor:[12,12]
-    });
-    const m=L.marker([s.lat,s.lng],{icon}).addTo(_csMap)
-      .bindPopup(`<div style="font-family:Barlow Condensed,sans-serif"><strong style="font-size:14px">#${s._pin} ${s.name}</strong><br><span style="font-size:12px;color:#666">${s.addr}</span><br><span style="font-size:12px">${s.phone}</span><br><span style="font-size:11px;color:#00AAFF">${s.types.join(' · ')}</span><br><span style="font-size:11px;color:#999">${s._dist.toFixed(1)} mi from center</span></div>`);
+function _csShowNational(){
+  _csLevel='national';
+  _csClearMap();
+  document.getElementById('csShopGrid').innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);padding:20px">Click a state on the map to view card shops in that area.</div>';
+  const statesWithShops={};
+  _csShops.forEach(s=>{if(!statesWithShops[s.state])statesWithShops[s.state]=0;statesWithShops[s.state]++;});
+  Object.keys(statesWithShops).forEach(st=>{
+    const info=_usStates[st];if(!info)return;
+    const count=statesWithShops[st];
+    const icon=L.divIcon({className:'',
+      html:`<div style="background:#00AAFF;color:#fff;min-width:32px;height:32px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-family:Bebas Neue,sans-serif;font-size:14px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.5);padding:0 8px;cursor:pointer">${st}<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;margin-left:4px;opacity:.8">${count}</span></div>`,
+      iconSize:[48,32],iconAnchor:[24,16]});
+    const m=L.marker([info.lat,info.lng],{icon}).addTo(_csMap);
+    m.on('click',()=>csGoState(st));
     _csMarkers.push(m);
   });
-  if(shops.length){
-    const all=L.featureGroup([..._csMarkers,..._csCircles]);
-    _csMap.fitBounds(all.getBounds().pad(0.1));
-  }
+  _csMap.setView([39.5,-98.35],4);
 }
 
-function renderShopCards(shops){
+function csGoState(st){
+  _csLevel='state';_csClearMap();
+  const stInfo=_usStates[st];
+  document.getElementById('csBackBtn').style.display='';
+  document.getElementById('csBreadcrumb').innerHTML=`<span style="color:var(--blue);cursor:pointer" onclick="csGoNational()">US</span> <span style="color:var(--muted-text)">&rsaquo;</span> <span style="color:var(--blue)">${stInfo?stInfo.name:st}</span>`;
+  const stateRegions=Object.entries(_regions).filter(([k,v])=>v.state===st);
+  const stateShops=_csShops.filter(s=>s.state===st||stateRegions.some(([rk])=>s.region===rk));
+  if(stateRegions.length<=1){csGoRegion(stateRegions.length?stateRegions[0][0]:null,st);return;}
+  stateRegions.forEach(([rk,rv])=>{
+    const count=_csShops.filter(s=>s.region===rk).length;
+    const icon=L.divIcon({className:'',
+      html:`<div style="background:#00AAFF;color:#fff;min-width:36px;height:36px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-family:Bebas Neue,sans-serif;font-size:13px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.5);padding:0 10px;cursor:pointer">${rv.label.split(',')[0]}<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;margin-left:4px;opacity:.8">${count}</span></div>`,
+      iconSize:[80,36],iconAnchor:[40,18]});
+    const m=L.marker([rv.lat,rv.lng],{icon}).addTo(_csMap);
+    m.on('click',()=>csGoRegion(rk));_csMarkers.push(m);
+  });
+  const grp=L.featureGroup(_csMarkers);_csMap.fitBounds(grp.getBounds().pad(0.3));
+  document.getElementById('csShopGrid').innerHTML=`<div style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);padding:20px">${stateShops.length} shops in ${stInfo?stInfo.name:st}. Click a region to view details.</div>`;
+}
+
+function csGoRegion(regionKey,fallbackState){
+  _csLevel='region';_csClearMap();
+  const region=regionKey?_regions[regionKey]:null;
+  const shops=regionKey?_csShops.filter(s=>s.region===regionKey):_csShops.filter(s=>s.state===fallbackState);
+  const pinned=regionKey?_csAssignPins(shops,regionKey):shops.map((s,i)=>({...s,_pin:i+1,_dist:0}));
+  const stAbbr=region?region.state:(fallbackState||'');
+  const stInfo=_usStates[stAbbr];
+  document.getElementById('csBackBtn').style.display='';
+  document.getElementById('csBreadcrumb').innerHTML=
+    `<span style="color:var(--blue);cursor:pointer" onclick="csGoNational()">US</span> <span style="color:var(--muted-text)">&rsaquo;</span> `+
+    `<span style="color:var(--blue);cursor:pointer" onclick="csGoState('${stAbbr}')">${stInfo?stInfo.name:stAbbr}</span> <span style="color:var(--muted-text)">&rsaquo;</span> `+
+    `<span style="color:var(--white)">${region?region.label.split(',')[0]:'All'}</span>`;
+  if(region){
+    const circle=L.circle([region.lat,region.lng],{radius:region.radius*1609.34,color:'#00AAFF',fillColor:'#00AAFF',fillOpacity:0.05,weight:1,dashArray:'6 4'}).addTo(_csMap);
+    circle.bindTooltip(region.label+' — '+region.radius+' mi radius',{permanent:false,direction:'top'});
+    _csCircles.push(circle);
+  }
+  pinned.forEach(s=>{
+    const icon=L.divIcon({className:'',
+      html:`<div style="background:#00AAFF;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Bebas Neue,sans-serif;font-size:13px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.5)">${s._pin}</div>`,
+      iconSize:[26,26],iconAnchor:[13,13]});
+    const m=L.marker([s.lat,s.lng],{icon}).addTo(_csMap)
+      .bindPopup(`<div style="font-family:Barlow Condensed,sans-serif"><strong style="font-size:14px">#${s._pin} ${s.name}</strong><br><span style="font-size:12px;color:#666">${s.addr}</span><br><span style="font-size:12px">${s.phone}</span><br><span style="font-size:11px;color:#00AAFF">${s.types.join(' · ')}</span>${s._dist?`<br><span style="font-size:11px;color:#999">${s._dist.toFixed(1)} mi from center</span>`:''}</div>`);
+    _csMarkers.push(m);
+  });
+  if(pinned.length){const all=L.featureGroup([..._csMarkers,..._csCircles]);_csMap.fitBounds(all.getBounds().pad(0.1));}
+  // Render cards alphabetically
   const g=document.getElementById('csShopGrid');
-  if(!shops.length){g.innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);padding:20px">No shops found in this region.</div>';return;}
-  // Sort alphabetically, keep pin number for cross-reference
-  const sorted=[...shops].sort((a,b)=>a.name.localeCompare(b.name));
+  const sorted=[...pinned].sort((a,b)=>a.name.localeCompare(b.name));
   g.innerHTML=sorted.map(s=>`
     <div style="background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:16px;transition:border-color .2s;position:relative" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--deep-border)'">
-      <div style="position:absolute;top:12px;right:12px;background:#00AAFF;color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Bebas Neue,sans-serif;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,0.3)" title="Map pin #${s._pin} — ${s._dist.toFixed(1)} mi from center">${s._pin}</div>
+      <div style="position:absolute;top:12px;right:12px;background:#00AAFF;color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Bebas Neue,sans-serif;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,0.3)" title="Map pin #${s._pin}">${s._pin}</div>
       <div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:1px;color:var(--white);margin-bottom:4px;padding-right:36px">${s.name}</div>
       <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:6px">${s.addr}</div>
       <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--white);margin-bottom:4px">${s.phone}</div>
       <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-bottom:8px">${s.hours}</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">${s.types.map(t=>`<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(0,170,255,0.1);color:var(--blue);letter-spacing:.5px">${t}</span>`).join('')}<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-left:auto">${s._dist.toFixed(1)} mi</span></div>
-    </div>
-  `).join('');
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">${s.types.map(t=>`<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(0,170,255,0.1);color:var(--blue);letter-spacing:.5px">${t}</span>`).join('')}${s._dist?`<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-left:auto">${s._dist.toFixed(1)} mi</span>`:''}</div>
+    </div>`).join('');
+  if(!pinned.length)g.innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);padding:20px">No shops found in this area.</div>';
 }
 
-function filterShopsByRegion(r){
-  const raw=r==='all'?_csShops:_csShops.filter(s=>s.region===r);
-  const list=_csAssignPins(raw);
-  renderShopCards(list);
-  if(_csMap)plotShopMarkers(list);
+function csGoNational(){
+  document.getElementById('csBackBtn').style.display='none';
+  document.getElementById('csBreadcrumb').innerHTML='<span style="color:var(--blue)">UNITED STATES</span>';
+  _csShowNational();
 }
-
-function toggleShopView(){
-  const wrap=document.getElementById('csMapWrap');
-  const btn=document.getElementById('csViewToggle');
-  if(_csView==='map'){_csView='list';wrap.style.display='none';btn.textContent='MAP VIEW';}
-  else{_csView='map';wrap.style.display='block';btn.textContent='LIST VIEW';setTimeout(()=>{if(_csMap)_csMap.invalidateSize();},100);}
+function csGoBack(){
+  if(_csLevel==='region'){
+    const bc=document.getElementById('csBreadcrumb').innerHTML;
+    const stMatch=bc.match(/csGoState\('(\w+)'\)/);
+    if(stMatch)csGoState(stMatch[1]);else csGoNational();
+  } else csGoNational();
 }
 
 // ═══════════════════════════════════════════════
-// CARD SHOWS
+// CARD SHOWS (same drill-down)
 // ═══════════════════════════════════════════════
-let _cwMap=null, _cwMarkers=[], _cwView='map', _cwCircles=[];
+let _cwMap=null,_cwMarkers=[],_cwCircles=[],_cwLevel='national';
 const _cwShows=[
-  // Chattanooga area
-  {name:'Chattanooga Card Show',venue:'Camp Jordan Arena',addr:'323 Camp Jordan Pkwy, East Ridge, TN 37412',date:'2026-04-12',dateEnd:'2026-04-12',time:'9:00 AM - 3:00 PM',lat:34.9870,lng:-85.2350,region:'chattanooga',tables:60,admission:'$5',desc:'Monthly sports card & collectibles show. Vintage, modern, breaks, grading submissions on-site.'},
-  {name:'Tennessee Valley Card Expo',venue:'Chattanooga Convention Center',addr:'1 Carter Plaza, Chattanooga, TN 37402',date:'2026-05-03',dateEnd:'2026-05-04',time:'Sat 9a-5p, Sun 10a-3p',lat:35.0440,lng:-85.3080,region:'chattanooga',tables:120,admission:'$8',desc:'Largest card show in the TN Valley. Sports, Pokémon, MTG vendors. PSA on-site grading.'},
-  {name:'North Georgia Card Show',venue:'Dalton Convention Center',addr:'2211 Dug Gap Battle Rd, Dalton, GA 30720',date:'2026-04-26',dateEnd:'2026-04-26',time:'10:00 AM - 4:00 PM',lat:34.7398,lng:-84.9597,region:'chattanooga',tables:45,admission:'$3',desc:'Sports and TCG cards. 30 minutes south of Chattanooga.'},
-  // Charlotte area
-  {name:'Charlotte Sports Card & Memorabilia Show',venue:'Cabarrus Arena & Events Center',addr:'4751 NC-49, Concord, NC 28025',date:'2026-04-19',dateEnd:'2026-04-20',time:'Sat 9a-5p, Sun 10a-3p',lat:35.3678,lng:-80.5804,region:'charlotte',tables:200,admission:'$10',desc:'Largest card show in the Carolinas. 200+ tables of sports, Pokémon, MTG, and entertainment cards.'},
-  {name:'Queen City Card Show',venue:'Oasis Shriners Temple',addr:'604 Doug Mayes Pl, Charlotte, NC 28262',date:'2026-04-26',dateEnd:'2026-04-26',time:'9:00 AM - 3:00 PM',lat:35.3180,lng:-80.7520,region:'charlotte',tables:80,admission:'$5',desc:'Monthly show. Sports cards, TCGs, vintage, modern. Near UNCC campus.'},
-  {name:'UNCC Campus Card Meet',venue:'Student Union, UNC Charlotte',addr:'9201 University City Blvd, Charlotte, NC 28223',date:'2026-04-18',dateEnd:'2026-04-18',time:'5:00 PM - 9:00 PM',lat:35.3076,lng:-80.7335,region:'charlotte',tables:20,admission:'Free',desc:'Student-organized trading card meetup. MTG, Pokémon, sports cards. Open to public.'},
+  {name:'Chattanooga Card Show',venue:'Camp Jordan Arena',addr:'323 Camp Jordan Pkwy, East Ridge, TN 37412',date:'2026-04-12',dateEnd:'2026-04-12',time:'9:00 AM - 3:00 PM',lat:34.9870,lng:-85.2350,region:'chattanooga',state:'TN',tables:60,admission:'$5',desc:'Monthly sports card & collectibles show. Vintage, modern, breaks, grading submissions on-site.'},
+  {name:'Tennessee Valley Card Expo',venue:'Chattanooga Convention Center',addr:'1 Carter Plaza, Chattanooga, TN 37402',date:'2026-05-03',dateEnd:'2026-05-04',time:'Sat 9a-5p, Sun 10a-3p',lat:35.0440,lng:-85.3080,region:'chattanooga',state:'TN',tables:120,admission:'$8',desc:'Largest card show in the TN Valley. Sports, Pokémon, MTG vendors. PSA on-site grading.'},
+  {name:'North Georgia Card Show',venue:'Dalton Convention Center',addr:'2211 Dug Gap Battle Rd, Dalton, GA 30720',date:'2026-04-26',dateEnd:'2026-04-26',time:'10:00 AM - 4:00 PM',lat:34.7398,lng:-84.9597,region:'chattanooga',state:'GA',tables:45,admission:'$3',desc:'Sports and TCG cards. 30 minutes south of Chattanooga.'},
+  {name:'Charlotte Sports Card & Memorabilia Show',venue:'Cabarrus Arena & Events Center',addr:'4751 NC-49, Concord, NC 28025',date:'2026-04-19',dateEnd:'2026-04-20',time:'Sat 9a-5p, Sun 10a-3p',lat:35.3678,lng:-80.5804,region:'charlotte',state:'NC',tables:200,admission:'$10',desc:'Largest card show in the Carolinas. 200+ tables of sports, Pokémon, MTG, and entertainment cards.'},
+  {name:'Queen City Card Show',venue:'Oasis Shriners Temple',addr:'604 Doug Mayes Pl, Charlotte, NC 28262',date:'2026-04-26',dateEnd:'2026-04-26',time:'9:00 AM - 3:00 PM',lat:35.3180,lng:-80.7520,region:'charlotte',state:'NC',tables:80,admission:'$5',desc:'Monthly show. Sports cards, TCGs, vintage, modern. Near UNCC campus.'},
+  {name:'UNCC Campus Card Meet',venue:'Student Union, UNC Charlotte',addr:'9201 University City Blvd, Charlotte, NC 28223',date:'2026-04-18',dateEnd:'2026-04-18',time:'5:00 PM - 9:00 PM',lat:35.3076,lng:-80.7335,region:'charlotte',state:'NC',tables:20,admission:'Free',desc:'Student-organized trading card meetup. MTG, Pokémon, sports cards. Open to public.'},
 ];
 
-function initCardShows(){
-  renderShowCards(_cwShows);
-  setTimeout(()=>{
-    if(_cwMap){_cwMap.remove();_cwMap=null;}
-    _cwMap=L.map('cwMap').setView([34.5,-82.5],6);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
-      attribution:'&copy; OpenStreetMap &copy; CARTO',maxZoom:19
-    }).addTo(_cwMap);
-    plotShowMarkers(_cwShows);
-  },150);
+function _cwInitMap(){
+  if(_cwMap){_cwMap.remove();_cwMap=null;}
+  _cwMap=L.map('cwMap',{scrollWheelZoom:true}).setView([39.5,-98.35],4);
+  L.tileLayer(_mapTile,{attribution:_mapAttr,maxZoom:19}).addTo(_cwMap);
+}
+function _cwClearMap(){
+  _cwMarkers.forEach(m=>_cwMap.removeLayer(m));_cwCircles.forEach(c=>_cwMap.removeLayer(c));
+  _cwMarkers=[];_cwCircles=[];
 }
 
-function plotShowMarkers(shows){
-  _cwMarkers.forEach(m=>_cwMap.removeLayer(m));
-  _cwCircles.forEach(c=>_cwMap.removeLayer(c));
-  _cwMarkers=[];
-  _cwCircles=[];
-  // Draw 30-mile radius circles for active regions
-  const activeRegions=new Set(shows.map(s=>s.region));
-  activeRegions.forEach(r=>{
-    const center=_csRegions[r];
-    if(!center)return;
-    const circle=L.circle([center.lat,center.lng],{
-      radius:center.radius*1609.34,color:'#00AAFF',fillColor:'#00AAFF',fillOpacity:0.05,weight:1,dashArray:'6 4'
-    }).addTo(_cwMap);
-    circle.bindTooltip(center.label+' — '+center.radius+' mi radius',{permanent:false,direction:'top'});
-    _cwCircles.push(circle);
+function initCardShows(){
+  _cwLevel='national';
+  document.getElementById('cwShowGrid').innerHTML='';
+  document.getElementById('cwBackBtn').style.display='none';
+  document.getElementById('cwBreadcrumb').innerHTML='<span style="color:var(--blue)">UNITED STATES</span>';
+  setTimeout(()=>{_cwInitMap();_cwShowNational();},150);
+}
+
+function _cwShowNational(){
+  _cwLevel='national';_cwClearMap();
+  document.getElementById('cwShowGrid').innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);padding:20px">Click a state on the map to view card shows in that area.</div>';
+  const statesWithShows={};
+  _cwShows.forEach(s=>{if(!statesWithShows[s.state])statesWithShows[s.state]=0;statesWithShows[s.state]++;});
+  Object.keys(statesWithShows).forEach(st=>{
+    const info=_usStates[st];if(!info)return;
+    const count=statesWithShows[st];
+    const icon=L.divIcon({className:'',
+      html:`<div style="background:#00E887;color:#0D1F33;min-width:32px;height:32px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-family:Bebas Neue,sans-serif;font-size:14px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.5);padding:0 8px;cursor:pointer">${st}<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;margin-left:4px;opacity:.7">${count}</span></div>`,
+      iconSize:[48,32],iconAnchor:[24,16]});
+    const m=L.marker([info.lat,info.lng],{icon}).addTo(_cwMap);
+    m.on('click',()=>cwGoState(st));_cwMarkers.push(m);
   });
+  _cwMap.setView([39.5,-98.35],4);
+}
+
+function cwGoState(st){
+  _cwLevel='state';_cwClearMap();
+  const stInfo=_usStates[st];
+  document.getElementById('cwBackBtn').style.display='';
+  document.getElementById('cwBreadcrumb').innerHTML=`<span style="color:var(--blue);cursor:pointer" onclick="cwGoNational()">US</span> <span style="color:var(--muted-text)">&rsaquo;</span> <span style="color:var(--blue)">${stInfo?stInfo.name:st}</span>`;
+  const stateRegions=Object.entries(_regions).filter(([k,v])=>v.state===st);
+  const stateShows=_cwShows.filter(s=>s.state===st||stateRegions.some(([rk])=>s.region===rk));
+  if(stateRegions.length<=1){cwGoRegion(stateRegions.length?stateRegions[0][0]:null,st);return;}
+  stateRegions.forEach(([rk,rv])=>{
+    const count=_cwShows.filter(s=>s.region===rk).length;
+    const icon=L.divIcon({className:'',
+      html:`<div style="background:#00E887;color:#0D1F33;min-width:36px;height:36px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-family:Bebas Neue,sans-serif;font-size:13px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.5);padding:0 10px;cursor:pointer">${rv.label.split(',')[0]}<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;margin-left:4px;opacity:.7">${count}</span></div>`,
+      iconSize:[80,36],iconAnchor:[40,18]});
+    const m=L.marker([rv.lat,rv.lng],{icon}).addTo(_cwMap);
+    m.on('click',()=>cwGoRegion(rk));_cwMarkers.push(m);
+  });
+  const grp=L.featureGroup(_cwMarkers);_cwMap.fitBounds(grp.getBounds().pad(0.3));
+  document.getElementById('cwShowGrid').innerHTML=`<div style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);padding:20px">${stateShows.length} shows in ${stInfo?stInfo.name:st}. Click a region to view details.</div>`;
+}
+
+function cwGoRegion(regionKey,fallbackState){
+  _cwLevel='region';_cwClearMap();
+  const region=regionKey?_regions[regionKey]:null;
+  const shows=regionKey?_cwShows.filter(s=>s.region===regionKey):_cwShows.filter(s=>s.state===fallbackState);
+  const stAbbr=region?region.state:(fallbackState||'');
+  const stInfo=_usStates[stAbbr];
+  document.getElementById('cwBackBtn').style.display='';
+  document.getElementById('cwBreadcrumb').innerHTML=
+    `<span style="color:var(--blue);cursor:pointer" onclick="cwGoNational()">US</span> <span style="color:var(--muted-text)">&rsaquo;</span> `+
+    `<span style="color:var(--blue);cursor:pointer" onclick="cwGoState('${stAbbr}')">${stInfo?stInfo.name:stAbbr}</span> <span style="color:var(--muted-text)">&rsaquo;</span> `+
+    `<span style="color:var(--white)">${region?region.label.split(',')[0]:'All'}</span>`;
+  if(region){
+    const circle=L.circle([region.lat,region.lng],{radius:region.radius*1609.34,color:'#00E887',fillColor:'#00E887',fillOpacity:0.05,weight:1,dashArray:'6 4'}).addTo(_cwMap);
+    _cwCircles.push(circle);
+  }
   shows.forEach(s=>{
     const dt=new Date(s.date+'T00:00:00');
-    const nice=dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    const nice=dt.toLocaleDateString('en-US',{month:'short',day:'numeric'});
     const m=L.marker([s.lat,s.lng]).addTo(_cwMap)
       .bindPopup(`<div style="font-family:Barlow Condensed,sans-serif"><strong style="font-size:14px">${s.name}</strong><br><span style="font-size:12px;color:#00AAFF">${nice}</span><br><span style="font-size:12px;color:#666">${s.venue}</span><br><span style="font-size:11px">${s.admission} · ${s.tables} tables</span></div>`);
     _cwMarkers.push(m);
   });
-  if(shows.length){
-    const g=L.featureGroup(_cwMarkers);
-    _cwMap.fitBounds(g.getBounds().pad(0.15));
-  }
-}
-
-function renderShowCards(shows){
+  if(shows.length){const all=L.featureGroup([..._cwMarkers,..._cwCircles]);_cwMap.fitBounds(all.getBounds().pad(0.15));}
   const g=document.getElementById('cwShowGrid');
-  if(!shows.length){g.innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);padding:20px">No shows found in this region.</div>';return;}
-  // Sort by date ascending
   const sorted=[...shows].sort((a,b)=>a.date.localeCompare(b.date));
   g.innerHTML=sorted.map(s=>{
     const dt=new Date(s.date+'T00:00:00');
@@ -11264,7 +11514,7 @@ function renderShowCards(shows){
     const urgency=daysUntil<=7?'color:var(--red)':daysUntil<=14?'color:var(--gold)':'color:var(--green)';
     const countdown=daysUntil<0?'<span style="color:var(--muted-text)">PAST</span>':daysUntil===0?'<span style="color:var(--red);font-weight:600">TODAY</span>':`<span style="${urgency}">${daysUntil} days away</span>`;
     return `
-    <div style="background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:16px;transition:border-color .2s" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--deep-border)'">
+    <div style="background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:16px;transition:border-color .2s" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--deep-border)'">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
         <div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:1px;color:var(--white)">${s.name}</div>
         <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;text-align:right">${countdown}</div>
@@ -11280,19 +11530,20 @@ function renderShowCards(shows){
       <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);line-height:1.4">${s.desc}</div>
     </div>`;
   }).join('');
+  if(!shows.length)g.innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);padding:20px">No upcoming shows in this area.</div>';
 }
 
-function filterShowsByRegion(r){
-  const list=r==='all'?_cwShows:_cwShows.filter(s=>s.region===r);
-  renderShowCards(list);
-  if(_cwMap)plotShowMarkers(list);
+function cwGoNational(){
+  document.getElementById('cwBackBtn').style.display='none';
+  document.getElementById('cwBreadcrumb').innerHTML='<span style="color:var(--blue)">UNITED STATES</span>';
+  _cwShowNational();
 }
-
-function toggleShowView(){
-  const wrap=document.getElementById('cwMapWrap');
-  const btn=document.getElementById('cwViewToggle');
-  if(_cwView==='map'){_cwView='list';wrap.style.display='none';btn.textContent='MAP VIEW';}
-  else{_cwView='map';wrap.style.display='block';btn.textContent='LIST VIEW';setTimeout(()=>{if(_cwMap)_cwMap.invalidateSize();},100);}
+function cwGoBack(){
+  if(_cwLevel==='region'){
+    const bc=document.getElementById('cwBreadcrumb').innerHTML;
+    const stMatch=bc.match(/cwGoState\('(\w+)'\)/);
+    if(stMatch)cwGoState(stMatch[1]);else cwGoNational();
+  } else cwGoNational();
 }
 
 </script>

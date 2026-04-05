@@ -6188,14 +6188,16 @@ function toggleTicker(card, el){
     list.push({
       _tid: id,
       cardId: _match ? _match.id : null,
-      name: (card.player || card.name || 'Unknown') + (card.variation && card.variation !== 'Base' ? ' ' + card.variation : '') + (card.serial_total ? ' /' + card.serial_total : ''),
+      name: (card.player || card.name || 'Unknown'),
       grade: card.grade || card.grade_company || 'Raw',
       price: est || paid,
       chg: chgPct,
       player: card.player || card.name || '',
       year: card.year || '',
+      brand: card.brand || '',
+      set_name: card.set_name || card.set || '',
       variation: card.variation || card.parallel || '',
-      card_number: card.card_number || '',
+      card_number: card.card_number || (card.cardNum||'').replace(/^#/,'') || '',
     });
     if(el){ el.classList.add('on-ticker'); el.innerHTML='&#10003; On Ticker'; }
     T(`${card.player||card.name||'Card'} added to ticker`);
@@ -6232,8 +6234,12 @@ function initCardTicker(){
       const p = w.price || 0;
       const chg = w.chg || 0;
       return {
-        name: w.name,
-        grade: w.grade || 'Raw',
+        player: w.player || w.name || '',
+        year: w.year || '',
+        brand: w.brand || '',
+        set_name: w.set_name || '',
+        variation: w.variation || '',
+        card_number: w.card_number || '',
         price: '$' + (p >= 1000 ? p.toLocaleString() : p.toFixed(p % 1 === 0 ? 0 : 2)),
         chg: (chg >= 0 ? '+' : '') + chg.toFixed(1) + '%',
         dir: chg >= 0 ? 'up' : 'dn',
@@ -6243,12 +6249,12 @@ function initCardTicker(){
   } else {
     // Fallback demo data when watchlist is empty
     cards = [
-      {name:'Juan Soto RC Auto Gold /50', grade:'PSA 10', price:'$1,200', chg:'+12.4%', dir:'up'},
-      {name:'Shohei Ohtani Chrome Auto /499', grade:'PSA 9', price:'$650', chg:'-3.1%', dir:'dn'},
-      {name:'Mike Trout 2011 Topps RC', grade:'PSA 10', price:'$890', chg:'+5.7%', dir:'up'},
-      {name:'Julio Rodriguez Gold /50', grade:'Raw', price:'$420', chg:'+8.2%', dir:'up'},
-      {name:'Ronald Acuña Jr Auto /25', grade:'BGS 9.5', price:'$1,850', chg:'+21.0%', dir:'up'},
-      {name:'Gunnar Henderson RC Prizm', grade:'PSA 10', price:'$310', chg:'+77.8%', dir:'up'},
+      {year:'2026',brand:'Topps',set_name:'Series 1',player:'Juan Soto',variation:'Gold',card_number:'1', price:'$1,200', chg:'+12.4%', dir:'up'},
+      {year:'2026',brand:'Topps',set_name:'Series 1',player:'Shohei Ohtani',variation:'Chrome Auto',card_number:'41', price:'$650', chg:'-3.1%', dir:'dn'},
+      {year:'2011',brand:'Topps',set_name:'Update',player:'Mike Trout',variation:'RC',card_number:'US175', price:'$890', chg:'+5.7%', dir:'up'},
+      {year:'2026',brand:'Topps',set_name:'Series 1',player:'Julio Rodriguez',variation:'Gold /50',card_number:'45', price:'$420', chg:'+8.2%', dir:'up'},
+      {year:'2026',brand:'Topps',set_name:'Series 1',player:'Ronald Acuña Jr.',variation:'Auto /25',card_number:'12', price:'$1,850', chg:'+21.0%', dir:'up'},
+      {year:'2026',brand:'Topps',set_name:'Series 1',player:'Gunnar Henderson',variation:'RC Prizm',card_number:'13', price:'$310', chg:'+77.8%', dir:'up'},
     ];
   }
 
@@ -6258,7 +6264,14 @@ function initCardTicker(){
   let items = '';
   [...cards, ...cards].forEach(c => {
     const clickAttr = c.cardId ? ` onclick="openCardDetail(${c.cardId})" style="cursor:pointer"` : '';
-    items += `<span class="ct-item"${clickAttr}><span class="ct-name">${c.name}</span><span class="ct-sep">·</span><span>${c.grade}</span><span class="ct-sep">·</span><span class="ct-price">${c.price}</span><span class="ct-chg ${c.dir}">${c.chg}</span><span class="ct-sep" style="margin-left:8px">&#11045;</span></span>`;
+    const yr = c.year || '';
+    const br = c.brand || '';
+    const sn = c.set_name || '';
+    const pl = c.player || c.name || '';
+    const vr = c.variation || '';
+    const cn = c.card_number ? '#'+c.card_number : '';
+    const label = [yr, br, sn, pl, vr, cn].filter(Boolean).join(' · ');
+    items += `<span class="ct-item"${clickAttr}><span class="ct-name">${label}</span><span class="ct-sep">·</span><span class="ct-price">${c.price}</span><span class="ct-chg ${c.dir}">${c.chg}</span><span class="ct-sep" style="margin-left:8px">&#11045;</span></span>`;
   });
   inner.innerHTML = items;
   // Scale animation speed by number of items (min 20s, max 60s)

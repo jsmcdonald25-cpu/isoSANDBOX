@@ -11096,15 +11096,41 @@ const _csShops=[
 ];
 
 let _csCircles=[];
+
+// Haversine distance in miles
+function _csDist(lat1,lng1,lat2,lng2){
+  const R=3958.8,dLat=(lat2-lat1)*Math.PI/180,dLng=(lng2-lng1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+// Assign pin numbers by distance from region center, per region
+function _csAssignPins(shops){
+  const byRegion={};
+  shops.forEach(s=>{
+    if(!byRegion[s.region])byRegion[s.region]=[];
+    const center=_csRegions[s.region];
+    const dist=center?_csDist(center.lat,center.lng,s.lat,s.lng):9999;
+    byRegion[s.region].push({...s,_dist:dist});
+  });
+  const result=[];
+  Object.keys(byRegion).forEach(r=>{
+    byRegion[r].sort((a,b)=>a._dist-b._dist);
+    byRegion[r].forEach((s,i)=>{s._pin=i+1;result.push(s);});
+  });
+  return result;
+}
+
 function initCardShops(){
-  renderShopCards(_csShops);
+  const shops=_csAssignPins(_csShops);
+  renderShopCards(shops);
   setTimeout(()=>{
     if(_csMap){_csMap.remove();_csMap=null;}
     _csMap=L.map('csMap').setView([34.5,-82.5],6);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
       attribution:'&copy; OpenStreetMap &copy; CARTO',maxZoom:19
     }).addTo(_csMap);
-    plotShopMarkers(_csShops);
+    plotShopMarkers(shops);
   },150);
 }
 
@@ -11113,7 +11139,6 @@ function plotShopMarkers(shops){
   _csCircles.forEach(c=>_csMap.removeLayer(c));
   _csMarkers=[];
   _csCircles=[];
-  // Draw 30-mile radius circles for active regions
   const activeRegions=new Set(shops.map(s=>s.region));
   activeRegions.forEach(r=>{
     const center=_csRegions[r];
@@ -11125,8 +11150,13 @@ function plotShopMarkers(shops){
     _csCircles.push(circle);
   });
   shops.forEach(s=>{
-    const m=L.marker([s.lat,s.lng]).addTo(_csMap)
-      .bindPopup(`<div style="font-family:Barlow Condensed,sans-serif"><strong style="font-size:14px">${s.name}</strong><br><span style="font-size:12px;color:#666">${s.addr}</span><br><span style="font-size:12px">${s.phone}</span><br><span style="font-size:11px;color:#00AAFF">${s.types.join(' · ')}</span></div>`);
+    const icon=L.divIcon({
+      className:'',
+      html:`<div style="background:#00AAFF;color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Bebas Neue,sans-serif;font-size:13px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.5)">${s._pin}</div>`,
+      iconSize:[24,24],iconAnchor:[12,12]
+    });
+    const m=L.marker([s.lat,s.lng],{icon}).addTo(_csMap)
+      .bindPopup(`<div style="font-family:Barlow Condensed,sans-serif"><strong style="font-size:14px">#${s._pin} ${s.name}</strong><br><span style="font-size:12px;color:#666">${s.addr}</span><br><span style="font-size:12px">${s.phone}</span><br><span style="font-size:11px;color:#00AAFF">${s.types.join(' · ')}</span><br><span style="font-size:11px;color:#999">${s._dist.toFixed(1)} mi from center</span></div>`);
     _csMarkers.push(m);
   });
   if(shops.length){
@@ -11138,19 +11168,23 @@ function plotShopMarkers(shops){
 function renderShopCards(shops){
   const g=document.getElementById('csShopGrid');
   if(!shops.length){g.innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);padding:20px">No shops found in this region.</div>';return;}
-  g.innerHTML=shops.map(s=>`
-    <div style="background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:16px;transition:border-color .2s" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--deep-border)'">
-      <div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:1px;color:var(--white);margin-bottom:4px">${s.name}</div>
+  // Sort alphabetically, keep pin number for cross-reference
+  const sorted=[...shops].sort((a,b)=>a.name.localeCompare(b.name));
+  g.innerHTML=sorted.map(s=>`
+    <div style="background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:16px;transition:border-color .2s;position:relative" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--deep-border)'">
+      <div style="position:absolute;top:12px;right:12px;background:#00AAFF;color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Bebas Neue,sans-serif;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,0.3)" title="Map pin #${s._pin} — ${s._dist.toFixed(1)} mi from center">${s._pin}</div>
+      <div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:1px;color:var(--white);margin-bottom:4px;padding-right:36px">${s.name}</div>
       <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:6px">${s.addr}</div>
       <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--white);margin-bottom:4px">${s.phone}</div>
       <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-bottom:8px">${s.hours}</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">${s.types.map(t=>`<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(0,170,255,0.1);color:var(--blue);letter-spacing:.5px">${t}</span>`).join('')}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">${s.types.map(t=>`<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(0,170,255,0.1);color:var(--blue);letter-spacing:.5px">${t}</span>`).join('')}<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-left:auto">${s._dist.toFixed(1)} mi</span></div>
     </div>
   `).join('');
 }
 
 function filterShopsByRegion(r){
-  const list=r==='all'?_csShops:_csShops.filter(s=>s.region===r);
+  const raw=r==='all'?_csShops:_csShops.filter(s=>s.region===r);
+  const list=_csAssignPins(raw);
   renderShopCards(list);
   if(_csMap)plotShopMarkers(list);
 }

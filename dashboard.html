@@ -5513,20 +5513,12 @@ function openMissingCardModal(){
   _mcBackFile = null;
 
   // Reset UI
-  ['mcFrontBox','mcBackBox'].forEach(id=>{document.getElementById(id).classList.remove('has-file');});
-  document.getElementById('mcFrontName').textContent='';
-  document.getElementById('mcBackName').textContent='';
-  document.getElementById('mcFrontPreview').style.display='none';
-  document.getElementById('mcBackPreview').style.display='none';
-  document.getElementById('mcFrontFile').value='';
-  document.getElementById('mcBackFile').value='';
-  document.getElementById('mcVariationName').value='';
-  document.getElementById('mcPrintRun').value='';
-  document.getElementById('mcSourceSection').style.display='none';
-  document.getElementById('mcRipSection').style.display='none';
-  document.getElementById('mcPriceSection').style.display='none';
-  document.getElementById('mcProgress').style.display='none';
-  document.getElementById('mcProgressBar').style.width='0';
+  const _$=id=>document.getElementById(id);
+  ['mcFrontBox','mcBackBox'].forEach(id=>{const e=_$(id);if(e)e.classList.remove('has-file');});
+  ['mcFrontName','mcBackName'].forEach(id=>{const e=_$(id);if(e)e.textContent='';});
+  ['mcFrontPreview','mcBackPreview','mcSourceSection','mcRipSection','mcPriceSection','mcProgress'].forEach(id=>{const e=_$(id);if(e)e.style.display='none';});
+  ['mcFrontFile','mcBackFile','mcVariationName','mcPrintRun'].forEach(id=>{const e=_$(id);if(e)e.value='';});
+  const pb=_$('mcProgressBar'); if(pb) pb.style.width='0';
   ['mcVarError','mcPhotoError','mcAcqError','mcSourceError','mcRipError','mcPriceError','mcSubmitError'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.style.display='none';
   });
@@ -5541,24 +5533,27 @@ function openMissingCardModal(){
   });
   const packEl = document.getElementById('mcPackType');
   if(packEl) packEl.value='';
-  document.getElementById('mcPricePaid').value='';
-  document.getElementById('mcDateAcquired').value='';
-  document.getElementById('mcSubmitBtn').textContent='SUBMIT FOR REVIEW';
-  document.getElementById('mcSubmitBtn').disabled=false;
-  document.getElementById('mcSubmitBtn').style.background='var(--red)';
-
-  // Show card context
-  if(card){
-    document.getElementById('mcCardInfo').style.display='block';
-    document.getElementById('mcCardName').textContent=card.player||'Unknown';
-    document.getElementById('mcCardDetail').textContent=`${card.year||''} ${card.brand||''} · ${card.set||''}`.trim().replace(/^·\s*/,'');
-  } else {
-    document.getElementById('mcCardInfo').style.display='none';
+  const pricePaidEl = document.getElementById('mcPricePaid'); if(pricePaidEl) pricePaidEl.value='';
+  const dateAcqEl = document.getElementById('mcDateAcquired'); if(dateAcqEl) dateAcqEl.value='';
+  const submitBtn = document.getElementById('mcSubmitBtn');
+  if(submitBtn){
+    submitBtn.textContent='SUBMIT FOR REVIEW';
+    submitBtn.disabled=false;
+    submitBtn.style.background='var(--red)';
   }
 
-  // Print run section — always visible
+  // Show card context
+  const ci=_$('mcCardInfo');
+  if(card){
+    if(ci) ci.style.display='block';
+    const cn=_$('mcCardName'); if(cn) cn.textContent=card.player||'Unknown';
+    const cd=_$('mcCardDetail'); if(cd) cd.textContent=`${card.year||''} ${card.brand||''} · ${card.set||''}`.trim().replace(/^·\s*/,'');
+  } else {
+    if(ci) ci.style.display='none';
+  }
 
-  document.getElementById('missingCardOverlay').style.display='flex';
+  const overlay=_$('missingCardOverlay');
+  if(overlay) overlay.style.display='flex';
   document.body.style.overflow='hidden';
 }
 

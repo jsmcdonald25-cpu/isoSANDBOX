@@ -855,7 +855,6 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv-scroll-card-name{font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mv-scroll-card-sub{font-family:Barlow Condensed,sans-serif;font-size:9px;color:var(--muted-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
 .mv-scroll-card-price{font-family:Bebas Neue,sans-serif;font-size:14px;color:var(--blue);line-height:1;margin-top:3px}
-.mv-grid-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid rgba(0,170,255,0.08)}
 .mv-grid-title{font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:1.5px;color:var(--white)}
 .mv-grid-ctrl{display:flex;gap:8px;align-items:center}
 .mv-gsearch-wrap{position:relative}
@@ -1192,7 +1191,6 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv-sport-chip{padding:5px 13px;border-radius:20px;font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .15s;border:1px solid var(--deep-border);background:rgba(0,0,0,.2);color:var(--muted-text);user-select:none}
 .mv-sport-chip:hover{border-color:rgba(0,170,255,.4);color:var(--white)}
 .mv-sport-chip.active{background:rgba(0,170,255,.12);border-color:var(--blue);color:var(--white)}
-#myVaultGrid{display:grid !important;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));grid-auto-rows:min-content;align-content:start;gap:10px;margin-bottom:14px}
 #mv-add-btn{flex-shrink:0;padding-top:8px}
 .mv-card{background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;overflow:hidden;cursor:pointer;transition:border-color .2s}
 .mv-card:hover{border-color:rgba(0,170,255,.4)}
@@ -2344,41 +2342,13 @@ async function logOut(){
 
     </div><!-- end #mv-dash -->
 
-    <!-- CARD SCROLL STRIP -->
-    <div id="mv-scroll-section" style="display:none;margin-top:14px">
+    <!-- MY CARDS — search + horizontal scroll -->
+    <div id="mv-grid-section" style="display:none;margin-top:14px">
       <div class="mv-scroll-search-wrap">
         <span class="mv-scroll-search-icon">&#128269;</span>
-        <input class="mv-scroll-search" id="mv-scroll-search" type="text" placeholder="Search my cards&hellip;" oninput="_filterScrollStrip(this.value)">
+        <input class="mv-scroll-search" id="mv3-search-input" type="text" placeholder="Search my cards&hellip;" oninput="filterVaultGrid(this.value)">
       </div>
-      <div class="mv-scroll-rail" id="mv-scroll-rail"></div>
-    </div>
-
-    <!-- CARD GRID SECTION -->
-    <div id="mv-grid-section" style="display:none;margin-top:8px">
-      <div class="mv-grid-head">
-        <div class="mv-grid-title">MY CARDS <span id="mv3-count-lbl2" style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);letter-spacing:1px;font-weight:400"></span></div>
-        <div class="mv-grid-ctrl">
-          <div class="mv-gsearch-wrap">
-            <span class="mv-gsearch-icon">&#128269;</span>
-            <input class="mv-gsearch" id="mv3-search-input" type="text" placeholder="Search player, set, year&hellip;" oninput="filterVaultGrid(this.value)">
-          </div>
-          <div class="mv-img-filter" id="mv3-img-filter">
-            <button class="active" onclick="setVaultImgFilter('all')">All</button>
-            <button onclick="setVaultImgFilter('with')">📷 Pics</button>
-            <button onclick="setVaultImgFilter('without')">No Pics</button>
-          </div>
-          <select class="mv-gsort" id="mv3-sort-sel" onchange="sortVaultGrid(this.value)">
-            <option value="date_desc">Newest First</option>
-            <option value="date_asc">Oldest First</option>
-            <option value="paid_desc">Highest Paid</option>
-            <option value="paid_asc">Lowest Paid</option>
-            <option value="player_asc">Player A &rarr; Z</option>
-            <option value="forsale_first">For Sale First</option>
-          </select>
-          <button id="mv-bulk-list-btn" onclick="toggleBulkListMode()" style="background:rgba(0,232,135,0.08);border:1px solid rgba(0,232,135,0.25);border-radius:7px;padding:7px 14px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--green);cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='rgba(0,232,135,0.25)'">&#127991; BULK SELL</button>
-        </div>
-      </div>
-      <div id="myVaultGrid" style="display:none"></div>
+      <div class="mv-scroll-rail" id="myVaultGrid"></div>
     </div>
 
     <!-- Hidden legacy IDs -->
@@ -5869,10 +5839,7 @@ function renderMyVault(){
     _renderBrandChart(data);
     _renderActivityFeed(data);
     _renderIsoPostModule();
-    _renderScrollStrip(data);
-    const scrollSearch=document.getElementById('mv-scroll-search'); if(scrollSearch) scrollSearch.value='';
     const si=document.getElementById('mv3-search-input'); if(si) si.value='';
-    const ss=document.getElementById('mv3-sort-sel'); if(ss) ss.value='date_desc';
     _renderVaultGrid(data);
     _patchVaultThumbnails(data);
   }).catch(err=>{ console.error('renderMyVault:',err); });
@@ -6004,16 +5971,13 @@ async function _renderIsoPostModule(){
 }
 
 // ── Render card grid ────────────────────────────────────────────────────────
-// ── Scroll strip ────────────────────────────────────────────────────────────
-function _renderScrollStrip(data){
-  const rail=document.getElementById('mv-scroll-rail');
-  const section=document.getElementById('mv-scroll-section');
-  if(!rail||!section) return;
-  if(!data||!data.length){section.style.display='none';return;}
-  section.style.display='block';
+function _renderVaultGrid(data){
+  const rail=document.getElementById('myVaultGrid');
+  if(!rail) return;
+  if(!data||!data.length){rail.innerHTML='';return;}
   rail.innerHTML=data.map((c,vIdx)=>{
-    const idx=(window._vaultData||[]).indexOf(c);
-    const realIdx=idx>=0?idx:vIdx;
+    const srcIdx=(window._vaultData||[]).indexOf(c);
+    const realIdx=srcIdx>=0?srcIdx:vIdx;
     const img=c.front_image_url;
     const ph=window._GRAIL_PH||'';
     const meta=[c.year,c.brand].filter(Boolean).join(' ');
@@ -6025,52 +5989,6 @@ function _renderScrollStrip(data){
         <div class="mv-scroll-card-name">${c.player||'Unknown'}</div>
         <div class="mv-scroll-card-sub">${meta}</div>
         <div class="mv-scroll-card-price">${priceStr}</div>
-      </div>
-    </div>`;
-  }).join('');
-}
-function _filterScrollStrip(q){
-  let data=window._vaultData||[];
-  if(q&&q.trim()){
-    const ql=q.toLowerCase();
-    data=data.filter(c=>(c.player||'').toLowerCase().includes(ql)||(c.set_name||'').toLowerCase().includes(ql)||(c.brand||'').toLowerCase().includes(ql)||String(c.year||'').includes(ql)||(c.parallel||'').toLowerCase().includes(ql)||(c.card_number||'').toLowerCase().includes(ql));
-  }
-  _renderScrollStrip(data);
-}
-
-function _renderVaultGrid(data){
-  const grid=document.getElementById('myVaultGrid');
-  if(!grid) return;
-  if(!data||!data.length){grid.style.display='none';return;}
-  grid.style.display='grid';
-  grid.innerHTML=data.map((c,vIdx)=>{
-    const srcIdx=(window._vaultData||[]).indexOf(c);
-    const realIdx=srcIdx>=0?srcIdx:vIdx;
-    const paid=parseFloat(c.price_paid)||0;
-    const est =parseFloat(c.estimated_value)||0;
-    const gl  =est-paid;
-    const glColor=gl>=0?'var(--green)':'var(--red)';
-    const imgSrc=c.front_image_url;
-    const isRipped=c.acquisition_type==='ripped';
-    const meta=[c.year,c.brand,c.set_name||c.parallel].filter(Boolean).join(' · ');
-    const _onTkr = isOnTicker(c);
-    const _forSale = c.is_for_sale;
-    const _askPrice = parseFloat(c.asking_price)||0;
-    return `<div class="mv3-card" data-vaultidx="${realIdx}" onclick="openVaultCard(parseInt(this.dataset.vaultidx))">
-      <div class="mv3-card-img">
-        ${imgSrc?`<img src="${imgSrc}" loading="lazy" alt="${(c.player||'').replace(/"/g,'&quot;')}">`:`<img src="${window._GRAIL_PH||''}" style="object-fit:cover" loading="lazy" alt="GrailISO">`}
-        <div class="mv3-acq ${isRipped?'ripped':'bought'}">${isRipped?'⚡ Ripped':'💰 Bought'}</div>
-        ${_forSale?`<div style="position:absolute;top:6px;right:6px;background:var(--green);color:#0D1F33;font-family:Bebas Neue,sans-serif;font-size:9px;padding:2px 7px;border-radius:4px;letter-spacing:.5px;z-index:3">FOR SALE &middot; $${_askPrice.toLocaleString()}</div>`:''}
-        <span class="ticker-pill${_onTkr?' on-ticker':''}" id="vaultTicker-${realIdx}" onclick="event.stopPropagation();toggleTicker(window._vaultData[${realIdx}],this)" title="${_onTkr?'Remove from ticker':'Add to stock ticker'}">${_onTkr?'&#10003; On Ticker':'&#128200; + Ticker'}</span>
-      </div>
-      <div class="mv3-info">
-        <div class="mv3-player">${c.player||'Unknown'}</div>
-        <div class="mv3-set">${meta}</div>
-        ${(c.card_number||c.serial_number)?`<div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:rgba(0,170,255,0.5);margin-top:2px">${c.card_number||''}${c.serial_number?' · #'+c.serial_number+(c.serial_total?'/'+c.serial_total:''):''}</div>`:''}
-        <div class="mv3-price-row">
-          <div><div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">Paid</div><div class="mv3-paid">$${paid.toLocaleString()}</div></div>
-          ${est?`<div style="text-align:right"><div style="font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)">G/L</div><div class="mv3-gl" style="color:${glColor}">${gl>=0?'+':''}$${Math.abs(gl).toLocaleString()}</div></div>`:''}
-        </div>
       </div>
     </div>`;
   }).join('');

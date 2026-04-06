@@ -8859,11 +8859,14 @@ window._ivMarketCache = {}; // card_number → avg price paid
 async function _ivLoadMarketPrices(table){
   window._ivMarketCache = {};
   try {
+    // Resolve the human-readable set label from IV_SETS — vault rows store the label, not the table name
+    const setDef = (IV_SETS||[]).find(s => s.table === table);
+    const setLabel = setDef ? (setDef.label || setDef.name) : table;
     const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
     const url = 'https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault'
       + '?select=card_number,price_paid,variation'
-      + '&set_name=eq.' + encodeURIComponent(table)
-      + '&acquisition_type=eq.purchased'
+      + '&set_name=eq.' + encodeURIComponent(setLabel)
+      + '&acquisition_type=in.(bought_single,pulled)'
       + '&price_paid=not.is.null'
       + '&market_excluded=not.is.true'
       + '&limit=1000';

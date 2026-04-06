@@ -8436,7 +8436,7 @@ function ivOpenCard(row){
     id: null,
     player:  row.player,
     year:    parseInt((row.year||'').toString().slice(0,4)) || 2026,
-    brand:   (_ivSet&&_ivSet.pokemonCols) ? 'Pokémon TCG' : (()=>{ const s=row.set_name||''; return s.includes('Bowman')?'Bowman':s.includes('Panini')?'Panini':'Topps'; })(),
+    brand:   (_ivSet&&_ivSet.pokemonCols) ? 'Pokémon TCG' : (_ivSet&&_ivSet.brand) ? _ivSet.brand : (()=>{ const s=row.set_name||''; return s.includes('Bowman')?'Bowman':s.includes('Panini')?'Panini':'Topps'; })(),
     set:     row.insert_name || (_ivSet ? _ivSet.name : '') || row.set_name || '',
     parallel: (function(){ let cat=row.category||'Base'; const pn=_ivSet?_ivSet.name:''; if(pn&&cat.startsWith(pn+' '))cat=cat.slice(pn.length+1); return cat; })(),
     cardNum: row.card_number ? '#'+row.card_number : '',

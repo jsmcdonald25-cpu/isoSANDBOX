@@ -5542,7 +5542,7 @@ function openMissingCardModal(){
   const dateAcqEl = document.getElementById('mcDateAcquired'); if(dateAcqEl) dateAcqEl.value='';
   const submitBtn = document.getElementById('mcSubmitBtn');
   if(submitBtn){
-    submitBtn.textContent='SUBMIT FOR REVIEW';
+    submitBtn.textContent = window._isAdmin ? 'ADD VARIATION' : 'SUBMIT FOR REVIEW';
     submitBtn.disabled=false;
     submitBtn.style.background='var(--red)';
   }
@@ -5556,6 +5556,12 @@ function openMissingCardModal(){
   } else {
     if(ci) ci.style.display='none';
   }
+
+  // Adjust modal copy for admin vs user
+  const sub=_$('mcSub');
+  if(sub) sub.textContent = window._isAdmin
+    ? 'Add a missing variation directly to the catalog. Upload images and fill in the details below.'
+    : "Don't see your variation? Submit it for admin review. Upload your card and fill in the details below.";
 
   const overlay=_$('missingCardOverlay');
   if(overlay) overlay.style.display='flex';
@@ -5669,39 +5675,73 @@ async function submitMissingCard(){
     btn.textContent = 'SUBMITTING...';
     const printRun = document.getElementById('mcPrintRun').value ? parseInt(document.getElementById('mcPrintRun').value) : null;
 
-    const row = {
-      user_id:           user.id,
-      player:            _mcCard ? (_mcCard.player || 'Unknown') : 'Unknown',
-      year:              _mcCard ? _mcCard.year : null,
-      brand:             _mcCard ? _mcCard.brand : null,
-      set_name:          _mcCard ? (_mcCard.set || _mcCard._setTable || null) : null,
-      card_number:       _mcCard ? (_mcCard._cardNumber || (_mcCard.cardNum||'').replace(/^#/,'') || null) : null,
-      team:              _mcCard ? (_mcCard._team || null) : null,
-      variation:         varName,
-      front_image_url:   frontURL,
-      back_image_url:    backURL,
-      serial_total:      printRun,
-      status:            'pending',
-    };
+    const isAdmin = !!window._isAdmin;
 
-    const pendRes = await fetch(`${SB_REST}/rest/v1/pending_cards`, {
-      method: 'POST',
-      headers: { ...sbHeaders, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
-      body: JSON.stringify(row)
-    });
-    if(!pendRes.ok){
-      const pe = await pendRes.json().catch(()=>({message:pendRes.statusText}));
-      throw new Error(pe.message||pe.error||`Submit failed: ${pendRes.status}`);
+    if(isAdmin && _mcCard && _mcCard._setTable && _mcCard._cardNumber){
+      // ── ADMIN PATH: write directly to the set table, no review queue ─────────
+      const setTable = _mcCard._setTable;
+      const cardNum  = _mcCard._cardNumber;
+      // Fetch the current row to merge variations + var_images
+      const getRes = await fetch(`${SB_REST}/rest/v1/${setTable}?card_number=eq.${encodeURIComponent(cardNum)}&select=variations,var_images&limit=1`, { headers: sbHeaders });
+      if(!getRes.ok) throw new Error('Could not load card row to merge variation');
+      const cur = (await getRes.json())[0] || {};
+      const curVars = Array.isArray(cur.variations) ? cur.variations : [];
+      const curImgs = (cur.var_images && typeof cur.var_images === 'object') ? cur.var_images : {};
+      // Skip if a variation with this label already exists; otherwise append
+      const exists = curVars.some(v => v && v.label === varName);
+      const newVars = exists ? curVars : [...curVars, Object.assign({label:varName, group:'Parallels', tooltip:'Added by admin'}, printRun ? {run:printRun} : {})];
+      const newImgs = Object.assign({}, curImgs, { [varName]: { front: frontURL, back: backURL } });
+      const patchRes = await fetch(`${SB_REST}/rest/v1/${setTable}?card_number=eq.${encodeURIComponent(cardNum)}`, {
+        method: 'PATCH',
+        headers: { ...sbHeaders, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ variations: newVars, var_images: newImgs })
+      });
+      if(!patchRes.ok){
+        const pe = await patchRes.json().catch(()=>({message:patchRes.statusText}));
+        throw new Error(pe.message||pe.error||`Admin update failed: ${patchRes.status}`);
+      }
+      document.getElementById('mcProgressBar').style.width='100%';
+      btn.textContent = '✓ ADDED!';
+      btn.style.background = 'var(--green)';
+      setTimeout(()=>{
+        closeMissingCardModal();
+        btn.style.background = '';
+        T(`Variation "${varName}" added directly (admin)`);
+      }, 1200);
+    } else {
+      // ── NON-ADMIN PATH: queue for admin review ───────────────────────────────
+      const row = {
+        user_id:           user.id,
+        player:            _mcCard ? (_mcCard.player || 'Unknown') : 'Unknown',
+        year:              _mcCard ? _mcCard.year : null,
+        brand:             _mcCard ? _mcCard.brand : null,
+        set_name:          _mcCard ? (_mcCard.set || _mcCard._setTable || null) : null,
+        card_number:       _mcCard ? (_mcCard._cardNumber || (_mcCard.cardNum||'').replace(/^#/,'') || null) : null,
+        team:              _mcCard ? (_mcCard._team || null) : null,
+        variation:         varName,
+        front_image_url:   frontURL,
+        back_image_url:    backURL,
+        serial_total:      printRun,
+        status:            'pending',
+      };
+      const pendRes = await fetch(`${SB_REST}/rest/v1/pending_cards`, {
+        method: 'POST',
+        headers: { ...sbHeaders, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
+        body: JSON.stringify(row)
+      });
+      if(!pendRes.ok){
+        const pe = await pendRes.json().catch(()=>({message:pendRes.statusText}));
+        throw new Error(pe.message||pe.error||`Submit failed: ${pendRes.status}`);
+      }
+      document.getElementById('mcProgressBar').style.width='100%';
+      btn.textContent = '✓ SUBMITTED!';
+      btn.style.background = 'var(--green)';
+      setTimeout(()=>{
+        closeMissingCardModal();
+        btn.style.background = '';
+        T(`Missing card "${varName}" submitted for admin review`);
+      }, 1200);
     }
-
-    document.getElementById('mcProgressBar').style.width='100%';
-    btn.textContent = '✓ SUBMITTED!';
-    btn.style.background = 'var(--green)';
-    setTimeout(()=>{
-      closeMissingCardModal();
-      btn.style.background = '';
-      T(`Missing card "${varName}" submitted for admin review`);
-    }, 1200);
 
   } catch(err){
     const errMsg = err.message || 'Submission failed. Try again.';

@@ -778,14 +778,6 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .vault-hero-face{position:absolute;inset:0;border-radius:10px;background:#071828;border:1px solid rgba(0,170,255,0.5);box-shadow:0 16px 60px rgba(0,0,0,0.7),0 0 30px rgba(0,170,255,0.2);overflow:hidden}
 .vault-hero-face img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:9px;display:block;z-index:1}
 .vault-hero-face::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.08) 0%,transparent 55%);pointer-events:none;z-index:3;border-radius:9px}
-.vault-fav-rail{display:flex;gap:8px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none}
-.vault-fav-rail::-webkit-scrollbar{display:none}
-.vault-fav-card{width:76px;min-width:76px;border-radius:7px;overflow:hidden;cursor:pointer;position:relative;border:2px solid transparent;transition:all .18s}
-.vault-fav-card:hover{border-color:rgba(0,170,255,0.4);transform:translateY(-2px)}
-.vault-fav-card.is-hero{border-color:var(--blue);box-shadow:0 0 12px rgba(0,170,255,0.4)}
-.vault-fav-img{height:106px;overflow:hidden;background:#071828}
-.vault-fav-img img{width:100%;height:100%;object-fit:cover;display:block}
-.vault-fav-name{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:.5px;color:var(--muted-text);padding:4px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--deep2)}
 
 .mv-act-item{display:flex;align-items:center;gap:8px;padding:5px 12px;border-bottom:1px solid rgba(0,170,255,0.05)}
 .mv-act-item:last-child{border-bottom:none}
@@ -834,30 +826,6 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv-stat-cell-val{font-family:Bebas Neue,sans-serif;font-size:34px;line-height:1;color:var(--white)}
 .mv-stat-cell-val.blue{color:var(--blue)}.mv-stat-cell-val.green{color:var(--green)}.mv-stat-cell-val.red{color:var(--red)}
 /* Hero card module */
-.mv-hero-inner{display:flex;flex-direction:column;align-items:center;gap:14px;padding:8px 4px 14px}
-.mv-hero-3d{width:120px;height:168px;position:relative;transform-style:preserve-3d;animation:vaultIdleSpin 6s ease-in-out infinite;cursor:pointer;flex-shrink:0}
-.mv-hero-3d:hover{animation-play-state:paused}
-.mv-hero-face{position:absolute;inset:0;border-radius:9px;background:#071828;border:1px solid rgba(0,170,255,0.5);box-shadow:0 20px 60px rgba(0,0,0,0.85),0 0 36px rgba(0,170,255,0.25);overflow:hidden}
-.mv-hero-face img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;border-radius:8px;z-index:1}
-.mv-hero-face::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.1) 0%,transparent 55%);z-index:3;border-radius:8px;pointer-events:none}
-.mv-hero-meta{text-align:center;width:100%;padding:0 8px}
-.mv-hero-badge{font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:2px;color:rgba(255,215,0,0.7);text-transform:uppercase;margin-bottom:5px}
-.mv-hero-player{font-family:Bebas Neue,sans-serif;font-size:19px;letter-spacing:.5px;color:var(--white);line-height:1.1;margin-bottom:3px}
-.mv-hero-set{font-family:Barlow Condensed,sans-serif;font-size:10px;color:rgba(0,170,255,0.65);letter-spacing:.3px;margin-bottom:10px}
-.mv-hero-prices{display:flex;gap:12px;justify-content:center;margin-bottom:10px}
-.mv-hero-price-item{text-align:center}
-.mv-hero-price-lbl{font-family:Barlow Condensed,sans-serif;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:1px}
-.mv-hero-price-val{font-family:Bebas Neue,sans-serif;font-size:18px;line-height:1;color:var(--white)}
-.mv-hero-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:32px 12px}
-.mv-hero-empty-icon{font-size:42px;display:block;color:rgba(0,170,255,0.15)}
-.mv-hero-empty-txt{font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:.5px;line-height:1.7;color:rgba(122,149,174,0.45)}
-/* At-a-glance */
-.mv-glance-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:4px 0}
-.mv-glance-chip{background:rgba(0,0,0,0.25);border:1px solid rgba(0,170,255,0.1);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .15s}
-.mv-glance-chip:hover{border-color:rgba(0,170,255,0.4);background:rgba(0,170,255,0.05)}
-.mv-glance-lbl{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:5px}
-.mv-glance-val{font-family:Bebas Neue,sans-serif;font-size:30px;line-height:1;color:var(--white)}
-.mv-glance-val.blue{color:var(--blue)}.mv-glance-val.green{color:var(--green)}
 /* Activity */
 .mv-act2-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(0,170,255,0.06)}
 .mv-act2-item:last-child{border-bottom:none;padding-bottom:0}
@@ -898,9 +866,6 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv3-acq{position:absolute;top:7px;left:7px;border-radius:4px;padding:2px 6px;font-family:Barlow Condensed,sans-serif;font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;backdrop-filter:blur(6px)}
 .mv3-acq.ripped{background:rgba(0,255,136,0.15);color:var(--green);border:1px solid rgba(0,255,136,0.3)}
 .mv3-acq.bought{background:rgba(0,170,255,0.12);color:var(--blue);border:1px solid rgba(0,170,255,0.25)}
-.mv3-star-btn{position:absolute;top:5px;right:6px;cursor:pointer;font-size:19px;line-height:1;transition:all .18s;filter:drop-shadow(0 1px 4px rgba(0,0,0,0.9));color:rgba(122,149,174,0.25);background:none;border:none;padding:2px}
-.mv3-star-btn:hover{transform:scale(1.25);color:rgba(255,215,0,0.8)}
-.mv3-star-btn.is-featured{color:#FFD700;filter:drop-shadow(0 0 8px rgba(255,215,0,0.6))}
 .mv3-info{padding:9px 11px 11px}
 .mv3-player{font-family:Bebas Neue,sans-serif;font-size:17px;letter-spacing:.5px;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.15}
 .mv3-set{font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
@@ -2316,38 +2281,6 @@ async function logOut(){
         </div>
       </div>
 
-      <!-- FEATURED CARD — 3 cols x 2 rows -->
-      <div class="mv-mod" id="mvmod-hero" data-mod-id="hero" style="grid-column:span 3;grid-row:span 2" draggable="true">
-        <div class="mv-mod-head mv-mod-head-drag">
-          <span class="mv-mod-drag">&#x2837;</span>
-          <span class="mv-mod-title">&#9733; Featured Card</span>
-        </div>
-        <div class="mv-mod-body" style="padding:12px 10px">
-          <div id="mv-hero-content" style="display:none" class="mv-hero-inner">
-            <div class="mv-hero-3d" id="vaultHero3d" onclick="vaultHeroClick()" title="Click to view card">
-              <div class="mv-hero-face" id="vaultHeroFace">
-                <img id="vaultHeroImg" src="" alt="Featured card">
-                <img id="vaultHeroImgBack" src="" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:2;opacity:0">
-              </div>
-            </div>
-            <div class="mv-hero-meta">
-              <div class="mv-hero-badge">&#9733; Featured</div>
-              <div class="mv-hero-player" id="vaultHeroPlayer"></div>
-              <div class="mv-hero-set" id="vaultHeroSet"></div>
-              <div class="mv-hero-prices" id="vaultHeroStats"></div>
-              <div style="display:flex;gap:6px;justify-content:center">
-                <button onclick="vaultHeroClick()" style="background:rgba(0,170,255,0.12);border:1px solid rgba(0,170,255,0.35);border-radius:6px;padding:6px 16px;font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);cursor:pointer;transition:background .15s" onmouseover="this.style.background='rgba(0,170,255,0.22)'" onmouseout="this.style.background='rgba(0,170,255,0.12)'">View Card &rsaquo;</button>
-                <button onclick="vaultClearHero()" style="background:none;border:1px solid rgba(122,149,174,0.12);border-radius:6px;padding:6px 9px;font-family:Barlow Condensed,sans-serif;font-size:10px;color:rgba(122,149,174,0.35);cursor:pointer">&#10005;</button>
-              </div>
-            </div>
-          </div>
-          <div id="mv-hero-empty" class="mv-hero-empty">
-            <span class="mv-hero-empty-icon">&#9734;</span>
-            <span class="mv-hero-empty-txt">Tap &#9733; on any card below<br>to feature it here</span>
-          </div>
-        </div>
-      </div>
-
       <!-- PLAYER VALUE CHART — 5 cols -->
       <div class="mv-mod" id="mvmod-pchart" data-mod-id="pchart" style="grid-column:span 5" draggable="true">
         <div class="mv-mod-head mv-mod-head-drag">
@@ -2356,35 +2289,6 @@ async function logOut(){
         </div>
         <div class="mv-mod-body" style="padding:10px 14px 14px">
           <svg id="mv-pchart-svg" viewBox="0 0 380 160" style="width:100%;height:auto;display:block;min-height:130px"></svg>
-        </div>
-      </div>
-
-      <!-- AT A GLANCE — 4 cols -->
-      <div class="mv-mod" id="mvmod-glance" data-mod-id="glance" style="grid-column:span 4" draggable="true">
-        <div class="mv-mod-head mv-mod-head-drag">
-          <span class="mv-mod-drag">&#x2837;</span>
-          <span class="mv-mod-title">At a Glance</span>
-        </div>
-        <div class="mv-mod-body" style="padding:12px">
-          <div class="mv-glance-grid">
-            <div class="mv-glance-chip" onclick="N('myisos',document.getElementById('nav-myisos'))">
-              <div class="mv-glance-lbl">Active ISOs</div>
-              <div class="mv-glance-val blue" id="mv-active-isos">&mdash;</div>
-            </div>
-            <div class="mv-glance-chip" onclick="T('Buy credits — coming soon')">
-              <div class="mv-glance-lbl">ISO Credits</div>
-              <div class="mv-glance-val" id="mv-credits">&mdash;</div>
-            </div>
-            <div class="mv-glance-chip" onclick="N('isoticker',null)" style="grid-column:span 2">
-              <div class="mv-glance-lbl">Portfolio Value</div>
-              <div class="mv-glance-val blue" id="mv-ticker-val">&mdash;</div>
-            </div>
-          </div>
-          <div style="display:flex;align-items:center;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,170,255,0.07)">
-            <span style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);flex:1">Notifications</span>
-            <span id="mv-notif-badge" style="display:none;background:var(--red);border-radius:6px;padding:2px 7px;font-family:Barlow Condensed,sans-serif;font-size:9px;font-weight:700;color:#fff">&#9679;</span>
-            <span style="font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--muted-text)" id="mv-notif-count">0</span>
-          </div>
         </div>
       </div>
 
@@ -2721,11 +2625,9 @@ async function logOut(){
           <!-- Vault purchase details — shown when from My Vault -->
           <div id="cd-vault-info" style="display:none;margin-bottom:10px"></div>
           <!-- Add to Vault + Favorites — hidden when from My Vault -->
-          <div id="cd-add-vault-row" style="display:flex;gap:6px;margin-bottom:8px">
-            <button class="btn btn-primary" style="flex:2;font-size:13px;padding:10px" onclick="openVaultModal(window._cdCard)">+ Add to My Vault</button>
-            <button id="cd-fav-star" onclick="cdToggleFav()" style="flex:1;background:rgba(0,0,0,0.2);border:1px solid rgba(255,215,0,0.25);border-radius:8px;padding:9px;font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:1px;color:rgba(255,215,0,0.7);cursor:pointer;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='rgba(255,215,0,0.6)';this.style.color='#FFD700'" onmouseout="cdUpdateFavBtn()">&#9734; Favorite</button>
+          <div id="cd-add-vault-row" style="margin-bottom:8px">
+            <button class="btn btn-primary" style="width:100%;font-size:13px;padding:10px" onclick="openVaultModal(window._cdCard)">+ Add to My Vault</button>
           </div>
-          <div id="cd-fav-btn" style="display:none"></div>
           <!-- Normal ISOVault CTA -->
           <div id="cd-cta-isovault">
             <button id="cd-ticker-btn" onclick="_cdToggleTicker()" style="width:100%;margin-top:6px;background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.25);border-radius:8px;padding:9px;font-family:Barlow Condensed,sans-serif;font-size:13px;letter-spacing:1px;color:var(--blue);cursor:pointer;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='var(--blue)';this.style.background='rgba(0,170,255,0.12)'" onmouseout="_cdUpdateTickerBtn()">&#128200; Add to Ticker</button>
@@ -5936,8 +5838,6 @@ function renderMyVault(){
     const ss=document.getElementById('mv3-sort-sel'); if(ss) ss.value='date_desc';
     _renderVaultGrid(data);
     _patchVaultThumbnails(data);
-    _renderVaultHero();
-    _updateStarVisuals();
   }).catch(err=>{ console.error('renderMyVault:',err); });
 }
 
@@ -6047,7 +5947,6 @@ function _renderVaultGrid(data){
     const glColor=gl>=0?'var(--green)':'var(--red)';
     const imgSrc=c.front_image_url;
     const isRipped=c.acquisition_type==='ripped';
-    const isFeat=vaultIsFeatured(realIdx);
     const meta=[c.year,c.brand,c.set_name||c.parallel].filter(Boolean).join(' · ');
     const _onTkr = isOnTicker(c);
     const _forSale = c.is_for_sale;
@@ -6057,7 +5956,6 @@ function _renderVaultGrid(data){
         ${imgSrc?`<img src="${imgSrc}" loading="lazy" alt="${(c.player||'').replace(/"/g,'&quot;')}">`:`<img src="${window._GRAIL_PH||''}" style="object-fit:cover" loading="lazy" alt="GrailISO">`}
         <div class="mv3-acq ${isRipped?'ripped':'bought'}">${isRipped?'⚡ Ripped':'💰 Bought'}</div>
         ${_forSale?`<div style="position:absolute;top:6px;right:6px;background:var(--green);color:#0D1F33;font-family:Bebas Neue,sans-serif;font-size:9px;padding:2px 7px;border-radius:4px;letter-spacing:.5px;z-index:3">FOR SALE &middot; $${_askPrice.toLocaleString()}</div>`:''}
-        <button class="mv3-star-btn${isFeat?' is-featured':''}" id="vaultStar-${realIdx}" onclick="event.stopPropagation();vaultSetFeatured(${realIdx})" title="Feature this card">${isFeat?'★':'☆'}</button>
         <span class="ticker-pill${_onTkr?' on-ticker':''}" id="vaultTicker-${realIdx}" onclick="event.stopPropagation();toggleTicker(window._vaultData[${realIdx}],this)" title="${_onTkr?'Remove from ticker':'Add to stock ticker'}">${_onTkr?'&#10003; On Ticker':'&#128200; + Ticker'}</span>
       </div>
       <div class="mv3-info">
@@ -6073,48 +5971,6 @@ function _renderVaultGrid(data){
   }).join('');
 }
 
-// ── Featured card ────────────────────────────────────────────────────────────
-function vaultSetFeatured(idx){window._vaultFeaturedIdx=(window._vaultFeaturedIdx===idx)?null:idx;_renderVaultHero();_updateStarVisuals();}
-function vaultIsFeatured(idx){return window._vaultFeaturedIdx===idx;}
-function vaultClearHero(){window._vaultFeaturedIdx=null;_renderVaultHero();_updateStarVisuals();}
-function vaultHeroClick(){const idx=window._vaultFeaturedIdx;if(idx==null||!window._vaultData)return;openVaultCard(idx);}
-function _renderVaultFavs(){}
-
-function _renderVaultHero(){
-  const hc=document.getElementById('mv-hero-content');
-  const he=document.getElementById('mv-hero-empty');
-  if(!hc||!he) return;
-  const idx=window._vaultFeaturedIdx;
-  const data=window._vaultData;
-  if(idx==null||!data||!data[idx]){
-    hc.style.display='none';he.style.display='flex';
-    const hi=document.getElementById('vaultHeroImg');if(hi) hi.src='';
-    return;
-  }
-  hc.style.display='flex';he.style.display='none';
-  const c=data[idx];
-  const img=document.getElementById('vaultHeroImg');if(img) img.src=c.front_image_url||window._GRAIL_PH||'';
-  const imgB=document.getElementById('vaultHeroImgBack');if(imgB) imgB.src=c.back_image_url||'';
-  const player=document.getElementById('vaultHeroPlayer');if(player) player.textContent=(c.player||'').toUpperCase();
-  const set=document.getElementById('vaultHeroSet');if(set) set.textContent=[c.year,c.brand,c.set_name||c.parallel].filter(Boolean).join(' · ');
-  const statsEl=document.getElementById('vaultHeroStats');
-  if(statsEl){
-    const paid=parseFloat(c.price_paid)||0;
-    const est=parseFloat(c.estimated_value)||0;
-    const gl=est-paid;
-    statsEl.innerHTML=`<div class="mv-hero-price-item"><div class="mv-hero-price-lbl">Paid</div><div class="mv-hero-price-val">$${paid.toLocaleString()}</div></div>`+
-      (est?`<div class="mv-hero-price-item"><div class="mv-hero-price-lbl">Value</div><div class="mv-hero-price-val" style="color:var(--blue)">$${est.toLocaleString()}</div></div><div class="mv-hero-price-item"><div class="mv-hero-price-lbl">G/L</div><div class="mv-hero-price-val" style="color:${gl>=0?'var(--green)':'var(--red)'}">${gl>=0?'+':''}$${Math.abs(gl).toLocaleString()}</div></div>`:'');
-  }
-}
-
-function _updateStarVisuals(){
-  (window._vaultData||[]).forEach((_,i)=>{
-    const btn=document.getElementById('vaultStar-'+i);if(!btn)return;
-    const f=vaultIsFeatured(i);
-    btn.className='mv3-star-btn'+(f?' is-featured':'');
-    btn.textContent=f?'★':'☆';
-  });
-}
 
 // ── Module drag-and-drop ─────────────────────────────────────────────────────
 let _mvDragSrc=null;
@@ -6192,7 +6048,6 @@ function filterVaultGrid(q){
   }
   _renderVaultGrid(data);
   _patchVaultThumbnails(data);
-  _updateStarVisuals();
 }
 
 function sortVaultGrid(mode){
@@ -6205,7 +6060,6 @@ function sortVaultGrid(mode){
   else if(mode==='forsale_first')data.sort((a,b)=>(b.is_for_sale?1:0)-(a.is_for_sale?1:0)||(parseFloat(b.asking_price)||0)-(parseFloat(a.asking_price)||0));
   _renderVaultGrid(data);
   _patchVaultThumbnails(data);
-  _updateStarVisuals();
 }
 
 // &#9472;&#9472; BUILD STAMP &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
@@ -9136,9 +8990,6 @@ function _cdSetMyVaultContext(fromMyVault){
       vaultInfo.innerHTML = '';
     }
   }
-  // Fav button — only shown when from My Vault
-  const favBtn = document.getElementById('cd-fav-btn');
-  cdUpdateFavBtn();
   // Update ticker button state
   _cdUpdateTickerBtn();
   // Update edit listing button
@@ -9147,25 +8998,6 @@ function _cdSetMyVaultContext(fromMyVault){
   _cdShowAdminTools();
 }
 
-function cdUpdateFavBtn(){
-  const btn = document.getElementById('cd-fav-star');
-  if(!btn) return;
-  const idx = window._cdMyVaultIdx;
-  const data = window._vaultData;
-  const isFav = idx != null && data && data[idx] && data[idx].is_favorite;
-  btn.textContent = isFav ? '\u2605 Favorited' : '\u2606 Favorite';
-  btn.style.borderColor = isFav ? 'rgba(255,215,0,0.6)' : 'rgba(255,215,0,0.25)';
-  btn.style.color = isFav ? '#FFD700' : 'rgba(255,215,0,0.7)';
-  btn.style.background = isFav ? 'rgba(255,215,0,0.1)' : 'rgba(0,0,0,0.2)';
-}
-
-function cdToggleFav(){
-  const idx = window._cdMyVaultIdx;
-  const data = window._vaultData;
-  if(idx == null || !data || !data[idx]) return;
-  data[idx].is_favorite = !data[idx].is_favorite;
-  cdUpdateFavBtn();
-}
 
 function _cdToggleTicker(){
   const card = window._cdCard;

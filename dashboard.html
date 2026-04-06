@@ -770,8 +770,8 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
   #scoresBar{left:0!important}
 }
 
-/* Card detail vertical layout — installed PWA + mobile browsers (touch devices) */
-@media (display-mode: standalone), (hover: none) and (pointer: coarse){
+/* Card detail vertical layout — installed PWA + mobile browsers + narrow viewports */
+@media (display-mode: standalone), (hover: none) and (pointer: coarse), (max-width: 768px){
   .cd-header-info{display:block;text-align:center;margin-bottom:12px}
   .cd-crumb-desktop{display:none !important}
   .cd-breadcrumb{margin-bottom:10px;gap:4px;overflow-x:auto;justify-content:center}

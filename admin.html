@@ -2816,32 +2816,8 @@ async function pendDoApprove() {
   confirmBtn.textContent = 'Saving…';
 
   try {
-    // 0) Add variation pill to the catalog set table
+    // 1) Add variation pill to the catalog set table (only — never insert into the submitter's vault)
     await _pendAddToCatalog(row, label, run, _paColor, _paGlow);
-
-    // 1) Insert into vault
-    const vaultRow = {
-      user_id:          row.user_id,
-      player:           row.player,
-      year:             row.year,
-      brand:            row.brand,
-      set_name:         row.set_name,
-      card_number:      row.card_number,
-      team:             row.team,
-      parallel:         label,
-      variation:        label,
-      front_image_url:  row.front_image_url,
-      back_image_url:   row.back_image_url,
-      acquisition_type: row.acquisition_type,
-      purchase_source:  row.purchase_source,
-      pack_type:        row.pack_type,
-      price_paid:       row.price_paid,
-      date_acquired:    row.date_acquired,
-      serial_number:    row.serial_number,
-      serial_total:     run,
-      has_catalog_pic:  false,
-    };
-    await _post('vault', vaultRow);
 
     // 2) Mark pending_cards as approved
     await _patch('pending_cards', `id=eq.${row.id}`, {
@@ -2859,7 +2835,7 @@ async function pendDoApprove() {
     if (navBadge) { navBadge.textContent = pending; navBadge.style.display = pending ? 'inline-block' : 'none'; }
 
     await logAdminAction('card_approved', null, row.card_number, row.player, {status:'pending'}, {status:'approved', variation:label, run, color:_paColor, user_id:row.user_id}, null);
-    toast(`Approved: ${label} — ${row.player} added to catalog + vault`, 'success');
+    toast(`Approved: ${label} — ${row.player} added to catalog`, 'success');
 
     document.getElementById('pend-approve-modal').style.display = 'none';
     _paRow = null;

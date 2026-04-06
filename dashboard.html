@@ -525,6 +525,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-vi-item{background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:6px;padding:6px 8px}
 .cd-vi-lbl{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)}
 .cd-vi-val{font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--white);margin-top:1px}
+.cd-header-info{display:none}
 .cd-card-title{font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:1.5px;color:var(--white);line-height:1.1}
 .cd-card-sub{font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);margin-top:3px;letter-spacing:.5px}
 .cd-card-num{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:rgba(0,170,255,0.6);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
@@ -767,6 +768,22 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
   .iv-sport-grid{grid-template-columns:repeat(3,1fr);gap:8px}
   .iv-set-grid{grid-template-columns:repeat(2,1fr);gap:10px}
   #scoresBar{left:0!important}
+  /* Card detail — vertical app layout */
+  .cd-header-info{display:block;text-align:center;margin-bottom:12px}
+  .cd-breadcrumb{margin-bottom:10px;gap:4px;overflow-x:auto;justify-content:center}
+  .cd-breadcrumb .cd-crumb{font-size:11px}
+  .cd-layout{flex-direction:column;align-items:center;gap:16px}
+  .cd-viewer-wrap{max-width:100%;width:100%;align-items:center}
+  .cd-scene-wrap{width:220px;height:308px;margin:0 auto}
+  .cd-front,.cd-back{width:220px;height:308px}
+  .cd-info{max-width:100%;min-width:0;width:100%;text-align:center;order:1}
+  .cd-info>div:first-child{display:none}
+  .cd-currently{width:100%;justify-content:center;gap:16px}
+  .cd-var-pills{justify-content:center;flex-wrap:wrap}
+  .cd-market-block{width:100%}
+  .cd-actions{min-width:0;max-width:100%;width:100%;order:2}
+  .cd-viewer-wrap .cd-side-label{display:none}
+  #cd-admin-tools{order:3}
 }
 
 .vault-empty-3d{width:160px;height:224px;position:relative;transform-style:preserve-3d;animation:vaultIdleSpin 5s ease-in-out infinite}
@@ -2529,19 +2546,23 @@ async function logOut(){
       <span id="cd-back-label">Back to ISOVault</span>
     </div>
     <div class="cd-breadcrumb">
-      <span class="cd-crumb" id="cd-bc-home" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnState='home';backToVault(true);}">ISOVault</span>
-      <span class="cd-crumb-sep">&#8250;</span>
       <span class="cd-crumb" id="cd-bc-sport" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnState='sets';backToVault(true);}">Baseball</span>
       <span class="cd-crumb-sep">&#8250;</span>
       <span class="cd-crumb" id="cd-bc-year" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnYear=document.getElementById('cd-bc-year').textContent;window._ivReturnState='sets-year';backToVault(true);}">2026</span>
       <span class="cd-crumb-sep">&#8250;</span>
       <span class="cd-crumb" id="cd-bc-brand" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnBrand=document.getElementById('cd-bc-brand').textContent;window._ivReturnState='sets-brand';backToVault(true);}">Topps</span>
       <span class="cd-crumb-sep">&#8250;</span>
-      <span class="cd-crumb" id="cd-bc-set" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnState='cards';backToVault(true);}" style="cursor:pointer">Set</span>
+      <span class="cd-crumb active" id="cd-bc-set" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnState='cards';backToVault(true);}" style="cursor:pointer">Set</span>
       <span class="cd-crumb-sep" id="cd-bc-subset-sep" style="display:none">&#8250;</span>
       <span class="cd-crumb" id="cd-bc-subset" style="display:none">Subset</span>
-      <span class="cd-crumb-sep">&#8250;</span>
-      <span class="cd-crumb active" id="cd-bc-card">Card</span>
+      <span id="cd-bc-home" style="display:none"></span>
+      <span id="cd-bc-card" style="display:none"></span>
+    </div>
+    <!-- Card header info — shows above viewer on mobile -->
+    <div class="cd-header-info" id="cd-header-info">
+      <div class="cd-card-title" id="cd-title-mobile">&#8212;</div>
+      <div class="cd-card-sub" id="cd-sub-mobile"></div>
+      <div class="cd-card-num" id="cd-num-mobile"></div>
     </div>
     <div class="cd-layout">
       <!-- LEFT: 3D Card Viewer -->
@@ -2572,17 +2593,6 @@ async function logOut(){
         <div class="cd-side-label" id="cd-side-label">FRONT &#183; Drag to rotate</div>
         <!-- Image status indicator -->
         <div id="cd-img-status" style="display:none;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;text-align:center;margin-top:4px"></div>
-        <!-- Admin tools — only visible to admins -->
-        <div id="cd-admin-tools" style="display:none;margin-top:12px;width:100%">
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;color:rgba(255,59,92,0.5);text-transform:uppercase;margin-bottom:6px;text-align:center">Admin Tools</div>
-          <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center">
-            <button onclick="cdAdminEditCard()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#9998; EDIT</button>
-            <button onclick="cdAdminDeleteCard()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128465; DELETE</button>
-            <button onclick="cdAdminDeleteImage()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128247; DEL IMG</button>
-            <button onclick="cdAdminDeleteVariation()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128308; DEL VAR</button>
-            <button onclick="cdAdminRenameVariation()" style="flex:1;min-width:60px;background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(0,170,255,0.8);cursor:pointer;text-align:center">&#9998; RENAME</button>
-          </div>
-        </div>
       </div>
       <!-- RIGHT: Info -->
       <div class="cd-info">
@@ -2660,6 +2670,17 @@ async function logOut(){
             </div>
             <div class="cd-report-badge">+1 CREDIT</div>
           </div>
+        </div>
+      </div>
+      <!-- Admin tools — only visible to admins -->
+      <div id="cd-admin-tools" style="display:none;margin-top:12px;width:100%">
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;color:rgba(255,59,92,0.5);text-transform:uppercase;margin-bottom:6px;text-align:center">Admin Tools</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center">
+          <button onclick="cdAdminEditCard()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#9998; EDIT</button>
+          <button onclick="cdAdminDeleteCard()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128465; DELETE</button>
+          <button onclick="cdAdminDeleteImage()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128247; DEL IMG</button>
+          <button onclick="cdAdminDeleteVariation()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128308; DEL VAR</button>
+          <button onclick="cdAdminRenameVariation()" style="flex:1;min-width:60px;background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(0,170,255,0.8);cursor:pointer;text-align:center">&#9998; RENAME</button>
         </div>
       </div>
     </div>
@@ -6585,6 +6606,10 @@ function _cdSetBreadcrumbsAndTitle(opts){
     : [opts.player, opts.cardNum].filter(Boolean).join(' · ');
   document.getElementById('cd-sub').textContent = sub;
   document.getElementById('cd-num').textContent = '';
+  // Sync mobile header
+  const mt=document.getElementById('cd-title-mobile');if(mt)mt.textContent=document.getElementById('cd-title').textContent;
+  const ms=document.getElementById('cd-sub-mobile');if(ms)ms.textContent=sub;
+  const mn=document.getElementById('cd-num-mobile');if(mn)mn.textContent='';
 }
 
 // Search IV_SETS tables by card_number+player to find which set a card belongs to

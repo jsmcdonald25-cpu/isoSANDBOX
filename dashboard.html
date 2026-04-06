@@ -80,7 +80,7 @@ html.light .ticker-bar{background:var(--deep2);border-color:var(--deep-border)}
 html,body{height:100%;background:var(--deep1);color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;overflow:hidden}
 body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;background:rgba(255,255,255,0.055);z-index:9999;pointer-events:none;animation:scanline 22s linear infinite}
 @keyframes scanline{0%{top:-2px}100%{top:100vh}}
-.app{display:flex;height:100vh;overflow:hidden}
+.app{display:flex;height:100vh;height:100dvh;overflow:hidden}
 /* SIDEBAR */
 .sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--deep2);border-right:1px solid var(--deep-border);display:flex;flex-direction:column;overflow:hidden}
 .sidebar-logo{padding:10px 14px;border-bottom:1px solid var(--deep-border);display:flex;align-items:center;gap:10px}
@@ -776,18 +776,23 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
   .cd-crumb-desktop{display:none !important}
   .cd-breadcrumb{margin-bottom:10px;gap:4px;overflow-x:auto;justify-content:center}
   .cd-breadcrumb .cd-crumb{font-size:11px}
-  .cd-layout{flex-direction:column;align-items:center;gap:16px}
-  .cd-viewer-wrap{max-width:100%;width:100%;align-items:center}
-  .cd-scene-wrap{width:220px;height:308px;margin:0 auto}
+  .cd-layout{flex-direction:column;align-items:center;gap:16px;padding-bottom:40px}
+  /* dissolve the viewer wrap on mobile so its children become flex items of cd-layout */
+  .cd-viewer-wrap{display:contents}
+  .cd-scene-wrap{width:220px;height:308px;margin:0 auto;order:0}
   .cd-front,.cd-back{width:220px;height:308px}
+  .cd-viewer-controls{order:0}
+  #cd-img-status{order:0}
   .cd-info{max-width:100%;min-width:0;width:100%;text-align:center;order:1}
   .cd-info>div:first-child{display:none}
   .cd-currently{width:100%;justify-content:center;gap:16px}
   .cd-var-pills{justify-content:center;flex-wrap:wrap}
   .cd-market-block{width:100%}
   .cd-actions{min-width:0;max-width:100%;width:100%;order:2}
-  .cd-viewer-wrap .cd-side-label{display:none}
-  #cd-admin-tools{order:99}
+  .cd-side-label{display:none}
+  #cd-admin-tools{order:99;width:100%;margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,59,92,0.15)}
+  /* Ensure card detail panel can scroll its content fully */
+  .content.carddetail-active #panel-carddetail{overflow-y:auto;-webkit-overflow-scrolling:touch}
 }
 
 .vault-empty-3d{width:160px;height:224px;position:relative;transform-style:preserve-3d;animation:vaultIdleSpin 5s ease-in-out infinite}

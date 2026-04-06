@@ -890,7 +890,8 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv-scroll-rail::-webkit-scrollbar{display:none}
 .mv-scroll-card{flex-shrink:0;width:110px;cursor:pointer;border-radius:10px;overflow:hidden;background:var(--deep2);border:1px solid rgba(0,170,255,0.08);transition:border-color .15s,transform .15s}
 .mv-scroll-card:hover{border-color:rgba(0,170,255,0.4);transform:translateY(-3px)}
-.mv-scroll-card-img{width:110px;height:154px;overflow:hidden;background:#071828}
+.mv-scroll-card-img{width:110px;height:154px;overflow:hidden;background:#071828;position:relative}
+.mv-scroll-count{position:absolute;top:5px;right:5px;background:var(--green);color:#0D1F33;font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:.5px;padding:2px 7px;border-radius:5px;box-shadow:0 2px 8px rgba(0,0,0,0.6);font-weight:700}
 .mv-scroll-card-img img{width:100%;height:100%;object-fit:cover;display:block}
 .mv-scroll-card-info{padding:6px 8px 8px}
 .mv-scroll-card-name{font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -2365,7 +2366,7 @@ async function logOut(){
           <span class="mv-mod-title">Market Value by Player</span>
         </div>
         <div class="mv-mod-body" style="padding:10px 14px 14px">
-          <svg id="mv-pchart-svg" viewBox="0 0 380 160" preserveAspectRatio="none" style="width:100%;height:170px;display:block"></svg>
+          <svg id="mv-pchart-svg" viewBox="0 0 380 160" style="width:380px;max-width:100%;height:170px;display:block"></svg>
         </div>
       </div>
 
@@ -2690,7 +2691,10 @@ async function logOut(){
               <button class="btn btn-primary" style="flex:1;font-size:12px;padding:8px 6px;letter-spacing:1px;white-space:nowrap" onclick="openSellModal(window._cdMyVaultIdx,'sold')">&#128176; SELL</button>
               <button class="btn btn-ghost" style="flex:1;font-size:12px;padding:8px 6px;letter-spacing:1px;border-color:rgba(255,59,92,0.3);color:rgba(255,59,92,0.7);white-space:nowrap" onclick="openSellModal(window._cdMyVaultIdx,'removed')">&#128465; REMOVE</button>
             </div>
-            <button id="cd-ticker-btn-mv" onclick="_cdToggleTicker()" style="width:100%;margin-top:6px;background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.25);border-radius:8px;padding:9px;font-family:Barlow Condensed,sans-serif;font-size:13px;letter-spacing:1px;color:var(--blue);cursor:pointer;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='var(--blue)';this.style.background='rgba(0,170,255,0.12)'" onmouseout="_cdUpdateTickerBtn()">&#128200; Add to Ticker</button>
+            <div style="display:flex;gap:6px;margin-top:6px">
+              <button id="cd-ticker-btn-mv" onclick="_cdToggleTicker()" style="flex:1;background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.25);border-radius:8px;padding:7px 8px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:.5px;color:var(--blue);cursor:pointer;transition:all .2s;text-align:center;white-space:nowrap" onmouseover="this.style.borderColor='var(--blue)';this.style.background='rgba(0,170,255,0.12)'" onmouseout="_cdUpdateTickerBtn()">&#128200; Add to Ticker</button>
+              <button onclick="openAddDuplicateModal()" style="flex:1;background:rgba(0,232,135,0.06);border:1px solid rgba(0,232,135,0.35);border-radius:8px;padding:7px 8px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:.5px;color:var(--green);cursor:pointer;transition:all .2s;text-align:center;white-space:nowrap" onmouseover="this.style.borderColor='var(--green)';this.style.background='rgba(0,232,135,0.12)'" onmouseout="this.style.borderColor='rgba(0,232,135,0.35)';this.style.background='rgba(0,232,135,0.06)'">&#10133; Add Duplicate</button>
+            </div>
           </div>
           <div class="cd-report-btn" onclick="openErrorReport()">
             <div class="cd-report-btn-icon">&#128681;</div>
@@ -2883,6 +2887,46 @@ async function logOut(){
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ADD DUPLICATE COPY MODAL -->
+  <div id="addDupOverlay" class="vault-modal-overlay" style="display:none" onclick="if(event.target===this)closeAddDuplicateModal()">
+    <div class="vault-modal" style="max-width:460px">
+      <button class="vm-close" onclick="closeAddDuplicateModal()">&times;</button>
+      <div class="vm-title" style="color:var(--green)">&#10133; ADD ANOTHER COPY</div>
+      <div class="vm-sub" id="addDupSub">Add another copy of this exact card. Same image, just enter the new purchase details.</div>
+      <div class="vm-card-info" id="addDupCardInfo" style="display:block">
+        <div class="vm-card-name" id="addDupCardName">—</div>
+        <div class="vm-card-detail" id="addDupCardDetail"></div>
+      </div>
+      <div style="margin-top:12px">
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);margin-bottom:6px">How did you get it?</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <div class="vm-acq-btn" id="dupAcqBought" onclick="_dupSetAcq('bought_single',this)" style="flex:1;min-width:120px;padding:10px;border:1px solid var(--deep-border);border-radius:8px;font-family:Barlow Condensed,sans-serif;font-size:12px;cursor:pointer;text-align:center;color:var(--white)">&#128176; Bought</div>
+          <div class="vm-acq-btn" id="dupAcqPulled" onclick="_dupSetAcq('pulled',this)" style="flex:1;min-width:120px;padding:10px;border:1px solid var(--deep-border);border-radius:8px;font-family:Barlow Condensed,sans-serif;font-size:12px;cursor:pointer;text-align:center;color:var(--white)">&#127939; Pulled</div>
+          <div class="vm-acq-btn" id="dupAcqTrade" onclick="_dupSetAcq('trade',this)" style="flex:1;min-width:120px;padding:10px;border:1px solid var(--deep-border);border-radius:8px;font-family:Barlow Condensed,sans-serif;font-size:12px;cursor:pointer;text-align:center;color:var(--white)">&#129309; Trade</div>
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Source <span style="color:rgba(122,149,174,0.5);text-transform:none;letter-spacing:0">(eBay, LCS, hobby box, etc.)</span></div>
+        <input class="vm-input" type="text" id="dupSource" placeholder="e.g. eBay, COMC, Local Card Shop">
+      </div>
+      <div style="margin-top:12px;display:flex;gap:10px">
+        <div style="flex:1">
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Price Paid</div>
+          <input class="vm-input" type="number" step="0.01" id="dupPrice" placeholder="0.00">
+        </div>
+        <div style="flex:1">
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Date Acquired</div>
+          <input class="vm-input" type="date" id="dupDate">
+        </div>
+      </div>
+      <div id="dupErr" style="display:none;color:var(--red);font-family:Barlow Condensed,sans-serif;font-size:12px;margin-top:8px"></div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="btn btn-ghost" style="flex:1" onclick="closeAddDuplicateModal()">Cancel</button>
+        <button class="btn btn-primary" style="flex:2;background:var(--green);border-color:var(--green)" id="dupSubmitBtn" onclick="submitAddDuplicate()">SAVE COPY</button>
+      </div>
     </div>
   </div>
 
@@ -5954,8 +5998,8 @@ function _renderPlayerChart(data){
   data.forEach(c=>{const p=c.player||'Unknown';const v=parseFloat(c.estimated_value)||parseFloat(c.price_paid)||0;byP[p]=(byP[p]||0)+v;});
   const sorted=Object.entries(byP).sort((a,b)=>b[1]-a[1]).slice(0,6);
   if(!sorted.length){el.innerHTML='';return;}
-  const W=340,H=155,PL=4,PR=4,PT=22,PB=28,chartW=W-PL-PR,chartH=H-PT-PB;
-  const n=sorted.length,gap=6,barW=Math.floor((chartW-(n-1)*gap)/n);
+  const W=380,H=155,PL=4,PR=4,PT=22,PB=28,chartW=W-PL-PR,chartH=H-PT-PB;
+  const n=sorted.length,gap=12,barW=50;
   const maxVal=sorted[0][1]*1.15;
   let out='<defs>';
   sorted.forEach((_,i)=>{out+=`<linearGradient id="bgrv${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00AAFF" stop-opacity="${(0.9-i*0.1).toFixed(2)}"/><stop offset="100%" stop-color="#003A6B" stop-opacity="${(0.5-i*0.05).toFixed(2)}"/></linearGradient>`;});
@@ -6089,20 +6133,42 @@ async function _renderIsoPostModule(){
 }
 
 // ── Render card grid ────────────────────────────────────────────────────────
+// Build a duplicate key from a vault row: same year + brand + set + card# + variation = same physical card
+function _vaultDupKey(c){
+  return [
+    (c.year||'').toString(),
+    (c.brand||'').toLowerCase(),
+    (c.set_name||'').toLowerCase(),
+    (c.card_number||'').toLowerCase(),
+    (c.variation||c.parallel||'').toLowerCase()
+  ].join('|');
+}
 function _renderVaultGrid(data){
   const rail=document.getElementById('myVaultGrid');
   if(!rail) return;
   if(!data||!data.length){rail.innerHTML='';return;}
-  rail.innerHTML=data.map((c,vIdx)=>{
-    const srcIdx=(window._vaultData||[]).indexOf(c);
-    const realIdx=srcIdx>=0?srcIdx:vIdx;
+  // Collapse duplicates: group rows by dup key, keep the first row as the "primary" tile
+  const groups = new Map();
+  data.forEach(c => {
+    const key = _vaultDupKey(c);
+    if(!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(c);
+  });
+  rail.innerHTML = Array.from(groups.values()).map(group => {
+    const c = group[0];
+    const realIdx=(window._vaultData||[]).indexOf(c);
     const img=c.front_image_url;
     const ph=window._GRAIL_PH||'';
     const meta=[c.year,c.brand].filter(Boolean).join(' ');
+    // Show market value if any copy has it; otherwise sum of paid prices as fallback
     const est=parseFloat(c.estimated_value)||0;
     const priceStr=est?'$'+est.toLocaleString():'—';
+    const count=group.length;
+    const countBadge = count>1
+      ? `<div class="mv-scroll-count">${count}x</div>`
+      : '';
     return `<div class="mv-scroll-card" onclick="openVaultCard(${realIdx})">
-      <div class="mv-scroll-card-img">${img?`<img src="${img}" loading="lazy" alt="${(c.player||'').replace(/"/g,'&quot;')}">`:`<img src="${ph}" style="object-fit:cover" loading="lazy">`}</div>
+      <div class="mv-scroll-card-img">${img?`<img src="${img}" loading="lazy" alt="${(c.player||'').replace(/"/g,'&quot;')}">`:`<img src="${ph}" style="object-fit:cover" loading="lazy">`}${countBadge}</div>
       <div class="mv-scroll-card-info">
         <div class="mv-scroll-card-name">${c.player||'Unknown'}</div>
         <div class="mv-scroll-card-sub">${meta}</div>
@@ -7101,6 +7167,101 @@ function _cdApplyTransform(){
   card.style.transform = `rotateY(${_cdRotY+(_cdFlipped?180:0)}deg) rotateX(${_cdRotX}deg)`;
   const lbl = document.getElementById('cd-side-label');
   if(lbl) lbl.textContent = _cdFlipped ? 'BACK · Drag to rotate' : 'FRONT · Drag to rotate';
+}
+
+// ── Add Duplicate Copy modal ────────────────────────────────────────────────
+let _dupAcq = null;
+function openAddDuplicateModal(){
+  const idx = window._cdMyVaultIdx;
+  const data = window._vaultData;
+  if(idx == null || !data || !data[idx]){ T('No card selected'); return; }
+  const src = data[idx];
+  _dupAcq = null;
+  ['dupAcqBought','dupAcqPulled','dupAcqTrade'].forEach(id=>{
+    const e=document.getElementById(id); if(e){ e.style.background=''; e.style.borderColor='var(--deep-border)'; }
+  });
+  document.getElementById('dupSource').value = src.purchase_source || '';
+  document.getElementById('dupPrice').value  = '';
+  document.getElementById('dupDate').value   = new Date().toISOString().slice(0,10);
+  document.getElementById('dupErr').style.display = 'none';
+  const btn = document.getElementById('dupSubmitBtn');
+  btn.disabled = false; btn.textContent = 'SAVE COPY';
+  const meta = [src.year, src.brand, src.set_name, src.parallel||src.variation].filter(Boolean).join(' · ');
+  document.getElementById('addDupCardName').textContent = src.player || 'Unknown';
+  document.getElementById('addDupCardDetail').textContent = meta + (src.card_number?' · #'+src.card_number:'');
+  document.getElementById('addDupOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeAddDuplicateModal(){
+  const ov = document.getElementById('addDupOverlay');
+  if(ov) ov.style.display = 'none';
+  document.body.style.overflow = '';
+}
+function _dupSetAcq(kind, el){
+  _dupAcq = kind;
+  ['dupAcqBought','dupAcqPulled','dupAcqTrade'].forEach(id=>{
+    const e=document.getElementById(id); if(e){ e.style.background=''; e.style.borderColor='var(--deep-border)'; }
+  });
+  if(el){ el.style.background='rgba(0,232,135,0.08)'; el.style.borderColor='var(--green)'; }
+}
+async function submitAddDuplicate(){
+  const idx = window._cdMyVaultIdx;
+  const data = window._vaultData;
+  if(idx == null || !data || !data[idx]) return;
+  const src = data[idx];
+  const errEl = document.getElementById('dupErr');
+  errEl.style.display = 'none';
+  if(!_dupAcq){ errEl.textContent = 'Pick how you got it.'; errEl.style.display='block'; return; }
+  const price = parseFloat(document.getElementById('dupPrice').value) || null;
+  const date  = document.getElementById('dupDate').value || null;
+  const source= document.getElementById('dupSource').value.trim() || null;
+  const btn = document.getElementById('dupSubmitBtn');
+  btn.disabled = true; btn.textContent = 'SAVING…';
+  try {
+    const {data:{user}} = await window._sb.auth.getUser();
+    if(!user) throw new Error('Not signed in');
+    const SB_REST = 'https://jyfaegmnzkarlcximxjo.supabase.co';
+    const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+    const tok = window._userAccessToken || ANON;
+    // Build new vault row that mirrors the existing card identity but holds the new purchase info
+    const row = {
+      user_id:          user.id,
+      player:           src.player,
+      year:             src.year,
+      brand:            src.brand,
+      set_name:         src.set_name,
+      card_number:      src.card_number,
+      team:             src.team || null,
+      parallel:         src.parallel,
+      variation:        src.variation,
+      front_image_url:  src.front_image_url || null,
+      back_image_url:   src.back_image_url  || null,
+      has_catalog_pic:  src.has_catalog_pic || false,
+      acquisition_type: _dupAcq,
+      purchase_source:  source,
+      price_paid:       price,
+      date_acquired:    date,
+      estimated_value:  src.estimated_value || null,
+      grade_company:    src.grade_company || null,
+      grade:            src.grade || null,
+      grade_cert_num:   null,
+      condition_notes:  null,
+    };
+    const res = await fetch(`${SB_REST}/rest/v1/vault`, {
+      method:'POST',
+      headers: { apikey: ANON, Authorization: 'Bearer '+tok, 'Content-Type':'application/json', Prefer:'return=minimal' },
+      body: JSON.stringify(row)
+    });
+    if(!res.ok){ const e = await res.json().catch(()=>({message:res.statusText})); throw new Error(e.message||`HTTP ${res.status}`); }
+    closeAddDuplicateModal();
+    T(`Added another copy of ${src.player}`);
+    // Refresh vault so the count badge updates
+    if(typeof renderMyVault === 'function') renderMyVault();
+  } catch(err){
+    errEl.textContent = err.message || 'Save failed';
+    errEl.style.display = 'block';
+    btn.disabled = false; btn.textContent = 'SAVE COPY';
+  }
 }
 
 // ── Zoom modal ──────────────────────────────────────────────────────────────
@@ -9245,29 +9406,59 @@ function _cdSetMyVaultContext(fromMyVault){
     if(isFromMv){
       const row = (window._vaultData||[])[window._cdMyVaultIdx];
       if(row){
-        const paid = parseFloat(row.price_paid)||0;
-        const est  = parseFloat(row.estimated_value)||0;
-        const gl   = est - paid;
-        const acqMap = {bought_single:'Bought Single',pulled:'Pulled from Pack',ripped:'Ripped',traded:'Traded'};
-        const acqLabel = acqMap[row.acquisition_type] || row.acquisition_type || '—';
-        const src  = row.purchase_source || '—';
-        const date = row.date_acquired ? new Date(row.date_acquired).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
-        const grade = row.grade || 'Raw';
-        const _rawVar = row.variation || row.parallel || 'Base';
+        // Find all duplicate copies of this exact card (same dup key)
+        const dupKey = _vaultDupKey(row);
+        const allCopies = (window._vaultData||[]).filter(r => _vaultDupKey(r) === dupKey);
+        const acqMap = {bought_single:'Bought',pulled:'Pulled',ripped:'Ripped',traded:'Trade',trade:'Trade'};
         const _ivE = _cdFindIvSet({year:row.year, brand:row.brand||row.set_name, set:row.set_name});
-        const variation = _cdStripSetPrefix(_rawVar, _ivE ? _ivE.name : '');
-        let html = '<div class="cd-vault-info-title">MY VAULT DETAILS</div>';
+        const variation = _cdStripSetPrefix(row.variation||row.parallel||'Base', _ivE ? _ivE.name : '');
+        let html = '<div class="cd-vault-info-title">MY VAULT DETAILS' + (allCopies.length>1 ? ` <span style="color:var(--green);font-size:12px">· ${allCopies.length}x copies</span>` : '') + '</div>';
         html += '<div class="cd-vi-grid">';
         html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Variation</div><div class="cd-vi-val" style="color:var(--blue)">${variation}</div></div>`;
-        html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Grade</div><div class="cd-vi-val">${grade}</div></div>`;
-        html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Acquired</div><div class="cd-vi-val">${acqLabel}</div></div>`;
-        html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Source</div><div class="cd-vi-val">${src}</div></div>`;
-        html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Date</div><div class="cd-vi-val">${date}</div></div>`;
-        html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Price Paid</div><div class="cd-vi-val" style="color:var(--green)">$${paid.toFixed(2)}</div></div>`;
-        if(est){ html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Est. Value</div><div class="cd-vi-val" style="color:var(--blue)">$${est.toFixed(2)}</div></div>`; }
-        if(paid){ html += `<div class="cd-vi-item"><div class="cd-vi-lbl">G/L</div><div class="cd-vi-val" style="color:${gl>=0?'var(--green)':'var(--red)'}">${ gl>=0?'+':''}${gl.toFixed(2)}</div></div>`; }
-        if(row.serial_number){ html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Serial</div><div class="cd-vi-val">#${row.serial_number}${row.serial_total?'/'+row.serial_total:''}</div></div>`; }
+        html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Grade</div><div class="cd-vi-val">${row.grade||'Raw'}</div></div>`;
         html += '</div>';
+
+        if(allCopies.length === 1){
+          // Single copy — show the original layout
+          const paid = parseFloat(row.price_paid)||0;
+          const est  = parseFloat(row.estimated_value)||0;
+          const gl   = est - paid;
+          const src  = row.purchase_source || '—';
+          const date = row.date_acquired ? new Date(row.date_acquired).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+          html += '<div class="cd-vi-grid" style="margin-top:6px">';
+          html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Acquired</div><div class="cd-vi-val">${acqMap[row.acquisition_type]||row.acquisition_type||'—'}</div></div>`;
+          html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Source</div><div class="cd-vi-val">${src}</div></div>`;
+          html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Date</div><div class="cd-vi-val">${date}</div></div>`;
+          html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Price Paid</div><div class="cd-vi-val" style="color:var(--green)">$${paid.toFixed(2)}</div></div>`;
+          if(est){ html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Est. Value</div><div class="cd-vi-val" style="color:var(--blue)">$${est.toFixed(2)}</div></div>`; }
+          if(paid){ html += `<div class="cd-vi-item"><div class="cd-vi-lbl">G/L</div><div class="cd-vi-val" style="color:${gl>=0?'var(--green)':'var(--red)'}">${ gl>=0?'+':''}${gl.toFixed(2)}</div></div>`; }
+          if(row.serial_number){ html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Serial</div><div class="cd-vi-val">#${row.serial_number}${row.serial_total?'/'+row.serial_total:''}</div></div>`; }
+          html += '</div>';
+        } else {
+          // Multiple copies — list each with its own purchase info
+          let totalPaid = 0;
+          html += '<div style="margin-top:8px;border-top:1px solid var(--deep-border);padding-top:8px">';
+          allCopies.forEach((cp, i) => {
+            const paid = parseFloat(cp.price_paid)||0;
+            totalPaid += paid;
+            const acq = acqMap[cp.acquisition_type] || cp.acquisition_type || '—';
+            const src = cp.purchase_source || '—';
+            const date = cp.date_acquired ? new Date(cp.date_acquired).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+            html += `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(0,170,255,0.05);font-family:Barlow Condensed,sans-serif;font-size:12px">
+              <div style="font-family:Bebas Neue,sans-serif;color:var(--blue);min-width:46px">COPY ${i+1}</div>
+              <div style="flex:1;color:var(--muted-text)">${acq} · ${src} · ${date}</div>
+              <div style="font-family:Bebas Neue,sans-serif;color:var(--green);min-width:60px;text-align:right">${paid?'$'+paid.toFixed(2):'—'}</div>
+            </div>`;
+          });
+          const avg = totalPaid / allCopies.length;
+          html += `<div style="display:flex;align-items:center;gap:8px;padding:8px 0 0;font-family:Barlow Condensed,sans-serif;font-size:12px">
+            <div style="font-family:Bebas Neue,sans-serif;color:var(--white);letter-spacing:1px">TOTAL PAID</div>
+            <div style="flex:1;text-align:right;font-family:Bebas Neue,sans-serif;color:var(--green);font-size:16px">$${totalPaid.toFixed(2)}</div>
+            <div style="color:var(--muted-text)">avg $${avg.toFixed(2)}</div>
+          </div>`;
+          html += '</div>';
+        }
+
         vaultInfo.innerHTML = html;
         vaultInfo.style.display = 'block';
       }

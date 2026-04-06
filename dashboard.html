@@ -2356,7 +2356,7 @@ async function logOut(){
           <span class="mv-mod-title">Market Value by Player</span>
         </div>
         <div class="mv-mod-body" style="padding:10px 14px 14px">
-          <svg id="mv-pchart-svg" viewBox="0 0 380 160" style="width:100%;height:auto;display:block;min-height:130px"></svg>
+          <svg id="mv-pchart-svg" viewBox="0 0 380 160" preserveAspectRatio="none" style="width:100%;height:170px;display:block"></svg>
         </div>
       </div>
 
@@ -5937,7 +5937,7 @@ function _renderPlayerChart(data){
     const x=PL+i*(barW+gap);
     const bH=Math.max(4,Math.floor(chartH*(val/maxVal)));
     const y=PT+chartH-bH;
-    const lastName=player.split(' ').pop();
+    const lastName=(function(p){const SUFFIXES=new Set(['jr','jr.','sr','sr.','ii','iii','iv']);const parts=(p||'').trim().split(/\s+/);if(parts.length>=2 && SUFFIXES.has(parts[parts.length-1].toLowerCase())) return parts.slice(-2).join(' ');return parts[parts.length-1]||p;})(player);
     const fmtVal=val>=1000?'$'+(val/1000).toFixed(1)+'k':'$'+Math.round(val);
     out+=`<rect x="${x}" y="${y}" width="${barW}" height="${bH}" rx="3" fill="url(#bgrv${i})"/>`;
     out+=`<text x="${x+barW/2}" y="${y-5}" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="11" fill="#00AAFF" opacity="0.9">${fmtVal}</text>`;

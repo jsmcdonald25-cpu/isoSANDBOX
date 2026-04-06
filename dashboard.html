@@ -768,8 +768,12 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
   .iv-sport-grid{grid-template-columns:repeat(3,1fr);gap:8px}
   .iv-set-grid{grid-template-columns:repeat(2,1fr);gap:10px}
   #scoresBar{left:0!important}
-  /* Card detail — vertical app layout */
+}
+
+/* PWA-only card detail vertical layout (installed app, not desktop browser) */
+@media (display-mode: standalone){
   .cd-header-info{display:block;text-align:center;margin-bottom:12px}
+  .cd-crumb-desktop{display:none !important}
   .cd-breadcrumb{margin-bottom:10px;gap:4px;overflow-x:auto;justify-content:center}
   .cd-breadcrumb .cd-crumb{font-size:11px}
   .cd-layout{flex-direction:column;align-items:center;gap:16px}
@@ -783,7 +787,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
   .cd-market-block{width:100%}
   .cd-actions{min-width:0;max-width:100%;width:100%;order:2}
   .cd-viewer-wrap .cd-side-label{display:none}
-  #cd-admin-tools{order:3}
+  #cd-admin-tools{order:99}
 }
 
 .vault-empty-3d{width:160px;height:224px;position:relative;transform-style:preserve-3d;animation:vaultIdleSpin 5s ease-in-out infinite}
@@ -2546,17 +2550,19 @@ async function logOut(){
       <span id="cd-back-label">Back to ISOVault</span>
     </div>
     <div class="cd-breadcrumb">
+      <span class="cd-crumb cd-crumb-desktop" id="cd-bc-home" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnState='home';backToVault(true);}">ISOVault</span>
+      <span class="cd-crumb-sep cd-crumb-desktop">&#8250;</span>
       <span class="cd-crumb" id="cd-bc-sport" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnState='sets';backToVault(true);}">Baseball</span>
       <span class="cd-crumb-sep">&#8250;</span>
       <span class="cd-crumb" id="cd-bc-year" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnYear=document.getElementById('cd-bc-year').textContent;window._ivReturnState='sets-year';backToVault(true);}">2026</span>
       <span class="cd-crumb-sep">&#8250;</span>
       <span class="cd-crumb" id="cd-bc-brand" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnBrand=document.getElementById('cd-bc-brand').textContent;window._ivReturnState='sets-brand';backToVault(true);}">Topps</span>
       <span class="cd-crumb-sep">&#8250;</span>
-      <span class="cd-crumb active" id="cd-bc-set" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnState='cards';backToVault(true);}" style="cursor:pointer">Set</span>
+      <span class="cd-crumb" id="cd-bc-set" onclick="if(window._cdFromMyVault){backToVault(false);}else{window._ivReturnState='cards';backToVault(true);}" style="cursor:pointer">Set</span>
       <span class="cd-crumb-sep" id="cd-bc-subset-sep" style="display:none">&#8250;</span>
       <span class="cd-crumb" id="cd-bc-subset" style="display:none">Subset</span>
-      <span id="cd-bc-home" style="display:none"></span>
-      <span id="cd-bc-card" style="display:none"></span>
+      <span class="cd-crumb-sep cd-crumb-desktop">&#8250;</span>
+      <span class="cd-crumb cd-crumb-desktop active" id="cd-bc-card">Card</span>
     </div>
     <!-- Card header info — shows above viewer on mobile -->
     <div class="cd-header-info" id="cd-header-info">
@@ -2593,6 +2599,17 @@ async function logOut(){
         <div class="cd-side-label" id="cd-side-label">FRONT &#183; Drag to rotate</div>
         <!-- Image status indicator -->
         <div id="cd-img-status" style="display:none;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;text-align:center;margin-top:4px"></div>
+        <!-- Admin tools — only visible to admins (desktop position) -->
+        <div id="cd-admin-tools" style="display:none;margin-top:12px;width:100%">
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;color:rgba(255,59,92,0.5);text-transform:uppercase;margin-bottom:6px;text-align:center">Admin Tools</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center">
+            <button onclick="cdAdminEditCard()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#9998; EDIT</button>
+            <button onclick="cdAdminDeleteCard()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128465; DELETE</button>
+            <button onclick="cdAdminDeleteImage()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128247; DEL IMG</button>
+            <button onclick="cdAdminDeleteVariation()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128308; DEL VAR</button>
+            <button onclick="cdAdminRenameVariation()" style="flex:1;min-width:60px;background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(0,170,255,0.8);cursor:pointer;text-align:center">&#9998; RENAME</button>
+          </div>
+        </div>
       </div>
       <!-- RIGHT: Info -->
       <div class="cd-info">
@@ -2670,17 +2687,6 @@ async function logOut(){
             </div>
             <div class="cd-report-badge">+1 CREDIT</div>
           </div>
-        </div>
-      </div>
-      <!-- Admin tools — only visible to admins -->
-      <div id="cd-admin-tools" style="display:none;margin-top:12px;width:100%">
-        <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;color:rgba(255,59,92,0.5);text-transform:uppercase;margin-bottom:6px;text-align:center">Admin Tools</div>
-        <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center">
-          <button onclick="cdAdminEditCard()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#9998; EDIT</button>
-          <button onclick="cdAdminDeleteCard()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128465; DELETE</button>
-          <button onclick="cdAdminDeleteImage()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128247; DEL IMG</button>
-          <button onclick="cdAdminDeleteVariation()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128308; DEL VAR</button>
-          <button onclick="cdAdminRenameVariation()" style="flex:1;min-width:60px;background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(0,170,255,0.8);cursor:pointer;text-align:center">&#9998; RENAME</button>
         </div>
       </div>
     </div>

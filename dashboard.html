@@ -5490,7 +5490,7 @@ async function submitVault(){
       date_acquired:     dateVal || null,
       estimated_value:   vmCard ? vmCard.price : null,
       has_catalog_pic:   hasCatalogPic || false,
-      card_number:       vmCard ? (vmCard._cardNumber||(vmCard.cardNum||"").replace(/^#/,"")||null) : null,
+      card_number:       vmCard ? (vmCard._cardNumber || (vmCard.cardNum != null ? String(vmCard.cardNum).replace(/^#/,"") : null)) : null,
       team:              vmCard ? (vmCard._team || null) : null,
       variation:         document.getElementById('vmVariationSelect').value || (vmCard ? (vmCard.parallel || 'Base') : 'Base'),
       // Grading fields
@@ -5781,7 +5781,7 @@ async function submitMissingCard(){
         year:              _mcCard ? _mcCard.year : null,
         brand:             _mcCard ? _mcCard.brand : null,
         set_name:          _mcCard ? (_mcCard.set || _mcCard._setTable || null) : null,
-        card_number:       _mcCard ? (_mcCard._cardNumber || (_mcCard.cardNum||'').replace(/^#/,'') || null) : null,
+        card_number:       _mcCard ? (_mcCard._cardNumber || (_mcCard.cardNum != null ? String(_mcCard.cardNum).replace(/^#/,'') : null)) : null,
         team:              _mcCard ? (_mcCard._team || null) : null,
         variation:         varName,
         front_image_url:   frontURL,
@@ -5827,10 +5827,10 @@ async function openVaultCard(idx){
   window._cdFromMyVault = true;
   window._cdMyVaultIdx  = idx;
   const known=CARDS.find(c=>c&&(
-    c._cardNumber===(row.card_number||'').replace(/^#/,'')||
+    c._cardNumber===String(row.card_number||'').replace(/^#/,'')||
     (c.player===row.player&&String(c.year)===String((row.year||'').toString().slice(0,4)))
   ));
-  window._cdDbCardNum=(row.card_number||'').replace(/^#/,'')||null;
+  window._cdDbCardNum=String(row.card_number||'').replace(/^#/,'')||null;
   window._cdPreloadVarImages=row.var_images||null;
   if(known){
     // Carry vault user-uploaded images so they survive openCardDetail's reset
@@ -5880,7 +5880,7 @@ async function openVaultCard(idx){
     run:null,auto:false,rc:!!row.is_rookie,tags:row.is_rookie?['rc']:[],
     price:parseFloat(row.estimated_value)||0,isos:0,
     hasCatalogPic:!!(row.var_images&&Object.keys(row.var_images).length),
-    _setTable:_resolvedTable,_cardNumber:(row.card_number||'').replace(/^#/,''),
+    _setTable:_resolvedTable,_cardNumber:String(row.card_number||'').replace(/^#/,''),
     _varImages:row.var_images||{},
     _vaultFrontUrl:row.front_image_url||null,
     _vaultBackUrl:row.back_image_url||null,
@@ -5912,11 +5912,11 @@ async function _patchVaultThumbnails(rows){
     const c=rows[i];
     if(c.front_image_url)continue;
     const known=CARDS.find(x=>x&&(
-      x._cardNumber===(c.card_number||'').replace(/^#/,'')||
+      x._cardNumber===String(c.card_number||'').replace(/^#/,'')||
       (x.player===c.player&&String(x.year)===String((c.year||'').toString().slice(0,4)))
     ));
     const table=known?known._setTable:null;
-    const cardNum=(c.card_number||'').replace(/^#/,'');
+    const cardNum=String(c.card_number||'').replace(/^#/,'');
     if(!table)continue;
     try{
       let r2=cardNum?await _rGet(table,'select=var_images,front_img&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1'):null;
@@ -6316,7 +6316,7 @@ function toggleTicker(card, el){
     const chgPct = paid > 0 ? (((est - paid) / paid) * 100) : 0;
     // Resolve CARDS id for navigation
     const _match = CARDS.find(x => x && (
-      x._cardNumber === (card.card_number||'').replace(/^#/,'') ||
+      x._cardNumber === String(card.card_number||'').replace(/^#/,'') ||
       (x.player === (card.player||card.name) && String(x.year) === String((card.year||'').toString().slice(0,4)))
     ));
     list.push({
@@ -6331,7 +6331,7 @@ function toggleTicker(card, el){
       brand: card.brand || '',
       set_name: card.set_name || card.set || '',
       variation: card.variation || card.parallel || '',
-      card_number: card.card_number || (card.cardNum||'').replace(/^#/,'') || '',
+      card_number: card.card_number || (card.cardNum != null ? String(card.cardNum).replace(/^#/,'') : '') || '',
     });
     if(el){ el.classList.add('on-ticker'); el.innerHTML='&#10003; On Ticker'; }
     T(`${card.player||card.name||'Card'} added to ticker`);
@@ -6347,7 +6347,7 @@ function _backfillTickerIds(){
   list.forEach(w => {
     if(w.cardId) return;
     const m = CARDS.find(x => x && (
-      x._cardNumber === (w.card_number||'').replace(/^#/,'') ||
+      x._cardNumber === String(w.card_number||'').replace(/^#/,'') ||
       (x.player === w.player && String(x.year) === String((w.year||'').toString().slice(0,4)))
     ));
     if(m){ w.cardId = m.id; changed = true; }
@@ -6566,7 +6566,7 @@ async function _cdLoadCatalogImages(c){
   }
 
   // _cdDbCardNum = actual DB card_number from ISOVault row (may differ from card's _cardNumber)
-  const cardNum = window._cdDbCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber || null));
+  const cardNum = window._cdDbCardNum || (c.cardNum != null ? String(c.cardNum).replace('#','') : (c._cardNumber || null));
   if(cardNum && !c._cardNumber) c._cardNumber = cardNum;
   if(!cardNum){
     if(statusEl){ statusEl.style.display='block'; statusEl.textContent='No card number'; statusEl.style.color='rgba(122,149,174,0.5)'; }
@@ -6719,7 +6719,7 @@ function _cdSetBreadcrumbsAndTitle(opts){
     || _cdFindIvSet({year:opts.year, brand:opts.brand, set:opts.setName||opts.subsetName});
   // If no entry found and we have a card number, search IV_SETS tables async
   if(!ivEntry && opts.cardNum && IV_SETS && IV_SETS.length){
-    const cn = (opts.cardNum||'').replace(/^#/,'');
+    const cn = String(opts.cardNum||'').replace(/^#/,'');
     if(cn) _cdFindIvSetByCard(cn, opts.player||'', opts.year).then(found=>{
       if(found){
         _cdSetBreadcrumbsAndTitle({...opts, ivSetEntry:found});
@@ -7718,7 +7718,7 @@ async function submitCatalogUpload(){
   const c=window._cdCard; if(!c) return;
   const table=c._setTable||_cdGuessTable(c);
   // Use actual DB card_number — _cdDbCardNum set by ISOVault row click, falls back to card's own number
-  const cardNum = window._cdDbCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber||null));
+  const cardNum = window._cdDbCardNum || (c.cardNum != null ? String(c.cardNum).replace('#','') : (c._cardNumber||null));
   if(!table||!cardNum){ T('Cannot identify set table for this card.'); return; }
 
   // Which variation are we uploading?
@@ -10129,7 +10129,7 @@ function cdAdminEditCard(){
   const c = window._cdCard;
   if(!c) return;
   const table = c._setTable || _cdGuessTable(c);
-  const cardNum = window._cdDbCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber||''));
+  const cardNum = window._cdDbCardNum || (c.cardNum != null ? String(c.cardNum).replace('#','') : (c._cardNumber||''));
   if(!table || !cardNum){ T('Cannot identify set table for this card.'); return; }
   // Open admin.html with params so it can auto-navigate to the card editor
   const url = 'admin.html?action=edit&table='+encodeURIComponent(table)+'&card='+encodeURIComponent(cardNum);
@@ -10140,7 +10140,7 @@ async function cdAdminDeleteCard(){
   const c = window._cdCard;
   if(!c) return;
   const table = c._setTable || _cdGuessTable(c);
-  const cardNum = window._cdDbCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber||''));
+  const cardNum = window._cdDbCardNum || (c.cardNum != null ? String(c.cardNum).replace('#','') : (c._cardNumber||''));
   if(!table || !cardNum){ T('Cannot identify set table for this card.'); return; }
   if(!confirm('ADMIN: Delete card #'+cardNum+' — '+(c.player||'Unknown')+' from '+table+'?\n\nThis removes the card from the catalog for ALL users. This cannot be undone.')) return;
   try {
@@ -10176,7 +10176,7 @@ async function cdAdminDeleteImage(){
   const c = window._cdCard;
   if(!c) return;
   const table = c._setTable || _cdGuessTable(c);
-  const cardNum = window._cdDbCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber||''));
+  const cardNum = window._cdDbCardNum || (c.cardNum != null ? String(c.cardNum).replace('#','') : (c._cardNumber||''));
   if(!table || !cardNum){ T('Cannot identify set table.'); return; }
   const vars = window._cdVars || [];
   const activeVar = vars[window._cdActiveVar||0];
@@ -10204,7 +10204,7 @@ async function cdAdminDeleteVariation(){
   const c = window._cdCard;
   if(!c) return;
   const table = c._setTable || _cdGuessTable(c);
-  const cardNum = window._cdDbCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber||''));
+  const cardNum = window._cdDbCardNum || (c.cardNum != null ? String(c.cardNum).replace('#','') : (c._cardNumber||''));
   if(!table || !cardNum){ T('Cannot identify set table.'); return; }
   const vars = window._cdVars || [];
   const activeVar = vars[window._cdActiveVar||0];
@@ -10239,7 +10239,7 @@ async function cdAdminRenameVariation(){
   const c = window._cdCard;
   if(!c) return;
   const table = c._setTable || _cdGuessTable(c);
-  const cardNum = window._cdDbCardNum || (c.cardNum ? c.cardNum.replace('#','') : (c._cardNumber||''));
+  const cardNum = window._cdDbCardNum || (c.cardNum != null ? String(c.cardNum).replace('#','') : (c._cardNumber||''));
   if(!table || !cardNum){ T('Cannot identify set table.'); return; }
   const vars = window._cdVars || [];
   const activeVar = vars[window._cdActiveVar||0];

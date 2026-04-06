@@ -839,6 +839,22 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv-act2-time{font-family:Barlow Condensed,sans-serif;font-size:9px;color:rgba(122,149,174,0.4);margin-top:2px}
 /* Card grid section */
 #mv-grid-section{margin-top:8px}
+/* Card scroll strip */
+.mv-scroll-search-wrap{position:relative;margin-bottom:10px}
+.mv-scroll-search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;color:rgba(122,149,174,0.4);pointer-events:none}
+.mv-scroll-search{width:100%;box-sizing:border-box;background:rgba(0,0,0,0.4);border:1px solid var(--deep-border);border-radius:10px;padding:10px 14px 10px 34px;font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--white);outline:none;transition:border-color .15s}
+.mv-scroll-search::placeholder{color:rgba(122,149,174,0.3)}
+.mv-scroll-search:focus{border-color:rgba(0,170,255,0.5)}
+.mv-scroll-rail{display:flex;gap:12px;overflow-x:auto;padding:6px 0 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.mv-scroll-rail::-webkit-scrollbar{display:none}
+.mv-scroll-card{flex-shrink:0;width:110px;cursor:pointer;border-radius:10px;overflow:hidden;background:var(--deep2);border:1px solid rgba(0,170,255,0.08);transition:border-color .15s,transform .15s}
+.mv-scroll-card:hover{border-color:rgba(0,170,255,0.4);transform:translateY(-3px)}
+.mv-scroll-card-img{width:110px;height:154px;overflow:hidden;background:#071828}
+.mv-scroll-card-img img{width:100%;height:100%;object-fit:cover;display:block}
+.mv-scroll-card-info{padding:6px 8px 8px}
+.mv-scroll-card-name{font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mv-scroll-card-sub{font-family:Barlow Condensed,sans-serif;font-size:9px;color:var(--muted-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.mv-scroll-card-price{font-family:Bebas Neue,sans-serif;font-size:14px;color:var(--blue);line-height:1;margin-top:3px}
 .mv-grid-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid rgba(0,170,255,0.08)}
 .mv-grid-title{font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:1.5px;color:var(--white)}
 .mv-grid-ctrl{display:flex;gap:8px;align-items:center}
@@ -2278,28 +2294,26 @@ async function logOut(){
             <div class="mv-stat-cell-lbl">Gain / Loss</div>
             <div class="mv-stat-cell-val" id="mv3-gl-val">&mdash;</div>
           </div>
+          <div class="mv-stat-cell">
+            <div class="mv-stat-cell-lbl">ISO Credits</div>
+            <div class="mv-stat-cell-val" id="mv-credits">&mdash;</div>
+          </div>
         </div>
       </div>
 
-      <!-- PLAYER VALUE CHART — 5 cols -->
-      <div class="mv-mod" id="mvmod-pchart" data-mod-id="pchart" style="grid-column:span 5" draggable="true">
+      <!-- CURRENT ISO POST — 4 cols -->
+      <div class="mv-mod" id="mvmod-isopost" data-mod-id="isopost" style="grid-column:span 4" draggable="true">
         <div class="mv-mod-head mv-mod-head-drag">
           <span class="mv-mod-drag">&#x2837;</span>
-          <span class="mv-mod-title">Market Value by Player</span>
+          <span class="mv-mod-title">Current ISO Post</span>
         </div>
         <div class="mv-mod-body" style="padding:10px 14px 14px">
-          <svg id="mv-pchart-svg" viewBox="0 0 380 160" style="width:100%;height:auto;display:block;min-height:130px"></svg>
-        </div>
-      </div>
-
-      <!-- RECENT ACTIVITY — 5 cols -->
-      <div class="mv-mod" id="mvmod-activity" data-mod-id="activity" style="grid-column:span 5" draggable="true">
-        <div class="mv-mod-head mv-mod-head-drag">
-          <span class="mv-mod-drag">&#x2837;</span>
-          <span class="mv-mod-title">Recent Activity</span>
-        </div>
-        <div class="mv-mod-body" style="padding:8px 16px 12px" id="mv-activity-list">
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);padding:12px 0">Loading&hellip;</div>
+          <div id="mv-isopost-content">
+            <div style="text-align:center;padding:18px 8px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text)">No active ISOs</div>
+          </div>
+          <div style="text-align:center;margin-top:8px">
+            <button onclick="N('myisos',document.getElementById('nav-myisos'))" style="background:none;border:none;font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(0,170,255,0.6);cursor:pointer">View All ISOs &rsaquo;</button>
+          </div>
         </div>
       </div>
 
@@ -2317,7 +2331,27 @@ async function logOut(){
         </div>
       </div>
 
+      <!-- MARKET VALUE BY PLAYER — 4 cols -->
+      <div class="mv-mod" id="mvmod-pchart" data-mod-id="pchart" style="grid-column:span 4" draggable="true">
+        <div class="mv-mod-head mv-mod-head-drag">
+          <span class="mv-mod-drag">&#x2837;</span>
+          <span class="mv-mod-title">Market Value by Player</span>
+        </div>
+        <div class="mv-mod-body" style="padding:10px 14px 14px">
+          <svg id="mv-pchart-svg" viewBox="0 0 380 160" style="width:100%;height:auto;display:block;min-height:130px"></svg>
+        </div>
+      </div>
+
     </div><!-- end #mv-dash -->
+
+    <!-- CARD SCROLL STRIP -->
+    <div id="mv-scroll-section" style="display:none;margin-top:14px">
+      <div class="mv-scroll-search-wrap">
+        <span class="mv-scroll-search-icon">&#128269;</span>
+        <input class="mv-scroll-search" id="mv-scroll-search" type="text" placeholder="Search my cards&hellip;" oninput="_filterScrollStrip(this.value)">
+      </div>
+      <div class="mv-scroll-rail" id="mv-scroll-rail"></div>
+    </div>
 
     <!-- CARD GRID SECTION -->
     <div id="mv-grid-section" style="display:none;margin-top:8px">
@@ -5834,6 +5868,9 @@ function renderMyVault(){
     _renderPlayerChart(data);
     _renderBrandChart(data);
     _renderActivityFeed(data);
+    _renderIsoPostModule();
+    _renderScrollStrip(data);
+    const scrollSearch=document.getElementById('mv-scroll-search'); if(scrollSearch) scrollSearch.value='';
     const si=document.getElementById('mv3-search-input'); if(si) si.value='';
     const ss=document.getElementById('mv3-sort-sel'); if(ss) ss.value='date_desc';
     _renderVaultGrid(data);
@@ -5932,7 +5969,75 @@ function _renderActivityFeed(data){
   el.innerHTML=html;
 }
 
+// ── Current ISO Post module ──────────────────────────────────────────────────
+async function _renderIsoPostModule(){
+  const el=document.getElementById('mv-isopost-content');
+  if(!el) return;
+  try{
+    const {data:{user}}=await window._sb.auth.getUser();
+    if(!user){el.innerHTML='<div style="text-align:center;padding:18px 8px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text)">Sign in to view ISOs</div>';return;}
+    const isos=window._myIsosData||(await(async()=>{const r=await _rGet('isos','select=*&user_id=eq.'+user.id+'&status=in.(active,matched)&order=created_at.desc&limit=5');return r||[];})());
+    const active=isos.filter(i=>i.status==='active'||i.status==='matched');
+    if(!active.length){el.innerHTML='<div style="text-align:center;padding:18px 8px"><div style="font-size:28px;margin-bottom:6px;opacity:.3">&#128269;</div><div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text)">No active ISOs</div></div>';return;}
+    el.innerHTML=active.slice(0,3).map(iso=>{
+      const player=iso.player||iso.card_name||'Unknown';
+      const maxP=iso.max_price?'$'+parseFloat(iso.max_price).toLocaleString():'—';
+      const sport=iso.sport||'';
+      const icon=sport==='Baseball'?'&#9918;':sport==='Basketball'?'&#127936;':'&#127944;';
+      const parallel=iso.parallel||'';
+      const grade=iso.grade?' · '+iso.grade:'';
+      const status=iso.status==='matched'?'MATCHED':'ACTIVE';
+      const statusCls=iso.status==='matched'?'matched':'active';
+      return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(0,170,255,0.06)">'
+        +'<div style="width:32px;height:32px;border-radius:8px;background:rgba(0,170,255,0.06);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">'+icon+'</div>'
+        +'<div style="flex:1;min-width:0">'
+          +'<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+player+'</div>'
+          +'<div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text)">'+parallel+grade+'</div>'
+        +'</div>'
+        +'<div style="text-align:right;flex-shrink:0">'
+          +'<div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--white)">'+maxP+'</div>'
+          +'<span class="status-pill '+statusCls+'" style="font-size:8px;padding:2px 6px">'+status+'</span>'
+        +'</div>'
+      +'</div>';
+    }).join('');
+  }catch(e){el.innerHTML='<div style="text-align:center;padding:18px 8px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text)">No active ISOs</div>';}
+}
+
 // ── Render card grid ────────────────────────────────────────────────────────
+// ── Scroll strip ────────────────────────────────────────────────────────────
+function _renderScrollStrip(data){
+  const rail=document.getElementById('mv-scroll-rail');
+  const section=document.getElementById('mv-scroll-section');
+  if(!rail||!section) return;
+  if(!data||!data.length){section.style.display='none';return;}
+  section.style.display='block';
+  rail.innerHTML=data.map((c,vIdx)=>{
+    const idx=(window._vaultData||[]).indexOf(c);
+    const realIdx=idx>=0?idx:vIdx;
+    const img=c.front_image_url;
+    const ph=window._GRAIL_PH||'';
+    const meta=[c.year,c.brand].filter(Boolean).join(' ');
+    const est=parseFloat(c.estimated_value)||0;
+    const priceStr=est?'$'+est.toLocaleString():'—';
+    return `<div class="mv-scroll-card" onclick="openVaultCard(${realIdx})">
+      <div class="mv-scroll-card-img">${img?`<img src="${img}" loading="lazy" alt="${(c.player||'').replace(/"/g,'&quot;')}">`:`<img src="${ph}" style="object-fit:cover" loading="lazy">`}</div>
+      <div class="mv-scroll-card-info">
+        <div class="mv-scroll-card-name">${c.player||'Unknown'}</div>
+        <div class="mv-scroll-card-sub">${meta}</div>
+        <div class="mv-scroll-card-price">${priceStr}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function _filterScrollStrip(q){
+  let data=window._vaultData||[];
+  if(q&&q.trim()){
+    const ql=q.toLowerCase();
+    data=data.filter(c=>(c.player||'').toLowerCase().includes(ql)||(c.set_name||'').toLowerCase().includes(ql)||(c.brand||'').toLowerCase().includes(ql)||String(c.year||'').includes(ql)||(c.parallel||'').toLowerCase().includes(ql)||(c.card_number||'').toLowerCase().includes(ql));
+  }
+  _renderScrollStrip(data);
+}
+
 function _renderVaultGrid(data){
   const grid=document.getElementById('myVaultGrid');
   if(!grid) return;

@@ -8859,31 +8859,40 @@ window._ivMarketCache = {}; // card_number → avg price paid
 async function _ivLoadMarketPrices(table){
   window._ivMarketCache = {};
   try {
-    // Resolve the human-readable set label from IV_SETS — vault rows store the label, not the table name
+    // Build list of card numbers loaded for this set, scoped by brand to avoid cross-set collisions
     const setDef = (IV_SETS||[]).find(s => s.table === table);
-    const setLabel = setDef ? (setDef.label || setDef.name) : table;
+    const setBrand = setDef ? setDef.brand : null;
+    const cardNums = Array.from(new Set((_ivData||[]).map(c => (c.card_number||'').toString()).filter(Boolean)));
+    if(!cardNums.length) return;
     const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
-    const url = 'https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault'
-      + '?select=card_number,price_paid,variation'
-      + '&set_name=eq.' + encodeURIComponent(setLabel)
-      + '&acquisition_type=in.(bought_single,pulled)'
-      + '&price_paid=not.is.null'
-      + '&market_excluded=not.is.true'
-      + '&limit=1000';
-    const r = await fetch(url, { headers:{ 'apikey': SKEY, 'Authorization': 'Bearer ' + SKEY } });
-    if(!r.ok) return;
-    const data = await r.json();
-    if(!data || !data.length) return;
-    // Group by card_number → compute avg price paid
-    const map = {};
-    data.forEach(r=>{
-      const k = (r.card_number||'').toString();
-      if(!map[k]) map[k] = [];
-      map[k].push(r.price_paid);
-    });
-    Object.keys(map).forEach(k=>{
-      const prices = map[k];
-      window._ivMarketCache[k] = prices.reduce((a,b)=>a+b,0)/prices.length;
+    // Chunk card_numbers to avoid URL length limits (~200 per request)
+    const CHUNK = 200;
+    for(let i = 0; i < cardNums.length; i += CHUNK){
+      const chunk = cardNums.slice(i, i + CHUNK);
+      const inList = chunk.map(n => `"${n.replace(/"/g,'\\"')}"`).join(',');
+      let url = 'https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault'
+        + '?select=card_number,price_paid,variation,brand'
+        + '&card_number=in.(' + encodeURIComponent(inList) + ')'
+        + '&acquisition_type=in.(bought_single,pulled)'
+        + '&price_paid=not.is.null'
+        + '&market_excluded=not.is.true'
+        + '&limit=1000';
+      if(setBrand) url += '&brand=eq.' + encodeURIComponent(setBrand);
+      const r = await fetch(url, { headers:{ 'apikey': SKEY, 'Authorization': 'Bearer ' + SKEY } });
+      if(!r.ok) continue;
+      const data = await r.json();
+      if(!data || !data.length) continue;
+      data.forEach(row => {
+        const k = (row.card_number||'').toString();
+        if(!window._ivMarketCache[k]) window._ivMarketCache[k] = { sum: 0, n: 0 };
+        window._ivMarketCache[k].sum += parseFloat(row.price_paid) || 0;
+        window._ivMarketCache[k].n   += 1;
+      });
+    }
+    // Collapse to avg
+    Object.keys(window._ivMarketCache).forEach(k => {
+      const v = window._ivMarketCache[k];
+      window._ivMarketCache[k] = v.n ? (v.sum / v.n) : null;
     });
   } catch(e){ console.warn('Market cache error:', e); }
 }

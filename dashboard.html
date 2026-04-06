@@ -6889,10 +6889,12 @@ function _cdSetViewerImages(frontUrl, backUrl){
 function _buildVariationPills(c){
   const pillsEl = document.getElementById('cd-pills');
   if(!pillsEl) return;
-  const vars = c.variations || [{
+  let vars = c.variations || [{
     label: c.parallel, color:'#00AAFF', glow:'rgba(0,170,255,0.4)',
     run: c.run, isBase:true, lastSale:'$'+c.price, isos:c.isos, pop:null, watching:null
   }];
+  // Always put the base variation first, preserving the rest of the order
+  vars = [...vars].sort((a,b) => (b && b.isBase ? 1 : 0) - (a && a.isBase ? 1 : 0));
   window._cdVars = vars;
 
   // Group variations by their group field (default: ungrouped)

@@ -5900,11 +5900,24 @@ function _renderBrandChart(data){
   if(!svgEl||!data||!data.length) return;
   const byBrand={};
   data.forEach(c=>{const b=c.brand||'Other';byBrand[b]=(byBrand[b]||0)+1;});
+  const bySport={};
+  data.forEach(c=>{const s=c.sport||'Other';bySport[s]=(bySport[s]||0)+1;});
+  const hasMultipleSports=Object.keys(bySport).length>1;
   const total=data.length;
   const entries=Object.entries(byBrand).sort((a,b)=>b[1]-a[1]);
   const COLORS=['#00AAFF','#0088CC','#00CCFF','#0055AA','#55AADD','#003377'];
-  const cx=65,cy=65,R=52,r=28;
+  const cx=55,cy=65,R=52,r=28;
   let startA=-Math.PI/2,paths='',legendHtml='';
+  // Multi-sport header
+  if(hasMultipleSports){
+    const sportEntries=Object.entries(bySport).sort((a,b)=>b[1]-a[1]);
+    legendHtml+='<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(0,170,255,0.1)">';
+    sportEntries.forEach(([sport,count])=>{
+      const pct=((count/total)*100).toFixed(0);
+      legendHtml+=`<div style="display:flex;align-items:center;margin-bottom:4px;transform:translateX(-20px)"><div style="font-family:Barlow Condensed,sans-serif;font-size:16px;color:var(--blue);flex:1;font-weight:600;text-transform:uppercase;letter-spacing:.5px">${sport}</div><div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:#fff;transform:translateX(-65px)">${count}</div></div>`;
+    });
+    legendHtml+='</div>';
+  }
   entries.forEach(([brand,count],i)=>{
     const sweep=(count/total)*Math.PI*2;
     const endA=startA+sweep;
@@ -5916,10 +5929,10 @@ function _renderBrandChart(data){
     const xi1=cx+r*Math.cos(endA),yi1=cy+r*Math.sin(endA);
     const xi2=cx+r*Math.cos(startA),yi2=cy+r*Math.sin(startA);
     paths+=`<path d="M${x1.toFixed(1)},${y1.toFixed(1)} A${R},${R} 0 ${large},1 ${x2.toFixed(1)},${y2.toFixed(1)} L${xi1.toFixed(1)},${yi1.toFixed(1)} A${r},${r} 0 ${large},0 ${xi2.toFixed(1)},${yi2.toFixed(1)} Z" fill="${color}" stroke="#0D1F33" stroke-width="1.5" opacity="0.88"/>`;
-    legendHtml+=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div style="width:16px;height:16px;border-radius:4px;background:${color};flex-shrink:0"></div><div style="font-family:Barlow Condensed,sans-serif;font-size:22px;color:#7A95AE;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600">${brand}</div><div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;flex-shrink:0;letter-spacing:1px;line-height:1">${pct}%</div></div>`;
+    legendHtml+=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div style="width:16px;height:16px;border-radius:4px;background:${color};flex-shrink:0;transform:translateX(-20px)"></div><div style="font-family:Barlow Condensed,sans-serif;font-size:22px;color:#7A95AE;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;transform:translateX(-20px)">${brand}</div><div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;flex-shrink:0;letter-spacing:1px;line-height:1;transform:translateX(-65px)">${pct}%</div></div>`;
     startA=endA;
   });
-  paths+=`<text x="${cx}" y="${cy-5}" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-size="8" fill="#7A95AE" letter-spacing="1">CARDS</text><text x="${cx}" y="${cy+13}" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="22" fill="#fff">${total}</text>`;
+  paths+=`<text x="${cx}" y="${cy-7}" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-size="12" fill="#7A95AE" letter-spacing="1">CARDS</text><text x="${cx}" y="${cy+18}" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="33" fill="#fff">${total}</text>`;
   svgEl.innerHTML=paths;
   if(legEl) legEl.innerHTML=legendHtml;
 }

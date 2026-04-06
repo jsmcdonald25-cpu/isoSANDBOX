@@ -5792,16 +5792,30 @@ async function openVaultCard(idx){
     _cdUpdateSlabLabBtn();
     return;
   }
+  // Resolve brand + set table by looking up iv_sets via the row's set_name (no hardcoded brand list)
+  const _rowYear = parseInt((row.year||'').toString().slice(0,4))||2026;
+  const _rowSetName = row.set_name||'';
+  const _ivMatch = (IV_SETS||[]).find(s => {
+    const sLabel = (s.label||s.name||'').toLowerCase();
+    const sTable = (s.table||'').toLowerCase();
+    const target = _rowSetName.toLowerCase();
+    if(!target) return false;
+    const yearOk = !s.year || !_rowYear || parseInt(s.year)===_rowYear;
+    if(!yearOk) return false;
+    return sLabel === target || sLabel.includes(target) || target.includes(sLabel) || sTable.includes(target.replace(/\s+/g,'_'));
+  });
+  const _resolvedBrand = _ivMatch ? _ivMatch.brand : ((_rowSetName.includes('Bowman')?'Bowman':_rowSetName.includes('Panini')?'Panini':'Topps'));
+  const _resolvedTable = _ivMatch ? _ivMatch.table : _cdGuessTable({year:_rowYear,brand:_resolvedBrand,set:_rowSetName});
   const card={
     id:null,player:row.player,
-    year:parseInt((row.year||'').toString().slice(0,4))||2026,
-    brand:(()=>{const s=row.set_name||'';return s.includes('Bowman')?'Bowman':s.includes('Panini')?'Panini':'Topps';})(),
-    set:row.set_name||row.variation||row.parallel||'',parallel:row.variation||row.parallel||row.category||'Base',
+    year:_rowYear,
+    brand:_resolvedBrand,
+    set:_rowSetName||row.variation||row.parallel||'',parallel:row.variation||row.parallel||row.category||'Base',
     cardNum:row.card_number?'#'+row.card_number:'',
     run:null,auto:false,rc:!!row.is_rookie,tags:row.is_rookie?['rc']:[],
     price:parseFloat(row.estimated_value)||0,isos:0,
     hasCatalogPic:!!(row.var_images&&Object.keys(row.var_images).length),
-    _setTable:_cdGuessTable({year:parseInt((row.year||'').toString().slice(0,4)),brand:(()=>{const s=row.set_name||'';return s.includes('Bowman')?'Bowman':s.includes('Panini')?'Panini':'Topps';})(),set:row.set_name||''}),_cardNumber:(row.card_number||'').replace(/^#/,''),
+    _setTable:_resolvedTable,_cardNumber:(row.card_number||'').replace(/^#/,''),
     _varImages:row.var_images||{},
     _vaultFrontUrl:row.front_image_url||null,
     _vaultBackUrl:row.back_image_url||null,

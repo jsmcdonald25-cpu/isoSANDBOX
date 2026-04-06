@@ -7718,13 +7718,13 @@ async function submitCatalogUpload(){
   const c=window._cdCard; if(!c) return;
   const table=c._setTable||_cdGuessTable(c);
   // Use actual DB card_number — _cdDbCardNum set by ISOVault row click, falls back to card's own number
-  const cardNum = window._cdDbCardNum || (c.cardNum != null ? String(c.cardNum).replace('#','') : (c._cardNumber||null));
+  const cardNum = String(window._cdDbCardNum || (c.cardNum != null ? String(c.cardNum).replace('#','') : (c._cardNumber||'')) || '');
   if(!table||!cardNum){ T('Cannot identify set table for this card.'); return; }
 
   // Which variation are we uploading?
   const activeVar = (window._cdVars||[])[window._cdActiveVar||0];
   const varLabel = activeVar ? activeVar.label : 'Base';
-  const varSlug = varLabel.replace(/[^a-zA-Z0-9]/g,'_').toLowerCase();
+  const varSlug = String(varLabel).replace(/[^a-zA-Z0-9]/g,'_').toLowerCase();
 
   const btn=document.getElementById('cdUploadSubmitBtn');
   btn.disabled=true; btn.textContent='UPLOADING...';
@@ -8856,7 +8856,7 @@ function ivOpenCard(row){
     })()
   };
 
-  window._cdDbCardNum = row.card_number || null;
+  window._cdDbCardNum = row.card_number != null ? String(row.card_number) : null;
   window._cdPreloadVarImages = row.var_images || null;
   window._cdCard = card;
   // Resolve sport label from active set context

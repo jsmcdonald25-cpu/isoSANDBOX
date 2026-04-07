@@ -68,7 +68,7 @@ function buildSearchQuery({ player, year, set_name, card_number, grade }) {
   if (year) parts.push(String(year));
   if (set_name) parts.push(set_name);
   if (card_number) parts.push(`#${card_number}`);
-  if (grade && grade !== 'Raw' && grade !== 'raw') parts.push(grade);
+  if (grade && !['Raw','raw','Base','base',''].includes(grade)) parts.push(grade);
   return parts.join(' ');
 }
 
@@ -163,6 +163,7 @@ exports.handler = async (event) => {
   try {
     const { player, year, set_name, card_number, grade } = JSON.parse(event.body || '{}');
 
+    // Need at least a player/card name to search
     if (!player) {
       return {
         statusCode: 400,

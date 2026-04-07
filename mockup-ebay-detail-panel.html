@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mockup v2 — eBay Listings in Detail Panel</title>
+<style>
+  /* Palette pulled from dashboard.html */
+  :root{
+    --blue:#00AAFF;
+    --blue-bright:#33CCFF;
+    --blue-deep:#0055AA;
+    --blue-glow:rgba(0,170,255,0.35);
+    --white:#FFFFFF;
+    --chrome:#B0BEC5;
+    --muted-text:#7A95AE;
+    --deep1:#0D1F33;
+    --deep2:#112840;
+    --deep3:#143050;
+    --deep-border:rgba(0,170,255,0.15);
+    --green:#00E887;
+    --gold:#FFC83C;
+    --red:#FF3B5C;
+  }
+  body{
+    margin:0;padding:40px;
+    background:var(--deep1);
+    font-family:Barlow,system-ui,sans-serif;
+    color:var(--chrome);
+    display:flex;gap:40px;justify-content:center;flex-wrap:wrap;
+  }
+  .cd-info{
+    width:340px;
+    background:var(--deep1);
+    border:1px solid var(--deep-border);
+    border-radius:10px;
+    padding:18px;
+  }
+  .cd-card-title{font-family:'Bebas Neue',sans-serif;font-size:26px;font-weight:400;color:var(--white);letter-spacing:1px;line-height:1}
+  .cd-card-sub{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text);margin-top:4px;letter-spacing:1px;text-transform:uppercase}
+  .cd-card-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text);margin-top:2px;letter-spacing:0.5px}
+
+  .cd-currently{
+    margin-top:14px;padding:10px;border-radius:8px;
+    background:var(--deep2);border:1px solid var(--deep-border);
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .cd-currently-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-right:8px;box-shadow:0 0 6px var(--green)}
+  .cd-currently-val{font-size:13px;color:var(--white)}
+  .cd-currently-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted-text);letter-spacing:1px}
+  .cd-currently-run{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--blue)}
+
+  .cd-var-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1.5px;color:rgba(0,170,255,0.5);margin-top:14px;margin-bottom:6px;text-transform:uppercase}
+  .cd-var-pills{display:flex;gap:6px;flex-wrap:wrap}
+  .cd-var-pill{background:rgba(0,170,255,0.1);border:1px solid rgba(0,170,255,0.3);color:var(--blue);font-size:10px;padding:3px 8px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;letter-spacing:0.5px}
+
+  /* Live Market block (existing) */
+  .cd-market-block{
+    margin-top:14px;
+    background:var(--deep2);
+    border:1px solid var(--deep-border);
+    border-radius:10px;padding:10px;
+  }
+  .cd-market-title{
+    font-family:'Barlow Condensed',sans-serif;font-size:11px;
+    color:var(--blue);letter-spacing:1.5px;
+    margin-bottom:8px;display:flex;align-items:center;gap:6px;text-transform:uppercase;
+  }
+  .live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 6px var(--green);animation:pulse 2.5s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+  .cd-mkt-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center}
+  .cd-mkt-lbl{font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--muted-text);letter-spacing:0.5px}
+  .cd-mkt-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--white);line-height:1;margin-top:3px}
+  .cd-mkt-val.blue{color:var(--blue)}
+  .cd-mkt-val.gold{color:var(--gold)}
+  .cd-mkt-val.green{color:var(--green)}
+
+  /* NEW — eBay Listings block — same theme, blue accent, eBay badge for brand */
+  .cd-ebay-block{
+    margin-top:12px;
+    background:var(--deep2);
+    border:1px solid var(--deep-border);
+    border-radius:10px;padding:10px;
+  }
+  .cd-ebay-title{
+    font-family:'Barlow Condensed',sans-serif;font-size:11px;
+    color:var(--blue);letter-spacing:1.5px;
+    margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;text-transform:uppercase;
+  }
+  .cd-ebay-title .left{display:flex;align-items:center;gap:8px}
+  /* eBay badge — uses real eBay logo colors but small/contained */
+  .ebay-badge{
+    font-family:Arial,sans-serif;font-weight:900;font-size:11px;
+    letter-spacing:-0.5px;display:inline-flex;
+  }
+  .ebay-badge .e1{color:#E53238}
+  .ebay-badge .b{color:#0064D2}
+  .ebay-badge .a{color:#F5AF02}
+  .ebay-badge .y{color:#86B817}
+  .cd-ebay-count{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted-text);letter-spacing:0.5px}
+
+  .cd-ebay-stats{
+    display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;
+    padding-bottom:8px;border-bottom:1px solid var(--deep-border);
+  }
+  .cd-ebay-rows{margin-top:8px;display:flex;flex-direction:column;gap:5px}
+  .cd-ebay-row{
+    display:flex;align-items:center;gap:8px;
+    padding:5px;border-radius:6px;
+    background:rgba(0,170,255,0.04);
+    border:1px solid transparent;
+    text-decoration:none;color:inherit;
+    transition:all 0.15s;
+  }
+  .cd-ebay-row:hover{background:rgba(0,170,255,0.1);border-color:rgba(0,170,255,0.25)}
+  .cd-ebay-row img{
+    width:34px;height:34px;object-fit:cover;border-radius:4px;
+    background:var(--deep3);flex-shrink:0;
+  }
+  .cd-ebay-row .ttl{
+    flex:1;font-size:10px;color:var(--chrome);
+    line-height:1.3;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+  .cd-ebay-row .prc{
+    font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--green);
+    flex-shrink:0;letter-spacing:0.5px;
+  }
+  .cd-ebay-link{
+    display:block;text-align:center;margin-top:8px;
+    font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;
+    color:var(--blue);text-decoration:none;
+    padding:6px;border:1px solid rgba(0,170,255,0.3);border-radius:6px;
+    text-transform:uppercase;
+    transition:all 0.15s;
+  }
+  .cd-ebay-link:hover{background:rgba(0,170,255,0.1);border-color:var(--blue)}
+  .cd-ebay-foot{
+    margin-top:8px;font-family:'Barlow Condensed',sans-serif;font-size:9px;
+    color:rgba(122,149,174,0.5);text-align:center;letter-spacing:0.5px;
+  }
+
+  .cd-tagline{
+    margin-top:12px;text-align:center;
+    font-family:'Barlow Condensed',sans-serif;font-size:9px;
+    color:rgba(122,149,174,0.4);letter-spacing:0.5px;
+  }
+
+  .note{
+    color:var(--white);font-size:13px;max-width:320px;
+    background:var(--deep2);padding:18px;border-radius:10px;
+    border:1px solid var(--deep-border);line-height:1.5;
+  }
+  .note h3{margin:0 0 6px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1.5px;color:var(--blue);font-size:12px;text-transform:uppercase}
+  .note h3:not(:first-child){margin-top:14px}
+  .note ul{margin:6px 0 0 18px;padding:0;color:var(--chrome)}
+  .note li{margin:4px 0;font-size:12px}
+  .note p{margin:0;color:var(--chrome);font-size:12px}
+</style>
+</head>
+<body>
+
+  <!-- ============ SPORTS CARD EXAMPLE ============ -->
+  <div class="cd-info">
+    <div>
+      <div class="cd-card-title">Mike Trout</div>
+      <div class="cd-card-sub">2011 Topps Update</div>
+      <div class="cd-card-num">#US175 · Baseball · Rookie</div>
+    </div>
+
+    <div class="cd-currently">
+      <div>
+        <div class="cd-currently-val">
+          <span class="cd-currently-dot"></span>Base · PSA 10
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div class="cd-currently-label">Print Run</div>
+        <div class="cd-currently-run">—</div>
+      </div>
+    </div>
+
+    <div class="cd-var-label">Variations — Click to Switch View</div>
+    <div class="cd-var-pills">
+      <span class="cd-var-pill">Base</span>
+      <span class="cd-var-pill">Cognac</span>
+      <span class="cd-var-pill">Walmart Blue</span>
+      <span class="cd-var-pill">Target Red</span>
+    </div>
+
+    <!-- EXISTING: Live Market block (unchanged) -->
+    <div class="cd-market-block">
+      <div class="cd-market-title"><div class="live-dot"></div>Live Market · Base</div>
+      <div class="cd-mkt-grid">
+        <div><div class="cd-mkt-lbl">Avg Price Paid</div><div class="cd-mkt-val blue">$8,400</div></div>
+        <div><div class="cd-mkt-lbl">Low / High</div><div class="cd-mkt-val" style="font-size:14px">$3.2K / $15K</div></div>
+        <div><div class="cd-mkt-lbl">Vault Count</div><div class="cd-mkt-val gold">12</div></div>
+      </div>
+    </div>
+
+    <!-- NEW: eBay Listings block — matches Live Market styling -->
+    <div class="cd-ebay-block">
+      <div class="cd-ebay-title">
+        <div class="left">
+          <span class="ebay-badge"><span class="e1">e</span><span class="b">b</span><span class="a">a</span><span class="y">y</span></span>
+          Currently Listed
+        </div>
+        <div class="cd-ebay-count">50</div>
+      </div>
+      <div class="cd-ebay-stats">
+        <div><div class="cd-mkt-lbl">Low</div><div class="cd-mkt-val green">$3.2K</div></div>
+        <div><div class="cd-mkt-lbl">Avg</div><div class="cd-mkt-val blue">$11.4K</div></div>
+        <div><div class="cd-mkt-lbl">High</div><div class="cd-mkt-val">$175K</div></div>
+      </div>
+      <div class="cd-ebay-rows">
+        <a class="cd-ebay-row" href="#">
+          <img src="https://i.ebayimg.com/images/g/jQYAAOSwdilcv6~4/s-l225.jpg">
+          <div class="ttl">2011 Topps Update Mike Trout RC #US175 BGS 10 BLACK LABEL</div>
+          <div class="prc">$175K</div>
+        </a>
+        <a class="cd-ebay-row" href="#">
+          <img src="https://i.ebayimg.com/images/g/Hk8AAOSwUFxmFvrI/s-l225.jpg">
+          <div class="ttl">2011 Topps Update Mike Trout Target Red BGS 9.5 #US175</div>
+          <div class="prc">$25K</div>
+        </a>
+        <a class="cd-ebay-row" href="#">
+          <img src="https://i.ebayimg.com/images/g/oJ0AAeSwrGVpPgWZ/s-l225.jpg">
+          <div class="ttl">2011 Topps Update Black Border Mike Trout #US175 SGC 9</div>
+          <div class="prc">$22K</div>
+        </a>
+        <a class="cd-ebay-row" href="#">
+          <img src="https://i.ebayimg.com/images/g/JGoAAOSwouNivt8j/s-l225.jpg">
+          <div class="ttl">2011 Mike Trout Topps Update RED BORDER RC BGS 9.5 #US175</div>
+          <div class="prc">$19K</div>
+        </a>
+        <a class="cd-ebay-row" href="#">
+          <img src="https://i.ebayimg.com/images/g/VMIAAOSwFv9nCAEH/s-l225.jpg">
+          <div class="ttl">Mike Trout 2011 Topps Update #US-175 PSA 10 RC</div>
+          <div class="prc">$15K</div>
+        </a>
+      </div>
+      <a class="cd-ebay-link" href="#">View All on eBay →</a>
+      <div class="cd-ebay-foot">Live asking prices · refreshed on view</div>
+    </div>
+
+    <div class="cd-tagline">GrailISO · LIVE</div>
+  </div>
+
+
+  <!-- ============ MTG CARD EXAMPLE ============ -->
+  <div class="cd-info">
+    <div>
+      <div class="cd-card-title">Black Lotus</div>
+      <div class="cd-card-sub">Limited Edition Alpha</div>
+      <div class="cd-card-num">#232 · MTG · Mythic</div>
+    </div>
+
+    <div class="cd-currently">
+      <div>
+        <div class="cd-currently-val">
+          <span class="cd-currently-dot"></span>Base · NM
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div class="cd-currently-label">Print Run</div>
+        <div class="cd-currently-run">—</div>
+      </div>
+    </div>
+
+    <div class="cd-var-label">Variations</div>
+    <div class="cd-var-pills">
+      <span class="cd-var-pill">Base</span>
+    </div>
+
+    <div class="cd-market-block">
+      <div class="cd-market-title"><div class="live-dot"></div>Live Market · Base</div>
+      <div class="cd-mkt-grid">
+        <div><div class="cd-mkt-lbl">Avg Price Paid</div><div class="cd-mkt-val blue">$32K</div></div>
+        <div><div class="cd-mkt-lbl">Low / High</div><div class="cd-mkt-val" style="font-size:14px">$8K / $90K</div></div>
+        <div><div class="cd-mkt-lbl">Vault Count</div><div class="cd-mkt-val gold">3</div></div>
+      </div>
+    </div>
+
+    <div class="cd-ebay-block">
+      <div class="cd-ebay-title">
+        <div class="left">
+          <span class="ebay-badge"><span class="e1">e</span><span class="b">b</span><span class="a">a</span><span class="y">y</span></span>
+          Currently Listed
+        </div>
+        <div class="cd-ebay-count">23</div>
+      </div>
+      <div class="cd-ebay-stats">
+        <div><div class="cd-mkt-lbl">Low</div><div class="cd-mkt-val green">$2.5K</div></div>
+        <div><div class="cd-mkt-lbl">Avg</div><div class="cd-mkt-val blue">$28.4K</div></div>
+        <div><div class="cd-mkt-lbl">High</div><div class="cd-mkt-val">$120K</div></div>
+      </div>
+      <div class="cd-ebay-rows">
+        <a class="cd-ebay-row" href="#">
+          <img src="" onerror="this.style.background='#143050'">
+          <div class="ttl">MTG Black Lotus Alpha BGS 9.5 Gem Mint Beckett Power 9</div>
+          <div class="prc">$120K</div>
+        </a>
+        <a class="cd-ebay-row" href="#">
+          <img src="" onerror="this.style.background='#143050'">
+          <div class="ttl">Black Lotus Alpha PSA 8 NM-MT Magic the Gathering Power 9</div>
+          <div class="prc">$58K</div>
+        </a>
+        <a class="cd-ebay-row" href="#">
+          <img src="" onerror="this.style.background='#143050'">
+          <div class="ttl">MTG Alpha Black Lotus CGC 6.5 EX/NM Vintage Power Nine</div>
+          <div class="prc">$24K</div>
+        </a>
+        <a class="cd-ebay-row" href="#">
+          <img src="" onerror="this.style.background='#143050'">
+          <div class="ttl">Black Lotus Alpha Played Authentic Magic Gathering Vintage</div>
+          <div class="prc">$8K</div>
+        </a>
+        <a class="cd-ebay-row" href="#">
+          <img src="" onerror="this.style.background='#143050'">
+          <div class="ttl">MTG Black Lotus Alpha Heavily Played Authentic 1993</div>
+          <div class="prc">$2.5K</div>
+        </a>
+      </div>
+      <a class="cd-ebay-link" href="#">View All on eBay →</a>
+      <div class="cd-ebay-foot">Live asking prices · refreshed on view</div>
+    </div>
+
+    <div class="cd-tagline">GrailISO · LIVE</div>
+  </div>
+
+
+  <!-- NOTES -->
+  <div class="note">
+    <h3>What changed from v1</h3>
+    <p>Pulled the actual color palette from <code>dashboard.html</code>. Your Detail Panel uses <b>blue + green + gold</b>, not orange. The new eBay block now matches the existing Live Market block exactly — same background, border, fonts, layout — so it reads as part of the same family.</p>
+
+    <h3>How it stays branded as eBay</h3>
+    <p>The only "eBay-orange" in the entire block is the small <b>eBay logo badge</b> (using the real eBay logo colors: red/blue/yellow/green letters). Everything else is your house palette. The badge is unmistakable, the section blends in.</p>
+
+    <h3>Layout</h3>
+    <ul>
+      <li>3 stat cells: Low / Avg / High asking price</li>
+      <li>Top 5 listings — thumbnail, 2-line title, price (green = "spendable" reference)</li>
+      <li>"View All on eBay" CTA button</li>
+      <li>Disclaimer: "Live asking prices · refreshed on view"</li>
+    </ul>
+
+    <h3>Sits below Live Market</h3>
+    <p>Drops in between lines 2663–2664 of <code>dashboard.html</code>. No existing UI changed. Both market blocks visible together: vault data (what collectors paid) + eBay data (what sellers are asking).</p>
+  </div>
+
+</body>
+</html>

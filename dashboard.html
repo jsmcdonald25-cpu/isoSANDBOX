@@ -569,6 +569,23 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-mkt-lbl{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);margin-bottom:3px}
 .cd-mkt-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--white);line-height:1}
 .cd-mkt-val.blue{color:var(--blue)}.cd-mkt-val.green{color:var(--green)}.cd-mkt-val.gold{color:#FFC83C}
+.cd-ebay-block{background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:10px;margin-top:10px}
+.cd-ebay-title{font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--white);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.cd-ebay-title .left{display:flex;align-items:center;gap:8px}
+.cd-ebay-badge{font-family:Arial,sans-serif;font-weight:900;font-size:12px;letter-spacing:-0.5px;line-height:1;display:inline-flex}
+.cd-ebay-badge .e1{color:#E53238}.cd-ebay-badge .b{color:#0064D2}.cd-ebay-badge .a{color:#F5AF02}.cd-ebay-badge .y{color:#86B817}
+.cd-ebay-count{font-family:Bebas Neue,sans-serif;font-size:13px;color:var(--muted-text);letter-spacing:0.5px}
+.cd-ebay-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding-bottom:8px;border-bottom:1px solid var(--deep-border)}
+.cd-ebay-rows{margin-top:8px;display:flex;flex-direction:column;gap:5px}
+.cd-ebay-row{display:flex;align-items:center;gap:8px;padding:5px;border-radius:6px;background:rgba(0,170,255,0.04);border:1px solid transparent;text-decoration:none;color:inherit;transition:all .15s}
+.cd-ebay-row:hover{background:rgba(0,170,255,0.1);border-color:rgba(0,170,255,0.25)}
+.cd-ebay-row img{width:34px;height:34px;object-fit:cover;border-radius:4px;background:var(--deep3);flex-shrink:0}
+.cd-ebay-row .ttl{flex:1;font-size:10px;color:var(--chrome);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cd-ebay-row .prc{font-family:Bebas Neue,sans-serif;font-size:15px;color:var(--green);flex-shrink:0;letter-spacing:0.5px}
+.cd-ebay-link{display:block;text-align:center;margin-top:8px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--blue);text-decoration:none;padding:6px;border:1px solid rgba(0,170,255,0.3);border-radius:6px;text-transform:uppercase;transition:all .15s}
+.cd-ebay-link:hover{background:rgba(0,170,255,0.1);border-color:var(--blue)}
+.cd-ebay-foot{margin-top:8px;font-family:Barlow Condensed,sans-serif;font-size:9px;color:rgba(122,149,174,0.5);text-align:center;letter-spacing:0.5px}
+.cd-ebay-empty{text-align:center;padding:14px 0;font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);letter-spacing:0.5px}
 .cd-watching{font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-top:10px;padding-top:10px;border-top:1px solid var(--deep-border);display:flex;align-items:center;gap:6px}
 .cd-watching strong{color:var(--white)}
 .cd-vault-cta{background:rgba(0,170,255,0.06);border:1px solid var(--deep-border);border-radius:10px;padding:10px}
@@ -2661,6 +2678,24 @@ async function logOut(){
           </div>
           <div class="cd-watching" id="cd-watching-row" style="display:none"><span>&#128065;</span>&nbsp;<strong id="cd-watching-ct">&#8212;</strong>&nbsp;collectors watching this variation right now</div>
           <div id="cd-mkt-tagline" style="display:none;font-family:'Barlow Condensed',sans-serif;font-size:10px;color:rgba(122,149,174,0.4);letter-spacing:.5px;margin-top:8px">Market price built from collector vault submissions &#183; Built by collectors, for collectors</div>
+        </div>
+        <div class="cd-ebay-block" id="cd-ebay-block">
+          <div class="cd-ebay-title">
+            <div class="left">
+              <span class="cd-ebay-badge"><span class="e1">e</span><span class="b">b</span><span class="a">a</span><span class="y">y</span></span>
+              <span>Currently Listed</span>
+            </div>
+            <div class="cd-ebay-count" id="cd-ebay-count">&#8212;</div>
+          </div>
+          <div class="cd-ebay-stats" id="cd-ebay-stats">
+            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Low</div><div class="cd-mkt-val green" id="cd-ebay-low">&#8212;</div></div>
+            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Avg</div><div class="cd-mkt-val blue" id="cd-ebay-avg">&#8212;</div></div>
+            <div class="cd-mkt-item"><div class="cd-mkt-lbl">High</div><div class="cd-mkt-val" id="cd-ebay-high">&#8212;</div></div>
+          </div>
+          <div class="cd-ebay-rows" id="cd-ebay-rows"></div>
+          <div class="cd-ebay-empty" id="cd-ebay-empty" style="display:none">No current listings on eBay</div>
+          <a class="cd-ebay-link" id="cd-ebay-link" href="#" target="_blank" rel="noopener" style="display:none">View All on eBay &rarr;</a>
+          <div class="cd-ebay-foot">Live asking prices &middot; refreshed on view</div>
         </div>
       </div>
       <!-- RIGHT: Actions Panel -->
@@ -5765,6 +5800,18 @@ async function submitMissingCard(){
         const pe = await patchRes.json().catch(()=>({message:patchRes.statusText}));
         throw new Error(pe.message||pe.error||`Admin update failed: ${patchRes.status}`);
       }
+      // Refresh in-memory card state so the new variation pill appears immediately
+      // without requiring the user to back out and re-enter the card.
+      if(window._cdCard && (window._cdCard._cardNumber === cardNum || window._cdCard.cardNum === cardNum || ('#'+cardNum) === window._cdCard.cardNum)){
+        window._cdCard.variations = newVars;
+        window._cdCard._varImages = newImgs;
+        window._cdCard.hasCatalogPic = true;
+        try { _buildVariationPills(window._cdCard); } catch(e){ console.warn('pill rebuild failed', e); }
+        try {
+          const newIdx = (window._cdVars||[]).findIndex(v => v && v.label === varName);
+          if(newIdx >= 0) cdSelectVar(newIdx);
+        } catch(e){ /* non-fatal */ }
+      }
       document.getElementById('mcProgressBar').style.width='100%';
       btn.textContent = '✓ ADDED!';
       btn.style.background = 'var(--green)';
@@ -5908,34 +5955,46 @@ async function openVaultCard(idx){
   _cdUpdateSlabLabBtn();
 }
 async function _patchVaultThumbnails(rows){
-  for(let i=0;i<rows.length;i++){
-    const c=rows[i];
-    if(c.front_image_url)continue;
+  // Patch one row — same logic as before, extracted so we can run in parallel.
+  const patchOne=async(c,i)=>{
+    if(c.front_image_url)return;
     const known=CARDS.find(x=>x&&(
       x._cardNumber===String(c.card_number||'').replace(/^#/,'')||
       (x.player===c.player&&String(x.year)===String((c.year||'').toString().slice(0,4)))
     ));
     const table=known?known._setTable:null;
     const cardNum=String(c.card_number||'').replace(/^#/,'');
-    if(!table)continue;
+    if(!table)return;
     try{
       let r2=cardNum?await _rGet(table,'select=var_images,front_img&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1'):null;
       if(!r2||!r2[0])r2=await _rGet(table,'select=var_images,front_img&player=eq.'+encodeURIComponent(c.player||'')+'&limit=1');
-      if(!r2||!r2[0])continue;
+      if(!r2||!r2[0])return;
       const rd=r2[0];
       let url=rd.front_img||null;
       if(!url&&rd.var_images){const k=Object.keys(rd.var_images)[0];if(k)url=(rd.var_images[k]||{}).front||null;}
-      if(!url)continue;
+      if(!url)return;
       const thumb=document.querySelector('.card-thumb[data-vaultidx="'+i+'"]');
-      if(!thumb)continue;
-      const box=thumb.querySelector('.ct-img');if(!box)continue;
+      if(!thumb)return;
+      const box=thumb.querySelector('.ct-img');if(!box)return;
       const badge=box.querySelector('div');
       const img=document.createElement('img');
       img.src=url;img.style.cssText='width:100%;height:100%;object-fit:contain;background:#071828';img.loading='lazy';
       box.innerHTML='';box.appendChild(img);if(badge)box.appendChild(badge);
       if(window._vaultData&&window._vaultData[i])window._vaultData[i].front_image_url=url;
     }catch(e){}
-  }
+  };
+  // Run in parallel, capped at 20 in-flight at a time so we never blast the
+  // browser's per-host connection budget on huge vaults.
+  const CONCURRENCY=20;
+  let next=0;
+  const workers=Array.from({length:Math.min(CONCURRENCY,rows.length)},async()=>{
+    while(true){
+      const i=next++;
+      if(i>=rows.length)return;
+      await patchOne(rows[i],i);
+    }
+  });
+  await Promise.all(workers);
 }
 function renderMyVault(){
   const empty=document.getElementById('myVaultEmpty');
@@ -7148,6 +7207,9 @@ function cdSelectVar(idx, skipShimmer){
 
   // Fire live market query for this variation
   if(window._cdCard) _cdLoadLiveMarket(window._cdCard, v.label);
+
+  // Fire eBay listings query for this variation
+  if(window._cdCard) _cdLoadEbayListings(window._cdCard, v.label);
 }
 
 function _cdShimmer(){
@@ -9374,6 +9436,96 @@ async function _cdLoadLiveMarket(card, variationLabel){
     }
   } catch(e){
     console.error('Market query error:', e);
+  }
+}
+
+// ── eBay Currently Listed loader ──────────────────────────
+async function _cdLoadEbayListings(card, variationLabel){
+  const block   = document.getElementById('cd-ebay-block');
+  const lowEl   = document.getElementById('cd-ebay-low');
+  const avgEl   = document.getElementById('cd-ebay-avg');
+  const highEl  = document.getElementById('cd-ebay-high');
+  const cntEl   = document.getElementById('cd-ebay-count');
+  const rowsEl  = document.getElementById('cd-ebay-rows');
+  const emptyEl = document.getElementById('cd-ebay-empty');
+  const linkEl  = document.getElementById('cd-ebay-link');
+  if(!block || !card) return;
+
+  // Loading state
+  lowEl.textContent = avgEl.textContent = highEl.textContent = '…';
+  cntEl.textContent = '…';
+  rowsEl.innerHTML = '';
+  emptyEl.style.display = 'none';
+  linkEl.style.display  = 'none';
+
+  // Build query payload from card object — works for both sports and MTG
+  // For MTG: card.player = card name, card.set = set name, card.cardNum = collector #
+  // For sports: card.player = player name, card.year + card.brand + card.set = identity
+  const isMtg = (String(card._setTable||'').startsWith('mtg_') || String(card.brand||'').toLowerCase().includes('wizards'));
+  const payload = {
+    player:      card.player || '',
+    year:        isMtg ? '' : (card.year || ''),
+    set_name:    card.set || '',
+    card_number: (card._cardNumber || String(card.cardNum||'').replace(/^#/,'')) || '',
+    grade:       variationLabel || ''
+  };
+  if(!payload.player){ block.style.display='none'; return; }
+  block.style.display = '';
+
+  try {
+    const resp = await fetch('/.netlify/functions/ebay-recent-sales', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if(!resp.ok) throw new Error('eBay fetch failed: ' + resp.status);
+    const data = await resp.json();
+
+    const fmt = (n) => {
+      if(n == null || isNaN(n)) return '—';
+      if(n >= 1000) return '$' + (n/1000).toFixed(n>=10000?0:1) + 'K';
+      return '$' + Number(n).toFixed(0);
+    };
+
+    if(!data || !data.count){
+      lowEl.textContent = avgEl.textContent = highEl.textContent = '—';
+      cntEl.textContent = '0';
+      emptyEl.style.display = 'block';
+      return;
+    }
+
+    cntEl.textContent  = String(data.count);
+    lowEl.textContent  = fmt(data.low);
+    avgEl.textContent  = fmt(data.average);
+    highEl.textContent = fmt(data.high);
+
+    // Render top 5 listing rows
+    const items = (data.items || []).slice(0,5);
+    if(items.length){
+      rowsEl.innerHTML = items.map(it => {
+        const img = it.imageUrl || '';
+        const ttl = (it.title || '').replace(/[<>]/g,'');
+        const prc = fmt(it.price);
+        const url = it.itemUrl || '#';
+        return `<a class="cd-ebay-row" href="${url}" target="_blank" rel="noopener">
+          <img src="${img}" onerror="this.style.visibility='hidden'">
+          <div class="ttl">${ttl}</div>
+          <div class="prc">${prc}</div>
+        </a>`;
+      }).join('');
+    }
+
+    // "View All on eBay" link → eBay search results page using the same query
+    if(data.query){
+      linkEl.href = 'https://www.ebay.com/sch/i.html?_nkw=' + encodeURIComponent(data.query);
+      linkEl.style.display = 'block';
+    }
+  } catch(e){
+    console.warn('eBay listings error:', e);
+    lowEl.textContent = avgEl.textContent = highEl.textContent = '—';
+    cntEl.textContent = '—';
+    emptyEl.textContent = 'Unable to load eBay listings';
+    emptyEl.style.display = 'block';
   }
 }
 

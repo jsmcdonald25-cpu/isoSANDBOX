@@ -1546,7 +1546,7 @@ async function initUserProfile(user){
   if(nameEl)   nameEl.textContent   = name;
   if(tierEl)   tierEl.textContent   = tier;
   if(credEl)   credEl.textContent   = credits;
-  if(credSub)  credSub.textContent  = `$5 per post · ${credits} left`;
+  if(credSub)  credSub.textContent  = `$1 per post · ${credits} left`;
   const mvCr = document.getElementById('mv-credits'); if(mvCr) mvCr.textContent = credits;
 
   // Owner badge on avatar
@@ -1605,7 +1605,7 @@ async function logOut(){
     <div><div class="user-name" id="user-name">Jason McDonald</div><div class="user-tier" id="user-tier">Verified Buyer</div></div>
   </div>
   <div class="sidebar-credits">
-    <div><div class="credits-label">ISO Credits</div><div class="credits-value" id="credits-value">12</div><div class="credits-sub" id="credits-sub">$5 per post &#183; 5 free left</div></div>
+    <div><div class="credits-label">ISO Credits</div><div class="credits-value" id="credits-value">12</div><div class="credits-sub" id="credits-sub">$1 per post &#183; 5 free left</div></div>
     <button class="credits-add" onclick="T('Credits &#8212; coming soon')">+</button>
   </div>
   <nav class="sidebar-nav" id="sidebarNav">
@@ -1747,8 +1747,8 @@ async function logOut(){
 
   <!-- OVERVIEW -->
 
-  <!-- POST ISO -->
-  <div class="panel" id="panel-post">
+  <!-- POST ISO (PARKED — old player-search-first flow, kept for rollback) -->
+  <div class="panel" id="panel-post-old">
     <div class="step-bar">
       <div class="step-item"><div class="step-circle now" id="sc1">1</div><span class="step-text now" id="st1">Sport</span></div>
       <div class="step-line" id="sl1"></div>
@@ -1875,13 +1875,170 @@ async function logOut(){
           <div class="is-row"><span class="is-label">Price Range</span><span class="is-val" id="sumPrice">&#8212;</span></div>
         </div>
         <div style="background:rgba(0,170,255,.06);border:1px solid var(--deep-border);border-radius:8px;padding:14px;margin-bottom:16px">
-          <div style="font-family:'Barlow',sans-serif;font-size:13px;color:var(--chrome);line-height:1.6">By posting this ISO you agree that 1 credit ($5) will be deducted. Matching sellers are notified anonymously. You will only see cards matching your exact ISO &#8212; no seller profiles, no other inventory.</div>
+          <div style="font-family:'Barlow',sans-serif;font-size:13px;color:var(--chrome);line-height:1.6">By posting this ISO you agree that 1 credit ($1) will be deducted. Matching sellers are notified anonymously. You will only see cards matching your exact ISO &#8212; no seller profiles, no other inventory.</div>
         </div>
         <div class="submit-bar">
           <div class="credit-cost">Cost: <strong>1 ISO Credit</strong> &nbsp;<span style="font-size:12px;color:var(--muted-text)" id="isoCreditsLeft"></span></div>
           <div style="display:flex;gap:10px"><button class="btn btn-ghost" onclick="gS(4)">&#8592; Back</button><button class="btn btn-primary" onclick="submitISO()">Post ISO &#8594;</button></div>
         </div>
         <div id="isoSubmitErr" style="display:none;margin-top:10px;padding:10px 14px;background:rgba(255,59,92,0.1);border:1px solid rgba(255,59,92,0.3);border-radius:8px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--red)"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- POST ISO v2 — ISOVault-style Sport>Year>Brand>Set>Card>Variant flow -->
+  <div class="panel" id="panel-post">
+    <div class="step-bar">
+      <div class="step-item"><div class="step-circle now" id="p2sc1">1</div><span class="step-text now" id="p2st1">Sport</span></div>
+      <div class="step-line"></div>
+      <div class="step-item"><div class="step-circle soon" id="p2sc2">2</div><span class="step-text" id="p2st2">Year</span></div>
+      <div class="step-line"></div>
+      <div class="step-item"><div class="step-circle soon" id="p2sc3">3</div><span class="step-text" id="p2st3">Brand</span></div>
+      <div class="step-line"></div>
+      <div class="step-item"><div class="step-circle soon" id="p2sc4">4</div><span class="step-text" id="p2st4">Set</span></div>
+      <div class="step-line"></div>
+      <div class="step-item"><div class="step-circle soon" id="p2sc5">5</div><span class="step-text" id="p2st5">Card</span></div>
+      <div class="step-line"></div>
+      <div class="step-item"><div class="step-circle soon" id="p2sc6">6</div><span class="step-text" id="p2st6">Variant</span></div>
+      <div class="step-line"></div>
+      <div class="step-item"><div class="step-circle soon" id="p2sc7">7</div><span class="step-text" id="p2st7">Grade</span></div>
+      <div class="step-line"></div>
+      <div class="step-item"><div class="step-circle soon" id="p2sc8">8</div><span class="step-text" id="p2st8">Review</span></div>
+    </div>
+    <div style="background:rgba(255,184,77,0.08);border:1px solid rgba(255,184,77,0.3);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:#FFB84D;letter-spacing:.5px"><strong>PHASE A PREVIEW</strong> — UI flow only, sample data. Posting is disabled until Phase B wires the per-set tables.</div>
+    <div class="card-block">
+      <!-- Step 1 — Sport -->
+      <div class="sp active" id="p2sp1">
+        <div class="sp-title">SELECT SPORT</div>
+        <div class="sp-sub">Same grid as ISOVault home.</div>
+        <div class="iv-sport-grid" id="p2SportGrid" style="margin-bottom:20px"></div>
+      </div>
+      <!-- Step 2 — Year -->
+      <div class="sp" id="p2sp2">
+        <div class="sp-title">SELECT YEAR</div>
+        <div class="sp-sub">Pick the release year for the chosen sport.</div>
+        <div class="iv-pill-row" id="p2YearPills" style="gap:8px;margin-bottom:20px"></div>
+        <div style="display:flex;justify-content:space-between"><button class="btn btn-ghost" onclick="p2Go(1)">&#8592; Sport</button><span></span></div>
+      </div>
+      <!-- Step 3 — Brand -->
+      <div class="sp" id="p2sp3">
+        <div class="sp-title">SELECT BRAND</div>
+        <div class="sp-sub">Brands available for the chosen sport &amp; year.</div>
+        <div class="iv-pill-row" id="p2BrandPills" style="gap:8px;margin-bottom:20px"></div>
+        <div style="display:flex;justify-content:space-between"><button class="btn btn-ghost" onclick="p2Go(2)">&#8592; Year</button><span></span></div>
+      </div>
+      <!-- Step 4 — Set -->
+      <div class="sp" id="p2sp4">
+        <div class="sp-title">SELECT SET</div>
+        <div class="sp-sub">Set tiles match ISOVault's set browser.</div>
+        <div class="iv-set-grid" id="p2SetGrid" style="margin-bottom:14px"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px"><button class="btn btn-ghost" onclick="p2Go(3)">&#8592; Brand</button><span style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--blue);cursor:pointer;border-bottom:1px dashed var(--blue)" onclick="p2Go(8)">Can't find your set? Use freeform &#8594;</span></div>
+      </div>
+      <!-- Step 5 — Card in set -->
+      <div class="sp" id="p2sp5">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <button class="btn btn-ghost btn-sm" onclick="p2Go(4)">&#8592; Set</button>
+            <div class="sp-title" id="p2CardStepTitle" style="margin-bottom:0">SELECT CARD</div>
+          </div>
+        </div>
+        <div class="sp-sub">Search by player or card #, filter by category &amp; subset.</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
+          <div style="flex:1;min-width:220px;display:flex;align-items:center;gap:8px;background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;padding:0 12px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--muted-text);flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="p2CardSearch" placeholder="Search player or card #..." oninput="p2FilterCards(this.value)" autocomplete="off" style="flex:1;background:none;border:none;outline:none;color:var(--white);font-family:Barlow Condensed,sans-serif;font-size:13px;padding:9px 0">
+          </div>
+          <div class="iv-pill-row" id="p2CatPills" style="gap:6px">
+            <div class="iv-pill active" onclick="p2CatFilter('all',this)">All</div>
+            <div class="iv-pill" onclick="p2CatFilter('Base',this)">Base</div>
+            <div class="iv-pill" onclick="p2CatFilter('Insert',this)">Inserts</div>
+            <div class="iv-pill" onclick="p2CatFilter('Auto',this)">Autos</div>
+            <div class="iv-pill" onclick="p2CatFilter('Rookie',this)">Rookies</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--muted-text)">SUBSET / INSERT:</span>
+          <div class="iv-pill-row" id="p2SubsetPills" style="gap:6px"></div>
+        </div>
+        <div id="p2CardList" style="display:flex;flex-direction:column;gap:6px;max-height:480px;overflow-y:auto"></div>
+        <div style="text-align:center;margin-top:12px"><span style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--blue);cursor:pointer;border-bottom:1px dashed var(--blue)" onclick="p2Go(8)">Can't find your card? Use freeform &#8594;</span></div>
+      </div>
+      <!-- Step 6 — Variant -->
+      <div class="sp" id="p2sp6">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+          <button class="btn btn-ghost btn-sm" onclick="p2Go(5)">&#8592; Card</button>
+          <div class="sp-title" id="p2VarStepTitle" style="margin-bottom:0">SELECT VARIANT</div>
+        </div>
+        <div class="sp-sub">Pick the exact parallel/variant.</div>
+        <div id="p2VarGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-bottom:18px"></div>
+        <div style="display:flex;justify-content:space-between"><button class="btn btn-ghost" onclick="p2Go(5)">&#8592; Card</button><button class="btn btn-primary" id="p2VarNextBtn" onclick="p2Go(7)" disabled style="opacity:.5;cursor:not-allowed">Next: Grade &amp; Price &#8594;</button></div>
+      </div>
+      <!-- Step 7 — Grade & Price -->
+      <div class="sp" id="p2sp7">
+        <div class="sp-title">GRADE &amp; PRICE</div>
+        <div class="sp-sub">Set your ISO/GRADE requirement and price range.</div>
+        <div style="margin-bottom:18px"><label class="fl" style="display:block;margin-bottom:10px">ISO/GRADE Requirement</label>
+          <div class="grade-tiles">
+            <div class="gt" onclick="p2SelGrade(this)">Raw Only</div>
+            <div class="gt" onclick="p2SelGrade(this)">Any Grade</div>
+            <div class="gt" onclick="p2SelGrade(this)">PSA 7+</div>
+            <div class="gt" onclick="p2SelGrade(this)">PSA 8+</div>
+            <div class="gt" onclick="p2SelGrade(this)">PSA 9+</div>
+            <div class="gt sel" onclick="p2SelGrade(this)">PSA 10</div>
+            <div class="gt" onclick="p2SelGrade(this)">BGS 9.5+</div>
+            <div class="gt" onclick="p2SelGrade(this)">SGC 10</div>
+          </div>
+        </div>
+        <div class="dgrid">
+          <div class="fg"><label class="fl">Min Price (USD)</label><input class="fc" type="number" id="p2MinP" placeholder="$25 minimum" min="25"></div>
+          <div class="fg"><label class="fl">Max Price (USD)</label><input class="fc" type="number" id="p2MaxP" placeholder="Your max bid"></div>
+        </div>
+        <!-- Serial # for provenance — only meaningful if variant is /N -->
+        <div class="fg" id="p2SerialWrap" style="display:none">
+          <label class="fl" id="p2SerialLabel">SERIAL # (FOR PROVENANCE)</label>
+          <input class="fc" type="number" id="p2Serial" placeholder="Your card's serial number" min="1" oninput="P2_STATE.serial=this.value">
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-top:5px">Optional but recommended &mdash; required to lock in provenance for this exact copy.</div>
+        </div>
+        <div class="fg"><label class="fl">Additional Notes (optional)</label><textarea class="fc" id="p2Notes" rows="3" style="resize:vertical" placeholder="Cert number, jersey number parallel, auto quality, specific condition details..."></textarea></div>
+        <div style="display:flex;justify-content:space-between;margin-top:20px"><button class="btn btn-ghost" onclick="p2Go(6)">&#8592; Variant</button><button class="btn btn-primary" onclick="p2GoReview()">Next &#8212; Review &#8594;</button></div>
+      </div>
+      <!-- Step 8 — Freeform fallback -->
+      <div class="sp" id="p2sp8">
+        <div class="sp-title">CAN'T FIND YOUR CARD?</div>
+        <div class="sp-sub">Freeform entry — used when the catalog doesn't have your card yet. Goes into the same review/admin queue.</div>
+        <div class="dgrid">
+          <div class="fg"><label class="fl">Sport</label><input class="fc" id="p2FfSport" placeholder="e.g. Baseball"></div>
+          <div class="fg"><label class="fl">Year</label><input class="fc" id="p2FfYear" placeholder="e.g. 2025"></div>
+          <div class="fg"><label class="fl">Brand</label><input class="fc" id="p2FfBrand" placeholder="e.g. Topps"></div>
+          <div class="fg"><label class="fl">Set</label><input class="fc" id="p2FfSet" placeholder="e.g. Topps Chrome"></div>
+          <div class="fg"><label class="fl">Card #</label><input class="fc" id="p2FfNum" placeholder="e.g. 25"></div>
+          <div class="fg"><label class="fl">Player</label><input class="fc" id="p2FfPlayer" placeholder="e.g. Paul Skenes"></div>
+        </div>
+        <div class="fg"><label class="fl">Variant / Parallel</label><input class="fc" id="p2FfVar" placeholder="e.g. Gold /50"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:20px"><button class="btn btn-ghost" onclick="p2Go(1)">&#8592; Start over</button><button class="btn btn-primary" onclick="p2Go(7)">Next: Grade &amp; Price &#8594;</button></div>
+      </div>
+      <!-- Step 9 (review) -->
+      <div class="sp" id="p2sp9">
+        <div class="sp-title">REVIEW YOUR ISO</div>
+        <div class="sp-sub">Confirm details before broadcasting.</div>
+        <div class="iso-sum">
+          <div class="is-title">ISO DETAILS</div>
+          <div class="is-row"><span class="is-label">Sport</span><span class="is-val" id="p2RSport">&#8212;</span></div>
+          <div class="is-row"><span class="is-label">Year</span><span class="is-val" id="p2RYear">&#8212;</span></div>
+          <div class="is-row"><span class="is-label">Brand</span><span class="is-val" id="p2RBrand">&#8212;</span></div>
+          <div class="is-row"><span class="is-label">Set</span><span class="is-val" id="p2RSet">&#8212;</span></div>
+          <div class="is-row" id="p2RSubsetRow" style="display:none"><span class="is-label">Subset</span><span class="is-val" id="p2RSubset">&#8212;</span></div>
+          <div class="is-row"><span class="is-label">Card</span><span class="is-val" id="p2RCard">&#8212;</span></div>
+          <div class="is-row"><span class="is-label">Variant</span><span class="is-val" id="p2RVar">&#8212;</span></div>
+          <div class="is-row" id="p2RSerialRow" style="display:none"><span class="is-label">Serial #</span><span class="is-val" id="p2RSerial">&#8212;</span></div>
+          <div class="is-row"><span class="is-label">ISO/GRADE</span><span class="is-val" id="p2RGrade">PSA 10</span></div>
+          <div class="is-row"><span class="is-label">Price Range</span><span class="is-val" id="p2RPrice">&#8212;</span></div>
+        </div>
+        <div style="background:rgba(0,170,255,.06);border:1px solid var(--deep-border);border-radius:8px;padding:14px;margin-bottom:16px;font-family:Barlow,sans-serif;font-size:13px;color:var(--chrome);line-height:1.6">By posting this ISO you agree that 1 credit ($1) will be deducted. Matching sellers are notified anonymously.</div>
+        <div class="submit-bar">
+          <div class="credit-cost">Cost: <strong>1 ISO Credit</strong></div>
+          <div style="display:flex;gap:10px"><button class="btn btn-ghost" onclick="p2Go(7)">&#8592; Edit</button><button class="btn btn-primary" disabled style="opacity:.5;cursor:not-allowed" title="Phase A preview — submission wired in Phase B">Post ISO &#8594;</button></div>
+        </div>
       </div>
     </div>
   </div>
@@ -3130,11 +3287,11 @@ async function logOut(){
         <div style="margin-top:14px"><button class="btn btn-ghost" onclick="T('Edit profile &#8212; coming soon')">Edit Profile</button></div>
       </div>
       <div class="card-block"><div class="card-block-title"><div class="dot"></div> ISO Credits</div>
-        <div style="margin-bottom:16px"><div class="stat-label">Balance</div><div class="stat-value blue" id="acct-credits">12</div><div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-top:6px">$5 per ISO post &#183; 5 free on verified account</div></div>
+        <div style="margin-bottom:16px"><div class="stat-label">Balance</div><div class="stat-value blue" id="acct-credits">12</div><div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-top:6px">$1 per ISO post &#183; 5 free on verified account</div></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-ghost btn-sm" onclick="T('5 credits &#8212; $25 &#8212; coming soon')">5 Credits &#8212; $25</button>
-          <button class="btn btn-ghost btn-sm" onclick="T('10 credits &#8212; $45 &#8212; coming soon')">10 Credits &#8212; $45</button>
-          <button class="btn btn-primary btn-sm" onclick="T('25 credits &#8212; $100 &#8212; coming soon')">25 Credits &#8212; $100</button>
+          <button class="btn btn-ghost btn-sm" onclick="T('5 credits &#8212; $5 &#8212; coming soon')">5 Credits &#8212; $5</button>
+          <button class="btn btn-ghost btn-sm" onclick="T('10 credits &#8212; $10 &#8212; coming soon')">10 Credits &#8212; $10</button>
+          <button class="btn btn-primary btn-sm" onclick="T('25 credits &#8212; $25 &#8212; coming soon')">25 Credits &#8212; $25</button>
         </div>
       </div>
     </div>
@@ -4202,7 +4359,7 @@ function N(id,el){
   if(id==='myvault')renderMyVault();
   if(id==='myisos')renderMyISOs();
   if(id==='market')renderMkt();
-  if(id==='post'){curStep=1;gS(1);isoRenderSportGrid();}
+  if(id==='post'){ p2Init(); }
   if(id==='isoticker')initISOTicker();
   if(id==='leaderboard')loadContributorLeaderboard();
   if(id==='account')loadSellerPrefs();
@@ -4256,6 +4413,348 @@ function isoRenderSportGrid(){
     }
     g.appendChild(tile);
   });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST ISO v2 — ISOVault-style flow (Phase A: static placeholders, no DB)
+// Sport > Year > Brand > Set > Card+Subset > Variant > Grade/Price > Review
+// ─────────────────────────────────────────────────────────────────────────────
+const P2_STATE = { sport:'', year:'', brand:'', set:'', subset:'', card:'', cardNum:'', variant:'', grade:'PSA 10' };
+const P2_SAMPLE = {
+  years:  ['2026','2025','2024','2023','2022','2021','2020'],
+  brands: ['Topps','Bowman','Panini','Donruss','Stadium Club'],
+  sets: [
+    {year:'2025', name:'Topps Chrome',         meta:'220 base · 47 inserts · 38 parallels'},
+    {year:'2025', name:'Topps Chrome Update',  meta:'200 base · 22 inserts'},
+    {year:'2025', name:'Topps Series 1',       meta:'350 base · 60 inserts'},
+    {year:'2025', name:'Topps Series 2',       meta:'350 base · 55 inserts'},
+    {year:'2025', name:'Topps Heritage',       meta:'500 base · 30 inserts'},
+    {year:'2025', name:'Topps Stadium Club',   meta:'300 base · 50 inserts'}
+  ],
+  cards: [
+    {num:'#1',     player:'Shohei Ohtani',    cat:'Base',   subset:'',                      rookie:false},
+    {num:'#10',    player:'Aaron Judge',      cat:'Base',   subset:'',                      rookie:false},
+    {num:'#25',    player:'Paul Skenes',      cat:'Base',   subset:'',                      rookie:true },
+    {num:'#50',    player:'Jackson Holliday', cat:'Base',   subset:'',                      rookie:true },
+    {num:'#100',   player:'Mike Trout',       cat:'Base',   subset:'',                      rookie:false},
+    {num:'#150',   player:'Bobby Witt Jr.',   cat:'Base',   subset:'',                      rookie:false},
+    {num:'#175',   player:'Ronald Acuña Jr.', cat:'Base',   subset:'',                      rookie:false},
+    {num:'TP-1',   player:'Shohei Ohtani',    cat:'Insert', subset:'Topps Profile',         rookie:false},
+    {num:'TP-2',   player:'Aaron Judge',      cat:'Insert', subset:'Topps Profile',         rookie:false},
+    {num:'TP-3',   player:'Paul Skenes',      cat:'Insert', subset:'Topps Profile',         rookie:true },
+    {num:'89TR-5', player:'Mike Trout',       cat:'Insert', subset:'1989 Topps Reimagined', rookie:false},
+    {num:'FS-12',  player:'Jackson Holliday', cat:'Insert', subset:'Future Stars',          rookie:true },
+    {num:'HRC-3',  player:'Aaron Judge',      cat:'Insert', subset:'Home Run Challenge',    rookie:false}
+  ],
+  variants: [
+    {name:'BASE',         meta:'Unnumbered', color:'#fff'},
+    {name:'REFRACTOR',    meta:'Unnumbered', color:'linear-gradient(90deg,#00AAFF,#FFB84D)'},
+    {name:'AUTO',         meta:'On-card / sticker', color:'linear-gradient(90deg,#00AAFF,#00E887)'},
+    {name:'BLUE',         meta:'/150',       color:'#00AAFF'},
+    {name:'GREEN',        meta:'/99',        color:'#00E887'},
+    {name:'GOLD',         meta:'/50',        color:'#FFB84D'},
+    {name:'ORANGE',       meta:'/25',        color:'#FF7733'},
+    {name:'RED',          meta:'/5',         color:'#FF3B5C'},
+    {name:'SUPERFRACTOR', meta:'1/1',        color:'linear-gradient(90deg,#FFB84D,#FFFFFF,#FFB84D)'},
+    {name:'OTHER',        meta:'Admin will build this variant', color:'repeating-linear-gradient(45deg,#7A95AE,#7A95AE 4px,#143050 4px,#143050 8px)', isOther:true}
+  ]
+};
+
+function p2Init(){
+  Object.assign(P2_STATE,{sport:'',year:'',brand:'',set:'',subset:'',card:'',cardNum:'',variant:'',grade:'PSA 10'});
+  p2RenderSportGrid();
+  p2Go(1);
+}
+
+function p2Go(step){
+  // Hide all sub-panels
+  document.querySelectorAll('#panel-post .sp').forEach(el=>el.classList.remove('active'));
+  const target = document.getElementById('p2sp'+step);
+  if(target) target.classList.add('active');
+  // Step bar (steps 1-8 visible; freeform reuses step 7's circle, review = 8)
+  for(let i=1;i<=8;i++){
+    const c = document.getElementById('p2sc'+i);
+    const t = document.getElementById('p2st'+i);
+    if(!c||!t) continue;
+    c.classList.remove('now','done','soon');
+    t.classList.remove('now');
+    const stepNum = step === 9 ? 8 : (step === 8 ? 7 : step); // freeform = grade slot, review = 8
+    if(i < stepNum){ c.classList.add('done'); }
+    else if(i === stepNum){ c.classList.add('now'); t.classList.add('now'); }
+    else { c.classList.add('soon'); }
+  }
+}
+
+function p2RenderSportGrid(){
+  const g = document.getElementById('p2SportGrid');
+  if(!g) return;
+  g.innerHTML = '';
+  IV_SPORTS.forEach(s=>{
+    const sets = (typeof IV_SETS !== 'undefined') ? IV_SETS.filter(x=>x.sport===s.id) : [];
+    const count = sets.length ? sets.length+' sets' : '';
+    const tile = document.createElement('div');
+    tile.className = s.active ? 'iv-sport-tile' : 'iv-sport-tile inactive';
+    tile.innerHTML = (s.active ? '<div class="iv-sport-badge">LIVE</div>' : '')
+      + '<div class="iv-sport-emoji">'+s.emoji+'</div>'
+      + '<div class="iv-sport-name">'+s.label+'</div>'
+      + '<div class="iv-sport-count">'+(s.active ? count : 'Coming soon')+'</div>';
+    if(s.active){
+      tile.style.cursor='pointer';
+      tile.addEventListener('click',()=>p2PickSport(s));
+    }
+    g.appendChild(tile);
+  });
+}
+
+function p2PickSport(s){
+  P2_STATE.sport = s.label;
+  P2_STATE.sportId = s.id;
+  p2RenderYearPills();
+  p2Go(2);
+}
+
+function p2RenderYearPills(){
+  const wrap = document.getElementById('p2YearPills');
+  if(!wrap) return;
+  wrap.innerHTML = '';
+  P2_SAMPLE.years.forEach(y=>{
+    const p = document.createElement('div');
+    p.className = 'iv-pill';
+    p.textContent = y;
+    p.onclick = ()=>{ P2_STATE.year = y; p2RenderBrandPills(); p2Go(3); };
+    wrap.appendChild(p);
+  });
+}
+
+function p2RenderBrandPills(){
+  const wrap = document.getElementById('p2BrandPills');
+  if(!wrap) return;
+  wrap.innerHTML = '';
+  P2_SAMPLE.brands.forEach(b=>{
+    const p = document.createElement('div');
+    p.className = 'iv-pill';
+    p.textContent = b;
+    p.onclick = ()=>{ P2_STATE.brand = b; p2RenderSetGrid(); p2Go(4); };
+    wrap.appendChild(p);
+  });
+}
+
+function p2RenderSetGrid(){
+  const grid = document.getElementById('p2SetGrid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  P2_SAMPLE.sets.forEach(s=>{
+    const tile = document.createElement('div');
+    tile.className = 'iv-set-tile';
+    tile.style.cursor = 'pointer';
+    tile.innerHTML =
+        '<div style="font-family:Bebas Neue,sans-serif;font-size:12px;letter-spacing:1.5px;color:var(--blue)">'+s.year+'</div>'
+      + '<div style="font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:1px;color:var(--white);margin:3px 0">'+s.name.toUpperCase()+'</div>'
+      + '<div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text)">'+s.meta+'</div>';
+    tile.onclick = ()=>{
+      P2_STATE.set = s.year+' '+s.name;
+      const titleEl = document.getElementById('p2CardStepTitle');
+      if(titleEl) titleEl.textContent = 'SELECT CARD — '+(s.year+' '+s.name).toUpperCase();
+      p2RenderSubsetPills();
+      p2RenderCardList();
+      p2Go(5);
+    };
+    grid.appendChild(tile);
+  });
+}
+
+function p2RenderSubsetPills(){
+  const wrap = document.getElementById('p2SubsetPills');
+  if(!wrap) return;
+  wrap.innerHTML = '';
+  // Distinct subset names from current set's cards
+  const subs = Array.from(new Set(P2_SAMPLE.cards.filter(c=>c.subset).map(c=>c.subset)));
+  const all = document.createElement('div');
+  all.className = 'iv-pill active';
+  all.textContent = 'All Cards';
+  all.onclick = ()=>p2SubsetFilter('all', all);
+  wrap.appendChild(all);
+  subs.forEach(name=>{
+    const p = document.createElement('div');
+    p.className = 'iv-pill';
+    p.textContent = name;
+    p.onclick = ()=>p2SubsetFilter(name, p);
+    wrap.appendChild(p);
+  });
+}
+
+function p2RenderCardList(){
+  const list = document.getElementById('p2CardList');
+  if(!list) return;
+  list.innerHTML = '';
+  P2_SAMPLE.cards.forEach(c=>{
+    const row = document.createElement('div');
+    row.className = 'p2-card-row';
+    row.setAttribute('data-subset', c.subset || '');
+    row.setAttribute('data-cat', c.cat || '');
+    row.setAttribute('data-search', (c.num+' '+c.player).toLowerCase());
+    row.style.cssText = 'display:flex;gap:12px;align-items:center;padding:9px 12px;background:var(--deep2);border:1px solid var(--deep-border);border-radius:7px;cursor:pointer;transition:all .15s';
+    const tagHTML =
+        (c.rookie ? '<span style="font-size:9px;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:rgba(255,184,77,.1);color:#FFB84D;border:1px solid rgba(255,184,77,.25)">RC</span>' : '')
+      + '<span style="font-size:9px;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:rgba(0,170,255,.1);color:var(--blue);border:1px solid rgba(0,170,255,.2);margin-left:4px">'+(c.subset || c.cat)+'</span>';
+    row.innerHTML =
+        '<div style="font-family:Bebas Neue,sans-serif;font-size:13px;color:var(--blue);min-width:48px">'+c.num+'</div>'
+      + '<div style="flex:1;font-size:14px;color:var(--white)">'+c.player+'</div>'
+      + '<div style="display:flex;gap:5px">'+tagHTML+'</div>';
+    row.onmouseover = ()=>{ row.style.borderColor='var(--blue)'; row.style.background='rgba(0,170,255,.06)'; };
+    row.onmouseout  = ()=>{ row.style.borderColor='var(--deep-border)'; row.style.background='var(--deep2)'; };
+    row.onclick = ()=>p2PickCard(c);
+    list.appendChild(row);
+  });
+}
+
+function p2FilterCards(q){
+  q = (q||'').toLowerCase();
+  document.querySelectorAll('#p2CardList .p2-card-row').forEach(r=>{
+    r.style.display = r.getAttribute('data-search').includes(q) ? '' : 'none';
+  });
+}
+
+function p2CatFilter(cat, el){
+  document.querySelectorAll('#p2CatPills .iv-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#p2CardList .p2-card-row').forEach(r=>{
+    if(cat === 'all') { r.style.display = ''; return; }
+    if(cat === 'Rookie') { r.style.display = r.querySelector('span') && r.innerHTML.includes('>RC<') ? '' : 'none'; return; }
+    r.style.display = r.getAttribute('data-cat') === cat ? '' : 'none';
+  });
+}
+
+function p2SubsetFilter(name, el){
+  document.querySelectorAll('#p2SubsetPills .iv-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#p2CardList .p2-card-row').forEach(r=>{
+    const sub = r.getAttribute('data-subset') || '';
+    if(name === 'all') { r.style.display = ''; }
+    else { r.style.display = sub === name ? '' : 'none'; }
+  });
+}
+
+function p2PickCard(c){
+  P2_STATE.card    = c.player;
+  P2_STATE.cardNum = c.num;
+  P2_STATE.subset  = c.subset || '';
+  const t = document.getElementById('p2VarStepTitle');
+  if(t) t.textContent = 'SELECT VARIANT — '+c.num+' '+c.player.toUpperCase();
+  p2RenderVariantGrid();
+  // Reset variant + disable Next until one chosen
+  P2_STATE.variant = '';
+  const nextBtn = document.getElementById('p2VarNextBtn');
+  if(nextBtn){ nextBtn.disabled = true; nextBtn.style.opacity='.5'; nextBtn.style.cursor='not-allowed'; }
+  p2Go(6);
+}
+
+function p2RenderVariantGrid(){
+  const grid = document.getElementById('p2VarGrid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  P2_SAMPLE.variants.forEach(v=>{
+    const tile = document.createElement('div');
+    tile.className = 'p2-var-tile';
+    tile.style.cssText = 'padding:12px;background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;cursor:pointer;transition:all .15s';
+    if(v.isOther){ tile.style.borderStyle='dashed'; }
+    tile.innerHTML =
+        '<div style="height:4px;border-radius:2px;margin-bottom:8px;background:'+v.color+'"></div>'
+      + '<div style="font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:.8px;color:'+(v.isOther?'var(--gold,#FFB84D)':'var(--white)')+'">'+v.name+'</div>'
+      + '<div style="font-size:11px;color:var(--muted-text);margin-top:2px">'+v.meta+'</div>';
+    tile.onclick = ()=>p2PickVariant(v, tile);
+    grid.appendChild(tile);
+  });
+  // Inline note + freeform input for OTHER, hidden until selected
+  let noteWrap = document.getElementById('p2OtherWrap');
+  if(!noteWrap){
+    noteWrap = document.createElement('div');
+    noteWrap.id = 'p2OtherWrap';
+    noteWrap.style.cssText = 'display:none;margin-top:14px;padding:12px 14px;background:rgba(255,184,77,0.08);border:1px solid rgba(255,184,77,0.3);border-radius:8px';
+    noteWrap.innerHTML =
+        '<div style="font-family:Bebas Neue,sans-serif;font-size:12px;letter-spacing:1.2px;color:#FFB84D;margin-bottom:6px">DESCRIBE THE VARIANT</div>'
+      + '<div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-bottom:8px">Admin will review and add this parallel to the catalog. Your ISO posts immediately and gets matched once the variant is built.</div>'
+      + '<input class="fc" id="p2OtherDesc" placeholder="e.g. Pink Mojo Refractor /75, Black Shimmer SSP, Jersey #/10..." oninput="P2_STATE.variantOther=this.value">';
+    grid.parentNode.insertBefore(noteWrap, grid.nextSibling);
+  }
+}
+
+function p2PickVariant(v, el){
+  // Detect serial-numbered variants (meta like "/50", "/99", "1/1")
+  const isSerialNumbered = !!(v.meta && /\/\d+|\d+\/\d+/.test(v.meta));
+  P2_STATE.variantPrintRun = isSerialNumbered ? v.meta : '';
+  if(v.isOther){
+    P2_STATE.variant = 'OTHER (admin to build)';
+    P2_STATE.variantOther = document.getElementById('p2OtherDesc')?.value || '';
+    P2_STATE.variantPrintRun = ''; // unknown until admin builds it
+    const nw = document.getElementById('p2OtherWrap');
+    if(nw){ nw.style.display=''; setTimeout(()=>{ const i=document.getElementById('p2OtherDesc'); if(i) i.focus(); }, 50); }
+  } else {
+    P2_STATE.variant = v.name + (v.meta && v.meta !== 'Unnumbered' && v.meta !== 'On-card / sticker' ? ' '+v.meta : '');
+    P2_STATE.variantOther = '';
+    const nw = document.getElementById('p2OtherWrap');
+    if(nw) nw.style.display='none';
+  }
+  // Show serial input on grade/price step if applicable
+  const sw = document.getElementById('p2SerialWrap');
+  const sl = document.getElementById('p2SerialLabel');
+  if(sw){
+    if(isSerialNumbered || v.isOther){
+      sw.style.display = '';
+      if(sl) sl.textContent = isSerialNumbered
+        ? ('SERIAL # (YOUR COPY OF '+v.meta+')')
+        : 'SERIAL # (IF SERIAL-NUMBERED)';
+    } else {
+      sw.style.display = 'none';
+      P2_STATE.serial = '';
+      const si = document.getElementById('p2Serial'); if(si) si.value='';
+    }
+  }
+  document.querySelectorAll('#p2VarGrid .p2-var-tile').forEach(t=>{
+    t.style.borderColor='var(--deep-border)';
+    t.style.background='var(--deep2)';
+  });
+  el.style.borderColor= v.isOther ? '#FFB84D' : 'var(--blue)';
+  el.style.background= v.isOther ? 'rgba(255,184,77,.1)' : 'rgba(0,170,255,.1)';
+  const nextBtn = document.getElementById('p2VarNextBtn');
+  if(nextBtn){ nextBtn.disabled = false; nextBtn.style.opacity='1'; nextBtn.style.cursor='pointer'; }
+}
+
+function p2SelGrade(el){
+  document.querySelectorAll('#p2sp7 .gt').forEach(t=>t.classList.remove('sel'));
+  el.classList.add('sel');
+  P2_STATE.grade = el.textContent;
+}
+
+function p2GoReview(){
+  document.getElementById('p2RSport').textContent = P2_STATE.sport || '—';
+  document.getElementById('p2RYear').textContent  = P2_STATE.year  || '—';
+  document.getElementById('p2RBrand').textContent = P2_STATE.brand || '—';
+  document.getElementById('p2RSet').textContent   = P2_STATE.set   || '—';
+  const subRow = document.getElementById('p2RSubsetRow');
+  if(P2_STATE.subset){
+    subRow.style.display = '';
+    document.getElementById('p2RSubset').textContent = P2_STATE.subset;
+  } else {
+    subRow.style.display = 'none';
+  }
+  document.getElementById('p2RCard').textContent  = (P2_STATE.cardNum ? P2_STATE.cardNum+' ' : '') + (P2_STATE.card || '—');
+  document.getElementById('p2RVar').textContent   = P2_STATE.variant || '—';
+  // Serial #
+  const serRow = document.getElementById('p2RSerialRow');
+  const serVal = document.getElementById('p2Serial')?.value || '';
+  if(serVal){
+    serRow.style.display = '';
+    document.getElementById('p2RSerial').textContent = '#' + serVal + (P2_STATE.variantPrintRun ? ' of ' + P2_STATE.variantPrintRun : '');
+    P2_STATE.serial = serVal;
+  } else {
+    serRow.style.display = 'none';
+  }
+  document.getElementById('p2RGrade').textContent = P2_STATE.grade;
+  const mn = document.getElementById('p2MinP')?.value || '';
+  const mx = document.getElementById('p2MaxP')?.value || '';
+  document.getElementById('p2RPrice').textContent = mn && mx ? '$'+mn+'–$'+mx : mx ? 'Up to $'+mx : mn ? 'Min $'+mn : '—';
+  p2Go(9);
 }
 
 function isoSelectSport(sportDef){
@@ -4616,7 +5115,7 @@ async function submitISO(){
     const credEl = document.getElementById('credits-value');
     const credSub = document.getElementById('credits-sub');
     if(credEl) credEl.textContent = currentCredits - 1;
-    if(credSub) credSub.textContent = `$5 per post · ${currentCredits - 1} left`;
+    if(credSub) credSub.textContent = `$1 per post · ${currentCredits - 1} left`;
 
     T(`ISO posted — ${ISO.player} · ${ISO.card.parallel} · 1 credit used`);
     ISO={sport:'Baseball',player:null,card:null,grade:'PSA 10'};

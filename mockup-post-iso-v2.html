@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Post ISO v2 — ISOVault-Style Flow Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#00AAFF; --blue-bright:#33CCFF; --blue-glow:rgba(0,170,255,0.35);
+  --deep:#0a1220; --deep1:#0D1F33; --deep2:#112840; --deep3:#143050;
+  --deep-border:rgba(0,170,255,0.15);
+  --white:#FFFFFF; --chrome:#B0BEC5; --muted:#7A95AE;
+  --green:#00E887; --red:#FF3B5C; --gold:#FFB84D;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--deep);color:var(--white);font-family:'Barlow Condensed',sans-serif;padding:24px}
+.wrap{max-width:1100px;margin:0 auto}
+h1{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;color:var(--blue);margin-bottom:6px}
+.sub{font-size:14px;color:var(--muted);margin-bottom:18px}
+.note{font-size:13px;color:var(--chrome);padding:12px 14px;background:rgba(0,170,255,0.06);border:1px solid var(--deep-border);border-radius:8px;margin-bottom:22px;line-height:1.55}
+.note strong{color:var(--blue)}
+
+/* Step bar */
+.step-bar{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;padding:18px 16px;background:var(--deep1);border:1px solid var(--deep-border);border-radius:10px;margin-bottom:18px}
+.step-item{display:flex;align-items:center;gap:6px}
+.step-circle{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;border:1.5px solid var(--deep-border);background:var(--deep2);color:var(--muted)}
+.step-circle.now{border-color:var(--blue);background:var(--blue);color:#000}
+.step-circle.done{border-color:var(--green);background:var(--green);color:#000}
+.step-text{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:1.2px;color:var(--muted);text-transform:uppercase}
+.step-text.now{color:var(--white)}
+.step-line{width:18px;height:1px;background:var(--deep-border)}
+
+/* Panel shell */
+.panel{background:var(--deep1);border:1px solid var(--deep-border);border-radius:12px;padding:22px;margin-bottom:18px;display:none}
+.panel.active{display:block}
+.panel-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--white);margin-bottom:4px}
+.panel-sub{font-size:13px;color:var(--muted);margin-bottom:18px}
+
+/* Hero (sport selector) */
+.iv-hero{text-align:center;padding:14px 0 24px}
+.iv-hero-title{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:6px;color:var(--white);text-shadow:0 0 30px var(--blue-glow)}
+.iv-hero-sub{font-size:13px;color:var(--muted);letter-spacing:1.5px;margin-top:4px}
+.iv-global-wrap{display:flex;align-items:center;gap:10px;background:var(--deep2);border:1px solid rgba(0,170,255,0.3);border-radius:10px;padding:0 14px;max-width:520px;margin:18px auto 6px}
+.iv-global-wrap input{flex:1;background:none;border:none;outline:none;font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--white);padding:13px 6px}
+.iv-search-icon{width:14px;height:14px;border:2px solid var(--muted);border-radius:50%;position:relative;flex-shrink:0}
+.iv-search-icon::after{content:'';position:absolute;width:7px;height:2px;background:var(--muted);transform:rotate(45deg);right:-5px;bottom:-1px}
+
+.section-label{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:var(--blue);margin:14px 0 10px}
+
+/* Sport grid */
+.iv-sport-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:8px}
+.iv-sport-tile{background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:18px 10px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.iv-sport-tile:hover{border-color:rgba(0,170,255,.5);transform:translateY(-2px);background:rgba(0,170,255,.06)}
+.iv-sport-tile.inactive{opacity:.38;cursor:not-allowed}
+.iv-sport-tile.inactive:hover{transform:none;border-color:var(--deep-border);background:var(--deep2)}
+.iv-sport-emoji{font-size:28px;margin-bottom:6px}
+.iv-sport-name{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--white)}
+.iv-sport-count{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted);margin-top:2px}
+.iv-sport-badge{position:absolute;top:7px;right:7px;background:var(--green);color:#000;font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 5px;border-radius:3px}
+
+/* Filter row */
+.iv-filter-row{display:flex;gap:18px;margin-bottom:14px;flex-wrap:wrap}
+.iv-filter-group{flex:1;min-width:240px}
+.iv-filter-label{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--muted);margin-bottom:6px}
+.iv-pill-row{display:flex;gap:6px;flex-wrap:wrap}
+.iv-pill{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.5px;padding:6px 12px;border-radius:14px;background:var(--deep2);border:1px solid var(--deep-border);color:var(--chrome);cursor:pointer;transition:all .15s}
+.iv-pill:hover{border-color:var(--blue)}
+.iv-pill.active{background:var(--blue);color:#000;border-color:var(--blue)}
+
+/* Set tiles */
+.iv-set-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.iv-set-tile{background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;padding:14px;cursor:pointer;transition:all .2s}
+.iv-set-tile:hover{border-color:var(--blue);background:rgba(0,170,255,.05);transform:translateY(-1px)}
+.iv-set-year{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:1.5px;color:var(--blue)}
+.iv-set-name{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--white);margin:3px 0}
+.iv-set-meta{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted)}
+
+/* Card list */
+.iv-card-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--deep-border)}
+.iv-card-search{flex:1;min-width:220px;display:flex;align-items:center;gap:8px;background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;padding:0 12px}
+.iv-card-search input{flex:1;background:none;border:none;outline:none;color:var(--white);font-family:'Barlow Condensed',sans-serif;font-size:13px;padding:9px 0}
+.iv-card-list{display:flex;flex-direction:column;gap:6px;max-height:520px;overflow-y:auto}
+.iv-card-row{display:flex;gap:12px;align-items:center;padding:9px 12px;background:var(--deep2);border:1px solid var(--deep-border);border-radius:7px;cursor:pointer;transition:all .15s}
+.iv-card-row:hover{border-color:var(--blue);background:rgba(0,170,255,.06)}
+.iv-card-num{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--blue);min-width:42px}
+.iv-card-name{flex:1;font-size:14px;color:var(--white)}
+.iv-card-tags{display:flex;gap:5px}
+.iv-card-tag{font-size:9px;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:rgba(0,170,255,.1);color:var(--blue);border:1px solid rgba(0,170,255,.2)}
+.iv-card-tag.rookie{background:rgba(255,184,77,.1);color:var(--gold);border-color:rgba(255,184,77,.25)}
+
+/* Variant picker */
+.var-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.var-tile{padding:12px;background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;cursor:pointer;transition:all .15s;position:relative}
+.var-tile:hover{border-color:var(--blue)}
+.var-tile.sel{border-color:var(--blue);background:rgba(0,170,255,.1)}
+.var-tile-color{height:4px;border-radius:2px;margin-bottom:8px}
+.var-tile-name{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:.8px;color:var(--white)}
+.var-tile-meta{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* Grade tiles */
+.grade-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px}
+.gt{padding:14px 8px;text-align:center;background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;color:var(--chrome);cursor:pointer;transition:all .15s}
+.gt:hover{border-color:var(--blue)}
+.gt.sel{background:var(--blue);color:#000;border-color:var(--blue)}
+
+/* Form */
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fg{margin-bottom:14px}
+.fl{display:block;font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--muted);margin-bottom:6px}
+.fc{width:100%;background:var(--deep2);border:1px solid var(--deep-border);border-radius:7px;padding:10px 12px;color:var(--white);font-family:'Barlow Condensed',sans-serif;font-size:14px;outline:none}
+.fc:focus{border-color:var(--blue)}
+
+/* Review */
+.iso-sum{background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:16px;margin-bottom:14px}
+.is-title{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--blue);margin-bottom:10px}
+.is-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--deep-border);font-size:13px}
+.is-row:last-child{border-bottom:none}
+.is-label{color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-size:11px}
+.is-val{color:var(--white)}
+
+/* Buttons */
+.btn{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:9px 18px;border-radius:6px;border:none;cursor:pointer;transition:all .15s}
+.btn-primary{background:var(--blue);color:#000}
+.btn-primary:hover{background:var(--blue-bright)}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--deep-border)}
+.btn-ghost:hover{color:var(--white);border-color:var(--blue)}
+.row-end{display:flex;justify-content:space-between;margin-top:18px;gap:10px}
+
+/* "Can't find" fallback */
+.fallback-link{display:inline-block;margin-top:14px;font-size:12px;color:var(--blue);cursor:pointer;border-bottom:1px dashed var(--blue)}
+.fallback-link:hover{color:var(--blue-bright)}
+
+@media(max-width:720px){
+  .iv-sport-grid{grid-template-columns:repeat(3,1fr)}
+  .iv-set-grid{grid-template-columns:1fr}
+  .grade-tiles{grid-template-columns:repeat(2,1fr)}
+  .dgrid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>POST ISO v2 — ISOVault-Style Flow</h1>
+  <div class="sub">Mockup only — no DB writes. Click through the 7 steps to evaluate the UX.</div>
+  <div class="note">
+    <strong>What changed:</strong> Replaces the player-search-first flow (which returned hundreds of results across every set & variant) with the same Sport &rarr; Year &rarr; Brand &rarr; Set &rarr; Card &rarr; Variant browse the user already knows from ISOVault. A "Can't find your card?" fallback covers anything not yet in the catalog.<br>
+    <strong>Note:</strong> Sample data here is hardcoded. The real build will pull from the same per-set tables ISOVault already uses.
+  </div>
+
+  <!-- STEP BAR -->
+  <div class="step-bar" id="stepBar"></div>
+
+  <!-- STEP 1 — Sport -->
+  <div class="panel active" id="p1">
+    <div class="iv-hero">
+      <div class="iv-hero-title">SELECT SPORT</div>
+      <div class="iv-hero-sub">Same grid as ISOVault home</div>
+    </div>
+    <div class="iv-sport-grid">
+      <div class="iv-sport-tile" onclick="pickSport('Baseball')"><div class="iv-sport-badge">LIVE</div><div class="iv-sport-emoji">⚾</div><div class="iv-sport-name">BASEBALL</div><div class="iv-sport-count">12,400 cards</div></div>
+      <div class="iv-sport-tile" onclick="pickSport('Basketball')"><div class="iv-sport-badge">LIVE</div><div class="iv-sport-emoji">🏀</div><div class="iv-sport-name">BASKETBALL</div><div class="iv-sport-count">9,820 cards</div></div>
+      <div class="iv-sport-tile" onclick="pickSport('Football')"><div class="iv-sport-badge">LIVE</div><div class="iv-sport-emoji">🏈</div><div class="iv-sport-name">FOOTBALL</div><div class="iv-sport-count">7,140 cards</div></div>
+      <div class="iv-sport-tile" onclick="pickSport('Pokémon')"><div class="iv-sport-badge">LIVE</div><div class="iv-sport-emoji">⚡</div><div class="iv-sport-name">POKÉMON</div><div class="iv-sport-count">5,210 cards</div></div>
+      <div class="iv-sport-tile" onclick="pickSport('MTG')"><div class="iv-sport-badge">LIVE</div><div class="iv-sport-emoji">🔮</div><div class="iv-sport-name">MTG</div><div class="iv-sport-count">54,335 cards</div></div>
+    </div>
+  </div>
+
+  <!-- STEP 2 — Year -->
+  <div class="panel" id="p2">
+    <div class="panel-title">SELECT YEAR</div>
+    <div class="panel-sub">Pick the release year. (In the real build, year pills come from <code>iv_sets</code> filtered by sport.)</div>
+    <div class="iv-pill-row" style="gap:8px">
+      <div class="iv-pill" onclick="pickYear('2026')">2026</div>
+      <div class="iv-pill active" onclick="pickYear('2025')">2025</div>
+      <div class="iv-pill" onclick="pickYear('2024')">2024</div>
+      <div class="iv-pill" onclick="pickYear('2023')">2023</div>
+      <div class="iv-pill" onclick="pickYear('2022')">2022</div>
+      <div class="iv-pill" onclick="pickYear('2021')">2021</div>
+      <div class="iv-pill" onclick="pickYear('2020')">2020</div>
+    </div>
+    <div class="row-end"><button class="btn btn-ghost" onclick="goStep(1)">← Sport</button><button class="btn btn-primary" onclick="goStep(3)">Next: Brand →</button></div>
+  </div>
+
+  <!-- STEP 3 — Brand -->
+  <div class="panel" id="p3">
+    <div class="panel-title">SELECT BRAND</div>
+    <div class="panel-sub">Brands available for the chosen sport + year.</div>
+    <div class="iv-pill-row" style="gap:8px">
+      <div class="iv-pill active" onclick="pickBrand('Topps')">Topps</div>
+      <div class="iv-pill" onclick="pickBrand('Bowman')">Bowman</div>
+      <div class="iv-pill" onclick="pickBrand('Panini')">Panini</div>
+      <div class="iv-pill" onclick="pickBrand('Donruss')">Donruss</div>
+      <div class="iv-pill" onclick="pickBrand('Stadium Club')">Stadium Club</div>
+    </div>
+    <div class="row-end"><button class="btn btn-ghost" onclick="goStep(2)">← Year</button><button class="btn btn-primary" onclick="goStep(4)">Next: Set →</button></div>
+  </div>
+
+  <!-- STEP 4 — Set -->
+  <div class="panel" id="p4">
+    <div class="panel-title">SELECT SET</div>
+    <div class="panel-sub">Set tiles match ISOVault's set browser exactly.</div>
+    <div class="iv-set-grid">
+      <div class="iv-set-tile" onclick="pickSet('2025 Topps Chrome')"><div class="iv-set-year">2025</div><div class="iv-set-name">TOPPS CHROME</div><div class="iv-set-meta">220 base · 47 inserts · 38 parallels</div></div>
+      <div class="iv-set-tile" onclick="pickSet('2025 Topps Chrome Update')"><div class="iv-set-year">2025</div><div class="iv-set-name">TOPPS CHROME UPDATE</div><div class="iv-set-meta">200 base · 22 inserts</div></div>
+      <div class="iv-set-tile" onclick="pickSet('2025 Topps Series 1')"><div class="iv-set-year">2025</div><div class="iv-set-name">TOPPS SERIES 1</div><div class="iv-set-meta">350 base · 60 inserts</div></div>
+      <div class="iv-set-tile" onclick="pickSet('2025 Topps Series 2')"><div class="iv-set-year">2025</div><div class="iv-set-name">TOPPS SERIES 2</div><div class="iv-set-meta">350 base · 55 inserts</div></div>
+      <div class="iv-set-tile" onclick="pickSet('2025 Topps Heritage')"><div class="iv-set-year">2025</div><div class="iv-set-name">TOPPS HERITAGE</div><div class="iv-set-meta">500 base · 30 inserts</div></div>
+      <div class="iv-set-tile" onclick="pickSet('2025 Topps Stadium Club')"><div class="iv-set-year">2025</div><div class="iv-set-name">STADIUM CLUB</div><div class="iv-set-meta">300 base · 50 inserts</div></div>
+    </div>
+    <div class="row-end"><button class="btn btn-ghost" onclick="goStep(3)">← Brand</button><span></span></div>
+    <div style="text-align:center;margin-top:12px"><span class="fallback-link" onclick="goStep(8)">Can't find your set? Use freeform entry →</span></div>
+  </div>
+
+  <!-- STEP 5 — Card in set -->
+  <div class="panel" id="p5">
+    <div class="panel-title" id="p5Title">SELECT CARD — 2025 TOPPS CHROME</div>
+    <div class="panel-sub">Same card list as ISOVault: search by player or card #, filter by category.</div>
+    <div class="iv-card-toolbar">
+      <div class="iv-card-search">
+        <span class="iv-search-icon"></span>
+        <input type="text" placeholder="Search player or card #..." oninput="filterCards(this.value)">
+      </div>
+      <div class="iv-pill-row" style="gap:6px">
+        <div class="iv-pill active" onclick="catFilter('all',this)">All</div>
+        <div class="iv-pill" onclick="catFilter('Base',this)">Base</div>
+        <div class="iv-pill" onclick="catFilter('Insert',this)">Inserts</div>
+        <div class="iv-pill" onclick="catFilter('Auto',this)">Autos</div>
+        <div class="iv-pill" onclick="catFilter('Rookie',this)">Rookies</div>
+      </div>
+    </div>
+    <!-- Subset selector — appears when an insert/subset exists in this set -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--muted)">SUBSET / INSERT:</span>
+      <div class="iv-pill-row" id="subsetPills" style="gap:6px">
+        <div class="iv-pill active" onclick="subsetFilter('all',this)">All Cards</div>
+        <div class="iv-pill" onclick="subsetFilter('Topps Profile',this)">Topps Profile</div>
+        <div class="iv-pill" onclick="subsetFilter('1989 Topps Reimagined',this)">1989 Topps Reimagined</div>
+        <div class="iv-pill" onclick="subsetFilter('Future Stars',this)">Future Stars</div>
+        <div class="iv-pill" onclick="subsetFilter('Home Run Challenge',this)">Home Run Challenge</div>
+      </div>
+    </div>
+    <div class="iv-card-list" id="cardList">
+      <div class="iv-card-row" onclick="pickCard('Shohei Ohtani','#1')"><div class="iv-card-num">#1</div><div class="iv-card-name">Shohei Ohtani</div><div class="iv-card-tags"><span class="iv-card-tag">Base</span></div></div>
+      <div class="iv-card-row" onclick="pickCard('Aaron Judge','#10')"><div class="iv-card-num">#10</div><div class="iv-card-name">Aaron Judge</div><div class="iv-card-tags"><span class="iv-card-tag">Base</span></div></div>
+      <div class="iv-card-row" onclick="pickCard('Paul Skenes','#25')"><div class="iv-card-num">#25</div><div class="iv-card-name">Paul Skenes</div><div class="iv-card-tags"><span class="iv-card-tag rookie">RC</span><span class="iv-card-tag">Base</span></div></div>
+      <div class="iv-card-row" onclick="pickCard('Jackson Holliday','#50')"><div class="iv-card-num">#50</div><div class="iv-card-name">Jackson Holliday</div><div class="iv-card-tags"><span class="iv-card-tag rookie">RC</span><span class="iv-card-tag">Base</span></div></div>
+      <div class="iv-card-row" onclick="pickCard('Mike Trout','#100')"><div class="iv-card-num">#100</div><div class="iv-card-name">Mike Trout</div><div class="iv-card-tags"><span class="iv-card-tag">Base</span></div></div>
+      <div class="iv-card-row" onclick="pickCard('Bobby Witt Jr.','#150')"><div class="iv-card-num">#150</div><div class="iv-card-name">Bobby Witt Jr.</div><div class="iv-card-tags"><span class="iv-card-tag">Base</span></div></div>
+      <div class="iv-card-row" onclick="pickCard('Ronald Acuña Jr.','#175')"><div class="iv-card-num">#175</div><div class="iv-card-name">Ronald Acuña Jr.</div><div class="iv-card-tags"><span class="iv-card-tag">Base</span></div></div>
+      <!-- Subset / insert rows -->
+      <div class="iv-card-row" data-subset="Topps Profile" onclick="pickCard('Shohei Ohtani','TP-1')"><div class="iv-card-num">TP-1</div><div class="iv-card-name">Shohei Ohtani</div><div class="iv-card-tags"><span class="iv-card-tag">Topps Profile</span></div></div>
+      <div class="iv-card-row" data-subset="Topps Profile" onclick="pickCard('Aaron Judge','TP-2')"><div class="iv-card-num">TP-2</div><div class="iv-card-name">Aaron Judge</div><div class="iv-card-tags"><span class="iv-card-tag">Topps Profile</span></div></div>
+      <div class="iv-card-row" data-subset="Topps Profile" onclick="pickCard('Paul Skenes','TP-3')"><div class="iv-card-num">TP-3</div><div class="iv-card-name">Paul Skenes</div><div class="iv-card-tags"><span class="iv-card-tag rookie">RC</span><span class="iv-card-tag">Topps Profile</span></div></div>
+      <div class="iv-card-row" data-subset="1989 Topps Reimagined" onclick="pickCard('Mike Trout','89TR-5')"><div class="iv-card-num">89TR-5</div><div class="iv-card-name">Mike Trout</div><div class="iv-card-tags"><span class="iv-card-tag">1989 Reimagined</span></div></div>
+      <div class="iv-card-row" data-subset="Future Stars" onclick="pickCard('Jackson Holliday','FS-12')"><div class="iv-card-num">FS-12</div><div class="iv-card-name">Jackson Holliday</div><div class="iv-card-tags"><span class="iv-card-tag rookie">RC</span><span class="iv-card-tag">Future Stars</span></div></div>
+      <div class="iv-card-row" data-subset="Home Run Challenge" onclick="pickCard('Aaron Judge','HRC-3')"><div class="iv-card-num">HRC-3</div><div class="iv-card-name">Aaron Judge</div><div class="iv-card-tags"><span class="iv-card-tag">HR Challenge</span></div></div>
+    </div>
+    <div class="row-end"><button class="btn btn-ghost" onclick="goStep(4)">← Set</button><span></span></div>
+    <div style="text-align:center;margin-top:12px"><span class="fallback-link" onclick="goStep(8)">Can't find your card? Use freeform entry →</span></div>
+  </div>
+
+  <!-- STEP 6 — Variant -->
+  <div class="panel" id="p6">
+    <div class="panel-title" id="p6Title">SELECT VARIANT</div>
+    <div class="panel-sub">Same parallel/variant list as ISOVault. Pick the exact version you want.</div>
+    <div class="var-grid">
+      <div class="var-tile sel" onclick="pickVariant('Base',this)"><div class="var-tile-color" style="background:#fff"></div><div class="var-tile-name">BASE</div><div class="var-tile-meta">Unnumbered</div></div>
+      <div class="var-tile" onclick="pickVariant('Refractor',this)"><div class="var-tile-color" style="background:linear-gradient(90deg,#00AAFF,#FFB84D)"></div><div class="var-tile-name">REFRACTOR</div><div class="var-tile-meta">Unnumbered</div></div>
+      <div class="var-tile" onclick="pickVariant('Blue /150',this)"><div class="var-tile-color" style="background:#00AAFF"></div><div class="var-tile-name">BLUE</div><div class="var-tile-meta">/150</div></div>
+      <div class="var-tile" onclick="pickVariant('Green /99',this)"><div class="var-tile-color" style="background:#00E887"></div><div class="var-tile-name">GREEN</div><div class="var-tile-meta">/99</div></div>
+      <div class="var-tile" onclick="pickVariant('Gold /50',this)"><div class="var-tile-color" style="background:#FFB84D"></div><div class="var-tile-name">GOLD</div><div class="var-tile-meta">/50</div></div>
+      <div class="var-tile" onclick="pickVariant('Orange /25',this)"><div class="var-tile-color" style="background:#FF7733"></div><div class="var-tile-name">ORANGE</div><div class="var-tile-meta">/25</div></div>
+      <div class="var-tile" onclick="pickVariant('Red /5',this)"><div class="var-tile-color" style="background:#FF3B5C"></div><div class="var-tile-name">RED</div><div class="var-tile-meta">/5</div></div>
+      <div class="var-tile" onclick="pickVariant('SuperFractor 1/1',this)"><div class="var-tile-color" style="background:linear-gradient(90deg,#FFB84D,#FFFFFF,#FFB84D)"></div><div class="var-tile-name">SUPERFRACTOR</div><div class="var-tile-meta">1/1</div></div>
+    </div>
+    <div class="row-end"><button class="btn btn-ghost" onclick="goStep(5)">← Card</button><button class="btn btn-primary" onclick="goStep(7)">Next: Grade & Price →</button></div>
+  </div>
+
+  <!-- STEP 7 — Grade & Price -->
+  <div class="panel" id="p7">
+    <div class="panel-title">GRADE & PRICE</div>
+    <div class="panel-sub">Identical to current Post ISO step 4 — keep what already works.</div>
+    <div class="fl">ISO/GRADE Requirement</div>
+    <div class="grade-tiles">
+      <div class="gt" onclick="selGrade(this)">Raw Only</div>
+      <div class="gt" onclick="selGrade(this)">Any Grade</div>
+      <div class="gt" onclick="selGrade(this)">PSA 7+</div>
+      <div class="gt" onclick="selGrade(this)">PSA 8+</div>
+      <div class="gt" onclick="selGrade(this)">PSA 9+</div>
+      <div class="gt sel" onclick="selGrade(this)">PSA 10</div>
+      <div class="gt" onclick="selGrade(this)">BGS 9.5+</div>
+      <div class="gt" onclick="selGrade(this)">SGC 10</div>
+    </div>
+    <div class="dgrid">
+      <div class="fg"><label class="fl">Min Price (USD)</label><input class="fc" type="number" placeholder="$25 minimum" min="25"></div>
+      <div class="fg"><label class="fl">Max Price (USD)</label><input class="fc" type="number" placeholder="Your max bid"></div>
+    </div>
+    <div class="fg"><label class="fl">Additional Notes (optional)</label><textarea class="fc" rows="3" placeholder="Cert number, jersey number parallel, auto quality..."></textarea></div>
+    <div class="row-end"><button class="btn btn-ghost" onclick="goStep(6)">← Variant</button><button class="btn btn-primary" onclick="goReview()">Next: Review →</button></div>
+  </div>
+
+  <!-- STEP 8 — Freeform fallback -->
+  <div class="panel" id="p8">
+    <div class="panel-title">CAN'T FIND YOUR CARD?</div>
+    <div class="panel-sub">Freeform entry — used when the catalog doesn't have your card yet. Goes into the same review/admin queue.</div>
+    <div class="dgrid">
+      <div class="fg"><label class="fl">Sport</label><input class="fc" placeholder="e.g. Baseball"></div>
+      <div class="fg"><label class="fl">Year</label><input class="fc" placeholder="e.g. 2025"></div>
+      <div class="fg"><label class="fl">Brand</label><input class="fc" placeholder="e.g. Topps"></div>
+      <div class="fg"><label class="fl">Set</label><input class="fc" placeholder="e.g. Topps Chrome"></div>
+      <div class="fg"><label class="fl">Card #</label><input class="fc" placeholder="e.g. 25"></div>
+      <div class="fg"><label class="fl">Player</label><input class="fc" placeholder="e.g. Paul Skenes"></div>
+    </div>
+    <div class="fg"><label class="fl">Variant / Parallel</label><input class="fc" placeholder="e.g. Gold /50"></div>
+    <div class="row-end"><button class="btn btn-ghost" onclick="goStep(1)">← Start over</button><button class="btn btn-primary" onclick="goStep(7)">Next: Grade & Price →</button></div>
+  </div>
+
+  <!-- STEP 9 — Review -->
+  <div class="panel" id="p9">
+    <div class="panel-title">REVIEW YOUR ISO</div>
+    <div class="panel-sub">Confirm details before broadcasting.</div>
+    <div class="iso-sum">
+      <div class="is-title">ISO DETAILS</div>
+      <div class="is-row"><span class="is-label">Sport</span><span class="is-val" id="rSport">Baseball</span></div>
+      <div class="is-row"><span class="is-label">Year</span><span class="is-val" id="rYear">2025</span></div>
+      <div class="is-row"><span class="is-label">Brand</span><span class="is-val" id="rBrand">Topps</span></div>
+      <div class="is-row"><span class="is-label">Set</span><span class="is-val" id="rSet">2025 Topps Chrome</span></div>
+      <div class="is-row"><span class="is-label">Card</span><span class="is-val" id="rCard">#25 Paul Skenes</span></div>
+      <div class="is-row"><span class="is-label">Variant</span><span class="is-val" id="rVar">Base</span></div>
+      <div class="is-row"><span class="is-label">ISO/GRADE</span><span class="is-val" id="rGrade">PSA 10</span></div>
+      <div class="is-row"><span class="is-label">Price Range</span><span class="is-val" id="rPrice">$25 — open</span></div>
+    </div>
+    <div style="background:rgba(0,170,255,.06);border:1px solid var(--deep-border);border-radius:8px;padding:12px;font-size:12px;color:var(--chrome);line-height:1.55;margin-bottom:14px">
+      Posting deducts 1 credit ($5). Matching sellers are notified anonymously. You only see cards matching your exact ISO.
+    </div>
+    <div class="row-end"><button class="btn btn-ghost" onclick="goStep(7)">← Edit</button><button class="btn btn-primary" onclick="alert('Mockup only — no real submission.')">Post ISO →</button></div>
+  </div>
+</div>
+
+<script>
+const STEPS = [
+  {n:1, label:'Sport'},
+  {n:2, label:'Year'},
+  {n:3, label:'Brand'},
+  {n:4, label:'Set'},
+  {n:5, label:'Card'},
+  {n:6, label:'Variant'},
+  {n:7, label:'Grade'},
+  {n:9, label:'Review'}
+];
+let cur = 1;
+const state = {sport:'',year:'2025',brand:'Topps',set:'',card:'',variant:'Base',grade:'PSA 10'};
+
+function renderStepBar(){
+  const bar = document.getElementById('stepBar');
+  bar.innerHTML = '';
+  STEPS.forEach((s,i)=>{
+    const item = document.createElement('div');
+    item.className = 'step-item';
+    const cls = s.n < cur ? 'done' : (s.n === cur ? 'now' : '');
+    const txtCls = s.n === cur ? 'now' : '';
+    item.innerHTML = `<div class="step-circle ${cls}">${i+1}</div><span class="step-text ${txtCls}">${s.label}</span>`;
+    bar.appendChild(item);
+    if(i < STEPS.length-1){
+      const line = document.createElement('div');
+      line.className = 'step-line';
+      bar.appendChild(line);
+    }
+  });
+}
+
+function goStep(n){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('p'+n).classList.add('active');
+  cur = n;
+  renderStepBar();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function pickSport(s){state.sport=s;goStep(2);}
+function pickYear(y){state.year=y;goStep(3);}
+function pickBrand(b){state.brand=b;goStep(4);}
+function pickSet(s){
+  state.set=s;
+  document.getElementById('p5Title').textContent = 'SELECT CARD — ' + s.toUpperCase();
+  goStep(5);
+}
+function pickCard(name,num){
+  state.card = num+' '+name;
+  document.getElementById('p6Title').textContent = 'SELECT VARIANT — ' + num + ' ' + name.toUpperCase();
+  goStep(6);
+}
+function pickVariant(v,el){
+  state.variant=v;
+  document.querySelectorAll('#p6 .var-tile').forEach(t=>t.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function selGrade(el){
+  document.querySelectorAll('#p7 .gt').forEach(t=>t.classList.remove('sel'));
+  el.classList.add('sel');
+  state.grade = el.textContent;
+}
+function catFilter(c,el){
+  document.querySelectorAll('#p5 .iv-card-toolbar .iv-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+}
+function subsetFilter(name,el){
+  document.querySelectorAll('#subsetPills .iv-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#cardList .iv-card-row').forEach(r=>{
+    const sub = r.getAttribute('data-subset') || '';
+    if(name === 'all'){ r.style.display = ''; }
+    else if(name === 'Base'){ r.style.display = sub ? 'none' : ''; }
+    else { r.style.display = sub === name ? '' : 'none'; }
+  });
+}
+function filterCards(q){
+  q = (q||'').toLowerCase();
+  document.querySelectorAll('#cardList .iv-card-row').forEach(r=>{
+    r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+function goReview(){
+  document.getElementById('rSport').textContent = state.sport || 'Baseball';
+  document.getElementById('rYear').textContent = state.year;
+  document.getElementById('rBrand').textContent = state.brand;
+  document.getElementById('rSet').textContent = state.set || '—';
+  document.getElementById('rCard').textContent = state.card || '—';
+  document.getElementById('rVar').textContent = state.variant;
+  document.getElementById('rGrade').textContent = state.grade;
+  goStep(9);
+}
+
+renderStepBar();
+</script>
+</body>
+</html>

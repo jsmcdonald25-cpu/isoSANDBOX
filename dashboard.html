@@ -2810,6 +2810,7 @@ async function logOut(){
           <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center">
             <button onclick="cdAdminEditCard()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#9998; EDIT</button>
             <button onclick="cdAdminDeleteCard()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128465; DELETE</button>
+            <button onclick="cdAdminAddImage()" style="flex:1;min-width:60px;background:rgba(0,232,135,0.08);border:1px solid rgba(0,232,135,0.30);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(0,232,135,0.95);cursor:pointer;text-align:center">&#128247; ADD IMG</button>
             <button onclick="cdAdminDeleteImage()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128247; DEL IMG</button>
             <button onclick="cdAdminDeleteVariation()" style="flex:1;min-width:60px;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,59,92,0.8);cursor:pointer;text-align:center">&#128308; DEL VAR</button>
             <button onclick="cdAdminRenameVariation()" style="flex:1;min-width:60px;background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.25);border-radius:6px;padding:5px 3px;font-family:Bebas Neue,sans-serif;font-size:10px;letter-spacing:1px;color:rgba(0,170,255,0.8);cursor:pointer;text-align:center">&#9998; RENAME</button>
@@ -11429,6 +11430,16 @@ async function cdAdminDeleteCard(){
   } catch(e){
     T('Delete failed: '+e.message);
   }
+}
+
+async function cdAdminAddImage(){
+  const c = window._cdCard;
+  if(!c){ T('No card selected.'); return; }
+  // Pre-resolve the set table so the upload modal's submit doesn't fail later
+  const table = await _cdEnsureSetTable(c);
+  const cardNum = window._cdDbCardNum || (c.cardNum != null ? String(c.cardNum).replace('#','') : (c._cardNumber||''));
+  if(!table || !cardNum){ T('Cannot identify set table for this card.'); return; }
+  openCatalogUpload();
 }
 
 async function cdAdminDeleteImage(){

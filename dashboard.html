@@ -3355,10 +3355,25 @@ async function logOut(){
     <!-- Variation Selector -->
     <div class="vm-section" id="vmVariationSection" style="display:none">
       <div class="vm-label">Which variation? <span class="req">*</span></div>
-      <select class="vm-input" id="vmVariationSelect" style="cursor:pointer">
+      <select class="vm-input" id="vmVariationSelect" style="cursor:pointer" onchange="_updateModalForVariation()">
         <option value="">Select variation...</option>
       </select>
       <div class="vm-error" id="varError">Please select a variation.</div>
+    </div>
+
+    <!-- Provenance: Autograph pen color (shown only when active variation is_auto) -->
+    <div class="vm-section" id="vmProvPenColorSection" style="display:none">
+      <div class="vm-label">Pen Color <span class="req">*</span> <span style="color:rgba(0,170,255,0.5);font-size:10px">&#8212; PROVENANCE: REQUIRED FOR AUTOS</span></div>
+      <select class="vm-input" id="vmProvPenColor" style="cursor:pointer">
+        <option value="">Select pen color...</option>
+        <option value="blue">Blue</option>
+        <option value="black">Black</option>
+        <option value="red">Red</option>
+        <option value="silver_paint">Silver paint pen</option>
+        <option value="gold_paint">Gold paint pen</option>
+        <option value="other">Other</option>
+      </select>
+      <div class="vm-error" id="vmProvPenColorError" style="display:none">Pen color is required for autographed cards.</div>
     </div>
 
     <!-- How did you get it -->
@@ -3399,6 +3414,16 @@ async function logOut(){
         <div class="vm-source-btn" id="srcFacebook" onclick="selectSource('facebook')">Facebook</div>
         <div class="vm-source-btn" id="srcOtherSrc" onclick="selectSource('other_source')">Other</div>
       </div>
+      <!-- Provenance: LCS shop details (shown when source = LCS) -->
+      <div id="vmProvLcsSection" style="display:none;margin-top:10px;padding:10px;background:rgba(0,170,255,0.04);border:1px dashed rgba(0,170,255,0.25);border-radius:6px">
+        <div class="vm-label" style="margin-bottom:6px;font-size:10px">LCS Details <span style="color:rgba(0,170,255,0.5)">&#8212; PROVENANCE</span></div>
+        <input class="vm-input" type="text" id="vmProvLcsName" placeholder="Shop name (e.g. Dave's Cards)" style="margin-bottom:6px">
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:6px">
+          <input class="vm-input" type="text" id="vmProvLcsCity" placeholder="City">
+          <input class="vm-input" type="text" id="vmProvLcsState" placeholder="State" maxlength="2">
+        </div>
+        <div class="vm-error" id="vmProvLcsError" style="display:none;margin-top:6px">Shop name is required for LCS purchases.</div>
+      </div>
       <div class="vm-error" id="sourceError" style="display:none">Please select where you purchased it.</div>
     </div>
 
@@ -3411,6 +3436,15 @@ async function logOut(){
         <div class="vm-source-btn" id="ripSrcRetail" onclick="selectRipSource('retail')">Retail</div>
         <div class="vm-source-btn" id="ripSrcMfg"    onclick="selectRipSource('manufacturer')">Manufacturer</div>
         <div class="vm-source-btn" id="ripSrcOther"  onclick="selectRipSource('other_source')" style="grid-column:1/-1">Other</div>
+      </div>
+      <!-- Provenance: LCS shop details (shown when rip source = LCS) -->
+      <div id="vmProvRipLcsSection" style="display:none;margin-top:10px;padding:10px;background:rgba(0,170,255,0.04);border:1px dashed rgba(0,170,255,0.25);border-radius:6px">
+        <div class="vm-label" style="margin-bottom:6px;font-size:10px">LCS Details <span style="color:rgba(0,170,255,0.5)">&#8212; PROVENANCE</span></div>
+        <input class="vm-input" type="text" id="vmProvRipLcsName" placeholder="Shop name (e.g. Dave's Cards)" style="margin-bottom:6px">
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:6px">
+          <input class="vm-input" type="text" id="vmProvRipLcsCity" placeholder="City">
+          <input class="vm-input" type="text" id="vmProvRipLcsState" placeholder="State" maxlength="2">
+        </div>
       </div>
       <div style="margin-top:12px">
         <div class="vm-label" style="margin-bottom:5px;font-size:10px">Pack / Box Type <span class="req">*</span></div>
@@ -4974,6 +5008,17 @@ function openVaultModal(card){
   ['ripSrcEbay','ripSrcLcs','ripSrcRetail','ripSrcMfg','ripSrcOther'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.classList.remove('selected');
   });
+  // Reset provenance fields
+  ['vmProvPenColorSection','vmProvLcsSection','vmProvRipLcsSection'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.style.display='none';
+  });
+  ['vmProvPenColor','vmProvLcsName','vmProvLcsCity','vmProvLcsState','vmProvRipLcsName','vmProvRipLcsCity','vmProvRipLcsState'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  ['vmProvPenColorError','vmProvLcsError'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.style.display='none';
+  });
+  window._vmProvState = null;
   const packTypeEl = document.getElementById('vmPackType');
   if(packTypeEl) packTypeEl.value='';
   document.getElementById('vmPricePaid').value='';
@@ -5041,6 +5086,8 @@ function openVaultModal(card){
     } else {
       document.getElementById('vmSerialSection').style.display='none';
     }
+    // Provenance: lazy-load active trigger rules + compute gate state
+    _loadProvRules().then(()=>_updateModalForVariation());
   } else {
     document.getElementById('vmCardInfo').style.display='none';
     document.getElementById('vmPhotoSection').style.display='block';
@@ -5318,6 +5365,83 @@ function vmToggleForSale(checked){
   if(!checked){ document.getElementById('vmAskingPrice').value = ''; document.getElementById('vmAskingError').style.display = 'none'; }
 }
 
+// ── PROVENANCE: trigger-rules loader (lazy, one-shot) ────────────────────────
+async function _loadProvRules(){
+  if(window._provRules) return window._provRules;
+  try {
+    const SB_REST = 'https://jyfaegmnzkarlcximxjo.supabase.co';
+    const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+    const r = await fetch(`${SB_REST}/rest/v1/provenance_trigger_rules?status=eq.active&select=*`, {
+      headers: { 'apikey': ANON_KEY, 'Authorization': 'Bearer ' + (window._userAccessToken || ANON_KEY) }
+    });
+    window._provRules = r.ok ? await r.json() : [];
+  } catch(e){ window._provRules = []; }
+  return window._provRules;
+}
+
+// ── PROVENANCE: gate decision + serial section + pen-color visibility ───────
+// Called on modal open and on variation change. Reads selected variation from
+// vmCard.variations, decides if provenance is required, updates the UI, and
+// stores the decision in window._vmProvState for the submit handler.
+function _updateModalForVariation(){
+  if(!vmCard) return;
+  const sel = document.getElementById('vmVariationSelect');
+  const selLabel = sel ? sel.value : null;
+  // Find the matching variation object so we get the right run + flags
+  let v = null;
+  if(vmCard.variations && vmCard.variations.length){
+    v = vmCard.variations.find(x => x.label === selLabel) || vmCard.variations[0];
+  }
+  const run = v ? v.run : (vmCard.run || null);
+  const label = v ? v.label : (vmCard.parallel || '');
+  const isAuto = /\bauto\b|autograph/i.test(label);
+
+  // Refresh serial section visibility based on the SELECTED variation
+  const serialSec = document.getElementById('vmSerialSection');
+  const serialOf  = document.getElementById('vmSerialOf');
+  if(serialSec && serialOf){
+    if(run){
+      serialSec.style.display = 'block';
+      serialOf.textContent = `/ ${run}`;
+    } else {
+      serialSec.style.display = 'none';
+    }
+  }
+
+  // Provenance gate: auto OR serial-numbered ≤99 OR matches an active rule
+  let triggerReason = null;
+  let triggerRuleId = null;
+  if(isAuto) triggerReason = 'auto';
+  else if(run && run <= 99) triggerReason = 'serial_lte_99';
+  else {
+    const rules = window._provRules || [];
+    for(const r of rules){
+      if(r.match_type === 'parallel_name_contains' && label && label.toLowerCase().includes(String(r.match_value).toLowerCase())){
+        triggerReason = 'rule_match'; triggerRuleId = r.id; break;
+      }
+      if(r.match_type === 'parallel_name_equals' && label && label.toLowerCase() === String(r.match_value).toLowerCase()){
+        triggerReason = 'rule_match'; triggerRuleId = r.id; break;
+      }
+      if(r.match_type === 'print_run_lte' && run && run <= parseInt(r.match_value)){
+        triggerReason = 'rule_match'; triggerRuleId = r.id; break;
+      }
+    }
+  }
+
+  // Show/hide pen-color section
+  const penSec = document.getElementById('vmProvPenColorSection');
+  if(penSec) penSec.style.display = isAuto ? 'block' : 'none';
+
+  window._vmProvState = {
+    required: !!triggerReason,
+    triggerReason,
+    triggerRuleId,
+    isAuto,
+    run,
+    label
+  };
+}
+
 function selectAcqType(type){
   vmAcq = type;
   vmSource = null;
@@ -5372,6 +5496,9 @@ function selectSource(src){
   if(map[src]) document.getElementById(map[src]).classList.add('selected');
   const errEl = document.getElementById('sourceError');
   if(errEl) errEl.style.display='none';
+  // Provenance: show LCS sub-block when source = lcs
+  const lcsSec = document.getElementById('vmProvLcsSection');
+  if(lcsSec) lcsSec.style.display = (src === 'lcs') ? 'block' : 'none';
 }
 
 // ── Rip source (Pulled It path) ──────────────────────────────────────────────
@@ -5385,6 +5512,9 @@ function selectRipSource(src){
   if(map[src]) document.getElementById(map[src]).classList.add('selected');
   const errEl = document.getElementById('ripSourceError');
   if(errEl) errEl.style.display='none';
+  // Provenance: show LCS sub-block when rip source = lcs
+  const lcsSec = document.getElementById('vmProvRipLcsSection');
+  if(lcsSec) lcsSec.style.display = (src === 'lcs') ? 'block' : 'none';
 }
 
 // Legacy alias kept for any residual calls
@@ -5444,6 +5574,19 @@ async function submitVault(){
     if(!document.getElementById('vmAskingPrice').value || isNaN(askingPrice) || askingPrice <= 0){
       document.getElementById('vmAskingError').style.display='block'; valid=false;
     }
+  }
+  // Provenance validation — pen color required when active variation is auto
+  const _provState = window._vmProvState || null;
+  if(_provState && _provState.isAuto){
+    const pen = (document.getElementById('vmProvPenColor')||{}).value;
+    if(!pen){ document.getElementById('vmProvPenColorError').style.display='block'; valid=false; }
+    else { document.getElementById('vmProvPenColorError').style.display='none'; }
+  }
+  // Provenance validation — LCS shop name required when source = lcs (any path)
+  if(vmAcq === 'bought_single' && vmSource === 'lcs'){
+    const shop = (document.getElementById('vmProvLcsName')||{}).value;
+    if(!shop || !shop.trim()){ document.getElementById('vmProvLcsError').style.display='block'; valid=false; }
+    else { document.getElementById('vmProvLcsError').style.display='none'; }
   }
   if(!valid) return;
 
@@ -5568,6 +5711,87 @@ async function submitVault(){
     if(!vaultRes.ok){ const ve = await vaultRes.json().catch(()=>({message:vaultRes.statusText})); throw new Error(ve.message||ve.error||`Insert failed: ${vaultRes.status}`); }
     const vaultRows = await vaultRes.json();
     const vaultRow = Array.isArray(vaultRows) ? vaultRows[0] : vaultRows;
+
+    // ── PROVENANCE WRITE — append-only ledger, fires when gate is met ──
+    // Failures here are NON-FATAL: the vault upload still succeeds even if
+    // provenance fails. The conflict-detection RPC opens an admin review row
+    // when the same serial is claimed by another active user.
+    try {
+      const _ps = window._vmProvState || {};
+      if(_ps.required){
+        const _serialNum = row.serial_number || null;
+        const _serialTot = _ps.run || row.serial_total || null;
+        const _setName = row.set_name || (vmCard ? vmCard._setTable : null) || null;
+        const _cardNum = row.card_number || null;
+        const _cardId  = row.card_id || (vmCard ? vmCard.id : null) || null;
+        // Source-specific fields (denormalized to the provenance row)
+        const _srcType = (vmAcq === 'bought_single')
+          ? (vmSource === 'facebook' ? 'online_other'
+             : vmSource === 'other_source' ? 'online_other'
+             : vmSource)
+          : (vmAcq === 'pulled')
+            ? 'pack'
+            : (vmAcq === 'trade')
+              ? 'trade'
+              : 'online_other';
+        const _provRow = {
+          set_name:        _setName,
+          card_number:     _cardNum,
+          card_id:         _cardId,
+          vault_id:        vaultRow ? vaultRow.id : null,
+          user_id:         user.id,
+          parallel:        row.variation || row.parallel || _ps.label || 'Base',
+          serial_number:   _serialNum,
+          serial_total:    _serialTot,
+          is_auto:         !!_ps.isAuto,
+          trigger_reason:  _ps.triggerReason,
+          trigger_rule_id: _ps.triggerRuleId || null,
+          event_type:      'acquired',
+          event_date:      (document.getElementById('vmDateAcquired').value) || new Date().toISOString().slice(0,10),
+          source_type:     _srcType,
+          source_note:     null,
+          // LCS denormalized
+          lcs_name:        (vmSource === 'lcs') ? (document.getElementById('vmProvLcsName').value||null)
+                            : (vmRipSource === 'lcs') ? (document.getElementById('vmProvRipLcsName').value||null) : null,
+          lcs_city:        (vmSource === 'lcs') ? (document.getElementById('vmProvLcsCity').value||null)
+                            : (vmRipSource === 'lcs') ? (document.getElementById('vmProvRipLcsCity').value||null) : null,
+          lcs_state:       (vmSource === 'lcs') ? (document.getElementById('vmProvLcsState').value||null)
+                            : (vmRipSource === 'lcs') ? (document.getElementById('vmProvRipLcsState').value||null) : null,
+          // Pack
+          pack_product:    (vmAcq === 'pulled') ? (document.getElementById('vmPackType').value||null) : null,
+          pack_retailer:   null,
+          // Auto
+          pen_color:       _ps.isAuto ? (document.getElementById('vmProvPenColor').value || null) : null,
+          price:           pricePaid || null,
+          notes:           null,
+        };
+        const _provRes = await fetch(`${SB_REST}/rest/v1/card_provenance`, {
+          method:'POST',
+          headers:{ ...sbHeaders, 'Content-Type':'application/json', 'Prefer':'return=representation' },
+          body: JSON.stringify(_provRow)
+        });
+        if(_provRes.ok && _serialNum && _serialTot){
+          // Cross-user duplicate-serial check via SECURITY DEFINER RPC
+          try {
+            await fetch(`${SB_REST}/rest/v1/rpc/check_and_record_serial_conflict`, {
+              method:'POST',
+              headers:{ ...sbHeaders, 'Content-Type':'application/json' },
+              body: JSON.stringify({
+                p_set_name: _setName,
+                p_card_number: _cardNum,
+                p_card_id: _cardId,
+                p_parallel: _provRow.parallel,
+                p_serial_number: _serialNum,
+                p_serial_total: _serialTot
+              })
+            });
+          } catch(rpcErr){ console.warn('Provenance conflict check (non-critical):', rpcErr); }
+        } else if(!_provRes.ok){
+          const _pe = await _provRes.json().catch(()=>({message:_provRes.statusText}));
+          console.warn('Provenance insert failed (non-critical):', _pe.message || _pe.error);
+        }
+      }
+    } catch(provErr){ console.warn('Provenance write error (non-critical):', provErr); }
 
     // ── MARKET PRICE ENGINE — update on every vault addition ──
     btn.textContent = 'UPDATING MARKET...';

@@ -903,8 +903,15 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
   .mv-scroll-search-wrap{flex:1;width:auto}
   .mv-search-btn{padding:9px 12px;font-size:11px}
 }
-.mv-scroll-rail{display:flex;gap:12px;overflow-x:auto;padding:6px 0 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.mv-scroll-rail{display:flex;gap:12px;overflow-x:auto;padding:6px 0 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
 .mv-scroll-rail::-webkit-scrollbar{display:none}
+.mv-scroll-wrap{position:relative}
+.mv-scroll-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:36px;height:64px;border-radius:8px;background:rgba(0,170,255,0.12);border:1px solid rgba(0,170,255,0.4);color:var(--blue);font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:opacity .15s,background .15s,border-color .15s;box-shadow:0 4px 14px rgba(0,0,0,0.5)}
+.mv-scroll-nav:hover{background:rgba(0,170,255,0.22);border-color:var(--blue);color:var(--white)}
+.mv-scroll-nav-prev{left:-6px}
+.mv-scroll-nav-next{right:-6px}
+.mv-scroll-nav[disabled]{opacity:0;pointer-events:none}
+@media(max-width:768px){.mv-scroll-nav{display:none}}
 .mv-scroll-card{flex-shrink:0;width:110px;cursor:pointer;border-radius:10px;overflow:hidden;background:var(--deep2);border:1px solid rgba(0,170,255,0.08);transition:border-color .15s,transform .15s}
 .mv-scroll-card:hover{border-color:rgba(0,170,255,0.4);transform:translateY(-3px)}
 .mv-scroll-card-img{width:110px;height:154px;overflow:hidden;background:#071828;position:relative}
@@ -2399,7 +2406,11 @@ async function logOut(){
         <button class="mv-search-btn" onclick="_mvSearchSubmit()">Search</button>
         <button class="mv-search-btn mv-search-btn-clear" onclick="_mvSearchClear()">Clear</button>
       </div>
-      <div class="mv-scroll-rail" id="myVaultGrid"></div>
+      <div class="mv-scroll-wrap">
+        <button type="button" class="mv-scroll-nav mv-scroll-nav-prev" id="mvScrollPrev" aria-label="Scroll left" onclick="_mvScrollBy(-1)">&#10094;</button>
+        <div class="mv-scroll-rail" id="myVaultGrid"></div>
+        <button type="button" class="mv-scroll-nav mv-scroll-nav-next" id="mvScrollNext" aria-label="Scroll right" onclick="_mvScrollBy(1)">&#10095;</button>
+      </div>
     </div>
 
     <!-- Hidden legacy IDs -->
@@ -3542,6 +3553,17 @@ async function logOut(){
       <div class="vm-label">Variation / Parallel Name <span class="req">*</span> <span style="color:rgba(255,59,48,0.6);font-size:10px">&#8212; What's missing from the list?</span></div>
       <input class="vm-input" type="text" id="mcVariationName" placeholder="e.g. Golden Hour, Ice, Sapphire..." style="font-size:15px;font-weight:600;color:var(--red)">
       <div class="vm-error" id="mcVarError">Please enter the variation name.</div>
+    </div>
+
+    <!-- Apply to entire set (admin only) -->
+    <div class="vm-section" id="mcSetWideSection" style="display:none">
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;padding:10px;border:1px solid rgba(0,170,255,0.25);border-radius:8px;background:rgba(0,170,255,0.04)">
+        <input type="checkbox" id="mcSetWideToggle" style="margin-top:3px;width:16px;height:16px;cursor:pointer">
+        <div style="flex:1">
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:600;color:var(--blue);letter-spacing:.5px;text-transform:uppercase">Apply to entire set</div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-top:3px;line-height:1.4">Adds this pill (no images) to every base card in the set. Photos you upload here go only to this card &#8212; other cards keep the pill until you upload their photos individually.</div>
+        </div>
+      </label>
     </div>
 
     <!-- Photo Upload — ALWAYS required for missing cards -->
@@ -5663,6 +5685,12 @@ function openMissingCardModal(){
     ? 'Add a missing variation directly to the catalog. Upload images and fill in the details below.'
     : "Don't see your variation? Submit it for admin review. Upload your card and fill in the details below.";
 
+  // Show "Apply to entire set" toggle for admins only; reset state on every open
+  const setWideSec = _$('mcSetWideSection');
+  const setWideTog = _$('mcSetWideToggle');
+  if(setWideSec) setWideSec.style.display = window._isAdmin ? 'block' : 'none';
+  if(setWideTog) setWideTog.checked = false;
+
   const overlay=_$('missingCardOverlay');
   if(overlay) overlay.style.display='flex';
   document.body.style.overflow='hidden';
@@ -5781,6 +5809,16 @@ async function submitMissingCard(){
       // ── ADMIN PATH: write directly to the set table, no review queue ─────────
       const setTable = _mcCard._setTable;
       const cardNum  = _mcCard._cardNumber;
+      const setWide  = !!(document.getElementById('mcSetWideToggle')||{}).checked;
+      // Build the new variation pill object once — same shape used for the
+      // originating card and for every fan-out target. setWide:true marks
+      // pills that were added by the set-wide flow so future hide/remove
+      // operations can target them precisely.
+      const newVarObj = Object.assign(
+        {label:varName, group:'Parallels', tooltip: setWide ? 'Added set-wide by admin' : 'Added by admin'},
+        printRun ? {run:printRun} : {},
+        setWide ? {setWide:true} : {}
+      );
       // Fetch the current row to merge variations + var_images
       const getRes = await fetch(`${SB_REST}/rest/v1/${setTable}?card_number=eq.${encodeURIComponent(cardNum)}&select=variations,var_images&limit=1`, { headers: sbHeaders });
       if(!getRes.ok) throw new Error('Could not load card row to merge variation');
@@ -5789,7 +5827,7 @@ async function submitMissingCard(){
       const curImgs = (cur.var_images && typeof cur.var_images === 'object') ? cur.var_images : {};
       // Skip if a variation with this label already exists; otherwise append
       const exists = curVars.some(v => v && v.label === varName);
-      const newVars = exists ? curVars : [...curVars, Object.assign({label:varName, group:'Parallels', tooltip:'Added by admin'}, printRun ? {run:printRun} : {})];
+      const newVars = exists ? curVars : [...curVars, newVarObj];
       const newImgs = Object.assign({}, curImgs, { [varName]: { front: frontURL, back: backURL } });
       const patchRes = await fetch(`${SB_REST}/rest/v1/${setTable}?card_number=eq.${encodeURIComponent(cardNum)}`, {
         method: 'PATCH',
@@ -5812,13 +5850,74 @@ async function submitMissingCard(){
           if(newIdx >= 0) cdSelectVar(newIdx);
         } catch(e){ /* non-fatal */ }
       }
+
+      // ── SET-WIDE FAN-OUT ────────────────────────────────────────────────────
+      // After the originating card is patched, optionally append the same pill
+      // (no images) to every other base card in the set. Photos stay only on
+      // the originating card; other cards get the pill until an admin uploads
+      // their photos individually.
+      let fanoutSummary = '';
+      if(setWide){
+        btn.textContent = 'COUNTING SET...';
+        document.getElementById('mcProgressBar').style.width='80%';
+        const listRes = await fetch(
+          `${SB_REST}/rest/v1/${setTable}?select=card_number,variations&category=eq.Base&limit=10000`,
+          { headers: sbHeaders }
+        );
+        if(!listRes.ok) throw new Error('Could not list set rows for fan-out');
+        const allRows = await listRes.json();
+        const targets = (Array.isArray(allRows) ? allRows : []).filter(r =>
+          String(r.card_number) !== String(cardNum) &&
+          !(Array.isArray(r.variations) && r.variations.some(v => v && v.label === varName))
+        );
+        if(targets.length === 0){
+          fanoutSummary = ' · already on all base cards';
+        } else {
+          const ok = window.confirm(
+            `Apply "${varName}" pill to ${targets.length} additional base card${targets.length===1?'':'s'} in this set?\n\n` +
+            `Photos stay on this card only. Other cards get the pill with no images until you upload them individually.`
+          );
+          if(ok){
+            btn.textContent = `APPLYING (0/${targets.length})...`;
+            let done = 0, failed = 0;
+            const CONCURRENCY = 20;
+            let next = 0;
+            const workers = Array.from({length: Math.min(CONCURRENCY, targets.length)}, async () => {
+              while(true){
+                const i = next++;
+                if(i >= targets.length) return;
+                const row = targets[i];
+                try {
+                  const rowVars = Array.isArray(row.variations) ? row.variations : [];
+                  const rowNew  = [...rowVars, newVarObj];
+                  const r = await fetch(
+                    `${SB_REST}/rest/v1/${setTable}?card_number=eq.${encodeURIComponent(row.card_number)}`,
+                    { method:'PATCH', headers:{...sbHeaders,'Content-Type':'application/json','Prefer':'return=minimal'}, body: JSON.stringify({variations: rowNew}) }
+                  );
+                  if(!r.ok) failed++;
+                } catch(e){ failed++; }
+                done++;
+                if(done % 5 === 0 || done === targets.length){
+                  btn.textContent = `APPLYING (${done}/${targets.length})...`;
+                  document.getElementById('mcProgressBar').style.width = (80 + 20*(done/targets.length)) + '%';
+                }
+              }
+            });
+            await Promise.all(workers);
+            fanoutSummary = ` · +${done - failed} cards${failed?` (${failed} failed)`:''}`;
+          } else {
+            fanoutSummary = ' · set-wide cancelled';
+          }
+        }
+      }
+
       document.getElementById('mcProgressBar').style.width='100%';
       btn.textContent = '✓ ADDED!';
       btn.style.background = 'var(--green)';
       setTimeout(()=>{
         closeMissingCardModal();
         btn.style.background = '';
-        T(`Variation "${varName}" added directly (admin)`);
+        T(`Variation "${varName}" added${fanoutSummary}`);
       }, 1200);
     } else {
       // ── NON-ADMIN PATH: queue for admin review ───────────────────────────────
@@ -6202,10 +6301,49 @@ function _vaultDupKey(c){
     (c.variation||c.parallel||'').toLowerCase()
   ].join('|');
 }
+function _mvScrollBy(dir){
+  const rail=document.getElementById('myVaultGrid');
+  if(!rail) return;
+  // Scroll by ~one viewport's worth of cards (card width ~110 + 12 gap)
+  const step=Math.max(244, Math.floor(rail.clientWidth*0.85));
+  rail.scrollBy({left:dir*step, behavior:'smooth'});
+}
+function _mvUpdateScrollNav(){
+  const rail=document.getElementById('myVaultGrid');
+  const prev=document.getElementById('mvScrollPrev');
+  const next=document.getElementById('mvScrollNext');
+  if(!rail||!prev||!next) return;
+  const overflow=rail.scrollWidth>rail.clientWidth+2;
+  if(!overflow){ prev.disabled=true; next.disabled=true; return; }
+  prev.disabled=rail.scrollLeft<=2;
+  next.disabled=rail.scrollLeft+rail.clientWidth>=rail.scrollWidth-2;
+}
 function _renderVaultGrid(data){
   const rail=document.getElementById('myVaultGrid');
   if(!rail) return;
-  if(!data||!data.length){rail.innerHTML='';return;}
+  if(!rail._mvNavBound){
+    rail._mvNavBound=true;
+    rail.addEventListener('scroll', _mvUpdateScrollNav, {passive:true});
+    window.addEventListener('resize', _mvUpdateScrollNav);
+    // Mouse wheel → horizontal scroll on desktop
+    rail.addEventListener('wheel', e=>{
+      if(e.deltaY===0) return;
+      if(rail.scrollWidth<=rail.clientWidth) return;
+      e.preventDefault();
+      rail.scrollLeft+=e.deltaY;
+    }, {passive:false});
+    // Arrow keys when My Vault panel visible and no input focused
+    document.addEventListener('keydown', e=>{
+      if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight') return;
+      const panel=document.getElementById('panel-myvault');
+      if(!panel||!panel.classList.contains('active')) return;
+      const t=document.activeElement;
+      if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable)) return;
+      e.preventDefault();
+      _mvScrollBy(e.key==='ArrowRight'?1:-1);
+    });
+  }
+  if(!data||!data.length){rail.innerHTML='';_mvUpdateScrollNav();return;}
   // Collapse duplicates: group rows by dup key, keep the first row as the "primary" tile
   const groups = new Map();
   data.forEach(c => {
@@ -6235,6 +6373,8 @@ function _renderVaultGrid(data){
       </div>
     </div>`;
   }).join('');
+  rail.scrollLeft=0;
+  requestAnimationFrame(_mvUpdateScrollNav);
 }
 
 

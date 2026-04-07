@@ -9182,8 +9182,11 @@ function ivOpenCard(row){
           seen[lbl] = true;
           const clr = _varPillColor(lbl);
           const runMatch = (lbl).match(/\/\s*(\d+)/);
-          vars.push({label:lbl, color:clr.color, glow:clr.glow, superfractor:clr.superfractor||false,
-            run:runMatch?parseInt(runMatch[1]):null, isBase:clr.isBase||lbl.toUpperCase()==='BASE CARDS',
+          // Strip the "/N" out of the label so renderers don't double-print it
+          // (run is shown separately as a pill-run span / read-only "/N" text).
+          const cleanLbl = runMatch ? lbl.replace(/\s*\/\s*\d+\s*$/, '').trim() : lbl;
+          vars.push({label:cleanLbl, color:clr.color, glow:clr.glow, superfractor:clr.superfractor||false,
+            run:runMatch?parseInt(runMatch[1]):null, isBase:clr.isBase||cleanLbl.toUpperCase()==='BASE CARDS',
             lastSale:'—', isos:0, pop:null, watching:null, _varImages: x.var_images||null});
         });
       }

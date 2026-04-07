@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Provenance — Vault Modal + Admin Review Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --deep:#0a1220; --deep2:#0f1a2d; --deep3:#162640; --deep-border:rgba(0,170,255,0.12);
+  --blue:#00AAFF; --green:#00E887; --red:#FF3B5C; --gold:#FFB84D;
+  --white:#E8F1FA; --muted:#7A95AE;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--deep);color:var(--white);font-family:'Barlow Condensed',sans-serif;padding:24px}
+.wrap{max-width:1200px;margin:0 auto}
+h1{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--blue);margin-bottom:6px}
+.sub{font-size:14px;color:var(--muted);margin-bottom:24px}
+.note{font-size:13px;color:var(--muted);padding:12px 14px;background:rgba(0,170,255,0.06);border:1px solid var(--deep-border);border-radius:8px;margin-bottom:24px}
+.note strong{color:var(--blue)}
+.section-h{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--white);margin:32px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--deep-border)}
+
+/* Modal shell */
+.modal{background:var(--deep2);border:1px solid var(--deep-border);border-radius:12px;overflow:hidden;margin-bottom:20px}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:rgba(0,170,255,0.04);border-bottom:1px solid var(--deep-border)}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--white)}
+.modal-x{color:var(--muted);font-size:18px;cursor:pointer}
+.modal-body{padding:18px}
+.card-line{display:flex;gap:12px;align-items:center;padding:10px 12px;background:var(--deep3);border-radius:8px;margin-bottom:14px}
+.card-thumb{width:48px;height:68px;border-radius:4px;background:linear-gradient(135deg,#1a3a5e,#0a1220);border:1px solid var(--deep-border);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--muted)}
+.card-meta{flex:1}
+.card-player{font-size:15px;font-weight:700;color:var(--white)}
+.card-id{font-size:11px;color:var(--muted);letter-spacing:.5px}
+
+/* Form */
+.row{display:grid;gap:12px;margin-bottom:12px}
+.row.two{grid-template-columns:1fr 1fr}
+.row.three{grid-template-columns:1fr 1fr 1fr}
+.row.serial{grid-template-columns:1.5fr auto 1.5fr}
+.field label{display:block;font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:1.5px;color:var(--muted);margin-bottom:4px}
+.field label .req{color:var(--red);margin-left:3px}
+.field input, .field select, .field textarea{
+  width:100%;background:var(--deep);border:1px solid var(--deep-border);color:var(--white);
+  padding:8px 10px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:14px
+}
+.field textarea{min-height:60px;resize:vertical}
+.slash{display:flex;align-items:flex-end;justify-content:center;color:var(--muted);font-size:18px;padding-bottom:8px}
+
+/* Parallel pill row */
+.parallel-row{display:flex;gap:8px;align-items:center;margin-bottom:14px;padding:10px 12px;background:rgba(255,184,77,0.06);border:1px solid rgba(255,184,77,0.25);border-radius:8px}
+.parallel-row .ic{font-size:16px}
+.parallel-row .txt{flex:1;font-size:13px;color:var(--white)}
+.parallel-row .pill{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:1px;padding:3px 8px;border-radius:4px;background:rgba(255,184,77,0.18);color:var(--gold);border:1px solid rgba(255,184,77,0.4)}
+
+/* Provenance section */
+.prov-block{background:var(--deep);border:1px solid rgba(0,170,255,0.2);border-radius:10px;padding:14px;margin-top:6px}
+.prov-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--deep-border)}
+.prov-head .ic{font-size:16px}
+.prov-head .ttl{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--blue)}
+.prov-head .req-tag{margin-left:auto;font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:1px;padding:2px 6px;border-radius:3px;background:rgba(255,59,92,0.15);color:var(--red);border:1px solid rgba(255,59,92,0.3)}
+
+/* Source-conditional block */
+.cond{margin-top:10px;padding:12px;background:rgba(0,170,255,0.04);border:1px dashed rgba(0,170,255,0.25);border-radius:8px}
+.cond-lbl{font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:1.5px;color:var(--blue);margin-bottom:8px}
+
+/* LCS typeahead mock */
+.typeahead{position:relative}
+.ta-results{margin-top:6px;background:var(--deep2);border:1px solid var(--deep-border);border-radius:6px;overflow:hidden}
+.ta-row{padding:8px 10px;border-bottom:1px solid var(--deep-border);font-size:13px;cursor:pointer}
+.ta-row:last-child{border-bottom:none}
+.ta-row:hover{background:rgba(0,170,255,0.06)}
+.ta-row.add{color:var(--green)}
+.ta-row .city{color:var(--muted);font-size:11px;display:block}
+
+/* Buttons */
+.btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;padding-top:14px;border-top:1px solid var(--deep-border)}
+.btn{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:1.5px;padding:9px 18px;border-radius:6px;border:none;cursor:pointer}
+.btn.primary{background:var(--blue);color:var(--deep)}
+.btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--deep-border)}
+.btn.danger{background:rgba(255,59,92,0.15);color:var(--red);border:1px solid rgba(255,59,92,0.3)}
+.btn.green{background:var(--green);color:var(--deep)}
+
+/* Admin queue */
+.q-head{display:grid;grid-template-columns:60px 2fr 1fr 1fr 1fr 1fr 120px;gap:12px;padding:10px 14px;font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:1.5px;color:var(--muted);border-bottom:1px solid var(--deep-border)}
+.q-row{display:grid;grid-template-columns:60px 2fr 1fr 1fr 1fr 1fr 120px;gap:12px;padding:12px 14px;align-items:center;border-bottom:1px solid var(--deep-border);font-size:13px}
+.q-row:last-child{border-bottom:none}
+.q-row:hover{background:rgba(0,170,255,0.04)}
+.q-thumb{width:40px;height:56px;border-radius:4px;background:linear-gradient(135deg,#1a3a5e,#0a1220);border:1px solid var(--deep-border)}
+.q-card{font-weight:600}
+.q-sub{font-size:11px;color:var(--muted)}
+.q-serial{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--gold);letter-spacing:1px}
+.q-conflict{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:1px;padding:3px 7px;border-radius:3px;background:rgba(255,59,92,0.15);color:var(--red);border:1px solid rgba(255,59,92,0.3);display:inline-block}
+.q-actions{display:flex;gap:6px}
+.q-actions .btn{padding:6px 10px;font-size:10px}
+
+/* Detail expansion under a queue row */
+.q-detail{padding:16px 20px;background:var(--deep);border-bottom:1px solid var(--deep-border)}
+.q-claims{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+.claim{background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;padding:12px}
+.claim-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--deep-border)}
+.claim-user{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--blue);letter-spacing:1px}
+.claim-when{font-size:11px;color:var(--muted)}
+.claim-kv{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:12px}
+.claim-kv .k{color:var(--muted);font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:1px}
+.claim-kv .v{color:var(--white)}
+.claim-imgs{display:flex;gap:6px;margin-top:8px}
+.claim-imgs .ph{width:60px;height:84px;background:linear-gradient(135deg,#1a3a5e,#0a1220);border:1px solid var(--deep-border);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--muted)}
+
+.legend{display:flex;gap:14px;margin-top:10px;padding:10px 12px;background:rgba(0,170,255,0.04);border-radius:6px;font-size:12px;color:var(--muted)}
+.legend b{color:var(--blue)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Provenance — Mockup</h1>
+  <div class="sub">Vault upload modal (with required Provenance block) + Admin Provenance Review queue</div>
+
+  <div class="note">
+    <strong>Gate rules (locked):</strong> Provenance is required when the parallel is <b>autographed</b>, OR <b>serial-numbered to /99 or less</b>, OR matches an entry in the admin-managed <b>Always-Trigger list</b> (seeded with <em>Superfractor</em>). Source dropdown reveals conditional fields (eBay / LCS / Pack / Trade / Show / Online other / Lost or stolen). Card uploads to the user's vault normally even when serial is a duplicate — the conflict is sent to the admin Provenance Review queue and is admin-only for now.
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 1. USER-FACING: VAULT UPLOAD MODAL                           -->
+  <!-- ============================================================ -->
+  <div class="section-h">1. User vault upload modal — Provenance section visible</div>
+
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Add to My Vault</div>
+      <div class="modal-x">×</div>
+    </div>
+    <div class="modal-body">
+
+      <div class="card-line">
+        <div class="card-thumb">CARD</div>
+        <div class="card-meta">
+          <div class="card-player">Ichiro Suzuki</div>
+          <div class="card-id">2026 Topps Heritage · Turn Back The Clock · #TBC-12</div>
+        </div>
+      </div>
+
+      <div class="row two">
+        <div class="field">
+          <label>Parallel</label>
+          <select>
+            <option>Red Refractor Auto /75</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Grade</label>
+          <select>
+            <option>Raw</option>
+            <option>PSA 9</option>
+            <option>PSA 10</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="parallel-row">
+        <div class="ic">★</div>
+        <div class="txt"><b>Autograph</b> + numbered <b>/99 or less</b> — Provenance details are required.</div>
+        <div class="pill">AUTO /75</div>
+      </div>
+
+      <!-- Provenance block -->
+      <div class="prov-block">
+        <div class="prov-head">
+          <div class="ic">◈</div>
+          <div class="ttl">Provenance</div>
+          <div class="req-tag">Required</div>
+        </div>
+
+        <div class="row serial">
+          <div class="field">
+            <label>Serial Number<span class="req">*</span></label>
+            <input type="text" value="042" placeholder="042">
+          </div>
+          <div class="slash">/</div>
+          <div class="field">
+            <label>Print Run<span class="req">*</span></label>
+            <input type="text" value="75" placeholder="75">
+          </div>
+        </div>
+
+        <!-- Conditional block: Autograph details (shown when is_auto = true) -->
+        <div class="cond">
+          <div class="cond-lbl">▸ Autograph details</div>
+          <div class="field">
+            <label>Pen Color<span class="req">*</span></label>
+            <select>
+              <option>— Select —</option>
+              <option>Blue</option>
+              <option selected>Black</option>
+              <option>Red</option>
+              <option>Silver paint</option>
+              <option>Gold paint</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:8px">
+            Pen color is required — it's part of every auth record (PSA/DNA, JSA, Beckett) and helps flag forgeries against known player exemplars.
+          </div>
+        </div>
+
+        <div class="row two">
+          <div class="field">
+            <label>Source<span class="req">*</span></label>
+            <select>
+              <option>eBay</option>
+              <option selected>Local Card Shop (LCS)</option>
+              <option>Pack pull</option>
+              <option>Trade</option>
+              <option>Card show</option>
+              <option>Online (other)</option>
+              <option>Lost / Stolen</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Date Acquired<span class="req">*</span></label>
+            <input type="date" value="2026-04-05">
+          </div>
+        </div>
+
+        <div class="row two">
+          <div class="field">
+            <label>Price Paid</label>
+            <input type="text" placeholder="$0.00" value="$45.00">
+          </div>
+          <div class="field">
+            <label>Acquisition Type</label>
+            <select>
+              <option>Bought single</option>
+              <option>Pulled from pack</option>
+              <option>Trade</option>
+              <option>Gift</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Conditional block: LCS -->
+        <div class="cond">
+          <div class="cond-lbl">▸ Local Card Shop details</div>
+          <div class="field typeahead">
+            <label>Shop<span class="req">*</span></label>
+            <input type="text" value="Daves Card">
+            <div class="ta-results">
+              <div class="ta-row">Dave's Cards & Collectibles<span class="city">Ooltewah, TN · ✓ verified</span></div>
+              <div class="ta-row">Dave's Sportscards<span class="city">Chattanooga, TN</span></div>
+              <div class="ta-row add">＋ Add a new shop…</div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:8px">
+            City &amp; state will autofill from the selected shop. Used by the LCS map and provenance analytics.
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:12px">
+          <label>Notes</label>
+          <textarea placeholder="Optional — anything you want recorded with this card's history."></textarea>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn ghost">Cancel</button>
+        <button class="btn primary">Add to Vault</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="legend">
+    <div><b>eBay</b> reveals: seller username, listing URL</div>
+    <div><b>Pack</b> reveals: product type, retailer (LCS picker or store + city)</div>
+    <div><b>Trade</b> reveals: traded with (username)</div>
+    <div><b>Show</b> reveals: show name + city/state</div>
+    <div><b>Lost/Stolen</b> reveals: date last seen, circumstances</div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 2. ADMIN: PROVENANCE REVIEW QUEUE                            -->
+  <!-- ============================================================ -->
+  <div class="section-h">2. Admin Dashboard — Provenance Review (new section)</div>
+
+  <div class="note">
+    The user's vault upload <strong>always succeeds</strong>. When the same <em>card_id + parallel + serial_number</em> is logged by a second active owner, an entry lands here for an admin to review. Same-serial owner history is admin-only (future subscriber feature).
+  </div>
+
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Provenance Review · 3 conflicts</div>
+      <div style="font-size:12px;color:var(--muted)">Filter: <b style="color:var(--white)">All</b> · Unresolved · Resolved</div>
+    </div>
+
+    <div class="q-head">
+      <div></div>
+      <div>Card</div>
+      <div>Serial</div>
+      <div>Claimants</div>
+      <div>First Logged</div>
+      <div>Status</div>
+      <div style="text-align:right">Actions</div>
+    </div>
+
+    <!-- Row 1: expanded -->
+    <div class="q-row">
+      <div class="q-thumb"></div>
+      <div>
+        <div class="q-card">Ichiro Suzuki — Red /75</div>
+        <div class="q-sub">2026 Topps Heritage · TBC-12</div>
+      </div>
+      <div class="q-serial">042/75</div>
+      <div>2 users</div>
+      <div>2026-02-14</div>
+      <div><span class="q-conflict">Duplicate</span></div>
+      <div class="q-actions">
+        <button class="btn ghost">View ▾</button>
+      </div>
+    </div>
+
+    <div class="q-detail">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--muted)">Conflicting claims for serial 042/75</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">Triggered by: <b style="color:var(--blue)">/99-or-less rule</b></div>
+      <div class="q-claims">
+        <div class="claim">
+          <div class="claim-h">
+            <div class="claim-user">@scott_m</div>
+            <div class="claim-when">Logged 2026-04-05</div>
+          </div>
+          <div class="claim-kv">
+            <div class="k">Source</div><div class="v">LCS · Dave's Cards & Collectibles</div>
+            <div class="k">Location</div><div class="v">Ooltewah, TN</div>
+            <div class="k">Price</div><div class="v">$45.00</div>
+            <div class="k">Acquired</div><div class="v">2026-04-05</div>
+            <div class="k">Notes</div><div class="v">Walked in Saturday, found in showcase.</div>
+          </div>
+          <div class="claim-imgs">
+            <div class="ph">FRONT</div>
+            <div class="ph">BACK</div>
+          </div>
+        </div>
+        <div class="claim">
+          <div class="claim-h">
+            <div class="claim-user">@cardking_22</div>
+            <div class="claim-when">Logged 2026-02-14</div>
+          </div>
+          <div class="claim-kv">
+            <div class="k">Source</div><div class="v">eBay · seller "topps_pulls"</div>
+            <div class="k">Location</div><div class="v">Phoenix, AZ</div>
+            <div class="k">Price</div><div class="v">$38.00</div>
+            <div class="k">Acquired</div><div class="v">2026-02-14</div>
+            <div class="k">Notes</div><div class="v">—</div>
+          </div>
+          <div class="claim-imgs">
+            <div class="ph">FRONT</div>
+            <div class="ph">BACK</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn ghost">Message both users</button>
+        <button class="btn danger">Flag as fraud</button>
+        <button class="btn ghost">Mark @cardking_22 as past owner</button>
+        <button class="btn green">Confirm @scott_m as current owner</button>
+      </div>
+    </div>
+
+    <!-- Row 2: collapsed -->
+    <div class="q-row">
+      <div class="q-thumb"></div>
+      <div>
+        <div class="q-card">Shohei Ohtani — Gold Auto /50</div>
+        <div class="q-sub">2026 Topps Chrome · CA-SO</div>
+      </div>
+      <div class="q-serial">12/50</div>
+      <div>2 users</div>
+      <div>2026-03-22</div>
+      <div><span class="q-conflict">Duplicate</span></div>
+      <div class="q-actions">
+        <button class="btn ghost">View ▾</button>
+      </div>
+    </div>
+
+    <!-- Row 3: lost/stolen -->
+    <div class="q-row">
+      <div class="q-thumb"></div>
+      <div>
+        <div class="q-card">Luka Doncic — Prizm Silver</div>
+        <div class="q-sub">2024-25 Panini Prizm · #75</div>
+      </div>
+      <div class="q-serial">unnumbered</div>
+      <div>1 user</div>
+      <div>2026-04-01</div>
+      <div><span class="q-conflict" style="background:rgba(255,184,77,0.15);color:var(--gold);border-color:rgba(255,184,77,0.3)">Lost / Stolen</span></div>
+      <div class="q-actions">
+        <button class="btn ghost">View ▾</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="note" style="margin-top:18px">
+    <strong>Resolution actions write to <code>card_provenance</code>:</strong> "Confirm current owner" appends an event for the new owner and marks the prior claimant's row as <em>past_owner</em>. "Flag as fraud" hides the suspect entry from the public timeline but keeps it in the audit trail. Nothing is ever deleted — provenance is append-only.
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 3. ADMIN: TRIGGER RULES MANAGEMENT                           -->
+  <!-- ============================================================ -->
+  <div class="section-h">3. Admin Dashboard — Provenance Trigger Rules</div>
+
+  <div class="note">
+    Controls <em>which</em> cards force the Provenance section to appear in the user vault modal. Two locked baseline rules + an editable Always-Trigger list. Add new rules here as you audit each set's parallel checklist — no redeploy needed.
+  </div>
+
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Provenance Trigger Rules</div>
+      <button class="btn primary" style="padding:6px 12px;font-size:11px">＋ Add Rule</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Locked baseline rules -->
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px">Baseline rules · always on</div>
+
+      <div style="background:var(--deep);border:1px solid var(--deep-border);border-radius:8px;overflow:hidden;margin-bottom:18px">
+        <div style="display:grid;grid-template-columns:32px 1fr 1fr 100px 80px;gap:12px;padding:12px 14px;align-items:center;border-bottom:1px solid var(--deep-border)">
+          <div style="font-size:16px">🔒</div>
+          <div style="font-weight:700">Autographed cards</div>
+          <div class="q-sub">Any parallel where <code>is_auto = true</code></div>
+          <div><span class="q-conflict" style="background:rgba(0,170,255,0.15);color:var(--blue);border-color:rgba(0,170,255,0.3)">Locked</span></div>
+          <div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:32px 1fr 1fr 100px 80px;gap:12px;padding:12px 14px;align-items:center">
+          <div style="font-size:16px">🔒</div>
+          <div style="font-weight:700">Serial numbered /99 or less</div>
+          <div class="q-sub">Any parallel where <code>print_run ≤ 99</code></div>
+          <div><span class="q-conflict" style="background:rgba(0,170,255,0.15);color:var(--blue);border-color:rgba(0,170,255,0.3)">Locked</span></div>
+          <div></div>
+        </div>
+      </div>
+
+      <!-- Editable always-trigger list -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:1.5px;color:var(--muted)">Always-Trigger list · editable</div>
+        <div class="q-sub">Match by parallel name (case-insensitive contains)</div>
+      </div>
+
+      <div style="background:var(--deep);border:1px solid var(--deep-border);border-radius:8px;overflow:hidden">
+
+        <div style="display:grid;grid-template-columns:32px 1fr 1fr 100px 80px;gap:12px;padding:12px 14px;align-items:center;border-bottom:1px solid var(--deep-border)">
+          <div style="font-size:16px">★</div>
+          <div style="font-weight:700">Superfractor</div>
+          <div class="q-sub">Topps · all sports · seeded entry</div>
+          <div><span class="q-conflict" style="background:rgba(0,232,135,0.15);color:var(--green);border-color:rgba(0,232,135,0.3)">Active</span></div>
+          <div class="q-actions"><button class="btn ghost" style="padding:5px 9px;font-size:10px">Edit</button></div>
+        </div>
+
+        <!-- Empty-state placeholder rows for future entries -->
+        <div style="padding:18px 14px;text-align:center;color:var(--muted);font-size:12px;font-style:italic">
+          Add more parallels here as you audit each set —<br>
+          e.g. <span style="color:var(--white)">Red Refractor /5</span>, <span style="color:var(--white)">Black 1/1</span>, <span style="color:var(--white)">Printing Plates</span>, <span style="color:var(--white)">SuperFractor variants</span>, set-specific 1/1s.
+        </div>
+
+      </div>
+
+      <!-- Inline Add Rule form (shown to demonstrate the flow) -->
+      <div style="margin-top:16px;padding:14px;background:rgba(0,170,255,0.04);border:1px dashed rgba(0,170,255,0.3);border-radius:8px">
+        <div class="cond-lbl">▸ Add Rule</div>
+        <div class="row three">
+          <div class="field">
+            <label>Match Type</label>
+            <select>
+              <option>Parallel name contains</option>
+              <option>Parallel name equals</option>
+              <option>Print run ≤</option>
+              <option>Has insert designation</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Value</label>
+            <input type="text" placeholder="e.g. Printing Plate">
+          </div>
+          <div class="field">
+            <label>Scope</label>
+            <select>
+              <option>All sets</option>
+              <option>This brand only…</option>
+              <option>This set only…</option>
+            </select>
+          </div>
+        </div>
+        <div class="row two">
+          <div class="field">
+            <label>Notes (admin only)</label>
+            <input type="text" placeholder="Why this rule was added">
+          </div>
+          <div class="field">
+            <label>Status</label>
+            <select>
+              <option>Active</option>
+              <option>Disabled</option>
+            </select>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn ghost">Cancel</button>
+          <button class="btn primary">Save Rule</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

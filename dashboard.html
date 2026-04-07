@@ -6660,13 +6660,19 @@ function toggleTicker(card, el){
     const paid = parseFloat(card.price_paid) || parseFloat(card.price) || 0;
     const est  = parseFloat(card.estimated_value) || paid;
     const chgPct = paid > 0 ? (((est - paid) / paid) * 100) : 0;
-    // Resolve CARDS id for navigation
-    const _match = CARDS.find(x => x && (
-      x._cardNumber === String(card.card_number||'').replace(/^#/,'') ||
-      (x.player === (card.player||card.name) && String(x.year) === String((card.year||'').toString().slice(0,4)))
-    ));
+    // Prefer vault row id (stable PK) for navigation back to My Vault.
+    // Fall back to CARDS.find only when not from a vault row (catalog adds).
+    const vaultId = card.id || null;
+    let _match = null;
+    if(!vaultId){
+      _match = (window.CARDS||[]).find(x => x && (
+        x._cardNumber === String(card.card_number||'').replace(/^#/,'') ||
+        (x.player === (card.player||card.name) && String(x.year) === String((card.year||'').toString().slice(0,4)))
+      ));
+    }
     list.push({
       _tid: id,
+      vaultId: vaultId,
       cardId: _match ? _match.id : null,
       name: (card.player || card.name || 'Unknown'),
       grade: card.grade || card.grade_company || 'Raw',
@@ -6707,43 +6713,45 @@ function initCardTicker(){
 
   _backfillTickerIds();
   const watchlist = _getTickerWatchlist();
-  let cards;
 
-  if(watchlist.length > 0){
-    cards = watchlist.map(w => {
-      const p = w.price || 0;
-      const chg = w.chg || 0;
-      return {
-        player: w.player || w.name || '',
-        year: w.year || '',
-        brand: w.brand || '',
-        set_name: w.set_name || '',
-        variation: w.variation || '',
-        card_number: w.card_number || '',
-        price: '$' + (p >= 1000 ? p.toLocaleString() : p.toFixed(p % 1 === 0 ? 0 : 2)),
-        chg: (chg >= 0 ? '+' : '') + chg.toFixed(1) + '%',
-        dir: chg >= 0 ? 'up' : 'dn',
-        cardId: w.cardId || null,
-      };
-    });
-  } else {
-    // Fallback demo data when watchlist is empty
-    cards = [
-      {year:'2026',brand:'Topps',set_name:'Series 1',player:'Juan Soto',variation:'Gold',card_number:'1', price:'$1,200', chg:'+12.4%', dir:'up'},
-      {year:'2026',brand:'Topps',set_name:'Series 1',player:'Shohei Ohtani',variation:'Chrome Auto',card_number:'41', price:'$650', chg:'-3.1%', dir:'dn'},
-      {year:'2011',brand:'Topps',set_name:'Update',player:'Mike Trout',variation:'RC',card_number:'US175', price:'$890', chg:'+5.7%', dir:'up'},
-      {year:'2026',brand:'Topps',set_name:'Series 1',player:'Julio Rodriguez',variation:'Gold /50',card_number:'45', price:'$420', chg:'+8.2%', dir:'up'},
-      {year:'2026',brand:'Topps',set_name:'Series 1',player:'Ronald Acuña Jr.',variation:'Auto /25',card_number:'12', price:'$1,850', chg:'+21.0%', dir:'up'},
-      {year:'2026',brand:'Topps',set_name:'Series 1',player:'Gunnar Henderson',variation:'RC Prizm',card_number:'13', price:'$310', chg:'+77.8%', dir:'up'},
-    ];
-  }
+  const userCards = watchlist.map(w => {
+    const p = w.price || 0;
+    const chg = w.chg || 0;
+    return {
+      player: w.player || w.name || '',
+      year: w.year || '',
+      brand: w.brand || '',
+      set_name: w.set_name || '',
+      variation: w.variation || '',
+      card_number: w.card_number || '',
+      price: '$' + (p >= 1000 ? p.toLocaleString() : p.toFixed(p % 1 === 0 ? 0 : 2)),
+      chg: (chg >= 0 ? '+' : '') + chg.toFixed(1) + '%',
+      dir: chg >= 0 ? 'up' : 'dn',
+      vaultId: w.vaultId || null,
+      cardId: w.cardId || null,
+    };
+  });
+
+  const defaultCards = [
+    {year:'2026',brand:'Topps',set_name:'Series 1',player:'Juan Soto',variation:'Gold',card_number:'1', price:'$1,200', chg:'+12.4%', dir:'up'},
+    {year:'2026',brand:'Topps',set_name:'Series 1',player:'Shohei Ohtani',variation:'Chrome Auto',card_number:'41', price:'$650', chg:'-3.1%', dir:'dn'},
+    {year:'2011',brand:'Topps',set_name:'Update',player:'Mike Trout',variation:'RC',card_number:'US175', price:'$890', chg:'+5.7%', dir:'up'},
+    {year:'2026',brand:'Topps',set_name:'Series 1',player:'Julio Rodriguez',variation:'Gold /50',card_number:'45', price:'$420', chg:'+8.2%', dir:'up'},
+    {year:'2026',brand:'Topps',set_name:'Series 1',player:'Ronald Acuña Jr.',variation:'Auto /25',card_number:'12', price:'$1,850', chg:'+21.0%', dir:'up'},
+    {year:'2026',brand:'Topps',set_name:'Series 1',player:'Gunnar Henderson',variation:'RC Prizm',card_number:'13', price:'$310', chg:'+77.8%', dir:'up'},
+  ];
+
+  // Show defaults until user has at least 4 of their own; then show only user cards.
+  let cards = userCards.length >= 4 ? userCards : [...userCards, ...defaultCards];
 
   // Need at least a few items for smooth scrolling — duplicate until >=4
   while(cards.length > 0 && cards.length < 4) cards = [...cards, ...cards];
 
   let items = '';
   [...cards, ...cards].forEach(c => {
-    const clickAttr = c.cardId ? ` onclick="openCardDetail(${c.cardId})" style="cursor:pointer"` : '';
+    const clickAttr = (c.vaultId || c.cardId)
+      ? ` onclick="_openTickerCard(${c.vaultId ? "'"+String(c.vaultId).replace(/'/g,"\\'")+"'" : 'null'}, ${c.cardId || 'null'})" style="cursor:pointer"`
+      : '';
     const yr = c.year || '';
     const br = c.brand || '';
     const sn = c.set_name || '';
@@ -6757,6 +6765,27 @@ function initCardTicker(){
   // Scale animation speed by number of items (min 20s, max 60s)
   const speed = Math.max(20, Math.min(60, cards.length * 6));
   inner.style.animation = `cardTick ${speed}s linear infinite`;
+}
+
+// Click handler for ticker pills — routes to My Vault context when possible.
+async function _openTickerCard(vaultId, cardId){
+  if(vaultId){
+    // Navigate to My Vault first so _vaultData is loaded, then open with vault context.
+    const vd = window._vaultData || [];
+    let idx = vd.findIndex(r => r && String(r.id) === String(vaultId));
+    if(idx < 0){
+      // Vault not loaded yet — switch to My Vault, wait for fetch, then resolve.
+      N('myvault', document.getElementById('nav-myvault'));
+      for(let tries = 0; tries < 40 && (!window._vaultData || !window._vaultData.length); tries++){
+        await new Promise(r => setTimeout(r, 100));
+      }
+      idx = (window._vaultData||[]).findIndex(r => r && String(r.id) === String(vaultId));
+    }
+    if(idx >= 0){ openVaultCard(idx); return; }
+    T('Card no longer in your vault');
+    return;
+  }
+  if(cardId){ openCardDetail(cardId); }
 }
 
 // &#9472;&#9472; SCORES BAR &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
@@ -9756,9 +9785,11 @@ async function _cdLoadEbayListings(card, variationLabel){
   const payload = {
     player:      card.player || '',
     year:        isMtg ? '' : (card.year || ''),
+    brand:       card.brand || '',
     set_name:    card.set || '',
     card_number: (card._cardNumber || String(card.cardNum||'').replace(/^#/,'')) || '',
-    grade:       variationLabel || ''
+    variation:   variationLabel || 'Base',
+    grade:       ''  // Reserved for actual PSA/BGS/SGC grade — not yet wired
   };
   if(!payload.player){ block.style.display='none'; return; }
   block.style.display = '';

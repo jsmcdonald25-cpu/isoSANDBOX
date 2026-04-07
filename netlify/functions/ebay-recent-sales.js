@@ -61,23 +61,66 @@ async function getEbayToken(clientId, clientSecret, env) {
   return JSON.parse(res.body).access_token;
 }
 
+// ── Parallel/variant tokens to exclude when searching for a BASE card ──
+// Without these, eBay returns every parallel of the same card and the
+// most expensive one wins. List is intentionally broad — covers the most
+// common color/parallel/auto/numbered/relic terms across modern sets.
+const BASE_EXCLUDE_TOKENS = [
+  'yellow','red','gold','orange','green','blue','purple','pink','black',
+  'rainbow','bronze','silver','platinum','aqua','teal','sapphire','ruby','emerald',
+  'refractor','prizm','xfractor','superfractor','wave','mojo','shimmer','disco',
+  'auto','autograph','signed','signature',
+  'patch','relic','jersey','memorabilia',
+  'printing plate','printplate','plate',
+  'ssp','sp','short print','/99','/75','/50','/25','/15','/10','/5','1/1','one of one',
+  'pmg','negative','image variation','sketch',
+];
+
+// Tokens that are part of base set names and should NOT be excluded
+// even though they sometimes appear in parallel names.
+const BASE_EXCLUDE_BLOCKLIST = new Set([
+  // (kept empty for now — add overrides here if a set name collides)
+]);
+
 // ── Build search query from card details ────────────────────
-function buildSearchQuery({ player, year, set_name, card_number, grade }) {
+function buildSearchQuery({ player, year, brand, set_name, card_number, variation, grade }) {
   const parts = [];
   if (player) parts.push(player);
   if (year) parts.push(String(year));
+  if (brand) parts.push(brand);
   if (set_name) parts.push(set_name);
   if (card_number) parts.push(`#${card_number}`);
+
+  // Variation handling: 'base' (or empty) → exclude common parallel tokens.
+  // Real parallel name → include it positively, quoted, so eBay matches it.
+  const v = String(variation || '').trim();
+  const isBase = !v || ['base','raw'].includes(v.toLowerCase());
+  if (isBase) {
+    for (const tok of BASE_EXCLUDE_TOKENS) {
+      if (BASE_EXCLUDE_BLOCKLIST.has(tok)) continue;
+      // Quote multi-word tokens so eBay treats them as a phrase
+      parts.push(tok.includes(' ') ? `-"${tok}"` : `-${tok}`);
+    }
+  } else {
+    // Quote multi-word parallel names ("Image Variation", "Pink Refractor", etc.)
+    parts.push(v.includes(' ') ? `"${v}"` : v);
+  }
+
+  // Real grade (PSA 10, BGS 9.5, etc.) — only include if it's an actual grade,
+  // not a parallel name accidentally passed in the grade slot.
   if (grade && !['Raw','raw','Base','base',''].includes(grade)) parts.push(grade);
+
   return parts.join(' ');
 }
 
 // ── Search eBay sold listings ───────────────────────────────
 async function searchSoldListings(token, query, env) {
+  // No `sort` param → eBay's default best-match relevance ranking.
+  // Previously we used `-price` which always surfaced the rarest parallel
+  // first regardless of whether it was the user's actual card.
   const params = new URLSearchParams({
     q: query,
     filter: 'buyingOptions:{FIXED_PRICE|AUCTION},conditionIds:{2750|3000}',
-    sort: '-price',
     limit: '50',
   });
 
@@ -116,18 +159,25 @@ function summarizePricing(results) {
     .filter((i) => i.price > 0);
 
   if (!items.length) {
-    return { count: 0, lastSold: null, average: null, low: null, high: null, items: [] };
+    return { count: 0, average: null, low: null, high: null, items: [] };
   }
 
-  const prices = items.map((i) => i.price);
-  const sum = prices.reduce((a, b) => a + b, 0);
+  // Trim outliers before computing low/avg/high so a single rogue parallel
+  // that slipped past the exclusion list can't blow up the stats.
+  // Drop top 10% and bottom 10% when we have at least 10 items.
+  const sortedAsc = items.map((i) => i.price).sort((a, b) => a - b);
+  let statsPrices = sortedAsc;
+  if (sortedAsc.length >= 10) {
+    const trim = Math.floor(sortedAsc.length * 0.1);
+    statsPrices = sortedAsc.slice(trim, sortedAsc.length - trim);
+  }
+  const sum = statsPrices.reduce((a, b) => a + b, 0);
 
   return {
     count: items.length,
-    lastSold: items[0].price,
-    average: Math.round((sum / prices.length) * 100) / 100,
-    low: Math.min(...prices),
-    high: Math.max(...prices),
+    average: Math.round((sum / statsPrices.length) * 100) / 100,
+    low: statsPrices[0],
+    high: statsPrices[statsPrices.length - 1],
     items: items.slice(0, 10), // Return top 10 for detail display
   };
 }
@@ -161,7 +211,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { player, year, set_name, card_number, grade } = JSON.parse(event.body || '{}');
+    const { player, year, brand, set_name, card_number, variation, grade } = JSON.parse(event.body || '{}');
 
     // Need at least a player/card name to search
     if (!player) {
@@ -179,7 +229,7 @@ exports.handler = async (event) => {
     const token = await getEbayToken(clientId, clientSecret, env);
 
     // 2. Build query and search
-    const query = buildSearchQuery({ player, year, set_name, card_number, grade });
+    const query = buildSearchQuery({ player, year, brand, set_name, card_number, variation, grade });
     const results = await searchSoldListings(token, query, env);
 
     // 3. Summarize pricing

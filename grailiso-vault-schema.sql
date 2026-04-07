@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS public.cards (
   year            INT NOT NULL,
   sport           TEXT NOT NULL,
   team            TEXT,
-  category        TEXT NOT NULL CHECK (category IN ('Base','Auto','Insert','Relic')),
+  category        TEXT NOT NULL CHECK (category IN ('Base','Auto','Insert','Relic','Common','Uncommon','Rare','Mythic')),
   insert_name     TEXT,
   is_rookie       BOOLEAN NOT NULL DEFAULT false,
   created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -686,6 +686,149 @@ CREATE POLICY "admin_actions_read" ON public.admin_actions FOR SELECT USING (tru
 CREATE POLICY "admin_actions_insert" ON public.admin_actions FOR INSERT WITH CHECK (true);
 
 -- ============================================================
+-- PROVENANCE FEATURE
+-- Append-only chain-of-custody for autos, /99-or-less serials,
+-- and admin-flagged high-end parallels (e.g. Superfractor).
+-- See mockup-provenance.html for the UX this backs.
+-- ============================================================
+
+-- ── PROVENANCE TRIGGER RULES (admin-managed always-trigger list) ──
+-- Two baseline rules are enforced in code (auto + /99-or-less);
+-- this table holds the editable extras (Superfractor, Printing Plates, etc.)
+CREATE TABLE IF NOT EXISTS public.provenance_trigger_rules (
+  id              BIGSERIAL PRIMARY KEY,
+  match_type      TEXT NOT NULL CHECK (match_type IN ('parallel_name_contains','parallel_name_equals','print_run_lte','has_insert_designation')),
+  match_value     TEXT NOT NULL,           -- e.g. 'Superfractor', '5', 'Printing Plate'
+  scope           TEXT NOT NULL DEFAULT 'all' CHECK (scope IN ('all','brand','set')),
+  scope_value     TEXT,                    -- brand name or set id when scope != 'all'
+  status          TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active','disabled')),
+  admin_note      TEXT,
+  created_by      UUID REFERENCES public.profiles(id),
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_ptr_status ON public.provenance_trigger_rules (status);
+
+ALTER TABLE public.provenance_trigger_rules ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "ptr_read_all"   ON public.provenance_trigger_rules FOR SELECT USING (true);
+CREATE POLICY "ptr_admin_write" ON public.provenance_trigger_rules FOR ALL USING (true) WITH CHECK (true);
+
+-- Seed: Superfractor (the only non-baseline entry agreed at design time)
+INSERT INTO public.provenance_trigger_rules (match_type, match_value, scope, status, admin_note)
+VALUES ('parallel_name_contains','Superfractor','all','active','Seeded entry — Topps Superfractor 1/1 across all sports')
+ON CONFLICT DO NOTHING;
+
+-- ── CARD PROVENANCE (append-only event ledger) ──
+-- One row per provenance event. Never UPDATE-in-place; never DELETE.
+-- A vault insert appends 'acquired'; a sale appends 'sold'; etc.
+CREATE TABLE IF NOT EXISTS public.card_provenance (
+  id              BIGSERIAL PRIMARY KEY,
+  card_id         BIGINT NOT NULL REFERENCES public.cards(id) ON DELETE CASCADE,
+  vault_id        BIGINT REFERENCES public.vault(id) ON DELETE SET NULL,  -- nullable: lost/stolen events may have no live vault row
+  user_id         UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+
+  -- Card identity at time of event
+  parallel        TEXT NOT NULL,
+  serial_number   INT,                     -- nullable for unnumbered autos
+  serial_total    INT,                     -- nullable for unnumbered autos
+  is_auto         BOOLEAN NOT NULL DEFAULT false,
+
+  -- Why this row exists in the provenance gate
+  trigger_reason  TEXT NOT NULL CHECK (trigger_reason IN ('auto','serial_lte_99','rule_match')),
+  trigger_rule_id BIGINT REFERENCES public.provenance_trigger_rules(id),  -- set when trigger_reason='rule_match'
+
+  -- Event
+  event_type      TEXT NOT NULL CHECK (event_type IN ('acquired','sold','traded_away','graded','lost','stolen','past_owner','flagged_fraud')),
+  event_date      DATE NOT NULL,
+
+  -- Source (always required for 'acquired')
+  source_type     TEXT CHECK (source_type IN ('ebay','lcs','pack','trade','show','online_other','lost_stolen')),
+  source_note     TEXT,                    -- free-text fallback / details
+
+  -- LCS denormalized fields (FK to public.lcs once that directory table exists)
+  lcs_id          BIGINT,                  -- TODO: FK to public.lcs when added
+  lcs_name        TEXT,
+  lcs_city        TEXT,
+  lcs_state       TEXT,
+  lcs_lat         NUMERIC(9,6),
+  lcs_lng         NUMERIC(9,6),
+
+  -- eBay-specific
+  ebay_seller     TEXT,
+  ebay_listing_url TEXT,
+
+  -- Pack pull
+  pack_product    TEXT,                    -- hobby box / blaster / retail / etc.
+  pack_retailer   TEXT,                    -- LCS name OR retailer (Target, Walmart...)
+
+  -- Trade
+  trade_with_user TEXT,
+
+  -- Card show
+  show_name       TEXT,
+  show_city       TEXT,
+  show_state      TEXT,
+
+  -- Autograph details (required: pen_color when is_auto)
+  pen_color       TEXT CHECK (pen_color IN ('blue','black','red','silver_paint','gold_paint','other')),
+
+  price           NUMERIC(10,2),
+  notes           TEXT,
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_prov_card    ON public.card_provenance (card_id);
+CREATE INDEX IF NOT EXISTS idx_prov_user    ON public.card_provenance (user_id);
+CREATE INDEX IF NOT EXISTS idx_prov_vault   ON public.card_provenance (vault_id);
+CREATE INDEX IF NOT EXISTS idx_prov_event   ON public.card_provenance (event_type);
+-- Composite key used by the duplicate-serial detector
+CREATE INDEX IF NOT EXISTS idx_prov_serial  ON public.card_provenance (card_id, parallel, serial_number, serial_total)
+  WHERE serial_number IS NOT NULL;
+
+ALTER TABLE public.card_provenance ENABLE ROW LEVEL SECURITY;
+
+-- Users can insert their own rows and read their own history.
+-- Cross-user history (other owners of the same serial) is admin-only for now;
+-- enforced by NOT writing a SELECT policy that exposes other users.
+CREATE POLICY "prov_insert_own" ON public.card_provenance
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "prov_read_own"   ON public.card_provenance
+  FOR SELECT USING (auth.uid() = user_id);
+
+-- ── PROVENANCE REVIEW QUEUE (duplicate-serial conflicts for admin) ──
+-- Populated when a vault insert produces a card_provenance row whose
+-- (card_id, parallel, serial_number, serial_total) tuple already has
+-- another active claimant. The user's vault upload still succeeds.
+CREATE TABLE IF NOT EXISTS public.provenance_review (
+  id              BIGSERIAL PRIMARY KEY,
+  card_id         BIGINT NOT NULL REFERENCES public.cards(id) ON DELETE CASCADE,
+  parallel        TEXT NOT NULL,
+  serial_number   INT NOT NULL,
+  serial_total    INT NOT NULL,
+
+  conflict_type   TEXT NOT NULL DEFAULT 'duplicate_serial'
+                  CHECK (conflict_type IN ('duplicate_serial','lost_stolen','manual_flag')),
+  status          TEXT NOT NULL DEFAULT 'unresolved'
+                  CHECK (status IN ('unresolved','resolved','dismissed')),
+
+  -- The two (or more) provenance rows in conflict
+  provenance_ids  BIGINT[] NOT NULL,
+
+  resolved_by     UUID REFERENCES public.profiles(id),
+  resolved_at     TIMESTAMPTZ,
+  resolution_note TEXT,
+
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_prov_review_status ON public.provenance_review (status);
+CREATE INDEX IF NOT EXISTS idx_prov_review_card   ON public.provenance_review (card_id);
+
+ALTER TABLE public.provenance_review ENABLE ROW LEVEL SECURITY;
+-- Admin-only — no public SELECT/INSERT policies. Service role bypasses RLS.
+
+-- ============================================================
 -- SCHEMA COMPLETE
 -- Tables:  profiles · cards · vault · isos · matches
 --          notifications · credit_events · pending_cards
@@ -694,5 +837,6 @@ CREATE POLICY "admin_actions_insert" ON public.admin_actions FOR INSERT WITH CHE
 --          grading_orders · shipping · hub_inspections
 --          disputes · reviews · upload_milestones
 --          admin_actions
+--          provenance_trigger_rules · card_provenance · provenance_review
 -- Triggers: vault→ISO match · ISO→vault match · signup bonus
 -- ============================================================

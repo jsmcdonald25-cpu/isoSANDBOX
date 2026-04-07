@@ -7361,13 +7361,12 @@ function _buildVariationPills(c){
 
   groupOrder.forEach((g,gi)=>{
     const items = groups[g];
-    const isFirst = gi === 0;
     if(hasMultipleGroups){
       html += `<div class="cd-pill-group">`;
-      html += `<div class="cd-pill-group-head ${isFirst?'open':''}" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('collapsed')">`;
+      html += `<div class="cd-pill-group-head open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('collapsed')">`;
       html += `<span class="pg-arrow">&#9654;</span> ${g.toUpperCase()} <span class="pg-count">(${items.length})</span>`;
       html += `</div>`;
-      html += `<div class="cd-pill-group-body ${isFirst?'':'collapsed'}">`;
+      html += `<div class="cd-pill-group-body">`;
     } else {
       html += `<div class="cd-pill-group"><div class="cd-pill-group-body">`;
     }
@@ -7376,8 +7375,11 @@ function _buildVariationPills(c){
       const runLabel = v.run ? `<span class="pill-run">/${v.run}</span>` : '';
       const sfClass  = v.superfractor ? 'superfractor' : '';
       const tipHtml  = v.tooltip ? `<span class="pill-tip">${v.tooltip}</span>` : '';
+      // Every pill gets its parallel color + glow (not just the active one).
+      // Active pill gets a stronger glow so it remains visually distinct.
+      const glowSize = (i===0) ? '14px' : '8px';
       html += `<div class="cd-pill ${i===0?'active':''} ${sfClass}" id="cd-pill-${i}"
-        style="${i===0?`background:${v.color};border-color:${v.color};box-shadow:0 0 10px ${v.glow}`:''}"
+        style="background:${v.color};border-color:${v.color};color:#fff;box-shadow:0 0 ${glowSize} ${v.glow}"
         onclick="cdSelectVar(${i})">${v.label}${runLabel}${tipHtml}</div>`;
     });
 
@@ -7413,19 +7415,21 @@ function cdSelectVar(idx, skipShimmer){
   if(!v) return;
   window._cdActiveVar = idx;
 
-  // Update pills
+  // Update pills — every pill keeps its parallel color; the active pill just
+  // gets a stronger glow so it stays visually distinct.
   vars.forEach((_,i)=>{
     const p = document.getElementById('cd-pill-'+i);
     if(!p) return;
     const vv = vars[i];
+    p.style.background  = vv.color;
+    p.style.borderColor = vv.color;
+    p.style.color       = '#fff';
     if(i===idx){
       p.classList.add('active');
-      p.style.background  = vv.color;
-      p.style.borderColor = vv.color;
-      p.style.boxShadow   = `0 0 12px ${vv.glow}`;
+      p.style.boxShadow = `0 0 14px ${vv.glow}`;
     } else {
       p.classList.remove('active');
-      p.style.background = p.style.borderColor = p.style.boxShadow = '';
+      p.style.boxShadow = `0 0 8px ${vv.glow}`;
     }
   });
 

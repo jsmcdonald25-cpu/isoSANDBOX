@@ -6364,7 +6364,7 @@ function _renderVaultGrid(data){
     const countBadge = count>1
       ? `<div class="mv-scroll-count">${count}x</div>`
       : '';
-    return `<div class="mv-scroll-card" onclick="openVaultCard(${realIdx})">
+    return `<div class="mv-scroll-card" data-mvidx="${realIdx}" onclick="openVaultCard(${realIdx})">
       <div class="mv-scroll-card-img">${img?`<img src="${img}" loading="lazy" alt="${(c.player||'').replace(/"/g,'&quot;')}">`:`<img src="${ph}" style="object-fit:cover" loading="lazy">`}${countBadge}</div>
       <div class="mv-scroll-card-info">
         <div class="mv-scroll-card-name">${c.player||'Unknown'}</div>
@@ -6375,6 +6375,153 @@ function _renderVaultGrid(data){
   }).join('');
   rail.scrollLeft=0;
   requestAnimationFrame(_mvUpdateScrollNav);
+  // Fire eBay current-price lookups (cached, throttled). Updates tiles + totals.
+  _mvLoadCurrentPrices(window._vaultData||[]);
+}
+
+// ── My Vault: live eBay current-value loader ─────────────────────────────────
+window._mvEbayCache = window._mvEbayCache || {};
+const _MV_CACHE_TTL = 6*60*60*1000; // 6h
+function _mvCacheKey(row){
+  return [
+    (row.player||'').toLowerCase().trim(),
+    String((row.year||'')).slice(0,4),
+    (row.set_name||row.set||'').toLowerCase().trim(),
+    String(row.card_number||'').replace(/^#/,''),
+    (row.variation||row.parallel||row.category||'Base').toLowerCase().trim()
+  ].join('|');
+}
+function _mvCacheGet(key){
+  const m = window._mvEbayCache[key];
+  if(m && (Date.now()-m.t) < _MV_CACHE_TTL) return m.v;
+  try{
+    const raw = sessionStorage.getItem('mvEbay::'+key);
+    if(raw){
+      const obj = JSON.parse(raw);
+      if(obj && (Date.now()-obj.t) < _MV_CACHE_TTL){
+        window._mvEbayCache[key] = obj;
+        return obj.v;
+      }
+    }
+  }catch(e){}
+  return null;
+}
+function _mvCacheSet(key, v){
+  const obj = {v, t: Date.now()};
+  window._mvEbayCache[key] = obj;
+  try{ sessionStorage.setItem('mvEbay::'+key, JSON.stringify(obj)); }catch(e){}
+}
+async function _mvFetchEbayAvg(row){
+  const key = _mvCacheKey(row);
+  const cached = _mvCacheGet(key);
+  if(cached !== null) return cached;
+  const isMtg = String(row.brand||'').toLowerCase().includes('wizards');
+  const payload = {
+    player:      row.player || '',
+    year:        isMtg ? '' : ((row.year||'').toString().slice(0,4) || ''),
+    set_name:    row.set_name || row.set || '',
+    card_number: String(row.card_number||'').replace(/^#/,''),
+    grade:       row.variation || row.parallel || row.category || ''
+  };
+  if(!payload.player){
+    if(!window._mvDbgLogged){ window._mvDbgLogged=true; console.warn('[mvEbay] skip — no player on row', row); }
+    return 0;
+  }
+  try{
+    const r = await fetch('/.netlify/functions/ebay-recent-sales', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const txt = await r.text();
+    let data = null;
+    try{ data = JSON.parse(txt); }catch(_){}
+    if(!window._mvDbgLogged){
+      window._mvDbgLogged = true;
+      console.log('[mvEbay] first request', {status:r.status, payload, response:data||txt});
+    }
+    if(!r.ok) throw new Error('http '+r.status+' '+txt.slice(0,120));
+    const avg = (data && data.count && data.average) ? Number(data.average) : 0;
+    _mvCacheSet(key, avg);
+    return avg;
+  }catch(e){
+    if(!window._mvDbgErrLogged){ window._mvDbgErrLogged = true; console.warn('[mvEbay] first error:', e, 'payload:', payload); }
+    return 0;
+  }
+}
+function _mvFmtPrice(n){
+  if(!n || isNaN(n)) return '—';
+  return '$'+Number(n).toLocaleString(undefined,{maximumFractionDigits:0});
+}
+function _mvUpdateTilePrice(idx){
+  const row = (window._vaultData||[])[idx];
+  if(!row) return;
+  const tile = document.querySelector('.mv-scroll-card[data-mvidx="'+idx+'"]');
+  if(!tile) return;
+  const priceEl = tile.querySelector('.mv-scroll-card-price');
+  if(!priceEl) return;
+  const cur = parseFloat(row._currentValue)||0;
+  if(cur > 0){
+    priceEl.textContent = _mvFmtPrice(cur);
+    const paid = parseFloat(row.price_paid)||0;
+    if(paid > 0){
+      priceEl.style.color = (cur >= paid) ? 'var(--green)' : 'var(--red)';
+    } else {
+      priceEl.style.color = '';
+    }
+  }
+}
+function _mvRecalcTotals(){
+  const data = window._vaultData;
+  if(!Array.isArray(data) || !data.length) return;
+  const totalPaid = data.reduce((s,c)=>s+(parseFloat(c.price_paid)||0),0);
+  const totalEst  = data.reduce((s,c)=>{
+    const cur = parseFloat(c._currentValue);
+    if(cur && cur > 0) return s + cur;
+    return s + (parseFloat(c.estimated_value)||0);
+  },0);
+  const gainLoss  = totalEst - totalPaid;
+  const glClass   = gainLoss >= 0 ? 'green' : 'red';
+  const ev = document.getElementById('mv3-est-val');
+  if(ev) ev.textContent = totalEst ? '$'+totalEst.toLocaleString(undefined,{maximumFractionDigits:0}) : '—';
+  const gv = document.getElementById('mv3-gl-val');
+  if(gv){
+    gv.textContent = (gainLoss>=0?'+':'')+'$'+Math.abs(gainLoss).toLocaleString(undefined,{maximumFractionDigits:0});
+    gv.className = 'mv-stat-cell-val '+glClass;
+  }
+}
+async function _mvLoadCurrentPrices(rows){
+  if(!Array.isArray(rows) || !rows.length) return;
+  // Token so a newer render aborts work from a stale render
+  const myToken = (window._mvLoadToken = (window._mvLoadToken||0) + 1);
+  const CONC = 6;
+  let next = 0;
+  let dirty = false;
+  let lastFlush = 0;
+  const flush = () => { if(dirty){ _mvRecalcTotals(); dirty = false; lastFlush = Date.now(); } };
+  const workers = Array.from({length: Math.min(CONC, rows.length)}, async () => {
+    while(true){
+      if(myToken !== window._mvLoadToken) return;
+      const i = next++;
+      if(i >= rows.length) return;
+      const row = rows[i];
+      // Skip if already resolved this session
+      if(row._currentValue != null){
+        _mvUpdateTilePrice(i);
+        continue;
+      }
+      const avg = await _mvFetchEbayAvg(row);
+      if(myToken !== window._mvLoadToken) return;
+      row._currentValue = avg || 0;
+      if(avg && avg > 0){
+        _mvUpdateTilePrice(i);
+        dirty = true;
+        if(Date.now() - lastFlush > 400) flush();
+      }
+    }
+  });
+  await Promise.all(workers);
+  if(myToken === window._mvLoadToken) flush();
 }
 
 

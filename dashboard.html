@@ -152,8 +152,13 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .topbar-sub{font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-top:1px}
 .topbar-actions{display:flex;align-items:center;gap:10px}
 /* CARD TICKER IN TOPBAR */
-.card-ticker-wrap{overflow:hidden;width:100%;background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:6px;padding:5px 10px;margin-top:4px}
-.card-ticker-inner{display:flex;gap:32px;white-space:nowrap;animation:cardTick 32s linear infinite}
+.card-ticker-wrap{overflow:hidden;width:100%;background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:6px;padding:5px 10px;margin-top:4px;display:flex;align-items:center;gap:8px}
+.ct-mode-badge{flex-shrink:0;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.8px;padding:2px 7px;border-radius:4px;cursor:default;position:relative}
+.ct-mode-badge.demo{background:rgba(255,170,0,0.12);color:#FFAA00;border:1px solid rgba(255,170,0,0.3)}
+.ct-mode-badge.live{background:rgba(0,232,135,0.1);color:var(--green);border:1px solid rgba(0,232,135,0.3)}
+.ct-mode-badge .ct-mode-tip{display:none;position:absolute;bottom:calc(100% + 6px);left:0;background:var(--deep2);border:1px solid var(--deep-border);border-radius:6px;padding:6px 10px;font-size:11px;font-weight:400;letter-spacing:0;white-space:nowrap;color:var(--chrome);z-index:99;pointer-events:none}
+.ct-mode-badge:hover .ct-mode-tip{display:block}
+.card-ticker-inner{flex:1;overflow:hidden;display:flex;gap:32px;white-space:nowrap;animation:cardTick 32s linear infinite}
 .card-ticker-inner:hover{animation-play-state:paused}
 .ct-item{display:inline-flex;align-items:center;gap:6px;font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted-text);flex-shrink:0}
 .ct-name{color:var(--white);font-weight:600}.ct-price{color:var(--blue)}.ct-chg{font-weight:700}.ct-chg.up{color:var(--green)}.ct-chg.dn{color:#FF3B5C}.ct-sep{opacity:0.3}
@@ -1731,6 +1736,7 @@ async function logOut(){
         <div class="topbar-sub" id="pgSub">Welcome back, Jason</div>
       </div>
       <div class="card-ticker-wrap">
+        <span class="ct-mode-badge demo" id="ctModeBadge">DEMO<span class="ct-mode-tip" id="ctModeTip"></span></span>
         <div class="card-ticker-inner" id="cardTickerInner"></div>
       </div>
       <script data-cfasync="false">
@@ -6706,6 +6712,13 @@ async function openVaultCard(idx){
     known._vaultFrontUrl = row.front_image_url || null;
     known._vaultBackUrl  = row.back_image_url  || null;
     await openCardDetail(known.id);
+    // CARDS entries built from the legacy `card-images` table can have a null
+    // _setTable when their set_name is an insert subset (e.g. "1991 Topps Relic")
+    // because _cdGuessTable can't resolve insert names against iv_sets. Resolve
+    // the parent table now so admin actions and uploads don't fail later.
+    if(window._cdCard && !window._cdCard._setTable){
+      await _cdEnsureSetTable(window._cdCard);
+    }
     // Re-set breadcrumbs with vault row data (openCardDetail doesn't have insert info)
     _cdSetBreadcrumbsAndTitle({sport:'Baseball', year:known.year||row.year, brand:known.brand||row.brand,
       setName:'', subsetName:row.set_name||known.set, cardNum:known.cardNum||('#'+row.card_number), player:known.player||row.player,
@@ -6762,6 +6775,10 @@ async function openVaultCard(idx){
     })()
   };
   window._cdCard=card;
+  // Insert subsets won't match iv_sets by label — resolve via card_number fan-out
+  if(!card._setTable){
+    await _cdEnsureSetTable(card);
+  }
   _cdSetBreadcrumbsAndTitle({sport:'Baseball', year:card.year, brand:card.brand,
     setName:'', subsetName:row.set_name||card.set, cardNum:card.cardNum, player:card.player,
     setTable:card._setTable});
@@ -7465,7 +7482,24 @@ function initCardTicker(){
   ];
 
   // Show defaults until user has at least 4 of their own; then show only user cards.
-  let cards = userCards.length >= 4 ? userCards : [...userCards, ...defaultCards];
+  const isLive = userCards.length >= 4;
+  let cards = isLive ? userCards : [...userCards, ...defaultCards];
+
+  // Update mode badge
+  const badge = document.getElementById('ctModeBadge');
+  const tip = document.getElementById('ctModeTip');
+  if(badge && tip){
+    if(isLive){
+      badge.className = 'ct-mode-badge live';
+      badge.firstChild.textContent = 'LIVE';
+      tip.textContent = 'Showing your watchlist · ' + userCards.length + ' card' + (userCards.length !== 1 ? 's' : '');
+    } else {
+      badge.className = 'ct-mode-badge demo';
+      badge.firstChild.textContent = 'DEMO';
+      const need = 4 - userCards.length;
+      tip.textContent = 'Sample cards — add ' + need + ' more to your watchlist to go live';
+    }
+  }
 
   // Need at least a few items for smooth scrolling — duplicate until >=4
   while(cards.length > 0 && cards.length < 4) cards = [...cards, ...cards];
@@ -7655,8 +7689,7 @@ async function _cdLoadCatalogImages(c){
     }
   }
 
-  const table = c._setTable || _cdGuessTable(c);
-  if(table && !c._setTable) c._setTable = table;
+  const table = await _cdEnsureSetTable(c);
   if(!table){
     if(statusEl){ statusEl.style.display='block'; statusEl.textContent='No set table found'; statusEl.style.color='rgba(122,149,174,0.5)'; }
     _vaultFallback();
@@ -7871,6 +7904,32 @@ function _cdSetBreadcrumbsAndTitle(opts){
   const mt=document.getElementById('cd-title-mobile');if(mt)mt.textContent=document.getElementById('cd-title').textContent;
   const ms=document.getElementById('cd-sub-mobile');if(ms)ms.textContent=sub;
   const mn=document.getElementById('cd-num-mobile');if(mn)mn.textContent='';
+}
+
+// Resolve _setTable for a card object that may have come from a path where
+// it was never set (e.g. CARDS entries built from the legacy `card-images`
+// table whose set_name is the insert subset name, not the parent set name).
+// Tries: existing _setTable → _cdGuessTable (sync) → _cdFindIvSetByCard (async,
+// fans out to per-set tables matching year+brand and queries by card_number).
+// Mutates c._setTable when a real table is found and returns the value.
+async function _cdEnsureSetTable(c){
+  if(!c) return null;
+  if(c._setTable) return c._setTable;
+  const guess = _cdGuessTable(c);
+  if(guess){ c._setTable = guess; return guess; }
+  const cn = c._cardNumber || (c.cardNum != null ? String(c.cardNum).replace('#','') : '');
+  if(!cn) return null;
+  const found = await _cdFindIvSetByCard(cn, c.player||'', c.year);
+  if(found && found.table){
+    c._setTable = found.table;
+    // Also cache on any matching CARDS entry so subsequent opens skip the lookup
+    if(c.id != null){
+      const k = CARDS.find(x => x && x.id === c.id);
+      if(k) k._setTable = found.table;
+    }
+    return found.table;
+  }
+  return null;
 }
 
 // Search IV_SETS tables by card_number+player to find which set a card belongs to
@@ -8821,7 +8880,7 @@ async function submitCatalogUpload(){
     document.getElementById('cdUploadError').style.display='block'; return;
   }
   const c=window._cdCard; if(!c) return;
-  const table=c._setTable||_cdGuessTable(c);
+  const table = await _cdEnsureSetTable(c);
   // Use actual DB card_number — _cdDbCardNum set by ISOVault row click, falls back to card's own number
   const cardNum = String(window._cdDbCardNum || (c.cardNum != null ? String(c.cardNum).replace('#','') : (c._cardNumber||'')) || '');
   if(!table||!cardNum){ T('Cannot identify set table for this card.'); return; }
@@ -11325,10 +11384,10 @@ function _cdShowAdminTools(){
   if(el) el.style.display = window._isAdmin ? 'block' : 'none';
 }
 
-function cdAdminEditCard(){
+async function cdAdminEditCard(){
   const c = window._cdCard;
   if(!c) return;
-  const table = c._setTable || _cdGuessTable(c);
+  const table = await _cdEnsureSetTable(c);
   const cardNum = window._cdDbCardNum || (c.cardNum != null ? String(c.cardNum).replace('#','') : (c._cardNumber||''));
   if(!table || !cardNum){ T('Cannot identify set table for this card.'); return; }
   // Open admin.html with params so it can auto-navigate to the card editor
@@ -11339,7 +11398,7 @@ function cdAdminEditCard(){
 async function cdAdminDeleteCard(){
   const c = window._cdCard;
   if(!c) return;
-  const table = c._setTable || _cdGuessTable(c);
+  const table = await _cdEnsureSetTable(c);
   const cardNum = window._cdDbCardNum || (c.cardNum != null ? String(c.cardNum).replace('#','') : (c._cardNumber||''));
   if(!table || !cardNum){ T('Cannot identify set table for this card.'); return; }
   if(!confirm('ADMIN: Delete card #'+cardNum+' — '+(c.player||'Unknown')+' from '+table+'?\n\nThis removes the card from the catalog for ALL users. This cannot be undone.')) return;
@@ -11375,7 +11434,7 @@ async function cdAdminDeleteCard(){
 async function cdAdminDeleteImage(){
   const c = window._cdCard;
   if(!c) return;
-  const table = c._setTable || _cdGuessTable(c);
+  const table = await _cdEnsureSetTable(c);
   const cardNum = window._cdDbCardNum || (c.cardNum != null ? String(c.cardNum).replace('#','') : (c._cardNumber||''));
   if(!table || !cardNum){ T('Cannot identify set table.'); return; }
   const vars = window._cdVars || [];
@@ -11403,7 +11462,7 @@ async function cdAdminDeleteImage(){
 async function cdAdminDeleteVariation(){
   const c = window._cdCard;
   if(!c) return;
-  const table = c._setTable || _cdGuessTable(c);
+  const table = await _cdEnsureSetTable(c);
   const cardNum = window._cdDbCardNum || (c.cardNum != null ? String(c.cardNum).replace('#','') : (c._cardNumber||''));
   if(!table || !cardNum){ T('Cannot identify set table.'); return; }
   const vars = window._cdVars || [];
@@ -11438,7 +11497,7 @@ async function cdAdminDeleteVariation(){
 async function cdAdminRenameVariation(){
   const c = window._cdCard;
   if(!c) return;
-  const table = c._setTable || _cdGuessTable(c);
+  const table = await _cdEnsureSetTable(c);
   const cardNum = window._cdDbCardNum || (c.cardNum != null ? String(c.cardNum).replace('#','') : (c._cardNumber||''));
   if(!table || !cardNum){ T('Cannot identify set table.'); return; }
   const vars = window._cdVars || [];

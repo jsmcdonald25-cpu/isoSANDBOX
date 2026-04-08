@@ -8097,10 +8097,15 @@ function _cdSetViewerImages(frontUrl, backUrl){
         imgEl.style.top='48px';   imgEl.style.left='-48px';
         imgEl.style.transform='rotate(90deg)'; imgEl.style.objectFit='cover';
       } else {
-        // Orientation matches — no rotation needed
+        // Orientation matches — no rotation needed. Use object-fit:cover so the
+        // photo fills the slot edge-to-edge. `contain` would letterbox whenever
+        // the photo aspect doesn't exactly match the slot aspect (e.g. auto
+        // scanner output with slight border padding), producing the black-bars
+        // bug. cover crops a few pixels of edge instead, which is fine for
+        // catalog card photos.
         imgEl.style.width='100%'; imgEl.style.height='100%';
         imgEl.style.top='0';      imgEl.style.left='0';
-        imgEl.style.transform=''; imgEl.style.objectFit='contain';
+        imgEl.style.transform=''; imgEl.style.objectFit='cover';
       }
     }
     if(imgEl.complete && imgEl.naturalWidth){ _doIt(); }
@@ -8727,18 +8732,20 @@ window._cdConfirmFlipped = { front: false, back: false };
 function cdRotateConfirm(side){
   window._cdConfirmRotation[side] = (window._cdConfirmRotation[side] + 90) % 360;
   _cdApplyConfirmTransform(side);
-  // Update the orientation select for the upload
+  // Update the orientation select for the upload — derive from the stored
+  // original orientation, NOT from the live img element. The img element may
+  // not have loaded yet when the user clicks rotate, in which case naturalWidth
+  // is 0 and we'd silently fail to update the select. Original orientation was
+  // captured from canvas.width > canvas.height in handleCatalogUpload, where
+  // the canvas dimensions are guaranteed correct.
   const deg = window._cdConfirmRotation[side];
   const selId = side === 'front' ? 'cdOrientFront' : 'cdOrientBack';
   const sel = document.getElementById(selId);
   if(sel){
+    const origIsLand = !!(window._cdUploadOrigLand && window._cdUploadOrigLand[side]);
     // 90 or 270 = orientation flipped from original
-    const imgEl = document.getElementById(side === 'front' ? 'cdConfirmFront' : 'cdConfirmBack');
-    if(imgEl && imgEl.naturalWidth){
-      const origIsLand = imgEl.naturalWidth > imgEl.naturalHeight;
-      const rotatedIsLand = (deg === 90 || deg === 270) ? !origIsLand : origIsLand;
-      sel.value = rotatedIsLand ? 'landscape' : 'portrait';
-    }
+    const rotatedIsLand = (deg === 90 || deg === 270) ? !origIsLand : origIsLand;
+    sel.value = rotatedIsLand ? 'landscape' : 'portrait';
   }
 }
 
@@ -8867,6 +8874,11 @@ function handleCatalogUpload(input, side){
           if(_sel) _sel.value = _autoLand ? 'landscape' : 'portrait';
           const _lbl = document.getElementById('cdOrientAutoLabel');
           if(_lbl) _lbl.textContent = 'auto-detected — change if incorrect';
+          // Store the auto-detected orientation in a window var so cdRotateConfirm
+          // can compute the new orientation deterministically without depending on
+          // the cdConfirmFront img element being loaded yet (race condition fix).
+          if(!window._cdUploadOrigLand) window._cdUploadOrigLand = {front:false, back:false};
+          window._cdUploadOrigLand[side] = _autoLand;
         }, 'image/jpeg', 0.85);
       };
       img.src = e2.target.result;
@@ -8874,6 +8886,38 @@ function handleCatalogUpload(input, side){
     dataReader.readAsDataURL(file);
   };
   arrReader.readAsArrayBuffer(file);
+}
+
+// Bake confirm-screen rotation/flip into the upload blob. The rotate button on
+// the confirm screen only changes a CSS transform on the preview img — without
+// this helper, the un-rotated original blob would still be uploaded and the
+// saved orientation flag would disagree with the file pixels.
+async function _cdBakeRotationIntoBlob(blob, side){
+  const deg     = (window._cdConfirmRotation && window._cdConfirmRotation[side]) || 0;
+  const flipped = (window._cdConfirmFlipped  && window._cdConfirmFlipped[side])  || false;
+  if(deg === 0 && !flipped) return blob; // nothing to bake
+  return await new Promise((resolve, reject)=>{
+    const img = new Image();
+    img.onload = function(){
+      const w = img.naturalWidth, h = img.naturalHeight;
+      const swap = (deg === 90 || deg === 270);
+      const canvas = document.createElement('canvas');
+      canvas.width  = swap ? h : w;
+      canvas.height = swap ? w : h;
+      const ctx = canvas.getContext('2d');
+      ctx.translate(canvas.width/2, canvas.height/2);
+      ctx.rotate(deg * Math.PI / 180);
+      if(flipped) ctx.scale(-1, 1);
+      ctx.drawImage(img, -w/2, -h/2);
+      try{ URL.revokeObjectURL(img.src); }catch(e){}
+      canvas.toBlob(b => b ? resolve(b) : reject(new Error('toBlob failed')), 'image/jpeg', 0.9);
+    };
+    img.onerror = function(e){
+      try{ URL.revokeObjectURL(img.src); }catch(e2){}
+      reject(e || new Error('image load failed'));
+    };
+    img.src = URL.createObjectURL(blob);
+  });
 }
 
 async function submitCatalogUpload(){
@@ -8901,16 +8945,23 @@ async function submitCatalogUpload(){
     // Deterministic path — no timestamp — so upsert:true actually replaces on re-upload
     const slug=`catalog/${table}/${cardNum.replace(/[^a-zA-Z0-9-]/g,'_')}/${varSlug}`;
 
+    // Bake any rotation/flip the user applied on the confirm screen INTO the blob
+    // before upload. Otherwise the saved orientation flag and the stored pixels
+    // disagree and the 3D viewer renders rotated wrong (or letterboxed).
+    bar.style.width='20%';
+    const _frontBlobToUpload = await _cdBakeRotationIntoBlob(_cdCatalogFrontBlob, 'front');
+    const _backBlobToUpload  = await _cdBakeRotationIntoBlob(_cdCatalogBackBlob,  'back');
+
     // Upload front
     bar.style.width='30%';
     const { error:fe } = await window._sb.storage.from('card-images')
-      .upload(`${slug}_front.jpg`, _cdCatalogFrontBlob, {contentType:'image/jpeg',upsert:true});
+      .upload(`${slug}_front.jpg`, _frontBlobToUpload, {contentType:'image/jpeg',upsert:true});
     if(fe) throw fe;
 
     // Upload back
     bar.style.width='60%';
     const { error:be } = await window._sb.storage.from('card-images')
-      .upload(`${slug}_back.jpg`, _cdCatalogBackBlob, {contentType:'image/jpeg',upsert:true});
+      .upload(`${slug}_back.jpg`, _backBlobToUpload, {contentType:'image/jpeg',upsert:true});
     if(be) throw be;
 
     const frontURL = window._sb.storage.from('card-images').getPublicUrl(`${slug}_front.jpg`).data.publicUrl;

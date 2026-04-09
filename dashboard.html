@@ -960,7 +960,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv-scroll-nav-next{right:-6px}
 .mv-scroll-nav[disabled]{opacity:0;pointer-events:none}
 @media(max-width:768px){.mv-scroll-nav{display:none}}
-.mv-scroll-card{flex-shrink:0;width:110px;cursor:pointer;border-radius:10px;overflow:hidden;background:var(--deep2);border:1px solid rgba(0,170,255,0.08);transition:border-color .15s,transform .15s}
+.mv-scroll-card{flex-shrink:0;width:110px;cursor:pointer;border-radius:10px;overflow:hidden;background:var(--deep2);border:1px solid rgba(0,170,255,0.08);transition:border-color .15s,transform .15s,box-shadow .15s}
 .mv-scroll-card:hover{border-color:rgba(0,170,255,0.4);transform:translateY(-3px)}
 .mv-scroll-card-img{width:110px;height:154px;overflow:hidden;background:#071828;position:relative}
 /* Landscape variant — wider tile with landscape-aspect image area, same total
@@ -969,6 +969,35 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
    1.4 (landscape aspect ratio) = 215.6 -> 216px wide. */
 .mv-scroll-card.landscape{width:216px}
 .mv-scroll-card.landscape .mv-scroll-card-img{width:216px;height:154px}
+
+/* FOR SALE indicator — green border + glow + corner badge.
+   Marks cards in the user's collection that are currently listed so they
+   never forget what's active and accidentally pull a card that has a buyer
+   already in flight. */
+.mv-scroll-card.for-sale{
+  border-color: rgba(0,232,135,0.55);
+  box-shadow: 0 0 0 1px rgba(0,232,135,0.35), 0 0 14px rgba(0,232,135,0.25);
+}
+.mv-scroll-card.for-sale:hover{
+  border-color: var(--green);
+  box-shadow: 0 0 0 1px var(--green), 0 0 18px rgba(0,232,135,0.4);
+}
+.mv-scroll-fs-badge{
+  position: absolute; top: 6px; left: 6px; z-index: 4;
+  background: var(--green); color: #0D1F33;
+  font-family: 'Bebas Neue', sans-serif; font-size: 9px;
+  letter-spacing: 1px; padding: 2px 6px; border-radius: 3px;
+  text-transform: uppercase; line-height: 1.2;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  pointer-events: none;
+}
+.mv-scroll-fs-price{
+  position: absolute; top: 6px; right: 6px; z-index: 4;
+  background: rgba(0,0,0,0.75); color: var(--green);
+  font-family: 'Bebas Neue', sans-serif; font-size: 11px;
+  padding: 2px 7px; border-radius: 3px;
+  line-height: 1.2; pointer-events: none;
+}
 .mv-scroll-count{position:absolute;top:5px;right:5px;background:var(--green);color:#0D1F33;font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:.5px;padding:2px 7px;border-radius:5px;box-shadow:0 2px 8px rgba(0,0,0,0.6);font-weight:700}
 .mv-scroll-card-img img{width:100%;height:100%;object-fit:cover;display:block}
 .mv-scroll-card-info{padding:6px 8px 8px}
@@ -7181,8 +7210,17 @@ function _renderVaultGrid(data){
     const countBadge = count>1
       ? `<div class="mv-scroll-count">${count}x</div>`
       : '';
-    return `<div class="mv-scroll-card" data-mvidx="${realIdx}" onclick="openVaultCard(${realIdx})">
-      <div class="mv-scroll-card-img">${img?`<img src="${img}" loading="lazy" alt="${(c.player||'').replace(/"/g,'&quot;')}" onload="_mvCheckImgLandscape(this)">`:`<img src="${ph}" style="object-fit:cover" loading="lazy">`}${countBadge}</div>
+    // FOR SALE — pull the listing flag from any copy in the dup group, since
+    // a single physical card grouped under one tile may have one of its copies
+    // listed and others not. Show the badge if ANY copy is for sale.
+    const listedCopy = group.find(g => g.is_for_sale && g.asking_price);
+    const isListedTile = !!listedCopy;
+    const tileClasses = `mv-scroll-card${isListedTile ? ' for-sale' : ''}`;
+    const fsBadge = isListedTile
+      ? `<div class="mv-scroll-fs-badge">For Sale</div><div class="mv-scroll-fs-price">$${parseFloat(listedCopy.asking_price).toLocaleString(undefined,{maximumFractionDigits:0})}</div>`
+      : '';
+    return `<div class="${tileClasses}" data-mvidx="${realIdx}" onclick="openVaultCard(${realIdx})">
+      <div class="mv-scroll-card-img">${img?`<img src="${img}" loading="lazy" alt="${(c.player||'').replace(/"/g,'&quot;')}" onload="_mvCheckImgLandscape(this)">`:`<img src="${ph}" style="object-fit:cover" loading="lazy">`}${countBadge}${fsBadge}</div>
       <div class="mv-scroll-card-info">
         <div class="mv-scroll-card-name">${c.player||'Unknown'}</div>
         <div class="mv-scroll-card-sub">${meta}</div>

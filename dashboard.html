@@ -963,6 +963,12 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv-scroll-card{flex-shrink:0;width:110px;cursor:pointer;border-radius:10px;overflow:hidden;background:var(--deep2);border:1px solid rgba(0,170,255,0.08);transition:border-color .15s,transform .15s}
 .mv-scroll-card:hover{border-color:rgba(0,170,255,0.4);transform:translateY(-3px)}
 .mv-scroll-card-img{width:110px;height:154px;overflow:hidden;background:#071828;position:relative}
+/* Landscape variant — wider tile with landscape-aspect image area, same total
+   height as portrait tiles so the row stays aligned. Applied by JS after image
+   load detects naturalWidth > naturalHeight. Math: 154 (portrait img height) x
+   1.4 (landscape aspect ratio) = 215.6 -> 216px wide. */
+.mv-scroll-card.landscape{width:216px}
+.mv-scroll-card.landscape .mv-scroll-card-img{width:216px;height:154px}
 .mv-scroll-count{position:absolute;top:5px;right:5px;background:var(--green);color:#0D1F33;font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:.5px;padding:2px 7px;border-radius:5px;box-shadow:0 2px 8px rgba(0,0,0,0.6);font-weight:700}
 .mv-scroll-card-img img{width:100%;height:100%;object-fit:cover;display:block}
 .mv-scroll-card-info{padding:6px 8px 8px}
@@ -7117,6 +7123,18 @@ function _mvUpdateScrollNav(){
   prev.disabled=rail.scrollLeft<=2;
   next.disabled=rail.scrollLeft+rail.clientWidth>=rail.scrollWidth-2;
 }
+// After a thumbnail image loads, detect if it's landscape-natural and widen
+// the parent tile so the row of cards has matching tile heights with proper
+// aspect ratios. Idempotent — safe to call multiple times for the same image.
+function _mvCheckImgLandscape(imgEl){
+  if(!imgEl || !imgEl.naturalWidth) return;
+  const isLandscape = imgEl.naturalWidth > imgEl.naturalHeight;
+  const tile = imgEl.closest('.mv-scroll-card');
+  if(!tile) return;
+  if(isLandscape) tile.classList.add('landscape');
+  else tile.classList.remove('landscape');
+}
+
 function _renderVaultGrid(data){
   const rail=document.getElementById('myVaultGrid');
   if(!rail) return;
@@ -7164,7 +7182,7 @@ function _renderVaultGrid(data){
       ? `<div class="mv-scroll-count">${count}x</div>`
       : '';
     return `<div class="mv-scroll-card" data-mvidx="${realIdx}" onclick="openVaultCard(${realIdx})">
-      <div class="mv-scroll-card-img">${img?`<img src="${img}" loading="lazy" alt="${(c.player||'').replace(/"/g,'&quot;')}">`:`<img src="${ph}" style="object-fit:cover" loading="lazy">`}${countBadge}</div>
+      <div class="mv-scroll-card-img">${img?`<img src="${img}" loading="lazy" alt="${(c.player||'').replace(/"/g,'&quot;')}" onload="_mvCheckImgLandscape(this)">`:`<img src="${ph}" style="object-fit:cover" loading="lazy">`}${countBadge}</div>
       <div class="mv-scroll-card-info">
         <div class="mv-scroll-card-name">${c.player||'Unknown'}</div>
         <div class="mv-scroll-card-sub">${meta}</div>

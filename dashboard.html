@@ -1969,7 +1969,7 @@ async function logOut(){
   <!-- OVERVIEW -->
 
   <!-- POST ISO (PARKED — old player-search-first flow, kept for rollback) -->
-  <div class="panel" id="panel-post-old">
+  <div class="panel" id="panel-post">
     <div class="step-bar">
       <div class="step-item"><div class="step-circle now" id="sc1">1</div><span class="step-text now" id="st1">Sport</span></div>
       <div class="step-line" id="sl1"></div>
@@ -2107,8 +2107,10 @@ async function logOut(){
     </div>
   </div>
 
-  <!-- POST ISO v2 — ISOVault-style Sport>Year>Brand>Set>Card>Variant flow -->
-  <div class="panel" id="panel-post">
+  <!-- POST ISO v2 — PARKED for alpha. PHASE A PREVIEW had hardcoded sample
+       data + disabled submit. Reverted to old player-search flow above.
+       To re-enable: swap panel IDs back and route N('post') to p2Init(). -->
+  <div class="panel" id="panel-post-v2-parked">
     <div class="step-bar">
       <div class="step-item"><div class="step-circle now" id="p2sc1">1</div><span class="step-text now" id="p2st1">Sport</span></div>
       <div class="step-line"></div>
@@ -4646,7 +4648,7 @@ function N(id,el){
   if(id==='myvault')renderMyVault();
   if(id==='myisos')renderMyISOs();
   if(id==='market')renderMkt();
-  if(id==='post'){ p2Init(); }
+  if(id==='post'){ curStep=1; gS(1); isoRenderSportGrid(); } // ROLLBACK: was p2Init() — Phase B parked, see project_post_iso_redesign.md
   if(id==='isoticker')initISOTicker();
   if(id==='leaderboard')loadContributorLeaderboard();
   if(id==='account')loadSellerPrefs();

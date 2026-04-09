@@ -506,7 +506,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-back-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(0,170,255,0.08);border:1px solid var(--deep-border);border-radius:6px;padding:6px 12px;font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);cursor:pointer;transition:all .2s;margin-bottom:18px}
 .cd-back-btn:hover{background:rgba(0,170,255,0.15);border-color:var(--blue)}
 .cd-layout{display:flex;align-items:start;min-width:0;justify-content:space-evenly}
-.cd-viewer-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;background:#0D1F33;width:fit-content;min-width:0;max-width:420px}
+.cd-viewer-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;background:#0D1F33;width:fit-content;min-width:0;max-width:500px}
 .cd-scene-wrap{position:relative;width:240px;height:336px;max-width:100%}
 .cd-shadow{position:absolute;inset:0;border-radius:10px;pointer-events:none;z-index:0;transition:box-shadow .4s}
 .cd-scene{position:absolute;inset:0;perspective:1200px;cursor:grab;user-select:none;z-index:1}
@@ -8077,10 +8077,11 @@ function _cdShowUploadBtn(show){
 }
 
 // &#9472;&#9472; Viewer orientation engine &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
-// Portrait card: 280 &#215; 392  (ratio ~0.714)
-// Landscape card: 392 &#215; 280 (ratio ~1.4)
+// Portrait card: 240 &#215; 336  (ratio ~0.714, real card 2.5x3.5in)
+// Landscape card: 470 &#215; 336 (ratio ~1.4, same height as portrait so cards
+// in the same view share a baseline — just wider for the landscape orientation)
 const _CD_PORT = {w:240, h:336};
-const _CD_LAND = {w:336, h:240};
+const _CD_LAND = {w:470, h:336};
 
 function _cdApplyOrientation(landscape){
   // Legacy single-face call — applies to both panels (used when no back image)
@@ -8176,12 +8177,17 @@ function _cdSetViewerImages(frontUrl, backUrl){
     function _doIt(){
       const imgIsLand = imgEl.naturalWidth > imgEl.naturalHeight;
       if(isLandscape && !imgIsLand){
-        // Portrait image, landscape container — rotate -90deg (CCW) to fill
-        imgEl.style.width='240px'; imgEl.style.height='336px';
-        imgEl.style.top='-48px';  imgEl.style.left='48px';
+        // Portrait image, landscape container (470w x 336h) — rotate -90deg
+        // (CCW) to fill. Pre-rotation element is 336w x 470h so AFTER rotation
+        // it visually becomes 470w x 336h and fills the slot. Offsets center
+        // the rotated image: (470-336)/2 = 67.
+        imgEl.style.width='336px'; imgEl.style.height='470px';
+        imgEl.style.top='-67px';  imgEl.style.left='67px';
         imgEl.style.transform='rotate(-90deg)'; imgEl.style.objectFit='cover';
       } else if(!isLandscape && imgIsLand){
-        // Landscape image, portrait container — rotate 90deg to fill
+        // Landscape image, portrait container (240w x 336h) — rotate 90deg.
+        // Pre-rotation element is 336w x 240h. After rotation visually becomes
+        // 240w x 336h and fills the portrait slot. Offsets: (336-240)/2 = 48.
         imgEl.style.width='336px'; imgEl.style.height='240px';
         imgEl.style.top='48px';   imgEl.style.left='-48px';
         imgEl.style.transform='rotate(90deg)'; imgEl.style.objectFit='cover';

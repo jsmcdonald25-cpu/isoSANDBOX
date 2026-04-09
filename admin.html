@@ -416,22 +416,22 @@ tr:hover td { background: var(--bg); }
         <div class="panel-sub">Platform health and quick actions.</div>
       </div>
       <div class="stats-grid">
-        <div class="stat-card">
+        <div class="stat-card" style="cursor:pointer" onclick="nav('sets',document.querySelector('[onclick*=sets]'))">
           <div class="stat-val" id="stat-sets">—</div>
           <div class="stat-lab">Active Sets</div>
           <div class="stat-sub">in iv_sets</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" style="cursor:pointer" onclick="nav('users',document.querySelector('[onclick*=users]'))">
           <div class="stat-val" id="stat-users">—</div>
           <div class="stat-lab">Total Users</div>
           <div class="stat-sub">registered profiles</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" style="cursor:pointer" onclick="nav('users',document.querySelector('[onclick*=users]'))">
           <div class="stat-val" id="stat-vault">—</div>
           <div class="stat-lab">Vault Entries</div>
           <div class="stat-sub">across all users</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" style="cursor:pointer" onclick="nav('isos',document.querySelector('[onclick*=isos]'))">
           <div class="stat-val" id="stat-isos">—</div>
           <div class="stat-lab">Active ISOs</div>
           <div class="stat-sub">open listings</div>
@@ -1593,6 +1593,7 @@ async function gateLogin() {
     }
     _token = data.session.access_token;
     _adminUser = { ...data.user, ...p };
+    _scheduleSessionExpiry(data.session.expires_at);
     document.getElementById('adminName').textContent = p.username ? '@'+p.username : email.split('@')[0];
     document.getElementById('adminAvatar').textContent = (p.username||email)[0].toUpperCase();
     document.getElementById('gate').style.display = 'none';
@@ -1611,6 +1612,22 @@ document.getElementById('gatePass').addEventListener('keydown', e => { if (e.key
 async function adminLogout() {
   await _sb.auth.signOut();
   location.reload();
+}
+
+// ── SESSION EXPIRY WATCHDOG ──
+// Supabase access tokens expire ~60 min after issue. Rather than letting admin
+// actions silently 401, schedule a hard logout at the exact moment the token
+// expires so the admin sees a clear "sign in again" prompt.
+let _sessionExpiryTimer = null;
+function _scheduleSessionExpiry(expiresAt) {
+  if (_sessionExpiryTimer) { clearTimeout(_sessionExpiryTimer); _sessionExpiryTimer = null; }
+  if (!expiresAt) return;
+  const msUntilExpiry = (expiresAt * 1000) - Date.now();
+  if (msUntilExpiry <= 0) { adminLogout(); return; }
+  _sessionExpiryTimer = setTimeout(() => {
+    alert('Your admin session has expired (60 minute limit). Please sign in again.');
+    adminLogout();
+  }, msUntilExpiry);
 }
 
 // ── NAV ──

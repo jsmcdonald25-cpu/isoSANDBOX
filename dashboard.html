@@ -7964,6 +7964,10 @@ function _cdSetBreadcrumbsAndTitle(opts){
   // If parentSet and subset are the same, no subset
   const hasSubset = subset && subset.toLowerCase() !== parentSet.toLowerCase();
   // Breadcrumbs: Page › Sport › Year › Brand › Set › Subset › Card#, Player
+  // Home crumb label reflects where the user came from — "My Vault" if they
+  // entered via openVaultCard (which sets _cdFromMyVault), else "ISOVault".
+  const homeEl = document.getElementById('cd-bc-home');
+  if(homeEl) homeEl.textContent = window._cdFromMyVault ? 'My Vault' : 'ISOVault';
   document.getElementById('cd-bc-sport').textContent = opts.sport || 'Baseball';
   document.getElementById('cd-bc-year').textContent  = opts.year || '';
   document.getElementById('cd-bc-brand').textContent = opts.brand || '';
@@ -10927,7 +10931,10 @@ function _cdUpdateTickerBtn(){
 
 function backToVault(forceLibrary){
   if(_cdSpinner){ clearInterval(_cdSpinner); _cdSpinner=null; _cdSpinning=false; }
-  const prev = forceLibrary ? 'library' : (window._prevSection || (window._cdFromMyVault ? 'myvault' : 'library'));
+  // _cdFromMyVault is set explicitly in openVaultCard and is the authoritative
+  // signal. Check it BEFORE _prevSection, which is stale because N('carddetail',...)
+  // intentionally does not update _prevSection.
+  const prev = forceLibrary ? 'library' : (window._cdFromMyVault ? 'myvault' : (window._prevSection || 'library'));
   window._cdFromMyVault = false;
   if(prev === 'myvault'){
     N('myvault', document.querySelector('[onclick*="myvault"]'));

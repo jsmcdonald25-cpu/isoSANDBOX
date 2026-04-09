@@ -904,6 +904,49 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv-search-btn:hover{background:rgba(0,170,255,0.18);border-color:var(--blue)}
 .mv-search-btn-clear{background:rgba(122,149,174,0.06);border-color:rgba(122,149,174,0.25);color:var(--muted-text)}
 .mv-search-btn-clear:hover{background:rgba(122,149,174,0.12);border-color:var(--muted-text);color:var(--white)}
+
+/* ── My Vault sort box (mid-bottom right of My Cards section) ── */
+.mv-sort-row{display:flex;justify-content:flex-end;margin-top:14px;padding-right:8px}
+.mv-sort-box{
+  background:rgba(10,18,32,0.6);
+  border:1px solid var(--deep-border);
+  border-radius:10px;
+  padding:10px 12px 11px;
+  min-width:230px;
+}
+.mv-sort-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:11px;
+  letter-spacing:2px;
+  color:var(--muted-text);
+  margin-bottom:8px;
+  text-transform:uppercase;
+}
+.mv-sort-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.mv-sort-btn{
+  background:rgba(122,149,174,0.06);
+  border:1px solid rgba(122,149,174,0.25);
+  border-radius:6px;
+  padding:6px 9px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:11px;
+  letter-spacing:.8px;
+  text-transform:uppercase;
+  color:var(--muted-text);
+  cursor:pointer;
+  transition:all .12s;
+  text-align:left;
+  white-space:nowrap;
+}
+.mv-sort-btn:hover{background:rgba(0,170,255,0.08);border-color:rgba(0,170,255,0.35);color:var(--white)}
+.mv-sort-btn.active{
+  background:rgba(0,170,255,0.15);
+  border-color:var(--blue);
+  color:var(--blue);
+  font-weight:600;
+}
+.mv-sort-btn .mv-sort-arrow{opacity:.5;font-size:9px;margin-right:3px}
+.mv-sort-btn.active .mv-sort-arrow{opacity:1}
 @media(max-width:768px){
   .mv-scroll-search-wrap{flex:1;width:auto}
   .mv-search-btn{padding:9px 12px;font-size:11px}
@@ -2573,6 +2616,20 @@ async function logOut(){
         <button type="button" class="mv-scroll-nav mv-scroll-nav-prev" id="mvScrollPrev" aria-label="Scroll left" onclick="_mvScrollBy(-1)">&#10094;</button>
         <div class="mv-scroll-rail" id="myVaultGrid"></div>
         <button type="button" class="mv-scroll-nav mv-scroll-nav-next" id="mvScrollNext" aria-label="Scroll right" onclick="_mvScrollBy(1)">&#10095;</button>
+      </div>
+      <!-- My Vault sort box — wired to existing sortVaultGrid() -->
+      <div class="mv-sort-row">
+        <div class="mv-sort-box">
+          <div class="mv-sort-title">Sort by</div>
+          <div class="mv-sort-grid">
+            <button class="mv-sort-btn" data-sort="date_desc"   onclick="_mvSetSort('date_desc',this)"><span class="mv-sort-arrow">&#9660;</span>Newest</button>
+            <button class="mv-sort-btn" data-sort="date_asc"    onclick="_mvSetSort('date_asc',this)"><span class="mv-sort-arrow">&#9650;</span>Oldest</button>
+            <button class="mv-sort-btn" data-sort="paid_desc"   onclick="_mvSetSort('paid_desc',this)"><span class="mv-sort-arrow">&#9660;</span>Highest Paid</button>
+            <button class="mv-sort-btn" data-sort="paid_asc"    onclick="_mvSetSort('paid_asc',this)"><span class="mv-sort-arrow">&#9650;</span>Lowest Paid</button>
+            <button class="mv-sort-btn" data-sort="player_asc"  onclick="_mvSetSort('player_asc',this)"><span class="mv-sort-arrow">A&#8594;Z</span>Player</button>
+            <button class="mv-sort-btn" data-sort="forsale_first" onclick="_mvSetSort('forsale_first',this)"><span class="mv-sort-arrow">&#36;</span>For Sale</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -6887,6 +6944,7 @@ function renderMyVault(){
     const si=document.getElementById('mv3-search-input'); if(si) si.value='';
     _renderVaultGrid(data);
     _patchVaultThumbnails(data);
+    _mvApplySavedSort();
   }).catch(err=>{ console.error('renderMyVault:',err); });
 }
 
@@ -7354,6 +7412,33 @@ function sortVaultGrid(mode){
   else if(mode==='forsale_first')data.sort((a,b)=>(b.is_for_sale?1:0)-(a.is_for_sale?1:0)||(parseFloat(b.asking_price)||0)-(parseFloat(a.asking_price)||0));
   _renderVaultGrid(data);
   _patchVaultThumbnails(data);
+}
+
+// ── My Vault sort box wiring ────────────────────────────────────────
+const _MV_SORT_KEY = 'grailiso_myvault_sort';
+const _MV_SORT_DEFAULT = 'date_desc';
+
+function _mvGetSavedSort(){
+  try { return localStorage.getItem(_MV_SORT_KEY) || _MV_SORT_DEFAULT; }
+  catch(e){ return _MV_SORT_DEFAULT; }
+}
+function _mvSaveSort(mode){
+  try { localStorage.setItem(_MV_SORT_KEY, mode); } catch(e){}
+}
+function _mvHighlightSortBtn(mode){
+  document.querySelectorAll('.mv-sort-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.sort === mode);
+  });
+}
+function _mvSetSort(mode, btn){
+  _mvSaveSort(mode);
+  _mvHighlightSortBtn(mode);
+  sortVaultGrid(mode);
+}
+function _mvApplySavedSort(){
+  const mode = _mvGetSavedSort();
+  _mvHighlightSortBtn(mode);
+  sortVaultGrid(mode);
 }
 
 // &#9472;&#9472; BUILD STAMP &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;

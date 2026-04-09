@@ -3395,6 +3395,13 @@ async function logOut(){
         <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Source <span style="color:rgba(122,149,174,0.5);text-transform:none;letter-spacing:0">(eBay, LCS, hobby box, etc.)</span></div>
         <input class="vm-input" type="text" id="dupSource" placeholder="e.g. eBay, COMC, Local Card Shop">
       </div>
+      <!-- Serial # — only shown when source card has a print run. Each copy
+           of a numbered card has its own serial, so this is required not
+           pre-filled. -->
+      <div id="dupSerialRow" style="display:none;margin-top:12px">
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Serial # <span class="req" style="color:var(--red)">*</span> <span id="dupSerialHint" style="color:rgba(122,149,174,0.5);text-transform:none;letter-spacing:0;font-weight:normal">— this copy's number</span></div>
+        <input class="vm-input" type="number" min="1" id="dupSerial" placeholder="e.g. 23">
+      </div>
       <div style="margin-top:12px;display:flex;gap:10px">
         <div style="flex:1">
           <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Price Paid</div>
@@ -8746,6 +8753,18 @@ function _cdApplyTransform(){
 
 // ── Add Duplicate Copy modal ────────────────────────────────────────────────
 let _dupAcq = null;
+// Returns true if the source vault row represents a numbered (serial-limited)
+// card. Trusts serial_total > 0 first, then falls back to parsing the parallel
+// label for /N patterns (e.g. "Red /50", "Sepia /99").
+function _dupIsNumbered(src){
+  if(!src) return false;
+  const total = parseInt(src.serial_total) || 0;
+  if(total > 0) return total;
+  const lbl = String(src.parallel || src.variation || '');
+  const m = lbl.match(/\/\s*(\d+)/);
+  return m ? parseInt(m[1]) : 0;
+}
+
 function openAddDuplicateModal(){
   const idx = window._cdMyVaultIdx;
   const data = window._vaultData;
@@ -8759,6 +8778,19 @@ function openAddDuplicateModal(){
   document.getElementById('dupPrice').value  = '';
   document.getElementById('dupDate').value   = new Date().toISOString().slice(0,10);
   document.getElementById('dupErr').style.display = 'none';
+  // Serial # row — show only when source card is numbered. Pre-fill nothing
+  // (each copy has its own serial). Hint shows the print run from src.
+  const printRun = _dupIsNumbered(src);
+  const serialRow = document.getElementById('dupSerialRow');
+  const serialInput = document.getElementById('dupSerial');
+  const serialHint = document.getElementById('dupSerialHint');
+  if(printRun > 0){
+    if(serialRow) serialRow.style.display = 'block';
+    if(serialInput){ serialInput.value = ''; serialInput.max = printRun; }
+    if(serialHint) serialHint.textContent = `— this copy's number, /${printRun}`;
+  } else {
+    if(serialRow) serialRow.style.display = 'none';
+  }
   const btn = document.getElementById('dupSubmitBtn');
   btn.disabled = false; btn.textContent = 'SAVE COPY';
   const meta = [src.year, src.brand, src.set_name, src.parallel||src.variation].filter(Boolean).join(' · ');
@@ -8787,6 +8819,22 @@ async function submitAddDuplicate(){
   const errEl = document.getElementById('dupErr');
   errEl.style.display = 'none';
   if(!_dupAcq){ errEl.textContent = 'Pick how you got it.'; errEl.style.display='block'; return; }
+  // Serial # — required when the source card is numbered. Each copy has
+  // its own serial so we never pre-fill from src.
+  const printRun = _dupIsNumbered(src);
+  let serialNum = null;
+  if(printRun > 0){
+    const raw = document.getElementById('dupSerial').value;
+    serialNum = parseInt(raw) || null;
+    if(!serialNum || serialNum < 1){
+      errEl.textContent = `Enter the serial # of this copy (1-${printRun}).`;
+      errEl.style.display = 'block'; return;
+    }
+    if(serialNum > printRun){
+      errEl.textContent = `Serial # cannot exceed the print run (/${printRun}).`;
+      errEl.style.display = 'block'; return;
+    }
+  }
   const price = parseFloat(document.getElementById('dupPrice').value) || null;
   const date  = document.getElementById('dupDate').value || null;
   const source= document.getElementById('dupSource').value.trim() || null;
@@ -8816,6 +8864,9 @@ async function submitAddDuplicate(){
       purchase_source:  source,
       price_paid:       price,
       date_acquired:    date,
+      // Per-copy serial — each numbered copy gets its own number
+      serial_number:    serialNum,
+      serial_total:     printRun > 0 ? printRun : (src.serial_total || null),
       estimated_value:  src.estimated_value || null,
       grade_company:    src.grade_company || null,
       grade:            src.grade || null,

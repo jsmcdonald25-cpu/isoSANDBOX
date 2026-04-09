@@ -8041,25 +8041,62 @@ async function _cdEnsureSetTable(c){
 }
 
 // Search IV_SETS tables by card_number+player to find which set a card belongs to
+// In-memory cache for _cdFindIvSetByCard. Keyed by cardNum|player|year.
+// Stores both successful matches AND nulls so repeated clicks on the same
+// card never re-trigger the fan-out. Cleared on full page reload only.
+window._cdIvSetByCardCache = window._cdIvSetByCardCache || {};
+// Tracks in-flight lookups so multiple parallel callers (e.g. breadcrumb +
+// catalog-image path firing for the same card) share one round-trip instead
+// of racing identical fan-outs.
+window._cdIvSetByCardInflight = window._cdIvSetByCardInflight || {};
+
 async function _cdFindIvSetByCard(cardNum, player, year){
   if(!IV_SETS || !IV_SETS.length || !cardNum) return null;
+  const cacheKey = `${cardNum}|${player||''}|${year||''}`;
+  // Cache hit (including cached nulls)
+  if(Object.prototype.hasOwnProperty.call(window._cdIvSetByCardCache, cacheKey)){
+    return window._cdIvSetByCardCache[cacheKey];
+  }
+  // De-dupe in-flight: if another caller is already searching for this exact
+  // key, return their promise instead of firing a parallel duplicate fan-out.
+  if(window._cdIvSetByCardInflight[cacheKey]){
+    return window._cdIvSetByCardInflight[cacheKey];
+  }
   const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
   const hdrs={'apikey':SKEY,'Authorization':'Bearer '+SKEY};
   const cYear=parseInt(year)||0;
-  // Filter to same year + brand candidates
+  // Filter to same-year candidates (most cards have a known year, so this
+  // typically narrows ~142 sets to ~5-10 candidates).
   const candidates=IV_SETS.filter(s=>{
     if(cYear && parseInt(s.year) && parseInt(s.year)!==cYear) return false;
     return true;
   });
-  for(const s of candidates){
-    try{
-      const pq = player ? '&player=eq.'+encodeURIComponent(player) : '';
-      const url=`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/${s.table}?select=card_number&card_number=eq.${encodeURIComponent(cardNum)}${pq}&limit=1`;
-      const r=await fetch(url,{headers:hdrs});
-      if(r.ok){const d=await r.json();if(d&&d.length) return s;}
-    }catch(e){}
+  // Fire all candidate fetches in parallel. Each request is tiny
+  // (select=card_number&limit=1) so this is fast and bandwidth-cheap.
+  const lookupPromise = (async () => {
+    const promises = candidates.map(async (s) => {
+      try {
+        const pq = player ? '&player=eq.'+encodeURIComponent(player) : '';
+        const url = `https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/${s.table}?select=card_number&card_number=eq.${encodeURIComponent(cardNum)}${pq}&limit=1`;
+        const r = await fetch(url, {headers:hdrs});
+        if(r.ok){
+          const d = await r.json();
+          if(d && d.length) return s;
+        }
+      } catch(e) {}
+      return null;
+    });
+    const results = await Promise.all(promises);
+    return results.find(r => r !== null) || null;
+  })();
+  window._cdIvSetByCardInflight[cacheKey] = lookupPromise;
+  try {
+    const found = await lookupPromise;
+    window._cdIvSetByCardCache[cacheKey] = found;
+    return found;
+  } finally {
+    delete window._cdIvSetByCardInflight[cacheKey];
   }
-  return null;
 }
 
 function _cdGuessTable(c){

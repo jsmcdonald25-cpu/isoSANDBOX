@@ -970,6 +970,58 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv-scroll-card.landscape{width:216px}
 .mv-scroll-card.landscape .mv-scroll-card-img{width:216px;height:154px}
 
+/* Edit-window banner — shows for 5 minutes after a fresh listing so the
+   seller has a one-click reverse path if they made a mistake. Sticky at
+   the top of MyVault. */
+.mv-edit-banner{
+  display:none; align-items:center; gap:14px;
+  background:linear-gradient(135deg, rgba(255,184,77,0.18), rgba(255,184,77,0.08));
+  border:1px solid rgba(255,184,77,0.4);
+  border-radius:10px;
+  padding:12px 16px; margin-bottom:14px;
+  animation: mv-edit-banner-pulse 2.4s ease-in-out infinite;
+}
+.mv-edit-banner.show{display:flex}
+@keyframes mv-edit-banner-pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,184,77,0.0)}
+  50%{box-shadow:0 0 0 4px rgba(255,184,77,0.15)}
+}
+.mv-edit-banner-icon{font-size:22px; flex-shrink:0}
+.mv-edit-banner-body{flex:1; min-width:0}
+.mv-edit-banner-title{
+  font-family:'Bebas Neue', sans-serif; font-size:14px;
+  letter-spacing:1.5px; color:var(--gold,#FFB84D);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.mv-edit-banner-sub{
+  font-family:'Barlow Condensed', sans-serif; font-size:11px;
+  color:var(--muted-text); margin-top:2px;
+}
+.mv-edit-banner-countdown{
+  font-family:'Bebas Neue', sans-serif; font-size:18px;
+  color:var(--gold,#FFB84D); font-variant-numeric:tabular-nums;
+  padding:0 12px;
+}
+.mv-edit-banner-actions{display:flex; gap:8px; flex-shrink:0}
+.mv-edit-banner-btn{
+  background:rgba(255,184,77,0.12); border:1px solid rgba(255,184,77,0.35);
+  color:var(--gold,#FFB84D); border-radius:6px;
+  padding:7px 12px; font-family:'Barlow Condensed', sans-serif;
+  font-size:11px; font-weight:600; letter-spacing:1px;
+  text-transform:uppercase; cursor:pointer; transition:all .15s;
+}
+.mv-edit-banner-btn:hover{background:rgba(255,184,77,0.22); border-color:var(--gold,#FFB84D); color:var(--white)}
+.mv-edit-banner-btn.danger{
+  background:rgba(255,59,92,0.10); border-color:rgba(255,59,92,0.35);
+  color:rgba(255,59,92,0.85);
+}
+.mv-edit-banner-btn.danger:hover{background:rgba(255,59,92,0.20); border-color:var(--red); color:var(--white)}
+.mv-edit-banner-close{
+  background:none; border:none; color:var(--muted-text);
+  font-size:18px; cursor:pointer; padding:0 4px; line-height:1;
+}
+.mv-edit-banner-close:hover{color:var(--white)}
+
 /* Listing Confirm modal — shows when a seller tries to list at a price that's
    significantly off the market average. Catches typos ($40 vs $400) and
    pricing errors at the source. */
@@ -2661,6 +2713,21 @@ async function logOut(){
   <!-- MY VAULT -->
 
   <div class="panel active" id="panel-myvault">
+
+    <!-- EDIT WINDOW BANNER (5 min after fresh listing) -->
+    <div class="mv-edit-banner" id="mvEditBanner">
+      <div class="mv-edit-banner-icon">&#128075;</div>
+      <div class="mv-edit-banner-body">
+        <div class="mv-edit-banner-title" id="mvEditBannerTitle">Listing live</div>
+        <div class="mv-edit-banner-sub">You just listed this card. Edit or unlist within the window if it was a mistake.</div>
+      </div>
+      <div class="mv-edit-banner-countdown" id="mvEditBannerCountdown">5:00</div>
+      <div class="mv-edit-banner-actions">
+        <button class="mv-edit-banner-btn" onclick="_mvEditBannerEdit()">Edit Price</button>
+        <button class="mv-edit-banner-btn danger" onclick="_mvEditBannerUnlist()">Unlist</button>
+        <button class="mv-edit-banner-close" onclick="_mvEditBannerHide()" title="Dismiss">&times;</button>
+      </div>
+    </div>
 
     <!-- PAGE HEADER -->
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
@@ -6566,11 +6633,24 @@ async function submitVault(){
     document.getElementById('vmProgressBar').style.width='100%';
     btn.textContent = '✓ ADDED!';
     btn.style.background = 'var(--green)';
+    // Capture whether this was a fresh listing for the edit-window banner.
+    // We need to wait until renderMyVault repopulates _vaultData so the
+    // banner's edit/unlist buttons can find the row by id.
+    const _wasListed = !!(row.is_for_sale && vaultRow && vaultRow.id);
     setTimeout(()=>{
       closeVaultModal();
       btn.style.background = '';
       renderMyVault();
       T(`${vmCard?.player||'Card'} added to vault · $${pricePaid.toFixed(2)} paid`);
+      // Show the edit-window banner if the user listed this card immediately.
+      // Defer until after renderMyVault has had a chance to repopulate.
+      if(_wasListed){
+        setTimeout(() => {
+          const data = window._vaultData || [];
+          const fresh = data.find(r => r.id === vaultRow.id);
+          if(fresh) _showEditWindowBanner(fresh);
+        }, 300);
+      }
     }, 1100);
 
   } catch(err){
@@ -11935,6 +12015,70 @@ function _cdUpdateEditListingBtn(){
   if(priceEl) priceEl.textContent = parseFloat(data[idx].asking_price||0).toFixed(2);
 }
 
+// ── Edit Window Banner ─────────────────────────────────────────────────────
+// Sticky banner at the top of MyVault that shows for 5 minutes after a fresh
+// listing. Gives the seller a one-click "edit price" or "unlist" path in
+// case they made a typo or changed their mind. Belt-and-suspenders to the
+// price sanity check modal: that catches obvious typos at the source, this
+// catches the rest in the cool-off window.
+const MV_EDIT_BANNER_MS = 5 * 60 * 1000; // 5 min
+let _mvEditBannerTimer = null;
+let _mvEditBannerInterval = null;
+let _mvEditBannerRowId = null;
+
+function _showEditWindowBanner(row){
+  if(!row) return;
+  _mvEditBannerRowId = row.id;
+  const banner = document.getElementById('mvEditBanner');
+  const titleEl = document.getElementById('mvEditBannerTitle');
+  if(!banner) return;
+  const name = _displayNameForRow(row);
+  const price = parseFloat(row.asking_price)||0;
+  if(titleEl) titleEl.textContent = `Listed: ${name} - $${price.toLocaleString(undefined,{maximumFractionDigits:0})}`;
+  banner.classList.add('show');
+  // Tick countdown
+  const startedAt = Date.now();
+  const cdEl = document.getElementById('mvEditBannerCountdown');
+  function tick(){
+    const remaining = MV_EDIT_BANNER_MS - (Date.now() - startedAt);
+    if(remaining <= 0){
+      _mvEditBannerHide();
+      return;
+    }
+    const min = Math.floor(remaining / 60000);
+    const sec = Math.floor((remaining % 60000) / 1000);
+    if(cdEl) cdEl.textContent = `${min}:${String(sec).padStart(2,'0')}`;
+  }
+  tick();
+  if(_mvEditBannerInterval){ clearInterval(_mvEditBannerInterval); }
+  _mvEditBannerInterval = setInterval(tick, 1000);
+  if(_mvEditBannerTimer){ clearTimeout(_mvEditBannerTimer); }
+  _mvEditBannerTimer = setTimeout(_mvEditBannerHide, MV_EDIT_BANNER_MS);
+}
+function _mvEditBannerHide(){
+  const banner = document.getElementById('mvEditBanner');
+  if(banner) banner.classList.remove('show');
+  if(_mvEditBannerTimer){ clearTimeout(_mvEditBannerTimer); _mvEditBannerTimer = null; }
+  if(_mvEditBannerInterval){ clearInterval(_mvEditBannerInterval); _mvEditBannerInterval = null; }
+  _mvEditBannerRowId = null;
+}
+function _mvEditBannerEdit(){
+  if(!_mvEditBannerRowId) return;
+  const data = window._vaultData || [];
+  const idx = data.findIndex(r => r.id === _mvEditBannerRowId);
+  if(idx >= 0) openEditListingModal(idx);
+}
+async function _mvEditBannerUnlist(){
+  if(!_mvEditBannerRowId) return;
+  const data = window._vaultData || [];
+  const idx = data.findIndex(r => r.id === _mvEditBannerRowId);
+  if(idx < 0) return;
+  if(!confirm('Unlist this card? Buyers will no longer see it.')) return;
+  await delistCard(idx);
+  _mvEditBannerHide();
+  renderMyVault(); // refresh to remove the FOR SALE indicator
+}
+
 // ── Listing Confirm Modal ──────────────────────────────────────────────────
 // Centralized "are you sure?" gate for any code path that's about to mark a
 // vault row as is_for_sale=true. Compares the asking price against the
@@ -12057,6 +12201,8 @@ async function submitEditListing(){
     row.asking_price = isForSale ? askingPrice : null;
     btn.textContent = '\u2713 SAVED!'; btn.style.background = 'var(--green)'; btn.style.color = '#0D1F33';
     T(isForSale ? 'Listing updated \u2014 $'+askingPrice.toFixed(2) : 'Card delisted');
+    // Show 5-min edit-window banner if we just listed (not delisted)
+    if(isForSale){ _showEditWindowBanner(row); }
     setTimeout(()=>{ closeEditListing(); btn.style.background=''; btn.style.color=''; _cdUpdateEditListingBtn(); }, 900);
   } catch(e){
     document.getElementById('elSubmitError').textContent = e.message;
@@ -12330,10 +12476,18 @@ async function submitBulkList(){
     btn.textContent = '\u2713 LISTED!'; btn.style.background = 'var(--green)'; btn.style.color = '#0D1F33';
     const msg = done+' card'+(done!==1?'s':'')+' listed for sale'+(skipped?' ('+skipped+' skipped — no price)':'');
     T(msg);
+    // Capture last successfully listed row for edit-window banner reference
+    const _lastListedIdx = indices[indices.length - 1];
+    const _lastListedRow = window._vaultData && window._vaultData[_lastListedIdx];
     setTimeout(()=>{
       closeBulkPriceModal(); btn.style.background=''; btn.style.color='';
       toggleBulkListMode(); // exit bulk mode
       renderMyVault(); // refresh grid
+      // Show single edit-window banner referencing the last listed row.
+      // For bulk we don't pop a banner per card - that would be a wall.
+      if(_lastListedRow && done > 0){
+        setTimeout(() => _showEditWindowBanner(_lastListedRow), 300);
+      }
     }, 1100);
   } catch(e){
     errEl.textContent = 'Error: '+e.message;

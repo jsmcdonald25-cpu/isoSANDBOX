@@ -1951,7 +1951,7 @@ async function logOut(){
         <div class="topbar-sub" id="pgSub">Welcome back, Jason</div>
       </div>
       <div class="card-ticker-wrap">
-        <span class="ct-mode-badge demo" id="ctModeBadge">Add Cards<span class="ct-mode-tip" id="ctModeTip">Add 4 cards to ticker from My Vault</span></span>
+        <span class="ct-mode-badge demo" id="ctModeBadge">Add Cards<span class="ct-mode-tip" id="ctModeTip">Add 3 cards to ticker from My Vault</span></span>
         <div class="card-ticker-inner" id="cardTickerInner"></div>
       </div>
       <script data-cfasync="false">
@@ -7847,8 +7847,8 @@ function initCardTicker(){
     {year:'2026',brand:'Topps',set_name:'Series 1',player:'Gunnar Henderson',variation:'RC Prizm',card_number:'13', price:'$310', chg:'+77.8%', dir:'up'},
   ];
 
-  // Show defaults until user has at least 4 of their own; then show only user cards.
-  const isLive = userCards.length >= 4;
+  // Show defaults until user has at least 3 of their own; then show only user cards.
+  const isLive = userCards.length >= 3;
   let cards = isLive ? userCards : [...userCards, ...defaultCards];
 
   // Update mode badge
@@ -7862,7 +7862,7 @@ function initCardTicker(){
     } else {
       badge.className = 'ct-mode-badge demo';
       badge.firstChild.textContent = 'Add Cards';
-      tip.textContent = 'Add 4 cards to ticker from My Vault';
+      tip.textContent = 'Add 3 cards to ticker from My Vault';
     }
   }
 

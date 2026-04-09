@@ -970,6 +970,91 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv-scroll-card.landscape{width:216px}
 .mv-scroll-card.landscape .mv-scroll-card-img{width:216px;height:154px}
 
+/* Listing Confirm modal — shows when a seller tries to list at a price that's
+   significantly off the market average. Catches typos ($40 vs $400) and
+   pricing errors at the source. */
+.lc-modal-bg{
+  display:none; position:fixed; inset:0; z-index:10100;
+  background:rgba(0,0,0,0.78); backdrop-filter:blur(4px);
+  align-items:center; justify-content:center; padding:16px;
+}
+.lc-modal-bg.show{display:flex}
+.lc-modal{
+  background:linear-gradient(180deg, var(--deep2,#0a1a2e), var(--deep,#061121));
+  border:1px solid rgba(255,184,77,0.4);
+  border-radius:14px; max-width:440px; width:100%;
+  box-shadow:0 30px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,184,77,0.15);
+  overflow:hidden;
+}
+.lc-modal-header{
+  display:flex; align-items:center; gap:10px;
+  padding:16px 20px; background:rgba(255,184,77,0.08);
+  border-bottom:1px solid rgba(255,184,77,0.2);
+}
+.lc-modal-icon{font-size:22px}
+.lc-modal-title{
+  font-family:'Bebas Neue',sans-serif; font-size:18px;
+  letter-spacing:2px; color:var(--gold,#FFB84D);
+}
+.lc-modal-body{padding:18px 20px}
+.lc-modal-card-name{
+  font-family:'Bebas Neue',sans-serif; font-size:16px;
+  letter-spacing:1px; color:var(--white); margin-bottom:14px;
+  text-align:center;
+}
+.lc-modal-row{
+  display:flex; gap:12px; margin-bottom:14px;
+}
+.lc-modal-col{
+  flex:1; background:rgba(0,0,0,0.3); border:1px solid var(--deep-border);
+  border-radius:8px; padding:10px 12px; text-align:center;
+}
+.lc-modal-label{
+  font-family:'Barlow Condensed',sans-serif; font-size:9px;
+  letter-spacing:1.5px; color:var(--muted-text);
+  text-transform:uppercase; margin-bottom:4px;
+}
+.lc-modal-val{
+  font-family:'Bebas Neue',sans-serif; font-size:24px;
+  color:var(--white); line-height:1;
+}
+.lc-modal-val.your-price{color:var(--gold,#FFB84D)}
+.lc-modal-val.market{color:var(--blue,#00AAFF)}
+.lc-modal-warning{
+  background:rgba(255,184,77,0.1); border:1px solid rgba(255,184,77,0.3);
+  border-radius:8px; padding:10px 12px; margin-bottom:10px;
+  font-family:'Barlow Condensed',sans-serif; font-size:13px;
+  color:var(--gold,#FFB84D); text-align:center; line-height:1.4;
+}
+.lc-modal-help{
+  font-family:'Barlow Condensed',sans-serif; font-size:11px;
+  color:var(--muted-text); line-height:1.5; text-align:center;
+  padding:0 6px;
+}
+.lc-modal-actions{
+  display:flex; gap:10px; padding:14px 20px 18px;
+  border-top:1px solid var(--deep-border);
+}
+.lc-modal-btn{
+  flex:1; border:none; cursor:pointer; padding:11px 14px;
+  border-radius:8px; font-family:'Barlow Condensed',sans-serif;
+  font-size:12px; font-weight:600; letter-spacing:1px;
+  text-transform:uppercase; transition:all .15s;
+}
+.lc-modal-btn-cancel{
+  background:rgba(122,149,174,0.1); color:var(--muted-text);
+  border:1px solid rgba(122,149,174,0.3);
+}
+.lc-modal-btn-cancel:hover{
+  background:rgba(122,149,174,0.2); color:var(--white);
+}
+.lc-modal-btn-confirm{
+  background:var(--gold,#FFB84D); color:#0D1F33;
+}
+.lc-modal-btn-confirm:hover{
+  background:#FFC966; box-shadow:0 4px 12px rgba(255,184,77,0.4);
+}
+
 /* FOR SALE indicator — green border + glow + corner badge.
    Marks cards in the user's collection that are currently listed so they
    never forget what's active and accidentally pull a card that has a buyer
@@ -2382,6 +2467,35 @@ async function logOut(){
       <div style="display:flex;gap:8px">
         <button class="btn btn-primary" style="flex:1" onclick="submitBulkList()" id="bpSubmitBtn">LIST ALL FOR SALE</button>
         <button class="btn btn-ghost" onclick="closeBulkPriceModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Listing Confirm modal ── Sanity check before going live with a price -->
+  <div class="lc-modal-bg" id="lcModalBg" onclick="if(event.target.id==='lcModalBg')_lcDeny()">
+    <div class="lc-modal">
+      <div class="lc-modal-header">
+        <span class="lc-modal-icon">&#9888;</span>
+        <span class="lc-modal-title">Price Sanity Check</span>
+      </div>
+      <div class="lc-modal-body">
+        <div class="lc-modal-card-name" id="lcCardName">&mdash;</div>
+        <div class="lc-modal-row">
+          <div class="lc-modal-col">
+            <div class="lc-modal-label">Your Price</div>
+            <div class="lc-modal-val your-price" id="lcAsking">$0</div>
+          </div>
+          <div class="lc-modal-col">
+            <div class="lc-modal-label">Market Avg</div>
+            <div class="lc-modal-val market" id="lcMarket">$0</div>
+          </div>
+        </div>
+        <div class="lc-modal-warning" id="lcWarning">&mdash;</div>
+        <div class="lc-modal-help">If your price is intentional (rare condition, error variation, hot card), proceed. Otherwise edit and try again.</div>
+      </div>
+      <div class="lc-modal-actions">
+        <button class="lc-modal-btn lc-modal-btn-cancel" onclick="_lcDeny()">Cancel &mdash; Edit Price</button>
+        <button class="lc-modal-btn lc-modal-btn-confirm" id="lcConfirmBtn" onclick="_lcAccept()">Yes, List at <span id="lcConfirmPrice">$0</span></button>
       </div>
     </div>
   </div>
@@ -6187,6 +6301,29 @@ async function submitVault(){
     else { document.getElementById('vmProvLcsError').style.display='none'; }
   }
   if(!valid) return;
+
+  // Sanity check: if the user is listing this card for sale immediately on
+  // add, compare the asking price against the eBay live market avg. If it's
+  // more than 50% off in either direction, show the warning modal. Lets the
+  // user catch typos like $40 instead of $400 before they go live.
+  if(document.getElementById('vmForSale').checked && vmCard){
+    const askingPrice = parseFloat(document.getElementById('vmAskingPrice').value);
+    const probeRow = {
+      player: vmCard.player,
+      year: vmCard.year,
+      set_name: vmCard.set || (vmCard._setTable || ''),
+      card_number: vmCard._cardNumber || (vmCard.cardNum != null ? String(vmCard.cardNum).replace(/^#/,"") : ''),
+      variation: document.getElementById('vmVariationSelect').value || vmCard.parallel || 'Base',
+      _currentValue: vmCard.price || 0
+    };
+    const marketAvg = _getMarketAvgForRow(probeRow);
+    const ok = await _listingConfirm({
+      displayName: _displayNameForRow(probeRow),
+      askingPrice: askingPrice,
+      marketAvg: marketAvg
+    });
+    if(!ok) return; // User cancelled — they can edit the price and resubmit
+  }
 
   const btn = document.getElementById('vmSubmitBtn');
   btn.disabled=true;
@@ -11798,6 +11935,68 @@ function _cdUpdateEditListingBtn(){
   if(priceEl) priceEl.textContent = parseFloat(data[idx].asking_price||0).toFixed(2);
 }
 
+// ── Listing Confirm Modal ──────────────────────────────────────────────────
+// Centralized "are you sure?" gate for any code path that's about to mark a
+// vault row as is_for_sale=true. Compares the asking price against the
+// market average from the eBay live-pricing cache. If the asking is more
+// than 50% off market in either direction, shows a warning modal. The user
+// must explicitly confirm to proceed. Returns a Promise<boolean>.
+//
+// Used by: submitVault (Add Card flow), submitEditListing (Edit Listing modal).
+// Bulk listing flow is intentionally skipped — bulk users tend to be
+// intentional and a per-card warning would be a UX wall.
+let _lcResolver = null;
+function _listingConfirm(opts){
+  // opts: {displayName, askingPrice, marketAvg}
+  // marketAvg of 0/null = no data, skip the check
+  return new Promise(resolve => {
+    const asking = parseFloat(opts.askingPrice) || 0;
+    const market = parseFloat(opts.marketAvg) || 0;
+    if(asking <= 0){ resolve(false); return; }
+    if(market <= 0){ resolve(true); return; } // No market data, allow
+    const ratio = asking / market;
+    const offBy = Math.abs(1 - ratio);
+    if(offBy < 0.50){ resolve(true); return; } // Within ±50%, allow
+    // Outside threshold — show warning modal
+    document.getElementById('lcCardName').textContent = opts.displayName || 'this card';
+    document.getElementById('lcAsking').textContent = '$' + asking.toLocaleString(undefined,{maximumFractionDigits:0});
+    document.getElementById('lcMarket').textContent = '$' + market.toLocaleString(undefined,{maximumFractionDigits:0});
+    document.getElementById('lcConfirmPrice').textContent = '$' + asking.toLocaleString(undefined,{maximumFractionDigits:0});
+    const pctText = (offBy * 100).toFixed(0) + '%';
+    const direction = ratio < 1 ? 'BELOW' : 'ABOVE';
+    document.getElementById('lcWarning').textContent =
+      `Your price is ${pctText} ${direction} the recent market average.`;
+    _lcResolver = resolve;
+    document.getElementById('lcModalBg').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  });
+}
+function _lcAccept(){
+  document.getElementById('lcModalBg').classList.remove('show');
+  document.body.style.overflow = '';
+  if(_lcResolver){ _lcResolver(true); _lcResolver = null; }
+}
+function _lcDeny(){
+  document.getElementById('lcModalBg').classList.remove('show');
+  document.body.style.overflow = '';
+  if(_lcResolver){ _lcResolver(false); _lcResolver = null; }
+}
+// Helper: read the current eBay market average for a vault row.
+// Tries the cache first, falls back to row._currentValue, returns 0 if unknown.
+function _getMarketAvgForRow(row){
+  if(!row) return 0;
+  const cached = (typeof _mvCacheGet === 'function') ? _mvCacheGet(_mvCacheKey(row)) : null;
+  if(cached && cached > 0) return cached;
+  const cur = parseFloat(row._currentValue) || 0;
+  return cur;
+}
+// Helper: build a display name for a card. Used by the modal title.
+function _displayNameForRow(row){
+  if(!row) return 'this card';
+  const parts = [row.year, row.brand, row.player].filter(Boolean);
+  return parts.join(' ') || 'this card';
+}
+
 function openEditListingModal(idx){
   const row = window._vaultData && window._vaultData[idx];
   if(!row) return;
@@ -11836,6 +12035,17 @@ async function submitEditListing(){
     document.getElementById('elPriceError').style.display = 'block'; return;
   }
   document.getElementById('elPriceError').style.display = 'none';
+  // Sanity check: only when actually listing (not when delisting). If the
+  // asking price is more than 50% off the market average, show a warning.
+  if(isForSale){
+    const marketAvg = _getMarketAvgForRow(row);
+    const ok = await _listingConfirm({
+      displayName: _displayNameForRow(row),
+      askingPrice: askingPrice,
+      marketAvg: marketAvg
+    });
+    if(!ok) return; // User cancelled — they can edit the price and try again
+  }
   const btn = document.getElementById('elSubmitBtn');
   btn.disabled = true; btn.textContent = 'SAVING...';
   try {

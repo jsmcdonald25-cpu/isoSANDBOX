@@ -7,6 +7,8 @@
 <title>GrailISO · Admin</title>
 <!-- admin_03_20_25_1649 -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <style>
 :root {
   --bg: #f4f6f9;
@@ -279,7 +281,103 @@ tr:hover td { background: var(--bg); }
 @media (max-width: 900px) {
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .grid-3 { grid-template-columns: 1fr 1fr; }
+  .pbi-grid { grid-template-columns: repeat(3, 1fr) !important; }
 }
+@media (max-width: 600px) {
+  .pbi-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* ──────── PBI ANALYTICS DASHBOARD ──────── */
+.pbi-section { margin-bottom: 14px; }
+.pbi-section-divider {
+  display: flex; align-items: center; gap: 12px; margin: 4px 0 10px;
+}
+.pbi-section-divider-line { flex: 1; height: 1px; background: var(--border); }
+.pbi-section-divider-label {
+  font-size: 9px; font-weight: 700; color: var(--text3);
+  letter-spacing: 1.5px; text-transform: uppercase;
+}
+.pbi-toolbar {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+}
+.pbi-toolbar-left { display: flex; flex-direction: column; }
+.pbi-toolbar-title { font-size: 13px; font-weight: 800; }
+.pbi-toolbar-sub { font-size: 11px; color: var(--text2); margin-top: 1px; }
+.pbi-lock-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--surface); border: 1px solid var(--border2);
+  color: var(--text2); font-family: var(--sans); font-size: 11px; font-weight: 700;
+  padding: 7px 12px; border-radius: 6px; cursor: pointer;
+  letter-spacing: .5px; text-transform: uppercase; transition: all .15s;
+}
+.pbi-lock-btn:hover { border-color: var(--blue); color: var(--blue); }
+.pbi-lock-btn.unlocked { background: var(--yellow-light); border-color: var(--yellow); color: var(--yellow); }
+.pbi-lock-btn .pbi-lock-icon { font-size: 13px; }
+.pbi-grid {
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 14px;
+}
+.pbi-tile {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+  padding: 10px 12px; cursor: pointer; transition: all .12s;
+  display: flex; flex-direction: column; height: 130px;
+}
+.pbi-tile:hover {
+  border-color: var(--blue); box-shadow: 0 3px 10px rgba(0,102,204,0.10); transform: translateY(-1px);
+}
+.pbi-tile-label {
+  font-size: 9px; font-weight: 700; color: var(--text2);
+  letter-spacing: .5px; text-transform: uppercase;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px;
+}
+.pbi-tile-body { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex: 1; min-height: 0; }
+.pbi-tile-numbers { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.pbi-tile-val { font-size: 22px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.pbi-tile-trend { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 8px; white-space: nowrap; align-self: flex-start; }
+.pbi-trend-up   { background: var(--green-light); color: var(--green); }
+.pbi-trend-down { background: var(--red-light);   color: var(--red); }
+.pbi-trend-flat { background: var(--bg);           color: var(--text2); }
+.pbi-blue   .pbi-tile-val { color: var(--blue); }
+.pbi-green  .pbi-tile-val { color: var(--green); }
+.pbi-yellow .pbi-tile-val { color: var(--yellow); }
+.pbi-red    .pbi-tile-val { color: var(--red); }
+.pbi-purple .pbi-tile-val { color: var(--purple); }
+.pbi-teal   .pbi-tile-val { color: #0891b2; }
+.pbi-chart-wrap { position: relative; width: 70px; height: 70px; flex-shrink: 0; }
+
+.pbi-grid.unlocked .pbi-tile {
+  cursor: grab; border-style: dashed; border-color: var(--yellow);
+  background: var(--yellow-light); animation: pbiWiggle 0.4s ease-in-out infinite alternate;
+}
+.pbi-grid.unlocked .pbi-tile:hover { transform: none; box-shadow: none; }
+.pbi-grid.unlocked .pbi-tile:active { cursor: grabbing; }
+@keyframes pbiWiggle {
+  from { transform: rotate(-0.4deg); }
+  to   { transform: rotate(0.4deg); }
+}
+.sortable-ghost { opacity: 0.3; }
+.sortable-chosen { animation: none !important; transform: scale(1.04) !important; box-shadow: 0 8px 24px rgba(0,102,204,0.25) !important; }
+.sortable-drag { opacity: 0.95; cursor: grabbing !important; }
+
+.pbi-modal-bg {
+  display: none; position: fixed; inset: 0;
+  background: rgba(15,23,42,.6); backdrop-filter: blur(4px);
+  z-index: 9000; align-items: center; justify-content: center; padding: 20px;
+}
+.pbi-modal-bg.show { display: flex; }
+.pbi-modal { background: var(--surface); border-radius: 10px; width: 100%; max-width: 680px; max-height: 86vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+.pbi-modal-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); }
+.pbi-modal-title { font-size: 14px; font-weight: 800; }
+.pbi-modal-sub { font-size: 10px; color: var(--text3); margin-top: 1px; }
+.pbi-modal-close { width: 26px; height: 26px; border-radius: 5px; border: 1px solid var(--border2); background: var(--surface); color: var(--text2); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+.pbi-modal-close:hover { background: var(--red-light); color: var(--red); border-color: var(--red); }
+.pbi-modal-body { padding: 16px 18px 18px; }
+.pbi-modal-headline { font-size: 32px; font-weight: 800; color: var(--blue); font-variant-numeric: tabular-nums; line-height: 1; }
+.pbi-modal-headline-sub { font-size: 11px; color: var(--text3); margin-top: 4px; margin-bottom: 14px; }
+.pbi-modal-chart-wrap { position: relative; width: 100%; height: 240px; margin-bottom: 14px; }
+.pbi-modal-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.pbi-modal-table th { text-align: left; padding: 5px 8px; font-size: 9px; color: var(--text2); font-weight: 700; letter-spacing: .5px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+.pbi-modal-table td { padding: 5px 8px; border-bottom: 1px solid var(--border); }
+.pbi-modal-table tr:last-child td { border-bottom: none; }
 </style>
 </head>
 <body>
@@ -415,6 +513,157 @@ tr:hover td { background: var(--bg); }
         <div class="panel-title">Overview</div>
         <div class="panel-sub">Platform health and quick actions.</div>
       </div>
+
+      <!-- ───── ANALYTICS DASHBOARD ───── -->
+      <div class="pbi-section">
+        <div class="pbi-toolbar">
+          <div class="pbi-toolbar-left">
+            <div class="pbi-toolbar-title">Platform Analytics</div>
+            <div class="pbi-toolbar-sub" id="pbiLockSub">Click any tile for the detail view. Unlock to rearrange.</div>
+          </div>
+          <button class="pbi-lock-btn" id="pbiLockBtn" onclick="pbiToggleLock()">
+            <span class="pbi-lock-icon">&#128274;</span><span id="pbiLockLabel">Locked</span>
+          </button>
+        </div>
+
+        <div class="pbi-grid" id="pbiGrid">
+          <div class="pbi-tile pbi-blue" data-key="sets" onclick="pbiOpenTile('sets')">
+            <div class="pbi-tile-label">Active Sets</div>
+            <div class="pbi-tile-body">
+              <div class="pbi-tile-numbers"><div class="pbi-tile-val" data-val="sets">—</div><span class="pbi-tile-trend pbi-trend-flat" data-trend="sets">live</span></div>
+              <div class="pbi-chart-wrap"><canvas data-donut="sets" width="70" height="70"></canvas></div>
+            </div>
+          </div>
+          <div class="pbi-tile pbi-green" data-key="users" onclick="pbiOpenTile('users')">
+            <div class="pbi-tile-label">Total Users</div>
+            <div class="pbi-tile-body">
+              <div class="pbi-tile-numbers"><div class="pbi-tile-val" data-val="users">—</div><span class="pbi-tile-trend pbi-trend-flat" data-trend="users">live</span></div>
+              <div class="pbi-chart-wrap"><canvas data-donut="users" width="70" height="70"></canvas></div>
+            </div>
+          </div>
+          <div class="pbi-tile pbi-purple" data-key="vault" onclick="pbiOpenTile('vault')">
+            <div class="pbi-tile-label">Vault Entries</div>
+            <div class="pbi-tile-body">
+              <div class="pbi-tile-numbers"><div class="pbi-tile-val" data-val="vault">—</div><span class="pbi-tile-trend pbi-trend-flat" data-trend="vault">live</span></div>
+              <div class="pbi-chart-wrap"><canvas data-donut="vault" width="70" height="70"></canvas></div>
+            </div>
+          </div>
+          <div class="pbi-tile pbi-yellow" data-key="isos" onclick="pbiOpenTile('isos')">
+            <div class="pbi-tile-label">Active ISOs &middot; Buyer</div>
+            <div class="pbi-tile-body">
+              <div class="pbi-tile-numbers"><div class="pbi-tile-val" data-val="isos">—</div><span class="pbi-tile-trend pbi-trend-flat" data-trend="isos">live</span></div>
+              <div class="pbi-chart-wrap"><canvas data-donut="isos" width="70" height="70"></canvas></div>
+            </div>
+          </div>
+          <div class="pbi-tile pbi-teal" data-key="forsale" onclick="pbiOpenTile('forsale')">
+            <div class="pbi-tile-label">Cards For Sale &middot; Seller</div>
+            <div class="pbi-tile-body">
+              <div class="pbi-tile-numbers"><div class="pbi-tile-val" data-val="forsale">—</div><span class="pbi-tile-trend pbi-trend-flat" data-trend="forsale">live</span></div>
+              <div class="pbi-chart-wrap"><canvas data-donut="forsale" width="70" height="70"></canvas></div>
+            </div>
+          </div>
+          <div class="pbi-tile pbi-blue" data-key="catcards" onclick="pbiOpenTile('catcards')">
+            <div class="pbi-tile-label">Catalog Cards</div>
+            <div class="pbi-tile-body">
+              <div class="pbi-tile-numbers"><div class="pbi-tile-val" data-val="catcards">—</div><span class="pbi-tile-trend pbi-trend-flat" data-trend="catcards">demo</span></div>
+              <div class="pbi-chart-wrap"><canvas data-donut="catcards" width="70" height="70"></canvas></div>
+            </div>
+          </div>
+
+          <div class="pbi-tile pbi-green" data-key="imgcoverage" onclick="pbiOpenTile('imgcoverage')">
+            <div class="pbi-tile-label">Image Coverage</div>
+            <div class="pbi-tile-body">
+              <div class="pbi-tile-numbers"><div class="pbi-tile-val" data-val="imgcoverage">—</div><span class="pbi-tile-trend pbi-trend-flat" data-trend="imgcoverage">demo</span></div>
+              <div class="pbi-chart-wrap"><canvas data-gauge="imgcoverage" width="70" height="70"></canvas></div>
+            </div>
+          </div>
+          <div class="pbi-tile pbi-yellow" data-key="pending" onclick="pbiOpenTile('pending')">
+            <div class="pbi-tile-label">Pending Approvals</div>
+            <div class="pbi-tile-body">
+              <div class="pbi-tile-numbers"><div class="pbi-tile-val" data-val="pending">—</div><span class="pbi-tile-trend pbi-trend-flat" data-trend="pending">live</span></div>
+              <div class="pbi-chart-wrap"><canvas data-gauge="pending" width="70" height="70"></canvas></div>
+            </div>
+          </div>
+          <div class="pbi-tile pbi-blue" data-key="alpha" onclick="pbiOpenTile('alpha')">
+            <div class="pbi-tile-label">Alpha Signups</div>
+            <div class="pbi-tile-body">
+              <div class="pbi-tile-numbers"><div class="pbi-tile-val" data-val="alpha">—</div><span class="pbi-tile-trend pbi-trend-flat" data-trend="alpha">live</span></div>
+              <div class="pbi-chart-wrap"><canvas data-gauge="alpha" width="70" height="70"></canvas></div>
+            </div>
+          </div>
+          <div class="pbi-tile pbi-green" data-key="newusers" onclick="pbiOpenTile('newusers')">
+            <div class="pbi-tile-label">New Users &middot; 7d</div>
+            <div class="pbi-tile-body">
+              <div class="pbi-tile-numbers"><div class="pbi-tile-val" data-val="newusers">—</div><span class="pbi-tile-trend pbi-trend-flat" data-trend="newusers">live</span></div>
+              <div class="pbi-chart-wrap"><canvas data-gauge="newusers" width="70" height="70"></canvas></div>
+            </div>
+          </div>
+          <div class="pbi-tile pbi-purple" data-key="newvault" onclick="pbiOpenTile('newvault')">
+            <div class="pbi-tile-label">New Vault &middot; 7d</div>
+            <div class="pbi-tile-body">
+              <div class="pbi-tile-numbers"><div class="pbi-tile-val" data-val="newvault">—</div><span class="pbi-tile-trend pbi-trend-flat" data-trend="newvault">live</span></div>
+              <div class="pbi-chart-wrap"><canvas data-donut="newvault" width="70" height="70"></canvas></div>
+            </div>
+          </div>
+          <div class="pbi-tile pbi-yellow" data-key="newisos" onclick="pbiOpenTile('newisos')">
+            <div class="pbi-tile-label">New ISOs &middot; 7d</div>
+            <div class="pbi-tile-body">
+              <div class="pbi-tile-numbers"><div class="pbi-tile-val" data-val="newisos">—</div><span class="pbi-tile-trend pbi-trend-flat" data-trend="newisos">live</span></div>
+              <div class="pbi-chart-wrap"><canvas data-gauge="newisos" width="70" height="70"></canvas></div>
+            </div>
+          </div>
+
+          <div class="pbi-tile pbi-green" data-key="credits" onclick="pbiOpenTile('credits')">
+            <div class="pbi-tile-label">Credit Balance</div>
+            <div class="pbi-tile-body">
+              <div class="pbi-tile-numbers"><div class="pbi-tile-val" data-val="credits">—</div><span class="pbi-tile-trend pbi-trend-flat" data-trend="credits">live</span></div>
+              <div class="pbi-chart-wrap"><canvas data-donut="credits" width="70" height="70"></canvas></div>
+            </div>
+          </div>
+          <div class="pbi-tile pbi-blue" data-key="txns" onclick="pbiOpenTile('txns')">
+            <div class="pbi-tile-label">Transactions</div>
+            <div class="pbi-tile-body">
+              <div class="pbi-tile-numbers"><div class="pbi-tile-val" data-val="txns">—</div><span class="pbi-tile-trend pbi-trend-flat" data-trend="txns">live</span></div>
+              <div class="pbi-chart-wrap"><canvas data-donut="txns" width="70" height="70"></canvas></div>
+            </div>
+          </div>
+          <div class="pbi-tile pbi-purple" data-key="avgcards" onclick="pbiOpenTile('avgcards')">
+            <div class="pbi-tile-label">Avg Cards / User</div>
+            <div class="pbi-tile-body">
+              <div class="pbi-tile-numbers"><div class="pbi-tile-val" data-val="avgcards">—</div><span class="pbi-tile-trend pbi-trend-flat" data-trend="avgcards">live</span></div>
+              <div class="pbi-chart-wrap"><canvas data-gauge="avgcards" width="70" height="70"></canvas></div>
+            </div>
+          </div>
+          <div class="pbi-tile pbi-teal" data-key="vaultsport" onclick="pbiOpenTile('vaultsport')">
+            <div class="pbi-tile-label">Vault by Sport</div>
+            <div class="pbi-tile-body">
+              <div class="pbi-tile-numbers"><div class="pbi-tile-val" data-val="vaultsport">—</div><span class="pbi-tile-trend pbi-trend-flat" data-trend="vaultsport">demo</span></div>
+              <div class="pbi-chart-wrap"><canvas data-donut="vaultsport" width="70" height="70"></canvas></div>
+            </div>
+          </div>
+          <div class="pbi-tile pbi-yellow" data-key="isosport" onclick="pbiOpenTile('isosport')">
+            <div class="pbi-tile-label">ISOs by Sport</div>
+            <div class="pbi-tile-body">
+              <div class="pbi-tile-numbers"><div class="pbi-tile-val" data-val="isosport">—</div><span class="pbi-tile-trend pbi-trend-flat" data-trend="isosport">live</span></div>
+              <div class="pbi-chart-wrap"><canvas data-donut="isosport" width="70" height="70"></canvas></div>
+            </div>
+          </div>
+          <div class="pbi-tile pbi-blue" data-key="setsbrand" onclick="pbiOpenTile('setsbrand')">
+            <div class="pbi-tile-label">Sets by Brand</div>
+            <div class="pbi-tile-body">
+              <div class="pbi-tile-numbers"><div class="pbi-tile-val" data-val="setsbrand">—</div><span class="pbi-tile-trend pbi-trend-flat" data-trend="setsbrand">live</span></div>
+              <div class="pbi-chart-wrap"><canvas data-donut="setsbrand" width="70" height="70"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pbi-section-divider">
+          <div class="pbi-section-divider-line"></div>
+          <div class="pbi-section-divider-label">Quick Stats &middot; Original</div>
+          <div class="pbi-section-divider-line"></div>
+        </div>
+      </div>
+
       <div class="stats-grid">
         <div class="stat-card" style="cursor:pointer" onclick="nav('sets',document.querySelector('[onclick*=sets]'))">
           <div class="stat-val" id="stat-sets">—</div>
@@ -1599,6 +1848,7 @@ async function gateLogin() {
     document.getElementById('gate').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     loadOverview();
+    pbiLoadDashboard();
     populateSetDropdowns();
     loadUsers();
     loadPendingCards();
@@ -4480,6 +4730,357 @@ function mpClearBatch() {
   document.getElementById('mp-batch-result').style.display = 'none';
 }
 
+// ════════════════════════════════════════════════════════
+// ANALYTICS DASHBOARD (PBI-style tiles in Overview panel)
+// ════════════════════════════════════════════════════════
+const PBI_PALETTE_HEX = ['#0066cc','#059669','#d97706','#7c3aed','#0891b2','#dc2626','#ec4899','#6366f1'];
+const PBI_COLOR_MAP = { green:'#059669', yellow:'#d97706', blue:'#0066cc', purple:'#7c3aed', red:'#dc2626', teal:'#0891b2' };
+
+// Cached data the dashboard accumulates as queries return
+const PBI_DATA = {
+  counts: {},          // sets, users, vault, isos, forsale, pending, alpha, etc.
+  comp: {},            // sets, users, isos, setsbrand, etc.
+  loaded: false,
+};
+
+// Returns an exact row count using Supabase REST count=exact head request.
+async function pbiCount(table, query) {
+  const tok = _token || SB_ANON;
+  const url = `${REST}/${table}?${query || 'select=*'}`;
+  try {
+    const r = await fetch(url, {
+      method: 'HEAD',
+      headers: {
+        'apikey': SB_ANON,
+        'Authorization': 'Bearer ' + tok,
+        'Prefer': 'count=exact',
+        'Range-Unit': 'items',
+        'Range': '0-0',
+      }
+    });
+    const cr = r.headers.get('Content-Range') || '';
+    const slash = cr.lastIndexOf('/');
+    if (slash >= 0) {
+      const n = parseInt(cr.slice(slash + 1), 10);
+      if (!isNaN(n)) return n;
+    }
+    return null;
+  } catch(e) {
+    console.warn('pbiCount', table, e);
+    return null;
+  }
+}
+
+function pbiSetTile(key, val, trendText, trendClass) {
+  const v = document.querySelector(`[data-val="${key}"]`);
+  if (v) v.textContent = (val == null ? '—' : (typeof val === 'number' ? val.toLocaleString() : val));
+  if (trendText != null) {
+    const t = document.querySelector(`[data-trend="${key}"]`);
+    if (t) {
+      t.textContent = trendText;
+      t.className = 'pbi-tile-trend ' + (trendClass || 'pbi-trend-flat');
+    }
+  }
+}
+
+// Fold an array of {sport|brand|...:value} rows into a {labels,data} object
+function pbiGroupBy(rows, field) {
+  const map = {};
+  for (const r of rows || []) {
+    const k = (r && r[field]) || 'Unknown';
+    map[k] = (map[k] || 0) + 1;
+  }
+  const entries = Object.entries(map).sort((a,b)=>b[1]-a[1]);
+  return { labels: entries.map(e=>e[0]), data: entries.map(e=>e[1]) };
+}
+
+const PBI_CHARTS = {}; // key -> Chart instance
+
+function pbiRenderDonut(key, comp) {
+  const canvas = document.querySelector(`[data-donut="${key}"]`);
+  if (!canvas) return;
+  if (PBI_CHARTS[key]) { try { PBI_CHARTS[key].destroy(); } catch(e){} }
+  if (!comp || !comp.data || !comp.data.length) {
+    // grey placeholder donut
+    PBI_CHARTS[key] = new Chart(canvas, {
+      type: 'doughnut',
+      data: { datasets: [{ data: [1], backgroundColor: ['#e2e8f0'], borderWidth: 0 }] },
+      options: { responsive: false, maintainAspectRatio: false, plugins:{legend:{display:false},tooltip:{enabled:false}}, cutout: '62%', animation: false }
+    });
+    return;
+  }
+  PBI_CHARTS[key] = new Chart(canvas, {
+    type: 'doughnut',
+    data: {
+      labels: comp.labels,
+      datasets: [{ data: comp.data, backgroundColor: PBI_PALETTE_HEX, borderWidth: 1, borderColor: '#fff' }]
+    },
+    options: {
+      responsive: false, maintainAspectRatio: false,
+      plugins: { legend:{display:false}, tooltip:{enabled:false} },
+      cutout: '62%', animation: { duration: 600 },
+    }
+  });
+}
+
+function pbiRenderGauge(key, percent, color) {
+  const canvas = document.querySelector(`[data-gauge="${key}"]`);
+  if (!canvas) return;
+  if (PBI_CHARTS[key]) { try { PBI_CHARTS[key].destroy(); } catch(e){} }
+  const pct = Math.max(0, Math.min(100, percent || 0));
+  const c = PBI_COLOR_MAP[color] || PBI_COLOR_MAP.blue;
+  PBI_CHARTS[key] = new Chart(canvas, {
+    type: 'doughnut',
+    data: { datasets: [{
+      data: [pct, 100 - pct],
+      backgroundColor: [c, '#e2e8f0'],
+      borderWidth: 0,
+      circumference: 180,
+      rotation: 270,
+    }] },
+    options: {
+      responsive: false, maintainAspectRatio: false,
+      plugins: { legend:{display:false}, tooltip:{enabled:false} },
+      cutout: '70%', animation: { duration: 800 },
+    }
+  });
+}
+
+// ─── Main loader: real for cheap queries, demo for expensive ones ───
+async function pbiLoadDashboard() {
+  // 1. Cheap counts via Prefer:count=exact, all in parallel
+  const [setsN, usersN, vaultN, isosN, forsaleN, pendingN, alphaN] = await Promise.all([
+    pbiCount('iv_sets',       'select=id'),
+    pbiCount('profiles',      'select=id'),
+    pbiCount('vault',         'select=id'),
+    pbiCount('isos',          'select=id&status=eq.active'),
+    pbiCount('vault',         'select=id&is_for_sale=eq.true&status=neq.sold&status=neq.removed'),
+    pbiCount('pending_cards', 'select=id'),
+    pbiCount('alpha_signups', 'select=id'),
+  ]);
+  PBI_DATA.counts = { sets:setsN, users:usersN, vault:vaultN, isos:isosN, forsale:forsaleN, pending:pendingN, alpha:alphaN };
+
+  pbiSetTile('sets',    setsN);
+  pbiSetTile('users',   usersN);
+  pbiSetTile('vault',   vaultN);
+  pbiSetTile('isos',    isosN);
+  pbiSetTile('forsale', forsaleN);
+  pbiSetTile('pending', pendingN, pendingN >= 50 ? 'WARN' : '/50 cap', pendingN >= 50 ? 'pbi-trend-down' : 'pbi-trend-flat');
+  pbiSetTile('alpha',   alphaN, '/100 cap');
+
+  if (usersN != null && vaultN != null && usersN > 0) {
+    const avg = (vaultN / usersN).toFixed(1);
+    pbiSetTile('avgcards', avg);
+    pbiRenderGauge('avgcards', Math.min(100, (vaultN / usersN) * 10), 'purple'); // target 10
+  }
+
+  // 2. Group-by composition for small tables — fetched in full + grouped client-side
+  try {
+    const setsRows = await _get('iv_sets', 'select=sport,brand');
+    const bySport = pbiGroupBy(setsRows, 'sport');
+    const byBrand = pbiGroupBy(setsRows, 'brand');
+    PBI_DATA.comp.sets = bySport;
+    PBI_DATA.comp.setsbrand = byBrand;
+    pbiRenderDonut('sets', bySport);
+    pbiRenderDonut('setsbrand', byBrand);
+    pbiSetTile('setsbrand', setsRows ? setsRows.length : 0);
+  } catch(e) { console.warn('sets composition', e); }
+
+  try {
+    const isosRows = await _get('isos', 'select=sport&status=eq.active');
+    const byIsoSport = pbiGroupBy(isosRows, 'sport');
+    PBI_DATA.comp.isos = byIsoSport;
+    PBI_DATA.comp.isosport = byIsoSport;
+    pbiRenderDonut('isos', byIsoSport);
+    pbiRenderDonut('isosport', byIsoSport);
+    pbiSetTile('isosport', isosRows ? isosRows.length : 0);
+  } catch(e) { console.warn('isos composition', e); }
+
+  // 3. Profiles / users by role status — small table, group client-side
+  try {
+    const profRows = await _get('profiles', 'select=is_admin,role');
+    const byStatus = { Active: 0, Admin: 0 };
+    for (const p of profRows || []) {
+      if (p.is_admin || p.role === 'owner') byStatus.Admin++;
+      else byStatus.Active++;
+    }
+    const userComp = { labels: Object.keys(byStatus), data: Object.values(byStatus) };
+    PBI_DATA.comp.users = userComp;
+    pbiRenderDonut('users', userComp);
+  } catch(e) { console.warn('users composition', e); }
+
+  // 4. New users (7d) — date filter cheap query
+  try {
+    const sevenAgo = new Date(Date.now() - 7*24*3600*1000).toISOString();
+    const [newUsers7, newVault7, newIsos7] = await Promise.all([
+      pbiCount('profiles', `select=id&created_at=gte.${sevenAgo}`),
+      pbiCount('vault',    `select=id&created_at=gte.${sevenAgo}`),
+      pbiCount('isos',     `select=id&created_at=gte.${sevenAgo}`),
+    ]);
+    PBI_DATA.counts.newusers = newUsers7;
+    PBI_DATA.counts.newvault = newVault7;
+    PBI_DATA.counts.newisos  = newIsos7;
+    pbiSetTile('newusers', newUsers7, newUsers7 != null ? `${Math.min(100, Math.round((newUsers7/30)*100))}% of 30/wk` : null);
+    pbiSetTile('newvault', newVault7);
+    pbiSetTile('newisos',  newIsos7);
+    pbiRenderGauge('newusers', newUsers7 != null ? Math.min(100, (newUsers7/30)*100) : 0, 'green');
+    pbiRenderGauge('newisos',  newIsos7  != null ? Math.min(100, (newIsos7/10)*100)  : 0, 'yellow');
+  } catch(e) { console.warn('7d trends', e); }
+
+  // 5. Render gauges for tiles that depend on counts
+  pbiRenderGauge('alpha',   alphaN != null ? Math.min(100, alphaN) : 0, 'blue');
+  pbiRenderGauge('pending', pendingN != null ? Math.min(100, (pendingN/50)*100) : 0, 'yellow');
+
+  // 6. Demo placeholders — wire later (require expensive queries or new tables)
+  pbiSetTile('catcards',    '54,892', 'demo');
+  pbiSetTile('imgcoverage', '87%',    'demo');
+  pbiSetTile('credits',     '—',      'TBD');
+  pbiSetTile('txns',        '—',      'TBD');
+  pbiSetTile('vaultsport',  '—',      'TBD');
+
+  pbiRenderDonut('catcards',  { labels:['Topps','Panini','Bowman','UD','Wizards','Other'], data:[22400,12300,8800,5400,3100,2892] });
+  pbiRenderGauge('imgcoverage', 87, 'green');
+  pbiRenderDonut('credits',   { labels:['Spent','Available','Pending'], data:[1240,1500,150] });
+  pbiRenderDonut('txns',      { labels:['Buy','Sell','Refund','Trade'], data:[210,160,12,30] });
+  pbiRenderDonut('vaultsport', null);  // grey placeholder
+  pbiRenderDonut('newvault',   null);  // grey placeholder until composition wired
+
+  PBI_DATA.loaded = true;
+  pbiRestoreOrder();
+}
+
+// ─── Tile detail modal ───
+let _pbiModalChart = null;
+const PBI_MODAL_META = {
+  sets:        { title:'Active Sets',          sub:'iv_sets, grouped by sport',                 unit:'sets' },
+  users:       { title:'Total Users',          sub:'profiles, grouped by status',               unit:'users' },
+  vault:       { title:'Vault Entries',        sub:'vault, total cards across all users',       unit:'cards' },
+  isos:        { title:'Active ISOs (Buyer)',  sub:'isos status=active, grouped by sport',      unit:'ISOs' },
+  forsale:     { title:'Cards For Sale',       sub:'vault.is_for_sale=true',                    unit:'cards' },
+  catcards:    { title:'Total Catalog Cards',  sub:'Sum across per-set tables (placeholder)',   unit:'cards' },
+  imgcoverage: { title:'Image Coverage',       sub:'Cards with at least one front image (demo)',unit:'%' },
+  pending:     { title:'Pending Approvals',    sub:'pending_cards waiting for review',          unit:'cards' },
+  alpha:       { title:'Alpha Signups',        sub:'alpha_signups, capped at 100',              unit:'signups' },
+  newusers:    { title:'New Users (7d)',       sub:'profiles created in last 7 days',           unit:'users' },
+  newvault:    { title:'New Vault (7d)',       sub:'vault rows created in last 7 days',         unit:'cards' },
+  newisos:     { title:'New ISOs (7d)',        sub:'isos rows created in last 7 days',          unit:'ISOs' },
+  credits:     { title:'Credit Balance',       sub:'TBD — needs credits column or table',       unit:'credits' },
+  txns:        { title:'Transactions',         sub:'TBD — needs transactions table',            unit:'txns' },
+  avgcards:    { title:'Avg Cards / User',     sub:'vault count / users count',                 unit:'cards/user' },
+  vaultsport:  { title:'Vault by Sport',       sub:'TBD — vault is too large for client-side group-by', unit:'cards' },
+  isosport:    { title:'ISOs by Sport',        sub:'isos status=active, grouped by sport',      unit:'ISOs' },
+  setsbrand:   { title:'Sets by Brand',        sub:'iv_sets, grouped by brand',                 unit:'sets' },
+};
+
+function pbiOpenTile(key) {
+  const meta = PBI_MODAL_META[key]; if(!meta) return;
+  document.getElementById('pbiModalTitle').textContent = meta.title;
+  document.getElementById('pbiModalSub').textContent = meta.sub;
+  const valEl = document.querySelector(`[data-val="${key}"]`);
+  document.getElementById('pbiModalHeadline').textContent = valEl ? valEl.textContent : '—';
+  document.getElementById('pbiModalHeadlineSub').textContent = (PBI_DATA.counts[key] != null) ? `Live · ${meta.unit}` : meta.unit;
+  document.getElementById('pbiModalBg').classList.add('show');
+
+  if (_pbiModalChart) { try { _pbiModalChart.destroy(); } catch(e){} _pbiModalChart = null; }
+
+  requestAnimationFrame(() => {
+    const ctx = document.getElementById('pbiModalChart');
+    const comp = PBI_DATA.comp[key];
+    if (comp && comp.data && comp.data.length) {
+      _pbiModalChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: { labels: comp.labels, datasets: [{ data: comp.data, backgroundColor: PBI_PALETTE_HEX, borderWidth: 2, borderColor: '#fff' }] },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend:{position:'right', labels:{font:{size:11},boxWidth:10,padding:6}}, tooltip:{enabled:true} },
+          cutout: '55%',
+        }
+      });
+      // Build composition table
+      const total = comp.data.reduce((a,b)=>a+b,0);
+      const rows = comp.labels.map((l,i) => {
+        const pct = ((comp.data[i]/total)*100).toFixed(1);
+        return `<tr><td><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${PBI_PALETTE_HEX[i%PBI_PALETTE_HEX.length]};margin-right:8px"></span>${l}</td><td style="text-align:right;font-variant-numeric:tabular-nums">${comp.data[i].toLocaleString()}</td><td style="text-align:right;color:#94a3b8">${pct}%</td></tr>`;
+      }).join('');
+      document.getElementById('pbiModalTable').innerHTML =
+        `<table class="pbi-modal-table"><thead><tr><th>Category</th><th style="text-align:right">Count</th><th style="text-align:right">Share</th></tr></thead><tbody>${rows}</tbody></table>`;
+    } else {
+      document.getElementById('pbiModalTable').innerHTML =
+        `<div style="padding:24px;text-align:center;color:var(--text3);font-size:12px">No breakdown data available for this metric yet. The current value is shown above.</div>`;
+    }
+  });
+}
+function pbiCloseModal() {
+  document.getElementById('pbiModalBg').classList.remove('show');
+  if (_pbiModalChart) { try { _pbiModalChart.destroy(); } catch(e){} _pbiModalChart = null; }
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape') pbiCloseModal(); });
+
+// ─── Lock / unlock + drag persistence ───
+const PBI_ORDER_KEY = 'grailiso-admin-pbi-order';
+let _pbiUnlocked = false;
+let _pbiSortable = null;
+
+function pbiRestoreOrder() {
+  const saved = localStorage.getItem(PBI_ORDER_KEY); if(!saved) return;
+  let order; try { order = JSON.parse(saved); } catch(e) { return; }
+  if(!Array.isArray(order)) return;
+  const grid = document.getElementById('pbiGrid'); if(!grid) return;
+  const tilesByKey = {};
+  grid.querySelectorAll('.pbi-tile').forEach(t => { tilesByKey[t.dataset.key] = t; });
+  order.forEach(key => { if(tilesByKey[key]) grid.appendChild(tilesByKey[key]); });
+}
+function pbiSaveOrder() {
+  const order = Array.from(document.querySelectorAll('#pbiGrid .pbi-tile')).map(t => t.dataset.key);
+  localStorage.setItem(PBI_ORDER_KEY, JSON.stringify(order));
+}
+function pbiToggleLock() {
+  _pbiUnlocked = !_pbiUnlocked;
+  const grid = document.getElementById('pbiGrid');
+  const btn = document.getElementById('pbiLockBtn');
+  const label = document.getElementById('pbiLockLabel');
+  const icon = btn.querySelector('.pbi-lock-icon');
+  const sub = document.getElementById('pbiLockSub');
+  if (_pbiUnlocked) {
+    grid.classList.add('unlocked');
+    btn.classList.add('unlocked');
+    label.textContent = 'Unlocked · Drag to rearrange';
+    icon.innerHTML = '&#128275;';
+    sub.textContent = 'Drag tiles to rearrange. Click the lock button when done to save.';
+    grid.querySelectorAll('.pbi-tile').forEach(t => { t.dataset.savedClick = t.getAttribute('onclick') || ''; t.removeAttribute('onclick'); });
+    _pbiSortable = Sortable.create(grid, { animation: 180, ghostClass:'sortable-ghost', chosenClass:'sortable-chosen', dragClass:'sortable-drag', onEnd: pbiSaveOrder });
+  } else {
+    grid.classList.remove('unlocked');
+    btn.classList.remove('unlocked');
+    label.textContent = 'Locked';
+    icon.innerHTML = '&#128274;';
+    sub.textContent = 'Click any tile for the detail view. Unlock to rearrange.';
+    if (_pbiSortable) { _pbiSortable.destroy(); _pbiSortable = null; }
+    grid.querySelectorAll('.pbi-tile').forEach(t => { if(t.dataset.savedClick) { t.setAttribute('onclick', t.dataset.savedClick); delete t.dataset.savedClick; } });
+    pbiSaveOrder();
+  }
+}
+
 </script>
+
+<!-- ── Analytics tile detail modal ── -->
+<div class="pbi-modal-bg" id="pbiModalBg" onclick="if(event.target.id==='pbiModalBg')pbiCloseModal()">
+  <div class="pbi-modal">
+    <div class="pbi-modal-head">
+      <div>
+        <div class="pbi-modal-title" id="pbiModalTitle">—</div>
+        <div class="pbi-modal-sub" id="pbiModalSub">—</div>
+      </div>
+      <button class="pbi-modal-close" onclick="pbiCloseModal()">&times;</button>
+    </div>
+    <div class="pbi-modal-body">
+      <div class="pbi-modal-headline" id="pbiModalHeadline">—</div>
+      <div class="pbi-modal-headline-sub" id="pbiModalHeadlineSub">—</div>
+      <div class="pbi-modal-chart-wrap"><canvas id="pbiModalChart"></canvas></div>
+      <div id="pbiModalTable"></div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

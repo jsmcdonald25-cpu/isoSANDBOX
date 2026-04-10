@@ -4307,6 +4307,8 @@ async function isoDelete(id) {
 // ── CREDIT EVENTS ──
 let _allCreditEvents = [];
 
+let _ceUserMap = {}; // user_id -> username lookup
+
 async function loadCreditEvents(filterUserId, filterLabel) {
   document.getElementById('ce-loading').style.display = 'block';
   document.getElementById('ce-table-wrap').style.display = 'none';
@@ -4314,6 +4316,16 @@ async function loadCreditEvents(filterUserId, filterLabel) {
   try {
     const rows = await _get('credit_events', 'select=*&order=created_at.desc&limit=1000');
     _allCreditEvents = rows || [];
+
+    // Resolve usernames for display
+    const uids = [...new Set(_allCreditEvents.map(r => r.user_id).filter(Boolean))];
+    if (uids.length) {
+      try {
+        const profiles = await _get('profiles', 'select=id,username&id=in.('+uids.join(',')+')');
+        (profiles||[]).forEach(p => { _ceUserMap[p.id] = p.username || p.id.slice(0,8)+'…'; });
+      } catch(e) {}
+    }
+
     const total    = _allCreditEvents.length;
     const awarded  = _allCreditEvents.filter(r => (r.amount||0) > 0).reduce((s,r) => s + (r.amount||0), 0);
     const deducted = Math.abs(_allCreditEvents.filter(r => (r.amount||0) < 0).reduce((s,r) => s + (r.amount||0), 0));
@@ -4321,7 +4333,6 @@ async function loadCreditEvents(filterUserId, filterLabel) {
     document.getElementById('ce-stat-awarded').textContent  = '+' + awarded;
     document.getElementById('ce-stat-deducted').textContent = '-' + deducted;
     document.getElementById('ce-loading').style.display = 'none';
-    // If called from user manager, pre-filter
     if (filterUserId) {
       document.getElementById('ce-search').value = filterUserId;
     }
@@ -4338,6 +4349,7 @@ function ceEventsRender() {
   let rows = _allCreditEvents.slice();
   if (q) rows = rows.filter(r =>
     (r.user_id||'').toLowerCase().includes(q) ||
+    (_ceUserMap[r.user_id]||'').toLowerCase().includes(q) ||
     (r.reason||'').toLowerCase().includes(q) ||
     (r.note||'').toLowerCase().includes(q)
   );
@@ -4350,14 +4362,18 @@ function ceEventsRender() {
   document.getElementById('ce-table-wrap').style.display = 'block';
   document.getElementById('ce-tbody').innerHTML = rows.map(r => {
     const dt = r.created_at ? new Date(r.created_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) : '—';
-    const amt = (r.amount||0) > 0 ? `<span style="color:var(--green);font-weight:600">+${r.amount}</span>` : `<span style="color:var(--red);font-weight:600">${r.amount}</span>`;
-    const reasonColors = { bug_report:'badge-purple', price_correction:'badge-blue', admin_award:'badge-green', iso_post:'badge-gray' };
+    const rawAmt = r.amount != null ? Number(r.amount) : null;
+    const amt = rawAmt == null ? '<span style="color:var(--text3)">—</span>'
+      : rawAmt > 0 ? `<span style="color:var(--green);font-weight:600">+${rawAmt}</span>`
+      : `<span style="color:var(--red);font-weight:600">${rawAmt}</span>`;
+    const userName = _ceUserMap[r.user_id] || (r.user_id ? r.user_id.slice(0,8)+'…' : '—');
+    const reasonColors = { bug_report:'badge-purple', price_correction:'badge-blue', admin_award:'badge-green', iso_post:'badge-gray', signup_bonus:'badge-blue', alpha_tester:'badge-green', promo:'badge-green', upload_milestone:'badge-purple' };
     const bClass = reasonColors[r.reason] || 'badge-gray';
     return `<tr>
       <td style="font-size:11px;color:var(--text2);white-space:nowrap">${dt}</td>
-      <td style="font-size:11px;font-family:var(--font)">${r.user_id?r.user_id.slice(0,8)+'…':'—'}</td>
+      <td style="font-size:11px;font-family:var(--font);font-weight:600">@${userName}</td>
       <td>${amt}</td>
-      <td><span class="badge ${bClass}" style="font-size:10px">${r.reason||'—'}</span></td>
+      <td><span class="badge ${bClass}" style="font-size:10px">${(r.reason||'—').replace(/_/g,' ')}</span></td>
       <td style="font-size:12px;color:var(--text2)">${r.note||'—'}</td>
     </tr>`;
   }).join('');

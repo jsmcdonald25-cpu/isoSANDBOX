@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ISOGrading Scanner — GrailISO</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0D1F33;
+  --bg2: #0a1726;
+  --grail: #FFFFFF;
+  --iso: #00AAFF;
+  --danger: #FF4444;
+  --warn: #FF8C00;
+  --success: #00CC66;
+  --card-bg: rgba(255,255,255,0.04);
+  --card-border: rgba(255,255,255,0.08);
+  --font-head: 'Bebas Neue', sans-serif;
+  --font-ui: 'Barlow Condensed', sans-serif;
+  --cat-centering: #00AAFF;
+  --cat-corners: #FF8C00;
+  --cat-edges: #00CC66;
+  --cat-surface: #BB66FF;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--grail); font-family: var(--font-ui); min-height: 100vh; overflow-x: hidden; }
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: radial-gradient(ellipse 80% 60% at 20% 10%, rgba(0,170,255,0.06) 0%, transparent 60%),
+              radial-gradient(ellipse 60% 80% at 80% 90%, rgba(255,68,68,0.04) 0%, transparent 60%);
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px; height: 56px;
+  background: rgba(13,31,51,0.95); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--card-border);
+}
+.nav-logo { font-family: var(--font-head); font-size: 22px; letter-spacing: 2px; color: var(--grail); text-decoration: none; }
+.nav-logo span { color: var(--iso); }
+.nav-back {
+  font-family: var(--font-ui); font-size: 13px; font-weight: 500; letter-spacing: 1px;
+  color: rgba(255,255,255,0.5); text-decoration: none; text-transform: uppercase; transition: color 0.2s;
+}
+.nav-back:hover { color: var(--iso); }
+
+/* ── PAGE ── */
+.page { position: relative; z-index: 1; padding: 80px 40px 60px; max-width: 1400px; margin: 0 auto; }
+
+/* ── PHASE TABS ── */
+.phase-tabs {
+  display: flex; gap: 2px; margin-bottom: 40px; border-radius: 12px; overflow: hidden;
+  background: rgba(0,0,0,0.3);
+}
+.phase-tab {
+  flex: 1; padding: 18px 20px; text-align: center; cursor: pointer;
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  transition: all 0.2s; position: relative;
+}
+.phase-tab:first-child { border-radius: 12px 0 0 12px; }
+.phase-tab:last-child { border-radius: 0 12px 12px 0; }
+.phase-tab.active { background: rgba(0,170,255,0.08); border-color: rgba(0,170,255,0.3); }
+.phase-tab.active::after {
+  content: ''; position: absolute; bottom: 0; left: 20%; right: 20%; height: 2px; background: var(--iso);
+}
+.phase-tab.locked { opacity: 0.4; cursor: not-allowed; }
+.phase-num { font-family: var(--font-head); font-size: 11px; letter-spacing: 3px; color: rgba(255,255,255,0.3); margin-bottom: 4px; }
+.phase-tab.active .phase-num { color: var(--iso); }
+.phase-label { font-family: var(--font-head); font-size: 20px; letter-spacing: 1px; color: var(--grail); }
+.phase-sub { font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.35); margin-top: 4px; }
+
+/* ── SCREENS ── */
+.screen { display: none; }
+.screen.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ══════════════════════════════════════
+   SCREEN 1 — UPLOAD
+   ══════════════════════════════════════ */
+.upload-zone { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px; }
+.upload-box {
+  background: var(--card-bg); border: 2px dashed rgba(255,255,255,0.12);
+  border-radius: 16px; padding: 60px 40px; text-align: center;
+  cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
+}
+.upload-box:hover, .upload-box.dragover { border-color: rgba(0,170,255,0.5); background: rgba(0,170,255,0.05); }
+.upload-box.has-image { border-style: solid; border-color: var(--success); padding: 12px; }
+.upload-box .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+.upload-box .label { font-family: var(--font-head); font-size: 24px; letter-spacing: 1px; margin-bottom: 8px; }
+.upload-box .hint { font-size: 13px; color: rgba(255,255,255,0.35); }
+.upload-box img.preview {
+  width: 100%; max-height: 400px; object-fit: contain; border-radius: 8px; display: none;
+}
+.upload-box.has-image .upload-placeholder { display: none; }
+.upload-box.has-image img.preview { display: block; }
+.upload-box input[type=file] { display: none; }
+.upload-box .remove-btn {
+  position: absolute; top: 8px; right: 8px; width: 28px; height: 28px;
+  border-radius: 50%; border: none; background: var(--danger); color: #fff;
+  font-size: 16px; cursor: pointer; display: none; z-index: 2;
+  font-family: var(--font-ui); line-height: 28px;
+}
+.upload-box.has-image .remove-btn { display: block; }
+
+.upload-reqs {
+  background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px;
+  padding: 24px 28px; margin-bottom: 32px;
+}
+.upload-reqs h3 { font-family: var(--font-head); font-size: 16px; letter-spacing: 2px; color: var(--iso); margin-bottom: 12px; }
+.upload-reqs ul { list-style: none; }
+.upload-reqs li {
+  font-size: 14px; color: rgba(255,255,255,0.55); padding: 4px 0;
+  padding-left: 20px; position: relative;
+}
+.upload-reqs li::before { content: '\2192'; position: absolute; left: 0; color: var(--iso); font-weight: 600; }
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 28px; border-radius: 8px; border: none;
+  background: var(--iso); color: #000;
+  font-family: var(--font-head); font-size: 16px; letter-spacing: 2px;
+  cursor: pointer; transition: all 0.2s; text-decoration: none;
+}
+.btn-primary:hover { background: #33bbff; transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 28px; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.15); background: transparent;
+  color: rgba(255,255,255,0.6);
+  font-family: var(--font-head); font-size: 16px; letter-spacing: 2px;
+  cursor: pointer; transition: all 0.2s; text-decoration: none;
+}
+.btn-ghost:hover { border-color: var(--iso); color: var(--iso); }
+.btn-danger {
+  padding: 10px 20px; border-radius: 8px; border: none;
+  background: rgba(255,68,68,0.15); color: var(--danger);
+  font-family: var(--font-head); font-size: 14px; letter-spacing: 1px;
+  cursor: pointer; transition: all 0.2s;
+}
+
+/* ══════════════════════════════════════
+   SCREEN 2 — GRID SCAN
+   ══════════════════════════════════════ */
+.scan-layout { display: grid; grid-template-columns: 1fr 420px; gap: 32px; align-items: start; }
+
+.card-scan-area {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: 16px; padding: 24px; position: relative;
+}
+.card-scan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.card-scan-title { font-family: var(--font-head); font-size: 18px; letter-spacing: 2px; color: var(--iso); }
+.card-side-toggle { display: flex; gap: 2px; background: rgba(0,0,0,0.3); border-radius: 6px; overflow: hidden; }
+.side-btn {
+  padding: 6px 16px; font-family: var(--font-ui); font-size: 13px; font-weight: 600;
+  letter-spacing: 1px; border: none; cursor: pointer;
+  background: transparent; color: rgba(255,255,255,0.4); transition: all 0.2s;
+}
+.side-btn.active { background: var(--iso); color: #000; }
+
+.card-grid-wrap {
+  position: relative; width: 100%; aspect-ratio: 2.5/3.5;
+  background: #111; border-radius: 12px; overflow: hidden;
+}
+.card-grid-wrap img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 12px;
+}
+.grid-overlay {
+  position: absolute; inset: 0;
+  display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: repeat(12, 1fr);
+  z-index: 2;
+}
+.grid-cell {
+  border: 1px solid rgba(0,170,255,0.06);
+  cursor: pointer; transition: all 0.15s; position: relative;
+}
+.grid-cell:hover { background: rgba(0,170,255,0.15); border-color: rgba(0,170,255,0.35); z-index: 3; }
+.grid-cell.perfect { background: rgba(0,204,102,0.08); border-color: rgba(0,204,102,0.12); }
+.grid-cell.good { background: rgba(0,204,102,0.04); border-color: rgba(0,204,102,0.08); }
+.grid-cell.minor { background: rgba(255,140,0,0.12); border-color: rgba(255,140,0,0.2); }
+.grid-cell.issue { background: rgba(255,68,68,0.15); border-color: rgba(255,68,68,0.25); }
+.grid-cell.severe { background: rgba(255,68,68,0.3); border-color: rgba(255,68,68,0.4); }
+.grid-cell.selected {
+  background: rgba(0,170,255,0.25) !important; border-color: var(--iso) !important;
+  box-shadow: inset 0 0 8px rgba(0,170,255,0.4); z-index: 4;
+}
+.grid-cell .cell-label {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-head); font-size: 8px; letter-spacing: 0.5px;
+  color: rgba(255,255,255,0); transition: color 0.15s; pointer-events: none;
+}
+.grid-cell:hover .cell-label { color: rgba(255,255,255,0.7); }
+
+.grid-coords {
+  display: flex; justify-content: space-around; margin-top: 6px;
+  font-family: var(--font-head); font-size: 9px; letter-spacing: 1px; color: rgba(255,255,255,0.2);
+}
+.grid-row-labels {
+  position: absolute; left: -22px; top: 0; bottom: 0;
+  display: flex; flex-direction: column; justify-content: space-around;
+  font-family: var(--font-head); font-size: 9px; letter-spacing: 1px; color: rgba(255,255,255,0.2);
+}
+
+/* Category filter bar */
+.cat-filter-bar { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+.cat-filter {
+  display: flex; align-items: center; gap: 6px; padding: 6px 14px;
+  border-radius: 6px; font-size: 13px; font-weight: 600; letter-spacing: 0.5px;
+  cursor: pointer; border: 1px solid; transition: all 0.2s; user-select: none;
+}
+.cat-filter.active { color: #000 !important; }
+.cf-centering { border-color: var(--cat-centering); color: var(--cat-centering); }
+.cf-centering.active { background: var(--cat-centering); }
+.cf-corners { border-color: var(--cat-corners); color: var(--cat-corners); }
+.cf-corners.active { background: var(--cat-corners); }
+.cf-edges { border-color: var(--cat-edges); color: var(--cat-edges); }
+.cf-edges.active { background: var(--cat-edges); }
+.cf-surface { border-color: var(--cat-surface); color: var(--cat-surface); }
+.cf-surface.active { background: var(--cat-surface); }
+.cat-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+
+/* ── RIGHT PANEL ── */
+.scan-panel { position: sticky; top: 80px; }
+
+/* Score card */
+.score-card {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: 16px; padding: 28px; margin-bottom: 16px; text-align: center;
+}
+.score-card-label {
+  font-family: var(--font-head); font-size: 13px; letter-spacing: 3px;
+  color: rgba(255,255,255,0.3); margin-bottom: 16px;
+}
+.score-ring { position: relative; width: 180px; height: 180px; margin: 0 auto 20px; }
+.score-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.score-ring circle { fill: none; cx: 90; cy: 90; r: 78; }
+.ring-bg { stroke: rgba(255,255,255,0.06); stroke-width: 8; }
+.ring-track { stroke-width: 8; stroke-linecap: round; transition: stroke-dasharray 0.6s ease, stroke-dashoffset 0.6s ease; }
+.score-center {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.score-number { font-family: var(--font-head); font-size: 52px; color: var(--grail); line-height: 1; letter-spacing: 2px; }
+.score-of { font-family: var(--font-head); font-size: 14px; letter-spacing: 2px; color: rgba(255,255,255,0.25); }
+.score-equiv { font-family: var(--font-head); font-size: 18px; color: var(--iso); letter-spacing: 1px; margin-top: 4px; }
+
+.cat-breakdown { margin-top: 20px; }
+.cat-row { display: grid; grid-template-columns: 90px 1fr 50px; align-items: center; gap: 10px; margin-bottom: 10px; }
+.cat-label { font-family: var(--font-head); font-size: 14px; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
+.cat-label-dot { width: 6px; height: 6px; border-radius: 50%; }
+.cat-bar-track { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.06); overflow: hidden; }
+.cat-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.cat-score { font-family: var(--font-head); font-size: 15px; letter-spacing: 1px; text-align: right; }
+.cat-max { text-align: right; margin-top: 8px; font-family: var(--font-head); font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,0.2); }
+
+/* Cell detail */
+.cell-detail {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: 16px; padding: 24px; margin-bottom: 16px;
+  display: none;
+}
+.cell-detail.visible { display: block; }
+.cell-detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.cell-coord { font-family: var(--font-head); font-size: 16px; letter-spacing: 2px; color: var(--iso); }
+.cell-zone-tag {
+  font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 4px;
+}
+.zone-corner { background: rgba(255,140,0,0.15); color: var(--warn); }
+.zone-edge { background: rgba(0,204,102,0.12); color: var(--success); }
+.zone-center { background: rgba(0,170,255,0.12); color: var(--iso); }
+.cell-scores-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.cell-score-item { background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px 12px; }
+.cell-score-cat { font-size: 11px; font-weight: 600; letter-spacing: 1px; margin-bottom: 4px; text-transform: uppercase; }
+.cell-score-val { font-family: var(--font-head); font-size: 22px; letter-spacing: 1px; }
+.cell-findings { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.6; }
+.cell-finding-item {
+  padding: 8px 10px; margin-bottom: 6px; border-radius: 6px;
+  border-left: 2px solid var(--danger); background: rgba(255,68,68,0.06);
+}
+.cell-finding-item.warn-finding { border-left-color: var(--warn); background: rgba(255,140,0,0.06); }
+.cell-finding-item strong { color: var(--grail); }
+
+/* Scan progress */
+.scan-progress-card {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: 16px; padding: 20px 24px;
+}
+.scan-progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.scan-progress-label { font-family: var(--font-head); font-size: 13px; letter-spacing: 2px; color: rgba(255,255,255,0.4); }
+.scan-progress-count { font-family: var(--font-head); font-size: 15px; letter-spacing: 1px; color: var(--iso); }
+.scan-progress-bar { height: 4px; border-radius: 2px; background: rgba(255,255,255,0.06); overflow: hidden; }
+.scan-progress-fill {
+  height: 100%; border-radius: 2px;
+  background: linear-gradient(90deg, var(--iso), var(--success));
+  transition: width 0.4s ease;
+}
+.scan-actions { display: flex; gap: 8px; margin-top: 16px; }
+.scanning-status {
+  margin-top: 12px; font-size: 13px; color: rgba(255,255,255,0.4);
+  font-weight: 500; letter-spacing: 0.5px;
+}
+.scanning-status .pulse {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--iso); margin-right: 6px; animation: pulse 1.2s ease infinite;
+}
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+/* ══════════════════════════════════════
+   SCREEN 3 — ISObiometrics REPORT
+   ══════════════════════════════════════ */
+.report-header { text-align: center; margin-bottom: 48px; }
+.report-title {
+  font-family: var(--font-head); font-size: clamp(36px, 5vw, 56px);
+  letter-spacing: 2px; color: var(--grail); margin-bottom: 4px;
+}
+.report-title .accent { color: var(--cat-surface); }
+.report-sub { font-size: 15px; color: rgba(255,255,255,0.35); margin-bottom: 24px; }
+.report-meta {
+  display: inline-flex; gap: 16px; align-items: center; flex-wrap: wrap; justify-content: center;
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: 8px; padding: 10px 20px;
+  font-size: 14px; color: rgba(255,255,255,0.55);
+}
+.report-meta strong { color: var(--grail); font-weight: 600; }
+
+.report-top { display: grid; grid-template-columns: 260px 1fr; gap: 24px; margin-bottom: 32px; align-items: start; }
+.report-big-score {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: 16px; padding: 32px; text-align: center;
+}
+.rbs-label { font-family: var(--font-head); font-size: 13px; letter-spacing: 3px; color: rgba(255,255,255,0.3); margin-bottom: 8px; }
+.rbs-number { font-family: var(--font-head); font-size: 72px; color: var(--grail); line-height: 1; letter-spacing: 3px; }
+.rbs-equiv { font-family: var(--font-head); font-size: 22px; color: var(--iso); letter-spacing: 1px; margin-top: 8px; }
+.rbs-equiv-sub { font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 4px; }
+
+.report-cats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.report-cat-card {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: 12px; padding: 20px; position: relative; overflow: hidden;
+}
+.report-cat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.rcc-centering::before { background: var(--cat-centering); }
+.rcc-corners::before { background: var(--cat-corners); }
+.rcc-edges::before { background: var(--cat-edges); }
+.rcc-surface::before { background: var(--cat-surface); }
+.rcc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.rcc-name { font-family: var(--font-head); font-size: 16px; letter-spacing: 1px; }
+.rcc-score { font-family: var(--font-head); font-size: 28px; letter-spacing: 1px; }
+.rcc-bar { height: 4px; border-radius: 2px; background: rgba(255,255,255,0.06); margin-bottom: 8px; overflow: hidden; }
+.rcc-bar-fill { height: 100%; border-radius: 2px; }
+.rcc-detail { font-size: 12px; color: rgba(255,255,255,0.4); line-height: 1.5; }
+
+/* Equiv scale */
+.report-section { margin-bottom: 32px; }
+.report-section-title {
+  font-family: var(--font-head); font-size: 18px; letter-spacing: 2px;
+  color: rgba(255,255,255,0.4); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.report-section-title::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
+
+.equiv-scale {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: 12px; padding: 24px;
+}
+.equiv-bar-wrap { position: relative; height: 32px; margin: 24px 0 16px; }
+.equiv-bar {
+  position: absolute; inset: 0; border-radius: 16px; overflow: hidden; display: flex;
+}
+.equiv-seg {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-head); font-size: 11px; letter-spacing: 1px;
+  color: rgba(0,0,0,0.6); font-weight: 600;
+}
+.eq-1 { background: #FF4444; } .eq-2 { background: #FF6633; } .eq-3 { background: #FF8C00; }
+.eq-4 { background: #FFaa22; } .eq-5 { background: #CCCC00; } .eq-6 { background: #99CC33; }
+.eq-7 { background: #66BB55; } .eq-8 { background: #33AA77; } .eq-9 { background: #00AA99; }
+.eq-10 { background: #00AAFF; }
+.equiv-marker {
+  position: absolute; top: -8px; bottom: -8px; width: 3px;
+  background: var(--grail); border-radius: 2px; box-shadow: 0 0 8px rgba(255,255,255,0.5);
+  transition: left 0.6s ease;
+}
+.equiv-labels {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: rgba(255,255,255,0.3); font-family: var(--font-head); letter-spacing: 1px;
+}
+
+/* Heatmaps */
+.heatmap-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.heatmap-panel {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: 12px; padding: 16px; text-align: center;
+}
+.hm-label { font-family: var(--font-head); font-size: 14px; letter-spacing: 1px; margin-bottom: 12px; }
+.hm-card {
+  position: relative; width: 100%; aspect-ratio: 2.5/3.5;
+  background: rgba(0,0,0,0.3); border-radius: 8px; overflow: hidden;
+}
+.hm-grid {
+  position: absolute; inset: 0;
+  display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: repeat(12, 1fr);
+}
+.hm-cell { border: 1px solid rgba(255,255,255,0.02); transition: background 0.3s; }
+.hm-perfect { background: rgba(0,204,102,0.35); }
+.hm-good { background: rgba(0,204,102,0.15); }
+.hm-ok { background: rgba(255,255,255,0.04); }
+.hm-minor { background: rgba(255,140,0,0.2); }
+.hm-issue { background: rgba(255,68,68,0.25); }
+.hm-severe { background: rgba(255,68,68,0.45); }
+
+.hm-legend {
+  display: flex; justify-content: center; gap: 12px; margin-top: 16px;
+  font-size: 10px; color: rgba(255,255,255,0.35); letter-spacing: 0.5px;
+}
+.hm-legend-item { display: flex; align-items: center; gap: 4px; }
+.hm-legend-swatch { width: 10px; height: 10px; border-radius: 2px; }
+
+/* Findings table */
+.findings {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: 12px; padding: 24px;
+}
+.finding-item {
+  display: grid; grid-template-columns: 70px 1fr 80px; gap: 12px;
+  align-items: center; padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.finding-item:last-child { border-bottom: none; }
+.finding-loc { font-family: var(--font-head); font-size: 14px; letter-spacing: 1px; color: var(--iso); }
+.finding-desc { font-size: 13px; color: rgba(255,255,255,0.55); }
+.finding-desc strong { color: var(--grail); }
+.finding-impact { text-align: right; font-family: var(--font-head); font-size: 14px; letter-spacing: 1px; }
+.impact-minor { color: var(--warn); }
+.impact-major { color: var(--danger); }
+.finding-total {
+  border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; margin-top: 4px;
+}
+
+.report-actions {
+  text-align: center; padding: 24px 0 60px;
+  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .page { padding: 80px 16px 40px; }
+  .scan-layout { grid-template-columns: 1fr; }
+  .scan-panel { position: static; }
+  .upload-zone { grid-template-columns: 1fr; }
+  .report-top { grid-template-columns: 1fr; }
+  .heatmap-grid { grid-template-columns: 1fr 1fr; }
+  .report-cats { grid-template-columns: 1fr; }
+  .report-meta { flex-direction: column; gap: 4px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="dashboard.html">GRAIL<span>ISO</span></a>
+  <a class="nav-back" href="dashboard.html">&larr; Back to Dashboard</a>
+</nav>
+
+<div class="page">
+
+<!-- PHASE TABS -->
+<div class="phase-tabs" id="phaseTabs">
+  <div class="phase-tab active" data-screen="upload" onclick="goScreen('upload')">
+    <div class="phase-num">STEP 01</div>
+    <div class="phase-label">Upload</div>
+    <div class="phase-sub">Front + Back photos</div>
+  </div>
+  <div class="phase-tab locked" data-screen="scan" onclick="goScreen('scan')">
+    <div class="phase-num">STEP 02</div>
+    <div class="phase-label">ISOGrading Scan</div>
+    <div class="phase-sub">12x12 Grid &mdash; 144 Points x 4 Categories</div>
+  </div>
+  <div class="phase-tab locked" data-screen="report" onclick="goScreen('report')">
+    <div class="phase-num">STEP 03</div>
+    <div class="phase-label">ISObiometrics Report</div>
+    <div class="phase-sub">1000-Point Score + Heatmaps</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 1 — UPLOAD
+     ══════════════════════════════════════ -->
+<div class="screen active" id="screen-upload">
+  <div class="upload-zone">
+    <div class="upload-box" id="uploadFront" onclick="document.getElementById('fileFront').click()">
+      <input type="file" id="fileFront" accept="image/*">
+      <button class="remove-btn" onclick="event.stopPropagation();removeImage('front')">&times;</button>
+      <div class="upload-placeholder">
+        <div class="icon">&#128247;</div>
+        <div class="label">CARD FRONT</div>
+        <div class="hint">Tap or drag to upload</div>
+      </div>
+      <img class="preview" id="previewFront">
+    </div>
+    <div class="upload-box" id="uploadBack" onclick="document.getElementById('fileBack').click()">
+      <input type="file" id="fileBack" accept="image/*">
+      <button class="remove-btn" onclick="event.stopPropagation();removeImage('back')">&times;</button>
+      <div class="upload-placeholder">
+        <div class="icon">&#128247;</div>
+        <div class="label">CARD BACK</div>
+        <div class="hint">Tap or drag to upload</div>
+      </div>
+      <img class="preview" id="previewBack">
+    </div>
+  </div>
+
+  <div class="upload-reqs">
+    <h3>SCAN REQUIREMENTS</h3>
+    <ul>
+      <li>600 DPI minimum (1200 DPI recommended)</li>
+      <li>Flat, even lighting &mdash; no glare, shadows, or flash hotspots</li>
+      <li>Card must fill at least 80% of the frame</li>
+      <li>Straight alignment &mdash; edges parallel to frame</li>
+      <li>Both front AND back required for full ISObiometrics score</li>
+      <li>Accepted: JPG, PNG, TIFF &bull; Max 50MB per image</li>
+    </ul>
+  </div>
+
+  <div style="text-align:center">
+    <button class="btn-primary" id="btnBeginScan" disabled onclick="beginScan()">BEGIN ISOGRADING SCAN &rarr;</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 2 — GRID SCAN
+     ══════════════════════════════════════ -->
+<div class="screen" id="screen-scan">
+  <div class="scan-layout">
+
+    <!-- LEFT: Card + Grid -->
+    <div class="card-scan-area">
+      <div class="card-scan-header">
+        <div class="card-scan-title" id="scanSideLabel">GRID ANALYSIS &mdash; FRONT</div>
+        <div class="card-side-toggle">
+          <button class="side-btn active" id="btnSideFront" onclick="switchSide('front')">FRONT</button>
+          <button class="side-btn" id="btnSideBack" onclick="switchSide('back')">BACK</button>
+        </div>
+      </div>
+
+      <div style="position:relative; padding-left: 24px;">
+        <div class="grid-row-labels" id="gridRowLabels"></div>
+        <div class="card-grid-wrap" id="cardGridWrap">
+          <img id="gridCardImg" src="" alt="Card">
+          <div class="grid-overlay" id="gridOverlay"></div>
+        </div>
+        <div class="grid-coords" id="gridColLabels"></div>
+      </div>
+
+      <div class="cat-filter-bar">
+        <div class="cat-filter cf-centering active" data-cat="centering" onclick="toggleCatFilter(this)">
+          <div class="cat-dot"></div> CENTERING
+        </div>
+        <div class="cat-filter cf-corners active" data-cat="corners" onclick="toggleCatFilter(this)">
+          <div class="cat-dot"></div> CORNERS
+        </div>
+        <div class="cat-filter cf-edges active" data-cat="edges" onclick="toggleCatFilter(this)">
+          <div class="cat-dot"></div> EDGES
+        </div>
+        <div class="cat-filter cf-surface active" data-cat="surface" onclick="toggleCatFilter(this)">
+          <div class="cat-dot"></div> SURFACE
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Score + Detail -->
+    <div class="scan-panel">
+      <div class="score-card">
+        <div class="score-card-label">LIVE ISOGRADING SCORE</div>
+        <div class="score-ring">
+          <svg viewBox="0 0 180 180">
+            <circle class="ring-bg" />
+            <circle class="ring-track" id="ringCentering" stroke="var(--cat-centering)" />
+            <circle class="ring-track" id="ringCorners" stroke="var(--cat-corners)" />
+            <circle class="ring-track" id="ringEdges" stroke="var(--cat-edges)" />
+            <circle class="ring-track" id="ringSurface" stroke="var(--cat-surface)" />
+          </svg>
+          <div class="score-center">
+            <div class="score-number" id="liveScore">0</div>
+            <div class="score-of">/ 1000</div>
+            <div class="score-equiv" id="liveEquiv">&mdash;</div>
+          </div>
+        </div>
+        <div class="cat-breakdown">
+          <div class="cat-row">
+            <div class="cat-label"><div class="cat-label-dot" style="background:var(--cat-centering)"></div> Centering</div>
+            <div class="cat-bar-track"><div class="cat-bar-fill" id="barCentering" style="width:0%;background:var(--cat-centering)"></div></div>
+            <div class="cat-score" id="scoreCentering" style="color:var(--cat-centering)">0</div>
+          </div>
+          <div class="cat-row">
+            <div class="cat-label"><div class="cat-label-dot" style="background:var(--cat-corners)"></div> Corners</div>
+            <div class="cat-bar-track"><div class="cat-bar-fill" id="barCorners" style="width:0%;background:var(--cat-corners)"></div></div>
+            <div class="cat-score" id="scoreCorners" style="color:var(--cat-corners)">0</div>
+          </div>
+          <div class="cat-row">
+            <div class="cat-label"><div class="cat-label-dot" style="background:var(--cat-edges)"></div> Edges</div>
+            <div class="cat-bar-track"><div class="cat-bar-fill" id="barEdges" style="width:0%;background:var(--cat-edges)"></div></div>
+            <div class="cat-score" id="scoreEdges" style="color:var(--cat-edges)">0</div>
+          </div>
+          <div class="cat-row">
+            <div class="cat-label"><div class="cat-label-dot" style="background:var(--cat-surface)"></div> Surface</div>
+            <div class="cat-bar-track"><div class="cat-bar-fill" id="barSurface" style="width:0%;background:var(--cat-surface)"></div></div>
+            <div class="cat-score" id="scoreSurface" style="color:var(--cat-surface)">0</div>
+          </div>
+          <div class="cat-max">250 PTS EACH x 4 = 1000</div>
+        </div>
+      </div>
+
+      <!-- Cell detail -->
+      <div class="cell-detail" id="cellDetail">
+        <div class="cell-detail-header">
+          <div class="cell-coord" id="cellCoord">--</div>
+          <div class="cell-zone-tag" id="cellZoneTag">--</div>
+        </div>
+        <div class="cell-scores-grid" id="cellScores"></div>
+        <div class="cell-findings" id="cellFindings"></div>
+      </div>
+
+      <!-- Scan progress -->
+      <div class="scan-progress-card">
+        <div class="scan-progress-header">
+          <div class="scan-progress-label">SCAN PROGRESS</div>
+          <div class="scan-progress-count" id="scanCount">0 / 288</div>
+        </div>
+        <div class="scan-progress-bar">
+          <div class="scan-progress-fill" id="scanProgressFill" style="width:0%"></div>
+        </div>
+        <div class="scanning-status" id="scanStatus">
+          <span class="pulse"></span> Waiting to start...
+        </div>
+        <div class="scan-actions">
+          <button class="btn-primary" id="btnRunScan" onclick="runFullScan()" style="flex:1;justify-content:center">
+            RUN FULL SCAN
+          </button>
+          <button class="btn-primary" id="btnGenReport" onclick="goScreen('report')" style="flex:1;justify-content:center;display:none">
+            GENERATE REPORT &rarr;
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 3 — ISObiometrics REPORT
+     ══════════════════════════════════════ -->
+<div class="screen" id="screen-report">
+  <div class="report-header">
+    <div class="report-title">ISO<span class="accent">biometrics</span></div>
+    <div class="report-sub">Full condition analysis &mdash; 144 grid points x 4 categories x front + back</div>
+    <div class="report-meta" id="reportMeta">
+      <span><strong>Scanned:</strong> <span id="reportDate"></span></span>
+    </div>
+  </div>
+
+  <div class="report-top">
+    <div class="report-big-score">
+      <div class="rbs-label">ISOGRADING SCORE</div>
+      <div class="rbs-number" id="reportScore">--</div>
+      <div class="rbs-equiv" id="reportEquiv">--</div>
+      <div class="rbs-equiv-sub" id="reportEquivRange"></div>
+    </div>
+    <div class="report-cats" id="reportCats"></div>
+  </div>
+
+  <!-- Grade equiv bar -->
+  <div class="report-section">
+    <div class="report-section-title">TRADITIONAL GRADE EQUIVALENT</div>
+    <div class="equiv-scale">
+      <div class="equiv-bar-wrap">
+        <div class="equiv-bar">
+          <div class="equiv-seg eq-1">1</div>
+          <div class="equiv-seg eq-2">2-3</div>
+          <div class="equiv-seg eq-3">4</div>
+          <div class="equiv-seg eq-4">5</div>
+          <div class="equiv-seg eq-5">6</div>
+          <div class="equiv-seg eq-6">7</div>
+          <div class="equiv-seg eq-7">8</div>
+          <div class="equiv-seg eq-8">9</div>
+          <div class="equiv-seg eq-9">9.5</div>
+          <div class="equiv-seg eq-10">10</div>
+        </div>
+        <div class="equiv-marker" id="equivMarker" style="left:0%"></div>
+      </div>
+      <div class="equiv-labels">
+        <span>0</span><span>100</span><span>200</span><span>300</span><span>400</span>
+        <span>500</span><span>600</span><span>700</span><span>800</span><span>900</span><span>1000</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Heatmaps -->
+  <div class="report-section">
+    <div class="report-section-title">CONDITION HEATMAPS &mdash; FRONT</div>
+    <div class="heatmap-grid" id="reportHeatmapFront"></div>
+  </div>
+  <div class="report-section">
+    <div class="report-section-title">CONDITION HEATMAPS &mdash; BACK</div>
+    <div class="heatmap-grid" id="reportHeatmapBack"></div>
+  </div>
+  <div class="hm-legend">
+    <div class="hm-legend-item"><div class="hm-legend-swatch hm-perfect"></div> Perfect</div>
+    <div class="hm-legend-item"><div class="hm-legend-swatch hm-good"></div> Good</div>
+    <div class="hm-legend-item"><div class="hm-legend-swatch hm-ok"></div> OK</div>
+    <div class="hm-legend-item"><div class="hm-legend-swatch hm-minor"></div> Minor</div>
+    <div class="hm-legend-item"><div class="hm-legend-swatch hm-issue"></div> Issue</div>
+    <div class="hm-legend-item"><div class="hm-legend-swatch hm-severe"></div> Severe</div>
+  </div>
+
+  <!-- Findings -->
+  <div class="report-section" style="margin-top:32px">
+    <div class="report-section-title">FINDINGS &amp; DEDUCTIONS</div>
+    <div class="findings" id="reportFindings"></div>
+  </div>
+
+  <div class="report-actions">
+    <button class="btn-primary" onclick="alert('Save to Vault coming soon')">SAVE TO VAULT</button>
+    <button class="btn-ghost" onclick="alert('PDF export coming soon')">DOWNLOAD PDF</button>
+    <button class="btn-ghost" onclick="alert('Share coming soon')">SHARE REPORT</button>
+    <button class="btn-ghost" onclick="goScreen('scan')">&larr; BACK TO SCAN</button>
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+/* ══════════════════════════════════════
+   STATE
+   ══════════════════════════════════════ */
+const ROWS = 12, COLS = 12, TOTAL_CELLS = 144;
+const CATS = ['centering', 'corners', 'edges', 'surface'];
+const CAT_COLORS = { centering: '#00AAFF', corners: '#FF8C00', edges: '#00CC66', surface: '#BB66FF' };
+const CAT_MAX = 250;
+
+// Images
+let imgFront = null, imgBack = null; // dataURL strings
+let activeSide = 'front';
+
+// Grid data: front[144] and back[144], each cell = { centering, corners, edges, surface, findings[] }
+let gridData = { front: null, back: null };
+let selectedCell = null; // { side, idx }
+let scanComplete = false;
+
+// Category filter state
+let catFilters = { centering: true, corners: true, edges: true, surface: true };
+
+/* ══════════════════════════════════════
+   UPLOAD HANDLING
+   ══════════════════════════════════════ */
+['Front', 'Back'].forEach(side => {
+  const box = document.getElementById('upload' + side);
+  const input = document.getElementById('file' + side);
+  const preview = document.getElementById('preview' + side);
+
+  // Drag and drop
+  box.addEventListener('dragover', e => { e.preventDefault(); box.classList.add('dragover'); });
+  box.addEventListener('dragleave', () => box.classList.remove('dragover'));
+  box.addEventListener('drop', e => {
+    e.preventDefault(); box.classList.remove('dragover');
+    if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0], side.toLowerCase());
+  });
+
+  // File input change
+  input.addEventListener('change', e => {
+    if (e.target.files.length) handleFile(e.target.files[0], side.toLowerCase());
+  });
+});
+
+function handleFile(file, side) {
+  if (!file.type.startsWith('image/')) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const url = e.target.result;
+    if (side === 'front') imgFront = url; else imgBack = url;
+    const preview = document.getElementById('preview' + cap(side));
+    preview.src = url;
+    document.getElementById('upload' + cap(side)).classList.add('has-image');
+    checkUploadReady();
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeImage(side) {
+  if (side === 'front') imgFront = null; else imgBack = null;
+  const box = document.getElementById('upload' + cap(side));
+  box.classList.remove('has-image');
+  document.getElementById('preview' + cap(side)).src = '';
+  document.getElementById('file' + cap(side)).value = '';
+  checkUploadReady();
+}
+
+function checkUploadReady() {
+  document.getElementById('btnBeginScan').disabled = !(imgFront && imgBack);
+}
+
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+/* ══════════════════════════════════════
+   SCREEN NAVIGATION
+   ══════════════════════════════════════ */
+function goScreen(name) {
+  // Validation
+  if (name === 'scan' && (!imgFront || !imgBack)) return;
+  if (name === 'report' && !scanComplete) return;
+
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  document.querySelectorAll('.phase-tab').forEach(t => {
+    t.classList.remove('active');
+    if (t.dataset.screen === name) t.classList.add('active');
+  });
+
+  if (name === 'scan') initScanScreen();
+  if (name === 'report') buildReport();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function beginScan() {
+  // Unlock scan tab
+  document.querySelector('[data-screen="scan"]').classList.remove('locked');
+  goScreen('scan');
+}
+
+/* ══════════════════════════════════════
+   SCAN SCREEN — GRID SETUP
+   ══════════════════════════════════════ */
+let gridBuilt = false;
+
+function initScanScreen() {
+  // Set card image
+  document.getElementById('gridCardImg').src = activeSide === 'front' ? imgFront : imgBack;
+
+  if (gridBuilt) return;
+  gridBuilt = true;
+
+  // Build grid cells
+  const overlay = document.getElementById('gridOverlay');
+  overlay.innerHTML = '';
+  for (let i = 0; i < TOTAL_CELLS; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'grid-cell';
+    cell.dataset.idx = i;
+    const row = Math.floor(i / COLS);
+    const col = i % COLS;
+    const label = String.fromCharCode(65 + col) + '-' + (row + 1);
+    cell.innerHTML = `<div class="cell-label">${label}</div>`;
+    cell.title = label;
+    cell.addEventListener('click', () => selectCell(activeSide, i));
+    overlay.appendChild(cell);
+  }
+
+  // Column labels (A-L)
+  const colLabels = document.getElementById('gridColLabels');
+  colLabels.innerHTML = '';
+  for (let c = 0; c < COLS; c++) {
+    const sp = document.createElement('span');
+    sp.textContent = String.fromCharCode(65 + c);
+    colLabels.appendChild(sp);
+  }
+
+  // Row labels (1-12)
+  const rowLabels = document.getElementById('gridRowLabels');
+  rowLabels.innerHTML = '';
+  for (let r = 0; r < ROWS; r++) {
+    const sp = document.createElement('span');
+    sp.textContent = r + 1;
+    rowLabels.appendChild(sp);
+  }
+}
+
+function switchSide(side) {
+  activeSide = side;
+  document.getElementById('gridCardImg').src = side === 'front' ? imgFront : imgBack;
+  document.getElementById('scanSideLabel').textContent = 'GRID ANALYSIS \u2014 ' + side.toUpperCase();
+  document.getElementById('btnSideFront').classList.toggle('active', side === 'front');
+  document.getElementById('btnSideBack').classList.toggle('active', side === 'back');
+  updateGridVisuals();
+  // Deselect
+  if (selectedCell && selectedCell.side !== side) {
+    document.getElementById('cellDetail').classList.remove('visible');
+    selectedCell = null;
+    document.querySelectorAll('.grid-cell.selected').forEach(c => c.classList.remove('selected'));
+  }
+}
+
+/* ══════════════════════════════════════
+   CELL SELECTION & DETAIL
+   ══════════════════════════════════════ */
+function selectCell(side, idx) {
+  selectedCell = { side, idx };
+  // Visual
+  document.querySelectorAll('.grid-cell').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.grid-cell')[idx].classList.add('selected');
+
+  const data = gridData[side];
+  if (!data) { document.getElementById('cellDetail').classList.remove('visible'); return; }
+
+  const cell = data[idx];
+  const row = Math.floor(idx / COLS);
+  const col = idx % COLS;
+  const label = String.fromCharCode(65 + col) + '-' + (row + 1);
+
+  document.getElementById('cellCoord').textContent = 'CELL ' + label;
+
+  // Zone tag
+  const zone = getZone(row, col);
+  const zt = document.getElementById('cellZoneTag');
+  zt.textContent = zone.label;
+  zt.className = 'cell-zone-tag ' + zone.cls;
+
+  // Per-category scores
+  const scGrid = document.getElementById('cellScores');
+  scGrid.innerHTML = CATS.map(cat => `
+    <div class="cell-score-item">
+      <div class="cell-score-cat" style="color:${CAT_COLORS[cat]}">${cat}</div>
+      <div class="cell-score-val" style="color:${CAT_COLORS[cat]}">${cell[cat].toFixed(1)}</div>
+    </div>
+  `).join('');
+
+  // Findings
+  const fDiv = document.getElementById('cellFindings');
+  if (cell.findings && cell.findings.length) {
+    fDiv.innerHTML = cell.findings.map(f => `
+      <div class="cell-finding-item ${f.severity === 'minor' ? 'warn-finding' : ''}">
+        <strong>${f.category}:</strong> ${f.text} <span style="float:right;font-family:var(--font-head);letter-spacing:1px;color:${f.severity === 'minor' ? 'var(--warn)' : 'var(--danger)'}">${f.deduction > 0 ? '-' + f.deduction.toFixed(1) : ''}</span>
+      </div>
+    `).join('');
+  } else {
+    fDiv.innerHTML = '<div style="color:var(--success);font-weight:600;letter-spacing:0.5px">No issues detected</div>';
+  }
+
+  document.getElementById('cellDetail').classList.add('visible');
+}
+
+function getZone(row, col) {
+  const isCorner = (row <= 1 && col <= 1) || (row <= 1 && col >= 10) || (row >= 10 && col <= 1) || (row >= 10 && col >= 10);
+  const isEdge = row === 0 || row === 11 || col === 0 || col === 11;
+  if (isCorner) return { label: 'CORNER ZONE', cls: 'zone-corner' };
+  if (isEdge) return { label: 'EDGE ZONE', cls: 'zone-edge' };
+  return { label: 'CENTER ZONE', cls: 'zone-center' };
+}
+
+/* ══════════════════════════════════════
+   SCORING ENGINE
+   ══════════════════════════════════════ */
+// Each cell gets a score per category (0-1.736... so 144 cells × max = 250)
+const CELL_MAX = CAT_MAX / TOTAL_CELLS; // ~1.736 per cell per category
+
+// Grade equivalents
+function scoreToGrade(score) {
+  if (score >= 980) return { label: 'GEM MINT 10', range: 'PSA 10 / BGS 10' };
+  if (score >= 950) return { label: 'GEM MINT 9.5', range: 'PSA 9.5 / BGS 9.5' };
+  if (score >= 900) return { label: 'MINT 9', range: 'PSA 9 / BGS 9' };
+  if (score >= 830) return { label: 'NM-MT 8', range: 'PSA 8 / BGS 8' };
+  if (score >= 740) return { label: 'NEAR MINT 7', range: 'PSA 7 / BGS 7' };
+  if (score >= 640) return { label: 'EX-MT 6', range: 'PSA 6 / BGS 6' };
+  if (score >= 530) return { label: 'EXCELLENT 5', range: 'PSA 5 / BGS 5' };
+  if (score >= 400) return { label: 'VG-EX 4', range: 'PSA 4 / BGS 4' };
+  if (score >= 250) return { label: 'VG 3', range: 'PSA 3 / BGS 3' };
+  if (score >= 100) return { label: 'GOOD 2', range: 'PSA 2 / BGS 2' };
+  return { label: 'POOR 1', range: 'PSA 1 / BGS 1' };
+}
+
+function computeTotals() {
+  const totals = { centering: 0, corners: 0, edges: 0, surface: 0 };
+  ['front', 'back'].forEach(side => {
+    if (!gridData[side]) return;
+    gridData[side].forEach(cell => {
+      CATS.forEach(cat => { totals[cat] += cell[cat]; });
+    });
+  });
+  // Each side contributes half (front 50%, back 50%)
+  // Since both sides have 144 cells and max per cell = CELL_MAX,
+  // total max per cat per side = 250. Two sides = 500. We want 250 per cat total.
+  // So divide by 2.
+  CATS.forEach(cat => { totals[cat] = Math.round(totals[cat] / 2); });
+  return totals;
+}
+
+function updateScoreUI() {
+  const totals = computeTotals();
+  const total = totals.centering + totals.corners + totals.edges + totals.surface;
+  const grade = scoreToGrade(total);
+
+  document.getElementById('liveScore').textContent = total;
+  document.getElementById('liveEquiv').textContent = '\u2248 ' + grade.label;
+
+  // Category bars
+  CATS.forEach(cat => {
+    const pct = (totals[cat] / CAT_MAX * 100).toFixed(1);
+    document.getElementById('bar' + cap(cat)).style.width = pct + '%';
+    document.getElementById('score' + cap(cat)).textContent = totals[cat];
+  });
+
+  // Ring arcs
+  const circ = 2 * Math.PI * 78; // ~490
+  CATS.forEach((cat, i) => {
+    const pct = totals[cat] / CAT_MAX;
+    const seg = (circ / 4) * pct;
+    const gap = circ - seg;
+    const offset = -(circ / 4) * i;
+    const ring = document.getElementById('ring' + cap(cat));
+    ring.setAttribute('stroke-dasharray', seg + ' ' + gap);
+    ring.setAttribute('stroke-dashoffset', offset);
+  });
+
+  // Progress
+  let scanned = 0;
+  ['front', 'back'].forEach(side => {
+    if (gridData[side]) scanned += TOTAL_CELLS;
+  });
+  const totalCells = TOTAL_CELLS * 2;
+  document.getElementById('scanCount').textContent = scanned + ' / ' + totalCells;
+  document.getElementById('scanProgressFill').style.width = (scanned / totalCells * 100) + '%';
+}
+
+/* ══════════════════════════════════════
+   GRID VISUALS — Color cells by score
+   ══════════════════════════════════════ */
+function updateGridVisuals() {
+  const data = gridData[activeSide];
+  const cells = document.querySelectorAll('.grid-cell');
+  cells.forEach((el, idx) => {
+    el.classList.remove('perfect', 'good', 'minor', 'issue', 'severe');
+    if (!data) return;
+    const cell = data[idx];
+    // Compute average score across active category filters
+    let sum = 0, n = 0;
+    CATS.forEach(cat => {
+      if (catFilters[cat]) { sum += cell[cat]; n++; }
+    });
+    if (n === 0) return;
+    const avg = sum / n;
+    const pct = avg / CELL_MAX;
+    if (pct >= 0.97) el.classList.add('perfect');
+    else if (pct >= 0.90) el.classList.add('good');
+    else if (pct >= 0.80) el.classList.add('minor');
+    else if (pct >= 0.60) el.classList.add('issue');
+    else el.classList.add('severe');
+  });
+}
+
+function toggleCatFilter(el) {
+  el.classList.toggle('active');
+  catFilters[el.dataset.cat] = el.classList.contains('active');
+  updateGridVisuals();
+}
+
+/* ══════════════════════════════════════
+   SIMULATED SCAN ENGINE
+   ══════════════════════════════════════ */
+// Generates realistic-looking condition data for a card side.
+// In production this would be driven by vision AI analysis.
+function generateSideData(side) {
+  const data = [];
+  // Seed some "defects" at realistic locations
+  const defects = [];
+
+  // Random corner softness (1-2 corners)
+  const cornerCells = [
+    [0, 0], [0, 1], [1, 0], [1, 1],           // TL
+    [0, 10], [0, 11], [1, 10], [1, 11],        // TR
+    [10, 0], [10, 1], [11, 0], [11, 1],        // BL
+    [10, 10], [10, 11], [11, 10], [11, 11]     // BR
+  ];
+  const affectedCorner = Math.floor(Math.random() * 4); // which corner group (0-3)
+  const cornerSeverity = 0.1 + Math.random() * 0.25;
+  const cornerDescs = ['Top-left', 'Top-right', 'Bottom-left', 'Bottom-right'];
+
+  // Random edge wear (1 edge)
+  const affectedEdge = Math.floor(Math.random() * 4); // 0=top,1=right,2=bottom,3=left
+  const edgeSeverity = 0.05 + Math.random() * 0.15;
+  const edgeRow = affectedEdge === 0 ? 0 : affectedEdge === 2 ? 11 : Math.floor(4 + Math.random() * 4);
+  const edgeCol = affectedEdge === 3 ? 0 : affectedEdge === 1 ? 11 : Math.floor(3 + Math.random() * 6);
+
+  // Random surface scratch
+  const scratchRow = Math.floor(3 + Math.random() * 6);
+  const scratchCol = Math.floor(2 + Math.random() * 8);
+  const scratchLen = 1 + Math.floor(Math.random() * 3);
+  const scratchSeverity = 0.08 + Math.random() * 0.2;
+
+  // Centering shift
+  const centerShiftLR = (Math.random() - 0.5) * 0.06; // small L/R bias
+  const centerShiftTB = (Math.random() - 0.5) * 0.08; // slightly more T/B bias
+
+  for (let i = 0; i < TOTAL_CELLS; i++) {
+    const row = Math.floor(i / COLS);
+    const col = i % COLS;
+    const label = String.fromCharCode(65 + col) + '-' + (row + 1);
+
+    let scores = {};
+    let findings = [];
+
+    // -- CENTERING: slight deduction based on distance from center, weighted by shift direction
+    const distFromCenterX = (col - 5.5) / 5.5;
+    const distFromCenterY = (row - 5.5) / 5.5;
+    const centerPenalty = Math.abs(distFromCenterX * centerShiftLR) + Math.abs(distFromCenterY * centerShiftTB);
+    scores.centering = CELL_MAX * (1 - Math.min(centerPenalty * 3, 0.15));
+
+    // -- CORNERS: heavy deduction in affected corner zone
+    scores.corners = CELL_MAX;
+    const cornerGroup = Math.floor(affectedCorner);
+    const cornerOffset = cornerGroup * 4;
+    const myCells = cornerCells.slice(cornerOffset, cornerOffset + 4);
+    const isAffectedCorner = myCells.some(([cr, cc]) => cr === row && cc === col);
+    if (isAffectedCorner) {
+      const ded = cornerSeverity * CELL_MAX;
+      scores.corners -= ded;
+      findings.push({
+        category: 'Corners',
+        text: cornerDescs[affectedCorner] + ' corner softness',
+        severity: cornerSeverity > 0.2 ? 'major' : 'minor',
+        deduction: ded
+      });
+    }
+    // Adjacent cells get minor deduction
+    const isNearCorner = myCells.some(([cr, cc]) => Math.abs(cr - row) <= 1 && Math.abs(cc - col) <= 1) && !isAffectedCorner;
+    if (isNearCorner) scores.corners -= cornerSeverity * CELL_MAX * 0.3;
+
+    // -- EDGES: deduction along affected edge
+    scores.edges = CELL_MAX;
+    let isOnEdge = false;
+    if (affectedEdge === 0 && row === 0 && Math.abs(col - edgeCol) <= 1) isOnEdge = true;
+    if (affectedEdge === 2 && row === 11 && Math.abs(col - edgeCol) <= 1) isOnEdge = true;
+    if (affectedEdge === 3 && col === 0 && Math.abs(row - edgeRow) <= 1) isOnEdge = true;
+    if (affectedEdge === 1 && col === 11 && Math.abs(row - edgeRow) <= 1) isOnEdge = true;
+    if (isOnEdge) {
+      const ded = edgeSeverity * CELL_MAX;
+      scores.edges -= ded;
+      findings.push({
+        category: 'Edges',
+        text: ['Top', 'Right', 'Bottom', 'Left'][affectedEdge] + ' edge micro-chipping',
+        severity: edgeSeverity > 0.1 ? 'major' : 'minor',
+        deduction: ded
+      });
+    }
+    // General edge wear
+    if ((row === 0 || row === 11 || col === 0 || col === 11) && !isOnEdge) {
+      scores.edges -= CELL_MAX * 0.02;
+    }
+
+    // -- SURFACE: scratch path
+    scores.surface = CELL_MAX;
+    const isOnScratch = row === scratchRow && col >= scratchCol && col < scratchCol + scratchLen;
+    if (isOnScratch) {
+      const ded = scratchSeverity * CELL_MAX;
+      scores.surface -= ded;
+      findings.push({
+        category: 'Surface',
+        text: 'Hairline surface scratch',
+        severity: scratchSeverity > 0.15 ? 'major' : 'minor',
+        deduction: ded
+      });
+    }
+    // Random micro-imperfections (very small)
+    if (Math.random() < 0.05) {
+      const microDed = CELL_MAX * 0.01;
+      scores.surface -= microDed;
+    }
+
+    // Clamp all scores
+    CATS.forEach(cat => { scores[cat] = Math.max(0, Math.min(CELL_MAX, scores[cat])); });
+
+    data.push({ ...scores, findings });
+  }
+  return data;
+}
+
+// Collect all findings with locations for the report
+function collectFindings() {
+  const all = [];
+  ['front', 'back'].forEach(side => {
+    if (!gridData[side]) return;
+    gridData[side].forEach((cell, idx) => {
+      if (cell.findings && cell.findings.length) {
+        const row = Math.floor(idx / COLS);
+        const col = idx % COLS;
+        const loc = String.fromCharCode(65 + col) + '-' + (row + 1);
+        cell.findings.forEach(f => {
+          // Deduplicate by grouping adjacent same-type findings
+          const existing = all.find(x => x.text === f.text && x.side === side);
+          if (existing) {
+            if (!existing.locs.includes(loc)) existing.locs.push(loc);
+            existing.totalDeduction += f.deduction;
+          } else {
+            all.push({
+              side, locs: [loc], text: f.text, category: f.category,
+              severity: f.severity, totalDeduction: f.deduction
+            });
+          }
+        });
+      }
+    });
+  });
+  return all.sort((a, b) => b.totalDeduction - a.totalDeduction);
+}
+
+/* ══════════════════════════════════════
+   RUN FULL SCAN (animated)
+   ══════════════════════════════════════ */
+async function runFullScan() {
+  const btn = document.getElementById('btnRunScan');
+  btn.disabled = true;
+  btn.textContent = 'SCANNING...';
+
+  const statusEl = document.getElementById('scanStatus');
+
+  // Scan front
+  statusEl.innerHTML = '<span class="pulse"></span> Analyzing FRONT — Centering...';
+  await delay(400);
+  statusEl.innerHTML = '<span class="pulse"></span> Analyzing FRONT — Corners...';
+  await delay(300);
+  statusEl.innerHTML = '<span class="pulse"></span> Analyzing FRONT — Edges...';
+  await delay(300);
+  statusEl.innerHTML = '<span class="pulse"></span> Analyzing FRONT — Surface...';
+  await delay(400);
+
+  gridData.front = generateSideData('front');
+  if (activeSide === 'front') updateGridVisuals();
+  updateScoreUI();
+
+  // Scan back
+  statusEl.innerHTML = '<span class="pulse"></span> Analyzing BACK — Centering...';
+  await delay(400);
+  statusEl.innerHTML = '<span class="pulse"></span> Analyzing BACK — Corners...';
+  await delay(300);
+  statusEl.innerHTML = '<span class="pulse"></span> Analyzing BACK — Edges...';
+  await delay(300);
+  statusEl.innerHTML = '<span class="pulse"></span> Analyzing BACK — Surface...';
+  await delay(400);
+
+  gridData.back = generateSideData('back');
+  if (activeSide === 'back') updateGridVisuals();
+  updateScoreUI();
+
+  scanComplete = true;
+  statusEl.innerHTML = '<span style="color:var(--success);font-weight:600">SCAN COMPLETE</span> — 288 / 288 cells analyzed';
+  btn.style.display = 'none';
+  document.getElementById('btnGenReport').style.display = 'flex';
+  document.querySelector('[data-screen="report"]').classList.remove('locked');
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+/* ══════════════════════════════════════
+   ISObiometrics REPORT BUILDER
+   ══════════════════════════════════════ */
+function buildReport() {
+  const totals = computeTotals();
+  const total = totals.centering + totals.corners + totals.edges + totals.surface;
+  const grade = scoreToGrade(total);
+
+  // Date
+  document.getElementById('reportDate').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  // Big score
+  document.getElementById('reportScore').textContent = total;
+  document.getElementById('reportEquiv').textContent = '\u2248 ' + grade.label;
+  document.getElementById('reportEquivRange').textContent = grade.range + ' equivalent';
+
+  // Equiv marker position
+  document.getElementById('equivMarker').style.left = (total / 1000 * 100) + '%';
+
+  // Category cards
+  const catContainer = document.getElementById('reportCats');
+  catContainer.innerHTML = CATS.map(cat => {
+    const val = totals[cat];
+    const pct = (val / CAT_MAX * 100).toFixed(1);
+    return `
+      <div class="report-cat-card rcc-${cat}">
+        <div class="rcc-header">
+          <div class="rcc-name" style="color:${CAT_COLORS[cat]}">${cat.toUpperCase()}</div>
+          <div class="rcc-score" style="color:${CAT_COLORS[cat]}">${val}<span style="font-size:14px;opacity:0.4">/250</span></div>
+        </div>
+        <div class="rcc-bar"><div class="rcc-bar-fill" style="width:${pct}%;background:${CAT_COLORS[cat]}"></div></div>
+        <div class="rcc-detail">${getCatDetail(cat, totals)}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Heatmaps
+  buildHeatmaps('reportHeatmapFront', 'front');
+  buildHeatmaps('reportHeatmapBack', 'back');
+
+  // Findings
+  const findings = collectFindings();
+  const fContainer = document.getElementById('reportFindings');
+  let totalDed = 0;
+  let html = findings.map(f => {
+    totalDed += f.totalDeduction;
+    const locStr = f.locs.length > 3 ? f.locs.slice(0, 3).join(', ') + '...' : f.locs.join(', ');
+    return `
+      <div class="finding-item">
+        <div class="finding-loc">${locStr}</div>
+        <div class="finding-desc"><strong>${f.category} — ${f.text}</strong> (${f.side})</div>
+        <div class="finding-impact ${f.severity === 'major' ? 'impact-major' : 'impact-minor'}">-${f.totalDeduction.toFixed(1)}</div>
+      </div>
+    `;
+  }).join('');
+
+  html += `
+    <div class="finding-item finding-total">
+      <div class="finding-loc" style="color:var(--grail)">TOTAL</div>
+      <div class="finding-desc"><strong style="color:var(--grail)">${findings.length} findings across front + back</strong></div>
+      <div class="finding-impact" style="color:var(--danger);font-size:16px">-${totalDed.toFixed(1)}</div>
+    </div>
+  `;
+  fContainer.innerHTML = html;
+}
+
+function getCatDetail(cat, totals) {
+  // Generate summary text based on score
+  const val = totals[cat];
+  const pct = val / CAT_MAX;
+  if (cat === 'centering') {
+    const lr = pct > 0.95 ? '50/50' : pct > 0.9 ? '51/49' : '53/47';
+    const tb = pct > 0.93 ? '50/50' : pct > 0.88 ? '52/48' : '55/45';
+    return `L/R: ${lr} | T/B: ${tb}<br>Front + Back averaged`;
+  }
+  if (cat === 'corners') {
+    return pct > 0.95 ? 'All four corners sharp and clean<br>No whitening or softness detected'
+      : pct > 0.88 ? '1 minor soft corner detected<br>No dings, bends, or whitening'
+      : 'Multiple corner issues detected<br>Softness and/or whitening present';
+  }
+  if (cat === 'edges') {
+    return pct > 0.95 ? 'All edges clean and intact<br>No chipping or peeling'
+      : pct > 0.88 ? 'Minor edge wear detected<br>Small chipping at 1-2 locations'
+      : 'Edge wear present on multiple sides<br>Visible chipping or delamination';
+  }
+  if (cat === 'surface') {
+    return pct > 0.95 ? 'Surface clean — no scratches or defects<br>Print registration excellent'
+      : pct > 0.88 ? 'Minor surface imperfection detected<br>Hairline scratch or print artifact'
+      : 'Surface defects present<br>Scratches, stains, or print issues detected';
+  }
+  return '';
+}
+
+function buildHeatmaps(containerId, side) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  const data = gridData[side];
+  if (!data) { container.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:14px;padding:20px">No data</div>'; return; }
+
+  CATS.forEach(cat => {
+    const panel = document.createElement('div');
+    panel.className = 'heatmap-panel';
+    panel.innerHTML = `<div class="hm-label" style="color:${CAT_COLORS[cat]}">${cat.toUpperCase()}</div><div class="hm-card"><div class="hm-grid"></div></div>`;
+    container.appendChild(panel);
+
+    const hmGrid = panel.querySelector('.hm-grid');
+    for (let i = 0; i < TOTAL_CELLS; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'hm-cell';
+      const score = data[i][cat];
+      const pct = score / CELL_MAX;
+      if (pct >= 0.97) cell.classList.add('hm-perfect');
+      else if (pct >= 0.92) cell.classList.add('hm-good');
+      else if (pct >= 0.85) cell.classList.add('hm-ok');
+      else if (pct >= 0.75) cell.classList.add('hm-minor');
+      else if (pct >= 0.60) cell.classList.add('hm-issue');
+      else cell.classList.add('hm-severe');
+      hmGrid.appendChild(cell);
+    }
+  });
+}
+</script>
+</body>
+</html>

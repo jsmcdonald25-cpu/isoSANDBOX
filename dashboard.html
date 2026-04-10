@@ -11917,7 +11917,7 @@ async function openISODetail(idx){
     </div>
     <div class="iso-dp-actions">
       ${iso.status==='active'?'<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();cancelISO('+idx+')">Cancel ISO</button>':''}
-      <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();repostISO('+idx+')">Repost as New</button>
+      <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();refreshISO('+idx+')">Refresh as New</button>
     </div>
   `;
   panel.classList.add('open');
@@ -12056,12 +12056,19 @@ async function renewISO(idx){
   } catch(e){ T('Failed to renew: '+e.message); }
 }
 
-function repostISO(idx){
+async function refreshISO(idx){
   const rows = _myIsosFilter !== 'all' ? _myIsosData.filter(i=>i.status===_myIsosFilter) : _myIsosData;
   const iso = rows[idx];
   if(!iso) return;
-  // Navigate to Post ISO with pre-filled data
-  T('Repost coming soon — use Post ISO to create a new one.');
+  try {
+    const now = new Date().toISOString();
+    await _rPatch('isos','id=eq.'+iso.id, { created_at: now, status: 'active' });
+    iso.created_at = now;
+    iso.status = 'active';
+    T('ISO refreshed — back at the top.');
+    _openIsoIdx = -1;
+    _renderISOList();
+  } catch(e){ T('Failed to refresh: '+e.message); }
 }
 
 function _isoTimeAgo(dateStr){

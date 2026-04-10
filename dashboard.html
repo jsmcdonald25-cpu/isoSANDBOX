@@ -2839,6 +2839,18 @@ async function logOut(){
         </div>
       </div>
 
+      <!-- FAVORITE SHOPS -->
+      <div class="mv-mod" id="mvmod-favshops" data-mod-id="favshops" style="grid-column:span 12" draggable="true">
+        <div class="mv-mod-head mv-mod-head-drag">
+          <span class="mv-mod-drag">&#x2837;</span>
+          <span class="mv-mod-title">My Favorite Shops</span>
+          <span class="mv-mod-link" onclick="N('cardshops',document.getElementById('nav-cardshops'))">View All Shops &rsaquo;</span>
+        </div>
+        <div class="mv-mod-body" id="mvFavShopsBody" style="padding:12px 14px">
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)">Loading...</div>
+        </div>
+      </div>
+
     </div><!-- end #mv-dash -->
 
     <!-- MY CARDS — search + horizontal scroll -->
@@ -3573,12 +3585,10 @@ async function logOut(){
 
     <div style="margin-top:18px" class="card-block">
       <div class="card-block-title"><div class="dot"></div> Top Sellers This Week</div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:4px">
-        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:8px"><span style="font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--blue)">1</span><div><div style="font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:600;color:var(--white)">@vault_kingz</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text)">3 cards sold &#183; $2,340 vol</div></div></div>
-        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:8px"><span style="font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--chrome)">2</span><div><div style="font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:600;color:var(--white)">@slabs_only</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text)">2 cards sold &#183; $1,890 vol</div></div></div>
-        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:8px"><span style="font-family:Bebas Neue,sans-serif;font-size:22px;color:#CD7F32">3</span><div><div style="font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:600;color:var(--white)">@chrome_connect</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted-text)">2 cards sold &#183; $1,200 vol</div></div></div>
+      <div style="text-align:center;padding:24px 14px">
+        <div style="font-size:28px;margin-bottom:8px;opacity:.4">&#127942;</div>
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);line-height:1.5">Seller rankings go live once marketplace transactions start.<br>Check back after launch week.</div>
       </div>
-      <div style="margin-top:12px;font-family:Barlow Condensed,sans-serif;font-size:11px;color:rgba(0,170,255,0.35);letter-spacing:1px;">LIVE RANKINGS LAUNCH AT FULL RELEASE &#183; DATA SHOWN IS DEMO</div>
     </div>
   </div>
 
@@ -4758,49 +4768,10 @@ function isoRenderSportGrid(){
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// POST ISO v2 — ISOVault-style flow (Phase A: static placeholders, no DB)
+// POST ISO v2 — ISOVault-style flow (Phase B: real data from IV_SETS + Supabase)
 // Sport > Year > Brand > Set > Card+Subset > Variant > Grade/Price > Review
 // ─────────────────────────────────────────────────────────────────────────────
 const P2_STATE = { sport:'', year:'', brand:'', set:'', subset:'', card:'', cardNum:'', variant:'', grade:'PSA 10' };
-const P2_SAMPLE = {
-  years:  ['2026','2025','2024','2023','2022','2021','2020'],
-  brands: ['Topps','Bowman','Panini','Donruss','Stadium Club'],
-  sets: [
-    {year:'2025', name:'Topps Chrome',         meta:'220 base · 47 inserts · 38 parallels'},
-    {year:'2025', name:'Topps Chrome Update',  meta:'200 base · 22 inserts'},
-    {year:'2025', name:'Topps Series 1',       meta:'350 base · 60 inserts'},
-    {year:'2025', name:'Topps Series 2',       meta:'350 base · 55 inserts'},
-    {year:'2025', name:'Topps Heritage',       meta:'500 base · 30 inserts'},
-    {year:'2025', name:'Topps Stadium Club',   meta:'300 base · 50 inserts'}
-  ],
-  cards: [
-    {num:'#1',     player:'Shohei Ohtani',    cat:'Base',   subset:'',                      rookie:false},
-    {num:'#10',    player:'Aaron Judge',      cat:'Base',   subset:'',                      rookie:false},
-    {num:'#25',    player:'Paul Skenes',      cat:'Base',   subset:'',                      rookie:true },
-    {num:'#50',    player:'Jackson Holliday', cat:'Base',   subset:'',                      rookie:true },
-    {num:'#100',   player:'Mike Trout',       cat:'Base',   subset:'',                      rookie:false},
-    {num:'#150',   player:'Bobby Witt Jr.',   cat:'Base',   subset:'',                      rookie:false},
-    {num:'#175',   player:'Ronald Acuña Jr.', cat:'Base',   subset:'',                      rookie:false},
-    {num:'TP-1',   player:'Shohei Ohtani',    cat:'Insert', subset:'Topps Profile',         rookie:false},
-    {num:'TP-2',   player:'Aaron Judge',      cat:'Insert', subset:'Topps Profile',         rookie:false},
-    {num:'TP-3',   player:'Paul Skenes',      cat:'Insert', subset:'Topps Profile',         rookie:true },
-    {num:'89TR-5', player:'Mike Trout',       cat:'Insert', subset:'1989 Topps Reimagined', rookie:false},
-    {num:'FS-12',  player:'Jackson Holliday', cat:'Insert', subset:'Future Stars',          rookie:true },
-    {num:'HRC-3',  player:'Aaron Judge',      cat:'Insert', subset:'Home Run Challenge',    rookie:false}
-  ],
-  variants: [
-    {name:'BASE',         meta:'Unnumbered', color:'#fff'},
-    {name:'REFRACTOR',    meta:'Unnumbered', color:'linear-gradient(90deg,#00AAFF,#FFB84D)'},
-    {name:'AUTO',         meta:'On-card / sticker', color:'linear-gradient(90deg,#00AAFF,#00E887)'},
-    {name:'BLUE',         meta:'/150',       color:'#00AAFF'},
-    {name:'GREEN',        meta:'/99',        color:'#00E887'},
-    {name:'GOLD',         meta:'/50',        color:'#FFB84D'},
-    {name:'ORANGE',       meta:'/25',        color:'#FF7733'},
-    {name:'RED',          meta:'/5',         color:'#FF3B5C'},
-    {name:'SUPERFRACTOR', meta:'1/1',        color:'linear-gradient(90deg,#FFB84D,#FFFFFF,#FFB84D)'},
-    {name:'OTHER',        meta:'Admin will build this variant', color:'repeating-linear-gradient(45deg,#7A95AE,#7A95AE 4px,#143050 4px,#143050 8px)', isOther:true}
-  ]
-};
 
 function p2Init(){
   Object.assign(P2_STATE,{sport:'',year:'',brand:'',set:'',subset:'',card:'',cardNum:'',variant:'',grade:'PSA 10'});
@@ -7230,6 +7201,11 @@ async function openVaultCard(idx){
     (c.player===row.player&&String(c.year)===String((row.year||'').toString().slice(0,4)))
   ));
   window._cdDbCardNum=String(row.card_number||'').replace(/^#/,'')||null;
+  // var_images is excluded from the initial vault load to reduce payload.
+  // If the row doesn't have it, the card detail view will fetch it from
+  // the set table via _cdLoadCatalogImages (the "slow path"). This is
+  // one extra query per card click, but saves potentially MBs on every
+  // vault render for users with large collections.
   window._cdPreloadVarImages=row.var_images||null;
   if(known){
     // Carry vault user-uploaded images so they survive openCardDetail's reset
@@ -7372,7 +7348,9 @@ function renderMyVault(){
   }
   const ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
   const userToken=window._userAccessToken||ANON_KEY;
-  fetch(`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault?select=*&user_id=eq.${user.id}&status=neq.sold&status=neq.removed&order=created_at.desc`,{
+  // Explicit column list — excludes var_images (large JSONB) to reduce payload.
+  // var_images is lazy-loaded in openVaultCard when a card is actually clicked.
+  fetch(`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault?select=id,player,year,brand,set_name,card_number,variation,parallel,category,price_paid,estimated_value,is_for_sale,asking_price,front_image_url,back_image_url,created_at,date_acquired,purchase_source,acquisition_type,is_rookie,serial_number,serial_total,grade,grade_company,grade_cert_num,condition_notes,team,card_id,has_catalog_pic,status&user_id=eq.${user.id}&status=neq.sold&status=neq.removed&order=created_at.desc`,{
     headers:{'apikey':ANON_KEY,'Authorization':'Bearer '+userToken}
   }).then(r=>r.json()).then(data=>{
     if(!Array.isArray(data)){
@@ -7407,11 +7385,36 @@ function renderMyVault(){
     _renderBrandChart(data);
     _renderActivityFeed(data);
     _renderIsoPostModule();
+    _renderFavShops();
     const si=document.getElementById('mv3-search-input'); if(si) si.value='';
     _renderVaultGrid(data);
     _patchVaultThumbnails(data);
     _mvApplySavedSort();
   }).catch(err=>{ console.error('renderMyVault:',err); });
+}
+
+async function _renderFavShops(){
+  const body=document.getElementById('mvFavShopsBody');
+  if(!body) return;
+  const user=window._authUser;
+  if(!user){body.innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)">Sign in to see your favorite shops.</div>';return;}
+  try{
+    const favs=await fetch(_SURL+'/shop_favorites?user_id=eq.'+user.id+'&select=shop_id',{headers:_sbH()}).then(r=>r.json());
+    if(!favs.length){
+      body.innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)">No favorite shops yet. Browse <span style="color:var(--blue);cursor:pointer" onclick="N(\'cardshops\',document.getElementById(\'nav-cardshops\'))">Card Shops</span> to add some.</div>';
+      return;
+    }
+    const ids=favs.map(f=>f.shop_id);
+    const shops=await fetch(_SURL+'/card_shops?id=in.('+ids.join(',')+')&select=id,name,city,state,region',{headers:{apikey:_SKEY}}).then(r=>r.json());
+    body.innerHTML='<div style="display:flex;gap:10px;flex-wrap:wrap">'+shops.map(s=>`
+      <div style="background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.15);border-radius:8px;padding:10px 14px;min-width:180px;cursor:pointer;transition:border-color .2s" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='rgba(0,170,255,0.15)'" onclick="N('cardshops',document.getElementById('nav-cardshops'))">
+        <div style="font-family:Bebas Neue,sans-serif;font-size:15px;color:var(--white);letter-spacing:.5px">${s.name}</div>
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text)">${s.city||''}${s.city&&s.state?', ':''}${s.state||''}</div>
+      </div>
+    `).join('')+'</div>';
+  }catch(e){
+    body.innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)">Could not load favorite shops.</div>';
+  }
 }
 
 function _renderPlayerChart(data){
@@ -14051,6 +14054,106 @@ function csGoBack(){
     const stMatch=bc.match(/csGoState\('(\w+)'\)/);
     if(stMatch)csGoState(stMatch[1]);else csGoNational();
   } else csGoNational();
+}
+
+// ── Shop Review Modal ──
+function openShopReview(shopId,shopName){
+  const user=window._authUser;
+  if(!user){T('Sign in to rate shops');return;}
+  _csReviewShopId=shopId;
+  document.getElementById('srShopName').textContent=shopName;
+  document.getElementById('srText').value='';
+  document.getElementById('srError').style.display='none';
+  document.getElementById('srCharCount').textContent='0 / 100 min';
+  document.getElementById('srCharCount').style.color='var(--muted-text)';
+  document.querySelectorAll('#srTags .sr-tag').forEach(b=>b.classList.remove('active'));
+  document.getElementById('srSubmitBtn').disabled=false;
+  document.getElementById('shopReviewOverlay').style.display='flex';
+}
+function closeShopReview(){
+  document.getElementById('shopReviewOverlay').style.display='none';
+  _csReviewShopId=null;
+}
+function toggleSrTag(btn){btn.classList.toggle('active');}
+function updateSrCount(){
+  const len=document.getElementById('srText').value.length;
+  const el=document.getElementById('srCharCount');
+  el.textContent=len+' / 100 min';
+  el.style.color=len>=100?'var(--green)':'var(--muted-text)';
+}
+async function submitShopReview(){
+  const user=window._authUser;
+  if(!user){T('Sign in to rate shops');return;}
+  const text=document.getElementById('srText').value.trim();
+  if(text.length<100){
+    const e=document.getElementById('srError');
+    e.textContent='Review must be at least 100 characters ('+(100-text.length)+' more needed)';
+    e.style.display='block';return;
+  }
+  const tags=document.querySelectorAll('#srTags .sr-tag.active');
+  if(!tags.length){
+    const e=document.getElementById('srError');
+    e.textContent='Select at least one quick tag';e.style.display='block';return;
+  }
+  document.getElementById('srError').style.display='none';
+  const btn=document.getElementById('srSubmitBtn');
+  btn.disabled=true;btn.textContent='SUBMITTING...';
+  const body={
+    shop_id:_csReviewShopId, user_id:user.id, review_text:text,
+    good_pulls:false, liked_shop:false, nice_people:false, good_prices:false, nice_inventory:false
+  };
+  tags.forEach(t=>{body[t.dataset.tag]=true;});
+  try{
+    const r=await fetch(_SURL+'/shop_reviews',{
+      method:'POST',headers:{..._sbH(),'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify(body)
+    });
+    if(!r.ok){const e=await r.json();throw new Error(e.message||'Failed');}
+    T('Review submitted — pending admin approval');
+    closeShopReview();
+  }catch(e){
+    const el=document.getElementById('srError');
+    el.textContent=e.message||'Failed to submit review';el.style.display='block';
+    btn.disabled=false;btn.textContent='SUBMIT REVIEW';
+  }
+}
+
+// ── Favorites Toggle ──
+async function csToggleFav(shopId){
+  const user=window._authUser;
+  if(!user){T('Sign in to favorite shops');return;}
+  const isFav=_csUserFavs.has(shopId);
+  try{
+    if(isFav){
+      await fetch(_SURL+'/shop_favorites?user_id=eq.'+user.id+'&shop_id=eq.'+shopId,{
+        method:'DELETE',headers:_sbH()
+      });
+      _csUserFavs.delete(shopId);
+      _csFavCounts[shopId]=Math.max(0,(_csFavCounts[shopId]||1)-1);
+      T('Removed from favorites');
+    }else{
+      const r=await fetch(_SURL+'/shop_favorites',{
+        method:'POST',headers:{..._sbH(),'Content-Type':'application/json','Prefer':'return=minimal'},
+        body:JSON.stringify({user_id:user.id,shop_id:shopId})
+      });
+      if(!r.ok) throw new Error('Failed');
+      _csUserFavs.add(shopId);
+      _csFavCounts[shopId]=(_csFavCounts[shopId]||0)+1;
+      T('Added to favorites');
+    }
+    // Re-render current view to update heart icons
+    if(_csLevel==='region'){
+      const bc=document.getElementById('csBreadcrumb').innerHTML;
+      const regionMatch=bc.match(/csGoState\('(\w+)'\)/);
+      // Just re-trigger the current region render
+      const regionKey=Object.keys(_regions).find(rk=>{
+        const shops=_csAll().filter(s=>s.region===rk);
+        return shops.some(s=>s.id===shopId);
+      });
+      if(regionKey)csGoRegion(regionKey);
+      else if(regionMatch)csGoState(regionMatch[1]);
+    }
+  }catch(e){T('Error updating favorite');}
 }
 
 // ═══════════════════════════════════════════════

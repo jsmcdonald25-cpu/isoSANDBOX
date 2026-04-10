@@ -24,3 +24,21 @@ desktop.ini
 .idea/
 *.swp
 *.swo
+
+# ── Claude Code local config ───────────────────────────────
+.claude/
+
+# ── Local screenshots, scans, imports ──────────────────────
+Card-Catalog_files/
+Cards Imports/
+Downloads/
+Scanned_Cards/
+
+# ── Mockup previews (design reference only, not production) ──
+mockup-*.html
+
+# ── Scanner pipeline working dirs ──────────────────────────
+Checklist/_done/
+Checklist/_failed/
+Checklist/_skipped/
+Checklist/_unmatched/

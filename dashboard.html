@@ -4864,6 +4864,10 @@ function p2RenderYearPills(){
   const years = [...new Set(
     (IV_SETS||[]).filter(s => !sportId || s.sport === sportId).map(s => String(s.year || ''))
   )].filter(Boolean).sort((a,b) => b.localeCompare(a));
+  if(!years.length){
+    wrap.innerHTML = '<div style="text-align:center;padding:14px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)">No years found for this sport yet.</div>';
+    return;
+  }
   years.forEach(y => {
     const p = document.createElement('div');
     p.className = 'iv-pill';
@@ -4885,6 +4889,10 @@ function p2RenderBrandPills(){
       (!year || String(s.year) === year)
     ).map(s => s.brand || '')
   )].filter(Boolean).sort();
+  if(!brands.length){
+    wrap.innerHTML = '<div style="text-align:center;padding:14px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)">No brands found for ' + (P2_STATE.year||'this year') + '.</div>';
+    return;
+  }
   brands.forEach(b => {
     const p = document.createElement('div');
     p.className = 'iv-pill';
@@ -13996,15 +14004,39 @@ function csGoRegion(regionKey,fallbackState){
   // Render cards alphabetically
   const g=document.getElementById('csShopGrid');
   const sorted=[...pinned].sort((a,b)=>a.name.localeCompare(b.name));
-  g.innerHTML=sorted.map(s=>`
+  g.innerHTML=sorted.map(s=>{
+    const sid=s.id||'';
+    const rv=sid?_csReviewStats[sid]:null;
+    const favCount=sid?(_csFavCounts[sid]||0):0;
+    const isFav=sid&&_csUserFavs.has(sid);
+    const tagHtml=rv?[
+      rv.good_pulls?`<span class="sr-tag-display">Good Pulls (${rv.good_pulls})</span>`:'',
+      rv.liked_shop?`<span class="sr-tag-display">Liked Shop (${rv.liked_shop})</span>`:'',
+      rv.nice_people?`<span class="sr-tag-display">Nice People (${rv.nice_people})</span>`:'',
+      rv.good_prices?`<span class="sr-tag-display">Good Prices (${rv.good_prices})</span>`:'',
+      rv.nice_inventory?`<span class="sr-tag-display">Nice Inventory (${rv.nice_inventory})</span>`:''
+    ].filter(Boolean).join(''):'';
+    return `
     <div style="background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:16px;transition:border-color .2s;position:relative" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--deep-border)'">
-      <div style="position:absolute;top:12px;right:12px;background:#00AAFF;color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Bebas Neue,sans-serif;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,0.3)" title="Map pin #${s._pin}">${s._pin}</div>
-      <div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:1px;color:var(--white);margin-bottom:4px;padding-right:36px">${s.name}</div>
+      <div style="position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:6px">
+        ${sid?`<button class="cs-fav-btn" onclick="csToggleFav('${sid}')" title="${isFav?'Remove from favorites':'Add to favorites'}">${isFav?'&#10084;&#65039;':'&#9825;'}</button>`:''}
+        <div style="background:#00AAFF;color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Bebas Neue,sans-serif;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,0.3)" title="Map pin #${s._pin}">${s._pin}</div>
+      </div>
+      <div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:1px;color:var(--white);margin-bottom:4px;padding-right:70px">${s.name}</div>
       <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:6px">${s.addr}</div>
       <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--white);margin-bottom:4px">${s.phone}</div>
       <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-bottom:8px">${s.hours}</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">${s.types.map(t=>`<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(0,170,255,0.1);color:var(--blue);letter-spacing:.5px">${t}</span>`).join('')}${s._dist?`<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-left:auto">${s._dist.toFixed(1)} mi</span>`:''}</div>
-    </div>`).join('');
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:${(rv||sid)?'8px':'0'}">${s.types.map(t=>`<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(0,170,255,0.1);color:var(--blue);letter-spacing:.5px">${t}</span>`).join('')}${s._dist?`<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-left:auto">${s._dist.toFixed(1)} mi</span>`:''}</div>
+      ${tagHtml?`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">${tagHtml}</div>`:''}
+      <div style="display:flex;align-items:center;gap:8px;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:8px">
+          ${rv?`<span style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text)">${rv.count} review${rv.count!==1?'s':''}</span>`:''}
+          ${favCount?`<span style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text)">&#10084; ${favCount}</span>`:''}
+        </div>
+        ${sid?`<button class="cs-rate-btn" onclick="openShopReview('${sid}','${s.name.replace(/'/g,"\\'")}')">RATE THIS SHOP</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
   if(!pinned.length)g.innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);padding:20px">No shops found in this area.</div>';
 }
 

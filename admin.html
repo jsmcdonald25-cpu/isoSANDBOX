@@ -2816,7 +2816,7 @@ async function msgDoAwardCredits() {
     const rows = await _get('profiles', `id=eq.${_mcUserId}&select=id,credits&limit=1`).catch(()=>[]);
     const cur  = (rows && rows[0]?.credits) || 0;
     await _patch('profiles', `id=eq.${_mcUserId}`, { credits: cur + amount });
-    await _post('credit_events', { user_id: _mcUserId, amount, reason: 'bug_report', note: reason, created_at: new Date().toISOString() }).catch(()=>{});
+    await _post('credit_events', { user_id: _mcUserId, delta: amount, reason: 'bug_report', ref_id: reason, balance_after: cur + amount, created_at: new Date().toISOString() }).catch(()=>{});
     await msgMarkStatus(_mcTable, _mcReportId, 'resolved');
     document.getElementById('msg-credits-modal').style.display = 'none';
     toast(`✓ ${amount} credits awarded and report resolved.`, 'success');
@@ -4078,10 +4078,10 @@ async function loadMilestones(){
     // Fetch existing milestone awards from credit_events
     let awarded = {};
     try {
-      const ceRows = await _get('credit_events','select=user_id,reason,note&reason=eq.upload_milestone&limit=5000');
+      const ceRows = await _get('credit_events','select=user_id,reason,ref_id&reason=eq.upload_milestone&limit=5000');
       (ceRows||[]).forEach(r => {
         if(!awarded[r.user_id]) awarded[r.user_id] = [];
-        awarded[r.user_id].push(r.note||'');
+        awarded[r.user_id].push(r.ref_id||'');
       });
     } catch(e){}
     // Build milestone data
@@ -4169,17 +4169,18 @@ async function msAwardMilestone(uid){
     const sortedTiers = [...MS_TIERS].sort((a,b) => a.threshold - b.threshold);
     for(const t of sortedTiers){
       if(row.count >= t.threshold && !row.userAwards.includes('milestone_'+t.threshold)){
-        await _post('credit_events', {
-          user_id: uid,
-          amount: t.bonus,
-          reason: 'upload_milestone',
-          note: 'milestone_'+t.threshold,
-          created_at: new Date().toISOString()
-        });
-        // Update user credits
         const profile = await _get('profiles','select=credits&id=eq.'+uid+'&limit=1');
         const currentCredits = (profile && profile[0]) ? (profile[0].credits||0) : 0;
-        await _patch('profiles','id=eq.'+uid, { credits: currentCredits + t.bonus });
+        const newBalance = currentCredits + t.bonus;
+        await _post('credit_events', {
+          user_id: uid,
+          delta: t.bonus,
+          reason: 'upload_milestone',
+          ref_id: 'milestone_'+t.threshold,
+          balance_after: newBalance,
+          created_at: new Date().toISOString()
+        });
+        await _patch('profiles','id=eq.'+uid, { credits: newBalance });
       }
     }
     toast(`Milestone credits awarded to @${row.username}`, 'success');
@@ -4327,8 +4328,8 @@ async function loadCreditEvents(filterUserId, filterLabel) {
     }
 
     const total    = _allCreditEvents.length;
-    const awarded  = _allCreditEvents.filter(r => (r.amount||0) > 0).reduce((s,r) => s + (r.amount||0), 0);
-    const deducted = Math.abs(_allCreditEvents.filter(r => (r.amount||0) < 0).reduce((s,r) => s + (r.amount||0), 0));
+    const awarded  = _allCreditEvents.filter(r => (r.delta||0) > 0).reduce((s,r) => s + (r.delta||0), 0);
+    const deducted = Math.abs(_allCreditEvents.filter(r => (r.delta||0) < 0).reduce((s,r) => s + (r.delta||0), 0));
     document.getElementById('ce-stat-total').textContent    = total;
     document.getElementById('ce-stat-awarded').textContent  = '+' + awarded;
     document.getElementById('ce-stat-deducted').textContent = '-' + deducted;
@@ -4351,7 +4352,7 @@ function ceEventsRender() {
     (r.user_id||'').toLowerCase().includes(q) ||
     (_ceUserMap[r.user_id]||'').toLowerCase().includes(q) ||
     (r.reason||'').toLowerCase().includes(q) ||
-    (r.note||'').toLowerCase().includes(q)
+    (r.ref_id||'').toLowerCase().includes(q)
   );
   if (reason) rows = rows.filter(r => (r.reason||'') === reason);
   if (!rows.length) {
@@ -4362,7 +4363,7 @@ function ceEventsRender() {
   document.getElementById('ce-table-wrap').style.display = 'block';
   document.getElementById('ce-tbody').innerHTML = rows.map(r => {
     const dt = r.created_at ? new Date(r.created_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) : '—';
-    const rawAmt = r.amount != null ? Number(r.amount) : null;
+    const rawAmt = r.delta != null ? Number(r.delta) : null;
     const amt = rawAmt == null ? '<span style="color:var(--text3)">—</span>'
       : rawAmt > 0 ? `<span style="color:var(--green);font-weight:600">+${rawAmt}</span>`
       : `<span style="color:var(--red);font-weight:600">${rawAmt}</span>`;
@@ -4374,7 +4375,7 @@ function ceEventsRender() {
       <td style="font-size:11px;font-family:var(--font);font-weight:600">@${userName}</td>
       <td>${amt}</td>
       <td><span class="badge ${bClass}" style="font-size:10px">${(r.reason||'—').replace(/_/g,' ')}</span></td>
-      <td style="font-size:12px;color:var(--text2)">${r.note||'—'}</td>
+      <td style="font-size:12px;color:var(--text2)">${r.ref_id||'—'}</td>
     </tr>`;
   }).join('');
 }
@@ -4459,12 +4460,14 @@ async function gcDoAward() {
   try {
     const rows = await _get('profiles', `id=eq.${_gcUserId}&select=id,credits&limit=1`).catch(()=>[]);
     const cur = (rows && rows[0]?.credits) || 0;
-    await _patch('profiles', `id=eq.${_gcUserId}`, { credits: cur + amount });
+    const newBalance = cur + amount;
+    await _patch('profiles', `id=eq.${_gcUserId}`, { credits: newBalance });
     await _post('credit_events', {
       user_id: _gcUserId,
-      amount,
+      delta: amount,
       reason,
-      note: note || reason,
+      ref_id: note || reason,
+      balance_after: newBalance,
       created_at: new Date().toISOString()
     }).catch(()=>{});
     document.getElementById('give-credits-modal').style.display = 'none';

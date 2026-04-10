@@ -4918,7 +4918,7 @@ async function p2LoadCards(table){
   if(list) list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted-text);font-family:Barlow Condensed,sans-serif;font-size:12px">Loading cards...</div>';
   if(subWrap) subWrap.innerHTML = '';
   try {
-    const rows = await _rGet(table, 'select=card_number,player,category,insert_name,is_rookie,variations&order=card_number.asc&limit=2000');
+    const rows = await _rGet(table, 'select=id,card_number,player,category,insert_name,is_rookie,variations&order=card_number.asc&limit=2000');
     window._p2Cards = rows || [];
     p2RenderSubsetPills(rows);
     p2RenderCardList(rows);
@@ -5151,7 +5151,7 @@ async function p2SubmitISO(){
       user_id:      user.id,
       sport:        S.sportId || S.sport,
       player:       S.card,
-      card_id:      null,
+      card_id:      (S._dbRow && S._dbRow.id) || user.id,
       card_name:    cardName,
       parallel:     S.variant,
       grade:        S.grade || 'PSA 10',

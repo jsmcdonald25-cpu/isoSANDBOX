@@ -11917,7 +11917,6 @@ async function openISODetail(idx){
     </div>
     <div class="iso-dp-actions">
       ${iso.status==='active'?'<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();cancelISO('+idx+')">Cancel ISO</button>':''}
-      ${iso.status==='active'?'<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();renewISO('+idx+')">Renew 30 Days</button>':''}
       <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();repostISO('+idx+')">Repost as New</button>
     </div>
   `;

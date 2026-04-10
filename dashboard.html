@@ -1750,7 +1750,7 @@ async function initUserProfile(user){
     ? '@' + profile.username
     : profile?.full_name || profile?.name || user.email.split('@')[0];
   const initials = profile?.initials  || name.replace('@','').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-  const credits  = (profile?.credits !== undefined && profile?.credits !== null) ? profile.credits : 0;
+  const credits  = (profile?.iso_credits !== undefined && profile?.iso_credits !== null) ? profile.iso_credits : 0;
   const tier     = profile?.tier || 'Alpha Member';
   const role     = profile?.role || 'user';
 
@@ -1796,6 +1796,8 @@ async function initUserProfile(user){
   if(acctUsername) acctUsername.textContent = profile?.username ? '@'+profile.username : '—';
   if(acctEmail)    acctEmail.textContent    = user.email || '';
   if(acctRole)     acctRole.textContent     = role === 'owner' ? 'Owner / Admin' : role === 'admin' ? 'Admin' : 'Collector / Buyer';
+  const acctCreditsEl = document.getElementById('acct-credits');
+  if(acctCreditsEl) acctCreditsEl.textContent = credits;
 
   // Show / hide admin nav items
   // My Vault is the landing page — ONLY on first login, not on token refresh
@@ -3607,7 +3609,7 @@ async function logOut(){
         <div style="margin-top:14px"><button class="btn btn-ghost" onclick="T('Profile editing launches with the next update.')">Edit Profile</button></div>
       </div>
       <div class="card-block"><div class="card-block-title"><div class="dot"></div> ISO Credits</div>
-        <div style="margin-bottom:16px"><div class="stat-label">Balance</div><div class="stat-value blue" id="acct-credits">12</div><div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-top:6px">$1 per ISO post &#183; 5 free on verified account</div></div>
+        <div style="margin-bottom:16px"><div class="stat-label">Balance</div><div class="stat-value blue" id="acct-credits">0</div><div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-top:6px">$1 per ISO post &#183; 5 free on verified account</div></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn btn-ghost btn-sm" onclick="T('Credit packs launch with the marketplace. Contact us for early access.')">5 Credits &#8212; $5</button>
           <button class="btn btn-ghost btn-sm" onclick="T('Credit packs launch with the marketplace. Contact us for early access.')">10 Credits &#8212; $10</button>
@@ -5138,13 +5140,13 @@ async function p2SubmitISO(){
     // Admins/owners skip credit check entirely — never charged for ISOs
     if(!window._isAdmin){
       const _cp = await _rGet('profiles', 'select=*&id=eq.'+user.id+'&limit=1');
-      const currentCredits = (_cp && _cp[0] && _cp[0].credits != null) ? (parseInt(_cp[0].credits)||0) : 0;
+      const currentCredits = (_cp && _cp[0] && _cp[0].iso_credits != null) ? (parseInt(_cp[0].iso_credits)||0) : 0;
       if(currentCredits < 1){
         T('Not enough credits — you need at least 1 to post an ISO.');
         if(btn){ btn.disabled = false; btn.textContent = 'Post ISO →'; }
         return;
       }
-      await _rPatch('profiles', 'id=eq.'+user.id, { credits: currentCredits - 1 });
+      await _rPatch('profiles', 'id=eq.'+user.id, { iso_credits: currentCredits - 1 });
     }
 
     // Build the ISO row
@@ -5549,9 +5551,9 @@ async function submitISO(){
 
   try {
     // Deduct 1 credit
-    const _cp=await _rGet('profiles','select=credits&id=eq.'+user.id+'&limit=1');
-    const profile={credits:(_cp&&_cp[0])?_cp[0].credits:0};
-    const currentCredits = profile ? (parseInt(profile.credits)||0) : 0;
+    const _cp=await _rGet('profiles','select=iso_credits&id=eq.'+user.id+'&limit=1');
+    const profile={iso_credits:(_cp&&_cp[0])?_cp[0].iso_credits:0};
+    const currentCredits = profile ? (parseInt(profile.iso_credits)||0) : 0;
     if(currentCredits < 1){
       T('Not enough credits — you need at least 1 to post an ISO.');
       if(btn){btn.disabled=false;btn.textContent='POST ISO →';}

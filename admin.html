@@ -2813,9 +2813,9 @@ async function msgDoAwardCredits() {
   if (!amount || amount < 1) { errEl.textContent = 'Enter a valid credit amount.'; errEl.style.display = 'block'; return; }
   errEl.style.display = 'none';
   try {
-    const rows = await _get('profiles', `id=eq.${_mcUserId}&select=id,credits&limit=1`).catch(()=>[]);
-    const cur  = (rows && rows[0]?.credits) || 0;
-    await _patch('profiles', `id=eq.${_mcUserId}`, { credits: cur + amount });
+    const rows = await _get('profiles', `id=eq.${_mcUserId}&select=id,iso_credits&limit=1`).catch(()=>[]);
+    const cur  = (rows && rows[0]?.iso_credits) || 0;
+    await _patch('profiles', `id=eq.${_mcUserId}`, { iso_credits: cur + amount });
     await _post('credit_events', { user_id: _mcUserId, delta: amount, reason: 'bug_report', ref_id: reason, balance_after: cur + amount, created_at: new Date().toISOString() }).catch(()=>{});
     await msgMarkStatus(_mcTable, _mcReportId, 'resolved');
     document.getElementById('msg-credits-modal').style.display = 'none';
@@ -4071,7 +4071,7 @@ async function loadMilestones(){
     let profiles = {};
     if(userIds.length){
       try {
-        const pRows = await _get('profiles','select=id,username,credits&id=in.('+userIds.join(',')+')');
+        const pRows = await _get('profiles','select=id,username,iso_credits&id=in.('+userIds.join(',')+')');
         (pRows||[]).forEach(p => { profiles[p.id] = p; });
       } catch(e){}
     }
@@ -4088,7 +4088,7 @@ async function loadMilestones(){
     _allMilestones = Object.entries(counts).map(([uid, count]) => {
       const profile = profiles[uid] || {};
       const username = profile.username || uid.slice(0,8);
-      const credits = profile.credits || 0;
+      const credits = profile.iso_credits || 0;
       const perUpload = count * 2;
       let bonusEarned = 0, bonusPending = 0, nextMilestone = null;
       const userAwards = awarded[uid] || [];
@@ -4169,8 +4169,8 @@ async function msAwardMilestone(uid){
     const sortedTiers = [...MS_TIERS].sort((a,b) => a.threshold - b.threshold);
     for(const t of sortedTiers){
       if(row.count >= t.threshold && !row.userAwards.includes('milestone_'+t.threshold)){
-        const profile = await _get('profiles','select=credits&id=eq.'+uid+'&limit=1');
-        const currentCredits = (profile && profile[0]) ? (profile[0].credits||0) : 0;
+        const profile = await _get('profiles','select=iso_credits&id=eq.'+uid+'&limit=1');
+        const currentCredits = (profile && profile[0]) ? (profile[0].iso_credits||0) : 0;
         const newBalance = currentCredits + t.bonus;
         await _post('credit_events', {
           user_id: uid,
@@ -4180,7 +4180,7 @@ async function msAwardMilestone(uid){
           balance_after: newBalance,
           created_at: new Date().toISOString()
         });
-        await _patch('profiles','id=eq.'+uid, { credits: newBalance });
+        await _patch('profiles','id=eq.'+uid, { iso_credits: newBalance });
       }
     }
     toast(`Milestone credits awarded to @${row.username}`, 'success');
@@ -4458,10 +4458,10 @@ async function gcDoAward() {
   const note = document.getElementById('gc-note').value.trim() || '';
   errEl.style.display = 'none';
   try {
-    const rows = await _get('profiles', `id=eq.${_gcUserId}&select=id,credits&limit=1`).catch(()=>[]);
-    const cur = (rows && rows[0]?.credits) || 0;
+    const rows = await _get('profiles', `id=eq.${_gcUserId}&select=id,iso_credits&limit=1`).catch(()=>[]);
+    const cur = (rows && rows[0]?.iso_credits) || 0;
     const newBalance = cur + amount;
-    await _patch('profiles', `id=eq.${_gcUserId}`, { credits: newBalance });
+    await _patch('profiles', `id=eq.${_gcUserId}`, { iso_credits: newBalance });
     await _post('credit_events', {
       user_id: _gcUserId,
       delta: amount,

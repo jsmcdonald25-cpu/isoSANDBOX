@@ -322,6 +322,32 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 @keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .t-item{font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--chrome);display:flex;align-items:center;gap:7px}
 .t-item .tn{color:var(--white);font-weight:600}.t-item .tv{color:var(--blue);font-weight:600}
+/* ISO DETAIL PANEL */
+.iso-item.iso-expanded{background:rgba(0,170,255,.08);border-color:rgba(0,170,255,.3);border-radius:8px 8px 0 0;margin-bottom:0}
+.iso-detail-panel{display:none;background:var(--deep);border:1px solid rgba(0,170,255,.3);border-top:none;border-radius:0 0 10px 10px;padding:0;margin-bottom:8px;overflow:hidden;animation:isoDetailIn .2s ease}
+.iso-detail-panel.open{display:block}
+@keyframes isoDetailIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.iso-dp-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--deep-border)}
+.iso-dp-title{font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:1px;color:var(--white)}
+.iso-dp-close{background:none;border:none;color:var(--muted-text);font-size:18px;cursor:pointer;padding:4px 8px}
+.iso-dp-close:hover{color:var(--white)}
+.iso-dp-body{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px 18px}
+.iso-dp-section{background:rgba(0,170,255,.03);border:1px solid var(--deep-border);border-radius:8px;padding:14px}
+.iso-dp-section-title{font-family:Bebas Neue,sans-serif;font-size:12px;letter-spacing:2px;color:var(--muted-text);margin-bottom:10px}
+.iso-dp-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.03);font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--chrome)}
+.iso-dp-row:last-child{border-bottom:none}
+.iso-dp-val{font-family:Bebas Neue,sans-serif;font-size:17px;letter-spacing:1px}
+.iso-dp-val.blue{color:var(--blue)}.iso-dp-val.green{color:var(--green)}.iso-dp-val.white{color:var(--white)}
+.iso-dp-seller{display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(0,232,135,.04);border:1px solid rgba(0,232,135,.12);border-radius:6px;margin-bottom:6px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--chrome)}
+.iso-dp-seller:last-child{margin-bottom:0}
+.iso-dp-seller-badge{width:24px;height:24px;border-radius:50%;background:var(--green);color:#000;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.iso-dp-seller-price{font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--green);margin-left:auto}
+.iso-dp-ebay-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.03);font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--chrome)}
+.iso-dp-ebay-item:last-child{border-bottom:none}
+.iso-dp-ebay-price{font-family:Bebas Neue,sans-serif;font-size:14px;color:var(--blue);white-space:nowrap;margin-left:auto}
+.iso-dp-actions{display:flex;gap:8px;padding:12px 18px;border-top:1px solid var(--deep-border)}
+.iso-dp-empty{font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);padding:6px 0}
+@media (max-width:768px){.iso-dp-body{grid-template-columns:1fr}}
 /* FILTER CHIPS */
 .filter-row{display:flex;gap:7px;margin-bottom:18px;flex-wrap:wrap}
 .chip{padding:5px 13px;border:1px solid var(--deep-border);border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.5px;color:var(--muted-text);cursor:pointer;transition:all .15s;user-select:none}
@@ -11773,6 +11799,8 @@ function filterMyISOs(filter, el){
   _renderISOList();
 }
 
+let _openIsoIdx = -1;
+
 function _renderISOList(){
   const list = document.getElementById('myIsosList');
   if(!list) return;
@@ -11784,7 +11812,6 @@ function _renderISOList(){
     return;
   }
   list.style.display='block';
-  // Check for pending offers on each ISO
   const isoIds = rows.map(i=>i.id).filter(Boolean);
   let offerCounts = {};
   if(isoIds.length && window._myIsoOffers){
@@ -11806,10 +11833,9 @@ function _renderISOList(){
     const statusClass = hasOffers ? 'matched' : iso.status==='matched'?'matched':iso.status==='completed'?'':'active';
     const statusLabel = hasOffers ? offerCount+' OFFER'+(offerCount>1?'S':'') : (isExpired ? 'EXPIRED' : (iso.status||'active').toUpperCase());
     const sportIcon = sport==='Baseball'?'&#9918;':sport==='Basketball'?'&#127936;':sport==='Football'?'&#127944;':'&#127944;';
-    const clickable = hasOffers || iso.status === 'active';
-    const action = hasOffers ? `<span class="ni-action" onclick="event.stopPropagation();openOfferReview(${idx})">Review Offers &#8594;</span>` : '';
+    const offerAction = hasOffers ? `<span class="ni-action" onclick="event.stopPropagation();openOfferReview(${idx})">Review Offers &#8594;</span>` : '';
     return `
-    <div class="iso-item" style="flex-wrap:wrap;gap:9px;cursor:${clickable?'pointer':'default'};${iso.status==='completed'||isExpired?'opacity:.55':''}" ${hasOffers?`onclick="openOfferReview(${idx})"`:''}>
+    <div class="iso-item" id="iso-row-${idx}" style="flex-wrap:wrap;gap:9px;cursor:pointer;${iso.status==='completed'||isExpired?'opacity:.55':''}" onclick="openISODetail(${idx})">
       <div class="iso-img" style="background:${hasOffers?'rgba(255,59,92,0.12)':'rgba(0,170,255,0.06)'};display:flex;align-items:center;justify-content:center;font-size:22px">${hasOffers?'&#128176;':sportIcon}</div>
       <div class="iso-info">
         <div class="iso-player">${player}</div>
@@ -11818,10 +11844,225 @@ function _renderISOList(){
       <div><div class="iso-price">${maxPrice}</div><div class="iso-price-sub">MAX BID</div></div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
         <span class="status-pill ${statusClass}">${statusLabel}</span>
-        ${action}
+        ${offerAction}
       </div>
-    </div>`;
+    </div>
+    <div class="iso-detail-panel" id="iso-dp-${idx}"></div>`;
   }).join('');
+}
+
+// ── ISO DETAIL VIEW ─────────────────────────────────────────
+async function openISODetail(idx){
+  // Close previously open panel
+  if(_openIsoIdx >= 0 && _openIsoIdx !== idx){
+    const prev = document.getElementById('iso-dp-'+_openIsoIdx);
+    const prevRow = document.getElementById('iso-row-'+_openIsoIdx);
+    if(prev) prev.classList.remove('open');
+    if(prevRow) prevRow.classList.remove('iso-expanded');
+  }
+  const panel = document.getElementById('iso-dp-'+idx);
+  const row = document.getElementById('iso-row-'+idx);
+  if(!panel) return;
+  // Toggle
+  if(panel.classList.contains('open')){
+    panel.classList.remove('open');
+    if(row) row.classList.remove('iso-expanded');
+    _openIsoIdx = -1;
+    return;
+  }
+  if(row) row.classList.add('iso-expanded');
+  _openIsoIdx = idx;
+
+  const rows = _myIsosFilter !== 'all' ? _myIsosData.filter(i=>i.status===_myIsosFilter) : _myIsosData;
+  const iso = rows[idx];
+  if(!iso){ panel.classList.remove('open'); return; }
+
+  const player = iso.player || iso.card_name || 'Unknown';
+  const parallel = iso.parallel || 'Base';
+  const cardName = iso.card_name || '';
+  const grade = iso.grade || 'Any';
+  const maxP = iso.max_price ? '$'+parseFloat(iso.max_price).toLocaleString() : '—';
+  const minP = iso.min_price ? '$'+parseFloat(iso.min_price).toLocaleString() : '—';
+  const posted = iso.created_at ? new Date(iso.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+  const notes = iso.notes || '';
+
+  // Show panel immediately with loading state
+  panel.innerHTML = `
+    <div class="iso-dp-header">
+      <div class="iso-dp-title">${player} — ${parallel}</div>
+      <button class="iso-dp-close" onclick="event.stopPropagation();openISODetail(${idx})">&times;</button>
+    </div>
+    <div class="iso-dp-body">
+      <div class="iso-dp-section">
+        <div class="iso-dp-section-title">ISO DETAILS</div>
+        <div class="iso-dp-row"><span>Card</span><span class="iso-dp-val white">${cardName || player}</span></div>
+        <div class="iso-dp-row"><span>Parallel</span><span class="iso-dp-val blue">${parallel}</span></div>
+        <div class="iso-dp-row"><span>Grade</span><span class="iso-dp-val white">${grade}</span></div>
+        <div class="iso-dp-row"><span>Price Range</span><span class="iso-dp-val blue">${minP} — ${maxP}</span></div>
+        <div class="iso-dp-row"><span>Posted</span><span style="color:var(--chrome)">${posted}</span></div>
+        ${notes ? '<div class="iso-dp-row"><span>Notes</span><span style="color:var(--chrome);font-size:12px">'+notes+'</span></div>' : ''}
+      </div>
+      <div class="iso-dp-section">
+        <div class="iso-dp-section-title">MARKET DATA</div>
+        <div id="iso-dp-ebay-${idx}" style="min-height:40px"><div class="iso-dp-empty">Loading eBay listings...</div></div>
+      </div>
+      <div class="iso-dp-section">
+        <div class="iso-dp-section-title">COLLECTORS WITH THIS CARD</div>
+        <div id="iso-dp-vault-${idx}" style="min-height:30px"><div class="iso-dp-empty">Checking vaults...</div></div>
+      </div>
+      <div class="iso-dp-section">
+        <div class="iso-dp-section-title">FOR SALE NOW</div>
+        <div id="iso-dp-sellers-${idx}" style="min-height:30px"><div class="iso-dp-empty">Checking sellers...</div></div>
+      </div>
+    </div>
+    <div class="iso-dp-actions">
+      ${iso.status==='active'?'<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();cancelISO('+idx+')">Cancel ISO</button>':''}
+      ${iso.status==='active'?'<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();renewISO('+idx+')">Renew 30 Days</button>':''}
+      <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();repostISO('+idx+')">Repost as New</button>
+    </div>
+  `;
+  panel.classList.add('open');
+
+  // ── Fetch eBay data ──
+  _isoFetchEbay(idx, iso);
+  // ── Fetch vault population + for-sale ──
+  _isoFetchVaultData(idx, iso);
+}
+
+async function _isoFetchEbay(idx, iso){
+  const el = document.getElementById('iso-dp-ebay-'+idx);
+  if(!el) return;
+  try {
+    const payload = {
+      player: iso.player || '',
+      year: '',
+      set_name: iso.card_name || '',
+      card_number: '',
+      variation: iso.parallel || '',
+      brand: ''
+    };
+    // Extract year from card_name if present
+    const ym = (iso.card_name||'').match(/^(20\d{2}|19\d{2})/);
+    if(ym) payload.year = ym[1];
+    const resp = await fetch('/.netlify/functions/ebay-recent-sales', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    if(!resp.ok) throw new Error('eBay ' + resp.status);
+    const data = await resp.json();
+    if(!data || !data.count){
+      el.innerHTML = '<div class="iso-dp-empty">No current eBay listings found</div>';
+      return;
+    }
+    const fmt = n => n==null||isNaN(n)?'—':n>=1000?'$'+(n/1000).toFixed(1)+'K':'$'+Number(n).toFixed(0);
+    let html = `
+      <div class="iso-dp-row"><span>Listings Found</span><span class="iso-dp-val blue">${data.count}</span></div>
+      <div class="iso-dp-row"><span>Low / Avg / High</span><span class="iso-dp-val blue">${fmt(data.low)} / ${fmt(data.average)} / ${fmt(data.high)}</span></div>
+    `;
+    const items = (data.items||[]).slice(0,4);
+    if(items.length){
+      html += items.map(it => `
+        <div class="iso-dp-ebay-item">
+          <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${it.title||'Listing'}</span>
+          <span class="iso-dp-ebay-price">${it.price?'$'+parseFloat(it.price).toFixed(0):'—'}</span>
+        </div>
+      `).join('');
+    }
+    el.innerHTML = html;
+  } catch(e){
+    el.innerHTML = '<div class="iso-dp-empty">eBay data unavailable</div>';
+  }
+}
+
+async function _isoFetchVaultData(idx, iso){
+  const vaultEl = document.getElementById('iso-dp-vault-'+idx);
+  const sellerEl = document.getElementById('iso-dp-sellers-'+idx);
+  if(!vaultEl || !sellerEl) return;
+  try {
+    const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+    const sbH = { 'apikey': SKEY, 'Authorization': 'Bearer ' + SKEY };
+    const playerName = iso.player || '';
+    const variation = iso.parallel || '';
+    // Query vault for matching cards
+    let url = 'https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault?select=id,user_id,variation,is_for_sale,asking_price,front_image_url&status=neq.sold&status=neq.removed';
+    if(playerName) url += '&player=ilike.*'+encodeURIComponent(playerName)+'*';
+    if(variation && variation !== 'Base') url += '&variation=ilike.*'+encodeURIComponent(variation)+'*';
+    url += '&limit=100';
+    const resp = await fetch(url, { headers: sbH });
+    const vaultRows = resp.ok ? await resp.json() : [];
+
+    // Vault count (exclude current user)
+    const userId = window._authUser?.id;
+    const otherOwners = vaultRows.filter(r => r.user_id !== userId);
+    const totalOwners = otherOwners.length;
+    const forSale = otherOwners.filter(r => r.is_for_sale === true);
+
+    if(totalOwners > 0){
+      vaultEl.innerHTML = `
+        <div class="iso-dp-row"><span>Collectors who own this</span><span class="iso-dp-val blue">${totalOwners}</span></div>
+        <div class="iso-dp-row"><span>Listed for sale</span><span class="iso-dp-val ${forSale.length?'green':'white'}">${forSale.length}</span></div>
+      `;
+    } else {
+      vaultEl.innerHTML = '<div class="iso-dp-empty">No other collectors have this card in their vault yet</div>';
+    }
+
+    // For-sale sellers
+    if(forSale.length){
+      sellerEl.innerHTML = forSale.map((s, i) => {
+        const price = s.asking_price ? '$'+parseFloat(s.asking_price).toLocaleString() : 'Make Offer';
+        return `
+          <div class="iso-dp-seller">
+            <div class="iso-dp-seller-badge">${i+1}</div>
+            <div style="flex:1">
+              <div style="font-weight:600;color:var(--white)">Seller #${i+1}</div>
+              <div style="font-size:11px;color:var(--muted-text)">${s.variation||'Base'}</div>
+            </div>
+            <div class="iso-dp-seller-price">${price}</div>
+          </div>
+        `;
+      }).join('');
+    } else {
+      sellerEl.innerHTML = '<div class="iso-dp-empty">No sellers have this card listed right now</div>';
+    }
+  } catch(e){
+    if(vaultEl) vaultEl.innerHTML = '<div class="iso-dp-empty">Could not check vaults</div>';
+    if(sellerEl) sellerEl.innerHTML = '<div class="iso-dp-empty">Could not check sellers</div>';
+  }
+}
+
+async function cancelISO(idx){
+  const rows = _myIsosFilter !== 'all' ? _myIsosData.filter(i=>i.status===_myIsosFilter) : _myIsosData;
+  const iso = rows[idx];
+  if(!iso) return;
+  if(!confirm('Cancel this ISO? It will no longer match with sellers.')) return;
+  try {
+    await _rPatch('isos','id=eq.'+iso.id, { status: 'cancelled' });
+    iso.status = 'cancelled';
+    T('ISO cancelled.');
+    _renderISOList();
+  } catch(e){ T('Failed to cancel: '+e.message); }
+}
+
+async function renewISO(idx){
+  const rows = _myIsosFilter !== 'all' ? _myIsosData.filter(i=>i.status===_myIsosFilter) : _myIsosData;
+  const iso = rows[idx];
+  if(!iso) return;
+  try {
+    const newExpiry = new Date(Date.now() + 30*24*60*60*1000).toISOString();
+    await _rPatch('isos','id=eq.'+iso.id, { expires_at: newExpiry, status: 'active' });
+    iso.expires_at = newExpiry;
+    iso.status = 'active';
+    T('ISO renewed for 30 days.');
+    _renderISOList();
+  } catch(e){ T('Failed to renew: '+e.message); }
+}
+
+function repostISO(idx){
+  const rows = _myIsosFilter !== 'all' ? _myIsosData.filter(i=>i.status===_myIsosFilter) : _myIsosData;
+  const iso = rows[idx];
+  if(!iso) return;
+  // Navigate to Post ISO with pre-filled data
+  T('Repost coming soon — use Post ISO to create a new one.');
 }
 
 function _isoTimeAgo(dateStr){
@@ -13964,8 +14205,9 @@ function csGoState(st){
   document.getElementById('csBackBtn').style.display='';
   document.getElementById('csBreadcrumb').innerHTML=`<span style="color:var(--blue);cursor:pointer" onclick="csGoNational()">US</span> <span style="color:var(--muted-text)">&rsaquo;</span> <span style="color:var(--blue)">${stInfo?stInfo.name:st}</span>`;
   const stateRegions=Object.entries(_regions).filter(([k,v])=>v.state===st);
-  const stateShops=_csAll().filter(s=>s.state===st||stateRegions.some(([rk])=>s.region===rk));
-  if(stateRegions.length<=1){csGoRegion(stateRegions.length?stateRegions[0][0]:null,st);return;}
+  const stateShops=_csAll().filter(s=>s.state===st);
+  // If no defined regions or few shops, show all shops directly
+  if(stateRegions.length===0||(stateRegions.length===1&&stateShops.length<=30)){csGoRegion(stateRegions.length?stateRegions[0][0]:null,st);return;}
   stateRegions.forEach(([rk,rv])=>{
     const count=_csAll().filter(s=>s.region===rk).length;
     const icon=L.divIcon({className:'',
@@ -13981,7 +14223,9 @@ function csGoState(st){
 function csGoRegion(regionKey,fallbackState){
   _csLevel='region';_csClearMap();
   const region=regionKey?_regions[regionKey]:null;
-  const shops=regionKey?_csAll().filter(s=>s.region===regionKey):_csAll().filter(s=>s.state===fallbackState);
+  const shops=regionKey
+    ?_csAll().filter(s=>s.region===regionKey||(s.state===(region?region.state:fallbackState)&&!s.region))
+    :_csAll().filter(s=>s.state===fallbackState);
   const pinned=regionKey?_csAssignPins(shops,regionKey):shops.map((s,i)=>({...s,_pin:i+1,_dist:0}));
   const stAbbr=region?region.state:(fallbackState||'');
   const stInfo=_usStates[stAbbr];

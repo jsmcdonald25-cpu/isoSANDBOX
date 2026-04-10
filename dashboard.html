@@ -2152,19 +2152,15 @@ async function logOut(){
     <div class="step-bar">
       <div class="step-item"><div class="step-circle now" id="p2sc1">1</div><span class="step-text now" id="p2st1">Sport</span></div>
       <div class="step-line"></div>
-      <div class="step-item"><div class="step-circle soon" id="p2sc2">2</div><span class="step-text" id="p2st2">Year</span></div>
+      <div class="step-item"><div class="step-circle soon" id="p2sc2">2</div><span class="step-text" id="p2st2">Set</span></div>
       <div class="step-line"></div>
-      <div class="step-item"><div class="step-circle soon" id="p2sc3">3</div><span class="step-text" id="p2st3">Brand</span></div>
+      <div class="step-item"><div class="step-circle soon" id="p2sc3">3</div><span class="step-text" id="p2st3">Card</span></div>
       <div class="step-line"></div>
-      <div class="step-item"><div class="step-circle soon" id="p2sc4">4</div><span class="step-text" id="p2st4">Set</span></div>
+      <div class="step-item"><div class="step-circle soon" id="p2sc4">4</div><span class="step-text" id="p2st4">Variant</span></div>
       <div class="step-line"></div>
-      <div class="step-item"><div class="step-circle soon" id="p2sc5">5</div><span class="step-text" id="p2st5">Card</span></div>
+      <div class="step-item"><div class="step-circle soon" id="p2sc5">5</div><span class="step-text" id="p2st5">Grade</span></div>
       <div class="step-line"></div>
-      <div class="step-item"><div class="step-circle soon" id="p2sc6">6</div><span class="step-text" id="p2st6">Variant</span></div>
-      <div class="step-line"></div>
-      <div class="step-item"><div class="step-circle soon" id="p2sc7">7</div><span class="step-text" id="p2st7">Grade</span></div>
-      <div class="step-line"></div>
-      <div class="step-item"><div class="step-circle soon" id="p2sc8">8</div><span class="step-text" id="p2st8">Review</span></div>
+      <div class="step-item"><div class="step-circle soon" id="p2sc6">6</div><span class="step-text" id="p2st6">Review</span></div>
     </div>
     <!-- Phase A banner removed — Phase B is live -->
     <div class="card-block">
@@ -2174,32 +2170,33 @@ async function logOut(){
         <div class="sp-sub">Same grid as ISOVault home.</div>
         <div class="iv-sport-grid" id="p2SportGrid" style="margin-bottom:20px"></div>
       </div>
-      <!-- Step 2 — Year -->
+      <!-- Step 2 — Browse: Year + Brand + Set (ISOVault-style, all on one page) -->
       <div class="sp" id="p2sp2">
-        <div class="sp-title">SELECT YEAR</div>
-        <div class="sp-sub">Pick the release year for the chosen sport.</div>
-        <div class="iv-pill-row" id="p2YearPills" style="gap:8px;margin-bottom:20px"></div>
-        <div style="display:flex;justify-content:space-between"><button class="btn btn-ghost" onclick="p2Go(1)">&#8592; Sport</button><span></span></div>
-      </div>
-      <!-- Step 3 — Brand -->
-      <div class="sp" id="p2sp3">
-        <div class="sp-title">SELECT BRAND</div>
-        <div class="sp-sub">Brands available for the chosen sport &amp; year.</div>
-        <div class="iv-pill-row" id="p2BrandPills" style="gap:8px;margin-bottom:20px"></div>
-        <div style="display:flex;justify-content:space-between"><button class="btn btn-ghost" onclick="p2Go(2)">&#8592; Year</button><span></span></div>
-      </div>
-      <!-- Step 4 — Set -->
-      <div class="sp" id="p2sp4">
-        <div class="sp-title">SELECT SET</div>
-        <div class="sp-sub">Set tiles match ISOVault's set browser.</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+          <button class="btn btn-ghost btn-sm" onclick="p2Go(1)">&#8592; Sport</button>
+          <div class="sp-title" id="p2BrowseTitle" style="margin-bottom:0">BROWSE SETS</div>
+        </div>
+        <div class="sp-sub">Filter by year &amp; brand, then pick a set.</div>
+        <div class="iv-filter-row" style="margin-top:14px">
+          <div class="iv-filter-group">
+            <div class="iv-filter-label">YEAR</div>
+            <div class="iv-pill-row" id="p2YearPills" style="gap:6px"></div>
+          </div>
+          <div class="iv-filter-group">
+            <div class="iv-filter-label">BRAND</div>
+            <div class="iv-pill-row" id="p2BrandPills" style="gap:6px"></div>
+          </div>
+        </div>
+        <div class="iv-section-label" style="margin-bottom:10px">SETS</div>
         <div class="iv-set-grid" id="p2SetGrid" style="margin-bottom:14px"></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px"><button class="btn btn-ghost" onclick="p2Go(3)">&#8592; Brand</button><span style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--blue);cursor:pointer;border-bottom:1px dashed var(--blue)" onclick="p2Go(8)">Can't find your set? Use freeform &#8594;</span></div>
+        <div style="text-align:center"><span style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--blue);cursor:pointer;border-bottom:1px dashed var(--blue)" onclick="p2Go(8)">Can't find your set? Use freeform &#8594;</span></div>
       </div>
+      <!-- Steps 3-4 removed — consolidated into step 2 above -->
       <!-- Step 5 — Card in set -->
       <div class="sp" id="p2sp5">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
           <div style="display:flex;align-items:center;gap:12px">
-            <button class="btn btn-ghost btn-sm" onclick="p2Go(4)">&#8592; Set</button>
+            <button class="btn btn-ghost btn-sm" onclick="p2Go(2)">&#8592; Sets</button>
             <div class="sp-title" id="p2CardStepTitle" style="margin-bottom:0">SELECT CARD</div>
           </div>
         </div>
@@ -4807,21 +4804,26 @@ function p2Init(){
   p2Go(1);
 }
 
+// Step mapping: internal panel IDs → 6-step progress bar
+// Panel IDs kept for compatibility: p2sp1(sport), p2sp2(browse), p2sp5(card),
+// p2sp6(variant), p2sp7(grade), p2sp8(freeform), p2sp9(review)
+const _P2_STEP_MAP = {1:1, 2:2, 5:3, 6:4, 7:5, 8:5, 9:6};
+
 function p2Go(step){
   // Hide all sub-panels
   document.querySelectorAll('#panel-post .sp').forEach(el=>el.classList.remove('active'));
   const target = document.getElementById('p2sp'+step);
   if(target) target.classList.add('active');
-  // Step bar (steps 1-8 visible; freeform reuses step 7's circle, review = 8)
-  for(let i=1;i<=8;i++){
+  // Update 6-step progress bar
+  const barStep = _P2_STEP_MAP[step] || step;
+  for(let i=1;i<=6;i++){
     const c = document.getElementById('p2sc'+i);
     const t = document.getElementById('p2st'+i);
     if(!c||!t) continue;
     c.classList.remove('now','done','soon');
     t.classList.remove('now');
-    const stepNum = step === 9 ? 8 : (step === 8 ? 7 : step); // freeform = grade slot, review = 8
-    if(i < stepNum){ c.classList.add('done'); }
-    else if(i === stepNum){ c.classList.add('now'); t.classList.add('now'); }
+    if(i < barStep){ c.classList.add('done'); }
+    else if(i === barStep){ c.classList.add('now'); t.classList.add('now'); }
     else { c.classList.add('soon'); }
   }
 }
@@ -4850,8 +4852,19 @@ function p2RenderSportGrid(){
 function p2PickSport(s){
   P2_STATE.sport = s.label;
   P2_STATE.sportId = s.id;
-  p2RenderYearPills();
+  P2_STATE.year = '';
+  P2_STATE.brand = '';
+  const title = document.getElementById('p2BrowseTitle');
+  if(title) title.textContent = s.emoji + ' ' + s.label.toUpperCase() + ' — BROWSE SETS';
+  p2RenderBrowsePage();
   p2Go(2);
+}
+
+// Render the combined Year+Brand+Set browse page (ISOVault-style)
+function p2RenderBrowsePage(){
+  p2RenderYearPills();
+  p2RenderBrandPills();
+  p2RenderSetGrid();
 }
 
 // ── Phase B: real data from IV_SETS + per-set Supabase tables ─────────────
@@ -4863,15 +4876,21 @@ function p2RenderYearPills(){
   const years = [...new Set(
     (IV_SETS||[]).filter(s => !sportId || s.sport === sportId).map(s => String(s.year || ''))
   )].filter(Boolean).sort((a,b) => b.localeCompare(a));
+  // "All" pill first
+  const allP = document.createElement('div');
+  allP.className = 'iv-pill' + (!P2_STATE.year ? ' active' : '');
+  allP.textContent = 'All';
+  allP.onclick = () => { P2_STATE.year = ''; p2RenderBrowsePage(); };
+  wrap.appendChild(allP);
   if(!years.length){
-    wrap.innerHTML = '<div style="text-align:center;padding:14px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)">No years found for this sport yet.</div>';
+    wrap.innerHTML += '<div style="padding:8px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text)">No years found.</div>';
     return;
   }
   years.forEach(y => {
     const p = document.createElement('div');
-    p.className = 'iv-pill';
+    p.className = 'iv-pill' + (P2_STATE.year === y ? ' active' : '');
     p.textContent = y;
-    p.onclick = () => { P2_STATE.year = y; p2RenderBrandPills(); p2Go(3); };
+    p.onclick = () => { P2_STATE.year = y; p2RenderBrowsePage(); };
     wrap.appendChild(p);
   });
 }
@@ -4888,15 +4907,21 @@ function p2RenderBrandPills(){
       (!year || String(s.year) === year)
     ).map(s => s.brand || '')
   )].filter(Boolean).sort();
+  // "All" pill first
+  const allB = document.createElement('div');
+  allB.className = 'iv-pill' + (!P2_STATE.brand ? ' active' : '');
+  allB.textContent = 'All';
+  allB.onclick = () => { P2_STATE.brand = ''; p2RenderBrowsePage(); };
+  wrap.appendChild(allB);
   if(!brands.length){
-    wrap.innerHTML = '<div style="text-align:center;padding:14px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)">No brands found for ' + (P2_STATE.year||'this year') + '.</div>';
+    wrap.innerHTML += '<div style="padding:8px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text)">No brands found.</div>';
     return;
   }
   brands.forEach(b => {
     const p = document.createElement('div');
-    p.className = 'iv-pill';
+    p.className = 'iv-pill' + (P2_STATE.brand === b ? ' active' : '');
     p.textContent = b;
-    p.onclick = () => { P2_STATE.brand = b; p2RenderSetGrid(); p2Go(4); };
+    p.onclick = () => { P2_STATE.brand = b; p2RenderBrowsePage(); };
     wrap.appendChild(p);
   });
 }

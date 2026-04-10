@@ -4929,29 +4929,14 @@ async function p2LoadCards(table){
 }
 
 function p2RenderSubsetPills(rows){
+  // Subset/insert pills hidden for Post ISO — the category pills (All/Base/
+  // Inserts/Autos/Rookies) + search bar are sufficient. Showing 10+ insert
+  // names was cluttering the UI. The pills HTML element is preserved for
+  // potential future use.
   const wrap = document.getElementById('p2SubsetPills');
-  if(!wrap) return;
-  wrap.innerHTML = '';
-  const subs = [...new Set((rows||[]).filter(c => c.insert_name).map(c => c.insert_name))].sort();
-  const all = document.createElement('div');
-  all.className = 'iv-pill active';
-  all.textContent = 'All Cards';
-  all.onclick = () => p2SubsetFilter('all', all);
-  wrap.appendChild(all);
-  if(subs.length){
-    const base = document.createElement('div');
-    base.className = 'iv-pill';
-    base.textContent = 'Base';
-    base.onclick = () => p2SubsetFilter('__base__', base);
-    wrap.appendChild(base);
-  }
-  subs.forEach(name => {
-    const p = document.createElement('div');
-    p.className = 'iv-pill';
-    p.textContent = name;
-    p.onclick = () => p2SubsetFilter(name, p);
-    wrap.appendChild(p);
-  });
+  if(wrap) wrap.innerHTML = '';
+  const labelEl = wrap && wrap.previousElementSibling;
+  if(labelEl && labelEl.textContent.includes('SUBSET')) labelEl.style.display = 'none';
 }
 
 function p2RenderCardList(rows){
@@ -4975,7 +4960,7 @@ function p2RenderCardList(rows){
       + '<span style="font-size:9px;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:rgba(0,170,255,.1);color:var(--blue);border:1px solid rgba(0,170,255,.2);margin-left:4px">' + (subset || cat) + '</span>';
     row.innerHTML =
         '<div style="font-family:Bebas Neue,sans-serif;font-size:13px;color:var(--blue);min-width:48px;flex-shrink:0">#' + num + '</div>'
-      + '<div style="font-size:14px;color:var(--white)">' + player + '</div>'
+      + '<div style="flex:1;font-size:14px;color:var(--white);max-width:300px">' + player + '</div>'
       + '<div style="display:flex;gap:5px;flex-shrink:0">' + tagHTML + '</div>';
     row.onmouseover = () => { row.style.borderColor='var(--blue)'; row.style.background='rgba(0,170,255,.06)'; };
     row.onmouseout  = () => { row.style.borderColor='var(--deep-border)'; row.style.background='var(--deep2)'; };
@@ -5150,22 +5135,29 @@ async function p2SubmitISO(){
     }
 
     // Build the ISO row
+    // Column list matches the OLD working submitISO exactly — only columns
+    // confirmed to exist on the isos table. card_number and serial_number
+    // are NOT columns on isos (they caused 400 errors when included).
     const mn = document.getElementById('p2MinP')?.value || null;
     const mx = document.getElementById('p2MaxP')?.value || null;
-    const serial = S.serial || null;
     const cardName = [S.year, S._ivSet ? S._ivSet.brand : S.brand, S._ivSet ? (S._ivSet.label||S._ivSet.name) : S.set].filter(Boolean).join(' ');
+    // Include card_number + serial in notes so the data isn't lost
+    const extraNotes = [
+      S.cardNum ? 'Card #' + String(S.cardNum).replace(/^#/,'') : '',
+      S.serial ? 'Serial #' + S.serial : '',
+      S.variantOther || ''
+    ].filter(Boolean).join(' · ');
     await _rPost('isos', {
       user_id:      user.id,
       sport:        S.sportId || S.sport,
       player:       S.card,
+      card_id:      null,
       card_name:    cardName,
-      card_number:  S.cardNum ? String(S.cardNum).replace(/^#/,'') : null,
       parallel:     S.variant,
       grade:        S.grade || 'PSA 10',
       min_price:    mn ? parseFloat(mn) : null,
       max_price:    mx ? parseFloat(mx) : null,
-      serial_number:serial ? parseInt(serial) : null,
-      notes:        S.variantOther || null,
+      notes:        extraNotes || null,
       status:       'active',
       created_at:   new Date().toISOString()
     }, 'return=minimal');

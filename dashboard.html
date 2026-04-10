@@ -4972,9 +4972,9 @@ function p2RenderCardList(rows){
         (isRookie ? '<span style="font-size:9px;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:rgba(255,184,77,.1);color:#FFB84D;border:1px solid rgba(255,184,77,.25)">RC</span>' : '')
       + '<span style="font-size:9px;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:rgba(0,170,255,.1);color:var(--blue);border:1px solid rgba(0,170,255,.2);margin-left:4px">' + (subset || cat) + '</span>';
     row.innerHTML =
-        '<div style="font-family:Bebas Neue,sans-serif;font-size:13px;color:var(--blue);min-width:48px">#' + num + '</div>'
-      + '<div style="flex:1;font-size:14px;color:var(--white)">' + player + '</div>'
-      + '<div style="display:flex;gap:5px">' + tagHTML + '</div>';
+        '<div style="font-family:Bebas Neue,sans-serif;font-size:13px;color:var(--blue);min-width:48px;flex-shrink:0">#' + num + '</div>'
+      + '<div style="font-size:14px;color:var(--white)">' + player + '</div>'
+      + '<div style="display:flex;gap:5px;flex-shrink:0">' + tagHTML + '</div>';
     row.onmouseover = () => { row.style.borderColor='var(--blue)'; row.style.background='rgba(0,170,255,.06)'; };
     row.onmouseout  = () => { row.style.borderColor='var(--deep-border)'; row.style.background='var(--deep2)'; };
     row.onclick = () => p2PickCard({num:'#'+num, player:player, cat:cat, subset:subset, rookie:isRookie, _dbRow:c, _idx:idx});

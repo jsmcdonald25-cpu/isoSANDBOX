@@ -147,13 +147,15 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .build-stamp{font-family:'Courier New',monospace;font-size:9px;color:rgba(0,170,255,.35);letter-spacing:.5px}
 /* MAIN */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.topbar{display:flex;align-items:flex-start;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--deep-border);background:var(--deep2);flex-shrink:0}
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;padding:14px 24px 10px;border-bottom:1px solid var(--deep-border);background:var(--deep2);flex-shrink:0;flex-wrap:wrap}
 .topbar-title{font-family:Bebas Neue,sans-serif;font-size:20px;letter-spacing:2px;color:var(--white)}
 .topbar-sub{font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-top:1px}
 .topbar-actions{display:flex;align-items:center;gap:10px}
 /* CARD TICKER IN TOPBAR */
-.card-ticker-wrap{overflow:hidden;width:100%;background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:6px;padding:5px 10px;margin-top:4px;display:flex;align-items:center;gap:8px}
-.ct-mode-badge{flex-shrink:0;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.8px;padding:2px 7px;border-radius:4px;cursor:default;position:relative}
+/* Ticker now lives as its own row in .topbar (flex-wrap:wrap, order:3, flex-basis:100%).
+   This naturally spans the full topbar width so the right edge aligns with the notification bell. */
+.card-ticker-wrap{overflow:hidden;width:100%;background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:6px;padding:5px 10px;margin-top:9px;display:flex;align-items:center;gap:10px;order:3;flex-basis:100%}
+.ct-mode-badge{flex-shrink:0;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.8px;padding:2px 7px;border-radius:4px;cursor:default;position:relative;z-index:2}
 .ct-mode-badge.demo{background:rgba(255,170,0,0.12);color:#FFAA00;border:1px solid rgba(255,170,0,0.3)}
 .ct-mode-badge.live{background:rgba(0,232,135,0.1);color:var(--green);border:1px solid rgba(0,232,135,0.3)}
 .ct-mode-badge .ct-mode-tip{display:none;position:absolute;bottom:calc(100% + 6px);left:0;background:var(--deep2);border:1px solid var(--deep-border);border-radius:6px;padding:6px 10px;font-size:11px;font-weight:400;letter-spacing:0;white-space:nowrap;color:var(--chrome);z-index:99;pointer-events:none}
@@ -191,6 +193,17 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .notif-bell{position:relative;cursor:pointer;width:34px;height:34px;border-radius:8px;background:rgba(0,170,255,.08);border:1px solid var(--deep-border);display:flex;align-items:center;justify-content:center;color:var(--muted-text);transition:all .2s}
 .notif-bell:hover{border-color:var(--blue);color:var(--blue)}
 .notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--red);border-radius:50%;border:1.5px solid var(--deep2)}
+/* Notification bell glow — pulses when there are unread notifications.
+   Applied via JS: notifBell.classList.add('has-notif') when count > 0. */
+.notif-bell.has-notif{
+  border-color:rgba(255,59,92,0.6);
+  color:var(--red);
+  animation:notifGlow 2s ease-in-out infinite;
+}
+@keyframes notifGlow{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,59,92,0.0), 0 0 8px rgba(255,59,92,0.3)}
+  50%{box-shadow:0 0 0 4px rgba(255,59,92,0.2), 0 0 14px rgba(255,59,92,0.5)}
+}
 .content{flex:1;overflow-y:auto;padding:24px;padding-bottom:58px}
 .content::-webkit-scrollbar{width:5px}
 .content::-webkit-scrollbar-thumb{background:var(--deep-border);border-radius:3px}
@@ -1946,22 +1959,22 @@ async function logOut(){
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <div style="flex:1;min-width:0">
-      <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:5px">
+      <div style="display:flex;align-items:baseline;gap:14px">
         <div class="topbar-title" id="pgTitle">OVERVIEW</div>
         <div class="topbar-sub" id="pgSub">Welcome back, Jason</div>
       </div>
-      <div class="card-ticker-wrap">
-        <span class="ct-mode-badge demo" id="ctModeBadge">Add Cards<span class="ct-mode-tip" id="ctModeTip">Add 3 cards to ticker from My Vault</span></span>
-        <div class="card-ticker-inner" id="cardTickerInner"></div>
-      </div>
-      <script data-cfasync="false">
-      // Ticker renders dynamically from watchlist — see initCardTicker()
-      </script>
     </div>
     <div class="topbar-actions" style="flex-shrink:0;margin-left:18px">
       <button class="btn btn-ghost" onclick="N('library',document.querySelector('[onclick*=library]'))">&#128269; ISOVault</button>
       <button class="btn btn-primary" onclick="N('post',document.querySelector('[onclick*=post]'))">+ Post ISO</button>
-      <div class="notif-bell" onclick="N('notifs',null)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><div class="notif-dot"></div></div>
+      <div class="notif-bell has-notif" id="notifBell" onclick="N('notifs',null)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><div class="notif-dot" id="notifDot"></div></div>
+    </div>
+    <!-- Ticker is a direct child of .topbar with order:3 + flex-basis:100%
+         so it wraps to its own row, spanning the full topbar width. Right
+         edge aligns naturally with the notification bell. -->
+    <div class="card-ticker-wrap">
+      <span class="ct-mode-badge demo" id="ctModeBadge">Add Cards<span class="ct-mode-tip" id="ctModeTip">Add 3 cards to ticker from My Vault</span></span>
+      <div class="card-ticker-inner" id="cardTickerInner"></div>
     </div>
   </div><!-- /topbar -->
   <div class="content">

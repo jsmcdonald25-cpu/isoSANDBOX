@@ -2543,6 +2543,16 @@ async function logOut(){
     </div>
   </div>
 
+  <!-- ── Chart Detail modal ── drills into Market Value by Player or Collection Breakdown -->
+  <div class="vault-modal-overlay" id="mvChartDetailOverlay" style="display:none" onclick="if(event.target===this)_closeChartDetail()">
+    <div class="vault-modal" style="max-width:520px;max-height:80vh;display:flex;flex-direction:column">
+      <button class="vm-close" onclick="_closeChartDetail()">&times;</button>
+      <div class="vm-title" id="mvcdTitle" style="color:var(--blue)">Detail</div>
+      <div class="vm-sub" id="mvcdSub"></div>
+      <div id="mvcdContent" style="overflow-y:auto;flex:1;min-height:0;margin-top:10px"></div>
+    </div>
+  </div>
+
   <!-- ── Listing Confirm modal ── Sanity check before going live with a price -->
   <div class="lc-modal-bg" id="lcModalBg" onclick="if(event.target.id==='lcModalBg')_lcDeny()">
     <div class="lc-modal">
@@ -7253,7 +7263,7 @@ function _renderPlayerChart(data){
     const lastName=(function(p){const SUFFIXES=new Set(['jr','jr.','sr','sr.','ii','iii','iv']);const parts=(p||'').trim().split(/\s+/);if(parts.length>=2 && SUFFIXES.has(parts[parts.length-1].toLowerCase())) return parts.slice(-2).join(' ');return parts[parts.length-1]||p;})(player);
     const fmtVal=val>=1000?'$'+(val/1000).toFixed(1)+'k':'$'+Math.round(val);
     const safe=(player||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
-    out+=`<g style="cursor:pointer" onclick="_pchartFilterByPlayer('${safe}')"><title>Click to filter My Cards by ${safe}</title>`;
+    out+=`<g style="cursor:pointer" onclick="_openPlayerDetail('${safe}')"><title>Click for ${safe} detail</title>`;
     out+=`<rect x="${x}" y="${y}" width="${barW}" height="${bH}" rx="3" fill="url(#bgrv${i})"/>`;
     out+=`<rect x="${x}" y="${PT}" width="${barW}" height="${chartH}" fill="transparent"/>`;
     out+=`<text x="${x+barW/2}" y="${y-5}" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="11" fill="#00AAFF" opacity="0.9">${fmtVal}</text>`;
@@ -7264,7 +7274,87 @@ function _renderPlayerChart(data){
   el.innerHTML=out;
 }
 
-// Click a Market Value bar to filter the My Cards rail to that player
+// ── Chart Detail Modal ────────────────────────────────────────────────────
+// Shared popup for both Market Value by Player and Collection Breakdown.
+// Shows a card-level breakdown with image, variation, price, gain/loss.
+function _openChartDetail(title, subtitle, cards){
+  document.getElementById('mvcdTitle').textContent = title;
+  document.getElementById('mvcdSub').textContent = subtitle;
+  const wrap = document.getElementById('mvcdContent');
+  if(!cards || !cards.length){
+    wrap.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted-text);font-family:Barlow Condensed,sans-serif;font-size:13px">No cards found.</div>';
+  } else {
+    // Summary stats
+    const totalPaid = cards.reduce((s,c)=>s+(parseFloat(c.price_paid)||0),0);
+    const totalEst  = cards.reduce((s,c)=>s+(parseFloat(c._currentValue)||parseFloat(c.estimated_value)||0),0);
+    const gl = totalEst - totalPaid;
+    const glColor = gl >= 0 ? 'var(--green)' : 'var(--red)';
+    const glSign = gl >= 0 ? '+' : '';
+    let html = `<div style="display:flex;gap:12px;margin-bottom:12px;padding:10px 12px;background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:8px">
+      <div style="flex:1;text-align:center"><div style="font-family:Barlow Condensed,sans-serif;font-size:9px;color:var(--muted-text);letter-spacing:1px;text-transform:uppercase">Cards</div><div style="font-family:Bebas Neue,sans-serif;font-size:20px;color:#fff">${cards.length}</div></div>
+      <div style="flex:1;text-align:center"><div style="font-family:Barlow Condensed,sans-serif;font-size:9px;color:var(--muted-text);letter-spacing:1px;text-transform:uppercase">Cost Basis</div><div style="font-family:Bebas Neue,sans-serif;font-size:20px;color:#fff">$${totalPaid.toLocaleString(undefined,{maximumFractionDigits:0})}</div></div>
+      <div style="flex:1;text-align:center"><div style="font-family:Barlow Condensed,sans-serif;font-size:9px;color:var(--muted-text);letter-spacing:1px;text-transform:uppercase">Est. Value</div><div style="font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--blue)">$${totalEst.toLocaleString(undefined,{maximumFractionDigits:0})}</div></div>
+      <div style="flex:1;text-align:center"><div style="font-family:Barlow Condensed,sans-serif;font-size:9px;color:var(--muted-text);letter-spacing:1px;text-transform:uppercase">Gain/Loss</div><div style="font-family:Bebas Neue,sans-serif;font-size:20px;color:${glColor}">${glSign}$${Math.abs(gl).toLocaleString(undefined,{maximumFractionDigits:0})}</div></div>
+    </div>`;
+    // Card list
+    cards.forEach((c,i) => {
+      const img = c.front_image_url || window._GRAIL_PH || '';
+      const paid = parseFloat(c.price_paid)||0;
+      const est = parseFloat(c._currentValue)||parseFloat(c.estimated_value)||0;
+      const cgl = est - paid;
+      const cglColor = cgl >= 0 ? 'var(--green)' : 'var(--red)';
+      const cglSign = cgl >= 0 ? '+' : '';
+      const variation = c.variation || c.parallel || c.category || 'Base';
+      const meta = [c.year, c.brand, c.set_name].filter(Boolean).join(' · ');
+      const dateStr = c.date_acquired ? new Date(c.date_acquired).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'}) : '—';
+      const idx = (window._vaultData||[]).indexOf(c);
+      const clickAttr = idx >= 0 ? ` onclick="_closeChartDetail();openVaultCard(${idx})"` : '';
+      html += `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(0,170,255,0.06);cursor:pointer"${clickAttr}>
+        <img src="${img}" style="width:40px;height:56px;object-fit:cover;border-radius:4px;flex-shrink:0;background:#071828" loading="lazy">
+        <div style="flex:1;min-width:0">
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.player||'Unknown'}</div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${meta}</div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--blue);margin-top:2px">${variation}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:#fff">$${est ? est.toLocaleString(undefined,{maximumFractionDigits:0}) : paid.toLocaleString(undefined,{maximumFractionDigits:0})}</div>
+          ${(paid && est) ? `<div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:${cglColor}">${cglSign}$${Math.abs(cgl).toLocaleString(undefined,{maximumFractionDigits:0})}</div>` : ''}
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;color:var(--muted-text)">${dateStr}</div>
+        </div>
+      </div>`;
+    });
+    wrap.innerHTML = html;
+  }
+  document.getElementById('mvChartDetailOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function _closeChartDetail(){
+  document.getElementById('mvChartDetailOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// Open detail for a specific player — called from Market Value by Player bars
+function _openPlayerDetail(player){
+  const cards = (window._vaultData||[]).filter(c => (c.player||'') === player);
+  const totalVal = cards.reduce((s,c)=>s+(parseFloat(c._currentValue)||parseFloat(c.estimated_value)||parseFloat(c.price_paid)||0),0);
+  _openChartDetail(
+    player,
+    cards.length + ' card' + (cards.length!==1?'s':'') + ' · $' + totalVal.toLocaleString(undefined,{maximumFractionDigits:0}) + ' total value',
+    cards
+  );
+}
+
+// Open detail for a specific brand — called from Collection Breakdown segments
+function _openBrandDetail(brand){
+  const cards = (window._vaultData||[]).filter(c => (c.brand||'Other') === brand);
+  _openChartDetail(
+    brand,
+    cards.length + ' card' + (cards.length!==1?'s':'') + ' in your collection',
+    cards
+  );
+}
+
+// Legacy filter function — kept for search bar. Chart clicks now use detail popup.
 function _pchartFilterByPlayer(player){
   const si = document.getElementById('mv3-search-input');
   if(si){ si.value = player; }
@@ -7284,6 +7374,9 @@ function _mvSearchClear(){
   filterVaultGrid('');
 }
 
+// Distinct multi-color palette for donut charts — never all-blue.
+const _MV_CHART_COLORS=['#00AAFF','#00E887','#FFB84D','#9B59B6','#FF3B5C','#0891b2','#ec4899','#6366f1','#f59e0b','#64748b'];
+
 function _renderBrandChart(data){
   const svgEl=document.getElementById('mv-bchart-svg');
   const legEl=document.getElementById('mv-bchart-legend');
@@ -7295,16 +7388,14 @@ function _renderBrandChart(data){
   const hasMultipleSports=Object.keys(bySport).length>1;
   const total=data.length;
   const entries=Object.entries(byBrand).sort((a,b)=>b[1]-a[1]);
-  const COLORS=['#00AAFF','#0088CC','#00CCFF','#0055AA','#55AADD','#003377'];
   const cx=55,cy=65,R=52,r=28;
   let startA=-Math.PI/2,paths='',legendHtml='';
-  // Multi-sport header
+  // Multi-sport header — clean flex, no translateX transforms
   if(hasMultipleSports){
     const sportEntries=Object.entries(bySport).sort((a,b)=>b[1]-a[1]);
-    legendHtml+='<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(0,170,255,0.1)">';
+    legendHtml+='<div style="margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid rgba(0,170,255,0.1)">';
     sportEntries.forEach(([sport,count])=>{
-      const pct=((count/total)*100).toFixed(0);
-      legendHtml+=`<div style="display:flex;align-items:center;margin-bottom:4px;transform:translateX(-20px)"><div style="font-family:Barlow Condensed,sans-serif;font-size:16px;color:var(--blue);flex:1;font-weight:600;text-transform:uppercase;letter-spacing:.5px">${sport}</div><div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:#fff;transform:translateX(-65px)">${count}</div></div>`;
+      legendHtml+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px"><div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--blue);flex:1;font-weight:600;text-transform:uppercase;letter-spacing:.5px">${sport}</div><div style="font-family:'Bebas Neue',sans-serif;font-size:14px;color:#fff">${count}</div></div>`;
     });
     legendHtml+='</div>';
   }
@@ -7312,14 +7403,16 @@ function _renderBrandChart(data){
     const sweep=(count/total)*Math.PI*2;
     const endA=startA+sweep;
     const large=sweep>Math.PI?1:0;
-    const color=COLORS[i%COLORS.length];
+    const color=_MV_CHART_COLORS[i%_MV_CHART_COLORS.length];
     const pct=((count/total)*100).toFixed(0);
     const x1=cx+R*Math.cos(startA),y1=cy+R*Math.sin(startA);
     const x2=cx+R*Math.cos(endA),y2=cy+R*Math.sin(endA);
     const xi1=cx+r*Math.cos(endA),yi1=cy+r*Math.sin(endA);
     const xi2=cx+r*Math.cos(startA),yi2=cy+r*Math.sin(startA);
-    paths+=`<path d="M${x1.toFixed(1)},${y1.toFixed(1)} A${R},${R} 0 ${large},1 ${x2.toFixed(1)},${y2.toFixed(1)} L${xi1.toFixed(1)},${yi1.toFixed(1)} A${r},${r} 0 ${large},0 ${xi2.toFixed(1)},${yi2.toFixed(1)} Z" fill="${color}" stroke="#0D1F33" stroke-width="1.5" opacity="0.88"/>`;
-    legendHtml+=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div style="width:16px;height:16px;border-radius:4px;background:${color};flex-shrink:0;transform:translateX(-20px)"></div><div style="font-family:Barlow Condensed,sans-serif;font-size:22px;color:#7A95AE;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;transform:translateX(-20px)">${brand}</div><div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;flex-shrink:0;letter-spacing:1px;line-height:1;transform:translateX(-65px)">${pct}%</div></div>`;
+    const safe=brand.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+    paths+=`<path d="M${x1.toFixed(1)},${y1.toFixed(1)} A${R},${R} 0 ${large},1 ${x2.toFixed(1)},${y2.toFixed(1)} L${xi1.toFixed(1)},${yi1.toFixed(1)} A${r},${r} 0 ${large},0 ${xi2.toFixed(1)},${yi2.toFixed(1)} Z" fill="${color}" stroke="#0D1F33" stroke-width="1.5" opacity="0.88" style="cursor:pointer" onclick="_openBrandDetail('${safe}')"><title>${brand}: ${count} cards (${pct}%)</title></path>`;
+    // Clean legend row — no translateX transforms, proper flex, compact sizing
+    legendHtml+=`<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;cursor:pointer" onclick="_openBrandDetail('${safe}')"><div style="width:10px;height:10px;border-radius:2px;background:${color};flex-shrink:0"></div><div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:#7A95AE;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600">${brand}</div><div style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:#fff;flex-shrink:0">${count}</div><div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:#7A95AE;flex-shrink:0;width:28px;text-align:right">${pct}%</div></div>`;
     startA=endA;
   });
   paths+=`<text x="${cx}" y="${cy-7}" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-size="12" fill="#7A95AE" letter-spacing="1">CARDS</text><text x="${cx}" y="${cy+18}" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="33" fill="#fff">${total}</text>`;

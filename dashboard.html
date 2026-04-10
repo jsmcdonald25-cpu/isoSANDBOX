@@ -5122,10 +5122,11 @@ async function p2SubmitISO(){
   const btn = document.getElementById('p2SubmitBtn');
   if(btn){ btn.disabled = true; btn.textContent = 'POSTING...'; }
   try {
+    // Fetch current credits (needed for UI update even if admin skips deduction)
+    const _cp = await _rGet('profiles', 'select=*&id=eq.'+user.id+'&limit=1');
+    let currentCredits = (_cp && _cp[0] && _cp[0].iso_credits != null) ? (parseInt(_cp[0].iso_credits)||0) : 0;
     // Admins/owners skip credit check entirely — never charged for ISOs
     if(!window._isAdmin){
-      const _cp = await _rGet('profiles', 'select=*&id=eq.'+user.id+'&limit=1');
-      const currentCredits = (_cp && _cp[0] && _cp[0].iso_credits != null) ? (parseInt(_cp[0].iso_credits)||0) : 0;
       if(currentCredits < 1){
         T('Not enough credits — you need at least 1 to post an ISO.');
         if(btn){ btn.disabled = false; btn.textContent = 'Post ISO →'; }
@@ -5546,16 +5547,17 @@ async function submitISO(){
   if(btn){btn.disabled=true;btn.textContent='POSTING...';}
 
   try {
-    // Deduct 1 credit
+    // Fetch credits (needed for UI update even if admin skips deduction)
     const _cp=await _rGet('profiles','select=iso_credits&id=eq.'+user.id+'&limit=1');
-    const profile={iso_credits:(_cp&&_cp[0])?_cp[0].iso_credits:0};
-    const currentCredits = profile ? (parseInt(profile.iso_credits)||0) : 0;
-    if(currentCredits < 1){
-      T('Not enough credits — you need at least 1 to post an ISO.');
-      if(btn){btn.disabled=false;btn.textContent='POST ISO →';}
-      return;
+    let currentCredits = (_cp&&_cp[0]&&_cp[0].iso_credits!=null) ? (parseInt(_cp[0].iso_credits)||0) : 0;
+    if(!window._isAdmin){
+      if(currentCredits < 1){
+        T('Not enough credits — you need at least 1 to post an ISO.');
+        if(btn){btn.disabled=false;btn.textContent='POST ISO →';}
+        return;
+      }
+      await _rPatch('profiles','id=eq.'+user.id,{ iso_credits: currentCredits - 1 });
     }
-    await _rPatch('profiles','id=eq.'+user.id,{ iso_credits: currentCredits - 1 });
 
     // Write ISO record
     const mn = document.getElementById('minP')?.value||null;

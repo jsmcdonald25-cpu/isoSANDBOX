@@ -1972,8 +1972,8 @@ async function logOut(){
 
   <!-- OVERVIEW -->
 
-  <!-- POST ISO (PARKED — old player-search-first flow, kept for rollback) -->
-  <div class="panel" id="panel-post">
+  <!-- POST ISO (old player-search-first flow — preserved for rollback) -->
+  <div class="panel" id="panel-post-old">
     <div class="step-bar">
       <div class="step-item"><div class="step-circle now" id="sc1">1</div><span class="step-text now" id="st1">Sport</span></div>
       <div class="step-line" id="sl1"></div>
@@ -2111,10 +2111,8 @@ async function logOut(){
     </div>
   </div>
 
-  <!-- POST ISO v2 — PARKED for alpha. PHASE A PREVIEW had hardcoded sample
-       data + disabled submit. Reverted to old player-search flow above.
-       To re-enable: swap panel IDs back and route N('post') to p2Init(). -->
-  <div class="panel" id="panel-post-v2-parked">
+  <!-- POST ISO v2 — ISOVault-style Sport>Year>Brand>Set>Card>Variant flow -->
+  <div class="panel" id="panel-post">
     <div class="step-bar">
       <div class="step-item"><div class="step-circle now" id="p2sc1">1</div><span class="step-text now" id="p2st1">Sport</span></div>
       <div class="step-line"></div>
@@ -2132,7 +2130,7 @@ async function logOut(){
       <div class="step-line"></div>
       <div class="step-item"><div class="step-circle soon" id="p2sc8">8</div><span class="step-text" id="p2st8">Review</span></div>
     </div>
-    <div style="background:rgba(255,184,77,0.08);border:1px solid rgba(255,184,77,0.3);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:#FFB84D;letter-spacing:.5px"><strong>PHASE A PREVIEW</strong> — UI flow only, sample data. Posting is disabled until Phase B wires the per-set tables.</div>
+    <!-- Phase A banner removed — Phase B is live -->
     <div class="card-block">
       <!-- Step 1 — Sport -->
       <div class="sp active" id="p2sp1">
@@ -2264,7 +2262,8 @@ async function logOut(){
         <div style="background:rgba(0,170,255,.06);border:1px solid var(--deep-border);border-radius:8px;padding:14px;margin-bottom:16px;font-family:Barlow,sans-serif;font-size:13px;color:var(--chrome);line-height:1.6">By posting this ISO you agree that 1 credit ($1) will be deducted. Matching sellers are notified anonymously.</div>
         <div class="submit-bar">
           <div class="credit-cost">Cost: <strong>1 ISO Credit</strong></div>
-          <div style="display:flex;gap:10px"><button class="btn btn-ghost" onclick="p2Go(7)">&#8592; Edit</button><button class="btn btn-primary" disabled style="opacity:.5;cursor:not-allowed" title="Phase A preview — submission wired in Phase B">Post ISO &#8594;</button></div>
+          <div id="p2SubmitErr" style="display:none;margin-bottom:10px;padding:10px 14px;background:rgba(255,59,92,0.1);border:1px solid rgba(255,59,92,0.3);border-radius:8px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--red)"></div>
+          <div style="display:flex;gap:10px"><button class="btn btn-ghost" onclick="p2Go(7)">&#8592; Edit</button><button class="btn btn-primary" id="p2SubmitBtn" onclick="p2SubmitISO()">Post ISO &#8594;</button></div>
         </div>
       </div>
     </div>
@@ -4662,7 +4661,7 @@ function N(id,el){
   if(id==='myvault')renderMyVault();
   if(id==='myisos')renderMyISOs();
   if(id==='market')renderMkt();
-  if(id==='post'){ curStep=1; gS(1); isoRenderSportGrid(); } // ROLLBACK: was p2Init() — Phase B parked, see project_post_iso_redesign.md
+  if(id==='post'){ p2Init(); }
   if(id==='isoticker')initISOTicker();
   if(id==='leaderboard')loadContributorLeaderboard();
   if(id==='account')loadSellerPrefs();
@@ -4816,15 +4815,20 @@ function p2PickSport(s){
   p2Go(2);
 }
 
+// ── Phase B: real data from IV_SETS + per-set Supabase tables ─────────────
 function p2RenderYearPills(){
   const wrap = document.getElementById('p2YearPills');
   if(!wrap) return;
   wrap.innerHTML = '';
-  P2_SAMPLE.years.forEach(y=>{
+  const sportId = P2_STATE.sportId || '';
+  const years = [...new Set(
+    (IV_SETS||[]).filter(s => !sportId || s.sport === sportId).map(s => String(s.year || ''))
+  )].filter(Boolean).sort((a,b) => b.localeCompare(a));
+  years.forEach(y => {
     const p = document.createElement('div');
     p.className = 'iv-pill';
     p.textContent = y;
-    p.onclick = ()=>{ P2_STATE.year = y; p2RenderBrandPills(); p2Go(3); };
+    p.onclick = () => { P2_STATE.year = y; p2RenderBrandPills(); p2Go(3); };
     wrap.appendChild(p);
   });
 }
@@ -4833,11 +4837,19 @@ function p2RenderBrandPills(){
   const wrap = document.getElementById('p2BrandPills');
   if(!wrap) return;
   wrap.innerHTML = '';
-  P2_SAMPLE.brands.forEach(b=>{
+  const sportId = P2_STATE.sportId || '';
+  const year = P2_STATE.year || '';
+  const brands = [...new Set(
+    (IV_SETS||[]).filter(s =>
+      (!sportId || s.sport === sportId) &&
+      (!year || String(s.year) === year)
+    ).map(s => s.brand || '')
+  )].filter(Boolean).sort();
+  brands.forEach(b => {
     const p = document.createElement('div');
     p.className = 'iv-pill';
     p.textContent = b;
-    p.onclick = ()=>{ P2_STATE.brand = b; p2RenderSetGrid(); p2Go(4); };
+    p.onclick = () => { P2_STATE.brand = b; p2RenderSetGrid(); p2Go(4); };
     wrap.appendChild(p);
   });
 }
@@ -4846,69 +4858,112 @@ function p2RenderSetGrid(){
   const grid = document.getElementById('p2SetGrid');
   if(!grid) return;
   grid.innerHTML = '';
-  P2_SAMPLE.sets.forEach(s=>{
+  const sportId = P2_STATE.sportId || '';
+  const year = P2_STATE.year || '';
+  const brand = P2_STATE.brand || '';
+  const sets = (IV_SETS||[]).filter(s =>
+    (!sportId || s.sport === sportId) &&
+    (!year || String(s.year) === year) &&
+    (!brand || s.brand === brand)
+  );
+  sets.forEach(s => {
     const tile = document.createElement('div');
     tile.className = 'iv-set-tile';
     tile.style.cursor = 'pointer';
     tile.innerHTML =
-        '<div style="font-family:Bebas Neue,sans-serif;font-size:12px;letter-spacing:1.5px;color:var(--blue)">'+s.year+'</div>'
-      + '<div style="font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:1px;color:var(--white);margin:3px 0">'+s.name.toUpperCase()+'</div>'
-      + '<div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text)">'+s.meta+'</div>';
-    tile.onclick = ()=>{
-      P2_STATE.set = s.year+' '+s.name;
+        '<div style="font-family:Bebas Neue,sans-serif;font-size:12px;letter-spacing:1.5px;color:var(--blue)">' + (s.year||'') + '</div>'
+      + '<div style="font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:1px;color:var(--white);margin:3px 0">' + (s.label||s.name||'').toUpperCase() + '</div>'
+      + '<div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text)">' + (s.brand||'') + '</div>';
+    tile.onclick = () => {
+      P2_STATE.set = (s.year||'') + ' ' + (s.label||s.name||'');
+      P2_STATE._setTable = s.table;
+      P2_STATE._ivSet = s;
       const titleEl = document.getElementById('p2CardStepTitle');
-      if(titleEl) titleEl.textContent = 'SELECT CARD — '+(s.year+' '+s.name).toUpperCase();
-      p2RenderSubsetPills();
-      p2RenderCardList();
+      if(titleEl) titleEl.textContent = 'SELECT CARD — ' + P2_STATE.set.toUpperCase();
+      p2LoadCards(s.table);
       p2Go(5);
     };
     grid.appendChild(tile);
   });
+  if(!sets.length){
+    grid.innerHTML = '<div style="text-align:center;padding:20px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)">No sets found for ' + year + ' ' + brand + '</div>';
+  }
 }
 
-function p2RenderSubsetPills(){
+// Fetch real card data from the per-set Supabase table
+async function p2LoadCards(table){
+  const list = document.getElementById('p2CardList');
+  const subWrap = document.getElementById('p2SubsetPills');
+  if(list) list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted-text);font-family:Barlow Condensed,sans-serif;font-size:12px">Loading cards...</div>';
+  if(subWrap) subWrap.innerHTML = '';
+  try {
+    const rows = await _rGet(table, 'select=card_number,player,category,insert_name,is_rookie,variations&order=card_number.asc&limit=2000');
+    window._p2Cards = rows || [];
+    p2RenderSubsetPills(rows);
+    p2RenderCardList(rows);
+  } catch(e) {
+    console.warn('p2LoadCards', e);
+    if(list) list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--red);font-family:Barlow Condensed,sans-serif;font-size:12px">Failed to load cards: ' + e.message + '</div>';
+  }
+}
+
+function p2RenderSubsetPills(rows){
   const wrap = document.getElementById('p2SubsetPills');
   if(!wrap) return;
   wrap.innerHTML = '';
-  // Distinct subset names from current set's cards
-  const subs = Array.from(new Set(P2_SAMPLE.cards.filter(c=>c.subset).map(c=>c.subset)));
+  const subs = [...new Set((rows||[]).filter(c => c.insert_name).map(c => c.insert_name))].sort();
   const all = document.createElement('div');
   all.className = 'iv-pill active';
   all.textContent = 'All Cards';
-  all.onclick = ()=>p2SubsetFilter('all', all);
+  all.onclick = () => p2SubsetFilter('all', all);
   wrap.appendChild(all);
-  subs.forEach(name=>{
+  if(subs.length){
+    const base = document.createElement('div');
+    base.className = 'iv-pill';
+    base.textContent = 'Base';
+    base.onclick = () => p2SubsetFilter('__base__', base);
+    wrap.appendChild(base);
+  }
+  subs.forEach(name => {
     const p = document.createElement('div');
     p.className = 'iv-pill';
     p.textContent = name;
-    p.onclick = ()=>p2SubsetFilter(name, p);
+    p.onclick = () => p2SubsetFilter(name, p);
     wrap.appendChild(p);
   });
 }
 
-function p2RenderCardList(){
+function p2RenderCardList(rows){
   const list = document.getElementById('p2CardList');
   if(!list) return;
   list.innerHTML = '';
-  P2_SAMPLE.cards.forEach(c=>{
+  (rows||[]).forEach((c, idx) => {
+    const num = String(c.card_number||'');
+    const player = c.player || 'Unknown';
+    const cat = c.category || 'Base';
+    const subset = c.insert_name || '';
+    const isRookie = c.is_rookie || false;
     const row = document.createElement('div');
     row.className = 'p2-card-row';
-    row.setAttribute('data-subset', c.subset || '');
-    row.setAttribute('data-cat', c.cat || '');
-    row.setAttribute('data-search', (c.num+' '+c.player).toLowerCase());
+    row.setAttribute('data-subset', subset);
+    row.setAttribute('data-cat', cat);
+    row.setAttribute('data-search', (num + ' ' + player).toLowerCase());
     row.style.cssText = 'display:flex;gap:12px;align-items:center;padding:9px 12px;background:var(--deep2);border:1px solid var(--deep-border);border-radius:7px;cursor:pointer;transition:all .15s';
     const tagHTML =
-        (c.rookie ? '<span style="font-size:9px;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:rgba(255,184,77,.1);color:#FFB84D;border:1px solid rgba(255,184,77,.25)">RC</span>' : '')
-      + '<span style="font-size:9px;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:rgba(0,170,255,.1);color:var(--blue);border:1px solid rgba(0,170,255,.2);margin-left:4px">'+(c.subset || c.cat)+'</span>';
+        (isRookie ? '<span style="font-size:9px;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:rgba(255,184,77,.1);color:#FFB84D;border:1px solid rgba(255,184,77,.25)">RC</span>' : '')
+      + '<span style="font-size:9px;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:rgba(0,170,255,.1);color:var(--blue);border:1px solid rgba(0,170,255,.2);margin-left:4px">' + (subset || cat) + '</span>';
     row.innerHTML =
-        '<div style="font-family:Bebas Neue,sans-serif;font-size:13px;color:var(--blue);min-width:48px">'+c.num+'</div>'
-      + '<div style="flex:1;font-size:14px;color:var(--white)">'+c.player+'</div>'
-      + '<div style="display:flex;gap:5px">'+tagHTML+'</div>';
-    row.onmouseover = ()=>{ row.style.borderColor='var(--blue)'; row.style.background='rgba(0,170,255,.06)'; };
-    row.onmouseout  = ()=>{ row.style.borderColor='var(--deep-border)'; row.style.background='var(--deep2)'; };
-    row.onclick = ()=>p2PickCard(c);
+        '<div style="font-family:Bebas Neue,sans-serif;font-size:13px;color:var(--blue);min-width:48px">#' + num + '</div>'
+      + '<div style="flex:1;font-size:14px;color:var(--white)">' + player + '</div>'
+      + '<div style="display:flex;gap:5px">' + tagHTML + '</div>';
+    row.onmouseover = () => { row.style.borderColor='var(--blue)'; row.style.background='rgba(0,170,255,.06)'; };
+    row.onmouseout  = () => { row.style.borderColor='var(--deep-border)'; row.style.background='var(--deep2)'; };
+    row.onclick = () => p2PickCard({num:'#'+num, player:player, cat:cat, subset:subset, rookie:isRookie, _dbRow:c, _idx:idx});
     list.appendChild(row);
   });
+  if(!(rows||[]).length){
+    list.innerHTML = '<div style="text-align:center;padding:20px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)">No cards in this set.</div>';
+  }
 }
 
 function p2FilterCards(q){
@@ -4934,6 +4989,7 @@ function p2SubsetFilter(name, el){
   document.querySelectorAll('#p2CardList .p2-card-row').forEach(r=>{
     const sub = r.getAttribute('data-subset') || '';
     if(name === 'all') { r.style.display = ''; }
+    else if(name === '__base__') { r.style.display = !sub ? '' : 'none'; }
     else { r.style.display = sub === name ? '' : 'none'; }
   });
 }
@@ -4942,6 +4998,7 @@ function p2PickCard(c){
   P2_STATE.card    = c.player;
   P2_STATE.cardNum = c.num;
   P2_STATE.subset  = c.subset || '';
+  P2_STATE._dbRow  = c._dbRow || null;
   const t = document.getElementById('p2VarStepTitle');
   if(t) t.textContent = 'SELECT VARIANT — '+c.num+' '+c.player.toUpperCase();
   p2RenderVariantGrid();
@@ -4956,7 +5013,26 @@ function p2RenderVariantGrid(){
   const grid = document.getElementById('p2VarGrid');
   if(!grid) return;
   grid.innerHTML = '';
-  P2_SAMPLE.variants.forEach(v=>{
+  // Build variant list from the card's actual variations column, plus an
+  // OTHER tile so users can request parallels not yet in the catalog.
+  const dbRow = P2_STATE._dbRow;
+  const rawVars = (dbRow && Array.isArray(dbRow.variations)) ? dbRow.variations : [];
+  const variants = rawVars.map(v => ({
+    name: v.label || 'Base',
+    meta: v.run ? '/'+v.run : 'Unnumbered',
+    color: v.color || '#fff',
+    isOther: false,
+    _run: v.run || null
+  }));
+  // Always add OTHER at the end
+  variants.push({
+    name: 'OTHER',
+    meta: 'Admin will build this variant',
+    color: 'repeating-linear-gradient(45deg,#7A95AE,#7A95AE 4px,#143050 4px,#143050 8px)',
+    isOther: true,
+    _run: null
+  });
+  variants.forEach(v=>{
     const tile = document.createElement('div');
     tile.className = 'p2-var-tile';
     tile.style.cssText = 'padding:12px;background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;cursor:pointer;transition:all .15s';
@@ -5021,6 +5097,73 @@ function p2PickVariant(v, el){
   el.style.background= v.isOther ? 'rgba(255,184,77,.1)' : 'rgba(0,170,255,.1)';
   const nextBtn = document.getElementById('p2VarNextBtn');
   if(nextBtn){ nextBtn.disabled = false; nextBtn.style.opacity='1'; nextBtn.style.cursor='pointer'; }
+}
+
+// ── Phase B: submit ISO from v2 flow ─────────────────────────────────────
+async function p2SubmitISO(){
+  const errEl = document.getElementById('p2SubmitErr');
+  if(errEl) errEl.style.display = 'none';
+  const S = P2_STATE;
+  if(!S.card || !S.variant){
+    if(errEl){ errEl.textContent = 'Go back and select a card and variant.'; errEl.style.display='block'; }
+    return;
+  }
+  const user = window._authUser;
+  if(!user){
+    if(errEl){ errEl.textContent = 'You must be signed in to post an ISO.'; errEl.style.display='block'; }
+    return;
+  }
+  const btn = document.getElementById('p2SubmitBtn');
+  if(btn){ btn.disabled = true; btn.textContent = 'POSTING...'; }
+  try {
+    // Check + deduct 1 credit
+    const _cp = await _rGet('profiles', 'select=credits&id=eq.'+user.id+'&limit=1');
+    const currentCredits = (_cp && _cp[0]) ? (parseInt(_cp[0].credits)||0) : 0;
+    if(currentCredits < 1){
+      T('Not enough credits — you need at least 1 to post an ISO.');
+      if(btn){ btn.disabled = false; btn.textContent = 'Post ISO →'; }
+      return;
+    }
+    await _rPatch('profiles', 'id=eq.'+user.id, { credits: currentCredits - 1 });
+
+    // Build the ISO row
+    const mn = document.getElementById('p2MinP')?.value || null;
+    const mx = document.getElementById('p2MaxP')?.value || null;
+    const serial = S.serial || null;
+    const cardName = [S.year, S._ivSet ? S._ivSet.brand : S.brand, S._ivSet ? (S._ivSet.label||S._ivSet.name) : S.set].filter(Boolean).join(' ');
+    await _rPost('isos', {
+      user_id:      user.id,
+      sport:        S.sportId || S.sport,
+      player:       S.card,
+      card_name:    cardName,
+      card_number:  S.cardNum ? String(S.cardNum).replace(/^#/,'') : null,
+      parallel:     S.variant,
+      grade:        S.grade || 'PSA 10',
+      min_price:    mn ? parseFloat(mn) : null,
+      max_price:    mx ? parseFloat(mx) : null,
+      serial_number:serial ? parseInt(serial) : null,
+      notes:        S.variantOther || null,
+      status:       'active',
+      created_at:   new Date().toISOString()
+    }, 'return=minimal');
+
+    // Update credit display
+    const credEl = document.getElementById('credits-value');
+    const credSub = document.getElementById('credits-sub');
+    if(credEl) credEl.textContent = currentCredits - 1;
+    if(credSub) credSub.textContent = '$1 per post · ' + (currentCredits - 1) + ' left';
+
+    T(S.card + ' · ' + S.variant + ' — ISO posted! 1 credit used.');
+    // Reset state and navigate to My ISOs
+    Object.assign(P2_STATE, {sport:'',year:'',brand:'',set:'',subset:'',card:'',cardNum:'',variant:'',grade:'PSA 10',_setTable:'',_ivSet:null,_dbRow:null});
+    setTimeout(() => N('myisos', document.querySelector('[onclick*=myisos]')), 1200);
+  } catch(e) {
+    const msg = e.message || 'Unknown error';
+    if(errEl){ errEl.textContent = 'Failed to post ISO: ' + msg; errEl.style.display='block'; }
+    T('Failed to post ISO — ' + msg);
+  } finally {
+    if(btn){ btn.disabled = false; btn.textContent = 'Post ISO →'; }
+  }
 }
 
 function p2SelGrade(el){

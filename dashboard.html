@@ -5135,15 +5135,17 @@ async function p2SubmitISO(){
   const btn = document.getElementById('p2SubmitBtn');
   if(btn){ btn.disabled = true; btn.textContent = 'POSTING...'; }
   try {
-    // Check + deduct 1 credit
-    const _cp = await _rGet('profiles', 'select=*&id=eq.'+user.id+'&limit=1');
-    const currentCredits = (_cp && _cp[0] && _cp[0].credits != null) ? (parseInt(_cp[0].credits)||0) : 0;
-    if(currentCredits < 1){
-      T('Not enough credits — you need at least 1 to post an ISO.');
-      if(btn){ btn.disabled = false; btn.textContent = 'Post ISO →'; }
-      return;
+    // Admins/owners skip credit check entirely — never charged for ISOs
+    if(!window._isAdmin){
+      const _cp = await _rGet('profiles', 'select=*&id=eq.'+user.id+'&limit=1');
+      const currentCredits = (_cp && _cp[0] && _cp[0].credits != null) ? (parseInt(_cp[0].credits)||0) : 0;
+      if(currentCredits < 1){
+        T('Not enough credits — you need at least 1 to post an ISO.');
+        if(btn){ btn.disabled = false; btn.textContent = 'Post ISO →'; }
+        return;
+      }
+      await _rPatch('profiles', 'id=eq.'+user.id, { credits: currentCredits - 1 });
     }
-    await _rPatch('profiles', 'id=eq.'+user.id, { credits: currentCredits - 1 });
 
     // Build the ISO row
     const mn = document.getElementById('p2MinP')?.value || null;

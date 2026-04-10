@@ -4372,10 +4372,9 @@ function viewCreditEvents(userId, label) {
 // ── GIVE CREDITS (standalone) ──────────────────────────────
 let _gcUserId = null;
 
-function openGiveCredits(userId, label) {
+async function openGiveCredits(userId, label) {
   _gcUserId = userId || null;
   const modal = document.getElementById('give-credits-modal');
-  const searchWrap = document.getElementById('gc-user-picker-wrap');
   const selEl = document.getElementById('gc-user-selected');
   const searchEl = document.getElementById('gc-user-search');
   const dropEl = document.getElementById('gc-user-dropdown');
@@ -4385,14 +4384,20 @@ function openGiveCredits(userId, label) {
   document.getElementById('gc-note').value = '';
   document.getElementById('gc-err').style.display = 'none';
 
+  // Auto-load users if not already loaded
+  if (!window._allUsers || !_allUsers.length) {
+    try {
+      const rows = await _get('profiles', 'select=id,username,role,is_admin,created_at&order=created_at.desc&limit=200');
+      _allUsers = rows || [];
+    } catch(e) { _allUsers = []; }
+  }
+
   if (userId && label) {
-    // Pre-selected user (from User Manager row)
     searchEl.style.display = 'none';
     dropEl.style.display = 'none';
     selEl.style.display = 'block';
     document.getElementById('gc-user-label').textContent = '@' + label;
   } else {
-    // Open picker
     searchEl.style.display = '';
     searchEl.value = '';
     selEl.style.display = 'none';
@@ -4417,10 +4422,9 @@ function gcFilterUsers() {
   const q = (document.getElementById('gc-user-search').value || '').toLowerCase().trim();
   const dropEl = document.getElementById('gc-user-dropdown');
   if (!q || q.length < 2) { dropEl.style.display = 'none'; return; }
-  // Use cached _allUsers if available, otherwise show hint
   const pool = window._allUsers || [];
   if (!pool.length) {
-    dropEl.innerHTML = '<div style="padding:10px;font-size:12px;color:var(--text3)">Load User Manager first to search users</div>';
+    dropEl.innerHTML = '<div style="padding:10px;font-size:12px;color:var(--text3)">No users loaded — try closing and reopening</div>';
     dropEl.style.display = 'block';
     return;
   }

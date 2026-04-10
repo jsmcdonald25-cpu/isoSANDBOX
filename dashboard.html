@@ -921,48 +921,34 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv-search-btn-clear{background:rgba(122,149,174,0.06);border-color:rgba(122,149,174,0.25);color:var(--muted-text)}
 .mv-search-btn-clear:hover{background:rgba(122,149,174,0.12);border-color:var(--muted-text);color:var(--white)}
 
-/* ── My Vault sort box (mid-bottom right of My Cards section) ── */
-.mv-sort-row{display:flex;justify-content:flex-end;margin-top:14px;padding-right:8px}
-.mv-sort-box{
-  background:rgba(10,18,32,0.6);
-  border:1px solid var(--deep-border);
-  border-radius:10px;
-  padding:10px 12px 11px;
-  min-width:230px;
+/* ── My Vault sort dropdown (inline in search bar, far right) ── */
+.mv-sort-dropdown{position:relative;flex-shrink:0}
+.mv-sort-trigger{
+  background:rgba(0,170,255,0.1);border:1px solid rgba(0,170,255,0.35);
+  border-radius:8px;padding:9px 14px;font-family:'Barlow Condensed',sans-serif;
+  font-size:12px;letter-spacing:1px;text-transform:uppercase;
+  color:var(--blue);cursor:pointer;transition:all .15s;font-weight:600;
+  white-space:nowrap;display:flex;align-items:center;gap:6px;
 }
-.mv-sort-title{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:11px;
-  letter-spacing:2px;
-  color:var(--muted-text);
-  margin-bottom:8px;
-  text-transform:uppercase;
+.mv-sort-trigger:hover{background:rgba(0,170,255,0.18);border-color:var(--blue)}
+.mv-sort-trigger .mv-sort-arrow{font-size:8px;opacity:.7}
+.mv-sort-menu{
+  display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:50;
+  background:var(--deep2,#0a1a2e);border:1px solid rgba(0,170,255,0.35);
+  border-radius:8px;min-width:180px;padding:4px;
+  box-shadow:0 12px 32px rgba(0,0,0,0.6);
 }
-.mv-sort-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
-.mv-sort-btn{
-  background:rgba(122,149,174,0.06);
-  border:1px solid rgba(122,149,174,0.25);
-  border-radius:6px;
-  padding:6px 9px;
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:11px;
-  letter-spacing:.8px;
-  text-transform:uppercase;
-  color:var(--muted-text);
-  cursor:pointer;
-  transition:all .12s;
-  text-align:left;
-  white-space:nowrap;
+.mv-sort-menu.open{display:block}
+.mv-sort-opt{
+  display:block;width:100%;text-align:left;
+  background:none;border:none;padding:8px 12px;
+  font-family:'Barlow Condensed',sans-serif;font-size:12px;
+  letter-spacing:.8px;text-transform:uppercase;
+  color:var(--muted-text);cursor:pointer;border-radius:5px;
+  transition:all .1s;
 }
-.mv-sort-btn:hover{background:rgba(0,170,255,0.08);border-color:rgba(0,170,255,0.35);color:var(--white)}
-.mv-sort-btn.active{
-  background:rgba(0,170,255,0.15);
-  border-color:var(--blue);
-  color:var(--blue);
-  font-weight:600;
-}
-.mv-sort-btn .mv-sort-arrow{opacity:.5;font-size:9px;margin-right:3px}
-.mv-sort-btn.active .mv-sort-arrow{opacity:1}
+.mv-sort-opt:hover{background:rgba(0,170,255,0.1);color:var(--white)}
+.mv-sort-opt.active{color:var(--blue);font-weight:600;background:rgba(0,170,255,0.08)}
 @media(max-width:768px){
   .mv-scroll-search-wrap{flex:1;width:auto}
   .mv-search-btn{padding:9px 12px;font-size:11px}
@@ -1976,7 +1962,7 @@ async function logOut(){
          so it wraps to its own row, spanning the full topbar width. Right
          edge aligns naturally with the notification bell. -->
     <div class="card-ticker-wrap">
-      <span class="ct-mode-badge demo" id="ctModeBadge">Add Cards<span class="ct-mode-tip" id="ctModeTip">Add 3 cards to ticker from My Vault</span></span>
+      <span class="ct-mode-badge demo" id="ctModeBadge" onclick="N('myvault',document.getElementById('nav-myvault'))" style="cursor:pointer" title="Go to My Vault to add cards">Add Cards<span class="ct-mode-tip" id="ctModeTip">Add 3 cards to ticker from My Vault</span></span>
       <div class="card-ticker-track">
         <div class="card-ticker-inner" id="cardTickerInner"></div>
       </div>
@@ -2857,25 +2843,25 @@ async function logOut(){
         </div>
         <button class="mv-search-btn" onclick="_mvSearchSubmit()">Search</button>
         <button class="mv-search-btn mv-search-btn-clear" onclick="_mvSearchClear()">Clear</button>
+        <!-- Sort dropdown — far right of search bar, overlays cards when expanded -->
+        <div class="mv-sort-dropdown">
+          <button class="mv-sort-trigger" onclick="_mvToggleSortMenu(event)">
+            Sort: <span id="mvSortLabel">Newest</span> <span class="mv-sort-arrow">&#9660;</span>
+          </button>
+          <div class="mv-sort-menu" id="mvSortMenu">
+            <button class="mv-sort-opt active" data-sort="date_desc"   onclick="_mvSetSortDrop('date_desc')">&#9660; Newest</button>
+            <button class="mv-sort-opt" data-sort="date_asc"    onclick="_mvSetSortDrop('date_asc')">&#9650; Oldest</button>
+            <button class="mv-sort-opt" data-sort="paid_desc"   onclick="_mvSetSortDrop('paid_desc')">&#9660; Highest Paid</button>
+            <button class="mv-sort-opt" data-sort="paid_asc"    onclick="_mvSetSortDrop('paid_asc')">&#9650; Lowest Paid</button>
+            <button class="mv-sort-opt" data-sort="player_asc"  onclick="_mvSetSortDrop('player_asc')">A&#8594;Z Player</button>
+            <button class="mv-sort-opt" data-sort="forsale_first" onclick="_mvSetSortDrop('forsale_first')">&#36; For Sale</button>
+          </div>
+        </div>
       </div>
       <div class="mv-scroll-wrap">
         <button type="button" class="mv-scroll-nav mv-scroll-nav-prev" id="mvScrollPrev" aria-label="Scroll left" onclick="_mvScrollBy(-1)">&#10094;</button>
         <div class="mv-scroll-rail" id="myVaultGrid"></div>
         <button type="button" class="mv-scroll-nav mv-scroll-nav-next" id="mvScrollNext" aria-label="Scroll right" onclick="_mvScrollBy(1)">&#10095;</button>
-      </div>
-      <!-- My Vault sort box — wired to existing sortVaultGrid() -->
-      <div class="mv-sort-row">
-        <div class="mv-sort-box">
-          <div class="mv-sort-title">Sort by</div>
-          <div class="mv-sort-grid">
-            <button class="mv-sort-btn" data-sort="date_desc"   onclick="_mvSetSort('date_desc',this)"><span class="mv-sort-arrow">&#9660;</span>Newest</button>
-            <button class="mv-sort-btn" data-sort="date_asc"    onclick="_mvSetSort('date_asc',this)"><span class="mv-sort-arrow">&#9650;</span>Oldest</button>
-            <button class="mv-sort-btn" data-sort="paid_desc"   onclick="_mvSetSort('paid_desc',this)"><span class="mv-sort-arrow">&#9660;</span>Highest Paid</button>
-            <button class="mv-sort-btn" data-sort="paid_asc"    onclick="_mvSetSort('paid_asc',this)"><span class="mv-sort-arrow">&#9650;</span>Lowest Paid</button>
-            <button class="mv-sort-btn" data-sort="player_asc"  onclick="_mvSetSort('player_asc',this)"><span class="mv-sort-arrow">A&#8594;Z</span>Player</button>
-            <button class="mv-sort-btn" data-sort="forsale_first" onclick="_mvSetSort('forsale_first',this)"><span class="mv-sort-arrow">&#36;</span>For Sale</button>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -7824,16 +7810,41 @@ function _mvGetSavedSort(){
 function _mvSaveSort(mode){
   try { localStorage.setItem(_MV_SORT_KEY, mode); } catch(e){}
 }
+// Sort dropdown label map
+const _MV_SORT_LABELS = {date_desc:'Newest',date_asc:'Oldest',paid_desc:'Highest Paid',paid_asc:'Lowest Paid',player_asc:'A→Z Player',forsale_first:'For Sale'};
+
 function _mvHighlightSortBtn(mode){
-  document.querySelectorAll('.mv-sort-btn').forEach(b => {
+  document.querySelectorAll('.mv-sort-opt').forEach(b => {
     b.classList.toggle('active', b.dataset.sort === mode);
   });
+  const label = document.getElementById('mvSortLabel');
+  if(label) label.textContent = _MV_SORT_LABELS[mode] || 'Sort';
 }
-function _mvSetSort(mode, btn){
+function _mvToggleSortMenu(e){
+  if(e) e.stopPropagation();
+  const menu = document.getElementById('mvSortMenu');
+  if(!menu) return;
+  const isOpen = menu.classList.contains('open');
+  menu.classList.toggle('open');
+  if(!isOpen){
+    // Close on any click outside
+    const closer = function(ev){
+      if(!menu.contains(ev.target)){
+        menu.classList.remove('open');
+        document.removeEventListener('click', closer, true);
+      }
+    };
+    setTimeout(()=>document.addEventListener('click', closer, true), 0);
+  }
+}
+function _mvSetSortDrop(mode){
   _mvSaveSort(mode);
   _mvHighlightSortBtn(mode);
   sortVaultGrid(mode);
+  const menu = document.getElementById('mvSortMenu');
+  if(menu) menu.classList.remove('open');
 }
+function _mvSetSort(mode, btn){ _mvSetSortDrop(mode); } // Legacy compat
 function _mvApplySavedSort(){
   const mode = _mvGetSavedSort();
   _mvHighlightSortBtn(mode);

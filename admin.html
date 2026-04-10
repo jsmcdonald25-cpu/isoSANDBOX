@@ -1124,9 +1124,8 @@ tr:hover td { background: var(--bg); }
         <div style="font-size:15px;font-weight:700;margin-bottom:12px">Give Credits</div>
         <div class="field" id="gc-user-picker-wrap">
           <label>USER</label>
-          <input class="input" id="gc-user-search" placeholder="Search username or email…" oninput="gcFilterUsers()" autocomplete="off">
-          <div id="gc-user-dropdown" style="display:none;max-height:180px;overflow-y:auto;background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-top:4px"></div>
-          <div id="gc-user-selected" style="display:none;margin-top:6px;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;display:none">
+          <div id="gc-user-list" style="display:flex;flex-direction:column;gap:4px"></div>
+          <div id="gc-user-selected" style="display:none;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:600">
             <span id="gc-user-label">—</span>
             <span onclick="gcClearUser()" style="float:right;cursor:pointer;color:var(--red);font-size:11px;font-weight:700">✕ change</span>
           </div>
@@ -4392,65 +4391,43 @@ async function openGiveCredits(userId, label) {
     } catch(e) { _allUsers = []; }
   }
 
+  const listEl = document.getElementById('gc-user-list');
+  const selEl = document.getElementById('gc-user-selected');
+
   if (userId && label) {
-    searchEl.style.display = 'none';
-    dropEl.style.display = 'none';
+    listEl.style.display = 'none';
     selEl.style.display = 'block';
     document.getElementById('gc-user-label').textContent = '@' + label;
   } else {
-    searchEl.style.display = '';
-    searchEl.value = '';
     selEl.style.display = 'none';
-    dropEl.style.display = 'none';
     _gcUserId = null;
+    // Render all users as clickable rows
+    listEl.style.display = 'flex';
+    listEl.innerHTML = _allUsers.map(u => `
+      <div onclick="gcPickUser('${u.id}','${(u.username||u.id.slice(0,8)).replace(/'/g,"\\'")}')"
+           style="padding:10px 14px;cursor:pointer;font-size:13px;border:1px solid var(--border);border-radius:8px;transition:all 0.15s;display:flex;align-items:center;gap:10px"
+           onmouseover="this.style.background='var(--bg)';this.style.borderColor='var(--blue)'" onmouseout="this.style.background='';this.style.borderColor=''">
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">${(u.username||'?')[0].toUpperCase()}</div>
+        <div>
+          <div style="font-weight:600">@${u.username||'—'}</div>
+          <div style="font-size:11px;color:var(--text3)">${u.id.slice(0,8)}… · ${u.role||'user'}${u.is_admin?' · Admin':''}</div>
+        </div>
+      </div>
+    `).join('');
+    if (!_allUsers.length) listEl.innerHTML = '<div style="padding:10px;font-size:12px;color:var(--text3)">No users found</div>';
   }
   modal.style.display = 'flex';
-  if (!userId) searchEl.focus();
 }
 
 function gcClearUser() {
   _gcUserId = null;
   document.getElementById('gc-user-selected').style.display = 'none';
-  const searchEl = document.getElementById('gc-user-search');
-  searchEl.style.display = '';
-  searchEl.value = '';
-  searchEl.focus();
-  document.getElementById('gc-user-dropdown').style.display = 'none';
-}
-
-function gcFilterUsers() {
-  const q = (document.getElementById('gc-user-search').value || '').toLowerCase().trim();
-  const dropEl = document.getElementById('gc-user-dropdown');
-  if (!q || q.length < 2) { dropEl.style.display = 'none'; return; }
-  const pool = window._allUsers || [];
-  if (!pool.length) {
-    dropEl.innerHTML = '<div style="padding:10px;font-size:12px;color:var(--text3)">No users loaded — try closing and reopening</div>';
-    dropEl.style.display = 'block';
-    return;
-  }
-  const matches = pool.filter(u =>
-    (u.username||'').toLowerCase().includes(q) ||
-    (u.id||'').toLowerCase().includes(q)
-  ).slice(0, 8);
-  if (!matches.length) {
-    dropEl.innerHTML = '<div style="padding:10px;font-size:12px;color:var(--text3)">No users found</div>';
-    dropEl.style.display = 'block';
-    return;
-  }
-  dropEl.innerHTML = matches.map(u => `
-    <div onclick="gcPickUser('${u.id}','${(u.username||u.id.slice(0,8)).replace(/'/g,"\\'")}')"
-         style="padding:8px 12px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border);transition:background 0.15s"
-         onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
-      <strong>@${u.username||'—'}</strong> <span style="color:var(--text3);font-size:11px">${u.id.slice(0,8)}…</span>
-    </div>
-  `).join('');
-  dropEl.style.display = 'block';
+  document.getElementById('gc-user-list').style.display = 'flex';
 }
 
 function gcPickUser(id, label) {
   _gcUserId = id;
-  document.getElementById('gc-user-search').style.display = 'none';
-  document.getElementById('gc-user-dropdown').style.display = 'none';
+  document.getElementById('gc-user-list').style.display = 'none';
   document.getElementById('gc-user-selected').style.display = 'block';
   document.getElementById('gc-user-label').textContent = '@' + label;
 }

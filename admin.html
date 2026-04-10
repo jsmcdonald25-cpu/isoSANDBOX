@@ -1118,6 +1118,45 @@ tr:hover td { background: var(--bg); }
       </div>
     </div>
 
+    <!-- Give Credits Modal (standalone — works from Credits panel or User Manager) -->
+    <div id="give-credits-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9000;align-items:center;justify-content:center">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px;width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.15)">
+        <div style="font-size:15px;font-weight:700;margin-bottom:12px">Give Credits</div>
+        <div class="field" id="gc-user-picker-wrap">
+          <label>USER</label>
+          <input class="input" id="gc-user-search" placeholder="Search username or email…" oninput="gcFilterUsers()" autocomplete="off">
+          <div id="gc-user-dropdown" style="display:none;max-height:180px;overflow-y:auto;background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-top:4px"></div>
+          <div id="gc-user-selected" style="display:none;margin-top:6px;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;display:none">
+            <span id="gc-user-label">—</span>
+            <span onclick="gcClearUser()" style="float:right;cursor:pointer;color:var(--red);font-size:11px;font-weight:700">✕ change</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>CREDITS TO AWARD</label>
+          <input class="input" id="gc-amount" type="number" min="1" max="1000" value="5">
+        </div>
+        <div class="field">
+          <label>REASON</label>
+          <select class="select" id="gc-reason" style="width:100%">
+            <option value="admin_award">Admin award</option>
+            <option value="bug_report">Bug report reward</option>
+            <option value="alpha_tester">Alpha tester bonus</option>
+            <option value="upload_milestone">Upload milestone</option>
+            <option value="promo">Promotional</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>NOTE (optional)</label>
+          <input class="input" id="gc-note" placeholder="e.g. Welcome bonus, alpha launch gift…">
+        </div>
+        <div id="gc-err" style="font-size:12px;color:var(--red);margin-bottom:10px;display:none"></div>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn btn-success" onclick="gcDoAward()" style="flex:1">Award Credits</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('give-credits-modal').style.display='none'">Cancel</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ── MISSING CARDS (Pending Submissions) ── -->
     <div class="panel" id="panel-pending">
       <div class="panel-header">
@@ -1417,6 +1456,7 @@ tr:hover td { background: var(--bg); }
             <option value="iso_post">ISO post</option>
           </select>
           <button class="btn btn-ghost" onclick="loadCreditEvents()">&#8635; Refresh</button>
+          <button class="btn btn-success" onclick="openGiveCredits()">+ Give Credits</button>
         </div>
         <div class="loading" id="ce-loading" style="display:none">Loading credit events…</div>
         <div id="ce-empty" class="empty" style="display:none">
@@ -2531,7 +2571,8 @@ function renderUsers(rows) {
           ${u.is_admin
             ? `<button class="btn btn-sm btn-ghost" onclick="setAdmin('${u.id}',false)">Revoke Admin</button>`
             : `<button class="btn btn-sm btn-success" onclick="setAdmin('${u.id}',true)">Make Admin</button>`}
-          <button class="btn btn-sm" onclick="viewCreditEvents('${u.id}','${u.username||u.id.slice(0,8)}')" style="font-size:10px;background:var(--yellow-light);color:var(--yellow);border:1px solid var(--yellow)">Credits</button>
+          <button class="btn btn-sm" onclick="openGiveCredits('${u.id}','${(u.username||u.id.slice(0,8)).replace(/'/g,"\\'")}');" style="font-size:10px;background:var(--yellow-light);color:var(--yellow);border:1px solid var(--yellow)">+ Credits</button>
+          <button class="btn btn-sm btn-ghost" onclick="viewCreditEvents('${u.id}','${u.username||u.id.slice(0,8)}')" style="font-size:10px">History</button>
         </div>
       </td>
     </tr>`;
@@ -4326,6 +4367,117 @@ function ceEventsRender() {
 function viewCreditEvents(userId, label) {
   nav('credits', document.querySelector('[onclick*="credits"]'));
   loadCreditEvents(userId, label);
+}
+
+// ── GIVE CREDITS (standalone) ──────────────────────────────
+let _gcUserId = null;
+
+function openGiveCredits(userId, label) {
+  _gcUserId = userId || null;
+  const modal = document.getElementById('give-credits-modal');
+  const searchWrap = document.getElementById('gc-user-picker-wrap');
+  const selEl = document.getElementById('gc-user-selected');
+  const searchEl = document.getElementById('gc-user-search');
+  const dropEl = document.getElementById('gc-user-dropdown');
+
+  document.getElementById('gc-amount').value = '5';
+  document.getElementById('gc-reason').value = 'admin_award';
+  document.getElementById('gc-note').value = '';
+  document.getElementById('gc-err').style.display = 'none';
+
+  if (userId && label) {
+    // Pre-selected user (from User Manager row)
+    searchEl.style.display = 'none';
+    dropEl.style.display = 'none';
+    selEl.style.display = 'block';
+    document.getElementById('gc-user-label').textContent = '@' + label;
+  } else {
+    // Open picker
+    searchEl.style.display = '';
+    searchEl.value = '';
+    selEl.style.display = 'none';
+    dropEl.style.display = 'none';
+    _gcUserId = null;
+  }
+  modal.style.display = 'flex';
+  if (!userId) searchEl.focus();
+}
+
+function gcClearUser() {
+  _gcUserId = null;
+  document.getElementById('gc-user-selected').style.display = 'none';
+  const searchEl = document.getElementById('gc-user-search');
+  searchEl.style.display = '';
+  searchEl.value = '';
+  searchEl.focus();
+  document.getElementById('gc-user-dropdown').style.display = 'none';
+}
+
+function gcFilterUsers() {
+  const q = (document.getElementById('gc-user-search').value || '').toLowerCase().trim();
+  const dropEl = document.getElementById('gc-user-dropdown');
+  if (!q || q.length < 2) { dropEl.style.display = 'none'; return; }
+  // Use cached _allUsers if available, otherwise show hint
+  const pool = window._allUsers || [];
+  if (!pool.length) {
+    dropEl.innerHTML = '<div style="padding:10px;font-size:12px;color:var(--text3)">Load User Manager first to search users</div>';
+    dropEl.style.display = 'block';
+    return;
+  }
+  const matches = pool.filter(u =>
+    (u.username||'').toLowerCase().includes(q) ||
+    (u.id||'').toLowerCase().includes(q)
+  ).slice(0, 8);
+  if (!matches.length) {
+    dropEl.innerHTML = '<div style="padding:10px;font-size:12px;color:var(--text3)">No users found</div>';
+    dropEl.style.display = 'block';
+    return;
+  }
+  dropEl.innerHTML = matches.map(u => `
+    <div onclick="gcPickUser('${u.id}','${(u.username||u.id.slice(0,8)).replace(/'/g,"\\'")}')"
+         style="padding:8px 12px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border);transition:background 0.15s"
+         onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
+      <strong>@${u.username||'—'}</strong> <span style="color:var(--text3);font-size:11px">${u.id.slice(0,8)}…</span>
+    </div>
+  `).join('');
+  dropEl.style.display = 'block';
+}
+
+function gcPickUser(id, label) {
+  _gcUserId = id;
+  document.getElementById('gc-user-search').style.display = 'none';
+  document.getElementById('gc-user-dropdown').style.display = 'none';
+  document.getElementById('gc-user-selected').style.display = 'block';
+  document.getElementById('gc-user-label').textContent = '@' + label;
+}
+
+async function gcDoAward() {
+  const errEl = document.getElementById('gc-err');
+  if (!_gcUserId) { errEl.textContent = 'Select a user first.'; errEl.style.display = 'block'; return; }
+  const amount = parseInt(document.getElementById('gc-amount').value, 10);
+  if (!amount || amount < 1) { errEl.textContent = 'Enter a valid credit amount.'; errEl.style.display = 'block'; return; }
+  const reason = document.getElementById('gc-reason').value || 'admin_award';
+  const note = document.getElementById('gc-note').value.trim() || '';
+  errEl.style.display = 'none';
+  try {
+    const rows = await _get('profiles', `id=eq.${_gcUserId}&select=id,credits&limit=1`).catch(()=>[]);
+    const cur = (rows && rows[0]?.credits) || 0;
+    await _patch('profiles', `id=eq.${_gcUserId}`, { credits: cur + amount });
+    await _post('credit_events', {
+      user_id: _gcUserId,
+      amount,
+      reason,
+      note: note || reason,
+      created_at: new Date().toISOString()
+    }).catch(()=>{});
+    document.getElementById('give-credits-modal').style.display = 'none';
+    toast(`${amount} credits awarded successfully.`, 'success');
+    // Refresh credit events if on that panel
+    if (document.getElementById('panel-credits')?.style.display !== 'none') loadCreditEvents();
+  } catch(e) {
+    errEl.textContent = 'Failed: ' + e.message;
+    errEl.style.display = 'block';
+  }
 }
 
 // ── MARKET PRICING ──

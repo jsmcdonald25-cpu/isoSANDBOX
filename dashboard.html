@@ -5555,7 +5555,7 @@ async function submitISO(){
       if(btn){btn.disabled=false;btn.textContent='POST ISO →';}
       return;
     }
-    await _rPatch('profiles','id=eq.'+user.id,{ credits: currentCredits - 1 });
+    await _rPatch('profiles','id=eq.'+user.id,{ iso_credits: currentCredits - 1 });
 
     // Write ISO record
     const mn = document.getElementById('minP')?.value||null;

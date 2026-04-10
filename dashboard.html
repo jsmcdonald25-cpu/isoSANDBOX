@@ -160,8 +160,11 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .ct-mode-badge.live{background:rgba(0,232,135,0.1);color:var(--green);border:1px solid rgba(0,232,135,0.3)}
 .ct-mode-badge .ct-mode-tip{display:none;position:absolute;bottom:calc(100% + 6px);left:0;background:var(--deep2);border:1px solid var(--deep-border);border-radius:6px;padding:6px 10px;font-size:11px;font-weight:400;letter-spacing:0;white-space:nowrap;color:var(--chrome);z-index:99;pointer-events:none}
 .ct-mode-badge:hover .ct-mode-tip{display:block}
-.card-ticker-inner{flex:1;overflow:hidden;display:flex;gap:32px;white-space:nowrap;animation:cardTick 32s linear infinite}
-.card-ticker-inner:hover{animation-play-state:paused}
+/* Track clips the scrolling inner — overflow:hidden HERE is what actually
+   prevents the animated ticker text from bleeding left into the badge. */
+.card-ticker-track{flex:1;overflow:hidden;min-width:0;position:relative}
+.card-ticker-inner{display:flex;gap:32px;white-space:nowrap;animation:cardTick 32s linear infinite;width:max-content}
+.card-ticker-track:hover .card-ticker-inner{animation-play-state:paused}
 .ct-item{display:inline-flex;align-items:center;gap:6px;font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted-text);flex-shrink:0}
 .ct-name{color:var(--white);font-weight:600}.ct-price{color:var(--blue)}.ct-chg{font-weight:700}.ct-chg.up{color:var(--green)}.ct-chg.dn{color:#FF3B5C}.ct-sep{opacity:0.3}
 .ticker-pill{position:absolute;bottom:6px;left:6px;z-index:3;display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:14px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .2s;user-select:none;border:1px solid rgba(0,170,255,0.25);background:rgba(0,12,30,0.75);color:var(--blue);white-space:nowrap;backdrop-filter:blur(6px)}
@@ -1974,7 +1977,9 @@ async function logOut(){
          edge aligns naturally with the notification bell. -->
     <div class="card-ticker-wrap">
       <span class="ct-mode-badge demo" id="ctModeBadge">Add Cards<span class="ct-mode-tip" id="ctModeTip">Add 3 cards to ticker from My Vault</span></span>
-      <div class="card-ticker-inner" id="cardTickerInner"></div>
+      <div class="card-ticker-track">
+        <div class="card-ticker-inner" id="cardTickerInner"></div>
+      </div>
     </div>
   </div><!-- /topbar -->
   <div class="content">

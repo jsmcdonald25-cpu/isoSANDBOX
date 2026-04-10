@@ -251,6 +251,14 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .sell-type-btn{flex:1;padding:9px 8px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:rgba(255,255,255,0.04);border:1px solid var(--deep-border);border-radius:6px;color:var(--muted-text);cursor:pointer;transition:all .2s}
 .sell-type-btn.active{background:rgba(0,170,255,0.12);border-color:rgba(0,170,255,0.4);color:var(--blue)}
 .vm-error{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--red);margin-top:6px;display:none}
+.sr-tag{font-family:Barlow Condensed,sans-serif;font-size:13px;padding:6px 14px;border-radius:20px;border:1px solid var(--deep-border);background:rgba(0,0,0,0.2);color:var(--muted-text);cursor:pointer;transition:all .2s;letter-spacing:.5px}
+.sr-tag:hover{border-color:var(--blue);color:var(--blue)}
+.sr-tag.active{background:rgba(0,170,255,0.15);border-color:var(--blue);color:var(--blue);font-weight:600}
+.sr-tag-display{font-family:Barlow Condensed,sans-serif;font-size:11px;padding:3px 8px;border-radius:10px;background:rgba(0,170,255,0.1);color:var(--blue);letter-spacing:.3px;display:inline-flex;align-items:center;gap:3px}
+.cs-fav-btn{background:none;border:none;cursor:pointer;font-size:18px;padding:2px;transition:transform .2s;line-height:1}
+.cs-fav-btn:hover{transform:scale(1.2)}
+.cs-rate-btn{font-family:Barlow Condensed,sans-serif;font-size:11px;padding:4px 10px;border-radius:4px;border:1px solid rgba(0,170,255,0.3);background:rgba(0,170,255,0.08);color:var(--blue);cursor:pointer;transition:all .2s;letter-spacing:.5px}
+.cs-rate-btn:hover{background:rgba(0,170,255,0.2);border-color:var(--blue)}
 .vm-progress{width:100%;height:3px;background:rgba(0,170,255,0.1);border-radius:2px;margin-top:14px;display:none}
 .vm-progress-bar{height:100%;background:var(--blue);border-radius:2px;width:0;transition:width .4s}
 /* PANELS */
@@ -3670,6 +3678,38 @@ async function logOut(){
 
     <!-- Shop cards grid -->
     <div id="csShopGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px"></div>
+  </div>
+
+  <!-- ═══════════════ SHOP REVIEW MODAL ═══════════════ -->
+  <div class="vault-modal-overlay" id="shopReviewOverlay" style="display:none" onclick="if(event.target===this)closeShopReview()">
+    <div class="vault-modal" style="max-width:480px">
+      <button class="vm-close" onclick="closeShopReview()">&times;</button>
+      <div class="vm-title" style="color:var(--blue)">RATE THIS SHOP</div>
+      <div class="vm-sub" id="srShopName" style="font-size:14px;color:var(--white);margin-bottom:10px"></div>
+
+      <!-- Quick-input tags -->
+      <div class="vm-label" style="margin-bottom:8px">Quick Tags <span style="font-size:10px;color:var(--muted-text);font-weight:400;text-transform:none;letter-spacing:0">(select all that apply)</span></div>
+      <div id="srTags" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">
+        <button type="button" class="sr-tag" data-tag="good_pulls" onclick="toggleSrTag(this)">Good Pulls</button>
+        <button type="button" class="sr-tag" data-tag="liked_shop" onclick="toggleSrTag(this)">Liked Shop</button>
+        <button type="button" class="sr-tag" data-tag="nice_people" onclick="toggleSrTag(this)">Nice People</button>
+        <button type="button" class="sr-tag" data-tag="good_prices" onclick="toggleSrTag(this)">Good Prices</button>
+        <button type="button" class="sr-tag" data-tag="nice_inventory" onclick="toggleSrTag(this)">Nice Inventory</button>
+      </div>
+
+      <!-- Freeform review -->
+      <div class="vm-label" style="margin-bottom:5px">Your Review <span class="req">*</span></div>
+      <textarea class="vm-input" id="srText" rows="5" placeholder="Tell us about your experience (minimum 100 characters)..." oninput="updateSrCount()" style="resize:vertical;min-height:100px"></textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;margin-bottom:14px">
+        <div class="vm-error" id="srError" style="margin:0"></div>
+        <div id="srCharCount" style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);text-align:right">0 / 100 min</div>
+      </div>
+
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" style="flex:1" onclick="submitShopReview()" id="srSubmitBtn">SUBMIT REVIEW</button>
+        <button class="btn btn-ghost" onclick="closeShopReview()">Cancel</button>
+      </div>
+    </div>
   </div>
 
   <!-- ═══════════════ CARD SHOWS ═══════════════ -->
@@ -13821,20 +13861,79 @@ function _csClearMap(){
   _csMarkers=[];_csCircles=[];
 }
 
+let _csDbShops=null, _csReviewStats={}, _csFavCounts={}, _csUserFavs=new Set(), _csReviewShopId=null;
+
+async function _csLoadFromDb(){
+  try{
+    const r=await fetch(_SURL+'/card_shops?active=eq.true&select=*&order=name',{headers:{'apikey':_SKEY}});
+    if(!r.ok) return null;
+    const rows=await r.json();
+    if(!rows.length) return null;
+    return rows.map(s=>({
+      id:s.id, name:s.name, addr:s.address?(s.address+(s.city?', '+s.city:'')+(s.state?', '+s.state:'')):'',
+      phone:s.phone||'', lat:s.lat||0, lng:s.lng||0, region:s.region||'',
+      state:s.state||'', types:s.types||[], hours:s.hours||'', notes:s.notes||''
+    }));
+  }catch(e){return null;}
+}
+
+async function _csLoadReviewStats(){
+  try{
+    const r=await fetch(_SURL+'/shop_reviews?status=eq.approved&select=shop_id,good_pulls,liked_shop,nice_people,good_prices,nice_inventory',{headers:{'apikey':_SKEY}});
+    if(!r.ok) return;
+    const rows=await r.json();
+    _csReviewStats={};
+    rows.forEach(rv=>{
+      if(!_csReviewStats[rv.shop_id]) _csReviewStats[rv.shop_id]={count:0,good_pulls:0,liked_shop:0,nice_people:0,good_prices:0,nice_inventory:0};
+      const s=_csReviewStats[rv.shop_id];
+      s.count++;
+      if(rv.good_pulls)s.good_pulls++;
+      if(rv.liked_shop)s.liked_shop++;
+      if(rv.nice_people)s.nice_people++;
+      if(rv.good_prices)s.good_prices++;
+      if(rv.nice_inventory)s.nice_inventory++;
+    });
+  }catch(e){}
+}
+
+async function _csLoadFavorites(){
+  try{
+    const r=await fetch(_SURL+'/shop_favorites?select=shop_id',{headers:{'apikey':_SKEY}});
+    if(!r.ok) return;
+    const rows=await r.json();
+    _csFavCounts={};
+    rows.forEach(f=>{_csFavCounts[f.shop_id]=(_csFavCounts[f.shop_id]||0)+1;});
+    // Load current user's favorites
+    const user=window._authUser;
+    if(user){
+      const r2=await fetch(_SURL+'/shop_favorites?user_id=eq.'+user.id+'&select=shop_id',{
+        headers:_sbH()
+      });
+      if(r2.ok){const uf=await r2.json();_csUserFavs=new Set(uf.map(f=>f.shop_id));}
+    }
+  }catch(e){}
+}
+
 function initCardShops(){
   _csLevel='national';
   document.getElementById('csShopGrid').innerHTML='';
   document.getElementById('csBackBtn').style.display='none';
   document.getElementById('csBreadcrumb').innerHTML='<span style="color:var(--blue)">UNITED STATES</span>';
-  setTimeout(()=>{_csInitMap();_csShowNational();},150);
+  // Load DB shops + review stats + favorites in parallel, then show map
+  Promise.all([_csLoadFromDb(),_csLoadReviewStats(),_csLoadFavorites()]).then(([dbShops])=>{
+    if(dbShops && dbShops.length) _csDbShops=dbShops;
+    setTimeout(()=>{_csInitMap();_csShowNational();},150);
+  });
 }
+
+function _csAll(){return _csDbShops||_csShops;}
 
 function _csShowNational(){
   _csLevel='national';
   _csClearMap();
   document.getElementById('csShopGrid').innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);padding:20px">Click a state on the map to view card shops in that area.</div>';
   const statesWithShops={};
-  _csShops.forEach(s=>{if(!statesWithShops[s.state])statesWithShops[s.state]=0;statesWithShops[s.state]++;});
+  _csAll().forEach(s=>{if(!statesWithShops[s.state])statesWithShops[s.state]=0;statesWithShops[s.state]++;});
   Object.keys(statesWithShops).forEach(st=>{
     const info=_usStates[st];if(!info)return;
     const count=statesWithShops[st];
@@ -13854,10 +13953,10 @@ function csGoState(st){
   document.getElementById('csBackBtn').style.display='';
   document.getElementById('csBreadcrumb').innerHTML=`<span style="color:var(--blue);cursor:pointer" onclick="csGoNational()">US</span> <span style="color:var(--muted-text)">&rsaquo;</span> <span style="color:var(--blue)">${stInfo?stInfo.name:st}</span>`;
   const stateRegions=Object.entries(_regions).filter(([k,v])=>v.state===st);
-  const stateShops=_csShops.filter(s=>s.state===st||stateRegions.some(([rk])=>s.region===rk));
+  const stateShops=_csAll().filter(s=>s.state===st||stateRegions.some(([rk])=>s.region===rk));
   if(stateRegions.length<=1){csGoRegion(stateRegions.length?stateRegions[0][0]:null,st);return;}
   stateRegions.forEach(([rk,rv])=>{
-    const count=_csShops.filter(s=>s.region===rk).length;
+    const count=_csAll().filter(s=>s.region===rk).length;
     const icon=L.divIcon({className:'',
       html:`<div style="background:#00AAFF;color:#fff;min-width:36px;height:36px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-family:Bebas Neue,sans-serif;font-size:13px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.5);padding:0 10px;cursor:pointer">${rv.label.split(',')[0]}<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;margin-left:4px;opacity:.8">${count}</span></div>`,
       iconSize:[80,36],iconAnchor:[40,18]});
@@ -13871,7 +13970,7 @@ function csGoState(st){
 function csGoRegion(regionKey,fallbackState){
   _csLevel='region';_csClearMap();
   const region=regionKey?_regions[regionKey]:null;
-  const shops=regionKey?_csShops.filter(s=>s.region===regionKey):_csShops.filter(s=>s.state===fallbackState);
+  const shops=regionKey?_csAll().filter(s=>s.region===regionKey):_csAll().filter(s=>s.state===fallbackState);
   const pinned=regionKey?_csAssignPins(shops,regionKey):shops.map((s,i)=>({...s,_pin:i+1,_dist:0}));
   const stAbbr=region?region.state:(fallbackState||'');
   const stInfo=_usStates[stAbbr];

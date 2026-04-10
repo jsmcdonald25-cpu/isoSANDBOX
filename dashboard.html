@@ -7348,9 +7348,7 @@ function renderMyVault(){
   }
   const ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
   const userToken=window._userAccessToken||ANON_KEY;
-  // Explicit column list — excludes var_images (large JSONB) to reduce payload.
-  // var_images is lazy-loaded in openVaultCard when a card is actually clicked.
-  fetch(`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault?select=id,player,year,brand,set_name,card_number,variation,parallel,category,price_paid,estimated_value,is_for_sale,asking_price,front_image_url,back_image_url,created_at,date_acquired,purchase_source,acquisition_type,is_rookie,serial_number,serial_total,grade,grade_company,grade_cert_num,condition_notes,team,card_id,has_catalog_pic,status&user_id=eq.${user.id}&status=neq.sold&status=neq.removed&order=created_at.desc`,{
+  fetch(`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault?select=*&user_id=eq.${user.id}&status=neq.sold&status=neq.removed&order=created_at.desc`,{
     headers:{'apikey':ANON_KEY,'Authorization':'Bearer '+userToken}
   }).then(r=>r.json()).then(data=>{
     if(!Array.isArray(data)){

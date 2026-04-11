@@ -556,14 +556,14 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-back-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(0,170,255,0.08);border:1px solid var(--deep-border);border-radius:6px;padding:6px 12px;font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);cursor:pointer;transition:all .2s;margin-bottom:18px}
 .cd-back-btn:hover{background:rgba(0,170,255,0.15);border-color:var(--blue)}
 .cd-layout{display:flex;align-items:start;min-width:0;justify-content:space-evenly;gap:16px}
-.cd-viewer-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;background:#0D1F33;width:fit-content;min-width:0;max-width:500px}
-.cd-scene-wrap{position:relative;width:320px;height:448px;max-width:100%}
+.cd-viewer-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;background:#0D1F33;flex:1.3;min-width:320px;max-width:500px}
+.cd-scene-wrap{position:relative;width:100%;aspect-ratio:2.5/3.5;max-width:400px;margin:0 auto}
 .cd-shadow{position:absolute;inset:0;border-radius:10px;pointer-events:none;z-index:0;transition:box-shadow .4s}
 .cd-scene{position:absolute;inset:0;perspective:1200px;cursor:grab;user-select:none;z-index:1}
 .cd-scene:active{cursor:grabbing}
 .cd-card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.05s linear}
-.cd-front{position:absolute;width:320px;height:448px;top:0;left:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:10px;overflow:hidden;background:#000}
-.cd-back{position:absolute;width:320px;height:448px;top:0;left:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);border-radius:10px;overflow:hidden;background:#000}
+.cd-front{position:absolute;width:100%;height:100%;top:0;left:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:10px;overflow:hidden;background:#000}
+.cd-back{position:absolute;width:100%;height:100%;top:0;left:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);border-radius:10px;overflow:hidden;background:#000}
 .cd-card-face{width:100%;height:100%;object-fit:fill;display:block;border-radius:10px}
 .cd-card-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;border-radius:10px}
 .cd-glare{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:2;border-radius:10px;transition:opacity 0.1s}
@@ -9043,19 +9043,17 @@ function _cdSetViewerImages(frontUrl, backUrl){
     function _doIt(){
       const imgIsLand = imgEl.naturalWidth > imgEl.naturalHeight;
       if(isLandscape && !imgIsLand){
-        // Portrait image, landscape container (470w x 336h) — rotate -90deg
-        // (CCW) to fill. Pre-rotation element is 336w x 470h so AFTER rotation
-        // it visually becomes 470w x 336h and fills the slot. Offsets center
-        // the rotated image: (470-336)/2 = 67.
-        imgEl.style.width='336px'; imgEl.style.height='470px';
-        imgEl.style.top='-67px';  imgEl.style.left='67px';
+        // Portrait image, landscape container — rotate -90deg (CCW) to fill.
+        // New card size: 320w x 448h. Landscape = 448w x 320h after rotation.
+        // Pre-rotation: 448w x 627h. Offset: (627-448)/2 = 89.
+        imgEl.style.width='448px'; imgEl.style.height='627px';
+        imgEl.style.top='-89px';  imgEl.style.left='89px';
         imgEl.style.transform='rotate(-90deg)'; imgEl.style.objectFit='cover';
       } else if(!isLandscape && imgIsLand){
-        // Landscape image, portrait container (240w x 336h) — rotate 90deg.
-        // Pre-rotation element is 336w x 240h. After rotation visually becomes
-        // 240w x 336h and fills the portrait slot. Offsets: (336-240)/2 = 48.
-        imgEl.style.width='336px'; imgEl.style.height='240px';
-        imgEl.style.top='48px';   imgEl.style.left='-48px';
+        // Landscape image, portrait container (320w x 448h) — rotate 90deg.
+        // Pre-rotation: 448w x 320h. After rotation: 320w x 448h. Offset: (448-320)/2 = 64.
+        imgEl.style.width='448px'; imgEl.style.height='320px';
+        imgEl.style.top='64px';   imgEl.style.left='-64px';
         imgEl.style.transform='rotate(90deg)'; imgEl.style.objectFit='cover';
       } else {
         // Orientation matches — no rotation needed. Use object-fit:cover so the

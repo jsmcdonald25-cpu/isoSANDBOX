@@ -3260,9 +3260,13 @@ async function logOut(){
                 <button onclick="delistCard(window._cdMyVaultIdx)" style="flex:1;background:rgba(255,59,92,0.06);border:1px solid rgba(255,59,92,0.25);border-radius:8px;padding:8px 6px;font-family:Bebas Neue,sans-serif;font-size:12px;letter-spacing:1.5px;color:rgba(255,59,92,0.7);cursor:pointer;transition:all .2s;text-align:center;white-space:nowrap" onmouseover="this.style.borderColor='rgba(255,59,92,0.5)'" onmouseout="this.style.borderColor='rgba(255,59,92,0.25)'">DELIST</button>
               </div>
             </div>
+            <!-- List for Sale — primary action to make card available on OpenISO -->
+            <div id="cd-list-for-sale-row" style="margin-bottom:6px">
+              <button onclick="openEditListingModal(window._cdMyVaultIdx)" style="width:100%;background:rgba(0,232,135,0.08);border:1px solid rgba(0,232,135,0.4);border-radius:8px;padding:10px 6px;font-family:Bebas Neue,sans-serif;font-size:14px;letter-spacing:1.5px;color:var(--green);cursor:pointer;transition:all .2s;text-align:center" onmouseover="this.style.borderColor='var(--green)';this.style.boxShadow='0 0 14px rgba(0,232,135,0.35)'" onmouseout="this.style.borderColor='rgba(0,232,135,0.4)';this.style.boxShadow='none'">&#128227; LIST ON OPENISO</button>
+            </div>
             <div style="display:flex;gap:6px;align-items:stretch">
               <button id="cd-slablab-btn" onclick="openSlabLab()" style="flex:1;background:linear-gradient(135deg,#0a1f35,#112840);border:1px solid rgba(0,170,255,0.35);border-radius:8px;padding:8px 6px;font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--blue);cursor:pointer;transition:all .2s;text-align:center;white-space:nowrap" onmouseover="this.style.borderColor='var(--blue)';this.style.boxShadow='0 0 12px rgba(0,170,255,0.3)'" onmouseout="this.style.borderColor='rgba(0,170,255,0.35)';this.style.boxShadow='none'">&#129514; SLAB LAB</button>
-              <button class="btn btn-primary" style="flex:1;font-size:12px;padding:8px 6px;letter-spacing:1px;white-space:nowrap" onclick="openSellModal(window._cdMyVaultIdx,'sold')">&#128176; SELL</button>
+              <button class="btn btn-primary" style="flex:1;font-size:11px;padding:8px 6px;letter-spacing:1px;white-space:nowrap;background:var(--muted-text)" onclick="openSellModal(window._cdMyVaultIdx,'sold')">MARK SOLD</button>
               <button class="btn btn-ghost" style="flex:1;font-size:12px;padding:8px 6px;letter-spacing:1px;border-color:rgba(255,59,92,0.3);color:rgba(255,59,92,0.7);white-space:nowrap" onclick="openSellModal(window._cdMyVaultIdx,'removed')">&#128465; REMOVE</button>
             </div>
             <div style="display:flex;gap:6px;margin-top:6px">
@@ -6224,7 +6228,19 @@ function openSellModal(idx, type){
   _sellType = type || 'sold';
   _sellVenueSelected = null;
 
-  document.getElementById('sellModalTitle').textContent = _sellType === 'sold' ? 'CARD SOLD' : 'REMOVE FROM MY VAULT';
+  document.getElementById('sellModalTitle').textContent = _sellType === 'sold' ? 'MARK AS SOLD (OFF-PLATFORM)' : 'REMOVE FROM MY VAULT';
+  // Show warning for sold type
+  let _sellWarn = document.getElementById('sellOffPlatformWarn');
+  if(!_sellWarn){
+    _sellWarn = document.createElement('div');
+    _sellWarn.id = 'sellOffPlatformWarn';
+    _sellWarn.style.cssText = 'background:rgba(255,184,77,0.08);border:1px solid rgba(255,184,77,0.3);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:#FFB84D;line-height:1.5';
+    _sellWarn.innerHTML = '<strong>&#9888; This is for recording a sale that happened OUTSIDE GrailISO</strong> (eBay, LCS, trade, etc.). This card will be marked as sold and removed from your active vault.<br><br>To list this card for sale TO buyers on GrailISO, go back and click <strong>LIST ON OPENISO</strong> instead.';
+    const titleEl = document.getElementById('sellModalTitle');
+    if(titleEl && titleEl.nextSibling) titleEl.parentNode.insertBefore(_sellWarn, titleEl.nextSibling);
+    else if(titleEl) titleEl.parentNode.appendChild(_sellWarn);
+  }
+  _sellWarn.style.display = _sellType === 'sold' ? 'block' : 'none';
 
   const playerName = row.player || 'Unknown';
   const yr  = row.year     || '';
@@ -12860,13 +12876,19 @@ let _editListingIdx = null;
 
 function _cdUpdateEditListingBtn(){
   const row = document.getElementById('cd-edit-listing-row');
+  const listBtn = document.getElementById('cd-list-for-sale-row');
   if(!row) return;
   const idx = window._cdMyVaultIdx;
   const data = window._vaultData;
   if(idx==null || !data || !data[idx] || !data[idx].is_for_sale){
-    row.style.display = 'none'; return;
+    row.style.display = 'none';
+    // Show "LIST ON OPENISO" when card is NOT listed
+    if(listBtn) listBtn.style.display = 'block';
+    return;
   }
+  // Card IS listed — show Edit Listing, hide List button
   row.style.display = 'block';
+  if(listBtn) listBtn.style.display = 'none';
   const priceEl = document.getElementById('cd-listing-price');
   if(priceEl) priceEl.textContent = parseFloat(data[idx].asking_price||0).toFixed(2);
 }

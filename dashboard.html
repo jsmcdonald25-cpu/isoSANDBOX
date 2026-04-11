@@ -7488,11 +7488,31 @@ function renderMyVault(){
     if(gsec)  gsec.style.display='none';
     return;
   }
+  // Hide everything and show loading while the fetch runs — prevents the
+  // false "YOUR VAULT IS EMPTY" flash that shows for 3-5 seconds on login.
+  if(empty) empty.style.display='none';
+  if(dash)  dash.style.display='none';
+  if(gsec)  gsec.style.display='none';
+  // Show inline loading message (reuse or create)
+  let _mvLoading = document.getElementById('mvLoadingMsg');
+  if(!_mvLoading){
+    _mvLoading = document.createElement('div');
+    _mvLoading.id = 'mvLoadingMsg';
+    _mvLoading.style.cssText = 'text-align:center;padding:40px 20px;font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);letter-spacing:1px';
+    _mvLoading.textContent = 'Loading your vault...';
+    empty.parentNode.insertBefore(_mvLoading, empty);
+  }
+  _mvLoading.style.display = 'block';
+
   const ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
   const userToken=window._userAccessToken||ANON_KEY;
   fetch(`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault?select=*&user_id=eq.${user.id}&status=neq.sold&status=neq.removed&order=created_at.desc`,{
     headers:{'apikey':ANON_KEY,'Authorization':'Bearer '+userToken}
   }).then(r=>r.json()).then(data=>{
+    // Hide loading message
+    const _ld = document.getElementById('mvLoadingMsg');
+    if(_ld) _ld.style.display = 'none';
+
     if(!Array.isArray(data)){
       if(empty){ empty.style.display='block'; empty.innerHTML=`<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--red);padding:20px">Vault error: ${data?.message||'Unknown error'}</div>`; }
       if(dash) dash.style.display='none';
@@ -7532,7 +7552,13 @@ function renderMyVault(){
     _renderVaultGrid(data);
     _patchVaultThumbnails(data);
     _mvApplySavedSort();
-  }).catch(err=>{ console.error('renderMyVault:',err); });
+  }).catch(err=>{
+    console.error('renderMyVault:',err);
+    const _ld = document.getElementById('mvLoadingMsg');
+    if(_ld) _ld.style.display = 'none';
+    const empty = document.getElementById('myVaultEmpty');
+    if(empty) empty.style.display = 'block';
+  });
 }
 
 async function _renderFavShops(){

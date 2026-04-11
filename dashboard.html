@@ -2221,14 +2221,24 @@ async function logOut(){
         <div id="p2CardList" style="display:flex;flex-direction:column;gap:6px;max-height:480px;overflow-y:auto"></div>
         <div style="text-align:center;margin-top:12px"><span style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--blue);cursor:pointer;border-bottom:1px dashed var(--blue)" onclick="p2Go(8)">Can't find your card? Use freeform &#8594;</span></div>
       </div>
-      <!-- Step 6 — Variant -->
+      <!-- Step 6 — Variant (card viewer style) -->
       <div class="sp" id="p2sp6">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
           <button class="btn btn-ghost btn-sm" onclick="p2Go(5)">&#8592; Card</button>
           <div class="sp-title" id="p2VarStepTitle" style="margin-bottom:0">SELECT VARIANT</div>
         </div>
-        <div class="sp-sub">Pick the exact parallel/variant.</div>
-        <div id="p2VarGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-bottom:18px"></div>
+        <!-- Card viewer preview — shows the card image so user confirms visually -->
+        <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px">
+          <div id="p2VarCardImg" style="width:180px;height:252px;border-radius:10px;background:#071828;border:1px solid var(--deep-border);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center">
+            <div style="font-size:48px;color:rgba(0,170,255,0.15)">&#127183;</div>
+          </div>
+          <div style="flex:1;min-width:240px">
+            <div id="p2VarCardName" style="font-family:Bebas Neue,sans-serif;font-size:20px;letter-spacing:1px;color:var(--white);margin-bottom:4px"></div>
+            <div id="p2VarCardMeta" style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:16px"></div>
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text);margin-bottom:8px">SELECT PARALLEL</div>
+            <div id="p2VarGrid" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
+          </div>
+        </div>
         <div style="display:flex;justify-content:space-between"><button class="btn btn-ghost" onclick="p2Go(5)">&#8592; Card</button><button class="btn btn-primary" id="p2VarNextBtn" onclick="p2Go(7)" disabled style="opacity:.5;cursor:not-allowed">Next: Grade &amp; Price &#8594;</button></div>
       </div>
       <!-- Step 7 — Grade & Price -->
@@ -5068,6 +5078,22 @@ function p2PickCard(c){
   P2_STATE._dbRow  = c._dbRow || null;
   const t = document.getElementById('p2VarStepTitle');
   if(t) t.textContent = 'SELECT VARIANT — '+c.num+' '+c.player.toUpperCase();
+  // Populate card viewer image on variant step
+  const imgWrap = document.getElementById('p2VarCardImg');
+  if(imgWrap && c._dbRow){
+    let imgUrl = c._dbRow.front_img || '';
+    if(!imgUrl && c._dbRow.var_images){
+      const vi = (typeof c._dbRow.var_images === 'string') ? (function(){try{return JSON.parse(c._dbRow.var_images)}catch(e){return {}}}()) : c._dbRow.var_images;
+      const fk = Object.keys(vi||{})[0];
+      if(fk && vi[fk]) imgUrl = vi[fk].front || '';
+    }
+    if(imgUrl) imgWrap.innerHTML = '<img src="'+imgUrl+'" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy">';
+    else imgWrap.innerHTML = '<div style="font-size:48px;color:rgba(0,170,255,0.15)">&#127183;</div>';
+  }
+  const nameEl = document.getElementById('p2VarCardName');
+  if(nameEl) nameEl.textContent = c.num + ' ' + c.player;
+  const metaEl = document.getElementById('p2VarCardMeta');
+  if(metaEl) metaEl.textContent = P2_STATE.set + (c.subset ? ' · ' + c.subset : '');
   p2RenderVariantGrid();
   // Reset variant + disable Next until one chosen
   P2_STATE.variant = '';
@@ -5100,16 +5126,19 @@ function p2RenderVariantGrid(){
     _run: null
   });
   variants.forEach(v=>{
-    const tile = document.createElement('div');
-    tile.className = 'p2-var-tile';
-    tile.style.cssText = 'padding:12px;background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;cursor:pointer;transition:all .15s';
-    if(v.isOther){ tile.style.borderStyle='dashed'; }
-    tile.innerHTML =
-        '<div style="height:4px;border-radius:2px;margin-bottom:8px;background:'+v.color+'"></div>'
-      + '<div style="font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:.8px;color:'+(v.isOther?'var(--gold,#FFB84D)':'var(--white)')+'">'+v.name+'</div>'
-      + '<div style="font-size:11px;color:var(--muted-text);margin-top:2px">'+v.meta+'</div>';
-    tile.onclick = ()=>p2PickVariant(v, tile);
-    grid.appendChild(tile);
+    const pill = document.createElement('div');
+    pill.className = 'cd-pill p2-var-pill';
+    // Style with the parallel's color (matches ISOVault pill rendering)
+    const bg = v.color || 'rgba(0,0,0,0.2)';
+    const isBg = bg.includes('gradient') || bg.includes('#');
+    if(v.isOther){
+      pill.style.cssText = 'border:1.5px dashed #FFB84D;color:#FFB84D;background:rgba(255,184,77,0.08);padding:5px 12px';
+    } else {
+      pill.style.cssText = 'background:' + (isBg ? bg : 'rgba(0,0,0,0.2)') + ';color:#fff;border:1.5px solid ' + (bg.includes('gradient') ? 'rgba(255,255,255,0.2)' : bg) + ';padding:5px 12px';
+    }
+    pill.innerHTML = v.name + (v.meta !== 'Unnumbered' ? '<span class="pill-run"> '+v.meta+'</span>' : '');
+    pill.onclick = ()=>p2PickVariant(v, pill);
+    grid.appendChild(pill);
   });
   // Inline note + freeform input for OTHER, hidden until selected
   let noteWrap = document.getElementById('p2OtherWrap');

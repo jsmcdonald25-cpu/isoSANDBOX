@@ -5136,13 +5136,15 @@ function p2RenderVariantGrid(){
   variants.forEach(v=>{
     const pill = document.createElement('div');
     pill.className = 'cd-pill p2-var-pill';
-    // Style with the parallel's color (matches ISOVault pill rendering)
+    // Store the parallel's color as data attributes for active state
     const bg = v.color || 'rgba(0,0,0,0.2)';
-    const isBg = bg.includes('gradient') || bg.includes('#');
+    pill.dataset.pillColor = bg;
+    pill.dataset.isOther = v.isOther ? '1' : '';
+    // Start INACTIVE (muted) — only the clicked pill gets full color
     if(v.isOther){
-      pill.style.cssText = 'border:1.5px dashed #FFB84D;color:#FFB84D;background:rgba(255,184,77,0.08);padding:5px 12px';
+      pill.style.cssText = 'border:1.5px dashed rgba(255,184,77,0.4);color:rgba(255,184,77,0.6);background:rgba(255,184,77,0.04);padding:5px 12px';
     } else {
-      pill.style.cssText = 'background:' + (isBg ? bg : 'rgba(0,0,0,0.2)') + ';color:#fff;border:1.5px solid ' + (bg.includes('gradient') ? 'rgba(255,255,255,0.2)' : bg) + ';padding:5px 12px';
+      pill.style.cssText = 'background:rgba(0,0,0,0.2);color:var(--muted-text);border:1.5px solid var(--deep-border);padding:5px 12px';
     }
     pill.innerHTML = v.name + (v.meta !== 'Unnumbered' ? '<span class="pill-run"> '+v.meta+'</span>' : '');
     pill.onclick = ()=>p2PickVariant(v, pill);
@@ -5178,6 +5180,17 @@ function p2PickVariant(v, el){
     const nw = document.getElementById('p2OtherWrap');
     if(nw) nw.style.display='none';
   }
+  // Update card image to show the selected variation's image if available
+  const imgWrap = document.getElementById('p2VarCardImg');
+  if(imgWrap && !v.isOther){
+    const dbRow = P2_STATE._dbRow;
+    const vi = dbRow ? ((typeof dbRow.var_images === 'string') ? (function(){try{return JSON.parse(dbRow.var_images)}catch(e){return {}}}()) : (dbRow.var_images||{})) : {};
+    const varImg = vi[v.name] ? (vi[v.name].front || '') : '';
+    if(varImg){
+      imgWrap.innerHTML = '<img src="'+varImg+'" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy">';
+    }
+  }
+
   // Show serial input on grade/price step if applicable
   const sw = document.getElementById('p2SerialWrap');
   const sl = document.getElementById('p2SerialLabel');
@@ -5193,12 +5206,24 @@ function p2PickVariant(v, el){
       const si = document.getElementById('p2Serial'); if(si) si.value='';
     }
   }
-  document.querySelectorAll('#p2VarGrid .p2-var-tile').forEach(t=>{
-    t.style.borderColor='var(--deep-border)';
-    t.style.background='var(--deep2)';
+  // Deselect all pills back to muted state
+  document.querySelectorAll('#p2VarGrid .p2-var-pill').forEach(t=>{
+    if(t.dataset.isOther){
+      t.style.borderColor='rgba(255,184,77,0.4)'; t.style.background='rgba(255,184,77,0.04)'; t.style.color='rgba(255,184,77,0.6)';
+    } else {
+      t.style.borderColor='var(--deep-border)'; t.style.background='rgba(0,0,0,0.2)'; t.style.color='var(--muted-text)';
+    }
   });
-  el.style.borderColor= v.isOther ? '#FFB84D' : 'var(--blue)';
-  el.style.background= v.isOther ? 'rgba(255,184,77,.1)' : 'rgba(0,170,255,.1)';
+  // Activate the selected pill with its parallel color
+  const bg = el.dataset.pillColor || 'var(--blue)';
+  if(v.isOther){
+    el.style.borderColor='#FFB84D'; el.style.background='rgba(255,184,77,0.15)'; el.style.color='#FFB84D';
+  } else {
+    const isBg = bg.includes('gradient') || bg.includes('#');
+    el.style.background = isBg ? bg : 'rgba(0,170,255,0.15)';
+    el.style.borderColor = bg.includes('gradient') ? 'rgba(255,255,255,0.3)' : bg;
+    el.style.color = '#fff';
+  }
   const nextBtn = document.getElementById('p2VarNextBtn');
   if(nextBtn){ nextBtn.disabled = false; nextBtn.style.opacity='1'; nextBtn.style.cursor='pointer'; }
 }

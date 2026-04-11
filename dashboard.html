@@ -5137,13 +5137,14 @@ function p2RenderVariantGrid(){
   if(typeof _rawV === 'string'){ try { _rawV = JSON.parse(_rawV); } catch(e){ _rawV = []; } }
   if(!Array.isArray(_rawV)) _rawV = [];
   const rawVars = _rawV;
-  const variants = rawVars.map(v => ({
-    name: v.label || 'Base',
-    meta: v.run ? '/'+v.run : 'Unnumbered',
-    color: v.color || '#fff',
-    isOther: false,
-    _run: v.run || null
-  }));
+  const variants = rawVars.map(v => {
+    let name = v.label || 'Base';
+    const meta = v.run ? '/'+v.run : 'Unnumbered';
+    // Strip trailing /N from label if it matches the run (prevents "Yellow /75 /75")
+    if(v.run && name.endsWith(' /'+v.run)) name = name.slice(0, -((' /'+v.run).length));
+    if(v.run && name.endsWith('/'+v.run)) name = name.slice(0, -(('/'+v.run).length));
+    return { name, meta, color: v.color || '#fff', isOther: false, _run: v.run || null };
+  });
   // Always add OTHER at the end
   variants.push({
     name: 'OTHER',
@@ -5165,7 +5166,8 @@ function p2RenderVariantGrid(){
     } else {
       pill.style.cssText = 'background:rgba(0,0,0,0.2);color:var(--muted-text);border:1.5px solid var(--deep-border);padding:5px 12px';
     }
-    pill.innerHTML = v.name + (v.meta !== 'Unnumbered' ? '<span class="pill-run"> '+v.meta+'</span>' : '');
+    const showMeta = v.meta && v.meta !== 'Unnumbered' && !v.name.includes(v.meta);
+    pill.innerHTML = v.name + (showMeta ? '<span class="pill-run"> '+v.meta+'</span>' : '');
     pill.onclick = ()=>p2PickVariant(v, pill);
     grid.appendChild(pill);
   });
@@ -5184,6 +5186,7 @@ function p2RenderVariantGrid(){
 }
 
 function p2PickVariant(v, el){
+  try {
   // Detect serial-numbered variants (meta like "/50", "/99", "1/1")
   const isSerialNumbered = !!(v.meta && /\/\d+|\d+\/\d+/.test(v.meta));
   P2_STATE.variantPrintRun = isSerialNumbered ? v.meta : '';
@@ -5246,6 +5249,7 @@ function p2PickVariant(v, el){
   }
   const nextBtn = document.getElementById('p2VarNextBtn');
   if(nextBtn){ nextBtn.disabled = false; nextBtn.style.opacity='1'; nextBtn.style.cursor='pointer'; }
+  } catch(e){ console.error('p2PickVariant error:', e); T('Error selecting variant: '+e.message); }
 }
 
 // ── Phase B: submit ISO from v2 flow ─────────────────────────────────────

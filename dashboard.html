@@ -3494,7 +3494,7 @@ async function logOut(){
            of a numbered card has its own serial, so this is required not
            pre-filled. -->
       <div id="dupSerialRow" style="display:none;margin-top:12px">
-        <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Serial # <span class="req" style="color:var(--red)">*</span> <span id="dupSerialHint" style="color:rgba(122,149,174,0.5);text-transform:none;letter-spacing:0;font-weight:normal">— this copy's number</span></div>
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Serial # <span id="dupSerialHint" style="color:rgba(122,149,174,0.5);text-transform:none;letter-spacing:0;font-weight:normal">— if numbered</span></div>
         <input class="vm-input" type="number" min="1" id="dupSerial" placeholder="e.g. 23">
       </div>
       <div style="margin-top:12px;display:flex;gap:10px">
@@ -9285,19 +9285,16 @@ function openAddDuplicateModal(){
   document.getElementById('dupPrice').value  = '';
   document.getElementById('dupDate').value   = new Date().toISOString().slice(0,10);
   document.getElementById('dupErr').style.display = 'none';
-  // Serial # row — show only when source card is numbered. Pre-fill nothing
-  // (each copy has its own serial). Hint shows the print run from src.
+  // Serial # row — always shown so numbered cards are never missed.
+  // If the card is numbered, user enters their serial. If not, they leave it blank.
   const printRun = _dupIsNumbered(src);
   const serialRow = document.getElementById('dupSerialRow');
   const serialInput = document.getElementById('dupSerial');
   const serialHint = document.getElementById('dupSerialHint');
-  if(printRun > 0){
-    if(serialRow) serialRow.style.display = 'block';
-    if(serialInput){ serialInput.value = ''; serialInput.max = printRun; }
-    if(serialHint) serialHint.textContent = `— this copy's number, /${printRun}`;
-  } else {
-    if(serialRow) serialRow.style.display = 'none';
-  }
+  // Always show the serial row
+  if(serialRow) serialRow.style.display = 'block';
+  if(serialInput){ serialInput.value = ''; serialInput.max = printRun || ''; }
+  if(serialHint) serialHint.textContent = printRun > 0 ? `— this copy's number, /${printRun}` : '— leave blank if not numbered';
   const btn = document.getElementById('dupSubmitBtn');
   btn.disabled = false; btn.textContent = 'SAVE COPY';
   const meta = [src.year, src.brand, src.set_name, src.parallel||src.variation].filter(Boolean).join(' · ');
@@ -9328,13 +9325,15 @@ async function submitAddDuplicate(){
   if(!_dupAcq){ errEl.textContent = 'Pick how you got it.'; errEl.style.display='block'; return; }
   // Serial # — required when the source card is numbered. Each copy has
   // its own serial so we never pre-fill from src.
+  // Serial # — always read the input. Required only when print run is known.
+  // Optional when we can't detect the print run (user may still enter it).
   const printRun = _dupIsNumbered(src);
-  let serialNum = null;
-  if(printRun > 0){
-    const raw = document.getElementById('dupSerial').value;
-    serialNum = parseInt(raw) || null;
-    if(!serialNum || serialNum < 1){
-      errEl.textContent = `Enter the serial # of this copy (1-${printRun}).`;
+  const rawSerial = document.getElementById('dupSerial').value;
+  let serialNum = parseInt(rawSerial) || null;
+  if(printRun > 0 && rawSerial){
+    // Validate against known print run
+    if(serialNum < 1){
+      errEl.textContent = `Enter a valid serial # (1-${printRun}).`;
       errEl.style.display = 'block'; return;
     }
     if(serialNum > printRun){

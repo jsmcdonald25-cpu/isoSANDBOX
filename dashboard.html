@@ -1828,11 +1828,12 @@ async function initUserProfile(user){
   // Show / hide admin nav items
   // My Vault is the landing page — ONLY on first login, not on token refresh
   if(!window._currentSection){
+    const isNewUser = profile && profile.tour_completed !== true && !localStorage.getItem('grailiso-tour-done');
+    // Splash screen acts as loading gate — data loads behind it
+    showSplash(isNewUser).then(() => {
+      if (isNewUser) startTour();
+    });
     N('myvault', document.getElementById('nav-myvault'));
-    // Show welcome tour for first-time users
-    if(profile && profile.tour_completed !== true && !localStorage.getItem('grailiso-tour-done')){
-      setTimeout(startTour, 500);
-    }
   }
   // Preload ISO count for the chip — silent, no nav side effects
   (async()=>{ try{ const r=await _rGet('isos','select=id,status&user_id=eq.'+user.id+'&status=in.(active,matched)&limit=100'); const n=(r||[]).length; const el=document.getElementById('mv-active-isos'); if(el) el.textContent=n||'0'; const b=document.getElementById('navBadge-myisos'); if(b){b.textContent=n||'';b.style.display=n?'':'none';} }catch(e){} })();
@@ -1964,6 +1965,10 @@ async function logOut(){
     <div class="nav-item" onclick="openCommunityPanel()">
       <div class="nav-icon"><svg viewBox="0 0 24 24" fill="#5865F2" width="16" height="16"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg></div>
       <span class="nav-label" style="color:#7289DA">Community</span>
+    </div>
+    <div class="nav-item" id="nav-guide" onclick="N('guide',this)">
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+      <span class="nav-label">Help</span>
     </div>
     <div class="nav-item" id="nav-account" onclick="N('account',this)">
       <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
@@ -3801,6 +3806,24 @@ async function logOut(){
     <div id="cwShowGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px"></div>
   </div>
 
+  <!-- Feature Guide Panel -->
+  <div class="panel" id="panel-guide">
+    <div class="section-header">
+      <div class="section-title">FEATURE GUIDE</div>
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);letter-spacing:.5px;margin-top:2px">Everything GrailISO can do — tap any tile to jump in</div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+      <button class="btn btn-ghost btn-sm" onclick="N('myvault',document.getElementById('nav-myvault'));setTimeout(startTour,300)" style="font-size:12px;padding:7px 16px;border-color:var(--blue);color:var(--blue)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="vertical-align:-2px;margin-right:4px"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        RETAKE TOUR
+      </button>
+    </div>
+
+    <div id="guideGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px">
+    </div>
+  </div>
+
   </div><!-- /content -->
 </div><!-- /main -->
 </div><!-- /app -->
@@ -4736,6 +4759,7 @@ const PM={
   carddetail:{t:'ISOVAULT',s:'Card detail'},  // overridden by _cdSetMyVaultContext when from vault
   cardshops:{t:'CARD SHOPS',s:'Find local card shops near you'},
   cardshows:{t:'CARD SHOWS',s:'Upcoming card shows & events'},
+  guide:{t:'FEATURE GUIDE',s:'Learn what every feature does'},
 };
 function toggleTheme(isLight){
   document.documentElement.classList.toggle('light', isLight);
@@ -4776,6 +4800,7 @@ function N(id,el){
   if(id==='activelistings')loadActiveListings();
   if(id==='cardshops')initCardShops();
   if(id==='cardshows')initCardShows();
+  if(id==='guide')renderGuide();
   // Push panel state into browser history so mouse back button steps through panels
   if(!_navSuppressHistory){
     history.pushState({panel:id}, '', window.location.href);
@@ -14871,49 +14896,87 @@ function cwGoBack(){
   window.addEventListener('appinstalled',function(){hideBanner();_prompt=null;});
 })();
 
-// ── Welcome Tour ────────────────────────────────────────────────────────────
+// ── Feature Guide ───────────────────────────────────────────────────────────
+const GUIDE_FEATURES = [
+  { title:'My Vault', desc:'Your home base. Track every card you own, what you paid, your collection\'s gain/loss. Share your vault with anyone and sell cards through ISO posts.', nav:'myvault', icon:'&#128188;' },
+  { title:'ISOVault', desc:'The card search engine everything revolves around. Browse every card from every set — search by player, year, or set. Find the exact parallel you need.', nav:'library', icon:'&#128218;' },
+  { title:'OpenISO', desc:'Post exactly what card you want to buy. Set your price, grade, and variation — collectors who have it get notified. You set the terms.', nav:'myisos', icon:'&#128276;' },
+  { title:'Post ISO', desc:'Create a new buy request. Choose your sport, set, player, and parallel — then broadcast it to every seller on the platform.', nav:'post', icon:'&#10133;' },
+  { title:'Market Data', desc:'Live bid, ask, and last-sale pricing across the hobby. See what cards are selling for right now.', nav:'market', icon:'&#128200;' },
+  { title:'Card Detail', desc:'Click any card in ISOVault to see every parallel, upload your own images, check eBay market prices, and add it to your vault — all from one screen.', nav:'library', icon:'&#127183;' },
+  { title:'Missing Variant', desc:'Found a parallel that\'s not in ISOVault yet? Submit it with photos from inside ISOVault. You help build the database, you earn credits.', nav:'library', icon:'&#128269;' },
+  { title:'Slab Lab', desc:'Tools and resources for graded card collectors. Understand population reports, grading standards, and slab authentication.', nav:'isoticker', icon:'&#129534;' },
+  { title:'Leaderboard', desc:'See top contributors — who\'s adding the most cards, submitting variants, and building ISOVault for everyone.', nav:'leaderboard', icon:'&#127942;' },
+  { title:'Card Shops', desc:'Find local card shops near you with our nationwide directory. See hours, reviews, and what they carry.', nav:'cardshops', icon:'&#127978;' },
+  { title:'Card Shows', desc:'Browse upcoming card shows and events across the country. Never miss a show in your area.', nav:'cardshows', icon:'&#128197;' },
+];
+
+function renderGuide(){
+  const grid = document.getElementById('guideGrid');
+  if(!grid) return;
+  grid.innerHTML = GUIDE_FEATURES.map(f => `
+    <div onclick="N('${f.nav}',document.getElementById('nav-${f.nav}'))" style="background:var(--deep2);border:1px solid var(--deep-border);border-radius:12px;padding:20px;cursor:pointer;transition:all .2s;position:relative"
+      onmouseover="this.style.borderColor='rgba(0,170,255,0.4)';this.style.boxShadow='0 0 16px rgba(0,170,255,0.1)'"
+      onmouseout="this.style.borderColor='var(--deep-border)';this.style.boxShadow='none'">
+      <div style="font-size:28px;margin-bottom:8px">${f.icon}</div>
+      <div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--white);margin-bottom:6px">${f.title}</div>
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);line-height:1.5">${f.desc}</div>
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--blue);letter-spacing:1px;margin-top:10px">SHOW ME &rarr;</div>
+    </div>
+  `).join('');
+}
+
+// ── Branded Splash + Welcome Tour ───────────────────────────────────────────
+// Splash screen: shown on every login as a loading gate.
+// Tour wizard: shown only for first-time users (tour_completed !== true).
+
+function showSplash(isNewUser) {
+  const splash = document.getElementById('splash-screen');
+  if (!splash) return Promise.resolve();
+  splash.style.display = 'flex';
+  // Animate in
+  requestAnimationFrame(() => { splash.classList.add('splash-visible'); });
+
+  return new Promise(resolve => {
+    const MIN_MS = isNewUser ? 2400 : 1400;
+    const start = Date.now();
+    // Wait for data to be ready (renderMyVault sets this flag) + minimum display
+    const check = setInterval(() => {
+      const elapsed = Date.now() - start;
+      if (elapsed >= MIN_MS) {
+        clearInterval(check);
+        splash.classList.remove('splash-visible');
+        splash.classList.add('splash-fade-out');
+        setTimeout(() => { splash.style.display = 'none'; splash.classList.remove('splash-fade-out'); resolve(); }, 500);
+      }
+    }, 100);
+  });
+}
+
 const TOUR_STEPS = [
   {
-    title: 'WELCOME TO GRAILISO',
-    text: 'The world\'s most complete sports card platform — built by collectors, for collectors. Let us show you around.',
-    target: null,
-    icon: '&#127942;'
-  },
-  {
-    title: 'ISOVAULT — YOUR HOME BASE',
-    text: 'Everything starts here. Browse every card from every set — search by player, set, or year. ISOVault is the world\'s most complete card search engine.',
-    target: '#nav-library',
-    icon: '&#128218;'
-  },
-  {
-    title: 'CARD DETAIL',
-    text: 'Click any card in ISOVault to see every parallel, upload images, check market prices, and add it to your vault — all from one screen.',
-    target: '#nav-library',
-    icon: '&#127183;'
-  },
-  {
     title: 'MY VAULT',
-    text: 'Cards you add from ISOVault land here. Track what you own, what you paid, and your profit/loss — your personal card portfolio.',
+    text: 'This is your home base. Every card you own lives here — track what you have, what you paid, and your collection\'s value. Share it with anyone, anytime. Sell directly through ISO posts.',
     target: '#nav-myvault',
     icon: '&#128188;'
   },
   {
-    title: 'POST ISO',
-    text: 'Broadcast exactly what card you want to buy. Set your price, grade, and variation — collectors who have it get notified. You set the terms.',
-    target: '#nav-post',
+    title: 'ISOVAULT',
+    text: 'The card search engine everything revolves around. Browse every card from every set — search by player, year, or set name. Find the exact card and parallel you\'re looking for.',
+    target: '#nav-library',
+    icon: '&#128218;'
+  },
+  {
+    title: 'OPENISO',
+    text: 'Post exactly what card you want to buy. Set your price, grade, and variation — collectors who have it get notified. You set the terms, they come to you.',
+    target: '#nav-myisos',
     icon: '&#128276;'
   },
   {
-    title: 'MISSING VARIANT',
-    text: 'Found a parallel that\'s not in ISOVault yet? Submit it with photos. You help build the database, you earn credits. Every contribution makes ISOVault better for everyone.',
-    target: null,
-    icon: '&#10133;'
-  },
-  {
-    title: 'YOU\'RE ALL SET!',
-    text: 'Start by browsing ISOVault — find your cards, build your vault, and join the community.',
+    title: 'LET\'S ADD YOUR FIRST CARD',
+    text: 'Head to ISOVault, find a card you own, and add it to your vault. It only takes a few seconds — and your collection starts now.',
     target: '#nav-library',
-    icon: '&#127919;',
+    icon: '&#127183;',
     isFinal: true
   }
 ];
@@ -14926,25 +14989,63 @@ function _tourShow() {
   const step = TOUR_STEPS[_tourStep];
   if (!step) { _tourEnd(); return; }
 
-  // Highlight target
+  // Clear previous highlights + arrows
   document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+  const oldArrow = document.getElementById('tour-arrow');
+  if (oldArrow) oldArrow.remove();
+
   if (step.target) {
     const el = document.querySelector(step.target);
-    if (el) { el.classList.add('tour-highlight'); el.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
+    if (el) {
+      el.classList.add('tour-highlight');
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      // Position arrow from nav item toward the modal
+      _positionTourArrow(el);
+    }
   }
 
   document.getElementById('tour-icon').innerHTML = step.icon;
   document.getElementById('tour-title').textContent = step.title;
   document.getElementById('tour-text').textContent = step.text;
   document.getElementById('tour-counter').textContent = (_tourStep + 1) + ' / ' + TOUR_STEPS.length;
-  document.getElementById('tour-next-btn').textContent = step.isFinal ? 'GO TO ISOVAULT' : 'NEXT';
+
+  const nextBtn = document.getElementById('tour-next-btn');
+  if (step.isFinal) {
+    nextBtn.textContent = 'FIND MY FIRST CARD';
+  } else {
+    nextBtn.textContent = 'NEXT';
+  }
+
   overlay.style.display = 'flex';
+}
+
+function _positionTourArrow(targetEl) {
+  const arrow = document.createElement('div');
+  arrow.id = 'tour-arrow';
+  document.body.appendChild(arrow);
+
+  const rect = targetEl.getBoundingClientRect();
+  // Arrow sits to the right of the nav item, pointing left at it
+  arrow.style.cssText = `
+    position:fixed;
+    top:${rect.top + rect.height / 2 - 16}px;
+    left:${rect.right + 12}px;
+    z-index:100001;
+    width:0;height:0;
+    border-top:16px solid transparent;
+    border-bottom:16px solid transparent;
+    border-right:20px solid #00AAFF;
+    filter:drop-shadow(0 0 8px rgba(0,170,255,0.6));
+    animation:tour-arrow-pulse 1s ease-in-out infinite;
+    pointer-events:none;
+  `;
 }
 
 function _tourNext() {
   const step = TOUR_STEPS[_tourStep];
   if (step && step.isFinal) {
     _tourEnd();
+    // Navigate to ISOVault so they can add their first card
     N('library', document.getElementById('nav-library'));
     return;
   }
@@ -14952,10 +15053,18 @@ function _tourNext() {
   _tourShow();
 }
 
+function _tourSkip() {
+  _tourEnd();
+  // Land them in My Vault (home base)
+  N('myvault', document.getElementById('nav-myvault'));
+}
+
 function _tourEnd() {
   const overlay = document.getElementById('tour-overlay');
   if (overlay) overlay.style.display = 'none';
   document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+  const arrow = document.getElementById('tour-arrow');
+  if (arrow) arrow.remove();
   // Mark tour as completed
   const user = window._authUser;
   if (user) {
@@ -14970,22 +15079,42 @@ function startTour() {
 }
 </script>
 
+<!-- Branded Splash Screen -->
+<div id="splash-screen" style="display:none;position:fixed;inset:0;z-index:100002;background:#0D1F33;align-items:center;justify-content:center;flex-direction:column;opacity:0;transition:opacity 0.4s ease">
+  <div style="text-align:center">
+    <div class="splash-logo" style="font-family:Bebas Neue,sans-serif;font-size:56px;letter-spacing:6px;margin-bottom:6px">
+      <span style="color:white">GRAIL</span><span style="color:#00AAFF">ISO</span>
+    </div>
+    <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#7A95AE;margin-bottom:36px">Built by collectors, for collectors</div>
+    <div class="splash-loader">
+      <div class="splash-loader-bar"></div>
+    </div>
+    <div id="splash-status" style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;color:rgba(122,149,174,0.5);margin-top:16px">Loading your collection...</div>
+  </div>
+</div>
+
 <!-- Welcome Tour Overlay -->
-<div id="tour-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.7);backdrop-filter:blur(3px);align-items:center;justify-content:center">
-  <div style="background:linear-gradient(135deg,#0a1f35,#0d2a4a);border:2px solid rgba(0,170,255,0.4);border-radius:16px;padding:32px 36px;max-width:480px;width:90%;text-align:center;box-shadow:0 0 40px rgba(0,170,255,0.2),0 20px 60px rgba(0,0,0,0.5)">
+<div id="tour-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center">
+  <div style="background:linear-gradient(135deg,#0a1f35,#0d2a4a);border:2px solid rgba(0,170,255,0.4);border-radius:16px;padding:32px 36px;max-width:480px;width:90%;text-align:center;box-shadow:0 0 40px rgba(0,170,255,0.2),0 20px 60px rgba(0,0,0,0.5);position:relative">
     <div id="tour-icon" style="font-size:48px;margin-bottom:12px"></div>
     <div id="tour-title" style="font-family:Bebas Neue,sans-serif;font-size:26px;letter-spacing:3px;color:#E8EDF2;margin-bottom:8px"></div>
     <div id="tour-text" style="font-family:Barlow Condensed,sans-serif;font-size:15px;color:#7A95AE;line-height:1.6;margin-bottom:20px"></div>
     <div style="display:flex;gap:10px;justify-content:center;align-items:center">
       <button onclick="_tourNext()" id="tour-next-btn" style="background:#00AAFF;border:none;border-radius:8px;padding:10px 28px;font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:2px;color:white;cursor:pointer;transition:all .2s" onmouseover="this.style.background='#33CCFF';this.style.boxShadow='0 0 20px rgba(0,170,255,0.4)'" onmouseout="this.style.background='#00AAFF';this.style.boxShadow='none'">NEXT</button>
-      <button onclick="_tourEnd()" style="background:none;border:1px solid rgba(122,149,174,0.3);border-radius:8px;padding:10px 20px;font-family:Barlow Condensed,sans-serif;font-size:13px;letter-spacing:1px;color:#7A95AE;cursor:pointer">SKIP TOUR</button>
+      <button onclick="_tourSkip()" style="background:none;border:1px solid rgba(122,149,174,0.3);border-radius:8px;padding:10px 20px;font-family:Barlow Condensed,sans-serif;font-size:13px;letter-spacing:1px;color:#7A95AE;cursor:pointer">SKIP TOUR</button>
     </div>
     <div id="tour-counter" style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:rgba(122,149,174,0.5);margin-top:14px;letter-spacing:1px"></div>
   </div>
 </div>
 
 <style>
+.splash-visible{opacity:1!important}
+.splash-fade-out{opacity:0!important}
+.splash-loader{width:200px;height:3px;background:rgba(0,170,255,0.15);border-radius:3px;overflow:hidden;margin:0 auto}
+.splash-loader-bar{width:30%;height:100%;background:linear-gradient(90deg,#00AAFF,#33CCFF);border-radius:3px;animation:splash-load 1.4s ease-in-out infinite}
+@keyframes splash-load{0%{transform:translateX(-100%)}50%{transform:translateX(240%)}100%{transform:translateX(-100%)}}
 .tour-highlight{position:relative;z-index:100000;box-shadow:0 0 0 4px #00AAFF,0 0 20px rgba(0,170,255,0.5)!important;border-radius:8px;transition:box-shadow .3s}
+@keyframes tour-arrow-pulse{0%,100%{opacity:1;transform:translateX(0)}50%{opacity:0.6;transform:translateX(6px)}}
 </style>
 </body>
 </html>

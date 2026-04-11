@@ -1890,7 +1890,7 @@ async function logOut(){
     <div class="nav-item" id="nav-myisos" onclick="N('myisos',this)">
       <div class="nav-drag-handle">&#10303;</div>
       <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
-      <span class="nav-label">My ISOs</span>
+      <span class="nav-label">OpenISO</span>
       <span class="nav-badge" id="navBadge-myisos">3</span>
     </div>
 
@@ -2314,23 +2314,47 @@ async function logOut(){
 
   <!-- MY ISOS -->
   <div class="panel" id="panel-myisos">
+    <!-- Tab row: All ISOs vs My ISOs -->
     <div class="filter-row" id="myIsosFilters" style="display:none">
-      <div class="chip active" onclick="filterMyISOs('all',this)">All</div>
-      <div class="chip" onclick="filterMyISOs('active',this)">Active</div>
-      <div class="chip" onclick="filterMyISOs('matched',this)">Matched</div>
-      <div class="chip" onclick="filterMyISOs('completed',this)">Completed</div>
+      <div class="chip active" onclick="switchISOTab('all',this)">All ISOs</div>
+      <div class="chip" onclick="switchISOTab('mine',this)">My ISOs</div>
+      <div style="flex:1"></div>
+      <div class="chip" onclick="filterMyISOs('active',this)" data-filter>Active</div>
+      <div class="chip" onclick="filterMyISOs('matched',this)" data-filter>Matched</div>
     </div>
     <div id="myIsosLoading" style="text-align:center;padding:60px 20px;color:var(--muted-text)">
       <div style="font-size:28px;margin-bottom:12px">&#8987;</div>
-      <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;letter-spacing:1px">Loading your ISOs&#8230;</div>
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;letter-spacing:1px">Loading OpenISO&#8230;</div>
     </div>
     <div id="myIsosEmpty" style="display:none;text-align:center;padding:60px 20px;color:var(--muted-text)">
       <div style="font-size:40px;margin-bottom:12px">&#128269;</div>
-      <div style="font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--white);margin-bottom:8px">No ISOs posted yet</div>
-      <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;margin-bottom:20px">Broadcast exactly what you want &#8212; matching sellers are notified instantly.</div>
-      <button class="btn btn-primary" onclick="N('post',document.querySelector('[onclick*=post]'))">Post Your First ISO</button>
+      <div style="font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--white);margin-bottom:8px">No active ISOs right now</div>
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;margin-bottom:20px">When collectors post ISOs looking for cards, they show up here. Got what they want? Make an offer.</div>
+      <button class="btn btn-primary" onclick="N('post',document.querySelector('[onclick*=post]'))">Post an ISO</button>
     </div>
     <div class="iso-list" id="myIsosList" style="display:none"></div>
+
+    <!-- Make Offer Modal -->
+    <div id="isoOfferModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9000;align-items:center;justify-content:center">
+      <div style="background:var(--deep);border:1px solid var(--deep-border);border-radius:12px;padding:28px;width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
+        <div style="font-family:Bebas Neue,sans-serif;font-size:20px;letter-spacing:1px;margin-bottom:4px;color:var(--white)">Make an Offer</div>
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:16px" id="offerIsoLabel">—</div>
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--chrome);margin-bottom:4px">Buyer's max price: <strong id="offerBuyerMax" style="color:var(--blue)">—</strong></div>
+        <div style="margin-bottom:14px">
+          <label style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;color:var(--muted-text);text-transform:uppercase;display:block;margin-bottom:4px">YOUR ASKING PRICE</label>
+          <input class="input" id="offerPrice" type="number" min="1" step="1" placeholder="$" style="background:var(--deep3);border:1px solid var(--deep-border);color:var(--white);font-family:Bebas Neue,sans-serif;font-size:22px;padding:10px 14px;border-radius:8px;width:100%">
+        </div>
+        <div style="margin-bottom:14px">
+          <label style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;color:var(--muted-text);text-transform:uppercase;display:block;margin-bottom:4px">NOTE (optional)</label>
+          <input class="input" id="offerNote" placeholder="Card condition, grade, etc." style="background:var(--deep3);border:1px solid var(--deep-border);color:var(--white);font-family:Barlow Condensed,sans-serif;font-size:13px;padding:8px 12px;border-radius:8px;width:100%">
+        </div>
+        <div id="offerErr" style="font-size:12px;color:var(--red);margin-bottom:10px;display:none"></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-primary" onclick="submitOffer()" style="flex:1">Send Offer</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('isoOfferModal').style.display='none'">Cancel</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- MY TRANSACTIONS -->
@@ -4706,7 +4730,7 @@ let libFilter='all';
 const PM={
   overview:{t:'OVERVIEW',s:'Welcome back, Jason'},
   post:{t:'POST ISO',s:'Broadcast exactly what you want'},
-  myisos:{t:'MY ISOs',s:'3 active · 1 completed'},
+  myisos:{t:'OpenISO',s:'Active card requests from collectors'},
   market:{t:'MARKET DATA',s:'Live bid · ask · last sale — Baseball'},
   library:{t:'ISOVAULT',s:'The world\'s most complete card search engine'},  myvault:{t:'MY VAULT',s:'Your personal card library'},
   notifs:{t:'NOTIFICATIONS',s:'2 unread'},
@@ -11846,7 +11870,27 @@ window.addEventListener('popstate', function(e){
 // ivInit() handles ISOVault rendering on N('library',...)
 
 let _myIsosData = [];
+let _allIsosData = [];
 let _myIsosFilter = 'all';
+let _isoTab = 'all'; // 'all' = OpenISO board, 'mine' = my posted ISOs
+let _offerIsoId = null;
+
+function switchISOTab(tab, el){
+  _isoTab = tab;
+  document.querySelectorAll('#myIsosFilters .chip').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  _myIsosFilter = 'all';
+  _openIsoIdx = -1;
+  _renderISOList();
+}
+
+function filterMyISOs(filter, el){
+  _myIsosFilter = filter === _myIsosFilter ? 'all' : filter;
+  document.querySelectorAll('#myIsosFilters .chip[data-filter]').forEach(c=>c.classList.remove('active'));
+  if(el && _myIsosFilter !== 'all') el.classList.add('active');
+  _openIsoIdx = -1;
+  _renderISOList();
+}
 
 async function renderMyISOs(){
   const loading = document.getElementById('myIsosLoading');

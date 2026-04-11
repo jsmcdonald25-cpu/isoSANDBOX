@@ -8557,8 +8557,10 @@ async function openCardDetail(cardId){
   const uploadBtn = document.getElementById('cd-upload-btn');
   if(uploadBtn){ uploadBtn.textContent='📷 Upload Image'; uploadBtn.style.display='inline-flex'; }
 
-  // Reset viewer to placeholder state
+  // Reset viewer to placeholder state + show loading text
   _cdSetViewerImages(null, null);
+  const _phF = document.getElementById('cd-placeholder-front');
+  if(_phF){ const _li = _phF.querySelector('.cd-loading-msg'); if(!_li){ const d=document.createElement('div'); d.className='cd-loading-msg'; d.style.cssText='position:absolute;bottom:12px;left:0;right:0;text-align:center;font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);letter-spacing:1px'; d.textContent='Loading...'; _phF.style.position='relative'; _phF.appendChild(d); } else { _li.style.display='block'; } }
 
   // Reset 3D state
   _cdReset3D();
@@ -8847,10 +8849,18 @@ window._cdIvSetByCardInflight = window._cdIvSetByCardInflight || {};
 async function _cdFindIvSetByCard(cardNum, player, year){
   if(!IV_SETS || !IV_SETS.length || !cardNum) return null;
   const cacheKey = `${cardNum}|${player||''}|${year||''}`;
-  // Cache hit (including cached nulls)
+  // Cache hit — check in-memory first, then sessionStorage
   if(Object.prototype.hasOwnProperty.call(window._cdIvSetByCardCache, cacheKey)){
     return window._cdIvSetByCardCache[cacheKey];
   }
+  try {
+    const ss = sessionStorage.getItem('ivSetByCard::'+cacheKey);
+    if(ss !== null){
+      const parsed = ss === 'null' ? null : JSON.parse(ss);
+      window._cdIvSetByCardCache[cacheKey] = parsed;
+      return parsed;
+    }
+  } catch(e){}
   // De-dupe in-flight: if another caller is already searching for this exact
   // key, return their promise instead of firing a parallel duplicate fan-out.
   if(window._cdIvSetByCardInflight[cacheKey]){
@@ -8887,6 +8897,8 @@ async function _cdFindIvSetByCard(cardNum, player, year){
   try {
     const found = await lookupPromise;
     window._cdIvSetByCardCache[cacheKey] = found;
+    // Persist to sessionStorage so page reload doesn't re-trigger fan-out
+    try { sessionStorage.setItem('ivSetByCard::'+cacheKey, found ? JSON.stringify(found) : 'null'); } catch(e){}
     return found;
   } finally {
     delete window._cdIvSetByCardInflight[cacheKey];
@@ -8972,9 +8984,11 @@ function _cdApplyOrientationBoth(frontLandscape, backLandscape){
 // Calls callback(landscape:boolean) exactly once.
 function _cdProbeOrientation(url, callback){
   if(!url){ callback(false); return; }
-  // Strip any existing query params and add unique timestamp — forces browser to fetch
-  // fresh from origin every time. Prevents stale cached image returning wrong dimensions.
-  const probeUrl = url.split('?')[0] + '?_probe=' + Date.now();
+  // Strip query params but DO NOT cache-bust with timestamp. The cache-bust
+  // was causing CDN errors (broken images) because some CDN nodes serve
+  // different responses for timestamped URLs. Image dimensions are immutable
+  // once uploaded, so CDN caching is safe and desired.
+  const probeUrl = url.split('?')[0];
   const img = new Image();
   let fired = false;
   function done(landscape){
@@ -8986,7 +9000,7 @@ function _cdProbeOrientation(url, callback){
   img.onerror = function(){ done(false); };
   img.crossOrigin = 'anonymous';
   img.src = probeUrl;
-  // NOTE: do NOT check img.complete here — probeUrl is always unique so it will never be cached
+  // NOTE: img may load from cache (fast) since we no longer cache-bust the URL
 }
 
 function _cdSetViewerImages(frontUrl, backUrl){
@@ -8999,6 +9013,9 @@ function _cdSetViewerImages(frontUrl, backUrl){
   if(frontUrl && imgFront){
     imgFront.style.display = 'block';
     if(phFront) phFront.style.display = 'none';
+    // Hide loading text when real image shows
+    const _lm = phFront && phFront.querySelector('.cd-loading-msg');
+    if(_lm) _lm.style.display = 'none';
   } else {
     if(imgFront){ imgFront.src=''; imgFront.style.display = 'none'; }
     if(phFront)  phFront.style.display = 'flex';

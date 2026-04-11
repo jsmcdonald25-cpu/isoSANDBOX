@@ -5113,7 +5113,11 @@ function p2RenderVariantGrid(){
   // Build variant list from the card's actual variations column, plus an
   // OTHER tile so users can request parallels not yet in the catalog.
   const dbRow = P2_STATE._dbRow;
-  const rawVars = (dbRow && Array.isArray(dbRow.variations)) ? dbRow.variations : [];
+  // Defensive parse — variations may be a JSON string on some tables
+  let _rawV = (dbRow && dbRow.variations) || [];
+  if(typeof _rawV === 'string'){ try { _rawV = JSON.parse(_rawV); } catch(e){ _rawV = []; } }
+  if(!Array.isArray(_rawV)) _rawV = [];
+  const rawVars = _rawV;
   const variants = rawVars.map(v => ({
     name: v.label || 'Base',
     meta: v.run ? '/'+v.run : 'Unnumbered',

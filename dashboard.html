@@ -556,7 +556,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-back-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(0,170,255,0.08);border:1px solid var(--deep-border);border-radius:6px;padding:6px 12px;font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);cursor:pointer;transition:all .2s;margin-bottom:18px}
 .cd-back-btn:hover{background:rgba(0,170,255,0.15);border-color:var(--blue)}
 .cd-layout{display:flex;align-items:start;min-width:0;justify-content:space-evenly;gap:16px}
-.cd-viewer-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;background:#0D1F33;width:fit-content;min-width:0;max-width:500px;order:1}
+.cd-viewer-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;background:#0D1F33;width:fit-content;min-width:0;max-width:500px}
 .cd-scene-wrap{position:relative;width:320px;height:448px;max-width:100%}
 .cd-shadow{position:absolute;inset:0;border-radius:10px;pointer-events:none;z-index:0;transition:box-shadow .4s}
 .cd-scene{position:absolute;inset:0;perspective:1200px;cursor:grab;user-select:none;z-index:1}
@@ -573,8 +573,8 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-ctrl-btn.upload{color:var(--green);border-color:rgba(0,232,135,0.3);background:rgba(0,232,135,0.06)}
 .cd-ctrl-btn.upload:hover{background:rgba(0,232,135,0.14);border-color:var(--green)}
 .cd-side-label{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)}
-.cd-info{display:flex;flex-direction:column;gap:10px;max-width:320px;min-width:260px;order:3}
-.cd-actions{display:flex;flex-direction:column;gap:8px;min-width:240px;max-width:320px;order:2}
+.cd-info{display:flex;flex-direction:column;gap:10px;max-width:320px;min-width:260px}
+.cd-actions{display:flex;flex-direction:column;gap:8px;min-width:240px;max-width:320px}
 .cd-vault-info-title{font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--blue);margin-bottom:8px}
 .cd-vi-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px}
 .cd-vi-item{background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:6px;padding:6px 8px}
@@ -3186,8 +3186,8 @@ async function logOut(){
           </div>
         </div>
       </div>
-      <!-- RIGHT: Info -->
-      <div class="cd-info">
+      <!-- CENTER: Card Identity + Vault Details + Actions -->
+      <div class="cd-actions" id="cd-actions">
         <div>
           <div class="cd-card-title" id="cd-title">&#8212;</div>
           <div class="cd-card-sub" id="cd-sub"></div>
@@ -3209,41 +3209,6 @@ async function logOut(){
           <div class="cd-var-label" id="cd-var-label">Variations &#8212; Click to Switch View</div>
           <div class="cd-var-pills" id="cd-pills"></div>
         </div>
-        <div class="cd-market-block">
-          <div class="cd-market-title"><div class="live-dot"></div> Live Market &#183; <span id="cd-mkt-var-name">&#8212;</span></div>
-          <div class="cd-mkt-grid">
-            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Avg Price Paid</div><div class="cd-mkt-val blue" id="cd-mkt-avg">&#8212;</div></div>
-            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Low / High</div><div class="cd-mkt-val" id="cd-mkt-range" style="font-size:13px">&#8212;</div></div>
-            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Vault Count</div><div class="cd-mkt-val gold" id="cd-mkt-count">&#8212;</div></div>
-          </div>
-          <div id="cd-mkt-sales-list" style="margin-top:10px;display:none">
-            <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;color:rgba(0,170,255,0.4);margin-bottom:6px">RECENT SUBMISSIONS</div>
-            <div id="cd-mkt-sales-rows"></div>
-          </div>
-          <div class="cd-watching" id="cd-watching-row" style="display:none"><span>&#128065;</span>&nbsp;<strong id="cd-watching-ct">&#8212;</strong>&nbsp;collectors watching this variation right now</div>
-          <div id="cd-mkt-tagline" style="display:none;font-family:'Barlow Condensed',sans-serif;font-size:10px;color:rgba(122,149,174,0.4);letter-spacing:.5px;margin-top:8px">Market price built from collector vault submissions &#183; Built by collectors, for collectors</div>
-        </div>
-        <div class="cd-ebay-block" id="cd-ebay-block">
-          <div class="cd-ebay-title">
-            <div class="left">
-              <span class="cd-ebay-badge"><span class="e1">e</span><span class="b">b</span><span class="a">a</span><span class="y">y</span></span>
-              <span>Currently Listed</span>
-            </div>
-            <div class="cd-ebay-count" id="cd-ebay-count">&#8212;</div>
-          </div>
-          <div class="cd-ebay-stats" id="cd-ebay-stats">
-            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Low</div><div class="cd-mkt-val green" id="cd-ebay-low">&#8212;</div></div>
-            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Avg</div><div class="cd-mkt-val blue" id="cd-ebay-avg">&#8212;</div></div>
-            <div class="cd-mkt-item"><div class="cd-mkt-lbl">High</div><div class="cd-mkt-val" id="cd-ebay-high">&#8212;</div></div>
-          </div>
-          <div class="cd-ebay-rows" id="cd-ebay-rows"></div>
-          <div class="cd-ebay-empty" id="cd-ebay-empty" style="display:none">No current listings on eBay</div>
-          <a class="cd-ebay-link" id="cd-ebay-link" href="#" target="_blank" rel="noopener" style="display:none">View All on eBay &rarr;</a>
-          <div class="cd-ebay-foot">Live asking prices &middot; refreshed on view</div>
-        </div>
-      </div>
-      <!-- RIGHT: Actions Panel -->
-      <div class="cd-actions" id="cd-actions">
         <div class="cd-vault-cta">
           <div class="cd-vault-path-msg" id="cd-path-msg" style="display:none"></div>
           <!-- Vault purchase details — shown when from My Vault -->
@@ -3287,6 +3252,41 @@ async function logOut(){
             </div>
             <div class="cd-report-badge">+1 CREDIT</div>
           </div>
+        </div>
+      </div>
+      <!-- RIGHT: Market Data + eBay + Admin Tools -->
+      <div class="cd-info">
+        <div class="cd-market-block">
+          <div class="cd-market-title"><div class="live-dot"></div> Live Market &#183; <span id="cd-mkt-var-name">&#8212;</span></div>
+          <div class="cd-mkt-grid">
+            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Avg Price Paid</div><div class="cd-mkt-val blue" id="cd-mkt-avg">&#8212;</div></div>
+            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Low / High</div><div class="cd-mkt-val" id="cd-mkt-range" style="font-size:13px">&#8212;</div></div>
+            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Vault Count</div><div class="cd-mkt-val gold" id="cd-mkt-count">&#8212;</div></div>
+          </div>
+          <div id="cd-mkt-sales-list" style="margin-top:10px;display:none">
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;color:rgba(0,170,255,0.4);margin-bottom:6px">RECENT SUBMISSIONS</div>
+            <div id="cd-mkt-sales-rows"></div>
+          </div>
+          <div class="cd-watching" id="cd-watching-row" style="display:none"><span>&#128065;</span>&nbsp;<strong id="cd-watching-ct">&#8212;</strong>&nbsp;collectors watching this variation right now</div>
+          <div id="cd-mkt-tagline" style="display:none;font-family:'Barlow Condensed',sans-serif;font-size:10px;color:rgba(122,149,174,0.4);letter-spacing:.5px;margin-top:8px">Market price built from collector vault submissions &#183; Built by collectors, for collectors</div>
+        </div>
+        <div class="cd-ebay-block" id="cd-ebay-block">
+          <div class="cd-ebay-title">
+            <div class="left">
+              <span class="cd-ebay-badge"><span class="e1">e</span><span class="b">b</span><span class="a">a</span><span class="y">y</span></span>
+              <span>Currently Listed</span>
+            </div>
+            <div class="cd-ebay-count" id="cd-ebay-count">&#8212;</div>
+          </div>
+          <div class="cd-ebay-stats" id="cd-ebay-stats">
+            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Low</div><div class="cd-mkt-val green" id="cd-ebay-low">&#8212;</div></div>
+            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Avg</div><div class="cd-mkt-val blue" id="cd-ebay-avg">&#8212;</div></div>
+            <div class="cd-mkt-item"><div class="cd-mkt-lbl">High</div><div class="cd-mkt-val" id="cd-ebay-high">&#8212;</div></div>
+          </div>
+          <div class="cd-ebay-rows" id="cd-ebay-rows"></div>
+          <div class="cd-ebay-empty" id="cd-ebay-empty" style="display:none">No current listings on eBay</div>
+          <a class="cd-ebay-link" id="cd-ebay-link" href="#" target="_blank" rel="noopener" style="display:none">View All on eBay &rarr;</a>
+          <div class="cd-ebay-foot">Live asking prices &middot; refreshed on view</div>
         </div>
       </div>
     </div>

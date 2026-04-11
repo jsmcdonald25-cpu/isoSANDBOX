@@ -555,15 +555,15 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-crumb-sep{color:rgba(0,170,255,0.3);font-size:11px}
 .cd-back-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(0,170,255,0.08);border:1px solid var(--deep-border);border-radius:6px;padding:6px 12px;font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);cursor:pointer;transition:all .2s;margin-bottom:18px}
 .cd-back-btn:hover{background:rgba(0,170,255,0.15);border-color:var(--blue)}
-.cd-layout{display:flex;align-items:start;min-width:0;justify-content:space-evenly;gap:16px}
-.cd-viewer-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;background:#0D1F33;flex:1.3;min-width:320px;max-width:500px}
-.cd-scene-wrap{position:relative;width:360px;height:504px;max-width:100%}
+.cd-layout{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:16px;align-items:start}
+.cd-viewer-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;background:#0D1F33}
+.cd-scene-wrap{position:relative;width:100%;aspect-ratio:2.5/3.5}
 .cd-shadow{position:absolute;inset:0;border-radius:10px;pointer-events:none;z-index:0;transition:box-shadow .4s}
 .cd-scene{position:absolute;inset:0;perspective:1200px;cursor:grab;user-select:none;z-index:1}
 .cd-scene:active{cursor:grabbing}
 .cd-card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.05s linear}
-.cd-front{position:absolute;width:360px;height:504px;top:0;left:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:10px;overflow:hidden;background:#000}
-.cd-back{position:absolute;width:360px;height:504px;top:0;left:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);border-radius:10px;overflow:hidden;background:#000}
+.cd-front,.cd-back{position:absolute;width:100%;height:100%;top:0;left:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:10px;overflow:hidden;background:#000}
+.cd-back{transform:rotateY(180deg)}
 .cd-card-face{width:100%;height:100%;object-fit:fill;display:block;border-radius:10px}
 .cd-card-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;border-radius:10px}
 .cd-glare{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:2;border-radius:10px;transition:opacity 0.1s}
@@ -573,8 +573,8 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-ctrl-btn.upload{color:var(--green);border-color:rgba(0,232,135,0.3);background:rgba(0,232,135,0.06)}
 .cd-ctrl-btn.upload:hover{background:rgba(0,232,135,0.14);border-color:var(--green)}
 .cd-side-label{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)}
-.cd-info{display:flex;flex-direction:column;gap:10px;max-width:320px;min-width:260px}
-.cd-actions{display:flex;flex-direction:column;gap:8px;min-width:240px;max-width:320px}
+.cd-info{display:flex;flex-direction:column;gap:10px;min-width:0}
+.cd-actions{display:flex;flex-direction:column;gap:8px;min-width:0}
 .cd-vault-info-title{font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--blue);margin-bottom:8px}
 .cd-vi-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px}
 .cd-vi-item{background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:6px;padding:6px 8px}
@@ -848,10 +848,10 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
   .cd-crumb-desktop{display:none !important}
   .cd-breadcrumb{margin-bottom:10px;gap:4px;overflow-x:auto;justify-content:center}
   .cd-breadcrumb .cd-crumb{font-size:11px}
-  .cd-layout{flex-direction:column;align-items:center;gap:16px;padding-bottom:40px}
+  .cd-layout{display:flex;flex-direction:column;align-items:center;gap:16px;padding-bottom:40px}
   /* dissolve the viewer wrap on mobile so its children become flex items of cd-layout */
   .cd-viewer-wrap{display:contents}
-  .cd-scene-wrap{width:220px;height:308px;margin:0 auto;order:0}
+  .cd-scene-wrap{width:220px;height:308px;margin:0 auto;order:0;aspect-ratio:auto}
   .cd-front,.cd-back{width:220px;height:308px}
   .cd-viewer-controls{order:0}
   #cd-img-status{order:0}
@@ -1217,7 +1217,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 /* ── From merge: Card Detail + MVC + Vault fit-to-page ── */
 .content.carddetail-active{overflow:hidden;display:flex;flex-direction:column}
 .content.carddetail-active #panel-carddetail{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
-.content.carddetail-active .cd-layout{flex:1;min-height:0;align-items:stretch;overflow:visible}
+.content.carddetail-active .cd-layout{flex:1;min-height:0;overflow-y:auto}
 .content.carddetail-active .cd-info{overflow-y:auto;min-height:0}
 .content.carddetail-active .cd-info::-webkit-scrollbar{width:2px}
 .content.carddetail-active .cd-info::-webkit-scrollbar-thumb{background:var(--deep-border)}
@@ -9044,16 +9044,21 @@ function _cdSetViewerImages(frontUrl, backUrl){
       const imgIsLand = imgEl.naturalWidth > imgEl.naturalHeight;
       if(isLandscape && !imgIsLand){
         // Portrait image, landscape container — rotate -90deg (CCW) to fill.
-        // Card size: 360w x 504h. Landscape = 504w x 360h after rotation.
-        // Pre-rotation: 504w x 706h. Offset: (706-504)/2 = 101.
-        imgEl.style.width='504px'; imgEl.style.height='706px';
-        imgEl.style.top='-101px'; imgEl.style.left='101px';
+        // Read actual rendered dimensions so this works at any card size.
+        const cW = imgEl.parentElement.offsetWidth || 360;
+        const cH = imgEl.parentElement.offsetHeight || 504;
+        const rH = Math.round(cH * cH / cW);
+        const off = Math.round((rH - cH) / 2);
+        imgEl.style.width=cH+'px'; imgEl.style.height=rH+'px';
+        imgEl.style.top=(-off)+'px'; imgEl.style.left=off+'px';
         imgEl.style.transform='rotate(-90deg)'; imgEl.style.objectFit='cover';
       } else if(!isLandscape && imgIsLand){
-        // Landscape image, portrait container (360w x 504h) — rotate 90deg.
-        // Pre-rotation: 504w x 360h. After rotation: 360w x 504h. Offset: (504-360)/2 = 72.
-        imgEl.style.width='504px'; imgEl.style.height='360px';
-        imgEl.style.top='72px';   imgEl.style.left='-72px';
+        // Landscape image, portrait container — rotate 90deg.
+        const cW = imgEl.parentElement.offsetWidth || 360;
+        const cH = imgEl.parentElement.offsetHeight || 504;
+        const off = Math.round((cH - cW) / 2);
+        imgEl.style.width=cH+'px'; imgEl.style.height=cW+'px';
+        imgEl.style.top=off+'px'; imgEl.style.left=(-off)+'px';
         imgEl.style.transform='rotate(90deg)'; imgEl.style.objectFit='cover';
       } else {
         // Orientation matches — no rotation needed. Use object-fit:cover so the

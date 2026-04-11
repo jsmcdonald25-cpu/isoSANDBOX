@@ -557,12 +557,12 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-back-btn:hover{background:rgba(0,170,255,0.15);border-color:var(--blue)}
 .cd-layout{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:16px;align-items:start}
 .cd-viewer-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;background:#0D1F33}
-.cd-scene-wrap{position:relative;width:100%;aspect-ratio:2.5/3.5}
+.cd-scene-wrap{position:relative;width:100%;padding:16px;background:linear-gradient(135deg,#0d2240,#1a3a5c,#0d2240);border:1px solid var(--deep-border);border-radius:16px;text-align:center}
 .cd-shadow{position:absolute;inset:0;border-radius:10px;pointer-events:none;z-index:0;transition:box-shadow .4s}
-.cd-scene{position:absolute;inset:0;perspective:1200px;cursor:grab;user-select:none;z-index:1}
+.cd-scene{position:relative;width:360px;height:504px;perspective:1200px;cursor:grab;user-select:none;z-index:1;margin:0 auto}
 .cd-scene:active{cursor:grabbing}
 .cd-card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.05s linear}
-.cd-front,.cd-back{position:absolute;width:100%;height:100%;top:0;left:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:10px;overflow:hidden;background:#000}
+.cd-front,.cd-back{position:absolute;width:360px;height:504px;top:0;left:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:10px;overflow:hidden;background:#000}
 .cd-back{transform:rotateY(180deg)}
 .cd-card-face{width:100%;height:100%;object-fit:fill;display:block;border-radius:10px}
 .cd-card-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;border-radius:10px}
@@ -849,10 +849,10 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
   .cd-breadcrumb{margin-bottom:10px;gap:4px;overflow-x:auto;justify-content:center}
   .cd-breadcrumb .cd-crumb{font-size:11px}
   .cd-layout{display:flex;flex-direction:column;align-items:center;gap:16px;padding-bottom:40px}
-  /* dissolve the viewer wrap on mobile so its children become flex items of cd-layout */
   .cd-viewer-wrap{display:contents}
-  .cd-scene-wrap{width:220px;height:308px;margin:0 auto;order:0;aspect-ratio:auto}
-  .cd-front,.cd-back{width:220px;height:308px}
+  .cd-scene{width:220px!important;height:308px!important}
+  .cd-front,.cd-back{width:220px!important;height:308px!important}
+  .cd-scene-wrap{margin:0 auto;order:0}
   .cd-viewer-controls{order:0}
   #cd-img-status{order:0}
   .cd-info{max-width:100%;min-width:0;width:100%;text-align:center;order:1}
@@ -9575,6 +9575,23 @@ function _cdZoomTouchEnd(e){
   if(e.touches.length === 0) _cdZoomDrag = null;
 }
 
+// Size the 3D card to fill the viewer grid column. Called on card open and window resize.
+function _cdSizeCard(){
+  const wrap = document.querySelector('.cd-scene-wrap');
+  if(!wrap) return;
+  const w = wrap.offsetWidth - 32; // subtract padding (16px each side)
+  if(w < 100) return;
+  const h = Math.round(w * 3.5 / 2.5);
+  wrap.style.width = '';
+  wrap.style.height = '';
+  const scene = document.getElementById('cd-scene');
+  const front = document.querySelector('.cd-front');
+  const back = document.querySelector('.cd-back');
+  if(scene){ scene.style.width = w+'px'; scene.style.height = h+'px'; scene.style.position='relative'; }
+  if(front){ front.style.width = w+'px'; front.style.height = h+'px'; }
+  if(back){ back.style.width = w+'px'; back.style.height = h+'px'; }
+}
+
 function _cdReset3D(){
   _cdRotX=0; _cdRotY=0; _cdFlipped=false;
   // Do NOT pre-apply orientation here — _cdSetViewerImages probes and applies it
@@ -9582,6 +9599,7 @@ function _cdReset3D(){
   if(_cdSpinner){ clearInterval(_cdSpinner); _cdSpinner=null; _cdSpinning=false; }
   const sb = document.getElementById('cd-spin-btn');
   if(sb) sb.textContent = 'Auto Spin';
+  _cdSizeCard();
   _cdApplyTransform();
 }
 

@@ -2261,12 +2261,7 @@ async function logOut(){
           <div class="fg"><label class="fl">Min Price (USD)</label><input class="fc" type="number" id="p2MinP" placeholder="$25 minimum" min="25"></div>
           <div class="fg"><label class="fl">Max Price (USD)</label><input class="fc" type="number" id="p2MaxP" placeholder="Your max bid"></div>
         </div>
-        <!-- Serial # for provenance — only meaningful if variant is /N -->
-        <div class="fg" id="p2SerialWrap" style="display:none">
-          <label class="fl" id="p2SerialLabel">SERIAL # (FOR PROVENANCE)</label>
-          <input class="fc" type="number" id="p2Serial" placeholder="Your card's serial number" min="1" oninput="P2_STATE.serial=this.value">
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-top:5px">Optional but recommended &mdash; required to lock in provenance for this exact copy.</div>
-        </div>
+        <!-- Serial # removed — buyer doesn't own the card yet, no serial to provide -->
         <div class="fg"><label class="fl">Additional Notes (optional)</label><textarea class="fc" id="p2Notes" rows="3" style="resize:vertical" placeholder="Cert number, jersey number parallel, auto quality, specific condition details..."></textarea></div>
         <div style="display:flex;justify-content:space-between;margin-top:20px"><button class="btn btn-ghost" onclick="p2Go(6)">&#8592; Variant</button><button class="btn btn-primary" onclick="p2GoReview()">Next &#8212; Review &#8594;</button></div>
       </div>

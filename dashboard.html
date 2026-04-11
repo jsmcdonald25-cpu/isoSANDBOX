@@ -11939,23 +11939,22 @@ async function renderMyISOs(){
   }
 }
 
-function filterMyISOs(filter, el){
-  _myIsosFilter = filter;
-  document.querySelectorAll('#myIsosFilters .chip').forEach(c=>c.classList.remove('active'));
-  if(el) el.classList.add('active');
-  _renderISOList();
-}
+// filterMyISOs defined above with switchISOTab
 
 let _openIsoIdx = -1;
 
 function _renderISOList(){
   const list = document.getElementById('myIsosList');
   if(!list) return;
-  let rows = _myIsosData;
-  if(_myIsosFilter !== 'all') rows = rows.filter(i=>i.status===_myIsosFilter);
+  const userId = window._authUser?.id;
+  // Pick data source based on tab
+  let rows = _isoTab === 'mine' ? _myIsosData.slice() : _allIsosData.slice();
+  if(_myIsosFilter === 'active') rows = rows.filter(i=>i.status==='active');
+  else if(_myIsosFilter === 'matched') rows = rows.filter(i=>i.status==='matched');
   if(!rows.length){
     list.style.display='block';
-    list.innerHTML='<div style="text-align:center;padding:40px 20px;font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text)">No ISOs matching this filter.</div>';
+    list.innerHTML='<div style="text-align:center;padding:40px 20px;font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text)">'
+      +(_isoTab==='mine'?'You haven\'t posted any ISOs yet.':'No active ISOs right now.')+'</div>';
     return;
   }
   list.style.display='block';
@@ -11977,18 +11976,25 @@ function _renderISOList(){
     const isExpired = iso.expires_at && new Date(iso.expires_at) < new Date();
     const offerCount = offerCounts[iso.id] || 0;
     const hasOffers = offerCount > 0;
+    const isMine = iso.user_id === userId;
     const statusClass = hasOffers ? 'matched' : iso.status==='matched'?'matched':iso.status==='completed'?'':'active';
     const statusLabel = hasOffers ? offerCount+' OFFER'+(offerCount>1?'S':'') : (isExpired ? 'EXPIRED' : (iso.status||'active').toUpperCase());
     const sportIcon = sport==='Baseball'?'&#9918;':sport==='Basketball'?'&#127936;':sport==='Football'?'&#127944;':'&#127944;';
-    const offerAction = hasOffers ? `<span class="ni-action" onclick="event.stopPropagation();openOfferReview(${idx})">Review Offers &#8594;</span>` : '';
+    // Actions: own ISOs get review/cancel, other people's ISOs get Make Offer
+    const offerAction = hasOffers && isMine
+      ? `<span class="ni-action" onclick="event.stopPropagation();openOfferReview(${idx})">Review Offers &#8594;</span>`
+      : (!isMine && iso.status==='active'
+        ? `<span class="ni-action" style="color:var(--green)" onclick="event.stopPropagation();openMakeOffer(${idx})">Make Offer &#8594;</span>`
+        : '');
+    const mineTag = isMine ? '<span style="font-size:10px;color:var(--muted-text);letter-spacing:1px;font-family:Barlow Condensed,sans-serif">YOUR ISO</span>' : '';
     return `
     <div class="iso-item" id="iso-row-${idx}" style="flex-wrap:wrap;gap:9px;cursor:pointer;${iso.status==='completed'||isExpired?'opacity:.55':''}" onclick="openISODetail(${idx})">
-      <div class="iso-img" style="background:${hasOffers?'rgba(255,59,92,0.12)':'rgba(0,170,255,0.06)'};display:flex;align-items:center;justify-content:center;font-size:22px">${hasOffers?'&#128176;':sportIcon}</div>
+      <div class="iso-img" style="background:${hasOffers&&isMine?'rgba(255,59,92,0.12)':!isMine?'rgba(0,232,135,0.06)':'rgba(0,170,255,0.06)'};display:flex;align-items:center;justify-content:center;font-size:22px">${hasOffers&&isMine?'&#128176;':sportIcon}</div>
       <div class="iso-info">
-        <div class="iso-player">${player}</div>
-        <div class="iso-detail">${parallel}${grade}${posted?' · Posted '+posted:''}</div>
+        <div class="iso-player">${player} ${mineTag}</div>
+        <div class="iso-detail">${parallel}${grade}${posted?' · '+posted:''}</div>
       </div>
-      <div><div class="iso-price">${maxPrice}</div><div class="iso-price-sub">MAX BID</div></div>
+      <div><div class="iso-price">${maxPrice}</div><div class="iso-price-sub">${isMine?'YOUR MAX':'BUYER MAX'}</div></div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
         <span class="status-pill ${statusClass}">${statusLabel}</span>
         ${offerAction}
@@ -12020,10 +12026,15 @@ async function openISODetail(idx){
   if(row) row.classList.add('iso-expanded');
   _openIsoIdx = idx;
 
-  const rows = _myIsosFilter !== 'all' ? _myIsosData.filter(i=>i.status===_myIsosFilter) : _myIsosData;
+  const _src = _isoTab === 'mine' ? _myIsosData : _allIsosData;
+  let rows = _src.slice();
+  if(_myIsosFilter === 'active') rows = rows.filter(i=>i.status==='active');
+  else if(_myIsosFilter === 'matched') rows = rows.filter(i=>i.status==='matched');
   const iso = rows[idx];
   if(!iso){ panel.classList.remove('open'); return; }
 
+  const userId = window._authUser?.id;
+  const isMine = iso.user_id === userId;
   const player = iso.player || iso.card_name || 'Unknown';
   const parallel = iso.parallel || 'Base';
   const cardName = iso.card_name || '';
@@ -12033,7 +12044,14 @@ async function openISODetail(idx){
   const posted = iso.created_at ? new Date(iso.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
   const notes = iso.notes || '';
 
-  // Show panel immediately with loading state
+  // Actions: owner gets cancel/refresh, other users get Make Offer
+  const actions = isMine
+    ? `${iso.status==='active'?'<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();cancelISO('+idx+')">Cancel ISO</button>':''}
+       <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();refreshISO('+idx+')">Refresh as New</button>`
+    : (iso.status==='active'
+      ? `<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openMakeOffer(${idx})" style="background:var(--green);color:#000">Make Offer</button>`
+      : '');
+
   panel.innerHTML = `
     <div class="iso-dp-header">
       <div class="iso-dp-title">${player} — ${parallel}</div>
@@ -12045,7 +12063,7 @@ async function openISODetail(idx){
         <div class="iso-dp-row"><span>Card</span><span class="iso-dp-val white">${cardName || player}</span></div>
         <div class="iso-dp-row"><span>Parallel</span><span class="iso-dp-val blue">${parallel}</span></div>
         <div class="iso-dp-row"><span>Grade</span><span class="iso-dp-val white">${grade}</span></div>
-        <div class="iso-dp-row"><span>Price Range</span><span class="iso-dp-val blue">${minP} — ${maxP}</span></div>
+        <div class="iso-dp-row"><span>Buyer Max</span><span class="iso-dp-val blue">${maxP}</span></div>
         <div class="iso-dp-row"><span>Posted</span><span style="color:var(--chrome)">${posted}</span></div>
         ${notes ? '<div class="iso-dp-row"><span>Notes</span><span style="color:var(--chrome);font-size:12px">'+notes+'</span></div>' : ''}
       </div>
@@ -12063,8 +12081,7 @@ async function openISODetail(idx){
       </div>
     </div>
     <div class="iso-dp-actions">
-      ${iso.status==='active'?'<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();cancelISO('+idx+')">Cancel ISO</button>':''}
-      <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();refreshISO('+idx+')">Refresh as New</button>
+      ${actions}
     </div>
   `;
   panel.classList.add('open');
@@ -12176,8 +12193,16 @@ async function _isoFetchVaultData(idx, iso){
   }
 }
 
+function _getIsoRows(){
+  const src = _isoTab === 'mine' ? _myIsosData : _allIsosData;
+  let rows = src.slice();
+  if(_myIsosFilter === 'active') rows = rows.filter(i=>i.status==='active');
+  else if(_myIsosFilter === 'matched') rows = rows.filter(i=>i.status==='matched');
+  return rows;
+}
+
 async function cancelISO(idx){
-  const rows = _myIsosFilter !== 'all' ? _myIsosData.filter(i=>i.status===_myIsosFilter) : _myIsosData;
+  const rows = _getIsoRows();
   const iso = rows[idx];
   if(!iso) return;
   if(!confirm('Cancel this ISO? It will no longer match with sellers.')) return;
@@ -12204,7 +12229,7 @@ async function renewISO(idx){
 }
 
 async function refreshISO(idx){
-  const rows = _myIsosFilter !== 'all' ? _myIsosData.filter(i=>i.status===_myIsosFilter) : _myIsosData;
+  const rows = _getIsoRows();
   const iso = rows[idx];
   if(!iso) return;
   try {
@@ -12216,6 +12241,49 @@ async function refreshISO(idx){
     _openIsoIdx = -1;
     _renderISOList();
   } catch(e){ T('Failed to refresh: '+e.message); }
+}
+
+function openMakeOffer(idx){
+  const rows = _getIsoRows();
+  const iso = rows[idx];
+  if(!iso) return;
+  _offerIsoId = iso.id;
+  const player = iso.player || iso.card_name || 'Unknown';
+  const parallel = iso.parallel || 'Base';
+  const maxP = iso.max_price ? '$'+parseFloat(iso.max_price).toLocaleString() : '—';
+  document.getElementById('offerIsoLabel').textContent = player + ' — ' + parallel;
+  document.getElementById('offerBuyerMax').textContent = maxP;
+  document.getElementById('offerPrice').value = iso.max_price ? Math.floor(parseFloat(iso.max_price)) : '';
+  document.getElementById('offerNote').value = '';
+  document.getElementById('offerErr').style.display = 'none';
+  document.getElementById('isoOfferModal').style.display = 'flex';
+}
+
+async function submitOffer(){
+  const errEl = document.getElementById('offerErr');
+  const price = parseFloat(document.getElementById('offerPrice').value);
+  const note = document.getElementById('offerNote').value.trim();
+  if(!price || price < 1){ errEl.textContent='Enter a valid price.'; errEl.style.display='block'; return; }
+  if(!_offerIsoId){ errEl.textContent='No ISO selected.'; errEl.style.display='block'; return; }
+  errEl.style.display='none';
+  const user = window._authUser;
+  if(!user){ errEl.textContent='You must be signed in.'; errEl.style.display='block'; return; }
+  try {
+    await _rPost('offers',{
+      iso_id: _offerIsoId,
+      seller_id: user.id,
+      price: price,
+      note: note || null,
+      status: 'pending',
+      created_at: new Date().toISOString()
+    },'return=minimal');
+    document.getElementById('isoOfferModal').style.display='none';
+    T('Offer sent — the buyer will be notified.');
+    _offerIsoId = null;
+  } catch(e){
+    errEl.textContent='Failed to send offer: '+e.message;
+    errEl.style.display='block';
+  }
 }
 
 function _isoTimeAgo(dateStr){

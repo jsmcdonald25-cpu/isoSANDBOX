@@ -4969,7 +4969,7 @@ async function p2LoadCards(table){
   if(list) list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted-text);font-family:Barlow Condensed,sans-serif;font-size:12px">Loading cards...</div>';
   if(subWrap) subWrap.innerHTML = '';
   try {
-    const rows = await _rGet(table, 'select=card_number,player,category,insert_name,is_rookie,variations&order=card_number.asc&limit=2000');
+    const rows = await _rGet(table, 'select=card_number,player,category,insert_name,is_rookie,variations,front_img,var_images&order=card_number.asc&limit=2000');
     window._p2Cards = rows || [];
     p2RenderSubsetPills(rows);
     p2RenderCardList(rows);
@@ -5000,6 +5000,13 @@ function p2RenderCardList(rows){
     const cat = c.category || 'Base';
     const subset = c.insert_name || '';
     const isRookie = c.is_rookie || false;
+    // Extract thumbnail URL: front_img first, then first var_images entry
+    let thumbUrl = c.front_img || '';
+    if(!thumbUrl && c.var_images){
+      const vi = (typeof c.var_images === 'string') ? (function(){try{return JSON.parse(c.var_images)}catch(e){return {}}}()) : c.var_images;
+      const firstKey = Object.keys(vi||{})[0];
+      if(firstKey && vi[firstKey]) thumbUrl = vi[firstKey].front || '';
+    }
     const row = document.createElement('div');
     row.className = 'p2-card-row';
     row.setAttribute('data-subset', subset);
@@ -5009,8 +5016,11 @@ function p2RenderCardList(rows){
     const tagHTML =
         (isRookie ? '<span style="font-size:9px;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:rgba(255,184,77,.1);color:#FFB84D;border:1px solid rgba(255,184,77,.25)">RC</span>' : '')
       + '<span style="font-size:9px;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:rgba(0,170,255,.1);color:var(--blue);border:1px solid rgba(0,170,255,.2);margin-left:4px">' + (subset || cat) + '</span>';
-    row.innerHTML =
-        '<div style="font-family:Bebas Neue,sans-serif;font-size:13px;color:var(--blue);min-width:48px;flex-shrink:0">#' + num + '</div>'
+    const thumbHTML = thumbUrl
+      ? '<img src="'+thumbUrl+'" loading="lazy" style="width:40px;height:56px;object-fit:cover;border-radius:4px;flex-shrink:0;background:#071828">'
+      : '<div style="width:40px;height:56px;border-radius:4px;background:rgba(0,170,255,0.06);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--muted-text)">&#127183;</div>';
+    row.innerHTML = thumbHTML
+      + '<div style="font-family:Bebas Neue,sans-serif;font-size:13px;color:var(--blue);min-width:48px;flex-shrink:0">#' + num + '</div>'
       + '<div style="flex:1;font-size:14px;color:var(--white);max-width:300px">' + player + '</div>'
       + '<div style="display:flex;gap:5px;flex-shrink:0">' + tagHTML + '</div>';
     row.onmouseover = () => { row.style.borderColor='var(--blue)'; row.style.background='rgba(0,170,255,.06)'; };

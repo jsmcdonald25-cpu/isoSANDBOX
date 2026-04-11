@@ -4855,7 +4855,7 @@ function p2PickSport(s){
   P2_STATE.year = '';
   P2_STATE.brand = '';
   const title = document.getElementById('p2BrowseTitle');
-  if(title) title.textContent = s.emoji + ' ' + s.label.toUpperCase() + ' — BROWSE SETS';
+  if(title) title.innerHTML = s.emoji + ' ' + s.label.toUpperCase() + ' &mdash; BROWSE SETS';
   p2RenderBrowsePage();
   p2Go(2);
 }

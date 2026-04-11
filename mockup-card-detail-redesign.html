@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Card Detail Redesign — Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a1726;
+  --deep: #0D1F33;
+  --deep-border: rgba(0,170,255,0.08);
+  --white: #fff;
+  --chrome: #7A95AE;
+  --muted-text: #4a6a8a;
+  --blue: #00AAFF;
+  --green: #00E887;
+  --red: #FF3B5C;
+  --font-head: 'Bebas Neue', sans-serif;
+  --font-ui: 'Barlow Condensed', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--white); font-family: var(--font-ui); min-height: 100vh; }
+
+/* Mockup banner */
+.mockup-banner {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+  background: repeating-linear-gradient(45deg, #FF8C00, #FF8C00 10px, #e07800 10px, #e07800 20px);
+  text-align: center; padding: 6px 0;
+  font-family: var(--font-head); font-size: 13px; letter-spacing: 3px; color: #000;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  padding: 40px 40px 4px;
+  font-size: 11px; color: var(--muted-text); letter-spacing: 0.5px;
+}
+.breadcrumb a { color: var(--muted-text); text-decoration: none; }
+.breadcrumb a:hover { color: var(--blue); }
+.breadcrumb .current { color: var(--blue); font-weight: 600; }
+
+/* Back button */
+.back-btn {
+  display: inline-flex; align-items: center; gap: 6px; margin: 4px 40px 0;
+  padding: 5px 12px; border-radius: 5px;
+  background: rgba(0,170,255,0.06); border: 1px solid rgba(0,170,255,0.15);
+  color: var(--blue); font-family: var(--font-ui); font-size: 12px; font-weight: 600;
+  letter-spacing: 0.5px; cursor: pointer; text-decoration: none;
+}
+
+/* ══════════════════════════════════════
+   MAIN LAYOUT — 3 columns
+   LEFT: Card Viewer (BIG)
+   CENTER: Card Identity + My Vault Details + My Vault Actions
+   RIGHT: Live Market + eBay + Admin Tools
+   ══════════════════════════════════════ */
+.cd-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 16px;
+  padding: 10px 40px 20px;
+  align-items: start;
+  max-height: calc(100vh - 80px);
+}
+
+/* ════════════════════════════════════════════════
+   BLOCK 1 — CARD VIEWER (BIG)
+   ════════════════════════════════════════════════ */
+.cd-card-col {
+  position: sticky; top: 40px;
+}
+.cd-scene-wrap {
+  background: linear-gradient(135deg, #0d2240 0%, #1a3a5c 50%, #0d2240 100%);
+  border: 1px solid var(--deep-border);
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+}
+.cd-card-frame {
+  position: relative;
+  width: 100%;
+  max-height: calc(100vh - 260px);
+  aspect-ratio: 2.5/3.5;
+  margin: 0 auto 12px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #143050, #0d2240);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 60px rgba(0,170,255,0.06);
+}
+.cd-card-placeholder {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.cd-card-placeholder .logo {
+  font-family: var(--font-head); font-size: 28px; letter-spacing: 3px;
+  color: rgba(255,255,255,0.12); margin-bottom: 12px;
+}
+.cd-card-placeholder .icon { font-size: 80px; color: rgba(0,170,255,0.1); }
+
+.cd-controls {
+  display: flex; justify-content: center; gap: 6px; margin-bottom: 6px;
+}
+.cd-btn {
+  padding: 5px 14px; border-radius: 5px; border: 1px solid var(--deep-border);
+  background: rgba(0,170,255,0.06); color: var(--chrome);
+  font-family: var(--font-ui); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.5px; cursor: pointer; transition: all 0.15s;
+}
+.cd-btn:hover { border-color: var(--blue); color: var(--blue); background: rgba(0,170,255,0.1); }
+.cd-btn.primary { background: rgba(0,170,255,0.12); color: var(--blue); border-color: rgba(0,170,255,0.3); }
+.cd-side-label {
+  font-family: var(--font-head); font-size: 10px; letter-spacing: 2px;
+  color: var(--muted-text); margin-top: 4px;
+}
+
+/* ════════════════════════════════════════════════
+   BLOCK 3 — CARD IDENTITY
+   ════════════════════════════════════════════════ */
+.cd-info-col {}
+
+.cd-header { margin-bottom: 8px; }
+.cd-set-name {
+  font-family: var(--font-head); font-size: 22px; letter-spacing: 1px;
+  color: var(--white); line-height: 1.1;
+}
+.cd-player {
+  font-family: var(--font-ui); font-size: 13px; color: var(--chrome); margin-top: 2px;
+}
+
+.cd-var-select {
+  width: 100%; padding: 6px 12px; margin-bottom: 8px;
+  background: var(--deep); border: 1px solid var(--deep-border); border-radius: 6px;
+  color: var(--white); font-family: var(--font-ui); font-size: 13px; font-weight: 600;
+}
+
+.cd-pills { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.cd-pill {
+  padding: 3px 10px; border-radius: 16px;
+  font-family: var(--font-ui); font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+  cursor: pointer; border: 1.5px solid; transition: all 0.15s;
+}
+
+/* ════════════════════════════════════════════════
+   BLOCK 6 — MY VAULT DETAILS
+   ════════════════════════════════════════════════ */
+.cd-block {
+  background: var(--deep); border: 1px solid var(--deep-border);
+  border-radius: 10px; padding: 12px; margin-bottom: 10px;
+}
+.cd-block-title {
+  font-family: var(--font-head); font-size: 12px; letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+.cd-block-title.blue { color: var(--blue); }
+.cd-block-title.green { color: var(--green); }
+.cd-block-title.muted { color: var(--muted-text); }
+
+.cd-detail-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+}
+.cd-detail-item {
+  background: rgba(0,170,255,0.03); border: 1px solid var(--deep-border);
+  border-radius: 5px; padding: 5px 8px;
+}
+.cd-detail-label {
+  font-size: 9px; letter-spacing: 1px; color: var(--muted-text);
+  text-transform: uppercase; margin-bottom: 1px;
+}
+.cd-detail-val {
+  font-family: var(--font-head); font-size: 14px; letter-spacing: 0.5px; color: var(--white);
+}
+.cd-detail-val.blue { color: var(--blue); }
+.cd-detail-val.green { color: var(--green); }
+.cd-detail-val.red { color: var(--red); }
+.cd-detail-val.muted { color: var(--muted-text); }
+
+/* ════════════════════════════════════════════════
+   BLOCK 7 — MY VAULT ACTIONS
+   ════════════════════════════════════════════════ */
+.cd-action-row {
+  display: flex; gap: 6px; margin-bottom: 6px;
+}
+.cd-action-row:last-child { margin-bottom: 0; }
+.cd-action-btn {
+  flex: 1; text-align: center;
+  padding: 7px 8px; border-radius: 5px; border: 1px solid var(--deep-border);
+  background: rgba(0,170,255,0.06); color: var(--chrome);
+  font-family: var(--font-ui); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.5px; cursor: pointer; transition: all 0.15s; text-decoration: none;
+  white-space: nowrap;
+}
+.cd-action-btn:hover { border-color: var(--blue); color: var(--blue); }
+.cd-action-btn.sell { background: rgba(0,232,135,0.12); border-color: rgba(0,232,135,0.3); color: var(--green); font-size: 14px; }
+.cd-action-btn.danger { background: rgba(255,59,92,0.08); border-color: rgba(255,59,92,0.2); color: var(--red); }
+.cd-action-btn.edit-listing { background: rgba(0,170,255,0.08); border-color: rgba(0,170,255,0.2); color: var(--blue); }
+
+.cd-report {
+  display: flex; align-items: center; gap: 6px; margin-top: 8px;
+  padding: 8px 10px; background: rgba(255,59,92,0.04); border: 1px solid rgba(255,59,92,0.12);
+  border-radius: 6px; font-size: 11px; color: var(--chrome);
+}
+.cd-report strong { color: var(--red); }
+.cd-report-btn {
+  margin-left: auto; padding: 4px 10px; border-radius: 4px;
+  background: rgba(0,232,135,0.12); border: 1px solid rgba(0,232,135,0.3);
+  color: var(--green); font-size: 11px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer;
+}
+
+/* ════════════════════════════════════════════════
+   BLOCK 4 — LIVE MARKET
+   BLOCK 5 — EBAY CURRENTLY LISTED
+   BLOCK 2 — ADMIN TOOLS
+   ════════════════════════════════════════════════ */
+.cd-market-col {}
+
+.cd-market-stats {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 6px;
+}
+.cd-market-stat { text-align: center; }
+.cd-market-stat-label {
+  font-size: 9px; letter-spacing: 1px; color: var(--muted-text); text-transform: uppercase;
+}
+.cd-market-stat-val {
+  font-family: var(--font-head); font-size: 18px; color: var(--white); letter-spacing: 1px;
+}
+
+.cd-ebay-header {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+}
+.cd-ebay-badge {
+  font-family: var(--font-head); font-size: 11px; letter-spacing: 1px;
+  background: rgba(0,170,255,0.12); color: var(--blue); padding: 2px 8px; border-radius: 4px;
+}
+.cd-ebay-row {
+  display: flex; align-items: center; gap: 8px; padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  font-size: 12px; color: var(--chrome);
+}
+.cd-ebay-row:last-child { border-bottom: none; }
+.cd-ebay-thumb {
+  width: 36px; height: 36px; border-radius: 4px; background: var(--bg);
+  flex-shrink: 0; overflow: hidden;
+}
+.cd-ebay-title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cd-ebay-price { font-family: var(--font-head); font-size: 16px; color: var(--blue); white-space: nowrap; }
+.cd-ebay-link {
+  display: block; text-align: center; padding: 8px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+  color: var(--blue); text-decoration: none; margin-top: 8px;
+  border: 1px solid var(--deep-border); border-radius: 6px;
+}
+.cd-ebay-link:hover { border-color: var(--blue); background: rgba(0,170,255,0.04); }
+
+/* Admin tools */
+.cd-admin-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.cd-admin-btn {
+  padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.5px; cursor: pointer; border: 1px solid; transition: all 0.15s;
+}
+.adm-edit { background: rgba(0,170,255,0.08); border-color: rgba(0,170,255,0.2); color: var(--blue); }
+.adm-delete { background: rgba(255,59,92,0.08); border-color: rgba(255,59,92,0.2); color: var(--red); }
+.adm-img { background: rgba(0,232,135,0.08); border-color: rgba(0,232,135,0.2); color: var(--green); }
+.adm-var { background: rgba(255,140,0,0.08); border-color: rgba(255,140,0,0.2); color: #FF8C00; }
+.adm-remove { background: rgba(187,102,255,0.08); border-color: rgba(187,102,255,0.2); color: #BB66FF; }
+
+/* ── Context labels for blocks ── */
+.block-label {
+  position: absolute; top: -10px; left: 12px;
+  font-family: var(--font-head); font-size: 10px; letter-spacing: 2px;
+  color: #FF8C00; background: var(--bg); padding: 0 6px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) {
+  .cd-layout { grid-template-columns: 1fr 1fr; }
+  .cd-card-col { grid-column: 1 / -1; max-width: 500px; margin: 0 auto; }
+}
+@media (max-width: 700px) {
+  .cd-layout { grid-template-columns: 1fr; padding: 12px 16px 40px; }
+  .cd-card-col { position: static; }
+}
+</style>
+</head>
+<body>
+
+<div class="mockup-banner">MOCKUP &mdash; CARD DETAIL REDESIGN v2 &mdash; ALL CARD VIEWS (MyVault, ISOVault, OpenISO)</div>
+
+<div class="breadcrumb">
+  <a href="#">MY VAULT</a> &middot;
+  <a href="#">BASEBALL</a> &middot;
+  <a href="#">2025</a> &middot;
+  <a href="#">TOPPS</a> &middot;
+  <a href="#">STADIUM CLUB</a> &middot;
+  <span class="current">#130, ALEX RODRIGUEZ</span>
+</div>
+<a class="back-btn" href="#">&larr; BACK TO MY VAULT</a>
+
+<div class="cd-layout">
+
+  <!-- ════════════════════════════════════════════════
+       LEFT — BLOCK 1: CARD VIEWER (BIG)
+       ════════════════════════════════════════════════ -->
+  <div class="cd-card-col">
+    <div class="cd-scene-wrap">
+      <div class="cd-card-frame">
+        <div class="cd-card-placeholder">
+          <div class="logo">GRAILISO</div>
+          <div class="icon">&#127183;</div>
+        </div>
+      </div>
+      <div class="cd-controls">
+        <button class="cd-btn">FLIP</button>
+        <button class="cd-btn">AUTO SPIN</button>
+        <button class="cd-btn">RESET</button>
+      </div>
+      <div class="cd-controls">
+        <button class="cd-btn primary">&#128270; ZOOM</button>
+        <button class="cd-btn primary">&#128247; UPLOAD IMAGE</button>
+      </div>
+      <div class="cd-side-label">FRONT &middot; DRAG TO ROTATE</div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════
+       CENTER — BLOCK 3 + BLOCK 6 + BLOCK 7
+       Card Identity → My Vault Details → My Vault Actions
+       ════════════════════════════════════════════════ -->
+  <div class="cd-info-col">
+
+    <!-- BLOCK 3: Card Identity -->
+    <div class="cd-header">
+      <div class="cd-set-name">2025 TOPPS STADIUM CLUB</div>
+      <div class="cd-player">Alex Rodriguez &middot; #130</div>
+    </div>
+
+    <select class="cd-var-select" id="varSelect" onchange="pickVar(this.value)">
+      <option value="" disabled selected>Select Variation</option>
+      <option value="Base">&#9679; Base</option>
+      <option value="Green">&#9679; Green</option>
+      <option value="Gold /50">&#9679; Gold /50</option>
+      <option value="Red /25">&#9679; Red /25</option>
+      <option value="Purple /10">&#9679; Purple /10</option>
+    </select>
+
+    <div class="cd-pills" id="varPills">
+      <div class="cd-pill" data-var="Base" data-color="#7A95AE" onclick="pickVar('Base')" style="background:rgba(0,0,0,0.2);color:var(--chrome);border-color:rgba(255,255,255,0.15)">Base</div>
+      <div class="cd-pill" data-var="Green" data-color="#00CC66" onclick="pickVar('Green')" style="background:rgba(0,0,0,0.2);color:#00CC66;border-color:#00CC66">Green</div>
+      <div class="cd-pill" data-var="Gold /50" data-color="#FFD700" onclick="pickVar('Gold /50')" style="background:rgba(0,0,0,0.2);color:#FFD700;border-color:#FFD700">Gold /50</div>
+      <div class="cd-pill" data-var="Red /25" data-color="#FF4444" onclick="pickVar('Red /25')" style="background:rgba(0,0,0,0.2);color:#FF4444;border-color:#FF4444">Red /25</div>
+      <div class="cd-pill" data-var="Purple /10" data-color="#BB66FF" onclick="pickVar('Purple /10')" style="background:rgba(0,0,0,0.2);color:#BB66FF;border-color:#BB66FF">Purple /10</div>
+    </div>
+
+    <!-- BLOCK 6: My Vault Details -->
+    <div class="cd-block">
+      <div class="cd-block-title blue">MY VAULT DETAILS</div>
+      <div class="cd-detail-grid">
+        <div class="cd-detail-item">
+          <div class="cd-detail-label">Variation</div>
+          <div class="cd-detail-val" data-field="variation">—</div>
+        </div>
+        <div class="cd-detail-item">
+          <div class="cd-detail-label">Grade</div>
+          <div class="cd-detail-val">Raw</div>
+        </div>
+        <div class="cd-detail-item">
+          <div class="cd-detail-label">Acquired</div>
+          <div class="cd-detail-val">Bought</div>
+        </div>
+        <div class="cd-detail-item">
+          <div class="cd-detail-label">Source</div>
+          <div class="cd-detail-val">eBay</div>
+        </div>
+        <div class="cd-detail-item">
+          <div class="cd-detail-label">Date</div>
+          <div class="cd-detail-val">Mar 28, 2025</div>
+        </div>
+        <div class="cd-detail-item">
+          <div class="cd-detail-label">Price Paid</div>
+          <div class="cd-detail-val blue">$8.50</div>
+        </div>
+        <div class="cd-detail-item">
+          <div class="cd-detail-label">Gain / Loss</div>
+          <div class="cd-detail-val red">-$6.50</div>
+        </div>
+        <div class="cd-detail-item">
+          <div class="cd-detail-label">Serial</div>
+          <div class="cd-detail-val">#36</div>
+          <!-- For non-numbered cards this would show: -->
+          <!-- <div class="cd-detail-val muted">N/A</div> -->
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOCK 7: My Vault Actions -->
+    <div class="cd-block">
+      <div class="cd-block-title green">ACTIONS</div>
+      <div class="cd-action-row">
+        <a class="cd-action-btn edit-listing" href="#">EDIT LISTING &mdash; $49.00</a>
+        <a class="cd-action-btn" href="#">RELIST</a>
+      </div>
+      <div class="cd-action-row">
+        <a class="cd-action-btn" href="#">SLAB LAB</a>
+        <a class="cd-action-btn sell" href="#">SELL</a>
+        <a class="cd-action-btn danger" href="#">REMOVE</a>
+      </div>
+      <div class="cd-action-row">
+        <a class="cd-action-btn" href="#">Add to Ticker</a>
+        <a class="cd-action-btn" href="#">+ Add Duplicate</a>
+      </div>
+      <div class="cd-report">
+        <span style="font-size:16px">&#128680;</span>
+        <div><strong>Report an Error</strong><br>Wrong data, missing variation, bad image?</div>
+        <button class="cd-report-btn">+1 CREDIT</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════════════
+       RIGHT — BLOCK 4 + BLOCK 5 + BLOCK 2
+       Live Market → eBay Listed → Admin Tools
+       ════════════════════════════════════════════════ -->
+  <div class="cd-market-col">
+
+    <!-- BLOCK 4: Live Market -->
+    <div class="cd-block">
+      <div class="cd-block-title muted"><span style="color:var(--green)">&#9679;</span> LIVE MARKET &mdash; GREEN</div>
+      <div class="cd-market-stats">
+        <div class="cd-market-stat">
+          <div class="cd-market-stat-label">Avg Price Paid</div>
+          <div class="cd-market-stat-val">&mdash;</div>
+        </div>
+        <div class="cd-market-stat">
+          <div class="cd-market-stat-label">Low / High</div>
+          <div class="cd-market-stat-val">&mdash;</div>
+        </div>
+        <div class="cd-market-stat">
+          <div class="cd-market-stat-label">Vault Count</div>
+          <div class="cd-market-stat-val" style="color:var(--blue)">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOCK 5: eBay Currently Listed -->
+    <div class="cd-block">
+      <div class="cd-ebay-header">
+        <span style="font-size:16px">&#128722;</span>
+        <span style="font-family:var(--font-head);font-size:14px;letter-spacing:1px">CURRENTLY LISTED</span>
+        <span class="cd-ebay-badge">1</span>
+      </div>
+      <div class="cd-market-stats">
+        <div class="cd-market-stat">
+          <div class="cd-market-stat-label">Low</div>
+          <div class="cd-market-stat-val" style="color:var(--blue)">$8</div>
+        </div>
+        <div class="cd-market-stat">
+          <div class="cd-market-stat-label">Avg</div>
+          <div class="cd-market-stat-val" style="color:var(--blue)">$8</div>
+        </div>
+        <div class="cd-market-stat">
+          <div class="cd-market-stat-label">High</div>
+          <div class="cd-market-stat-val" style="color:var(--blue)">$8</div>
+        </div>
+      </div>
+      <div class="cd-ebay-row">
+        <div class="cd-ebay-thumb"></div>
+        <div class="cd-ebay-title">Alex Rodriguez Green #130 — Stadium Club</div>
+        <div class="cd-ebay-price">$8</div>
+      </div>
+      <a class="cd-ebay-link" href="#">VIEW ALL ON EBAY &rarr;</a>
+      <div style="font-size:10px;color:var(--muted-text);text-align:center;margin-top:6px">Live asking prices &mdash; refreshed on view</div>
+    </div>
+
+    <!-- BLOCK 2: Admin Tools (admin only) -->
+    <div class="cd-block" style="border-color:rgba(255,140,0,0.15)">
+      <div class="cd-block-title" style="color:#FF8C00">ADMIN TOOLS</div>
+      <div class="cd-admin-grid">
+        <button class="cd-admin-btn adm-edit">EDIT</button>
+        <button class="cd-admin-btn adm-delete">DELETE</button>
+        <button class="cd-admin-btn adm-img">ADD IMG</button>
+        <button class="cd-admin-btn adm-img">DEL IMG</button>
+        <button class="cd-admin-btn adm-var">DEL VAR</button>
+        <button class="cd-admin-btn adm-remove">REMOVE</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+function pickVar(name) {
+  // Sync dropdown
+  const sel = document.getElementById('varSelect');
+  if (sel) sel.value = name;
+  // Sync pills — deactivate all, activate selected
+  document.querySelectorAll('#varPills .cd-pill').forEach(p => {
+    const c = p.dataset.color;
+    if (p.dataset.var === name) {
+      p.style.background = c + '22';
+      p.style.boxShadow = '0 0 14px ' + c + '66';
+    } else {
+      p.style.background = 'rgba(0,0,0,0.2)';
+      p.style.boxShadow = 'none';
+    }
+  });
+  // Update variation in vault details
+  const varEl = document.querySelector('.cd-detail-val[data-field="variation"]');
+  if (varEl) varEl.textContent = name;
+}
+</script>
+</body>
+</html>

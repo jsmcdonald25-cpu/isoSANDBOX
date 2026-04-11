@@ -5153,21 +5153,20 @@ function p2RenderVariantGrid(){
     isOther: true,
     _run: null
   });
+  // Render pills with PURE inline styles — no cd-pill class dependency.
+  // Avoids CSS specificity conflicts with the card detail viewer's .cd-pill rules.
+  const PILL_BASE = 'display:inline-block;padding:6px 14px;border-radius:20px;font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:700;letter-spacing:.3px;cursor:pointer;transition:all .2s;user-select:none;white-space:nowrap;margin:2px 0';
+  const PILL_INACTIVE = PILL_BASE+';background:rgba(0,0,0,0.25);color:#7A95AE;border:1.5px solid rgba(0,170,255,0.12)';
+  const PILL_OTHER_INACTIVE = PILL_BASE+';background:rgba(255,184,77,0.04);color:rgba(255,184,77,0.6);border:1.5px dashed rgba(255,184,77,0.4)';
   variants.forEach(v=>{
     const pill = document.createElement('div');
-    pill.className = 'cd-pill p2-var-pill';
-    // Store the parallel's color as data attributes for active state
+    pill.className = 'p2-var-pill';
     const bg = v.color || 'rgba(0,0,0,0.2)';
     pill.dataset.pillColor = bg;
     pill.dataset.isOther = v.isOther ? '1' : '';
-    // Start INACTIVE (muted) — only the clicked pill gets full color
-    if(v.isOther){
-      pill.style.cssText = 'border:1.5px dashed rgba(255,184,77,0.4);color:rgba(255,184,77,0.6);background:rgba(255,184,77,0.04);padding:5px 12px';
-    } else {
-      pill.style.cssText = 'background:rgba(0,0,0,0.2);color:var(--muted-text);border:1.5px solid var(--deep-border);padding:5px 12px';
-    }
+    pill.style.cssText = v.isOther ? PILL_OTHER_INACTIVE : PILL_INACTIVE;
     const showMeta = v.meta && v.meta !== 'Unnumbered' && !v.name.includes(v.meta);
-    pill.innerHTML = v.name + (showMeta ? '<span class="pill-run"> '+v.meta+'</span>' : '');
+    pill.textContent = v.name + (showMeta ? ' '+v.meta : '');
     pill.onclick = ()=>p2PickVariant(v, pill);
     grid.appendChild(pill);
   });
@@ -5229,12 +5228,12 @@ function p2PickVariant(v, el){
       const si = document.getElementById('p2Serial'); if(si) si.value='';
     }
   }
-  // Deselect all pills back to muted state
+  // Deselect all pills back to muted state (matches PILL_INACTIVE / PILL_OTHER_INACTIVE)
   document.querySelectorAll('#p2VarGrid .p2-var-pill').forEach(t=>{
     if(t.dataset.isOther){
-      t.style.borderColor='rgba(255,184,77,0.4)'; t.style.background='rgba(255,184,77,0.04)'; t.style.color='rgba(255,184,77,0.6)';
+      t.style.borderColor='rgba(255,184,77,0.4)'; t.style.background='rgba(255,184,77,0.04)'; t.style.color='rgba(255,184,77,0.6)'; t.style.borderStyle='dashed';
     } else {
-      t.style.borderColor='var(--deep-border)'; t.style.background='rgba(0,0,0,0.2)'; t.style.color='var(--muted-text)';
+      t.style.borderColor='rgba(0,170,255,0.12)'; t.style.background='rgba(0,0,0,0.25)'; t.style.color='#7A95AE'; t.style.borderStyle='solid';
     }
   });
   // Activate the selected pill with its parallel color
@@ -5297,7 +5296,7 @@ async function p2SubmitISO(){
     ].filter(Boolean).join(' · ');
     await _rPost('isos', {
       user_id:      user.id,
-      sport:        S.sportId || S.sport,
+      sport:        S.sport || S.sportId,  // Use label ('Baseball') not id ('baseball') — matches old submitISO + emoji lookup
       player:       S.card,
       // card_id is NOT NULL INTEGER on isos. Per-set tables don't have UUID
       // ids, and the CARDS array index is ephemeral. Use the card_number
@@ -11979,7 +11978,8 @@ function _renderISOList(){
     const isMine = iso.user_id === userId;
     const statusClass = hasOffers ? 'matched' : iso.status==='matched'?'matched':iso.status==='completed'?'':'active';
     const statusLabel = hasOffers ? offerCount+' OFFER'+(offerCount>1?'S':'') : (isExpired ? 'EXPIRED' : (iso.status||'active').toUpperCase());
-    const sportIcon = sport==='Baseball'?'&#9918;':sport==='Basketball'?'&#127936;':sport==='Football'?'&#127944;':'&#127944;';
+    const _sl = (sport||'').toLowerCase();
+    const sportIcon = _sl.includes('baseball')?'&#9918;':_sl.includes('basketball')?'&#127936;':_sl.includes('football')?'&#127944;':_sl.includes('hockey')?'&#127954;':'&#9918;';
     // Actions: own ISOs get review/cancel, other people's ISOs get Make Offer
     const offerAction = hasOffers && isMine
       ? `<span class="ni-action" onclick="event.stopPropagation();openOfferReview(${idx})">Review Offers &#8594;</span>`

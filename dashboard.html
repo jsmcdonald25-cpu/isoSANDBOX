@@ -5007,7 +5007,7 @@ async function p2LoadCards(table){
   if(list) list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted-text);font-family:Barlow Condensed,sans-serif;font-size:12px">Loading cards...</div>';
   if(subWrap) subWrap.innerHTML = '';
   try {
-    const rows = await _rGet(table, 'select=card_number,player,category,insert_name,is_rookie,variations,front_img,var_images&order=card_number.asc&limit=2000');
+    const rows = await _rGet(table, 'select=*&order=card_number.asc&limit=2000');
     window._p2Cards = rows || [];
     p2RenderSubsetPills(rows);
     p2RenderCardList(rows);
@@ -11905,33 +11905,37 @@ async function renderMyISOs(){
     const { data:{ user } } = await window._sb.auth.getUser();
     if(!user){ if(loading) loading.style.display='none'; if(empty) empty.style.display='block'; return; }
     const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
-    const _isoResp = await fetch('https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/isos?select=*&user_id=eq.'+user.id+'&order=created_at.desc', { headers:{ 'apikey': SKEY, 'Authorization': 'Bearer ' + SKEY } });
+    const sbH = { 'apikey': SKEY, 'Authorization': 'Bearer ' + SKEY };
+
+    // Fetch ALL active ISOs (OpenISO board) + user's own ISOs
+    const [allResp, myResp] = await Promise.all([
+      fetch('https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/isos?select=*&status=eq.active&order=created_at.desc&limit=200', { headers: sbH }),
+      fetch('https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/isos?select=*&user_id=eq.'+user.id+'&order=created_at.desc&limit=200', { headers: sbH })
+    ]);
     if(loading) loading.style.display='none';
-    const data = _isoResp.ok ? await _isoResp.json() : null;
-    const error = _isoResp.ok ? null : { message: 'HTTP ' + _isoResp.status };
-    if(error){
-      if(list){ list.style.display='block'; list.innerHTML=`<div style="padding:20px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--red)">Error loading ISOs: ${error.message}</div>`; }
-      return;
-    }
-    if(!data || !data.length){ if(empty) empty.style.display='block'; return; }
-    _myIsosData = data;
-    // Fetch pending offers for buyer's ISOs
+    _allIsosData = allResp.ok ? await allResp.json() : [];
+    _myIsosData = myResp.ok ? await myResp.json() : [];
+
+    // Fetch pending offers
     window._myIsoOffers = [];
     try {
       const offerRows = await _rGet('offers','select=*&buyer_id=eq.'+user.id+'&status=in.(pending,countered)&order=created_at.desc&limit=200');
       if(offerRows) window._myIsoOffers = offerRows;
     } catch(e){}
-    const offerCount = (window._myIsoOffers||[]).filter(o=>o.status==='pending').length;
-    const activeCount = data.filter(i=>i.status==='active'||i.status==='matched').length;
-    const totalBadge = offerCount || activeCount;
+
+    // Badge
+    const activeCount = _allIsosData.length;
     const badge = document.getElementById('navBadge-myisos');
-    if(badge){ badge.textContent=offerCount?offerCount+' offer'+(offerCount>1?'s':''):(activeCount||''); badge.style.display=totalBadge?'':'none'; if(offerCount) badge.classList.add('red'); else badge.classList.remove('red'); }
-    const mvIso = document.getElementById('mv-active-isos'); if(mvIso) mvIso.textContent = activeCount||'0';
+    if(badge){ badge.textContent=activeCount||''; badge.style.display=activeCount?'':'none'; }
+    const mvIso = document.getElementById('mv-active-isos');
+    if(mvIso) mvIso.textContent = _myIsosData.filter(i=>i.status==='active'||i.status==='matched').length||'0';
+
+    if(!_allIsosData.length && !_myIsosData.length){ if(empty) empty.style.display='block'; return; }
     if(filters) filters.style.display='flex';
     _renderISOList();
   } catch(e){
     if(loading) loading.style.display='none';
-    if(list){ list.style.display='block'; list.innerHTML=`<div style="padding:20px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--red)">Failed to load ISOs: ${e.message}</div>`; }
+    if(list){ list.style.display='block'; list.innerHTML=`<div style="padding:20px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--red)">Failed to load: ${e.message}</div>`; }
   }
 }
 

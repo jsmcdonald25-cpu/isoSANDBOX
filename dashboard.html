@@ -5194,7 +5194,8 @@ function p2PickVariant(v, el){
     const nw = document.getElementById('p2OtherWrap');
     if(nw){ nw.style.display=''; setTimeout(()=>{ const i=document.getElementById('p2OtherDesc'); if(i) i.focus(); }, 50); }
   } else {
-    P2_STATE.variant = v.name + (v.meta && v.meta !== 'Unnumbered' && v.meta !== 'On-card / sticker' ? ' '+v.meta : '');
+    const metaSuffix = (v.meta && v.meta !== 'Unnumbered' && v.meta !== 'On-card / sticker' && !v.name.includes(v.meta)) ? ' '+v.meta : '';
+    P2_STATE.variant = v.name + metaSuffix;
     P2_STATE.variantOther = '';
     const nw = document.getElementById('p2OtherWrap');
     if(nw) nw.style.display='none';

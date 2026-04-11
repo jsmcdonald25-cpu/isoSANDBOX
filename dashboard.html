@@ -555,15 +555,15 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-crumb-sep{color:rgba(0,170,255,0.3);font-size:11px}
 .cd-back-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(0,170,255,0.08);border:1px solid var(--deep-border);border-radius:6px;padding:6px 12px;font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);cursor:pointer;transition:all .2s;margin-bottom:18px}
 .cd-back-btn:hover{background:rgba(0,170,255,0.15);border-color:var(--blue)}
-.cd-layout{display:flex;align-items:start;min-width:0;justify-content:space-evenly}
-.cd-viewer-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;background:#0D1F33;width:fit-content;min-width:0;max-width:500px}
-.cd-scene-wrap{position:relative;width:240px;height:336px;max-width:100%}
+.cd-layout{display:flex;align-items:start;min-width:0;justify-content:space-evenly;gap:16px}
+.cd-viewer-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;background:#0D1F33;width:fit-content;min-width:0;max-width:500px;order:1}
+.cd-scene-wrap{position:relative;width:320px;height:448px;max-width:100%}
 .cd-shadow{position:absolute;inset:0;border-radius:10px;pointer-events:none;z-index:0;transition:box-shadow .4s}
 .cd-scene{position:absolute;inset:0;perspective:1200px;cursor:grab;user-select:none;z-index:1}
 .cd-scene:active{cursor:grabbing}
 .cd-card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.05s linear}
-.cd-front{position:absolute;width:240px;height:336px;top:0;left:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:10px;overflow:hidden;background:#000}
-.cd-back{position:absolute;width:240px;height:336px;top:0;left:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);border-radius:10px;overflow:hidden;background:#000}
+.cd-front{position:absolute;width:320px;height:448px;top:0;left:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:10px;overflow:hidden;background:#000}
+.cd-back{position:absolute;width:320px;height:448px;top:0;left:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);border-radius:10px;overflow:hidden;background:#000}
 .cd-card-face{width:100%;height:100%;object-fit:fill;display:block;border-radius:10px}
 .cd-card-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;border-radius:10px}
 .cd-glare{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:2;border-radius:10px;transition:opacity 0.1s}
@@ -573,8 +573,8 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-ctrl-btn.upload{color:var(--green);border-color:rgba(0,232,135,0.3);background:rgba(0,232,135,0.06)}
 .cd-ctrl-btn.upload:hover{background:rgba(0,232,135,0.14);border-color:var(--green)}
 .cd-side-label{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted-text)}
-.cd-info{display:flex;flex-direction:column;gap:10px;max-width:320px;min-width:260px}
-.cd-actions{display:flex;flex-direction:column;gap:8px;min-width:220px;max-width:280px}
+.cd-info{display:flex;flex-direction:column;gap:10px;max-width:320px;min-width:260px;order:3}
+.cd-actions{display:flex;flex-direction:column;gap:8px;min-width:240px;max-width:320px;order:2}
 .cd-vault-info-title{font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--blue);margin-bottom:8px}
 .cd-vi-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px}
 .cd-vi-item{background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:6px;padding:6px 8px}
@@ -10815,7 +10815,14 @@ function _ivApplySortAndRender(){
       if(aIsNum && bIsNum) return dir === 'asc' ? parseInt(ca) - parseInt(cb) : parseInt(cb) - parseInt(ca);
       if(aIsNum && !bIsNum) return dir === 'asc' ? -1 : 1;
       if(!aIsNum && bIsNum) return dir === 'asc' ? 1 : -1;
-      // Both are letter-prefix — sort alphabetically
+      // Both are letter-prefix — sort by prefix alpha, then trailing number numerically
+      const pa = ca.match(/^(.*?)(\d+)$/);
+      const pb = cb.match(/^(.*?)(\d+)$/);
+      if(pa && pb){
+        const pfxCmp = pa[1].toLowerCase().localeCompare(pb[1].toLowerCase());
+        if(pfxCmp !== 0) return dir === 'asc' ? pfxCmp : -pfxCmp;
+        return dir === 'asc' ? parseInt(pa[2]) - parseInt(pb[2]) : parseInt(pb[2]) - parseInt(pa[2]);
+      }
       va = ca.toLowerCase();
       vb = cb.toLowerCase();
     } else if(col === 'player'){

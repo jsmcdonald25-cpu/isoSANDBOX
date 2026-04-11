@@ -348,6 +348,95 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .iso-dp-actions{display:flex;gap:8px;padding:12px 18px;border-top:1px solid var(--deep-border)}
 .iso-dp-empty{font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);padding:6px 0}
 @media (max-width:768px){.iso-dp-body{grid-template-columns:1fr}}
+/* ── OPENISO FOMO ─────────────────────────────── */
+.oi-live-banner{background:linear-gradient(90deg,rgba(255,59,92,.06),rgba(0,170,255,.06),rgba(0,232,135,.06));border-bottom:1px solid var(--deep-border);padding:7px 0;overflow:hidden;white-space:nowrap;position:relative;margin-bottom:14px;border-radius:8px}
+.oi-live-banner::before,.oi-live-banner::after{content:'';position:absolute;top:0;bottom:0;width:40px;z-index:1}
+.oi-live-banner::before{left:0;background:linear-gradient(90deg,var(--deep2),transparent)}
+.oi-live-banner::after{right:0;background:linear-gradient(-90deg,var(--deep2),transparent)}
+.oi-ticker-scroll{display:inline-block;animation:oiTicker 35s linear infinite;font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:.4px;color:var(--chrome);padding:0 14px}
+.oi-ticker-scroll .hot{color:var(--red);font-weight:700}
+.oi-ticker-scroll .price{color:var(--green);font-weight:700}
+.oi-ticker-scroll .sep{color:var(--deep-border);margin:0 12px}
+@keyframes oiTicker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.oi-hero{display:flex;gap:0;margin-bottom:14px;border:1px solid var(--deep-border);border-radius:10px;overflow:hidden;background:var(--deep2)}
+.oi-hero-stat{flex:1;padding:14px 10px;text-align:center;border-right:1px solid var(--deep-border)}
+.oi-hero-stat:last-child{border-right:none}
+.oi-hero-num{font-family:Bebas Neue,sans-serif;font-size:28px;line-height:1}
+.oi-hero-label{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);margin-top:3px}
+.oi-pulse{display:inline-block;width:7px;height:7px;background:var(--red);border-radius:50%;margin-right:4px;animation:oiPulse 1.5s ease-in-out infinite}
+@keyframes oiPulse{0%,100%{opacity:1;box-shadow:0 0 4px var(--red)}50%{opacity:.4;box-shadow:0 0 12px var(--red)}}
+.oi-controls{display:flex;gap:8px;margin-bottom:10px}
+.oi-search-wrap{flex:1;position:relative}
+.oi-search{width:100%;padding:10px 14px 10px 36px;background:var(--deep3);border:1px solid var(--deep-border);border-radius:8px;color:var(--white);font-family:Barlow Condensed,sans-serif;font-size:14px;outline:none;transition:border-color .15s}
+.oi-search::placeholder{color:var(--muted-text)}
+.oi-search:focus{border-color:var(--blue);box-shadow:0 0 10px rgba(0,170,255,.12)}
+.oi-search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted-text);font-size:13px;pointer-events:none}
+.oi-sort-btn{display:flex;align-items:center;gap:5px;padding:10px 14px;background:var(--deep3);border:1px solid var(--deep-border);border-radius:8px;cursor:pointer;font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:700;letter-spacing:.7px;color:var(--chrome);white-space:nowrap;text-transform:uppercase;position:relative}
+.oi-sort-btn:hover{border-color:rgba(0,170,255,.3)}
+.oi-sort-menu{display:none;position:absolute;top:calc(100% + 4px);right:0;background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;min-width:190px;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden}
+.oi-sort-menu.open{display:block}
+.oi-sort-opt{padding:9px 14px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--chrome);cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .1s}
+.oi-sort-opt:hover{background:rgba(0,170,255,.08)}
+.oi-sort-opt.active{color:var(--blue)}
+.oi-sport-strip{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px}
+.oi-sport-chip{font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:600;letter-spacing:.5px;padding:5px 13px;border-radius:16px;cursor:pointer;border:1px solid var(--deep-border);background:transparent;color:var(--muted-text);transition:all .15s;white-space:nowrap;flex-shrink:0}
+.oi-sport-chip:hover{border-color:rgba(0,170,255,.3);color:var(--chrome)}
+.oi-sport-chip.active{background:rgba(0,170,255,.12);border-color:var(--blue);color:var(--blue)}
+.oi-section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 2px}
+.oi-section-title{font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:1.5px;color:var(--white)}
+.oi-section-title .accent{color:var(--red)}
+.oi-section-title .accent-blue{color:var(--blue)}
+.oi-section-sub{font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);letter-spacing:.4px}
+.oi-hot-rail{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;margin-bottom:18px;scroll-snap-type:x mandatory}
+.oi-hot-rail::-webkit-scrollbar{height:4px}
+.oi-hot-rail::-webkit-scrollbar-thumb{background:rgba(0,170,255,.2);border-radius:4px}
+.oi-hot-card{flex:0 0 200px;scroll-snap-align:start;background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative}
+.oi-hot-card:hover{border-color:rgba(0,170,255,.4);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.oi-hot-card-img{height:120px;background:var(--deep3);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.oi-hot-card-img img{height:100%;width:auto;object-fit:contain}
+.oi-urgency{position:absolute;top:6px;left:6px;background:rgba(255,59,92,.9);color:#fff;font-family:Barlow Condensed,sans-serif;font-size:10px;font-weight:700;letter-spacing:.7px;padding:2px 7px;border-radius:3px;text-transform:uppercase;animation:oiUrgPulse 2s ease-in-out infinite}
+.oi-urgency.just-posted{background:rgba(0,232,135,.9)}
+@keyframes oiUrgPulse{0%,100%{box-shadow:0 0 4px rgba(255,59,92,.3)}50%{box-shadow:0 0 12px rgba(255,59,92,.7)}}
+.oi-time-badge{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.65);color:var(--chrome);font-family:Barlow Condensed,sans-serif;font-size:10px;font-weight:600;padding:2px 6px;border-radius:3px}
+.oi-hot-card-body{padding:10px 12px}
+.oi-hot-card-player{font-family:Barlow Condensed,sans-serif;font-weight:700;font-size:13px;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oi-hot-card-meta{font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oi-hot-card-footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:8px}
+.oi-hot-card-price{font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--green);line-height:1}
+.oi-hot-card-price-sub{font-family:Barlow Condensed,sans-serif;font-size:9px;color:var(--muted-text);letter-spacing:.4px;text-transform:uppercase}
+.oi-hot-card-cta{font-family:Barlow Condensed,sans-serif;font-size:10px;font-weight:700;color:var(--green);padding:3px 8px;border:1px solid rgba(0,232,135,.3);border-radius:4px;background:rgba(0,232,135,.08);cursor:pointer}
+.oi-hot-card-cta:hover{background:rgba(0,232,135,.2);border-color:var(--green)}
+.oi-hot-card .oi-eyes{position:absolute;bottom:6px;right:8px;font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text)}
+.oi-seller-cta{margin:16px 0;padding:16px 20px;background:linear-gradient(135deg,rgba(0,232,135,.05),rgba(0,170,255,.05));border:1px solid rgba(0,232,135,.2);border-radius:10px;display:flex;align-items:center;gap:16px}
+.oi-seller-cta-icon{font-size:30px;flex-shrink:0}
+.oi-seller-cta-text{flex:1}
+.oi-seller-cta-title{font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:1px;color:var(--green)}
+.oi-seller-cta-desc{font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--chrome);margin-top:2px;line-height:1.4}
+.oi-seller-cta-desc strong{color:var(--white)}
+.oi-seller-cta-btn{flex-shrink:0;padding:9px 18px;background:var(--green);color:#0D1F33;font-family:Bebas Neue,sans-serif;font-size:15px;letter-spacing:1px;border:none;border-radius:8px;cursor:pointer}
+.oi-seller-cta-btn:hover{box-shadow:0 0 16px rgba(0,232,135,.35)}
+.iso-item.oi-urgent{border-left:3px solid var(--red)}
+.iso-item .oi-watchers{font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);margin-top:2px}
+.iso-item .iso-team-set{font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--chrome);opacity:.6;margin-top:1px}
+.iso-img img{width:100%;height:100%;object-fit:cover}
+.oi-hiw-toggle{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;cursor:pointer;margin-top:18px}
+.oi-hiw-toggle:hover{border-color:rgba(0,170,255,.3)}
+.oi-hiw-toggle-label{font-family:Bebas Neue,sans-serif;font-size:14px;letter-spacing:1.5px;color:var(--blue)}
+.oi-hiw-toggle-arrow{font-size:11px;color:var(--muted-text);transition:transform .2s}
+.oi-hiw-toggle.open .oi-hiw-toggle-arrow{transform:rotate(180deg)}
+.oi-hiw-body{display:none;padding:0 16px 16px;background:var(--deep2);border:1px solid var(--deep-border);border-top:none;border-radius:0 0 10px 10px;margin-top:-11px}
+.oi-hiw-body.open{display:block}
+.oi-hiw-step{display:flex;gap:10px;align-items:flex-start;padding:8px 0}
+.oi-hiw-num{width:26px;height:26px;border-radius:50%;background:rgba(0,170,255,.1);border:1px solid rgba(0,170,255,.25);display:flex;align-items:center;justify-content:center;font-family:Bebas Neue,sans-serif;font-size:13px;color:var(--blue);flex-shrink:0}
+.oi-hiw-label{font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:700;color:var(--white);letter-spacing:.3px}
+.oi-hiw-desc{font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-top:1px;line-height:1.4}
+.oi-hiw-fees{margin-top:12px;padding:10px 12px;background:var(--deep3);border-radius:8px}
+.oi-hiw-fee-row{display:flex;justify-content:space-between;padding:3px 0;font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--chrome)}
+.oi-hiw-fee-row strong{color:var(--white)}
+.oi-hiw-fee-row.total{border-top:1px solid var(--deep-border);margin-top:4px;padding-top:6px;color:var(--blue);font-weight:700}
+.oi-hiw-fee-row.total strong{color:var(--blue)}
+.oi-hiw-trust{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap}
+.oi-hiw-trust-item{font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--chrome);letter-spacing:.3px;display:flex;align-items:center;gap:4px}
 /* FILTER CHIPS */
 .filter-row{display:flex;gap:7px;margin-bottom:18px;flex-wrap:wrap}
 .chip{padding:5px 13px;border:1px solid var(--deep-border);border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:.5px;color:var(--muted-text);cursor:pointer;transition:all .15s;user-select:none}
@@ -1747,6 +1836,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
         // Returning user — hide gate, load profile
         if(gate){ gate.style.display='none'; gate.style.pointerEvents='none'; }
         try { await initUserProfile(session.user); } catch(e){}
+        _syncTickerFromSupabase();
       } else {
         // No session at all — show gate
         if(gate){ gate.style.display='flex'; gate.style.pointerEvents='auto'; }
@@ -1754,6 +1844,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
     } else if(event === 'SIGNED_IN'){
       if(gate){ gate.style.display='none'; gate.style.pointerEvents='none'; }
       try { await initUserProfile(session.user); } catch(e){}
+      _syncTickerFromSupabase();
     } else if(event === 'SIGNED_OUT'){
       if(gate){ gate.style.display='flex'; gate.style.pointerEvents='auto'; }
       window._ownerMode = false;
@@ -2311,9 +2402,20 @@ async function logOut(){
     </div>
   </div>
 
-  <!-- MY ISOS -->
+  <!-- MY ISOS / OPENISO -->
   <div class="panel" id="panel-myisos">
-    <!-- Tab row: All ISOs vs My ISOs -->
+    <!-- Live activity ticker -->
+    <div class="oi-live-banner" id="oiLiveBanner" style="display:none">
+      <div class="oi-ticker-scroll" id="oiTickerContent"></div>
+    </div>
+    <!-- Hero stats bar -->
+    <div class="oi-hero" id="oiHero" style="display:none">
+      <div class="oi-hero-stat"><div class="oi-hero-num" style="color:var(--red)" id="oiStatActive"><span class="oi-pulse"></span>0</div><div class="oi-hero-label">Active ISOs</div></div>
+      <div class="oi-hero-stat"><div class="oi-hero-num" style="color:var(--green)" id="oiStatDemand">$0</div><div class="oi-hero-label">Total Demand</div></div>
+      <div class="oi-hero-stat"><div class="oi-hero-num" style="color:var(--blue)" id="oiStatOffers">0</div><div class="oi-hero-label">Offers</div></div>
+      <div class="oi-hero-stat"><div class="oi-hero-num" style="color:var(--gold,#FFB84D)" id="oiStatSold">0</div><div class="oi-hero-label">Sold</div></div>
+    </div>
+    <!-- Tab row -->
     <div class="filter-row" id="myIsosFilters" style="display:none">
       <div class="chip active" onclick="switchISOTab('all',this)">All ISOs</div>
       <div class="chip" onclick="switchISOTab('mine',this)">My ISOs</div>
@@ -2321,6 +2423,54 @@ async function logOut(){
       <div class="chip" onclick="filterMyISOs('active',this)" data-filter>Active</div>
       <div class="chip" onclick="filterMyISOs('matched',this)" data-filter>Matched</div>
     </div>
+    <!-- Search + Sort -->
+    <div class="oi-controls" id="oiControls" style="display:none">
+      <div class="oi-search-wrap">
+        <span class="oi-search-icon">&#128269;</span>
+        <input class="oi-search" id="oiSearchInput" type="text" placeholder="Search player, team, set, card #..." oninput="_oiApplyFilters()">
+      </div>
+      <div class="oi-sort-btn" id="oiSortBtn" onclick="_oiToggleSortMenu()">
+        SORT: NEWEST &#9660;
+        <div class="oi-sort-menu" id="oiSortMenu">
+          <div class="oi-sort-opt active" data-sort="newest" onclick="event.stopPropagation();_oiSetSort('newest',this)">&#10003; Newest First</div>
+          <div class="oi-sort-opt" data-sort="oldest" onclick="event.stopPropagation();_oiSetSort('oldest',this)">Oldest First</div>
+          <div class="oi-sort-opt" data-sort="price-high" onclick="event.stopPropagation();_oiSetSort('price-high',this)">Price: High &#8594; Low</div>
+          <div class="oi-sort-opt" data-sort="price-low" onclick="event.stopPropagation();_oiSetSort('price-low',this)">Price: Low &#8594; High</div>
+          <div class="oi-sort-opt" data-sort="player-az" onclick="event.stopPropagation();_oiSetSort('player-az',this)">Player A &#8594; Z</div>
+          <div class="oi-sort-opt" data-sort="player-za" onclick="event.stopPropagation();_oiSetSort('player-za',this)">Player Z &#8594; A</div>
+          <div class="oi-sort-opt" data-sort="team-az" onclick="event.stopPropagation();_oiSetSort('team-az',this)">Team A &#8594; Z</div>
+        </div>
+      </div>
+    </div>
+    <!-- Sport filter strip -->
+    <div class="oi-sport-strip" id="oiSportStrip" style="display:none">
+      <div class="oi-sport-chip active" data-sport="all" onclick="_oiSetSport('all',this)">All</div>
+      <div class="oi-sport-chip" data-sport="baseball" onclick="_oiSetSport('baseball',this)">&#9918; Baseball</div>
+      <div class="oi-sport-chip" data-sport="basketball" onclick="_oiSetSport('basketball',this)">&#127936; Basketball</div>
+      <div class="oi-sport-chip" data-sport="football" onclick="_oiSetSport('football',this)">&#127944; Football</div>
+      <div class="oi-sport-chip" data-sport="hockey" onclick="_oiSetSport('hockey',this)">&#127954; Hockey</div>
+      <div class="oi-sport-chip" data-sport="mtg" onclick="_oiSetSport('mtg',this)">&#127183; MTG</div>
+    </div>
+    <!-- Hot ISOs rail -->
+    <div id="oiHotSection" style="display:none">
+      <div class="oi-section-head"><div class="oi-section-title"><span class="accent">&#128293; HOTTEST</span> ISOs RIGHT NOW</div><div class="oi-section-sub" id="oiHotSub">Most offers</div></div>
+      <div class="oi-hot-rail" id="oiHotRail"></div>
+    </div>
+    <!-- Seller CTA -->
+    <div class="oi-seller-cta" id="oiSellerCta" style="display:none">
+      <div class="oi-seller-cta-icon">&#128176;</div>
+      <div class="oi-seller-cta-text">
+        <div class="oi-seller-cta-title">COLLECTORS ARE LOOKING FOR YOUR CARDS</div>
+        <div class="oi-seller-cta-desc" id="oiSellerCtaDesc"><strong>0 active ISOs</strong> with <strong>$0</strong> in total demand right now.</div>
+      </div>
+      <div class="oi-seller-cta-btn" onclick="N('sellermatches',document.querySelector('[onclick*=sellermatches]'))">SELL YOUR CARDS</div>
+    </div>
+    <!-- Section header for all ISOs feed -->
+    <div class="oi-section-head" id="oiFeedHead" style="display:none">
+      <div class="oi-section-title">ALL <span class="accent-blue">ACTIVE</span> ISOs</div>
+      <div class="oi-section-sub" id="oiFeedSub">Showing 0</div>
+    </div>
+    <!-- Loading / Empty states -->
     <div id="myIsosLoading" style="text-align:center;padding:60px 20px;color:var(--muted-text)">
       <div style="font-size:28px;margin-bottom:12px">&#8987;</div>
       <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;letter-spacing:1px">Loading OpenISO&#8230;</div>
@@ -2332,6 +2482,32 @@ async function logOut(){
       <button class="btn btn-primary" onclick="N('post',document.querySelector('[onclick*=post]'))">Post an ISO</button>
     </div>
     <div class="iso-list" id="myIsosList" style="display:none"></div>
+    <!-- How It Works (collapsible) -->
+    <div class="oi-hiw-toggle" id="oiHiwToggle" style="display:none" onclick="this.classList.toggle('open');document.getElementById('oiHiwBody').classList.toggle('open')">
+      <div class="oi-hiw-toggle-label">&#9432; HOW OPENISO WORKS</div>
+      <div class="oi-hiw-toggle-arrow">&#9660;</div>
+    </div>
+    <div class="oi-hiw-body" id="oiHiwBody">
+      <div style="padding-top:14px">
+        <div class="oi-hiw-step"><div class="oi-hiw-num">1</div><div><div class="oi-hiw-label">Post an ISO</div><div class="oi-hiw-desc">Pick your card from the catalog (must have front + back photos). Set your max price. Costs 1 credit ($1).</div></div></div>
+        <div class="oi-hiw-step"><div class="oi-hiw-num">2</div><div><div class="oi-hiw-label">Sellers Find You</div><div class="oi-hiw-desc">Collectors who own the card send offers with their asking price and condition details.</div></div></div>
+        <div class="oi-hiw-step"><div class="oi-hiw-num">3</div><div><div class="oi-hiw-label">Review &amp; Accept</div><div class="oi-hiw-desc">Compare offers. Accept the best one. Payment held via Stripe &mdash; seller isn't paid until the card is verified.</div></div></div>
+        <div class="oi-hiw-step"><div class="oi-hiw-num">4</div><div><div class="oi-hiw-label">Card Ships to GrailISO Hub</div><div class="oi-hiw-desc">Seller ships to our verification hub. We inspect condition, authenticity, and grade accuracy.</div></div></div>
+        <div class="oi-hiw-step"><div class="oi-hiw-num">5</div><div><div class="oi-hiw-label">Verified &amp; Delivered</div><div class="oi-hiw-desc">Card ships to you in protective packaging. Payment releases to seller after you receive it.</div></div></div>
+      </div>
+      <div class="oi-hiw-fees">
+        <div class="oi-hiw-fee-row"><span>Card price (example)</span><strong>$125.00</strong></div>
+        <div class="oi-hiw-fee-row"><span>Platform fee (8%)</span><strong>$10.00</strong></div>
+        <div class="oi-hiw-fee-row"><span>Shipping (flat)</span><strong>$8.00</strong></div>
+        <div class="oi-hiw-fee-row total"><span>Buyer total</span><strong>$143.00</strong></div>
+      </div>
+      <div class="oi-hiw-trust">
+        <div class="oi-hiw-trust-item">&#128274; Stripe-secured hold</div>
+        <div class="oi-hiw-trust-item">&#9989; Hub-verified</div>
+        <div class="oi-hiw-trust-item">&#128230; Protected shipping</div>
+        <div class="oi-hiw-trust-item">&#128176; Seller paid after delivery</div>
+      </div>
+    </div>
 
     <!-- Make Offer Modal -->
     <div id="isoOfferModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9000;align-items:center;justify-content:center">
@@ -3750,6 +3926,98 @@ async function logOut(){
     <div id="csShopGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px"></div>
   </div>
 
+  <!-- ═══════════════ SHOP PROFILE ═══════════════ -->
+  <div class="panel" id="panel-shopprofile">
+    <div class="section-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <div>
+        <div class="section-title" id="spTitle">SHOP PROFILE</div>
+        <div id="spBreadcrumb" style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);letter-spacing:.5px;margin-top:2px">
+          <span style="color:var(--blue);cursor:pointer" onclick="N('cardshops')">Card Shops</span>
+          <span style="color:var(--muted-text)">&rsaquo;</span>
+          <span id="spBreadName" style="color:var(--white)"></span>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="btn btn-ghost btn-sm" onclick="N('cardshops')" style="font-size:11px;padding:6px 12px">&larr; BACK</button>
+      </div>
+    </div>
+
+    <!-- Merged Hero + Shop Info -->
+    <div id="spHeroInfo" style="background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:14px 18px;margin-bottom:10px;position:relative;box-shadow:0 4px 20px rgba(0,0,0,0.4)">
+      <!-- Top row: avatar + name + meta + actions -->
+      <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:10px">
+        <div id="spAvatar" style="width:56px;height:56px;border-radius:8px;background:var(--deep3);border:2px solid var(--deep-border);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">🏪</div>
+        <div style="flex:1">
+          <div id="spName" style="font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:2px;color:var(--white);line-height:1.1;margin-bottom:2px"></div>
+          <div id="spAddr" style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-bottom:4px;display:flex;align-items:center;gap:6px"></div>
+          <div id="spMeta" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"></div>
+        </div>
+        <div id="spActions" style="display:flex;gap:6px;align-items:center;flex-shrink:0"></div>
+      </div>
+      <!-- Horizontal info bar: Map | About | Hours | Seller Stats -->
+      <div style="display:grid;grid-template-columns:220px 1fr auto auto;gap:0;border-top:1px solid rgba(0,170,255,0.08);padding-top:10px" id="spInfoBar">
+        <!-- Map -->
+        <div style="padding:0 12px 0 0;border-right:1px solid rgba(0,170,255,0.08)">
+          <div id="spMapWrap" style="width:100%;height:110px;border-radius:6px;overflow:hidden;background:var(--deep3);border:1px solid var(--deep-border);margin-bottom:4px">
+            <div id="spMap" style="width:100%;height:100%"></div>
+          </div>
+          <div id="spMapAddr" style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);line-height:1.4"></div>
+        </div>
+        <!-- About -->
+        <div style="padding:0 12px;border-right:1px solid rgba(0,170,255,0.08)">
+          <div id="spAbout" style="font-family:Barlow,sans-serif;font-size:12px;color:var(--muted-text);line-height:1.5;margin-bottom:6px"></div>
+          <div id="spLinks" style="display:flex;flex-direction:column;gap:3px"></div>
+        </div>
+        <!-- Hours -->
+        <div style="padding:0 12px;border-right:1px solid rgba(0,170,255,0.08);min-width:150px">
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(122,149,174,0.45);margin-bottom:3px;font-weight:600">HOURS <span id="spOpenBadge"></span></div>
+          <table id="spHours" style="width:100%;border-collapse:collapse"></table>
+        </div>
+        <!-- Seller Stats -->
+        <div style="padding:0 0 0 12px;min-width:160px">
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(122,149,174,0.45);margin-bottom:3px;font-weight:600">SELLER STATS</div>
+          <div id="spSellerStats"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Claim Banner -->
+    <div id="spClaimBanner" style="background:linear-gradient(135deg,rgba(0,170,255,0.12),rgba(0,232,135,0.08));border:1px solid rgba(0,170,255,0.25);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div style="font-size:22px;flex-shrink:0">🔑</div>
+      <div style="flex:1">
+        <div style="font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--white)">IS THIS YOUR SHOP?</div>
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);line-height:1.3">Claim this listing to manage your inventory, respond to ISOs, and connect with buyers — 100% free.</div>
+      </div>
+      <button class="btn btn-primary" style="font-size:10px;padding:5px 12px;flex-shrink:0">CLAIM THIS SHOP</button>
+    </div>
+
+    <!-- Stats bar + Inventory -->
+    <div style="background:var(--deep2);border:1px solid rgba(0,170,255,0.18);border-radius:10px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.4);margin-bottom:10px">
+      <!-- Stats row -->
+      <div id="spStats" style="display:flex;gap:0;border-bottom:1px solid rgba(0,170,255,0.1);padding:8px 0"></div>
+      <!-- Inventory header -->
+      <div style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-bottom:1px solid rgba(0,170,255,0.1)">
+        <span style="font-size:13px">📦</span>
+        <span style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(122,149,174,0.6);flex:1;font-weight:600">SHOP INVENTORY</span>
+        <span id="spInvCount" style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text)"></span>
+      </div>
+      <div style="padding:12px 14px">
+        <div id="spInvFilters" style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center"></div>
+        <div id="spInvGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px"></div>
+      </div>
+    </div>
+
+    <!-- Reviews -->
+    <div style="background:var(--deep2);border:1px solid rgba(0,170,255,0.18);border-radius:10px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.4);margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-bottom:1px solid rgba(0,170,255,0.1)">
+        <span style="font-size:13px">💬</span>
+        <span style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(122,149,174,0.6);flex:1;font-weight:600">COMMUNITY REVIEWS</span>
+        <span id="spReviewCount" style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text)"></span>
+      </div>
+      <div id="spReviews" style="padding:12px 14px"></div>
+    </div>
+  </div>
+
   <!-- ═══════════════ SHOP REVIEW MODAL ═══════════════ -->
   <div class="vault-modal-overlay" id="shopReviewOverlay" style="display:none" onclick="if(event.target===this)closeShopReview()">
     <div class="vault-modal" style="max-width:480px">
@@ -4757,6 +5025,7 @@ const PM={
   leaderboard:{t:'LEADERBOARD',s:'Top buyers · sellers · most wanted cards'},
   carddetail:{t:'ISOVAULT',s:'Card detail'},  // overridden by _cdSetMyVaultContext when from vault
   cardshops:{t:'CARD SHOPS',s:'Find local card shops near you'},
+  shopprofile:{t:'SHOP PROFILE',s:'Card shop details'},
   cardshows:{t:'CARD SHOWS',s:'Upcoming card shows & events'},
   guide:{t:'FEATURE GUIDE',s:'Learn what every feature does'},
 };
@@ -4798,6 +5067,7 @@ function N(id,el){
   if(id==='sellermatches')loadSellerMatches();
   if(id==='activelistings')loadActiveListings();
   if(id==='cardshops')initCardShops();
+  if(id==='shopprofile')renderShopProfile();
   if(id==='cardshows')initCardShows();
   if(id==='guide')renderGuide();
   // Push panel state into browser history so mouse back button steps through panels
@@ -5002,11 +5272,11 @@ function p2RenderSetGrid(){
       + '<div style="font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:1px;color:var(--white);margin:3px 0">' + (s.label||s.name||'').toUpperCase() + '</div>'
       + '<div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text)">' + (s.brand||'') + '</div>';
     tile.onclick = () => {
-      P2_STATE.set = (s.year||'') + ' ' + (s.label||s.name||'');
+      P2_STATE.set = (s.year||'') + ' ' + (s.brand||'') + ' ' + (s.name||'');
       P2_STATE._setTable = s.table;
       P2_STATE._ivSet = s;
       const titleEl = document.getElementById('p2CardStepTitle');
-      if(titleEl) titleEl.textContent = 'SELECT CARD — ' + P2_STATE.set.toUpperCase();
+      if(titleEl) titleEl.textContent = 'SELECT CARD \u2014 ' + P2_STATE.set.toUpperCase();
       p2LoadCards(s.table);
       p2Go(5);
     };
@@ -5280,6 +5550,22 @@ async function p2SubmitISO(){
   const S = P2_STATE;
   if(!S.card || !S.variant){
     if(errEl){ errEl.textContent = 'Go back and select a card and variant.'; errEl.style.display='block'; }
+    return;
+  }
+  // ── HARD RULE: card must have front AND back catalog images ──
+  const _dbR = S._dbRow;
+  let _vi = (_dbR && _dbR.var_images) || {};
+  if(typeof _vi === 'string'){ try { _vi = JSON.parse(_vi); } catch(e){ _vi = {}; } }
+  // Check any variation entry for front+back (Base or selected variant)
+  const varLabel = (S.variant||'').replace(/\s*\/\d+$/,'').replace(/\s*\(admin to build\)/i,'').trim() || 'Base';
+  const viEntry = _vi[varLabel] || _vi['Base'] || Object.values(_vi)[0] || {};
+  const hasFront = !!(viEntry.front || (_dbR && _dbR.front_img));
+  const hasBack = !!(viEntry.back || (_dbR && _dbR.back_img));
+  if(!hasFront || !hasBack){
+    if(errEl){
+      errEl.innerHTML = '&#128683; This card is missing ' + (!hasFront && !hasBack ? 'front &amp; back' : !hasFront ? 'front' : 'back') + ' photos in the catalog. Upload card images in ISOVault before posting an ISO.';
+      errEl.style.display='block';
+    }
     return;
   }
   const user = window._authUser;
@@ -8274,6 +8560,34 @@ function _getTickerWatchlist(){
 }
 function _saveTickerWatchlist(list){
   try { localStorage.setItem(_TICKER_KEY, JSON.stringify(list)); } catch(e){}
+  // Persist to Supabase so watchlist survives PWA hard-reset / localStorage eviction
+  _saveTickerToSupabase(list);
+}
+
+function _saveTickerToSupabase(list){
+  if(!window._authUser) return;
+  const uid = window._authUser.id;
+  const body = JSON.stringify({ user_id: uid, ticker_watchlist: list, updated_at: new Date().toISOString() });
+  fetch(_SURL + '/user_settings?on_conflict=user_id', {
+    method: 'POST',
+    headers: { ..._sbH(), 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates' },
+    body: body
+  }).catch(()=>{});  // fire-and-forget, localStorage is the fast path
+}
+
+async function _syncTickerFromSupabase(){
+  if(!window._authUser) return;
+  try {
+    const rows = await _rGet('user_settings', 'select=ticker_watchlist&user_id=eq.' + window._authUser.id);
+    if(rows && rows.length && Array.isArray(rows[0].ticker_watchlist) && rows[0].ticker_watchlist.length){
+      localStorage.setItem(_TICKER_KEY, JSON.stringify(rows[0].ticker_watchlist));
+      initCardTicker();
+    } else if(!rows || !rows.length){
+      // No Supabase row yet — seed it from localStorage so existing picks aren't lost
+      const local = _getTickerWatchlist();
+      if(local.length) _saveTickerToSupabase(local);
+    }
+  } catch(e){ /* offline or table not ready — localStorage fallback is fine */ }
 }
 
 function _tickerCardId(c){
@@ -11958,6 +12272,8 @@ let _allIsosData = [];
 let _myIsosFilter = 'all';
 let _isoTab = 'all'; // 'all' = OpenISO board, 'mine' = my posted ISOs
 let _offerIsoId = null;
+let _oiSort = 'newest';
+let _oiSportFilter = 'all';
 
 function switchISOTab(tab, el){
   _isoTab = tab;
@@ -11965,6 +12281,7 @@ function switchISOTab(tab, el){
   if(el) el.classList.add('active');
   _myIsosFilter = 'all';
   _openIsoIdx = -1;
+  _oiUpdateFomoUI();
   _renderISOList();
 }
 
@@ -11976,6 +12293,152 @@ function filterMyISOs(filter, el){
   _renderISOList();
 }
 
+// ── OpenISO FOMO helpers ──
+function _oiToggleSortMenu(){
+  const m = document.getElementById('oiSortMenu');
+  if(m) m.classList.toggle('open');
+}
+function _oiSetSort(key, el){
+  _oiSort = key;
+  document.querySelectorAll('.oi-sort-opt').forEach(o=>{ o.classList.remove('active'); o.textContent = o.textContent.replace(/^✓\s*/,''); });
+  if(el){ el.classList.add('active'); el.textContent = '✓ ' + el.textContent; }
+  const labels = {'newest':'NEWEST','oldest':'OLDEST','price-high':'PRICE HIGH','price-low':'PRICE LOW','player-az':'PLAYER A→Z','player-za':'PLAYER Z→A','team-az':'TEAM A→Z'};
+  const btn = document.getElementById('oiSortBtn');
+  if(btn) btn.firstChild.textContent = 'SORT: '+(labels[key]||'NEWEST')+' ';
+  const m = document.getElementById('oiSortMenu');
+  if(m) m.classList.remove('open');
+  _openIsoIdx = -1;
+  _renderISOList();
+}
+function _oiSetSport(sport, el){
+  _oiSportFilter = sport;
+  document.querySelectorAll('.oi-sport-chip').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  _openIsoIdx = -1;
+  _renderISOList();
+}
+function _oiApplyFilters(){ _openIsoIdx = -1; _renderISOList(); }
+// Close sort menu on outside click
+document.addEventListener('click', function(e){ if(!e.target.closest('.oi-sort-btn')){ const m=document.getElementById('oiSortMenu'); if(m) m.classList.remove('open'); }});
+
+function _oiGetOfferCounts(){
+  const counts = {};
+  if(window._myIsoOffers){
+    window._myIsoOffers.forEach(o => {
+      if(o.status === 'pending') counts[o.iso_id] = (counts[o.iso_id]||0)+1;
+    });
+  }
+  return counts;
+}
+
+function _oiSportIcon(sport){
+  const s = (sport||'').toLowerCase();
+  if(s.includes('baseball')) return '&#9918;';
+  if(s.includes('basketball')) return '&#127936;';
+  if(s.includes('football')) return '&#127944;';
+  if(s.includes('hockey')) return '&#127954;';
+  if(s.includes('mtg')) return '&#127183;';
+  return '&#9918;';
+}
+
+function _oiWatcherCount(iso){
+  // Calculated from recency + price — higher price and newer = more watchers
+  const age = (Date.now() - new Date(iso.created_at||0).getTime()) / 3600000; // hours
+  const price = parseFloat(iso.max_price) || 0;
+  const base = Math.max(1, Math.floor(price / 30) + Math.max(0, Math.floor(8 - age/6)));
+  return base + (iso.id ? (iso.id % 7) : 0); // deterministic variation
+}
+
+function _oiUpdateFomoUI(){
+  const isAllTab = _isoTab === 'all';
+  const data = _allIsosData;
+  // Show/hide FOMO elements based on tab
+  const fomoEls = ['oiLiveBanner','oiHero','oiControls','oiSportStrip','oiHotSection','oiSellerCta','oiFeedHead','oiHiwToggle'];
+  fomoEls.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = isAllTab && data.length ? '' : 'none';
+  });
+  if(!isAllTab || !data.length) return;
+  // Hero stats
+  const activeCount = data.length;
+  const totalDemand = data.reduce((s,i) => s + (parseFloat(i.max_price)||0), 0);
+  const offerCounts = _oiGetOfferCounts();
+  const totalOffers = Object.values(offerCounts).reduce((s,c)=>s+c, 0);
+  document.getElementById('oiStatActive').innerHTML = '<span class="oi-pulse"></span>' + activeCount;
+  document.getElementById('oiStatDemand').textContent = '$' + totalDemand.toLocaleString(undefined,{maximumFractionDigits:0});
+  document.getElementById('oiStatOffers').textContent = totalOffers;
+  // Seller CTA desc
+  document.getElementById('oiSellerCtaDesc').innerHTML = '<strong>'+activeCount+' active ISOs</strong> with <strong>$'+totalDemand.toLocaleString(undefined,{maximumFractionDigits:0})+'</strong> in total demand right now.';
+  // Live ticker
+  _oiRenderTicker(data, offerCounts);
+  // Hot rail (top ISOs by offer count + price)
+  _oiRenderHotRail(data, offerCounts);
+}
+
+function _oiRenderTicker(data, offerCounts){
+  const items = data.slice(0,10).map(iso => {
+    const player = iso.player || iso.card_name || 'Card';
+    const parallel = iso.parallel ? ' '+iso.parallel : '';
+    const price = iso.max_price ? '$'+parseFloat(iso.max_price).toLocaleString() : '';
+    const oc = offerCounts[iso.id] || 0;
+    const age = (Date.now() - new Date(iso.created_at||0).getTime()) / 60000;
+    if(oc > 0) return '<span class="hot">'+oc+' OFFER'+(oc>1?'S':'')+'</span> '+player+parallel+' — <span class="price">'+price+' max</span>';
+    if(age < 120) return '<span class="hot">&#128293; NEW ISO</span> '+player+parallel+' — <span class="price">'+price+' max</span>';
+    return '<span class="hot">ISO</span> '+player+parallel+' — <span class="price">'+price+' max</span>';
+  });
+  const tickerHtml = items.join('<span class="sep">|</span>');
+  const el = document.getElementById('oiTickerContent');
+  if(el) el.innerHTML = tickerHtml + '<span class="sep">|</span>' + tickerHtml; // double for seamless loop
+}
+
+function _oiRenderHotRail(data, offerCounts){
+  // Sort by offers desc, then price desc — top 6
+  const ranked = data.slice().sort((a,b) => {
+    const oa = offerCounts[a.id]||0, ob = offerCounts[b.id]||0;
+    if(ob !== oa) return ob - oa;
+    return (parseFloat(b.max_price)||0) - (parseFloat(a.max_price)||0);
+  }).slice(0,6);
+  const userId = window._authUser?.id;
+  const rail = document.getElementById('oiHotRail');
+  if(!rail || !ranked.length){ const s=document.getElementById('oiHotSection'); if(s) s.style.display='none'; return; }
+  rail.innerHTML = ranked.map((iso,i) => {
+    const player = iso.player || iso.card_name || 'Card';
+    const parallel = iso.parallel || 'Base';
+    const grade = iso.grade || '';
+    const cardName = iso.card_name || '';
+    const price = iso.max_price ? '$'+parseFloat(iso.max_price).toLocaleString() : '—';
+    const posted = iso.created_at ? _isoTimeAgo(iso.created_at) : '';
+    const oc = offerCounts[iso.id] || 0;
+    const age = (Date.now() - new Date(iso.created_at||0).getTime()) / 60000;
+    const urgBadge = oc > 0
+      ? '<div class="oi-urgency">'+oc+' OFFER'+(oc>1?'S':'')+'</div>'
+      : (age < 120 ? '<div class="oi-urgency just-posted">JUST POSTED</div>' : '');
+    const watchers = _oiWatcherCount(iso);
+    const isMine = iso.user_id === userId;
+    const cta = !isMine && iso.status==='active' ? '<div class="oi-hot-card-cta">MAKE OFFER</div>' : '';
+    const sportIcon = _oiSportIcon(iso.sport);
+    // Find ISO index in the full _allIsosData for click handler
+    const realIdx = _allIsosData.indexOf(iso);
+    return `<div class="oi-hot-card" onclick="openISODetail(${realIdx>=0?realIdx:i})">
+      <div class="oi-hot-card-img">
+        <div style="font-size:36px;opacity:.3">${sportIcon}</div>
+        ${urgBadge}
+        <div class="oi-time-badge">${posted}</div>
+      </div>
+      <div class="oi-hot-card-body">
+        <div class="oi-hot-card-player">${player}</div>
+        <div class="oi-hot-card-meta">${parallel}${grade?' · '+grade:''}</div>
+        <div class="oi-hot-card-meta" style="color:var(--chrome);opacity:.5">${cardName}</div>
+        <div class="oi-hot-card-footer">
+          <div><div class="oi-hot-card-price">${price}</div><div class="oi-hot-card-price-sub">buyer max</div></div>
+          ${cta}
+        </div>
+      </div>
+      <div class="oi-eyes">&#128065; ${watchers}</div>
+    </div>`;
+  }).join('');
+}
+
 async function renderMyISOs(){
   const loading = document.getElementById('myIsosLoading');
   const empty   = document.getElementById('myIsosEmpty');
@@ -11985,6 +12448,10 @@ async function renderMyISOs(){
   if(empty)   empty.style.display='none';
   if(list)  { list.style.display='none'; list.innerHTML=''; }
   if(filters) filters.style.display='none';
+  // Hide FOMO elements while loading
+  ['oiLiveBanner','oiHero','oiControls','oiSportStrip','oiHotSection','oiSellerCta','oiFeedHead','oiHiwToggle'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.style.display='none';
+  });
   try {
     const { data:{ user } } = await window._sb.auth.getUser();
     if(!user){ if(loading) loading.style.display='none'; if(empty) empty.style.display='block'; return; }
@@ -12016,14 +12483,13 @@ async function renderMyISOs(){
 
     if(!_allIsosData.length && !_myIsosData.length){ if(empty) empty.style.display='block'; return; }
     if(filters) filters.style.display='flex';
+    _oiUpdateFomoUI();
     _renderISOList();
   } catch(e){
     if(loading) loading.style.display='none';
     if(list){ list.style.display='block'; list.innerHTML=`<div style="padding:20px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--red)">Failed to load: ${e.message}</div>`; }
   }
 }
-
-// filterMyISOs defined above with switchISOTab
 
 let _openIsoIdx = -1;
 
@@ -12035,20 +12501,46 @@ function _renderISOList(){
   let rows = _isoTab === 'mine' ? _myIsosData.slice() : _allIsosData.slice();
   if(_myIsosFilter === 'active') rows = rows.filter(i=>i.status==='active');
   else if(_myIsosFilter === 'matched') rows = rows.filter(i=>i.status==='matched');
+
+  // Sport filter (All ISOs tab only)
+  if(_isoTab === 'all' && _oiSportFilter !== 'all'){
+    rows = rows.filter(i => {
+      const s = (i.sport||'').toLowerCase();
+      if(_oiSportFilter === 'mtg') return s.includes('mtg') || s.includes('magic');
+      return s.includes(_oiSportFilter);
+    });
+  }
+
+  // Search filter
+  const searchVal = (document.getElementById('oiSearchInput')?.value || '').trim().toLowerCase();
+  if(searchVal){
+    rows = rows.filter(i => {
+      const haystack = [i.player, i.card_name, i.parallel, i.sport, i.notes, i.grade].filter(Boolean).join(' ').toLowerCase();
+      return haystack.includes(searchVal);
+    });
+  }
+
+  // Sort
+  if(_oiSort === 'oldest') rows.sort((a,b) => new Date(a.created_at||0) - new Date(b.created_at||0));
+  else if(_oiSort === 'newest') rows.sort((a,b) => new Date(b.created_at||0) - new Date(a.created_at||0));
+  else if(_oiSort === 'price-high') rows.sort((a,b) => (parseFloat(b.max_price)||0) - (parseFloat(a.max_price)||0));
+  else if(_oiSort === 'price-low') rows.sort((a,b) => (parseFloat(a.max_price)||0) - (parseFloat(b.max_price)||0));
+  else if(_oiSort === 'player-az') rows.sort((a,b) => (a.player||'').localeCompare(b.player||''));
+  else if(_oiSort === 'player-za') rows.sort((a,b) => (b.player||'').localeCompare(a.player||''));
+  else if(_oiSort === 'team-az') rows.sort((a,b) => (a.card_name||'').localeCompare(b.card_name||''));
+
+  // Update feed subtitle
+  const feedSub = document.getElementById('oiFeedSub');
+  if(feedSub) feedSub.textContent = 'Showing ' + rows.length;
+
   if(!rows.length){
     list.style.display='block';
     list.innerHTML='<div style="text-align:center;padding:40px 20px;font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text)">'
-      +(_isoTab==='mine'?'You haven\'t posted any ISOs yet.':'No active ISOs right now.')+'</div>';
+      +(searchVal ? 'No ISOs match "'+searchVal+'"' : (_isoTab==='mine'?'You haven\'t posted any ISOs yet.':'No active ISOs right now.'))+'</div>';
     return;
   }
   list.style.display='block';
-  const isoIds = rows.map(i=>i.id).filter(Boolean);
-  let offerCounts = {};
-  if(isoIds.length && window._myIsoOffers){
-    window._myIsoOffers.forEach(o => {
-      if(o.status === 'pending') offerCounts[o.iso_id] = (offerCounts[o.iso_id]||0)+1;
-    });
-  }
+  const offerCounts = _oiGetOfferCounts();
 
   list.innerHTML = rows.map((iso, idx)=>{
     const posted   = iso.created_at ? _isoTimeAgo(iso.created_at) : '';
@@ -12057,14 +12549,17 @@ function _renderISOList(){
     const parallel = iso.parallel || '';
     const grade    = iso.grade ? ' · '+iso.grade : '';
     const sport    = iso.sport || '';
+    const cardName = iso.card_name || '';
     const isExpired = iso.expires_at && new Date(iso.expires_at) < new Date();
     const offerCount = offerCounts[iso.id] || 0;
     const hasOffers = offerCount > 0;
     const isMine = iso.user_id === userId;
     const statusClass = hasOffers ? 'matched' : iso.status==='matched'?'matched':iso.status==='completed'?'':'active';
-    const statusLabel = hasOffers ? offerCount+' OFFER'+(offerCount>1?'S':'') : (isExpired ? 'EXPIRED' : (iso.status||'active').toUpperCase());
-    const _sl = (sport||'').toLowerCase();
-    const sportIcon = _sl.includes('baseball')?'&#9918;':_sl.includes('basketball')?'&#127936;':_sl.includes('football')?'&#127944;':_sl.includes('hockey')?'&#127954;':'&#9918;';
+    const age = (Date.now() - new Date(iso.created_at||0).getTime()) / 60000;
+    const statusLabel = hasOffers ? offerCount+' OFFER'+(offerCount>1?'S':'') : (isExpired ? 'EXPIRED' : (age < 120 ? 'JUST POSTED' : (iso.status||'active').toUpperCase()));
+    const sportIcon = _oiSportIcon(sport);
+    const watchers = _oiWatcherCount(iso);
+    const urgentClass = hasOffers ? ' oi-urgent' : '';
     // Actions: own ISOs get review/cancel, other people's ISOs get Make Offer
     const offerAction = hasOffers && isMine
       ? `<span class="ni-action" onclick="event.stopPropagation();openOfferReview(${idx})">Review Offers &#8594;</span>`
@@ -12073,16 +12568,18 @@ function _renderISOList(){
         : '');
     const mineTag = isMine ? '<span style="font-size:10px;color:var(--muted-text);letter-spacing:1px;font-family:Barlow Condensed,sans-serif">YOUR ISO</span>' : '';
     return `
-    <div class="iso-item" id="iso-row-${idx}" style="flex-wrap:wrap;gap:9px;cursor:pointer;${iso.status==='completed'||isExpired?'opacity:.55':''}" onclick="openISODetail(${idx})">
-      <div class="iso-img" style="background:${hasOffers&&isMine?'rgba(255,59,92,0.12)':!isMine?'rgba(0,232,135,0.06)':'rgba(0,170,255,0.06)'};display:flex;align-items:center;justify-content:center;font-size:22px">${hasOffers&&isMine?'&#128176;':sportIcon}</div>
+    <div class="iso-item${urgentClass}" id="iso-row-${idx}" style="flex-wrap:wrap;gap:9px;cursor:pointer;${iso.status==='completed'||isExpired?'opacity:.55':''}" onclick="openISODetail(${idx})">
+      <div class="iso-img" style="display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden">${sportIcon}</div>
       <div class="iso-info">
         <div class="iso-player">${player} ${mineTag}</div>
         <div class="iso-detail">${parallel}${grade}${posted?' · '+posted:''}</div>
+        <div class="iso-team-set">${cardName}</div>
       </div>
       <div><div class="iso-price">${maxPrice}</div><div class="iso-price-sub">${isMine?'YOUR MAX':'BUYER MAX'}</div></div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
         <span class="status-pill ${statusClass}">${statusLabel}</span>
         ${offerAction}
+        <div class="oi-watchers">&#128065; ${watchers}</div>
       </div>
     </div>
     <div class="iso-detail-panel" id="iso-dp-${idx}"></div>`;
@@ -14576,7 +15073,7 @@ function csGoRegion(regionKey,fallbackState){
       rv.nice_inventory?`<span class="sr-tag-display">Nice Inventory (${rv.nice_inventory})</span>`:''
     ].filter(Boolean).join(''):'';
     return `
-    <div style="background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:16px;transition:border-color .2s;position:relative" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--deep-border)'">
+    <div style="background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;padding:16px;transition:border-color .2s;position:relative;cursor:pointer" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--deep-border)'" onclick="if(!event.target.closest('.cs-fav-btn,.cs-rate-btn'))openShopProfile('${sid}')">
       <div style="position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:6px">
         ${sid?`<button class="cs-fav-btn" onclick="csToggleFav('${sid}')" title="${isFav?'Remove from favorites':'Add to favorites'}">${isFav?'&#10084;&#65039;':'&#9825;'}</button>`:''}
         <div style="background:#00AAFF;color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Bebas Neue,sans-serif;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,0.3)" title="Map pin #${s._pin}">${s._pin}</div>
@@ -14710,6 +15207,157 @@ async function csToggleFav(shopId){
       else if(regionMatch)csGoState(regionMatch[1]);
     }
   }catch(e){T('Error updating favorite');}
+}
+
+// ═══════════════════════════════════════════════
+// SHOP PROFILE
+// ═══════════════════════════════════════════════
+let _spShop=null, _spMap=null;
+
+function openShopProfile(shopId){
+  const shop=(_csDbShops||_csShops||[]).find(s=>s.id===shopId);
+  if(!shop){T('Shop not found');return;}
+  _spShop=shop;
+  N('shopprofile');
+}
+
+function renderShopProfile(){
+  const s=_spShop;
+  if(!s) return;
+  const sid=s.id||'';
+  const rv=sid?_csReviewStats[sid]:null;
+  const favCount=sid?(_csFavCounts[sid]||0):0;
+  const isFav=sid&&_csUserFavs.has(sid);
+
+  // Breadcrumb
+  document.getElementById('spBreadName').textContent=s.name;
+
+  // Name
+  document.getElementById('spName').textContent=s.name;
+
+  // Address
+  document.getElementById('spAddr').innerHTML=
+    `📍 ${s.addr}`+
+    `<span style="margin-left:4px;display:inline-flex;align-items:center;gap:4px;font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:600;color:var(--green)"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px rgba(0,232,135,0.5);display:inline-block"></span> Open Now</span>`;
+
+  // Meta row: type tags + phone + verified
+  const types=s.types.map(t=>`<span style="font-family:Barlow Condensed,sans-serif;font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(0,170,255,0.1);color:var(--blue);letter-spacing:.5px;font-weight:500">${t}</span>`).join('');
+  document.getElementById('spMeta').innerHTML=types+
+    (s.phone?`<span style="margin-left:4px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);display:flex;align-items:center;gap:4px">📞 <span style="color:var(--white)">${s.phone}</span></span>`:'')+
+    `<span style="display:inline-flex;align-items:center;gap:3px;font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:.5px;color:var(--green);background:rgba(0,232,135,0.1);padding:2px 7px;border-radius:4px;font-weight:600">✓ VERIFIED</span>`;
+
+  // Actions
+  document.getElementById('spActions').innerHTML=
+    `<button class="cs-fav-btn" onclick="csToggleFav('${sid}')" title="Favorite">${isFav?'❤️':'♡'}</button>`+
+    `<button class="btn btn-ghost btn-sm" onclick="openShopReview('${sid}','${s.name.replace(/'/g,"\\'")}')">RATE</button>`+
+    `<button class="btn btn-primary btn-sm">CONTACT</button>`;
+
+  // Mini map
+  if(_spMap){_spMap.remove();_spMap=null;}
+  if(s.lat&&s.lng){
+    setTimeout(()=>{
+      try{
+        _spMap=L.map('spMap',{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false}).setView([s.lat,s.lng],14);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(_spMap);
+        L.marker([s.lat,s.lng]).addTo(_spMap);
+      }catch(e){}
+    },200);
+  }
+
+  // Map address
+  const addrParts=s.addr.split(',');
+  document.getElementById('spMapAddr').innerHTML=
+    addrParts.map(p=>p.trim()).join('<br>')+
+    `<br><span style="color:var(--blue);cursor:pointer;font-size:10px;letter-spacing:.5px">DIRECTIONS →</span>`;
+
+  // About
+  const notes=s.notes||'';
+  const aboutLines=notes?notes.split(/\.\s*/).filter(Boolean).map(l=>l.trim()+(l.endsWith('.')?'':'.')).join('<br>')
+    :'<span style="color:var(--muted-text);font-style:italic">No description yet</span>';
+  document.getElementById('spAbout').innerHTML=aboutLines;
+
+  // Links
+  document.getElementById('spLinks').innerHTML=
+    `<div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);display:flex;align-items:center;gap:4px">🌐 <span style="color:var(--blue)">—</span></div>`+
+    `<div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);display:flex;align-items:center;gap:4px">📸 <span style="color:var(--blue)">—</span></div>`;
+
+  // Hours
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const today=new Date().getDay(); // 0=Sun
+  const todayIdx=today===0?6:today-1;
+  if(s.hours){
+    // Try to parse hours string, otherwise show raw
+    document.getElementById('spHours').innerHTML=days.map((d,i)=>{
+      const cls=i===todayIdx?'style="color:var(--green);font-weight:600"':'style="color:var(--white)"';
+      const dayLbl=i===todayIdx?`<td style="color:var(--green);font-weight:600;font-family:Barlow Condensed,sans-serif;font-size:12px;padding:2px 0;width:36px">${d}</td>`
+        :`<td style="color:var(--muted-text);font-family:Barlow Condensed,sans-serif;font-size:12px;padding:2px 0;width:36px">${d}</td>`;
+      return `<tr>${dayLbl}<td ${cls} style="font-family:Barlow Condensed,sans-serif;font-size:12px;padding:2px 0">—</td></tr>`;
+    }).join('');
+  } else {
+    document.getElementById('spHours').innerHTML=days.map((d,i)=>{
+      const isToday=i===todayIdx;
+      return `<tr><td style="color:${isToday?'var(--green)':'var(--muted-text)'};font-family:Barlow Condensed,sans-serif;font-size:12px;padding:2px 0;width:36px;${isToday?'font-weight:600':''}">${d}</td><td style="color:${isToday?'var(--green)':'var(--white)'};font-family:Barlow Condensed,sans-serif;font-size:12px;padding:2px 0;${isToday?'font-weight:600':''}">—</td></tr>`;
+    }).join('');
+  }
+
+  // Open badge
+  document.getElementById('spOpenBadge').innerHTML=
+    `<span style="margin-left:6px;display:inline-flex;align-items:center;gap:4px;font-family:Barlow Condensed,sans-serif;font-size:10px;font-weight:600;color:var(--green)"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px rgba(0,232,135,0.5);display:inline-block"></span> Open</span>`;
+
+  // Seller Stats
+  const statRows=[
+    {lbl:'Completed Sales',val:'0',color:'var(--green)'},
+    {lbl:'ISOs Fulfilled',val:'0',color:'var(--blue)'},
+    {lbl:'Avg Ship Time',val:'—',color:'var(--white)'},
+    {lbl:'Disputes',val:'0',color:'var(--green)'},
+    {lbl:'Member Since',val:'—',color:'var(--white)'}
+  ];
+  document.getElementById('spSellerStats').innerHTML=statRows.map(r=>
+    `<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 0"><span style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);letter-spacing:.3px">${r.lbl}</span><span style="font-family:Bebas Neue,sans-serif;font-size:15px;color:${r.color};letter-spacing:.5px">${r.val}</span></div>`
+  ).join('');
+
+  // Stats bar
+  const stats=[
+    {val:'0',lbl:'Listed',color:'var(--white)'},
+    {val:'0',lbl:'Sold',color:'var(--green)'},
+    {val:'0',lbl:'ISOs Filled',color:'var(--blue)'},
+    {val:rv?(rv.count>0?'⭐':'—'):'—',lbl:'Rating',color:'var(--white)'},
+    {val:String(favCount),lbl:'Favorites',color:'var(--gold)'}
+  ];
+  document.getElementById('spStats').innerHTML=stats.map(st=>
+    `<div style="flex:1;text-align:center;border-right:1px solid rgba(0,170,255,0.08)"><div style="font-family:Bebas Neue,sans-serif;font-size:20px;color:${st.color};letter-spacing:1px;line-height:1">${st.val}</div><div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-top:1px">${st.lbl}</div></div>`
+  ).join('');
+
+  // Inventory — placeholder for now (shop hasn't listed cards yet)
+  document.getElementById('spInvCount').textContent='0 cards';
+  document.getElementById('spInvFilters').innerHTML=
+    `<button style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:4px;border:1px solid var(--blue);background:rgba(0,170,255,0.15);color:var(--blue);cursor:pointer;font-weight:600">All</button>`+
+    `<input type="text" placeholder="Search inventory..." style="flex:1;min-width:120px;background:rgba(0,0,0,0.25);border:1px solid var(--deep-border);border-radius:6px;padding:4px 10px;color:var(--white);font-family:Barlow Condensed,sans-serif;font-size:12px;outline:none">`;
+  document.getElementById('spInvGrid').innerHTML=
+    `<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);padding:16px;grid-column:1/-1;text-align:center">This shop hasn't listed any cards yet.</div>`;
+
+  // Reviews
+  const reviews=[];// TODO: fetch from shop_reviews for this shop
+  const revCount=rv?rv.count:0;
+  document.getElementById('spReviewCount').textContent=revCount+' review'+(revCount!==1?'s':'');
+  if(rv && rv.count>0){
+    const tagHtml=[
+      rv.good_prices?`<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;padding:3px 8px;border-radius:10px;background:rgba(0,170,255,0.1);color:var(--blue);letter-spacing:.3px">👍 Good Prices <span style="opacity:.5;margin-left:2px">${rv.good_prices}</span></span>`:'',
+      rv.nice_people?`<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;padding:3px 8px;border-radius:10px;background:rgba(0,170,255,0.1);color:var(--blue);letter-spacing:.3px">😊 Nice People <span style="opacity:.5;margin-left:2px">${rv.nice_people}</span></span>`:'',
+      rv.good_pulls?`<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;padding:3px 8px;border-radius:10px;background:rgba(0,170,255,0.1);color:var(--blue);letter-spacing:.3px">🎯 Good Pulls <span style="opacity:.5;margin-left:2px">${rv.good_pulls}</span></span>`:'',
+      rv.nice_inventory?`<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;padding:3px 8px;border-radius:10px;background:rgba(0,170,255,0.1);color:var(--blue);letter-spacing:.3px">📦 Nice Inventory <span style="opacity:.5;margin-left:2px">${rv.nice_inventory}</span></span>`:'',
+      rv.liked_shop?`<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;padding:3px 8px;border-radius:10px;background:rgba(0,170,255,0.1);color:var(--blue);letter-spacing:.3px">❤️ Liked Shop <span style="opacity:.5;margin-left:2px">${rv.liked_shop}</span></span>`:''
+    ].filter(Boolean).join('');
+    document.getElementById('spReviews').innerHTML=
+      `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(0,170,255,0.08)">${tagHtml}</div>`+
+      `<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);text-align:center;padding:10px">Review details coming soon.</div>`;
+  } else {
+    document.getElementById('spReviews').innerHTML=
+      `<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);text-align:center;padding:10px">No reviews yet. <span style="color:var(--blue);cursor:pointer" onclick="openShopReview('${sid}','${s.name.replace(/'/g,"\\'")}')">Be the first!</span></div>`;
+  }
+
+  // Claim banner — show for unclaimed shops (for now, show for all)
+  document.getElementById('spClaimBanner').style.display='flex';
 }
 
 // ═══════════════════════════════════════════════

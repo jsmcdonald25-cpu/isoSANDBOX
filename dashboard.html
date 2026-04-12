@@ -15110,11 +15110,13 @@ function _geoDist(lat1,lng1,lat2,lng2){
   return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
 const _usStates={
+  // US States
   AL:{name:'Alabama',lat:32.806671,lng:-86.791130},AZ:{name:'Arizona',lat:34.048927,lng:-111.093735},
   AR:{name:'Arkansas',lat:34.969704,lng:-92.373123},CA:{name:'California',lat:36.116203,lng:-119.681564},
   CO:{name:'Colorado',lat:39.059811,lng:-105.311104},CT:{name:'Connecticut',lat:41.597782,lng:-72.755371},
   DE:{name:'Delaware',lat:39.318523,lng:-75.507141},FL:{name:'Florida',lat:27.766279,lng:-81.686783},
-  GA:{name:'Georgia',lat:33.040619,lng:-83.643074},ID:{name:'Idaho',lat:44.240459,lng:-114.478828},
+  GA:{name:'Georgia',lat:33.040619,lng:-83.643074},HI:{name:'Hawaii',lat:21.094318,lng:-157.498337},
+  ID:{name:'Idaho',lat:44.240459,lng:-114.478828},
   IL:{name:'Illinois',lat:40.349457,lng:-88.986137},IN:{name:'Indiana',lat:39.849426,lng:-86.258278},
   IA:{name:'Iowa',lat:42.011539,lng:-93.210526},KS:{name:'Kansas',lat:38.526600,lng:-96.726486},
   KY:{name:'Kentucky',lat:37.668140,lng:-84.670067},LA:{name:'Louisiana',lat:31.169546,lng:-91.867805},
@@ -15133,11 +15135,27 @@ const _usStates={
   TX:{name:'Texas',lat:31.054487,lng:-97.563461},UT:{name:'Utah',lat:40.150032,lng:-111.862434},
   VT:{name:'Vermont',lat:44.045876,lng:-72.710686},VA:{name:'Virginia',lat:37.769337,lng:-78.169968},
   WA:{name:'Washington',lat:47.400902,lng:-121.490494},WV:{name:'West Virginia',lat:38.491226,lng:-80.954453},
-  WI:{name:'Wisconsin',lat:44.268543,lng:-89.616508},WY:{name:'Wyoming',lat:42.755966,lng:-107.302490}
+  WI:{name:'Wisconsin',lat:44.268543,lng:-89.616508},WY:{name:'Wyoming',lat:42.755966,lng:-107.302490},
+  DC:{name:'Washington DC',lat:38.9072,lng:-77.0369},
+  // Canadian Provinces
+  AB:{name:'Alberta',lat:53.9333,lng:-116.5765},BC:{name:'British Columbia',lat:53.7267,lng:-127.6476},
+  MB:{name:'Manitoba',lat:53.7609,lng:-98.8139},NB:{name:'New Brunswick',lat:46.5653,lng:-66.4619},
+  NL:{name:'Newfoundland & Labrador',lat:53.1355,lng:-57.6604},NS:{name:'Nova Scotia',lat:44.6820,lng:-63.7443},
+  NT:{name:'Northwest Territories',lat:64.8255,lng:-124.8457},NU:{name:'Nunavut',lat:70.2998,lng:-83.1076},
+  ON:{name:'Ontario',lat:51.2538,lng:-85.3232},PE:{name:'Prince Edward Island',lat:46.5107,lng:-63.4168},
+  QC:{name:'Quebec',lat:52.9399,lng:-73.5491},SK:{name:'Saskatchewan',lat:52.9399,lng:-106.4509},
+  YT:{name:'Yukon',lat:64.2823,lng:-135.0000}
 };
 const _regions={
   chattanooga:{lat:35.0456,lng:-85.3097,label:'Chattanooga, TN',radius:30,state:'TN'},
-  charlotte:{lat:35.2271,lng:-80.8431,label:'Charlotte, NC',radius:50,state:'NC'}
+  charlotte:{lat:35.2271,lng:-80.8431,label:'Charlotte, NC',radius:50,state:'NC'},
+  nashville:{lat:36.1627,lng:-86.7816,label:'Nashville, TN',radius:40,state:'TN'},
+  knoxville:{lat:35.9606,lng:-83.9207,label:'Knoxville, TN',radius:30,state:'TN'},
+  memphis:{lat:35.1495,lng:-90.0490,label:'Memphis, TN',radius:30,state:'TN'},
+  clarksville:{lat:36.5298,lng:-87.3595,label:'Clarksville, TN',radius:20,state:'TN'},
+  murfreesboro:{lat:35.8456,lng:-86.3903,label:'Murfreesboro, TN',radius:25,state:'TN'},
+  bowling_green:{lat:36.9685,lng:-86.4808,label:'Bowling Green, KY',radius:25,state:'KY'},
+  cookeville:{lat:36.1628,lng:-85.5016,label:'Cookeville, TN',radius:20,state:'TN'}
 };
 
 // ═══════════════════════════════════════════════
@@ -15212,7 +15230,7 @@ function _csAssignPins(shops,regionKey){
 
 function _csInitMap(){
   if(_csMap){_csMap.remove();_csMap=null;}
-  _csMap=L.map('csMap',{scrollWheelZoom:true}).setView([39.5,-98.35],4);
+  _csMap=L.map('csMap',{scrollWheelZoom:true}).setView([45,-95],3.5);
   L.tileLayer(_mapTile,{attribution:_mapAttr,maxZoom:19}).addTo(_csMap);
 }
 function _csClearMap(){
@@ -15229,11 +15247,20 @@ async function _csLoadFromDb(){
     if(!r.ok) return null;
     const rows=await r.json();
     if(!rows.length) return null;
-    return rows.map(s=>({
-      id:s.id, name:s.name, addr:s.address?(s.address+(s.city?', '+s.city:'')+(s.state?', '+s.state:'')):'',
-      phone:s.phone||'', lat:s.lat||0, lng:s.lng||0, region:s.region||'',
-      state:s.state||'', types:s.types||[], hours:s.hours||'', notes:s.notes||''
-    }));
+    return rows.map(s=>{
+      let lat=parseFloat(s.lat)||0, lng=parseFloat(s.lng)||0;
+      // If coords are missing/zero/obviously wrong, fall back to state centroid
+      if(!lat || !lng || (Math.abs(lat)<1 && Math.abs(lng)<1)){
+        const stInfo=_usStates[s.state];
+        if(stInfo){ lat=stInfo.lat; lng=stInfo.lng; }
+      }
+      return {
+        id:s.id, name:s.name, addr:s.address?(s.address+(s.city?', '+s.city:'')+(s.state?', '+s.state:'')):'',
+        phone:s.phone||'', lat, lng, region:s.region||'',
+        state:s.state||'', city:s.city||'', country:s.country||'US',
+        types:s.types||[], hours:s.hours||'', notes:s.notes||'', website:s.website||''
+      };
+    });
   }catch(e){return null;}
 }
 
@@ -15278,7 +15305,7 @@ function initCardShops(){
   _csLevel='national';
   document.getElementById('csShopGrid').innerHTML='';
   document.getElementById('csBackBtn').style.display='none';
-  document.getElementById('csBreadcrumb').innerHTML='<span style="color:var(--blue)">UNITED STATES</span>';
+  document.getElementById('csBreadcrumb').innerHTML='<span style="color:var(--blue)">US &amp; CANADA</span>';
   // Load DB shops + review stats + favorites in parallel, then show map
   Promise.all([_csLoadFromDb(),_csLoadReviewStats(),_csLoadFavorites()]).then(([dbShops])=>{
     if(dbShops && dbShops.length) _csDbShops=dbShops;
@@ -15304,14 +15331,14 @@ function _csShowNational(){
     m.on('click',()=>csGoState(st));
     _csMarkers.push(m);
   });
-  _csMap.setView([39.5,-98.35],4);
+  _csMap.setView([45,-95],3.5);
 }
 
 function csGoState(st){
   _csLevel='state';_csClearMap();
   const stInfo=_usStates[st];
   document.getElementById('csBackBtn').style.display='';
-  document.getElementById('csBreadcrumb').innerHTML=`<span style="color:var(--blue);cursor:pointer" onclick="csGoNational()">US</span> <span style="color:var(--muted-text)">&rsaquo;</span> <span style="color:var(--blue)">${stInfo?stInfo.name:st}</span>`;
+  document.getElementById('csBreadcrumb').innerHTML=`<span style="color:var(--blue);cursor:pointer" onclick="csGoNational()">US &amp; CA</span> <span style="color:var(--muted-text)">&rsaquo;</span> <span style="color:var(--blue)">${stInfo?stInfo.name:st}</span>`;
   const stateRegions=Object.entries(_regions).filter(([k,v])=>v.state===st);
   const stateShops=_csAll().filter(s=>s.state===st);
   // If no defined regions or few shops, show all shops directly
@@ -15339,7 +15366,7 @@ function csGoRegion(regionKey,fallbackState){
   const stInfo=_usStates[stAbbr];
   document.getElementById('csBackBtn').style.display='';
   document.getElementById('csBreadcrumb').innerHTML=
-    `<span style="color:var(--blue);cursor:pointer" onclick="csGoNational()">US</span> <span style="color:var(--muted-text)">&rsaquo;</span> `+
+    `<span style="color:var(--blue);cursor:pointer" onclick="csGoNational()">US &amp; CA</span> <span style="color:var(--muted-text)">&rsaquo;</span> `+
     `<span style="color:var(--blue);cursor:pointer" onclick="csGoState('${stAbbr}')">${stInfo?stInfo.name:stAbbr}</span> <span style="color:var(--muted-text)">&rsaquo;</span> `+
     `<span style="color:var(--white)">${region?region.label.split(',')[0]:'All'}</span>`;
   if(region){
@@ -15397,7 +15424,7 @@ function csGoRegion(regionKey,fallbackState){
 
 function csGoNational(){
   document.getElementById('csBackBtn').style.display='none';
-  document.getElementById('csBreadcrumb').innerHTML='<span style="color:var(--blue)">UNITED STATES</span>';
+  document.getElementById('csBreadcrumb').innerHTML='<span style="color:var(--blue)">US &amp; CANADA</span>';
   _csShowNational();
 }
 function csGoBack(){

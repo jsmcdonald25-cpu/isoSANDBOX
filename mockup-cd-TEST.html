@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Card Detail v3 — Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a1726;
+  --deep1: #0D1F33;
+  --deep2: #112840;
+  --deep3: #143050;
+  --deep-border: rgba(0,170,255,0.15);
+  --white: #fff;
+  --chrome: #B0BEC5;
+  --muted-text: #7A95AE;
+  --blue: #00AAFF;
+  --green: #00E887;
+  --red: #FF3B5C;
+  --sidebar-w: 240px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--white); font-family: 'Barlow Condensed', sans-serif; }
+
+/* Mockup banner */
+.mockup-banner {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 999; height: 28px;
+  background: repeating-linear-gradient(45deg, #FF8C00, #FF8C00 10px, #e07800 10px, #e07800 20px);
+  text-align: center; padding: 6px 0;
+  font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 3px; color: #000;
+}
+
+/* ═══ APP FRAME ═══ */
+.app {
+  position: fixed; top: 28px; left: 0; right: 0; bottom: 0;
+  display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  background: var(--deep2); border-right: 1px solid var(--deep-border);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.sidebar-logo {
+  padding: 10px 14px; border-bottom: 1px solid var(--deep-border);
+  font-family: Bebas Neue, sans-serif; font-size: 18px; letter-spacing: 3px; color: var(--blue);
+}
+.sidebar-user {
+  padding: 14px 20px; border-bottom: 1px solid var(--deep-border);
+  display: flex; align-items: center; gap: 10px;
+}
+.sidebar-avatar {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--deep3);
+  display: flex; align-items: center; justify-content: center; font-size: 14px;
+}
+.sidebar-uname { font-size: 13px; font-weight: 600; color: var(--white); }
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 6px 0; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 18px; font-size: 13px; letter-spacing: 0.5px;
+  color: var(--muted-text); cursor: pointer; transition: all .15s;
+}
+.nav-item:hover { color: var(--white); background: rgba(0,170,255,0.04); }
+.nav-item.active { color: var(--blue); background: rgba(0,170,255,0.08); border-left: 3px solid var(--blue); }
+.nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+/* Main */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* Topbar */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 24px; border-bottom: 1px solid var(--deep-border);
+  background: var(--deep2); flex-shrink: 0;
+}
+.topbar-title { font-family: Bebas Neue, sans-serif; font-size: 20px; letter-spacing: 2px; color: var(--white); }
+.topbar-sub { font-size: 12px; color: var(--muted-text); margin-top: 1px; }
+
+/* Content — scrollable */
+.content {
+  flex: 1; overflow-y: auto;
+  padding: 0;
+}
+
+/* ═══ CARD DETAIL PANEL ═══ */
+.cd-back-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(0,170,255,0.08); border: 1px solid var(--deep-border); border-radius: 6px;
+  padding: 4px 10px; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--blue); cursor: pointer; margin: 10px 20px 4px;
+}
+.cd-breadcrumb {
+  display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; white-space: nowrap;
+  margin: 0 20px 6px; font-size: 11px;
+}
+.cd-crumb { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted-text); cursor: pointer; }
+.cd-crumb.active { color: var(--white); }
+.cd-crumb-sep { color: rgba(0,170,255,0.3); font-size: 11px; }
+
+/* ═══ 3-COLUMN LAYOUT — fills content, no scroll ═══ */
+.cd-layout {
+  display: flex; align-items: start;
+  gap: 16px;
+  padding: 0 50px 20px 20px;
+  justify-content: flex-start;
+}
+
+/* LEFT: Card viewer — pinned 20px from left edge, card as big as possible */
+.cd-viewer-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  flex-shrink: 0;
+  width: auto;
+  margin-left: 50px;
+  padding-top: 20px;
+}
+.cd-scene-wrap {
+  width: 400px; height: 560px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #143050, #0d2240);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 60px rgba(0,170,255,0.06);
+}
+.cd-card-placeholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px;
+  border-radius: 12px; background: linear-gradient(135deg, #0d2240 0%, #1a3a5c 50%, #0d2240 100%);
+}
+.cd-viewer-controls { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; flex-shrink: 0; }
+.cd-ctrl-btn {
+  background: rgba(0,170,255,0.08); border: 1px solid var(--deep-border); border-radius: 6px;
+  padding: 5px 12px; font-family: 'Barlow Condensed', sans-serif; font-size: 11px;
+  letter-spacing: 1px; text-transform: uppercase; color: var(--blue); cursor: pointer;
+}
+.cd-ctrl-btn.upload { color: var(--green); border-color: rgba(0,232,135,0.3); background: rgba(0,232,135,0.06); }
+.cd-side-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted-text); flex-shrink: 0; }
+
+/* CENTER column */
+.cd-actions {
+  display: flex; flex-direction: column; gap: 8px;
+  min-width: 200px; max-width: 280px;
+  margin-left: 65px;
+}
+.cd-card-title { font-family: Bebas Neue, sans-serif; font-size: 22px; letter-spacing: 1.5px; color: var(--white); line-height: 1.1; }
+.cd-card-sub { font-size: 14px; color: var(--muted-text); margin-top: 3px; letter-spacing: .5px; }
+.cd-card-num { font-size: 12px; color: rgba(0,170,255,0.6); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+.cd-currently {
+  background: rgba(0,170,255,0.06); border: 1px solid var(--deep-border); border-radius: 8px;
+  padding: 8px 10px; display: flex; align-items: center; justify-content: space-between;
+}
+.cd-currently-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted-text); }
+.cd-currently-val { font-size: 15px; font-weight: 700; color: var(--white); display: flex; align-items: center; gap: 8px; }
+.cd-currently-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.cd-var-label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted-text); margin-bottom: 8px; }
+.cd-pill-group { margin-bottom: 6px; }
+.cd-pill-group-head {
+  display: flex; align-items: center; gap: 6px; cursor: pointer;
+  padding: 4px 0; border-bottom: 1px solid rgba(0,170,255,0.08); margin-bottom: 5px;
+  font-family: 'Bebas Neue', sans-serif; font-size: 12px; letter-spacing: 1.5px; color: var(--muted-text);
+}
+.cd-pill-group-body { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+.cd-pill {
+  padding: 5px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: .3px;
+  cursor: pointer; border: 1.5px solid transparent; text-align: center; white-space: nowrap;
+}
+.cd-pill.active { color: #fff; }
+.cd-pill:not(.active) { background: rgba(0,0,0,0.2); color: var(--muted-text); border-color: rgba(0,170,255,0.08); }
+
+/* RIGHT column — scrolls internally */
+.cd-info {
+  display: flex; flex-direction: column; gap: 10px;
+  min-width: 240px; max-width: 320px; flex-shrink: 0;
+  margin-left: auto;
+  padding-top: 20px;
+}
+
+/* Blocks */
+.cd-block { background: var(--deep1); border: 1px solid var(--deep-border); border-radius: 10px; padding: 12px; }
+.cd-block-title { font-family: Bebas Neue, sans-serif; font-size: 12px; letter-spacing: 2px; margin-bottom: 8px; }
+.cd-block-title.blue { color: var(--blue); }
+.cd-block-title.green { color: var(--green); }
+.cd-block-title.muted { color: var(--muted-text); }
+.cd-block-title.orange { color: #FF8C00; }
+
+/* Vault info grid */
+.cd-vi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; }
+.cd-vi-item { background: rgba(0,170,255,0.04); border: 1px solid var(--deep-border); border-radius: 6px; padding: 6px 8px; }
+.cd-vi-lbl { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted-text); }
+.cd-vi-val { font-size: 14px; color: var(--white); margin-top: 1px; }
+
+/* Action buttons */
+.cd-action-row { display: flex; gap: 6px; margin-bottom: 6px; }
+.cd-action-row:last-child { margin-bottom: 0; }
+.cd-action-btn {
+  flex: 1; text-align: center; padding: 7px 8px; border-radius: 5px;
+  border: 1px solid var(--deep-border); background: rgba(0,170,255,0.06);
+  color: var(--chrome); font-size: 11px; font-weight: 600; letter-spacing: .5px;
+  cursor: pointer; white-space: nowrap;
+}
+.cd-action-btn.sell { background: rgba(0,232,135,0.12); border-color: rgba(0,232,135,0.3); color: var(--green); }
+.cd-action-btn.danger { background: rgba(255,59,92,0.08); border-color: rgba(255,59,92,0.2); color: var(--red); }
+.cd-action-btn.edit-listing { background: rgba(0,170,255,0.08); border-color: rgba(0,170,255,0.2); color: var(--blue); }
+
+/* Market */
+.cd-mkt-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.cd-mkt-item { text-align: center; }
+.cd-mkt-lbl { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted-text); margin-bottom: 3px; }
+.cd-mkt-val { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--white); line-height: 1; }
+.cd-mkt-val.blue { color: var(--blue); }
+.cd-mkt-val.green { color: var(--green); }
+.cd-mkt-val.gold { color: #FFC83C; }
+
+/* eBay */
+.cd-ebay-block { background: var(--deep1); border: 1px solid var(--deep-border); border-radius: 10px; padding: 10px; }
+.cd-ebay-title {
+  font-family: Bebas Neue, sans-serif; font-size: 13px; letter-spacing: 1.5px; color: var(--white);
+  margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;
+}
+.cd-ebay-title .left { display: flex; align-items: center; gap: 8px; }
+.cd-ebay-badge { font-family: Arial, sans-serif; font-weight: 900; font-size: 12px; letter-spacing: -0.5px; display: inline-flex; }
+.cd-ebay-badge .e1 { color: #E53238; } .cd-ebay-badge .b { color: #0064D2; }
+.cd-ebay-badge .a { color: #F5AF02; } .cd-ebay-badge .y { color: #86B817; }
+.cd-ebay-count { font-family: Bebas Neue, sans-serif; font-size: 13px; color: var(--muted-text); }
+.cd-ebay-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--deep-border); }
+.cd-ebay-rows { margin-top: 8px; display: flex; flex-direction: column; gap: 5px; }
+.cd-ebay-row {
+  display: flex; align-items: center; gap: 8px; padding: 5px; border-radius: 6px;
+  background: rgba(0,170,255,0.04); border: 1px solid transparent; text-decoration: none; color: inherit;
+}
+.cd-ebay-row img { width: 34px; height: 34px; object-fit: cover; border-radius: 4px; background: var(--deep3); flex-shrink: 0; }
+.cd-ebay-row .ttl { flex: 1; font-size: 10px; color: var(--muted-text); line-height: 1.3; }
+.cd-ebay-row .prc { font-family: Bebas Neue, sans-serif; font-size: 15px; color: var(--green); flex-shrink: 0; }
+.cd-ebay-foot { margin-top: 8px; font-size: 9px; color: rgba(122,149,174,0.5); text-align: center; letter-spacing: 0.5px; }
+.cd-ebay-link {
+  display: block; text-align: center; margin-top: 8px; font-size: 11px; letter-spacing: 1.5px;
+  color: var(--blue); text-decoration: none; padding: 6px;
+  border: 1px solid rgba(0,170,255,0.3); border-radius: 6px; text-transform: uppercase;
+}
+
+/* Admin tools */
+.cd-admin-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.cd-admin-btn {
+  padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 600;
+  letter-spacing: .5px; cursor: pointer; border: 1px solid;
+}
+.adm-edit { background: rgba(0,170,255,0.08); border-color: rgba(0,170,255,0.2); color: var(--blue); }
+.adm-delete { background: rgba(255,59,92,0.08); border-color: rgba(255,59,92,0.2); color: var(--red); }
+.adm-img { background: rgba(0,232,135,0.08); border-color: rgba(0,232,135,0.2); color: var(--green); }
+.adm-var { background: rgba(255,140,0,0.08); border-color: rgba(255,140,0,0.2); color: #FF8C00; }
+.adm-rename { background: rgba(0,170,255,0.06); border-color: rgba(0,170,255,0.15); color: var(--blue); }
+
+/* Report */
+.cd-report-btn {
+  width: 100%; background: rgba(255,59,92,0.06); border: 1px solid rgba(255,59,92,0.18);
+  border-radius: 8px; padding: 8px 10px; display: flex; align-items: center; gap: 8px; cursor: pointer;
+}
+.cd-report-btn-icon { font-size: 16px; }
+.cd-report-btn-text { flex: 1; text-align: left; }
+.cd-report-btn-label { font-size: 13px; letter-spacing: .5px; color: rgba(255,59,92,0.9); font-weight: 700; }
+.cd-report-btn-sub { font-size: 11px; color: var(--muted-text); margin-top: 1px; }
+.cd-report-badge {
+  font-size: 10px; letter-spacing: 1px; background: rgba(255,200,60,0.12);
+  border: 1px solid rgba(255,200,60,0.25); border-radius: 4px; padding: 2px 7px;
+  color: #FFC83C; font-weight: 700; white-space: nowrap;
+}
+
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
+.live-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; box-shadow: 0 0 6px var(--green); animation: pulse 2.5s ease-in-out infinite; display: inline-block; }
+</style>
+</head>
+<body>
+
+<div class="mockup-banner">MOCKUP &mdash; CARD DETAIL V3 &mdash; FULL APP FRAME &mdash; SCROLLABLE</div>
+
+<div class="app">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">GRAILISO</div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">&#128100;</div>
+      <div><div class="sidebar-uname">Scott</div><div style="font-size:10px;color:var(--muted-text)">scott@grailiso.com</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item"><span class="nav-icon">&#128200;</span> Overview</div>
+      <div class="nav-item active"><span class="nav-icon">&#128179;</span> My Vault</div>
+      <div class="nav-item"><span class="nav-icon">&#127968;</span> ISOVault</div>
+      <div class="nav-item"><span class="nav-icon">&#128230;</span> OpenISO</div>
+      <div class="nav-item"><span class="nav-icon">&#129514;</span> Slab Lab</div>
+      <div class="nav-item"><span class="nav-icon">&#128276;</span> Notifications</div>
+      <div class="nav-item"><span class="nav-icon">&#128218;</span> Feature Guide</div>
+      <div class="nav-item"><span class="nav-icon">&#9881;</span> Settings</div>
+    </nav>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <div class="main">
+    <!-- Topbar -->
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">MY VAULT</div>
+        <div class="topbar-sub">Card detail</div>
+      </div>
+    </div>
+
+    <!-- Content — NO SCROLL -->
+    <div class="content">
+
+      <div class="cd-back-btn" style="margin:10px 20px 4px">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>Back to My Vault</span>
+      </div>
+
+      <div class="cd-breadcrumb" style="margin:0 20px 6px">
+        <span class="cd-crumb">My Vault</span>
+        <span class="cd-crumb-sep">&#8250;</span>
+        <span class="cd-crumb">Baseball</span>
+        <span class="cd-crumb-sep">&#8250;</span>
+        <span class="cd-crumb">2025</span>
+        <span class="cd-crumb-sep">&#8250;</span>
+        <span class="cd-crumb">Topps</span>
+        <span class="cd-crumb-sep">&#8250;</span>
+        <span class="cd-crumb">Stadium Club</span>
+        <span class="cd-crumb-sep">&#8250;</span>
+        <span class="cd-crumb active">#130 Alex Rodriguez</span>
+      </div>
+
+      <!-- ═══ 3-COLUMN LAYOUT ═══ -->
+      <div class="cd-layout">
+
+        <!-- LEFT: Card Viewer — big, fills height -->
+        <div class="cd-viewer-wrap">
+          <div class="cd-scene-wrap">
+            <div class="cd-card-placeholder">
+              <svg width="60" height="80" viewBox="0 0 60 80" fill="none">
+                <rect x="2" y="2" width="56" height="76" rx="6" stroke="rgba(0,170,255,0.2)" stroke-width="2" fill="none"/>
+                <rect x="10" y="10" width="40" height="30" rx="3" fill="rgba(0,170,255,0.06)" stroke="rgba(0,170,255,0.1)" stroke-width="1"/>
+                <line x1="10" y1="48" x2="50" y2="48" stroke="rgba(0,170,255,0.1)"/>
+                <line x1="10" y1="55" x2="40" y2="55" stroke="rgba(0,170,255,0.08)"/>
+                <line x1="10" y1="62" x2="35" y2="62" stroke="rgba(0,170,255,0.06)"/>
+              </svg>
+              <div style="font-family:Bebas Neue,sans-serif;font-size:28px;letter-spacing:4px;color:rgba(0,170,255,0.15)">GRAILISO</div>
+              <div style="font-size:10px;letter-spacing:2px;color:rgba(0,170,255,0.1);text-transform:uppercase">3D Card Viewer</div>
+            </div>
+          </div>
+          <div class="cd-viewer-controls">
+            <button class="cd-ctrl-btn">Flip</button>
+            <button class="cd-ctrl-btn">Auto Spin</button>
+            <button class="cd-ctrl-btn">Reset</button>
+            <button class="cd-ctrl-btn">&#128270; Zoom</button>
+            <button class="cd-ctrl-btn upload">&#128247; Upload Image</button>
+          </div>
+          <div class="cd-side-label">FRONT &middot; Drag to rotate</div>
+        </div>
+
+        <!-- CENTER: Card Identity + My Vault Details + Actions -->
+        <div class="cd-actions">
+          <div>
+            <div class="cd-card-title">2025 TOPPS STADIUM CLUB</div>
+            <div class="cd-card-sub">Alex Rodriguez &middot; #130</div>
+          </div>
+
+          <div class="cd-currently">
+            <div>
+              <div class="cd-currently-val">
+                <span class="cd-currently-dot" style="background:#2E8B57;box-shadow:0 0 6px #2E8B57"></span>
+                <span>Green</span>
+              </div>
+            </div>
+            <div style="text-align:right">
+              <div class="cd-currently-label">Print Run</div>
+              <div style="font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--blue)">/99</div>
+            </div>
+          </div>
+
+          <div>
+            <div class="cd-var-label">Variations</div>
+            <div>
+              <div class="cd-pill-group">
+                <div class="cd-pill-group-head">
+                  <span style="font-size:8px;transform:rotate(90deg);display:inline-block">&#9654;</span> PARALLELS
+                  <span style="font-size:10px;color:var(--muted-text)">(6)</span>
+                </div>
+                <div class="cd-pill-group-body">
+                  <div class="cd-pill" style="background:rgba(0,0,0,0.2);color:var(--chrome);border-color:rgba(0,170,255,0.08)">Base</div>
+                  <div class="cd-pill active" style="background:#2E8B57;border-color:#2E8B57;color:#fff">Green</div>
+                  <div class="cd-pill">Red</div>
+                  <div class="cd-pill">Gold</div>
+                  <div class="cd-pill">Black</div>
+                  <div class="cd-pill">1/1</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MY VAULT DETAILS -->
+          <div class="cd-block">
+            <div class="cd-block-title blue">MY VAULT DETAILS</div>
+            <div class="cd-vi-grid">
+              <div class="cd-vi-item"><div class="cd-vi-lbl">Variation</div><div class="cd-vi-val" style="color:var(--blue)">Green</div></div>
+              <div class="cd-vi-item"><div class="cd-vi-lbl">Grade</div><div class="cd-vi-val">Raw</div></div>
+              <div class="cd-vi-item"><div class="cd-vi-lbl">Acquired</div><div class="cd-vi-val">Bought</div></div>
+              <div class="cd-vi-item"><div class="cd-vi-lbl">Source</div><div class="cd-vi-val">eBay</div></div>
+              <div class="cd-vi-item"><div class="cd-vi-lbl">Date</div><div class="cd-vi-val">Mar 28, 2025</div></div>
+              <div class="cd-vi-item"><div class="cd-vi-lbl">Price Paid</div><div class="cd-vi-val" style="color:var(--green)">$8.50</div></div>
+              <div class="cd-vi-item"><div class="cd-vi-lbl">Gain / Loss</div><div class="cd-vi-val" style="color:var(--red)">-$6.50</div></div>
+              <div class="cd-vi-item"><div class="cd-vi-lbl">Serial</div><div class="cd-vi-val">#36/99</div></div>
+            </div>
+          </div>
+
+          <!-- ACTIONS -->
+          <div class="cd-block">
+            <div class="cd-block-title green">ACTIONS</div>
+            <div class="cd-action-row">
+              <button class="cd-action-btn edit-listing">EDIT LISTING &mdash; $49.00</button>
+              <button class="cd-action-btn danger">DELIST</button>
+            </div>
+            <div class="cd-action-row">
+              <button class="cd-action-btn">SLAB LAB</button>
+              <button class="cd-action-btn sell">SELL</button>
+              <button class="cd-action-btn danger">REMOVE</button>
+            </div>
+            <div class="cd-action-row">
+              <button class="cd-action-btn">&#128200; Add to Ticker</button>
+              <button class="cd-action-btn" style="color:var(--green);border-color:rgba(0,232,135,0.3)">+ Add Duplicate</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Live Market + eBay + Admin + Report -->
+        <div class="cd-info">
+
+          <!-- Live Market -->
+          <div class="cd-block">
+            <div class="cd-block-title muted"><span class="live-dot"></span>&nbsp; LIVE MARKET &mdash; GREEN</div>
+            <div class="cd-mkt-grid">
+              <div class="cd-mkt-item"><div class="cd-mkt-lbl">Avg Price Paid</div><div class="cd-mkt-val blue">$3.25</div></div>
+              <div class="cd-mkt-item"><div class="cd-mkt-lbl">Low / High</div><div class="cd-mkt-val" style="font-size:13px">$1.50 / $8.50</div></div>
+              <div class="cd-mkt-item"><div class="cd-mkt-lbl">Vault Count</div><div class="cd-mkt-val gold">4</div></div>
+            </div>
+          </div>
+
+          <!-- eBay -->
+          <div class="cd-ebay-block">
+            <div class="cd-ebay-title">
+              <div class="left">
+                <span class="cd-ebay-badge"><span class="e1">e</span><span class="b">b</span><span class="a">a</span><span class="y">y</span></span>
+                <span>Currently Listed</span>
+              </div>
+              <div class="cd-ebay-count">1 listing</div>
+            </div>
+            <div class="cd-ebay-stats">
+              <div class="cd-mkt-item"><div class="cd-mkt-lbl">Low</div><div class="cd-mkt-val green">$4.99</div></div>
+              <div class="cd-mkt-item"><div class="cd-mkt-lbl">Avg</div><div class="cd-mkt-val blue">$4.99</div></div>
+              <div class="cd-mkt-item"><div class="cd-mkt-lbl">High</div><div class="cd-mkt-val">$4.99</div></div>
+            </div>
+            <div class="cd-ebay-rows">
+              <a class="cd-ebay-row" href="#">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34'%3E%3Crect width='34' height='34' fill='%23071828'/%3E%3C/svg%3E" alt="">
+                <div class="ttl">2025 Topps Stadium Club Alex Rodriguez #130 Green /99</div>
+                <div class="prc">$4.99</div>
+              </a>
+            </div>
+            <a class="cd-ebay-link" href="#">View All on eBay &rarr;</a>
+            <div class="cd-ebay-foot">Live asking prices &middot; refreshed on view</div>
+          </div>
+
+          <!-- Admin Tools -->
+          <div class="cd-block" style="border-color:rgba(255,140,0,0.15)">
+            <div class="cd-block-title orange">ADMIN TOOLS</div>
+            <div class="cd-admin-grid">
+              <button class="cd-admin-btn adm-edit">EDIT</button>
+              <button class="cd-admin-btn adm-delete">DELETE</button>
+              <button class="cd-admin-btn adm-img">ADD IMG</button>
+              <button class="cd-admin-btn adm-delete">DEL IMG</button>
+              <button class="cd-admin-btn adm-var">DEL VAR</button>
+              <button class="cd-admin-btn adm-rename">RENAME</button>
+            </div>
+          </div>
+
+          <!-- Report an Error — bottom of column 3 -->
+          <div class="cd-report-btn">
+            <div class="cd-report-btn-icon">&#128681;</div>
+            <div class="cd-report-btn-text">
+              <div class="cd-report-btn-label">Report an Error</div>
+              <div class="cd-report-btn-sub">Wrong data, missing variation, bad image?</div>
+            </div>
+            <div class="cd-report-badge">+1 CREDIT</div>
+          </div>
+
+        </div>
+
+      </div><!-- /cd-layout -->
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+</body>
+</html>

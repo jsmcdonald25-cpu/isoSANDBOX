@@ -3542,6 +3542,7 @@ async function logOut(){
             <div class="cd-ebay-empty" id="cd-ebay-empty" style="display:none">No current listings on eBay</div>
             <a class="cd-ebay-link" id="cd-ebay-link" href="#" target="_blank" rel="noopener" style="display:none">View All on eBay &rarr;</a>
             <div class="cd-ebay-foot">Live asking prices &middot; refreshed on view</div>
+            <button class="cd-ctrl-btn" id="cd-ebay-refresh-btn" onclick="_cdRefreshEbayPrice()" style="width:100%;margin-top:8px;padding:8px 12px;font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--green);border-color:rgba(0,232,135,.3);background:rgba(0,232,135,.04);cursor:pointer">&#8635; Push for Current Pricing</button>
           </div>
         </div>
         <!-- Admin tools — only visible to admins -->
@@ -12112,7 +12113,23 @@ async function _cdLoadEbayListings(card, variationLabel){
   }
 }
 
-// &#9472;&#9472; Back to Vault from Card Detail &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── Push for Current Pricing button ──
+async function _cdRefreshEbayPrice(){
+  const btn = document.getElementById('cd-ebay-refresh-btn');
+  if(btn){ btn.disabled = true; btn.textContent = 'Fetching...'; btn.style.opacity = '.5'; }
+  const card = window._cdCard;
+  if(!card){
+    if(btn){ btn.disabled = false; btn.innerHTML = '&#8635; Push for Current Pricing'; btn.style.opacity = ''; }
+    return;
+  }
+  // Get current variation label from the active pill
+  const activePill = document.querySelector('.cd-pill.active, .cd-var-pills .active');
+  const varLabel = activePill ? (activePill.textContent||'').replace(/\s*\/\d+$/,'').trim() : 'Base';
+  await _cdLoadEbayListings(card, varLabel);
+  if(btn){ btn.disabled = false; btn.innerHTML = '&#8635; Push for Current Pricing'; btn.style.opacity = ''; }
+}
+
+// ── Back to Vault from Card Detail ────────────────────────────
 function _cdSetMyVaultContext(fromMyVault){
   window._cdFromMyVault = !!fromMyVault;
   const isFromMv = !!fromMyVault;

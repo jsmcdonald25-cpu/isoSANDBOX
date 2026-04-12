@@ -15318,7 +15318,7 @@ function _csAll(){return _csDbShops||_csShops;}
 function _csShowNational(){
   _csLevel='national';
   _csClearMap();
-  document.getElementById('csShopGrid').innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);padding:20px">Click a state on the map to view card shops in that area.</div>';
+  document.getElementById('csShopGrid').innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);padding:20px">Click a state or province to view card shops in that area.</div>';
   const statesWithShops={};
   _csAll().forEach(s=>{if(!statesWithShops[s.state])statesWithShops[s.state]=0;statesWithShops[s.state]++;});
   Object.keys(statesWithShops).forEach(st=>{
@@ -15331,7 +15331,13 @@ function _csShowNational(){
     m.on('click',()=>csGoState(st));
     _csMarkers.push(m);
   });
-  _csMap.setView([45,-95],3.5);
+  // Fit map to show all state/province pins
+  if(_csMarkers.length){
+    const grp=L.featureGroup(_csMarkers);
+    _csMap.fitBounds(grp.getBounds().pad(0.15));
+  } else {
+    _csMap.setView([45,-95],3.5);
+  }
 }
 
 function csGoState(st){

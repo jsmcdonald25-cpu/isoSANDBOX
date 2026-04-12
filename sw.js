@@ -1,4 +1,4 @@
-const CACHE_NAME = 'grailiso-shell-v4';
+const CACHE_NAME = 'grailiso-shell-v5';
 const SHELL_ASSETS = ['/dashboard.html', '/manifest.json', '/icons/icon-192.png', '/icons/icon-512.png'];
 
 self.addEventListener('install', e => {

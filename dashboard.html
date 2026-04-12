@@ -3098,8 +3098,8 @@ async function logOut(){
         </div>
       </div>
 
-      <!-- COLLECTION BREAKDOWN — 1/4 width -->
-      <div class="mv-mod" id="mvmod-bchart" data-mod-id="bchart" style="grid-column:span 3" draggable="true">
+      <!-- COLLECTION BREAKDOWN -->
+      <div class="mv-mod" id="mvmod-bchart" data-mod-id="bchart" style="grid-column:span 4" draggable="true">
         <div class="mv-mod-head mv-mod-head-drag">
           <span class="mv-mod-drag">&#x2837;</span>
           <span class="mv-mod-title">Collection Breakdown</span>
@@ -3113,7 +3113,7 @@ async function logOut(){
       </div>
 
       <!-- PORTFOLIO BY PLAYER -->
-      <div class="mv-mod" id="mvmod-pchart" data-mod-id="pchart" style="grid-column:span 5" draggable="true">
+      <div class="mv-mod" id="mvmod-pchart" data-mod-id="pchart" style="grid-column:span 4" draggable="true">
         <div class="mv-mod-head mv-mod-head-drag">
           <span class="mv-mod-drag">&#x2837;</span>
           <span class="mv-mod-title" id="pchart-title">Portfolio by Player</span>
@@ -3123,7 +3123,7 @@ async function logOut(){
           </div>
         </div>
         <div class="mv-mod-body" style="padding:10px 14px 14px;overflow-x:auto">
-          <svg id="mv-pchart-svg" viewBox="0 0 380 160" style="width:380px;height:170px;display:block"></svg>
+          <svg id="mv-pchart-svg" viewBox="0 0 380 160" style="width:100%;height:170px;display:block"></svg>
         </div>
       </div>
 
@@ -3138,7 +3138,7 @@ async function logOut(){
           </div>
         </div>
         <div class="mv-mod-body" style="padding:10px 14px 14px;overflow-x:auto">
-          <svg id="mv-vchart-svg" viewBox="0 0 380 160" style="width:380px;height:170px;display:block"></svg>
+          <svg id="mv-vchart-svg" viewBox="0 0 380 160" style="width:100%;height:170px;display:block"></svg>
         </div>
       </div>
 
@@ -8064,11 +8064,10 @@ function _lastNameOf(p){
 function _renderBarChart(el, sorted, opts){
   if(!el||!sorted.length){if(el)el.innerHTML='';return;}
   const {gradId,color1,color2,isCount,onClick}=opts;
-  const H=155,PL=4,PR=4,PT=22,PB=28,chartH=H-PT-PB;
-  const n=sorted.length,gap=6,barW=Math.min(40,Math.max(20,Math.floor((380-PL-PR)/n)-gap));
-  const W=Math.max(380, PL + n*(barW+gap) + PR);
+  const W=380,H=155,PL=4,PR=4,PT=22,PB=28,chartH=H-PT-PB;
+  const n=sorted.length,gap=4;
+  const barW=Math.max(12,Math.floor((W-PL-PR-gap*(n-1))/n));
   el.setAttribute('viewBox', `0 0 ${W} ${H}`);
-  el.style.width = W+'px';
   const maxVal=sorted[sorted.length-1][1]*1.15||sorted[0][1]*1.15||1;
   let out='<defs>';
   sorted.forEach((_,i)=>{

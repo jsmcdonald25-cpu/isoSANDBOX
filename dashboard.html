@@ -684,6 +684,17 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-copy-row.expanded .cd-copy-arrow{transform:rotate(180deg)}
 .cd-copy-detail{display:none;border:1px solid rgba(0,170,255,.3);border-top:none;border-radius:0 0 8px 8px;padding:10px 12px;margin-bottom:4px;background:rgba(0,170,255,.03)}
 .cd-copy-detail.open{display:block}
+/* Card detail drag-to-rearrange blocks */
+.cd-drag-block{position:relative;transition:opacity .15s}
+.cd-drag-handle{display:none;position:absolute;top:4px;left:-18px;cursor:grab;color:var(--muted-text);font-size:12px;opacity:.4;user-select:none;z-index:2}
+.cd-drag-handle:hover{opacity:1;color:var(--blue)}
+.cd-layout-mode .cd-drag-block{border:1px dashed rgba(0,170,255,.2);border-radius:8px;padding:4px;margin:-4px;cursor:grab}
+.cd-layout-mode .cd-drag-block:hover{border-color:rgba(0,170,255,.4);background:rgba(0,170,255,.02)}
+.cd-layout-mode .cd-drag-handle{display:block}
+.cd-drag-block.dragging{opacity:.4}
+.cd-drag-block.drag-over{border-color:var(--blue)!important;background:rgba(0,170,255,.06)!important;box-shadow:0 0 12px rgba(0,170,255,.15)}
+.cd-layout-bar{display:none;justify-content:flex-end;gap:6px;margin-bottom:4px}
+.cd-layout-mode .cd-layout-bar{display:flex}
 .cd-header-info{display:none}
 .cd-card-title{font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:1.5px;color:var(--white);line-height:1.1}
 .cd-card-sub{font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);margin-top:3px;letter-spacing:.5px}
@@ -3387,46 +3398,66 @@ async function logOut(){
       </div>
       <!-- CENTER: Card Identity + Vault Details + Actions -->
       <div class="cd-actions" id="cd-actions">
-        <div>
-          <div class="cd-card-title" id="cd-title">&#8212;</div>
-          <div class="cd-card-sub" id="cd-sub"></div>
-          <div class="cd-card-num" id="cd-num"></div>
+        <!-- Customize layout toggle -->
+        <div style="display:flex;justify-content:flex-end;gap:6px;margin-bottom:4px">
+          <button class="cd-ctrl-btn" id="cdLayoutReset" onclick="_cdResetLayout()" style="font-size:10px;padding:3px 10px;letter-spacing:.5px;display:none">Reset Default</button>
+          <button class="cd-ctrl-btn" id="cdLayoutToggle" onclick="_cdToggleLayoutMode()" style="font-size:10px;padding:3px 10px;letter-spacing:.5px">&#9881; Customize Layout</button>
         </div>
-        <div class="cd-currently">
+        <div class="cd-drag-block" data-block-id="card-identity">
+          <div class="cd-drag-handle">&#9776;</div>
           <div>
-            <div class="cd-currently-val">
-              <span class="cd-currently-dot" id="cd-curr-dot"></span>
-              <span id="cd-curr-name">&#8212;</span>
+            <div class="cd-card-title" id="cd-title">&#8212;</div>
+            <div class="cd-card-sub" id="cd-sub"></div>
+            <div class="cd-card-num" id="cd-num"></div>
+          </div>
+        </div>
+        <div class="cd-drag-block" data-block-id="variation-display">
+          <div class="cd-drag-handle">&#9776;</div>
+          <div class="cd-currently">
+            <div>
+              <div class="cd-currently-val">
+                <span class="cd-currently-dot" id="cd-curr-dot"></span>
+                <span id="cd-curr-name">&#8212;</span>
+              </div>
+            </div>
+            <div style="text-align:right" id="cd-print-run-wrap">
+              <div class="cd-currently-label">Print Run</div>
+              <div style="font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--blue)" id="cd-curr-run">&#8212;</div>
             </div>
           </div>
-          <div style="text-align:right" id="cd-print-run-wrap">
-            <div class="cd-currently-label">Print Run</div>
-            <div style="font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--blue)" id="cd-curr-run">&#8212;</div>
+        </div>
+        <div class="cd-drag-block" data-block-id="variation-pills">
+          <div class="cd-drag-handle">&#9776;</div>
+          <div>
+            <div class="cd-var-label" id="cd-var-label">Variations &#8212; Click to Switch View</div>
+            <div class="cd-var-pills" id="cd-pills"></div>
           </div>
         </div>
-        <div>
-          <div class="cd-var-label" id="cd-var-label">Variations &#8212; Click to Switch View</div>
-          <div class="cd-var-pills" id="cd-pills"></div>
-        </div>
-        <div class="cd-vault-cta">
-          <div class="cd-vault-path-msg" id="cd-path-msg" style="display:none"></div>
-          <!-- Vault purchase details — shown when from My Vault -->
-          <div id="cd-vault-info" style="display:none;margin-bottom:10px"></div>
-          <!-- Add to Vault + Favorites — hidden when from My Vault -->
-          <div id="cd-add-vault-row">
-            <div class="cd-block">
-              <div class="cd-block-title green">ACTIONS</div>
+        <div class="cd-drag-block" data-block-id="vault-details">
+          <div class="cd-drag-handle">&#9776;</div>
+          <div class="cd-vault-cta">
+            <div class="cd-vault-path-msg" id="cd-path-msg" style="display:none"></div>
+            <!-- Vault purchase details — shown when from My Vault -->
+            <div id="cd-vault-info" style="display:none;margin-bottom:10px"></div>
+            <!-- Add to Vault + Favorites — hidden when from My Vault -->
+            <div id="cd-add-vault-row">
+              <div class="cd-block">
+                <div class="cd-block-title green">ACTIONS</div>
+                <div class="cd-action-row">
+                  <button class="cd-action-btn sell" onclick="openVaultModal(window._cdCard)">+ Add to My Vault</button>
+                </div>
+              </div>
+            </div>
+            <!-- Normal ISOVault CTA -->
+            <div id="cd-cta-isovault">
               <div class="cd-action-row">
-                <button class="cd-action-btn sell" onclick="openVaultModal(window._cdCard)">+ Add to My Vault</button>
+                <button id="cd-ticker-btn" class="cd-action-btn" onclick="_cdToggleTicker()">&#128200; Add to Ticker</button>
               </div>
             </div>
           </div>
-          <!-- Normal ISOVault CTA -->
-          <div id="cd-cta-isovault">
-            <div class="cd-action-row">
-              <button id="cd-ticker-btn" class="cd-action-btn" onclick="_cdToggleTicker()">&#128200; Add to Ticker</button>
-            </div>
-          </div>
+        </div>
+        <div class="cd-drag-block" data-block-id="actions">
+          <div class="cd-drag-handle">&#9776;</div>
           <!-- My Vault CTA — shown when entered from My Vault -->
           <div id="cd-cta-myvault" style="display:none">
             <div class="cd-block">
@@ -3475,49 +3506,58 @@ async function logOut(){
       </div>
       <!-- RIGHT: Market Data + eBay + Admin Tools -->
       <div class="cd-info">
-        <div class="cd-market-block cd-block">
-          <div class="cd-block-title muted"><span style="color:var(--green)">&#9679;</span> LIVE MARKET &mdash; <span id="cd-mkt-var-name">&#8212;</span></div>
-          <div class="cd-mkt-grid">
-            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Avg Price Paid</div><div class="cd-mkt-val blue" id="cd-mkt-avg">&#8212;</div></div>
-            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Low / High</div><div class="cd-mkt-val" id="cd-mkt-range" style="font-size:13px">&#8212;</div></div>
-            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Vault Count</div><div class="cd-mkt-val gold" id="cd-mkt-count">&#8212;</div></div>
-          </div>
-          <div id="cd-mkt-sales-list" style="margin-top:10px;display:none">
-            <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;color:rgba(0,170,255,0.4);margin-bottom:6px">RECENT SUBMISSIONS</div>
-            <div id="cd-mkt-sales-rows"></div>
-          </div>
-          <div class="cd-watching" id="cd-watching-row" style="display:none"><span>&#128065;</span>&nbsp;<strong id="cd-watching-ct">&#8212;</strong>&nbsp;collectors watching this variation right now</div>
-          <div id="cd-mkt-tagline" style="display:none;font-family:'Barlow Condensed',sans-serif;font-size:10px;color:rgba(122,149,174,0.4);letter-spacing:.5px;margin-top:8px">Market price built from collector vault submissions &#183; Built by collectors, for collectors</div>
-        </div>
-        <div class="cd-ebay-block" id="cd-ebay-block">
-          <div class="cd-ebay-title">
-            <div class="left">
-              <span class="cd-ebay-badge"><span class="e1">e</span><span class="b">b</span><span class="a">a</span><span class="y">y</span></span>
-              <span>Currently Listed</span>
+        <div class="cd-drag-block" data-block-id="market-data">
+          <div class="cd-drag-handle">&#9776;</div>
+          <div class="cd-market-block cd-block">
+            <div class="cd-block-title muted"><span style="color:var(--green)">&#9679;</span> LIVE MARKET &mdash; <span id="cd-mkt-var-name">&#8212;</span></div>
+            <div class="cd-mkt-grid">
+              <div class="cd-mkt-item"><div class="cd-mkt-lbl">Avg Price Paid</div><div class="cd-mkt-val blue" id="cd-mkt-avg">&#8212;</div></div>
+              <div class="cd-mkt-item"><div class="cd-mkt-lbl">Low / High</div><div class="cd-mkt-val" id="cd-mkt-range" style="font-size:13px">&#8212;</div></div>
+              <div class="cd-mkt-item"><div class="cd-mkt-lbl">Vault Count</div><div class="cd-mkt-val gold" id="cd-mkt-count">&#8212;</div></div>
             </div>
-            <div class="cd-ebay-count" id="cd-ebay-count">&#8212;</div>
+            <div id="cd-mkt-sales-list" style="margin-top:10px;display:none">
+              <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;color:rgba(0,170,255,0.4);margin-bottom:6px">RECENT SUBMISSIONS</div>
+              <div id="cd-mkt-sales-rows"></div>
+            </div>
+            <div class="cd-watching" id="cd-watching-row" style="display:none"><span>&#128065;</span>&nbsp;<strong id="cd-watching-ct">&#8212;</strong>&nbsp;collectors watching this variation right now</div>
+            <div id="cd-mkt-tagline" style="display:none;font-family:'Barlow Condensed',sans-serif;font-size:10px;color:rgba(122,149,174,0.4);letter-spacing:.5px;margin-top:8px">Market price built from collector vault submissions &#183; Built by collectors, for collectors</div>
           </div>
-          <div class="cd-ebay-stats" id="cd-ebay-stats">
-            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Low</div><div class="cd-mkt-val green" id="cd-ebay-low">&#8212;</div></div>
-            <div class="cd-mkt-item"><div class="cd-mkt-lbl">Avg</div><div class="cd-mkt-val blue" id="cd-ebay-avg">&#8212;</div></div>
-            <div class="cd-mkt-item"><div class="cd-mkt-lbl">High</div><div class="cd-mkt-val" id="cd-ebay-high">&#8212;</div></div>
+        </div>
+        <div class="cd-drag-block" data-block-id="ebay-listings">
+          <div class="cd-drag-handle">&#9776;</div>
+          <div class="cd-ebay-block" id="cd-ebay-block">
+            <div class="cd-ebay-title">
+              <div class="left">
+                <span class="cd-ebay-badge"><span class="e1">e</span><span class="b">b</span><span class="a">a</span><span class="y">y</span></span>
+                <span>Currently Listed</span>
+              </div>
+              <div class="cd-ebay-count" id="cd-ebay-count">&#8212;</div>
+            </div>
+            <div class="cd-ebay-stats" id="cd-ebay-stats">
+              <div class="cd-mkt-item"><div class="cd-mkt-lbl">Low</div><div class="cd-mkt-val green" id="cd-ebay-low">&#8212;</div></div>
+              <div class="cd-mkt-item"><div class="cd-mkt-lbl">Avg</div><div class="cd-mkt-val blue" id="cd-ebay-avg">&#8212;</div></div>
+              <div class="cd-mkt-item"><div class="cd-mkt-lbl">High</div><div class="cd-mkt-val" id="cd-ebay-high">&#8212;</div></div>
+            </div>
+            <div class="cd-ebay-rows" id="cd-ebay-rows"></div>
+            <div class="cd-ebay-empty" id="cd-ebay-empty" style="display:none">No current listings on eBay</div>
+            <a class="cd-ebay-link" id="cd-ebay-link" href="#" target="_blank" rel="noopener" style="display:none">View All on eBay &rarr;</a>
+            <div class="cd-ebay-foot">Live asking prices &middot; refreshed on view</div>
           </div>
-          <div class="cd-ebay-rows" id="cd-ebay-rows"></div>
-          <div class="cd-ebay-empty" id="cd-ebay-empty" style="display:none">No current listings on eBay</div>
-          <a class="cd-ebay-link" id="cd-ebay-link" href="#" target="_blank" rel="noopener" style="display:none">View All on eBay &rarr;</a>
-          <div class="cd-ebay-foot">Live asking prices &middot; refreshed on view</div>
         </div>
         <!-- Admin tools — only visible to admins -->
-        <div id="cd-admin-tools" style="display:none">
-          <div class="cd-block" style="border-color:rgba(255,140,0,0.15)">
-            <div class="cd-block-title orange">ADMIN TOOLS</div>
-            <div class="cd-admin-grid">
-              <button class="cd-admin-btn adm-edit" onclick="cdAdminEditCard()">EDIT</button>
-              <button class="cd-admin-btn adm-delete" onclick="cdAdminDeleteCard()">DELETE</button>
-              <button class="cd-admin-btn adm-img" onclick="cdAdminAddImage()">ADD IMG</button>
-              <button class="cd-admin-btn adm-delete" onclick="cdAdminDeleteImage()">DEL IMG</button>
-              <button class="cd-admin-btn adm-var" onclick="cdAdminDeleteVariation()">DEL VAR</button>
-              <button class="cd-admin-btn adm-rename" onclick="cdAdminRenameVariation()">RENAME</button>
+        <div class="cd-drag-block" data-block-id="admin-tools">
+          <div class="cd-drag-handle">&#9776;</div>
+          <div id="cd-admin-tools" style="display:none">
+            <div class="cd-block" style="border-color:rgba(255,140,0,0.15)">
+              <div class="cd-block-title orange">ADMIN TOOLS</div>
+              <div class="cd-admin-grid">
+                <button class="cd-admin-btn adm-edit" onclick="cdAdminEditCard()">EDIT</button>
+                <button class="cd-admin-btn adm-delete" onclick="cdAdminDeleteCard()">DELETE</button>
+                <button class="cd-admin-btn adm-img" onclick="cdAdminAddImage()">ADD IMG</button>
+                <button class="cd-admin-btn adm-delete" onclick="cdAdminDeleteImage()">DEL IMG</button>
+                <button class="cd-admin-btn adm-var" onclick="cdAdminDeleteVariation()">DEL VAR</button>
+                <button class="cd-admin-btn adm-rename" onclick="cdAdminRenameVariation()">RENAME</button>
+              </div>
             </div>
           </div>
         </div>
@@ -12962,6 +13002,160 @@ function _cdToggleCopyDetail(rowEl){
     detail.classList.add('open');
   }
 }
+
+// ── Card detail drag-to-rearrange layout ──────────────────────
+let _cdLayoutMode = false;
+let _cdDragSrc = null;
+const _CD_LAYOUT_KEY = 'grailiso_cd_layout_v1';
+const _CD_LAYOUT_DEFAULT = {
+  'cd-actions': ['card-identity','variation-display','variation-pills','vault-details','actions'],
+  'cd-info': ['market-data','ebay-listings','admin-tools']
+};
+
+function _cdToggleLayoutMode(){
+  _cdLayoutMode = !_cdLayoutMode;
+  const layout = document.querySelector('.cd-layout');
+  const btn = document.getElementById('cdLayoutToggle');
+  if(_cdLayoutMode){
+    layout.classList.add('cd-layout-mode');
+    btn.innerHTML = '&#10003; Done';
+    btn.style.color = 'var(--green)';
+    btn.style.borderColor = 'rgba(0,232,135,.3)';
+    const resetBtn = document.getElementById('cdLayoutReset');
+    if(resetBtn) resetBtn.style.display = '';
+    // Enable drag on all blocks
+    document.querySelectorAll('.cd-drag-block').forEach(el => {
+      el.setAttribute('draggable','true');
+      el.addEventListener('dragstart', _cdBlockDragStart);
+      el.addEventListener('dragover', _cdBlockDragOver);
+      el.addEventListener('dragleave', _cdBlockDragLeave);
+      el.addEventListener('drop', _cdBlockDrop);
+      el.addEventListener('dragend', _cdBlockDragEnd);
+    });
+    // Also allow dropping on the column containers themselves (for empty columns or appending)
+    document.querySelectorAll('#cd-actions, .cd-info').forEach(col => {
+      col.addEventListener('dragover', _cdColDragOver);
+      col.addEventListener('drop', _cdColDrop);
+    });
+  } else {
+    layout.classList.remove('cd-layout-mode');
+    btn.innerHTML = '&#9881; Customize Layout';
+    btn.style.color = '';
+    btn.style.borderColor = '';
+    const resetBtn2 = document.getElementById('cdLayoutReset');
+    if(resetBtn2) resetBtn2.style.display = 'none';
+    document.querySelectorAll('.cd-drag-block').forEach(el => {
+      el.setAttribute('draggable','false');
+      el.removeEventListener('dragstart', _cdBlockDragStart);
+      el.removeEventListener('dragover', _cdBlockDragOver);
+      el.removeEventListener('dragleave', _cdBlockDragLeave);
+      el.removeEventListener('drop', _cdBlockDrop);
+      el.removeEventListener('dragend', _cdBlockDragEnd);
+    });
+    document.querySelectorAll('#cd-actions, .cd-info').forEach(col => {
+      col.removeEventListener('dragover', _cdColDragOver);
+      col.removeEventListener('drop', _cdColDrop);
+    });
+    // Save layout
+    _cdSaveLayout();
+  }
+}
+
+function _cdBlockDragStart(e){
+  _cdDragSrc = this;
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', this.dataset.blockId);
+}
+function _cdBlockDragOver(e){
+  e.preventDefault();
+  e.stopPropagation();
+  if(_cdDragSrc && _cdDragSrc !== this) this.classList.add('drag-over');
+}
+function _cdBlockDragLeave(){ this.classList.remove('drag-over'); }
+function _cdBlockDrop(e){
+  e.preventDefault();
+  e.stopPropagation();
+  this.classList.remove('drag-over');
+  if(!_cdDragSrc || _cdDragSrc === this) return;
+  // Insert dragged block before or after this one in the same or different column
+  const targetCol = this.parentElement;
+  const blocks = [...targetCol.querySelectorAll('.cd-drag-block')];
+  const tgtIdx = blocks.indexOf(this);
+  const srcIdx = blocks.indexOf(_cdDragSrc);
+  if(srcIdx >= 0 && srcIdx < tgtIdx){
+    targetCol.insertBefore(_cdDragSrc, this.nextSibling);
+  } else {
+    targetCol.insertBefore(_cdDragSrc, this);
+  }
+}
+function _cdBlockDragEnd(){
+  this.classList.remove('dragging');
+  document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+  _cdDragSrc = null;
+}
+function _cdColDragOver(e){ e.preventDefault(); }
+function _cdColDrop(e){
+  e.preventDefault();
+  if(!_cdDragSrc) return;
+  // If dropped on the column itself (not on a block), append to end
+  if(e.target === this || e.target.classList.contains('cd-actions') || e.target.classList.contains('cd-info')){
+    this.appendChild(_cdDragSrc);
+  }
+}
+
+function _cdSaveLayout(){
+  const layout = {};
+  ['cd-actions'].forEach(id => {
+    const col = document.getElementById(id);
+    if(col) layout[id] = [...col.querySelectorAll('.cd-drag-block')].map(b => b.dataset.blockId);
+  });
+  // cd-info uses class not id
+  const infoCol = document.querySelector('.cd-layout > .cd-info');
+  if(infoCol) layout['cd-info'] = [...infoCol.querySelectorAll('.cd-drag-block')].map(b => b.dataset.blockId);
+  try { localStorage.setItem(_CD_LAYOUT_KEY, JSON.stringify(layout)); } catch(e){}
+}
+
+function _cdRestoreLayout(){
+  let saved;
+  try { saved = JSON.parse(localStorage.getItem(_CD_LAYOUT_KEY)); } catch(e){}
+  if(!saved) return;
+  const actionsCol = document.getElementById('cd-actions');
+  const infoCol = document.querySelector('.cd-layout > .cd-info');
+  if(!actionsCol || !infoCol) return;
+  // Build a map of all blocks by ID
+  const allBlocks = {};
+  document.querySelectorAll('.cd-drag-block').forEach(b => { allBlocks[b.dataset.blockId] = b; });
+  // Reorder cd-actions
+  if(saved['cd-actions']){
+    // Find the toggle button (first child) — keep it at the top
+    const toggleRow = actionsCol.querySelector('#cdLayoutToggle')?.parentElement;
+    saved['cd-actions'].forEach(id => {
+      if(allBlocks[id]) actionsCol.appendChild(allBlocks[id]);
+    });
+  }
+  // Reorder cd-info
+  if(saved['cd-info']){
+    saved['cd-info'].forEach(id => {
+      if(allBlocks[id]) infoCol.appendChild(allBlocks[id]);
+    });
+  }
+}
+
+function _cdResetLayout(){
+  try { localStorage.removeItem(_CD_LAYOUT_KEY); } catch(e){}
+  // Re-order blocks to default
+  const actionsCol = document.getElementById('cd-actions');
+  const infoCol = document.querySelector('.cd-layout > .cd-info');
+  if(!actionsCol || !infoCol) return;
+  const allBlocks = {};
+  document.querySelectorAll('.cd-drag-block').forEach(b => { allBlocks[b.dataset.blockId] = b; });
+  _CD_LAYOUT_DEFAULT['cd-actions'].forEach(id => { if(allBlocks[id]) actionsCol.appendChild(allBlocks[id]); });
+  _CD_LAYOUT_DEFAULT['cd-info'].forEach(id => { if(allBlocks[id]) infoCol.appendChild(allBlocks[id]); });
+}
+
+// Restore layout on page load
+try { _cdRestoreLayout(); } catch(e){}
 
 // ══════════════════════════════════════════════════════════════
 // PRICE FLAGS

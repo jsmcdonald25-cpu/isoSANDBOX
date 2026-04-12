@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Vault — Team Theme Mockup (PKM - Pokemon Fire Orange)</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* ── TEAM: PKM - Pokemon Fire Orange ── */
+  --team-primary:#F47B20;          /* Pokemon fire orange — sidebar */
+  --team-primary-dark:#D06518;     /* darker shade for hover/depth */
+  --team-secondary:#2A75BB;        /* blue — stripe, accents */
+  --team-secondary-bright:#4A95DB;
+  --team-secondary-glow:rgba(42,117,187,0.45);
+  --team-primary-light:rgba(244,123,32,0.06);
+  --team-primary-mid:rgba(244,123,32,0.12);
+  --team-secondary-light:rgba(42,117,187,0.10);
+  --team-border:rgba(244,123,32,0.20);
+  /* ── Semantic (unchanged) ── */
+  --gain:#00C853;
+  --loss:#FF3B5C;
+  --white:#FFFFFF;
+  --text:#1A2B3C;
+  --text2:#5A7A9A;
+  --text3:#8CA3BA;
+  --bg:#FFFFFF;
+  --surface:#F5F7FA;
+  --border:#E2E8F0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font-size:15px}
+
+/* ── Sidebar — Pokemon fire orange ── */
+.sidebar{position:fixed;top:0;left:0;width:240px;height:100%;background:var(--team-primary);display:flex;flex-direction:column;z-index:100;overflow-y:auto}
+.sidebar-logo{padding:20px 18px 12px;font-family:Bebas Neue,sans-serif;font-size:28px;letter-spacing:3px;color:var(--white)}
+.sidebar-logo .g{color:var(--team-secondary)}
+.nav-section{padding:8px 18px 4px;font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 18px;cursor:pointer;transition:all .15s;font-family:Barlow Condensed,sans-serif;font-size:14px;letter-spacing:.5px;color:rgba(255,255,255,0.55)}
+.nav-item:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.85)}
+.nav-item.active{background:rgba(42,117,187,0.15);color:var(--white);border-right:2px solid var(--team-secondary)}
+.nav-icon{width:18px;height:18px;flex-shrink:0}
+
+/* ── Content area ── */
+.content{margin-left:240px;padding:28px 32px;height:100%;overflow-y:auto;background:var(--bg)}
+
+/* ── Header ── */
+.mv-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.mv-header-left{display:flex;align-items:center;gap:14px}
+.mv-title{font-family:Bebas Neue,sans-serif;font-size:30px;letter-spacing:2px;color:var(--team-primary);line-height:1}
+.mv-sub{font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--text3);letter-spacing:.5px;margin-top:2px}
+
+/* ── Team badge ── */
+.mv-team-badge{display:flex;align-items:center;gap:6px;background:var(--team-primary);border-radius:8px;padding:5px 12px 5px 8px;cursor:pointer;transition:all .2s}
+.mv-team-badge:hover{box-shadow:0 0 14px var(--team-secondary-glow)}
+.mv-team-dots{display:flex;gap:3px;margin-right:2px}
+.mv-team-dot{width:8px;height:8px;border-radius:50%}
+.mv-team-code{font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:2px;color:var(--white)}
+.mv-team-name{font-family:Barlow Condensed,sans-serif;font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:.5px}
+
+.mv-header-right{display:flex;gap:8px;align-items:center}
+.btn-team{background:var(--team-primary);color:var(--white);border:none;border-radius:7px;padding:7px 14px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .15s;font-weight:600}
+.btn-team:hover{box-shadow:0 0 12px var(--team-secondary-glow)}
+.btn-add{background:var(--team-secondary);color:var(--white);border:none;border-radius:7px;padding:8px 16px;font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .15s}
+.btn-add:hover{box-shadow:0 0 14px var(--team-secondary-glow);filter:brightness(1.05)}
+
+/* ── Modules ── */
+.mv-dash{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin-bottom:20px}
+.mv-mod{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06);transition:border-color .2s,box-shadow .2s}
+.mv-mod:hover{border-color:rgba(244,123,32,0.35);box-shadow:0 4px 16px rgba(244,123,32,0.10)}
+.mv-mod-head{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--team-primary-light)}
+.mv-mod-drag{color:rgba(244,123,32,0.2);font-size:14px;flex-shrink:0;cursor:grab}
+.mv-mod-title{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--team-primary);flex:1;font-weight:700;opacity:0.6}
+.mv-mod-link{font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--team-primary);cursor:pointer;white-space:nowrap;opacity:0.5;transition:opacity .15s}
+.mv-mod-link:hover{opacity:1}
+
+/* ── Stats row ── */
+.mv-stat-row{display:flex;gap:0;align-items:stretch;flex-wrap:wrap}
+.mv-stat-cell{flex:1 1 0;min-width:0;text-align:center;padding:14px 8px;position:relative}
+.mv-stat-cell::after{content:'';position:absolute;right:0;top:20%;height:60%;width:1px;background:var(--border)}
+.mv-stat-cell:last-child::after{display:none}
+.mv-stat-cell-lbl{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
+.mv-stat-cell-val{font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:1px;color:var(--team-primary)}
+.mv-stat-cell-val.gold{color:var(--team-secondary);text-shadow:0 0 8px var(--team-secondary-glow)}
+.mv-stat-cell-val.gain{color:var(--gain)}
+.mv-stat-cell-val.loss{color:var(--loss)}
+
+/* ── Card tiles ── */
+.mv-cards-section{margin-top:14px}
+.mv-cards-label{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:10px;font-weight:600}
+.mv-cards-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:10px}
+.mv3-card{width:180px;flex-shrink:0;background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .2s}
+.mv3-card:hover{border-color:var(--team-primary);box-shadow:0 4px 16px rgba(244,123,32,0.12);transform:translateY(-2px)}
+.mv3-card-img{width:100%;aspect-ratio:2.5/3.5;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:40px;color:rgba(244,123,32,0.1)}
+.mv3-card-info{padding:8px 10px}
+.mv3-card-player{font-family:Bebas Neue,sans-serif;font-size:14px;letter-spacing:1px;color:var(--team-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mv3-card-set{font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--text3);letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mv3-card-price{font-family:Bebas Neue,sans-serif;font-size:13px;color:var(--team-secondary);margin-top:2px;text-shadow:0 0 6px var(--team-secondary-glow)}
+
+/* ── Team selector dropdown ── */
+.team-selector{position:fixed;top:80px;right:32px;background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px;width:300px;box-shadow:0 12px 40px rgba(0,0,0,0.12);z-index:200;display:none}
+.team-selector.open{display:block}
+.team-selector-title{font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:2px;color:var(--team-primary);margin-bottom:10px}
+.team-selector-search{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--text);margin-bottom:10px;outline:none}
+.team-selector-search:focus{border-color:var(--team-primary)}
+.team-selector-search::placeholder{color:var(--text3)}
+.team-selector-list{max-height:400px;overflow-y:auto}
+.ts-group-header{font-family:Bebas Neue,sans-serif;font-size:11px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;border-bottom:1px solid var(--border);padding:8px 4px 4px;margin-top:6px}
+.ts-group-header:first-child{margin-top:0}
+.team-option{display:flex;align-items:center;gap:10px;padding:8px;border-radius:6px;cursor:pointer;transition:background .15s}
+.team-option:hover{background:var(--surface)}
+.team-option.active{background:var(--team-primary-light);border:1px solid var(--team-border)}
+.team-option-dots{display:flex;gap:3px}
+.team-option-dot{width:10px;height:10px;border-radius:50%;border:1px solid rgba(0,0,0,0.06)}
+.team-option-info{display:flex;flex-direction:column}
+.team-option-code{font-family:Bebas Neue,sans-serif;font-size:14px;letter-spacing:1.5px;color:var(--text);min-width:36px;line-height:1.1}
+.team-option-name{font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--text2);line-height:1.2}
+
+/* ── Comparison strip ── */
+.compare-strip{position:fixed;bottom:0;left:240px;right:0;background:var(--team-primary);padding:10px 32px;display:flex;align-items:center;gap:16px;z-index:100}
+.compare-label{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5)}
+.compare-note{font-family:Barlow Condensed,sans-serif;font-size:11px;color:rgba(255,255,255,0.6);margin-left:auto}
+
+/* ── Team Speed Stripe ── */
+.team-stripe-vert{position:fixed;top:0;left:225px;width:10px;height:100%;z-index:101;pointer-events:none;overflow:visible}
+.team-stripe-vert::before{
+  content:'';position:absolute;top:25px;left:0;width:10px;
+  height:calc(100% - 58px);
+  background:var(--team-secondary);
+  box-shadow:0 0 8px var(--team-secondary-glow),0 0 20px rgba(42,117,187,0.15);
+}
+.team-stripe-corner{
+  position:fixed;bottom:23px;left:225px;width:20px;height:20px;z-index:101;pointer-events:none;
+  border-bottom:10px solid var(--team-secondary);
+  border-left:10px solid var(--team-secondary);
+  border-bottom-left-radius:16px;
+  box-shadow:-3px 3px 8px var(--team-secondary-glow);
+  border-top:none;border-right:none;
+}
+.team-stripe-hz{
+  position:fixed;bottom:18px;left:245px;right:20px;height:10px;z-index:101;pointer-events:none;
+  background:linear-gradient(90deg,var(--team-secondary) 0%,rgba(42,117,187,0.5) 75%,rgba(42,117,187,0.25) 100%);
+  box-shadow:0 0 8px var(--team-secondary-glow),0 0 20px rgba(42,117,187,0.15);
+}
+.team-stripe-br-corner{
+  position:fixed;bottom:8px;right:5px;width:20px;height:20px;z-index:101;pointer-events:none;
+  border-top:10px solid rgba(42,117,187,0.2);
+  border-right:10px solid rgba(42,117,187,0.15);
+  border-top-right-radius:16px;
+  border-bottom:none;border-left:none;
+}
+.team-stripe-br-fade{
+  position:fixed;bottom:0;right:5px;width:10px;height:8px;z-index:101;pointer-events:none;
+  background:linear-gradient(180deg,rgba(42,117,187,0.12) 0%,rgba(42,117,187,0) 100%);
+}
+.team-stripe-top-corner{
+  position:fixed;top:5px;left:215px;width:20px;height:20px;z-index:101;pointer-events:none;
+  border-top:10px solid var(--team-secondary);
+  border-right:10px solid var(--team-secondary);
+  border-top-right-radius:16px;
+  box-shadow:3px -3px 8px var(--team-secondary-glow);
+  border-bottom:none;border-left:none;
+}
+.team-stripe-top{
+  position:fixed;top:5px;left:0;width:215px;height:10px;z-index:101;pointer-events:none;
+  background:linear-gradient(90deg,rgba(42,117,187,0) 0%,rgba(42,117,187,0.4) 50%,var(--team-secondary) 100%);
+  box-shadow:0 0 8px var(--team-secondary-glow);
+}
+.racing-streak{
+  position:fixed;z-index:102;pointer-events:none;border-radius:2px;
+  opacity:0;
+}
+.racing-streak.hz{
+  height:10px;width:60px;
+  background:linear-gradient(90deg,transparent 0%,var(--team-secondary-bright) 35%,#FFFFFF 50%,var(--team-secondary-bright) 65%,transparent 100%);
+}
+.racing-streak.vt{
+  width:10px;height:60px;
+  background:linear-gradient(180deg,transparent 0%,var(--team-secondary-bright) 35%,#FFFFFF 50%,var(--team-secondary-bright) 65%,transparent 100%);
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR — Pokemon fire orange -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <span class="g">G</span>RAIL<span class="g">ISO</span>
+  </div>
+  <div class="nav-section">Collection</div>
+  <div class="nav-item active">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    <span>My Vault</span>
+  </div>
+  <div class="nav-item">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <span>ISOVault</span>
+  </div>
+  <div class="nav-item">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    <span>ISOTicker</span>
+  </div>
+  <div class="nav-section">Trade</div>
+  <div class="nav-item">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    <span>Post ISO</span>
+  </div>
+  <div class="nav-item">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg>
+    <span>OpenISO</span>
+  </div>
+</div>
+
+<!-- RACING STRIPE -->
+<div class="team-stripe-top"></div>
+<div class="team-stripe-top-corner"></div>
+<div class="team-stripe-vert"></div>
+<div class="team-stripe-corner"></div>
+<div class="team-stripe-hz"></div>
+<div class="team-stripe-br-corner"></div>
+<div class="team-stripe-br-fade"></div>
+<div class="racing-streak" id="racingStreak"></div>
+
+<!-- CONTENT — white background -->
+<div class="content">
+
+  <!-- PAGE HEADER -->
+  <div class="mv-header">
+    <div class="mv-header-left">
+      <div>
+        <div class="mv-title">MY VAULT</div>
+        <div class="mv-sub">Your personal card library</div>
+      </div>
+      <!-- TEAM BADGE -->
+      <div class="mv-team-badge" onclick="document.querySelector('.team-selector').classList.toggle('open')" title="Change your team colors">
+        <div class="mv-team-dots">
+          <div class="mv-team-dot" style="background:#F47B20"></div>
+          <div class="mv-team-dot" style="background:#2A75BB"></div>
+        </div>
+        <div class="mv-team-code">Pokémon</div>
+        <div class="mv-team-name">Fire Orange</div>
+      </div>
+    </div>
+    <div class="mv-header-right">
+      <button class="btn-team" onclick="document.querySelector('.team-selector').classList.toggle('open')">&#x1F3A8; CHANGE TEAM</button>
+      <button class="btn-add">+ ADD CARD</button>
+    </div>
+  </div>
+
+  <!-- TEAM SELECTOR POPUP -->
+  <div class="team-selector">
+    <div class="team-selector-title">CHOOSE YOUR TEAM</div>
+    <input class="team-selector-search" placeholder="Search teams...">
+    <div class="team-selector-list">
+<!-- Team Selector Dropdown Inner HTML Reference -->
+<!-- Everything inside <div class="team-selector-list"> -->
+
+<div class="ts-group-header">NFL Football</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#97233F"></div><div class="team-option-dot" style="background:#FFB612"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">PHX</div><div class="team-option-name">Arizona Cardinals</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#A71930"></div><div class="team-option-dot" style="background:#A5ACAF"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">ATL</div><div class="team-option-name">Atlanta Falcons</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#241773"></div><div class="team-option-dot" style="background:#9E7C0C"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">BWI</div><div class="team-option-name">Baltimore Ravens</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#00338D"></div><div class="team-option-dot" style="background:#C60C30"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">BUF</div><div class="team-option-name">Buffalo Bills</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#0085CA"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#BFC0BF"></div></div>
+  <div class="team-option-info"><div class="team-option-code">CLT</div><div class="team-option-name">Carolina Panthers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#0B162A"></div><div class="team-option-dot" style="background:#C83803"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">ORD</div><div class="team-option-name">Chicago Bears</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#FB4F14"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">CVG</div><div class="team-option-name">Cincinnati Bengals</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#311D00"></div><div class="team-option-dot" style="background:#FF3C00"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">CLE</div><div class="team-option-name">Cleveland Browns</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#003594"></div><div class="team-option-dot" style="background:#869397"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">DFW</div><div class="team-option-name">Dallas Cowboys</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#FB4F14"></div><div class="team-option-dot" style="background:#002244"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">DEN</div><div class="team-option-name">Denver Broncos</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#0076B6"></div><div class="team-option-dot" style="background:#B0B7BC"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">DTW</div><div class="team-option-name">Detroit Lions</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#203731"></div><div class="team-option-dot" style="background:#FFB612"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MKE</div><div class="team-option-name">Green Bay Packers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#03202F"></div><div class="team-option-dot" style="background:#A71930"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">IAH</div><div class="team-option-name">Houston Texans</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#002C5F"></div><div class="team-option-dot" style="background:#A2AAAD"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">IND</div><div class="team-option-name">Indianapolis Colts</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#006778"></div><div class="team-option-dot" style="background:#D7A22A"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">JAX</div><div class="team-option-name">Jacksonville Jaguars</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#E31837"></div><div class="team-option-dot" style="background:#FFB81C"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MCI</div><div class="team-option-name">Kansas City Chiefs</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#A5ACAF"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">LAS</div><div class="team-option-name">Las Vegas Raiders</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#0080C6"></div><div class="team-option-dot" style="background:#FFC20E"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">LAX</div><div class="team-option-name">LA Chargers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#003594"></div><div class="team-option-dot" style="background:#FFA300"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">LAX</div><div class="team-option-name">LA Rams</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#008E97"></div><div class="team-option-dot" style="background:#FC4C02"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MIA</div><div class="team-option-name">Miami Dolphins</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#4F2683"></div><div class="team-option-dot" style="background:#FFC62F"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MSP</div><div class="team-option-name">Minnesota Vikings</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#002244"></div><div class="team-option-dot" style="background:#C60C30"></div><div class="team-option-dot" style="background:#B0B7BC"></div></div>
+  <div class="team-option-info"><div class="team-option-code">BOS</div><div class="team-option-name">New England Patriots</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#D3BC8D"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MSY</div><div class="team-option-name">New Orleans Saints</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#0B2265"></div><div class="team-option-dot" style="background:#A71930"></div><div class="team-option-dot" style="background:#A5ACAF"></div></div>
+  <div class="team-option-info"><div class="team-option-code">JFK</div><div class="team-option-name">NY Giants</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#125740"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div><div class="team-option-dot" style="background:#2B2B2B"></div></div>
+  <div class="team-option-info"><div class="team-option-code">JFK</div><div class="team-option-name">NY Jets</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#004C54"></div><div class="team-option-dot" style="background:#A5ACAF"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">PHL</div><div class="team-option-name">Philadelphia Eagles</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#FFB612"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">PIT</div><div class="team-option-name">Pittsburgh Steelers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#AA0000"></div><div class="team-option-dot" style="background:#B3995D"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">SFO</div><div class="team-option-name">San Francisco 49ers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#002244"></div><div class="team-option-dot" style="background:#69BE28"></div><div class="team-option-dot" style="background:#A5ACAF"></div></div>
+  <div class="team-option-info"><div class="team-option-code">SEA</div><div class="team-option-name">Seattle Seahawks</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#D50A0A"></div><div class="team-option-dot" style="background:#34302B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">TPA</div><div class="team-option-name">Tampa Bay Buccaneers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#0C2340"></div><div class="team-option-dot" style="background:#4B92DB"></div><div class="team-option-dot" style="background:#C8102E"></div></div>
+  <div class="team-option-info"><div class="team-option-code">BNA</div><div class="team-option-name">Tennessee Titans</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#5A1414"></div><div class="team-option-dot" style="background:#FFB612"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">DCA</div><div class="team-option-name">Washington Commanders</div></div>
+</div>
+
+<div class="ts-group-header">MLB Baseball</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#A71930"></div><div class="team-option-dot" style="background:#E3D4AD"></div><div class="team-option-dot" style="background:#2B2B2B"></div></div>
+  <div class="team-option-info"><div class="team-option-code">PHX</div><div class="team-option-name">Arizona Diamondbacks</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#CE1141"></div><div class="team-option-dot" style="background:#13274F"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">ATL</div><div class="team-option-name">Atlanta Braves</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#DF4601"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">BWI</div><div class="team-option-name">Baltimore Orioles</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#BD3039"></div><div class="team-option-dot" style="background:#0C2340"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">BOS</div><div class="team-option-name">Boston Red Sox</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#0E3386"></div><div class="team-option-dot" style="background:#CC3433"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">ORD</div><div class="team-option-name">Chicago Cubs</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#C4CED4"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">ORD</div><div class="team-option-name">Chicago White Sox</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#C6011F"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">CVG</div><div class="team-option-name">Cincinnati Reds</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#00385D"></div><div class="team-option-dot" style="background:#E50022"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">CLE</div><div class="team-option-name">Cleveland Guardians</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#33006F"></div><div class="team-option-dot" style="background:#C4CED4"></div><div class="team-option-dot" style="background:#2B2B2B"></div></div>
+  <div class="team-option-info"><div class="team-option-code">DEN</div><div class="team-option-name">Colorado Rockies</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#003278"></div><div class="team-option-dot" style="background:#C0111F"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">DFW</div><div class="team-option-name">Texas Rangers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#0C2340"></div><div class="team-option-dot" style="background:#FA4616"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">DTW</div><div class="team-option-name">Detroit Tigers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#002D62"></div><div class="team-option-dot" style="background:#EB6E1F"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">IAH</div><div class="team-option-name">Houston Astros</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#004687"></div><div class="team-option-dot" style="background:#BD9B60"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MCI</div><div class="team-option-name">Kansas City Royals</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#BA0021"></div><div class="team-option-dot" style="background:#003263"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">LAX</div><div class="team-option-name">LA Angels</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#005A9C"></div><div class="team-option-dot" style="background:#EF3E42"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">LAX</div><div class="team-option-name">LA Dodgers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#12284B"></div><div class="team-option-dot" style="background:#FFC52F"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MKE</div><div class="team-option-name">Milwaukee Brewers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#002B5C"></div><div class="team-option-dot" style="background:#D31145"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MSP</div><div class="team-option-name">Minnesota Twins</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#00A3E0"></div><div class="team-option-dot" style="background:#EF3340"></div><div class="team-option-dot" style="background:#2B2B2B"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MIA</div><div class="team-option-name">Miami Marlins</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#002D72"></div><div class="team-option-dot" style="background:#FF5910"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">JFK</div><div class="team-option-name">NY Mets</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#0C2340"></div><div class="team-option-dot" style="background:#C4CED4"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">JFK</div><div class="team-option-name">NY Yankees</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#003831"></div><div class="team-option-dot" style="background:#EFB21E"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">OAK</div><div class="team-option-name">Oakland Athletics</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#E81828"></div><div class="team-option-dot" style="background:#002D72"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">PHL</div><div class="team-option-name">Philadelphia Phillies</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#FDB827"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">PIT</div><div class="team-option-name">Pittsburgh Pirates</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#2F241D"></div><div class="team-option-dot" style="background:#FFC425"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">SAN</div><div class="team-option-name">San Diego Padres</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#FD5A1E"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">SFO</div><div class="team-option-name">San Francisco Giants</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#0C2C56"></div><div class="team-option-dot" style="background:#005C5C"></div><div class="team-option-dot" style="background:#C4CED4"></div></div>
+  <div class="team-option-info"><div class="team-option-code">SEA</div><div class="team-option-name">Seattle Mariners</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#C41E3A"></div><div class="team-option-dot" style="background:#0C2340"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">STL</div><div class="team-option-name">St. Louis Cardinals</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#092C5C"></div><div class="team-option-dot" style="background:#8FBCE6"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">TPA</div><div class="team-option-name">Tampa Bay Rays</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#134A8E"></div><div class="team-option-dot" style="background:#E8291C"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">TOR</div><div class="team-option-name">Toronto Blue Jays</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#AB0003"></div><div class="team-option-dot" style="background:#14225A"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">DCA</div><div class="team-option-name">Washington Nationals</div></div>
+</div>
+
+<div class="ts-group-header">NBA Basketball</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#E03A3E"></div><div class="team-option-dot" style="background:#C1D32F"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">ATL</div><div class="team-option-name">Atlanta Hawks</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#007A33"></div><div class="team-option-dot" style="background:#BA9653"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">BOS</div><div class="team-option-name">Boston Celtics</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div><div class="team-option-dot" style="background:#777D84"></div></div>
+  <div class="team-option-info"><div class="team-option-code">JFK</div><div class="team-option-name">Brooklyn Nets</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#1D1160"></div><div class="team-option-dot" style="background:#00788C"></div><div class="team-option-dot" style="background:#A1A1A4"></div></div>
+  <div class="team-option-info"><div class="team-option-code">CLT</div><div class="team-option-name">Charlotte Hornets</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#CE1141"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">ORD</div><div class="team-option-name">Chicago Bulls</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#860038"></div><div class="team-option-dot" style="background:#041E42"></div><div class="team-option-dot" style="background:#FDBB30"></div></div>
+  <div class="team-option-info"><div class="team-option-code">CLE</div><div class="team-option-name">Cleveland Cavaliers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#00538C"></div><div class="team-option-dot" style="background:#002B5E"></div><div class="team-option-dot" style="background:#B8C4CA"></div></div>
+  <div class="team-option-info"><div class="team-option-code">DFW</div><div class="team-option-name">Dallas Mavericks</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#0E2240"></div><div class="team-option-dot" style="background:#FEC524"></div><div class="team-option-dot" style="background:#8B2131"></div></div>
+  <div class="team-option-info"><div class="team-option-code">DEN</div><div class="team-option-name">Denver Nuggets</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#C8102E"></div><div class="team-option-dot" style="background:#1D42BA"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">DTW</div><div class="team-option-name">Detroit Pistons</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#1D428A"></div><div class="team-option-dot" style="background:#FFC72C"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">SFO</div><div class="team-option-name">Golden State Warriors</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#CE1141"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#C4CED4"></div></div>
+  <div class="team-option-info"><div class="team-option-code">IAH</div><div class="team-option-name">Houston Rockets</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#002D62"></div><div class="team-option-dot" style="background:#FDBB30"></div><div class="team-option-dot" style="background:#BEC0C2"></div></div>
+  <div class="team-option-info"><div class="team-option-code">IND</div><div class="team-option-name">Indiana Pacers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#C8102E"></div><div class="team-option-dot" style="background:#1D428A"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">LAX</div><div class="team-option-name">LA Clippers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#552583"></div><div class="team-option-dot" style="background:#FDB927"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">LAX</div><div class="team-option-name">LA Lakers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#5D76A9"></div><div class="team-option-dot" style="background:#12173F"></div><div class="team-option-dot" style="background:#F5B112"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MEM</div><div class="team-option-name">Memphis Grizzlies</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#98002E"></div><div class="team-option-dot" style="background:#F9A01B"></div><div class="team-option-dot" style="background:#2B2B2B"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MIA</div><div class="team-option-name">Miami Heat</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#00471B"></div><div class="team-option-dot" style="background:#EEE1C6"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MKE</div><div class="team-option-name">Milwaukee Bucks</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#0C2340"></div><div class="team-option-dot" style="background:#236192"></div><div class="team-option-dot" style="background:#78BE20"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MSP</div><div class="team-option-name">Minnesota Timberwolves</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#0C2340"></div><div class="team-option-dot" style="background:#C8102E"></div><div class="team-option-dot" style="background:#85714D"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MSY</div><div class="team-option-name">New Orleans Pelicans</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#006BB6"></div><div class="team-option-dot" style="background:#F58426"></div><div class="team-option-dot" style="background:#BEC0C2"></div></div>
+  <div class="team-option-info"><div class="team-option-code">JFK</div><div class="team-option-name">New York Knicks</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#007AC1"></div><div class="team-option-dot" style="background:#EF6100"></div><div class="team-option-dot" style="background:#002D62"></div></div>
+  <div class="team-option-info"><div class="team-option-code">OKC</div><div class="team-option-name">Oklahoma City Thunder</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#0077C0"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MCO</div><div class="team-option-name">Orlando Magic</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#006BB6"></div><div class="team-option-dot" style="background:#ED174C"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">PHL</div><div class="team-option-name">Philadelphia 76ers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#1D1160"></div><div class="team-option-dot" style="background:#E56020"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">PHX</div><div class="team-option-name">Phoenix Suns</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#E03A3E"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">PDX</div><div class="team-option-name">Portland Trail Blazers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#5A2D81"></div><div class="team-option-dot" style="background:#63727A"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">SAC</div><div class="team-option-name">Sacramento Kings</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#C4CED4"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">SAN</div><div class="team-option-name">San Antonio Spurs</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#CE1141"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#A1A1A4"></div></div>
+  <div class="team-option-info"><div class="team-option-code">TOR</div><div class="team-option-name">Toronto Raptors</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#002B5C"></div><div class="team-option-dot" style="background:#F9A01B"></div><div class="team-option-dot" style="background:#00471B"></div></div>
+  <div class="team-option-info"><div class="team-option-code">SLC</div><div class="team-option-name">Utah Jazz</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#002B5C"></div><div class="team-option-dot" style="background:#E31837"></div><div class="team-option-dot" style="background:#C4CED4"></div></div>
+  <div class="team-option-info"><div class="team-option-code">DCA</div><div class="team-option-name">Washington Wizards</div></div>
+</div>
+
+<div class="ts-group-header">NHL Hockey</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#8C2633"></div><div class="team-option-dot" style="background:#E2D6B5"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">PHX</div><div class="team-option-name">Arizona Coyotes</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#69B3E7"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">ATL</div><div class="team-option-name">Utah Hockey Club</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#FFB81C"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">BOS</div><div class="team-option-name">Boston Bruins</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#003087"></div><div class="team-option-dot" style="background:#FFB81C"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">BUF</div><div class="team-option-name">Buffalo Sabres</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#D2001C"></div><div class="team-option-dot" style="background:#FAAF19"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">CGY</div><div class="team-option-name">Calgary Flames</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#CC0000"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#A2A9B1"></div></div>
+  <div class="team-option-info"><div class="team-option-code">CLT</div><div class="team-option-name">Carolina Hurricanes</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#CF0A2C"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">ORD</div><div class="team-option-name">Chicago Blackhawks</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#6F263D"></div><div class="team-option-dot" style="background:#236192"></div><div class="team-option-dot" style="background:#A2AAAD"></div></div>
+  <div class="team-option-info"><div class="team-option-code">DEN</div><div class="team-option-name">Colorado Avalanche</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#002654"></div><div class="team-option-dot" style="background:#CE1141"></div><div class="team-option-dot" style="background:#A4A9AD"></div></div>
+  <div class="team-option-info"><div class="team-option-code">CMH</div><div class="team-option-name">Columbus Blue Jackets</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#006847"></div><div class="team-option-dot" style="background:#8F8F8C"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">DFW</div><div class="team-option-name">Dallas Stars</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#CE1141"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div><div class="team-option-dot" style="background:#2B2B2B"></div></div>
+  <div class="team-option-info"><div class="team-option-code">DTW</div><div class="team-option-name">Detroit Red Wings</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#041E42"></div><div class="team-option-dot" style="background:#FF4C00"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">YEG</div><div class="team-option-name">Edmonton Oilers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#041E42"></div><div class="team-option-dot" style="background:#C8102E"></div><div class="team-option-dot" style="background:#B9975B"></div></div>
+  <div class="team-option-info"><div class="team-option-code">FLL</div><div class="team-option-name">Florida Panthers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#A2AAAD"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">LAX</div><div class="team-option-name">LA Kings</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#154734"></div><div class="team-option-dot" style="background:#A6192E"></div><div class="team-option-dot" style="background:#EDAA00"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MSP</div><div class="team-option-name">Minnesota Wild</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#AF1E2D"></div><div class="team-option-dot" style="background:#192168"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MTL</div><div class="team-option-name">Montreal Canadiens</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#FFB81C"></div><div class="team-option-dot" style="background:#041E42"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">BNA</div><div class="team-option-name">Nashville Predators</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#CE1141"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">EWR</div><div class="team-option-name">New Jersey Devils</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#00539B"></div><div class="team-option-dot" style="background:#F47D30"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">JFK</div><div class="team-option-name">NY Islanders</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#0038A8"></div><div class="team-option-dot" style="background:#CE1141"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">JFK</div><div class="team-option-name">NY Rangers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#C52032"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#C2912C"></div></div>
+  <div class="team-option-info"><div class="team-option-code">OTT</div><div class="team-option-name">Ottawa Senators</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#F74902"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">PHL</div><div class="team-option-name">Philadelphia Flyers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#FFB81C"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">PIT</div><div class="team-option-name">Pittsburgh Penguins</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#006D75"></div><div class="team-option-dot" style="background:#EA7200"></div><div class="team-option-dot" style="background:#2B2B2B"></div></div>
+  <div class="team-option-info"><div class="team-option-code">SAN</div><div class="team-option-name">San Jose Sharks</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#001628"></div><div class="team-option-dot" style="background:#99D9D9"></div><div class="team-option-dot" style="background:#E8544E"></div></div>
+  <div class="team-option-info"><div class="team-option-code">SEA</div><div class="team-option-name">Seattle Kraken</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#002F87"></div><div class="team-option-dot" style="background:#FCB514"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">STL</div><div class="team-option-name">St. Louis Blues</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#002868"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div><div class="team-option-dot" style="background:#2B2B2B"></div></div>
+  <div class="team-option-info"><div class="team-option-code">TPA</div><div class="team-option-name">Tampa Bay Lightning</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#00205B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div><div class="team-option-dot" style="background:#2B2B2B"></div></div>
+  <div class="team-option-info"><div class="team-option-code">TOR</div><div class="team-option-name">Toronto Maple Leafs</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#00205B"></div><div class="team-option-dot" style="background:#00843D"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">YVR</div><div class="team-option-name">Vancouver Canucks</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#B4975A"></div><div class="team-option-dot" style="background:#333F48"></div><div class="team-option-dot" style="background:#C8102E"></div></div>
+  <div class="team-option-info"><div class="team-option-code">LAS</div><div class="team-option-name">Vegas Golden Knights</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#041E42"></div><div class="team-option-dot" style="background:#C8102E"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">DCA</div><div class="team-option-name">Washington Capitals</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#041E42"></div><div class="team-option-dot" style="background:#AC162C"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">WPG</div><div class="team-option-name">Winnipeg Jets</div></div>
+</div>
+
+<div class="ts-group-header">MLS Soccer</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#80000A"></div><div class="team-option-dot" style="background:#A19060"></div><div class="team-option-dot" style="background:#2B2B2B"></div></div>
+  <div class="team-option-info"><div class="team-option-code">ATL</div><div class="team-option-name">Atlanta United</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#00B140"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">ATX</div><div class="team-option-name">Austin FC</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#1A85C8"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div><div class="team-option-dot" style="background:#2B2B2B"></div></div>
+  <div class="team-option-info"><div class="team-option-code">CLT</div><div class="team-option-name">Charlotte FC</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#AF2626"></div><div class="team-option-dot" style="background:#7CCDEF"></div><div class="team-option-dot" style="background:#2B2B2B"></div></div>
+  <div class="team-option-info"><div class="team-option-code">ORD</div><div class="team-option-name">Chicago Fire</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#F05323"></div><div class="team-option-dot" style="background:#263B80"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">CVG</div><div class="team-option-name">FC Cincinnati</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#FEDD00"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">CLE</div><div class="team-option-name">Columbus Crew</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#BF0D3E"></div><div class="team-option-dot" style="background:#002B5E"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">DFW</div><div class="team-option-name">FC Dallas</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#862633"></div><div class="team-option-dot" style="background:#8BB8E8"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">DEN</div><div class="team-option-name">Colorado Rapids</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#F68712"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">IAH</div><div class="team-option-name">Houston Dynamo</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#F7B5CD"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">JAX</div><div class="team-option-name">Inter Miami CF</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#00245D"></div><div class="team-option-dot" style="background:#FFD200"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">LAX</div><div class="team-option-name">LA Galaxy</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#C39E6D"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">LAX</div><div class="team-option-name">LAFC</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#9BCEE2"></div><div class="team-option-dot" style="background:#231F20"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MSP</div><div class="team-option-name">Minnesota United</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#ECE83A"></div><div class="team-option-dot" style="background:#1F1646"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">BNA</div><div class="team-option-name">Nashville SC</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#6CACE4"></div><div class="team-option-dot" style="background:#F15524"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">JFK</div><div class="team-option-name">New York City FC</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#ED1E36"></div><div class="team-option-dot" style="background:#23326A"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">EWR</div><div class="team-option-name">NY Red Bulls</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#612B9B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div><div class="team-option-dot" style="background:#2B2B2B"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MCO</div><div class="team-option-name">Orlando City</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#002D55"></div><div class="team-option-dot" style="background:#B18D30"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">PHL</div><div class="team-option-name">Philadelphia Union</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#004812"></div><div class="team-option-dot" style="background:#D6A828"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">PDX</div><div class="team-option-name">Portland Timbers</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#B30838"></div><div class="team-option-dot" style="background:#013A81"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">SLC</div><div class="team-option-name">Real Salt Lake</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#0067B1"></div><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">SAN</div><div class="team-option-name">San Jose Earthquakes</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#236192"></div><div class="team-option-dot" style="background:#658D1B"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">SEA</div><div class="team-option-name">Seattle Sounders</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#DE2C40"></div><div class="team-option-dot" style="background:#002F65"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">STL</div><div class="team-option-name">St. Louis City SC</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#E31937"></div><div class="team-option-dot" style="background:#B6B6B6"></div><div class="team-option-dot" style="background:#2B2B2B"></div></div>
+  <div class="team-option-info"><div class="team-option-code">TOR</div><div class="team-option-name">Toronto FC</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#00245E"></div><div class="team-option-dot" style="background:#9DC2EA"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">YVR</div><div class="team-option-name">Vancouver Whitecaps</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#2B2B2B"></div><div class="team-option-dot" style="background:#EF3E42"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">DCA</div><div class="team-option-name">D.C. United</div></div>
+</div>
+
+<div class="ts-group-header">TCG &mdash; Pok&eacute;mon</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#CC0000"></div><div class="team-option-dot" style="background:#3B4CCA"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">PKM</div><div class="team-option-name">Pok&eacute;mon / Classic Red</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#3B4CCA"></div><div class="team-option-dot" style="background:#FFCB05"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">PKM</div><div class="team-option-name">Pok&eacute;mon / Ocean Blue</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#FFCB05"></div><div class="team-option-dot" style="background:#3B4CCA"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">PKM</div><div class="team-option-name">Pok&eacute;mon / Pikachu Yellow</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#4DAD5B"></div><div class="team-option-dot" style="background:#F7D02C"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">PKM</div><div class="team-option-name">Pok&eacute;mon / Grass Green</div></div>
+</div>
+
+<div class="team-option active">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#F47B20"></div><div class="team-option-dot" style="background:#2A75BB"></div><div class="team-option-dot" style="background:#FFFFFF;border:1px solid #ccc"></div></div>
+  <div class="team-option-info"><div class="team-option-code">PKM</div><div class="team-option-name">Pok&eacute;mon / Fire Orange</div></div>
+</div>
+
+<div class="ts-group-header">TCG &mdash; Magic: The Gathering</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#1A1A2E"></div><div class="team-option-dot" style="background:#B0B7BC"></div><div class="team-option-dot" style="background:#4A90D9"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MTG</div><div class="team-option-name">Magic / Dark Steel</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#1A1A2E"></div><div class="team-option-dot" style="background:#E8720C"></div><div class="team-option-dot" style="background:#B0B7BC"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MTG</div><div class="team-option-name">Magic / Forge</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#F0F0F0;border:1px solid #ccc"></div><div class="team-option-dot" style="background:#1A1A2E"></div><div class="team-option-dot" style="background:#C41E3A"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MTG</div><div class="team-option-name">Magic / Warlord</div></div>
+</div>
+
+<div class="team-option">
+  <div class="team-option-dots"><div class="team-option-dot" style="background:#F0F0F0;border:1px solid #ccc"></div><div class="team-option-dot" style="background:#1A1A2E"></div><div class="team-option-dot" style="background:#B0B7BC"></div></div>
+  <div class="team-option-info"><div class="team-option-code">MTG</div><div class="team-option-name">Magic / Sovereign</div></div>
+</div>
+    </div>
+  </div>
+
+  <!-- MODULAR DASHBOARD -->
+  <div class="mv-dash">
+
+    <!-- PORTFOLIO STATS -->
+    <div class="mv-mod" style="grid-column:span 12">
+      <div class="mv-mod-head">
+        <span class="mv-mod-drag">&#x2837;</span>
+        <span class="mv-mod-title">Portfolio Overview</span>
+      </div>
+      <div class="mv-stat-row">
+        <div class="mv-stat-cell">
+          <div class="mv-stat-cell-lbl">Cards</div>
+          <div class="mv-stat-cell-val">47</div>
+        </div>
+        <div class="mv-stat-cell">
+          <div class="mv-stat-cell-lbl">Cost Basis</div>
+          <div class="mv-stat-cell-val">$2,062</div>
+        </div>
+        <div class="mv-stat-cell">
+          <div class="mv-stat-cell-lbl">Est. Value</div>
+          <div class="mv-stat-cell-val gold">$2,669</div>
+        </div>
+        <div class="mv-stat-cell">
+          <div class="mv-stat-cell-lbl">Gain / Loss</div>
+          <div class="mv-stat-cell-val gain">+$607</div>
+        </div>
+        <div class="mv-stat-cell">
+          <div class="mv-stat-cell-lbl">ISO Credits</div>
+          <div class="mv-stat-cell-val">12</div>
+        </div>
+        <div class="mv-stat-cell">
+          <div class="mv-stat-cell-lbl">Current ISO Post</div>
+          <div class="mv-stat-cell-val gold">3</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLLECTION BREAKDOWN -->
+    <div class="mv-mod" style="grid-column:span 4">
+      <div class="mv-mod-head">
+        <span class="mv-mod-drag">&#x2837;</span>
+        <span class="mv-mod-title">Collection Breakdown</span>
+      </div>
+      <div style="padding:16px;display:flex;align-items:center;justify-content:center;gap:16px">
+        <svg viewBox="0 0 140 140" style="width:120px;height:120px">
+          <circle cx="70" cy="70" r="54" fill="none" stroke="var(--surface)" stroke-width="14"/>
+          <circle cx="70" cy="70" r="54" fill="none" stroke="var(--team-primary)" stroke-width="14" stroke-dasharray="200 340" stroke-dashoffset="0" stroke-linecap="round"/>
+          <circle cx="70" cy="70" r="54" fill="none" stroke="var(--team-secondary)" stroke-width="14" stroke-dasharray="55 340" stroke-dashoffset="-205" stroke-linecap="round"/>
+          <circle cx="70" cy="70" r="54" fill="none" stroke="#CC0000" stroke-width="14" stroke-dasharray="30 340" stroke-dashoffset="-265" stroke-linecap="round"/>
+          <text x="70" y="66" text-anchor="middle" font-family="Bebas Neue" font-size="22" fill="var(--team-primary)">47</text>
+          <text x="70" y="82" text-anchor="middle" font-family="Barlow Condensed" font-size="10" fill="var(--text3)" letter-spacing="1">CARDS</text>
+        </svg>
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--text2);line-height:2">
+          <div><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--team-primary);margin-right:6px"></span>Pokémon TCG (35)</div>
+          <div><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--team-secondary);margin-right:6px"></span>Baseball (8)</div>
+          <div><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#CC0000;margin-right:6px"></span>Basketball (4)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MARKET VALUE BY CARD -->
+    <div class="mv-mod" style="grid-column:span 8">
+      <div class="mv-mod-head">
+        <span class="mv-mod-drag">&#x2837;</span>
+        <span class="mv-mod-title">Market Value by Card</span>
+      </div>
+      <div style="padding:16px;overflow-x:auto">
+        <svg viewBox="0 0 500 140" style="width:100%;height:140px">
+          <rect x="20" y="20" width="60" height="100" rx="4" fill="var(--surface)"/>
+          <rect x="20" y="25" width="60" height="95" rx="4" fill="var(--team-primary)" opacity="0.8"/>
+          <text x="50" y="135" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="var(--text3)">Lugia</text>
+
+          <rect x="100" y="20" width="60" height="100" rx="4" fill="var(--surface)"/>
+          <rect x="100" y="45" width="60" height="75" rx="4" fill="var(--team-secondary)" opacity="0.75"/>
+          <text x="130" y="135" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="var(--text3)">Charizard</text>
+
+          <rect x="180" y="20" width="60" height="100" rx="4" fill="var(--surface)"/>
+          <rect x="180" y="55" width="60" height="65" rx="4" fill="var(--team-primary)" opacity="0.65"/>
+          <text x="210" y="135" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="var(--text3)">Umbreon</text>
+
+          <rect x="260" y="20" width="60" height="100" rx="4" fill="var(--surface)"/>
+          <rect x="260" y="65" width="60" height="55" rx="4" fill="var(--team-secondary)" opacity="0.6"/>
+          <text x="290" y="135" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="var(--text3)">Rayquaza</text>
+
+          <rect x="340" y="20" width="60" height="100" rx="4" fill="var(--surface)"/>
+          <rect x="340" y="85" width="60" height="35" rx="4" fill="var(--team-primary)" opacity="0.5"/>
+          <text x="370" y="135" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="var(--text3)">Pikachu</text>
+        </svg>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MY CARDS -->
+  <div class="mv-cards-section">
+    <div class="mv-cards-label">My Cards</div>
+    <div class="mv-cards-scroll">
+      <div class="mv3-card">
+        <div class="mv3-card-img">&#127183;</div>
+        <div class="mv3-card-info">
+          <div class="mv3-card-player">Lugia</div>
+          <div class="mv3-card-set">Neo Genesis 1st Ed</div>
+          <div class="mv3-card-price">$890.00</div>
+        </div>
+      </div>
+      <div class="mv3-card">
+        <div class="mv3-card-img">&#127183;</div>
+        <div class="mv3-card-info">
+          <div class="mv3-card-player">Charizard</div>
+          <div class="mv3-card-set">Base Set Holo #4</div>
+          <div class="mv3-card-price">$450.00</div>
+        </div>
+      </div>
+      <div class="mv3-card">
+        <div class="mv3-card-img">&#127183;</div>
+        <div class="mv3-card-info">
+          <div class="mv3-card-player">Umbreon</div>
+          <div class="mv3-card-set">Evolving Skies Alt Art</div>
+          <div class="mv3-card-price">$320.00</div>
+        </div>
+      </div>
+      <div class="mv3-card">
+        <div class="mv3-card-img">&#127183;</div>
+        <div class="mv3-card-info">
+          <div class="mv3-card-player">Rayquaza</div>
+          <div class="mv3-card-set">VMAX Alt Art</div>
+          <div class="mv3-card-price">$210.00</div>
+        </div>
+      </div>
+      <div class="mv3-card">
+        <div class="mv3-card-img">&#127183;</div>
+        <div class="mv3-card-info">
+          <div class="mv3-card-player">Pikachu</div>
+          <div class="mv3-card-set">Celebrations Gold Star</div>
+          <div class="mv3-card-price">$85.00</div>
+        </div>
+      </div>
+      <div class="mv3-card">
+        <div class="mv3-card-img">&#127183;</div>
+        <div class="mv3-card-info">
+          <div class="mv3-card-player">Mewtwo</div>
+          <div class="mv3-card-set">Scarlet & Violet ex</div>
+          <div class="mv3-card-price">$42.00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM STRIP -->
+<div class="compare-strip">
+  <div class="compare-label">Pokémon - Fire Orange Theme Active</div>
+  <div class="compare-note">No semantic conflicts — orange theme has clean separation from gain/loss colors</div>
+</div>
+
+<script>
+(function(){
+  const el = document.getElementById('racingStreak');
+  const topFadeY = 5;
+  const topFadeXStart = 0;
+  const topFadeXEnd = 215;
+  const vertX = 225;
+  const vertYStart = 25;
+  const hzXStart = 245;
+
+  const DURATION = 2800;
+  const PAUSE = 400;
+
+  function getPositions(){
+    const h = window.innerHeight;
+    const w = window.innerWidth;
+    const bottomHzY = h - 23;
+    const hzEnd = w - 20;
+    return { h, w, bottomHzY, hzEnd };
+  }
+
+  function animate(){
+    const { h, bottomHzY, hzEnd } = getPositions();
+    const vertYEnd = bottomHzY - 15;
+
+    const seg1 = topFadeXEnd - topFadeXStart;
+    const seg2 = vertYEnd - vertYStart;
+    const seg3 = hzEnd - hzXStart;
+    const total = seg1 + seg2 + seg3;
+    const t1 = seg1/total, t2 = (seg1+seg2)/total;
+
+    let start = null;
+    function step(ts){
+      if(!start) start = ts;
+      const p = Math.min((ts - start) / DURATION, 1);
+
+      if(p < t1){
+        const sp = p / t1;
+        el.className = 'racing-streak hz';
+        el.style.left = (topFadeXStart + sp * seg1 - 30) + 'px';
+        el.style.top = topFadeY + 'px';
+        el.style.opacity = Math.min(sp * 3, 0.75);
+      } else if(p < t2){
+        const sp = (p - t1) / (t2 - t1);
+        el.className = 'racing-streak vt';
+        el.style.left = vertX + 'px';
+        el.style.top = (vertYStart + sp * seg2 - 30) + 'px';
+        el.style.opacity = 0.75;
+      } else {
+        const sp = (p - t2) / (1 - t2);
+        el.className = 'racing-streak hz';
+        el.style.left = (hzXStart + sp * seg3 - 30) + 'px';
+        el.style.top = (bottomHzY - 2) + 'px';
+        el.style.opacity = Math.max(0.75 - sp * 0.75, 0);
+      }
+
+      if(p < 1){
+        requestAnimationFrame(step);
+      } else {
+        el.style.opacity = 0;
+        setTimeout(animate, PAUSE);
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+  animate();
+})();
+</script>
+</body>
+</html>

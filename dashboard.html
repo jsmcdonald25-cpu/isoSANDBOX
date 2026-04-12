@@ -669,6 +669,21 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-vi-item{background:rgba(0,170,255,0.04);border:1px solid var(--deep-border);border-radius:6px;padding:6px 8px}
 .cd-vi-lbl{font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)}
 .cd-vi-val{font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--white);margin-top:1px}
+/* Card # duplicate rows */
+.cd-copy-list{margin-top:8px;border-top:1px solid var(--deep-border);padding-top:8px;display:flex;flex-direction:column;gap:4px}
+.cd-copy-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--deep-border);border-radius:8px;cursor:pointer;transition:all .15s;background:rgba(0,170,255,.03)}
+.cd-copy-row:hover{background:rgba(0,170,255,.08);border-color:rgba(0,170,255,.3)}
+.cd-copy-row.expanded{background:rgba(0,170,255,.06);border-color:rgba(0,170,255,.3);border-radius:8px 8px 0 0}
+.cd-copy-num{font-family:Bebas Neue,sans-serif;font-size:14px;color:var(--blue);white-space:nowrap;min-width:50px}
+.cd-copy-serial{font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--white);font-weight:600;flex-shrink:0}
+.cd-copy-serial .denom{color:var(--muted-text);font-weight:400}
+.cd-copy-mid{flex:1;min-width:0}
+.cd-copy-source{font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cd-copy-price{font-family:Bebas Neue,sans-serif;font-size:15px;color:var(--green);text-align:right;white-space:nowrap;min-width:50px}
+.cd-copy-arrow{color:var(--muted-text);font-size:10px;flex-shrink:0;transition:transform .2s}
+.cd-copy-row.expanded .cd-copy-arrow{transform:rotate(180deg)}
+.cd-copy-detail{display:none;border:1px solid rgba(0,170,255,.3);border-top:none;border-radius:0 0 8px 8px;padding:10px 12px;margin-bottom:4px;background:rgba(0,170,255,.03)}
+.cd-copy-detail.open{display:block}
 .cd-header-info{display:none}
 .cd-card-title{font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:1.5px;color:var(--white);line-height:1.1}
 .cd-card-sub{font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text);margin-top:3px;letter-spacing:.5px}
@@ -12094,7 +12109,7 @@ function _cdSetMyVaultContext(fromMyVault){
         const acqMap = {bought_single:'Bought',pulled:'Pulled',ripped:'Ripped',traded:'Trade',trade:'Trade'};
         const _ivE = _cdFindIvSet({year:row.year, brand:row.brand||row.set_name, set:row.set_name});
         const variation = _cdStripSetPrefix(row.variation||row.parallel||'Base', _ivE ? _ivE.name : '');
-        let html = '<div class="cd-block"><div class="cd-block-title blue">MY VAULT DETAILS' + (allCopies.length>1 ? ` <span style="color:var(--green);font-size:12px">· ${allCopies.length}x copies</span>` : '') + '</div>';
+        let html = '<div class="cd-block"><div class="cd-block-title blue">MY VAULT DETAILS' + (allCopies.length>1 ? ` <span style="color:var(--green);font-size:12px">\u00b7 ${allCopies.length} cards</span>` : '') + '</div>';
         html += '<div class="cd-vi-grid">';
         html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Variation</div><div class="cd-vi-val" style="color:var(--blue)">${variation}</div></div>`;
         html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Grade</div><div class="cd-vi-val">${row.grade||'Raw'}</div></div>`;
@@ -12108,36 +12123,47 @@ function _cdSetMyVaultContext(fromMyVault){
           const src  = row.purchase_source || '—';
           const date = row.date_acquired ? new Date(row.date_acquired).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
           html += '<div class="cd-vi-grid" style="margin-top:6px">';
+          if(row.serial_number){ html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Serial</div><div class="cd-vi-val">#${row.serial_number}${row.serial_total?'/'+row.serial_total:''}</div></div>`; }
           html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Acquired</div><div class="cd-vi-val">${acqMap[row.acquisition_type]||row.acquisition_type||'—'}</div></div>`;
           html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Source</div><div class="cd-vi-val">${src}</div></div>`;
           html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Date</div><div class="cd-vi-val">${date}</div></div>`;
           html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Price Paid</div><div class="cd-vi-val" style="color:var(--green)">$${paid.toFixed(2)}</div></div>`;
           if(est){ html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Est. Value</div><div class="cd-vi-val" style="color:var(--blue)">$${est.toFixed(2)}</div></div>`; }
-          if(paid){ html += `<div class="cd-vi-item"><div class="cd-vi-lbl">G/L</div><div class="cd-vi-val" style="color:${gl>=0?'var(--green)':'var(--red)'}">${ gl>=0?'+':''}${gl.toFixed(2)}</div></div>`; }
-          if(row.serial_number){ html += `<div class="cd-vi-item"><div class="cd-vi-lbl">Serial</div><div class="cd-vi-val">#${row.serial_number}${row.serial_total?'/'+row.serial_total:''}</div></div>`; }
+          if(paid){ html += `<div class="cd-vi-item"><div class="cd-vi-lbl">G/L</div><div class="cd-vi-val" style="color:${gl>=0?'var(--green)':'var(--red)'}">${gl>=0?'+':''}${gl.toFixed(2)}</div></div>`; }
           html += '</div>';
         } else {
-          // Multiple copies — list each with its own purchase info
-          let totalPaid = 0;
-          html += '<div style="margin-top:8px;border-top:1px solid var(--deep-border);padding-top:8px">';
+          // Multiple copies — Card #1, Card #2, etc. with serial + price visible, click to expand
+          html += '<div class="cd-copy-list">';
           allCopies.forEach((cp, i) => {
             const paid = parseFloat(cp.price_paid)||0;
-            totalPaid += paid;
             const acq = acqMap[cp.acquisition_type] || cp.acquisition_type || '—';
             const src = cp.purchase_source || '—';
             const date = cp.date_acquired ? new Date(cp.date_acquired).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
-            html += `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(0,170,255,0.05);font-family:Barlow Condensed,sans-serif;font-size:12px">
-              <div style="font-family:Bebas Neue,sans-serif;color:var(--blue);min-width:46px">COPY ${i+1}</div>
-              <div style="flex:1;color:var(--muted-text)">${acq} · ${src} · ${date}</div>
-              <div style="font-family:Bebas Neue,sans-serif;color:var(--green);min-width:60px;text-align:right">${paid?'$'+paid.toFixed(2):'—'}</div>
+            const serialDisp = cp.serial_number ? '#'+cp.serial_number+(cp.serial_total?'/'+cp.serial_total:'') : '';
+            const serialDenom = cp.serial_total ? '/'+cp.serial_total : '';
+            const est = parseFloat(cp.estimated_value)||0;
+            const gl = est - paid;
+            html += `<div>
+              <div class="cd-copy-row" onclick="_cdToggleCopyDetail(this)">
+                <div class="cd-copy-num">CARD #${i+1}</div>
+                ${cp.serial_number ? '<div class="cd-copy-serial">#'+cp.serial_number+'<span class="denom">'+serialDenom+'</span></div>' : ''}
+                <div class="cd-copy-mid"><div class="cd-copy-source">${src} \u00b7 ${date}</div></div>
+                <div class="cd-copy-price">${paid?'$'+paid.toFixed(2):'\u2014'}</div>
+                <div class="cd-copy-arrow">\u25BC</div>
+              </div>
+              <div class="cd-copy-detail">
+                <div class="cd-vi-grid">
+                  <div class="cd-vi-item"><div class="cd-vi-lbl">Acquired</div><div class="cd-vi-val">${acq}</div></div>
+                  <div class="cd-vi-item"><div class="cd-vi-lbl">Source</div><div class="cd-vi-val">${src}</div></div>
+                  <div class="cd-vi-item"><div class="cd-vi-lbl">Date</div><div class="cd-vi-val">${date}</div></div>
+                  <div class="cd-vi-item"><div class="cd-vi-lbl">Price Paid</div><div class="cd-vi-val" style="color:var(--green)">${paid?'$'+paid.toFixed(2):'\u2014'}</div></div>
+                  ${cp.serial_number ? '<div class="cd-vi-item"><div class="cd-vi-lbl">Serial</div><div class="cd-vi-val">'+serialDisp+'</div></div>' : ''}
+                  ${est ? '<div class="cd-vi-item"><div class="cd-vi-lbl">Est. Value</div><div class="cd-vi-val" style="color:var(--blue)">$'+est.toFixed(2)+'</div></div>' : ''}
+                  ${paid ? '<div class="cd-vi-item"><div class="cd-vi-lbl">G/L</div><div class="cd-vi-val" style="color:'+(gl>=0?'var(--green)':'var(--red)')+'">'+(gl>=0?'+':'')+gl.toFixed(2)+'</div></div>' : ''}
+                </div>
+              </div>
             </div>`;
           });
-          const avg = totalPaid / allCopies.length;
-          html += `<div style="display:flex;align-items:center;gap:8px;padding:8px 0 0;font-family:Barlow Condensed,sans-serif;font-size:12px">
-            <div style="font-family:Bebas Neue,sans-serif;color:var(--white);letter-spacing:1px">TOTAL PAID</div>
-            <div style="flex:1;text-align:right;font-family:Bebas Neue,sans-serif;color:var(--green);font-size:16px">$${totalPaid.toFixed(2)}</div>
-            <div style="color:var(--muted-text)">avg $${avg.toFixed(2)}</div>
-          </div>`;
           html += '</div>';
         }
         html += '</div>'; // close cd-block
@@ -12920,6 +12946,21 @@ function _isoTimeAgo(dateStr){
   if(days>0) return days+'d ago';
   if(hours>0) return hours+'h ago';
   return mins+'m ago';
+}
+
+// ── Card # duplicate expand/collapse ──
+function _cdToggleCopyDetail(rowEl){
+  const wrapper = rowEl.parentElement;
+  const detail = wrapper.querySelector('.cd-copy-detail');
+  const wasOpen = rowEl.classList.contains('expanded');
+  // Close all open copy details
+  document.querySelectorAll('.cd-copy-row.expanded').forEach(r=>r.classList.remove('expanded'));
+  document.querySelectorAll('.cd-copy-detail.open').forEach(d=>d.classList.remove('open'));
+  // Toggle this one
+  if(!wasOpen && detail){
+    rowEl.classList.add('expanded');
+    detail.classList.add('open');
+  }
 }
 
 // ══════════════════════════════════════════════════════════════

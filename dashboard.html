@@ -4019,6 +4019,11 @@ async function logOut(){
     <!-- Map -->
     <div id="csMapWrap" style="width:100%;height:420px;border-radius:10px;overflow:hidden;border:1px solid var(--deep-border);margin-bottom:18px;position:relative">
       <div id="csMap" style="width:100%;height:100%;z-index:1"></div>
+      <div id="csMapLoading" style="position:absolute;inset:0;z-index:10;background:var(--deep2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+        <div style="width:36px;height:36px;border:3px solid var(--deep-border);border-top-color:var(--blue);border-radius:50%;animation:csSpinner .8s linear infinite"></div>
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;letter-spacing:1px;color:var(--muted-text)">Loading Card Shops&hellip;</div>
+        <style>@keyframes csSpinner{to{transform:rotate(360deg)}}</style>
+      </div>
     </div>
 
     <!-- Shop cards grid -->
@@ -15306,10 +15311,18 @@ function initCardShops(){
   document.getElementById('csShopGrid').innerHTML='';
   document.getElementById('csBackBtn').style.display='none';
   document.getElementById('csBreadcrumb').innerHTML='<span style="color:var(--blue)">US &amp; CANADA</span>';
+  // Show loading overlay
+  const loader=document.getElementById('csMapLoading');
+  if(loader) loader.style.display='flex';
   // Load DB shops + review stats + favorites in parallel, then show map
   Promise.all([_csLoadFromDb(),_csLoadReviewStats(),_csLoadFavorites()]).then(([dbShops])=>{
     if(dbShops && dbShops.length) _csDbShops=dbShops;
-    setTimeout(()=>{_csInitMap();_csShowNational();},150);
+    setTimeout(()=>{
+      _csInitMap();_csShowNational();
+      if(loader) loader.style.display='none';
+    },150);
+  }).catch(()=>{
+    if(loader) loader.style.display='none';
   });
 }
 

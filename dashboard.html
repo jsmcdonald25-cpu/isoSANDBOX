@@ -1050,6 +1050,9 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .mv-mod-title{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(122,149,174,0.6);flex:1;font-weight:600}
 .mv-mod-link{font-family:Barlow Condensed,sans-serif;font-size:10px;color:rgba(0,170,255,0.5);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:color .15s;letter-spacing:.5px}
 .mv-mod-link:hover{color:var(--blue)}
+.mv-toggle-btn{background:none;border:1px solid var(--deep-border);border-radius:4px;padding:3px 8px;font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);cursor:pointer;transition:all .15s}
+.mv-toggle-btn:hover{border-color:rgba(0,170,255,0.3);color:var(--chrome)}
+.mv-toggle-btn.active{background:rgba(0,170,255,0.12);border-color:rgba(0,170,255,0.3);color:var(--blue)}
 .mv-mod-body{padding:16px}
 /* Stats module */
 .mv-stat-row{display:flex;gap:0;align-items:stretch;flex-wrap:wrap}
@@ -3109,14 +3112,33 @@ async function logOut(){
         </div>
       </div>
 
-      <!-- MARKET VALUE BY PLAYER — 3/4 width -->
-      <div class="mv-mod" id="mvmod-pchart" data-mod-id="pchart" style="grid-column:span 9" draggable="true">
+      <!-- PORTFOLIO BY PLAYER — left half -->
+      <div class="mv-mod" id="mvmod-pchart" data-mod-id="pchart" style="grid-column:span 6" draggable="true">
         <div class="mv-mod-head mv-mod-head-drag">
           <span class="mv-mod-drag">&#x2837;</span>
-          <span class="mv-mod-title">Market Value by Player</span>
+          <span class="mv-mod-title" id="pchart-title">Portfolio by Player</span>
+          <div style="display:flex;gap:2px;margin-left:auto">
+            <button class="mv-toggle-btn active" id="pchart-tog-cost" onclick="_pchartToggle('cost')">Total Cost</button>
+            <button class="mv-toggle-btn" id="pchart-tog-count" onclick="_pchartToggle('count')">Most Cards</button>
+          </div>
         </div>
         <div class="mv-mod-body" style="padding:10px 14px 14px;overflow-x:auto">
           <svg id="mv-pchart-svg" viewBox="0 0 380 160" style="width:380px;height:170px;display:block"></svg>
+        </div>
+      </div>
+
+      <!-- MOST VALUABLE CARDS — right half -->
+      <div class="mv-mod" id="mvmod-vchart" data-mod-id="vchart" style="grid-column:span 6" draggable="true">
+        <div class="mv-mod-head mv-mod-head-drag">
+          <span class="mv-mod-drag">&#x2837;</span>
+          <span class="mv-mod-title" id="vchart-title">Most Valuable Cards</span>
+          <div style="display:flex;gap:2px;margin-left:auto">
+            <button class="mv-toggle-btn active" id="vchart-tog-paid" onclick="_vchartToggle('paid')">Price Paid</button>
+            <button class="mv-toggle-btn" id="vchart-tog-market" onclick="_vchartToggle('market')">Market Avg</button>
+          </div>
+        </div>
+        <div class="mv-mod-body" style="padding:10px 14px 14px;overflow-x:auto">
+          <svg id="mv-vchart-svg" viewBox="0 0 380 160" style="width:380px;height:170px;display:block"></svg>
         </div>
       </div>
 
@@ -7975,6 +7997,7 @@ function renderMyVault(){
     const ev=document.getElementById('mv3-est-val'); if(ev) ev.textContent=totalEst?'$'+totalEst.toLocaleString(undefined,{maximumFractionDigits:0}):'—';
     const gv=document.getElementById('mv3-gl-val'); if(gv){ gv.textContent=(gainLoss>=0?'+':'')+`$${Math.abs(gainLoss).toLocaleString(undefined,{maximumFractionDigits:0})}`; gv.className='mv-stat-cell-val '+glClass; }
     _renderPlayerChart(data);
+    _renderValueChart(data);
     _renderBrandChart(data);
     _renderActivityFeed(data);
     _renderIsoPostModule();
@@ -8016,41 +8039,97 @@ async function _renderFavShops(){
   }
 }
 
-function _renderPlayerChart(data){
-  const el=document.getElementById('mv-pchart-svg');
-  if(!el||!data||!data.length){if(el)el.innerHTML='';return;}
-  const byP={};
-  data.forEach(c=>{const p=c.player||'Unknown';const v=parseFloat(c.estimated_value)||parseFloat(c.price_paid)||0;byP[p]=(byP[p]||0)+v;});
-  // Show ALL players, sorted by value desc — no slice cutoff.
-  const sorted=Object.entries(byP).sort((a,b)=>b[1]-a[1]);
-  if(!sorted.length){el.innerHTML='';return;}
+let _pchartMode='cost', _vchartMode='paid', _chartVaultData=null;
+
+function _pchartToggle(mode){
+  _pchartMode=mode;
+  document.getElementById('pchart-tog-cost').classList.toggle('active',mode==='cost');
+  document.getElementById('pchart-tog-count').classList.toggle('active',mode==='count');
+  _renderPlayerChart(_chartVaultData);
+}
+function _vchartToggle(mode){
+  _vchartMode=mode;
+  document.getElementById('vchart-tog-paid').classList.toggle('active',mode==='paid');
+  document.getElementById('vchart-tog-market').classList.toggle('active',mode==='market');
+  _renderValueChart(_chartVaultData);
+}
+
+function _lastNameOf(p){
+  const SUFFIXES=new Set(['jr','jr.','sr','sr.','ii','iii','iv']);
+  const parts=(p||'').trim().split(/\s+/);
+  if(parts.length>=2 && SUFFIXES.has(parts[parts.length-1].toLowerCase())) return parts.slice(-2).join(' ');
+  return parts[parts.length-1]||p;
+}
+
+function _renderBarChart(el, sorted, opts){
+  if(!el||!sorted.length){if(el)el.innerHTML='';return;}
+  const {gradId,color1,color2,isCount,onClick}=opts;
   const H=155,PL=4,PR=4,PT=22,PB=28,chartH=H-PT-PB;
-  const n=sorted.length,gap=12,barW=50;
-  // Dynamic width: expands for as many players as the user has. Scrollable
-  // container (.mv-mod-body) handles horizontal overflow.
+  const n=sorted.length,gap=6,barW=Math.min(40,Math.max(20,Math.floor((380-PL-PR)/n)-gap));
   const W=Math.max(380, PL + n*(barW+gap) + PR);
   el.setAttribute('viewBox', `0 0 ${W} ${H}`);
   el.style.width = W+'px';
-  const maxVal=sorted[0][1]*1.15;
+  const maxVal=sorted[sorted.length-1][1]*1.15||sorted[0][1]*1.15||1;
   let out='<defs>';
-  sorted.forEach((_,i)=>{out+=`<linearGradient id="bgrv${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00AAFF" stop-opacity="${(0.9-i*0.1).toFixed(2)}"/><stop offset="100%" stop-color="#003A6B" stop-opacity="${(0.5-i*0.05).toFixed(2)}"/></linearGradient>`;});
+  sorted.forEach((_,i)=>{
+    const op1=Math.max(0.3,(0.9-i*0.06)).toFixed(2);
+    const op2=Math.max(0.15,(0.5-i*0.04)).toFixed(2);
+    out+=`<linearGradient id="${gradId}${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color1}" stop-opacity="${op1}"/><stop offset="100%" stop-color="${color2}" stop-opacity="${op2}"/></linearGradient>`;
+  });
   out+='</defs>';
-  sorted.forEach(([player,val],i)=>{
+  const absMax=Math.max(...sorted.map(s=>s[1]))*1.15||1;
+  sorted.forEach(([label,val],i)=>{
     const x=PL+i*(barW+gap);
-    const bH=Math.max(4,Math.floor(chartH*(val/maxVal)));
+    const bH=Math.max(4,Math.floor(chartH*(val/absMax)));
     const y=PT+chartH-bH;
-    const lastName=(function(p){const SUFFIXES=new Set(['jr','jr.','sr','sr.','ii','iii','iv']);const parts=(p||'').trim().split(/\s+/);if(parts.length>=2 && SUFFIXES.has(parts[parts.length-1].toLowerCase())) return parts.slice(-2).join(' ');return parts[parts.length-1]||p;})(player);
-    const fmtVal=val>=1000?'$'+(val/1000).toFixed(1)+'k':'$'+Math.round(val);
-    const safe=(player||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
-    out+=`<g style="cursor:pointer" onclick="_openPlayerDetail('${safe}')"><title>Click for ${safe} detail</title>`;
-    out+=`<rect x="${x}" y="${y}" width="${barW}" height="${bH}" rx="3" fill="url(#bgrv${i})"/>`;
+    const fmtVal=isCount?val:(val>=1000?'$'+(val/1000).toFixed(1)+'k':'$'+Math.round(val));
+    const lastName=_lastNameOf(label);
+    const safe=(label||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+    const click=onClick?` onclick="${onClick}('${safe}')"`:' ';
+    out+=`<g style="cursor:pointer"${click}><title>${safe}: ${fmtVal}</title>`;
+    out+=`<rect x="${x}" y="${y}" width="${barW}" height="${bH}" rx="3" fill="url(#${gradId}${i})"/>`;
     out+=`<rect x="${x}" y="${PT}" width="${barW}" height="${chartH}" fill="transparent"/>`;
-    out+=`<text x="${x+barW/2}" y="${y-5}" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="11" fill="#00AAFF" opacity="0.9">${fmtVal}</text>`;
+    out+=`<text x="${x+barW/2}" y="${y-5}" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="11" fill="${color1}" opacity="0.9">${fmtVal}</text>`;
     out+=`<text x="${x+barW/2}" y="${H-4}" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-size="9" fill="#7A95AE">${lastName}</text>`;
     out+=`</g>`;
   });
   out+=`<line x1="${PL}" y1="${PT+chartH}" x2="${W-PR}" y2="${PT+chartH}" stroke="rgba(0,170,255,0.07)" stroke-width="1"/>`;
   el.innerHTML=out;
+}
+
+function _renderPlayerChart(data){
+  _chartVaultData=data;
+  const el=document.getElementById('mv-pchart-svg');
+  if(!el||!data||!data.length){if(el)el.innerHTML='';return;}
+
+  if(_pchartMode==='count'){
+    const byP={};
+    data.forEach(c=>{const p=c.player||'Unknown';byP[p]=(byP[p]||0)+1;});
+    const sorted=Object.entries(byP).sort((a,b)=>b[1]-a[1]).slice(0,10);
+    _renderBarChart(el,sorted,{gradId:'bgpc',color1:'#00AAFF',color2:'#003A6B',isCount:true,onClick:'_openPlayerDetail'});
+  } else {
+    const byP={};
+    data.forEach(c=>{const p=c.player||'Unknown';const v=parseFloat(c.price_paid)||0;byP[p]=(byP[p]||0)+v;});
+    let sorted=Object.entries(byP).sort((a,b)=>b[1]-a[1]);
+    const hasOver5=sorted.some(([,v])=>v>=5);
+    if(hasOver5) sorted=sorted.filter(([,v])=>v>=5);
+    sorted=sorted.slice(0,10);
+    _renderBarChart(el,sorted,{gradId:'bgpv',color1:'#00AAFF',color2:'#003A6B',isCount:false,onClick:'_openPlayerDetail'});
+  }
+}
+
+function _renderValueChart(data){
+  _chartVaultData=data;
+  const el=document.getElementById('mv-vchart-svg');
+  if(!el||!data||!data.length){if(el)el.innerHTML='';return;}
+
+  const valKey=_vchartMode==='market'?'estimated_value':'price_paid';
+  const cards=data.map(c=>({player:c.player||'Unknown',val:parseFloat(c[valKey])||0})).filter(c=>c.val>0);
+  cards.sort((a,b)=>b.val-a.val);
+  const top10=cards.slice(0,10);
+  top10.reverse();
+  const sorted=top10.map(c=>[c.player,c.val]);
+  _renderBarChart(el,sorted,{gradId:'bgvc',color1:'#00E887',color2:'#005533',isCount:false,onClick:'_openPlayerDetail'});
 }
 
 // ── Chart Detail Modal ────────────────────────────────────────────────────
@@ -9693,8 +9772,9 @@ function cdSelectVar(idx, skipShimmer){
   // Fire live market query for this variation
   if(window._cdCard) _cdLoadLiveMarket(window._cdCard, v.label);
 
-  // Fire eBay listings query for this variation
-  if(window._cdCard) _cdLoadEbayListings(window._cdCard, v.label);
+  // Fire eBay listings query for this variation — include run count (e.g. "Green /199")
+  const _ebayVarLabel = v.run ? `${v.label} /${v.run}` : v.label;
+  if(window._cdCard) _cdLoadEbayListings(window._cdCard, _ebayVarLabel);
 }
 
 function _cdShimmer(){
@@ -12131,7 +12211,7 @@ async function _cdRefreshEbayPrice(){
   }
   // Get current variation label from the active pill
   const activePill = document.querySelector('.cd-pill.active, .cd-var-pills .active');
-  const varLabel = activePill ? (activePill.textContent||'').replace(/\s*\/\d+$/,'').trim() : 'Base';
+  const varLabel = activePill ? (activePill.textContent||'').trim() : 'Base';
   await _cdLoadEbayListings(card, varLabel);
   if(btn){ btn.disabled = false; btn.innerHTML = '&#8635; Push for Current Pricing'; btn.style.opacity = ''; }
 }

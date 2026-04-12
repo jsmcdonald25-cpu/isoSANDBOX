@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Vault — Portfolio + Most Valuable Charts Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#00AAFF;--green:#00E887;--white:#FFFFFF;--chrome:#B0BEC5;--muted-text:#7A95AE;--deep1:#0D1F33;--deep2:#112840;--deep3:#143050;--deep-border:rgba(0,170,255,0.15)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--deep1);color:var(--white);font-family:'Barlow',sans-serif;font-size:15px}
+
+.container{max-width:1200px;margin:0 auto;padding:30px 24px}
+.section-label{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(122,149,174,0.4);margin-bottom:16px;font-weight:600}
+
+/* Module grid */
+.mod-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.mv-mod{background:var(--deep2);border:1px solid rgba(0,170,255,0.18);border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.4)}
+.mv-mod-head{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid rgba(0,170,255,0.1)}
+.mv-mod-drag{color:rgba(122,149,174,0.18);font-size:14px;flex-shrink:0}
+.mv-mod-title{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(122,149,174,0.6);flex:1;font-weight:600}
+.mv-mod-body{padding:10px 14px 14px}
+
+/* Toggle buttons */
+.mv-toggle-wrap{display:flex;gap:2px;margin-left:auto}
+.mv-toggle-btn{background:none;border:1px solid var(--deep-border);border-radius:4px;padding:3px 8px;font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);cursor:pointer;transition:all .15s}
+.mv-toggle-btn:hover{border-color:rgba(0,170,255,0.3);color:var(--chrome)}
+.mv-toggle-btn.active{background:rgba(0,170,255,0.12);border-color:rgba(0,170,255,0.3);color:var(--blue)}
+
+/* Before/after labels */
+.mockup-note{font-family:Barlow Condensed,sans-serif;font-size:11px;color:rgba(255,170,0,0.7);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;padding:4px 8px;background:rgba(255,170,0,0.06);border:1px solid rgba(255,170,0,0.15);border-radius:4px;display:inline-block}
+.mockup-divider{border:none;border-top:1px dashed rgba(255,170,0,0.2);margin:30px 0}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="mockup-note">BEFORE — Current Layout (single chart, span 9)</div>
+  <div style="display:grid;grid-template-columns:1fr 3fr;gap:12px;margin-bottom:12px">
+    <div class="mv-mod" style="opacity:0.4">
+      <div class="mv-mod-head">
+        <span class="mv-mod-drag">&#x2837;</span>
+        <span class="mv-mod-title">Collection Breakdown</span>
+      </div>
+      <div class="mv-mod-body" style="text-align:center;padding:20px;color:var(--muted-text);font-size:12px">(donut chart)</div>
+    </div>
+    <div class="mv-mod">
+      <div class="mv-mod-head">
+        <span class="mv-mod-drag">&#x2837;</span>
+        <span class="mv-mod-title">Market Value by Player</span>
+      </div>
+      <div class="mv-mod-body">
+        <svg viewBox="0 0 620 155" style="width:100%;height:160px">
+          <defs>
+            <linearGradient id="old0" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00AAFF" stop-opacity="0.9"/><stop offset="100%" stop-color="#003A6B" stop-opacity="0.5"/></linearGradient>
+            <linearGradient id="old1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00AAFF" stop-opacity="0.8"/><stop offset="100%" stop-color="#003A6B" stop-opacity="0.45"/></linearGradient>
+            <linearGradient id="old2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00AAFF" stop-opacity="0.7"/><stop offset="100%" stop-color="#003A6B" stop-opacity="0.4"/></linearGradient>
+            <linearGradient id="old3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00AAFF" stop-opacity="0.6"/><stop offset="100%" stop-color="#003A6B" stop-opacity="0.35"/></linearGradient>
+          </defs>
+          <rect x="4" y="22" width="50" height="95" rx="3" fill="url(#old0)"/>
+          <text x="29" y="17" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">$109</text>
+          <text x="29" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Ichiro</text>
+
+          <rect x="66" y="32" width="50" height="85" rx="3" fill="url(#old1)"/>
+          <text x="91" y="27" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">$92</text>
+          <text x="91" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Montgomery</text>
+
+          <rect x="128" y="40" width="50" height="77" rx="3" fill="url(#old1)"/>
+          <text x="153" y="35" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">$78</text>
+          <text x="153" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Griffey Jr</text>
+
+          <rect x="190" y="62" width="50" height="55" rx="3" fill="url(#old2)"/>
+          <text x="215" y="57" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">$37</text>
+          <text x="215" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Wood</text>
+
+          <rect x="252" y="68" width="50" height="49" rx="3" fill="url(#old2)"/>
+          <text x="277" y="63" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">$27</text>
+          <text x="277" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Soto</text>
+
+          <rect x="314" y="72" width="50" height="45" rx="3" fill="url(#old3)"/>
+          <text x="339" y="67" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">$25</text>
+          <text x="339" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Winfield</text>
+
+          <rect x="376" y="80" width="50" height="37" rx="3" fill="url(#old3)"/>
+          <text x="401" y="75" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">$19</text>
+          <text x="401" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Fielder</text>
+
+          <rect x="438" y="88" width="50" height="29" rx="3" fill="url(#old3)"/>
+          <text x="463" y="83" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">$9</text>
+          <text x="463" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Rodriguez</text>
+
+          <rect x="500" y="92" width="50" height="25" rx="3" fill="url(#old3)"/>
+          <text x="525" y="87" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">$5</text>
+          <text x="525" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Narvaez</text>
+
+          <rect x="562" y="100" width="50" height="17" rx="3" fill="url(#old3)"/>
+          <text x="587" y="95" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">$4</text>
+          <text x="587" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Montgomery</text>
+
+          <line x1="4" y1="117" x2="616" y2="117" stroke="rgba(0,170,255,0.07)" stroke-width="1"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <hr class="mockup-divider">
+
+  <div class="mockup-note">AFTER — New Layout (two half-width charts with toggles)</div>
+
+  <!-- ══════════════ NEW: TWO CHARTS SIDE BY SIDE ══════════════ -->
+  <div class="mod-grid">
+
+    <!-- LEFT: PORTFOLIO BY PLAYER -->
+    <div class="mv-mod">
+      <div class="mv-mod-head">
+        <span class="mv-mod-drag">&#x2837;</span>
+        <span class="mv-mod-title">Portfolio by Player</span>
+        <div class="mv-toggle-wrap">
+          <button class="mv-toggle-btn active" onclick="showToggle(this,'left','cost')">Total Cost</button>
+          <button class="mv-toggle-btn" onclick="showToggle(this,'left','count')">Most Cards</button>
+        </div>
+      </div>
+      <div class="mv-mod-body">
+        <!-- DEFAULT: Total Cost view -->
+        <div id="left-cost">
+          <svg viewBox="0 0 380 155" style="width:100%;height:160px">
+            <defs>
+              <linearGradient id="lc0" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00AAFF" stop-opacity="0.9"/><stop offset="100%" stop-color="#003A6B" stop-opacity="0.5"/></linearGradient>
+              <linearGradient id="lc1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00AAFF" stop-opacity="0.78"/><stop offset="100%" stop-color="#003A6B" stop-opacity="0.42"/></linearGradient>
+              <linearGradient id="lc2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00AAFF" stop-opacity="0.66"/><stop offset="100%" stop-color="#003A6B" stop-opacity="0.36"/></linearGradient>
+              <linearGradient id="lc3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00AAFF" stop-opacity="0.54"/><stop offset="100%" stop-color="#003A6B" stop-opacity="0.3"/></linearGradient>
+            </defs>
+            <!-- Top 10 by total cost, descending L→R. Cards under $5 filtered out. -->
+            <rect x="4" y="22" width="34" height="95" rx="3" fill="url(#lc0)"/>
+            <text x="21" y="17" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">$109</text>
+            <text x="21" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Ichiro</text>
+
+            <rect x="44" y="32" width="34" height="85" rx="3" fill="url(#lc0)"/>
+            <text x="61" y="27" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">$92</text>
+            <text x="61" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Montgy</text>
+
+            <rect x="84" y="40" width="34" height="77" rx="3" fill="url(#lc1)"/>
+            <text x="101" y="35" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">$78</text>
+            <text x="101" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Griffey Jr</text>
+
+            <rect x="124" y="62" width="34" height="55" rx="3" fill="url(#lc1)"/>
+            <text x="141" y="57" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">$37</text>
+            <text x="141" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Wood</text>
+
+            <rect x="164" y="68" width="34" height="49" rx="3" fill="url(#lc2)"/>
+            <text x="181" y="63" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">$27</text>
+            <text x="181" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Soto</text>
+
+            <rect x="204" y="72" width="34" height="45" rx="3" fill="url(#lc2)"/>
+            <text x="221" y="67" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">$25</text>
+            <text x="221" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Winfield</text>
+
+            <rect x="244" y="80" width="34" height="37" rx="3" fill="url(#lc2)"/>
+            <text x="261" y="75" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">$19</text>
+            <text x="261" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Fielder</text>
+
+            <rect x="284" y="88" width="34" height="29" rx="3" fill="url(#lc3)"/>
+            <text x="301" y="83" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">$9</text>
+            <text x="301" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Rodriguez</text>
+
+            <rect x="324" y="92" width="34" height="25" rx="3" fill="url(#lc3)"/>
+            <text x="341" y="87" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">$5</text>
+            <text x="341" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Narvaez</text>
+
+            <line x1="4" y1="117" x2="376" y2="117" stroke="rgba(0,170,255,0.07)" stroke-width="1"/>
+          </svg>
+        </div>
+        <!-- TOGGLE: Most Cards view -->
+        <div id="left-count" style="display:none">
+          <svg viewBox="0 0 380 155" style="width:100%;height:160px">
+            <defs>
+              <linearGradient id="lk0" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00AAFF" stop-opacity="0.9"/><stop offset="100%" stop-color="#003A6B" stop-opacity="0.5"/></linearGradient>
+              <linearGradient id="lk1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00AAFF" stop-opacity="0.7"/><stop offset="100%" stop-color="#003A6B" stop-opacity="0.38"/></linearGradient>
+              <linearGradient id="lk2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00AAFF" stop-opacity="0.55"/><stop offset="100%" stop-color="#003A6B" stop-opacity="0.3"/></linearGradient>
+            </defs>
+            <!-- Most cards by player count, descending L→R -->
+            <rect x="4" y="22" width="34" height="95" rx="3" fill="url(#lk0)"/>
+            <text x="21" y="17" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">5</text>
+            <text x="21" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Ichiro</text>
+
+            <rect x="44" y="32" width="34" height="85" rx="3" fill="url(#lk0)"/>
+            <text x="61" y="27" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">4</text>
+            <text x="61" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Montgy</text>
+
+            <rect x="84" y="42" width="34" height="75" rx="3" fill="url(#lk1)"/>
+            <text x="101" y="37" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">3</text>
+            <text x="101" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Griffey Jr</text>
+
+            <rect x="124" y="68" width="34" height="49" rx="3" fill="url(#lk1)"/>
+            <text x="141" y="63" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">2</text>
+            <text x="141" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Soto</text>
+
+            <rect x="164" y="68" width="34" height="49" rx="3" fill="url(#lk1)"/>
+            <text x="181" y="63" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">2</text>
+            <text x="181" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Wood</text>
+
+            <rect x="204" y="90" width="34" height="27" rx="3" fill="url(#lk2)"/>
+            <text x="221" y="85" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">1</text>
+            <text x="221" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Winfield</text>
+
+            <rect x="244" y="90" width="34" height="27" rx="3" fill="url(#lk2)"/>
+            <text x="261" y="85" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">1</text>
+            <text x="261" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Fielder</text>
+
+            <rect x="284" y="90" width="34" height="27" rx="3" fill="url(#lk2)"/>
+            <text x="301" y="85" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">1</text>
+            <text x="301" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Rodriguez</text>
+
+            <rect x="324" y="90" width="34" height="27" rx="3" fill="url(#lk2)"/>
+            <text x="341" y="85" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF">1</text>
+            <text x="341" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Narvaez</text>
+
+            <line x1="4" y1="117" x2="376" y2="117" stroke="rgba(0,170,255,0.07)" stroke-width="1"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: MOST VALUABLE CARDS -->
+    <div class="mv-mod">
+      <div class="mv-mod-head">
+        <span class="mv-mod-drag">&#x2837;</span>
+        <span class="mv-mod-title">Most Valuable Cards</span>
+        <div class="mv-toggle-wrap">
+          <button class="mv-toggle-btn active" onclick="showToggle(this,'right','paid')">Price Paid</button>
+          <button class="mv-toggle-btn" onclick="showToggle(this,'right','market')">Market Avg</button>
+        </div>
+      </div>
+      <div class="mv-mod-body">
+        <!-- DEFAULT: Price Paid view — ascending L→R (lowest left, highest right) -->
+        <div id="right-paid">
+          <svg viewBox="0 0 380 155" style="width:100%;height:160px">
+            <defs>
+              <linearGradient id="rp0" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00E887" stop-opacity="0.5"/><stop offset="100%" stop-color="#005533" stop-opacity="0.25"/></linearGradient>
+              <linearGradient id="rp1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00E887" stop-opacity="0.6"/><stop offset="100%" stop-color="#005533" stop-opacity="0.3"/></linearGradient>
+              <linearGradient id="rp2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00E887" stop-opacity="0.75"/><stop offset="100%" stop-color="#005533" stop-opacity="0.4"/></linearGradient>
+              <linearGradient id="rp3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00E887" stop-opacity="0.9"/><stop offset="100%" stop-color="#005533" stop-opacity="0.5"/></linearGradient>
+            </defs>
+            <!-- Top 10 individual cards by price_paid, ascending L→R -->
+            <rect x="4" y="100" width="34" height="17" rx="3" fill="url(#rp0)"/>
+            <text x="21" y="95" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00E887">$5</text>
+            <text x="21" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Narvaez</text>
+
+            <rect x="44" y="95" width="34" height="22" rx="3" fill="url(#rp0)"/>
+            <text x="61" y="90" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00E887">$8</text>
+            <text x="61" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Rodriguez</text>
+
+            <rect x="84" y="88" width="34" height="29" rx="3" fill="url(#rp0)"/>
+            <text x="101" y="83" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00E887">$12</text>
+            <text x="101" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Fielder</text>
+
+            <rect x="124" y="82" width="34" height="35" rx="3" fill="url(#rp1)"/>
+            <text x="141" y="77" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00E887">$15</text>
+            <text x="141" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Winfield</text>
+
+            <rect x="164" y="75" width="34" height="42" rx="3" fill="url(#rp1)"/>
+            <text x="181" y="70" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00AAFF" fill="#00E887">$20</text>
+            <text x="181" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Soto</text>
+
+            <rect x="204" y="68" width="34" height="49" rx="3" fill="url(#rp1)"/>
+            <text x="221" y="63" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00E887">$25</text>
+            <text x="221" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Wood</text>
+
+            <rect x="244" y="58" width="34" height="59" rx="3" fill="url(#rp2)"/>
+            <text x="261" y="53" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00E887">$32</text>
+            <text x="261" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Griffey Jr</text>
+
+            <rect x="284" y="48" width="34" height="69" rx="3" fill="url(#rp2)"/>
+            <text x="301" y="43" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00E887">$40</text>
+            <text x="301" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Montgy</text>
+
+            <rect x="324" y="32" width="34" height="85" rx="3" fill="url(#rp3)"/>
+            <text x="341" y="27" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00E887">$55</text>
+            <text x="341" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Ichiro</text>
+
+            <line x1="4" y1="117" x2="376" y2="117" stroke="rgba(0,232,135,0.07)" stroke-width="1"/>
+          </svg>
+        </div>
+        <!-- TOGGLE: Market Avg view -->
+        <div id="right-market" style="display:none">
+          <svg viewBox="0 0 380 155" style="width:100%;height:160px">
+            <defs>
+              <linearGradient id="rm0" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00E887" stop-opacity="0.5"/><stop offset="100%" stop-color="#005533" stop-opacity="0.25"/></linearGradient>
+              <linearGradient id="rm1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00E887" stop-opacity="0.65"/><stop offset="100%" stop-color="#005533" stop-opacity="0.35"/></linearGradient>
+              <linearGradient id="rm2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00E887" stop-opacity="0.8"/><stop offset="100%" stop-color="#005533" stop-opacity="0.45"/></linearGradient>
+              <linearGradient id="rm3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00E887" stop-opacity="0.9"/><stop offset="100%" stop-color="#005533" stop-opacity="0.5"/></linearGradient>
+            </defs>
+            <!-- Same cards but by current market avg — ascending L→R -->
+            <rect x="4" y="100" width="34" height="17" rx="3" fill="url(#rm0)"/>
+            <text x="21" y="95" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00E887">$3</text>
+            <text x="21" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Narvaez</text>
+
+            <rect x="44" y="93" width="34" height="24" rx="3" fill="url(#rm0)"/>
+            <text x="61" y="88" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00E887">$7</text>
+            <text x="61" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Fielder</text>
+
+            <rect x="84" y="88" width="34" height="29" rx="3" fill="url(#rm0)"/>
+            <text x="101" y="83" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00E887">$9</text>
+            <text x="101" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Rodriguez</text>
+
+            <rect x="124" y="80" width="34" height="37" rx="3" fill="url(#rm1)"/>
+            <text x="141" y="75" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00E887">$18</text>
+            <text x="141" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Winfield</text>
+
+            <rect x="164" y="72" width="34" height="45" rx="3" fill="url(#rm1)"/>
+            <text x="181" y="67" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00E887">$22</text>
+            <text x="181" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Wood</text>
+
+            <rect x="204" y="65" width="34" height="52" rx="3" fill="url(#rm1)"/>
+            <text x="221" y="60" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00E887">$30</text>
+            <text x="221" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Soto</text>
+
+            <rect x="244" y="52" width="34" height="65" rx="3" fill="url(#rm2)"/>
+            <text x="261" y="47" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00E887">$45</text>
+            <text x="261" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Montgy</text>
+
+            <rect x="284" y="40" width="34" height="77" rx="3" fill="url(#rm2)"/>
+            <text x="301" y="35" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00E887">$56</text>
+            <text x="301" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Griffey Jr</text>
+
+            <rect x="324" y="22" width="34" height="95" rx="3" fill="url(#rm3)"/>
+            <text x="341" y="17" text-anchor="middle" font-family="Bebas Neue" font-size="11" fill="#00E887">$78</text>
+            <text x="341" y="147" text-anchor="middle" font-family="Barlow Condensed" font-size="9" fill="#7A95AE">Ichiro</text>
+
+            <line x1="4" y1="117" x2="376" y2="117" stroke="rgba(0,232,135,0.07)" stroke-width="1"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- NOTES -->
+  <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);line-height:1.8;margin-top:10px">
+    <strong style="color:var(--blue)">Left box — Portfolio by Player:</strong><br>
+    &bull; Toggle 1 (default): Total cost spent on each player (all cards combined, price_paid)<br>
+    &bull; Toggle 2: Most cards by player (count)<br>
+    &bull; Top 10, descending left &rarr; right. Cards under $5 filtered out (unless all are under $5)<br>
+    &bull; Blue bars (same as current)<br><br>
+    <strong style="color:var(--green)">Right box — Most Valuable Cards:</strong><br>
+    &bull; Toggle 1 (default): Most expensive individual cards by price paid<br>
+    &bull; Toggle 2: Most expensive by current market avg (eBay estimated value)<br>
+    &bull; Top 10 individual cards, ascending left &rarr; right (lowest left, highest right)<br>
+    &bull; Green bars (differentiate from left box)
+  </div>
+
+</div>
+
+<script>
+function showToggle(btn, side, view){
+  const wrap = btn.parentElement;
+  wrap.querySelectorAll('.mv-toggle-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(side==='left'){
+    document.getElementById('left-cost').style.display = view==='cost'?'block':'none';
+    document.getElementById('left-count').style.display = view==='count'?'block':'none';
+  } else {
+    document.getElementById('right-paid').style.display = view==='paid'?'block':'none';
+    document.getElementById('right-market').style.display = view==='market'?'block':'none';
+  }
+}
+</script>
+</body>
+</html>

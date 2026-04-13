@@ -61,53 +61,37 @@ async function getEbayToken(clientId, clientSecret, env) {
   return JSON.parse(res.body).access_token;
 }
 
-// ── Parallel/variant tokens to exclude when searching for a BASE card ──
-// Without these, eBay returns every parallel of the same card and the
-// most expensive one wins. List is intentionally broad — covers the most
-// common color/parallel/auto/numbered/relic terms across modern sets.
-const BASE_EXCLUDE_TOKENS = [
-  'yellow','red','gold','orange','green','blue','purple','pink','black',
-  'rainbow','bronze','silver','platinum','aqua','teal','sapphire','ruby','emerald',
-  'refractor','prizm','xfractor','superfractor','wave','mojo','shimmer','disco',
-  'auto','autograph','signed','signature',
-  'patch','relic','jersey','memorabilia',
-  'printing plate','printplate','plate',
-  'ssp','sp','short print','/99','/75','/50','/25','/15','/10','/5','1/1','one of one',
-  'pmg','negative','image variation','sketch',
-];
-
-// Tokens that are part of base set names and should NOT be excluded
-// even though they sometimes appear in parallel names.
-const BASE_EXCLUDE_BLOCKLIST = new Set([
-  // (kept empty for now — add overrides here if a set name collides)
-]);
-
 // ── Build search query from card details ────────────────────
+// Assembles: year → brand → set → player → card# → variation → grade
+// The set_name may already contain year/brand, so we strip duplicates.
 function buildSearchQuery({ player, year, brand, set_name, card_number, variation, grade }) {
+  const yearStr  = year ? String(year).trim() : '';
+  const brandStr = (brand || '').trim();
+
+  // Strip sport suffix, year, and brand from set_name to get the pure set name
+  let setOnly = (set_name || '')
+    .replace(/\s+(Baseball|Football|Basketball|Hockey|Soccer)\s*$/i, '')
+    .trim();
+  // Remove leading year if set_name starts with it (e.g. "2025 Topps Stadium Club" → "Topps Stadium Club")
+  if (yearStr && setOnly.startsWith(yearStr)) setOnly = setOnly.slice(yearStr.length).trim();
+  // Remove brand if set_name starts with it after year removal (e.g. "Topps Stadium Club" → "Stadium Club")
+  if (brandStr && setOnly.toLowerCase().startsWith(brandStr.toLowerCase())) setOnly = setOnly.slice(brandStr.length).trim();
+
+  // Build query in the order sellers list cards:
+  // year → brand → set → player → card# → variation → grade
   const parts = [];
-  if (player) parts.push(player);
-  if (year) parts.push(String(year));
-  if (brand) parts.push(brand);
-  if (set_name) parts.push(set_name);
+  if (yearStr)  parts.push(yearStr);
+  if (brandStr) parts.push(brandStr);
+  if (setOnly)  parts.push(setOnly);
+  if (player)   parts.push(player);
   if (card_number) parts.push(`#${card_number}`);
 
-  // Variation handling: 'base' (or empty) → exclude common parallel tokens.
-  // Real parallel name → include it positively, quoted, so eBay matches it.
+  // Variation: include if not base
   const v = String(variation || '').trim();
-  const isBase = !v || ['base','raw'].includes(v.toLowerCase());
-  if (isBase) {
-    for (const tok of BASE_EXCLUDE_TOKENS) {
-      if (BASE_EXCLUDE_BLOCKLIST.has(tok)) continue;
-      // Quote multi-word tokens so eBay treats them as a phrase
-      parts.push(tok.includes(' ') ? `-"${tok}"` : `-${tok}`);
-    }
-  } else {
-    // Quote multi-word parallel names ("Image Variation", "Pink Refractor", etc.)
-    parts.push(v.includes(' ') ? `"${v}"` : v);
-  }
+  const isBase = !v || ['base','raw','base cards'].includes(v.toLowerCase());
+  if (!isBase) parts.push(v);
 
-  // Real grade (PSA 10, BGS 9.5, etc.) — only include if it's an actual grade,
-  // not a parallel name accidentally passed in the grade slot.
+  // Grade (PSA 10, BGS 9.5, etc.)
   if (grade && !['Raw','raw','Base','base',''].includes(grade)) parts.push(grade);
 
   return parts.join(' ');

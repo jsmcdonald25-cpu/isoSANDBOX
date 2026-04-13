@@ -7802,7 +7802,7 @@ async function openVaultCard(idx){
   window._cdFromMyVault = true;
   window._cdMyVaultIdx  = idx;
   const known=CARDS.find(c=>c&&(
-    c._cardNumber===String(row.card_number||'').replace(/^#/,'')||
+    (c._cardNumber===String(row.card_number||'').replace(/^#/,'')&&c.player===row.player)||
     (c.player===row.player&&String(c.year)===String((row.year||'').toString().slice(0,4)))
   ));
   window._cdDbCardNum=String(row.card_number||'').replace(/^#/,'')||null;

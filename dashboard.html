@@ -3103,21 +3103,27 @@ async function logOut(){
         <div class="mv-mod-head mv-mod-head-drag">
           <span class="mv-mod-drag">&#x2837;</span>
           <span class="mv-mod-title">Collection Breakdown</span>
+          <div style="display:flex;gap:2px;margin-left:auto;visibility:hidden">
+            <button class="mv-toggle-btn">X</button>
+            <button class="mv-toggle-btn">X</button>
+          </div>
         </div>
-        <div class="mv-mod-body" style="padding:10px 14px 14px;position:relative;min-height:110px">
+        <div class="mv-mod-body" style="padding:10px 14px 14px;position:relative;height:170px">
           <!-- Donut — dead center of the box -->
           <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:0">
-            <svg id="mv-bchart-svg" viewBox="0 0 110 110" style="width:90px;height:90px;display:block"></svg>
+            <svg id="mv-bchart-svg" viewBox="0 0 110 110" style="width:120px;height:120px;display:block"></svg>
           </div>
-          <div style="display:flex;align-items:center;position:relative;z-index:1;min-height:100px">
+          <div style="display:flex;align-items:center;position:relative;z-index:1;height:100%">
             <!-- Card count -->
-            <div style="flex-shrink:0;padding-left:1px;padding-right:36px;text-align:center;border-right:1px solid rgba(0,170,255,0.1)">
-              <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Total Cards</div>
-              <div style="font-family:Bebas Neue,sans-serif;font-size:56px;color:var(--white);line-height:1;letter-spacing:1px" id="mv-bchart-count">—</div>
-              <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);margin-top:2px">in My Vault</div>
+            <div style="flex-shrink:0;padding-left:11px;padding-right:36px;text-align:center;border-right:none">
+              <div style="border:1px solid var(--blue);box-shadow:0 0 10px rgba(0,170,255,0.5);border-radius:6px;padding:6px 10px">
+                <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Total Cards</div>
+                <div style="font-family:Bebas Neue,sans-serif;font-size:62px;color:var(--white);line-height:1;letter-spacing:1px" id="mv-bchart-count">—</div>
+                <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);margin-top:2px">in My Vault</div>
+              </div>
             </div>
             <!-- Legend -->
-            <div id="mv-bchart-legend" style="margin-left:auto;margin-right:-10px"></div>
+            <div id="mv-bchart-legend" style="margin-left:auto;margin-right:-20px"></div>
           </div>
         </div>
       </div>
@@ -12253,7 +12259,9 @@ function _cdSetMyVaultContext(fromMyVault){
         if(allCopies.length === 1){
           // Single copy — show the original layout
           const paid = parseFloat(row.price_paid)||0;
-          const est  = parseFloat(row.estimated_value)||0;
+          const _ckey = typeof _mvCacheKey==='function' ? _mvCacheKey(row) : null;
+          const _cval = _ckey ? _mvCacheGet(_ckey) : null;
+          const est  = _cval !== null ? _cval : (parseFloat(row.estimated_value)||0);
           const gl   = est - paid;
           const src  = row.purchase_source || '—';
           const date = row.date_acquired ? new Date(row.date_acquired).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
@@ -12276,7 +12284,9 @@ function _cdSetMyVaultContext(fromMyVault){
             const date = cp.date_acquired ? new Date(cp.date_acquired).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
             const serialDisp = cp.serial_number ? '#'+cp.serial_number+(cp.serial_total?'/'+cp.serial_total:'') : '';
             const serialDenom = cp.serial_total ? '/'+cp.serial_total : '';
-            const est = parseFloat(cp.estimated_value)||0;
+            const _cpkey = typeof _mvCacheKey==='function' ? _mvCacheKey(cp) : null;
+            const _cpval = _cpkey ? _mvCacheGet(_cpkey) : null;
+            const est = _cpval !== null ? _cpval : (parseFloat(cp.estimated_value)||0);
             const gl = est - paid;
             html += `<div>
               <div class="cd-copy-row" onclick="_cdToggleCopyDetail(this)">

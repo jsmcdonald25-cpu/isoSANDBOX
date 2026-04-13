@@ -3152,17 +3152,6 @@ async function logOut(){
         </div>
       </div>
 
-      <!-- FAVORITE SHOPS -->
-      <div class="mv-mod" id="mvmod-favshops" data-mod-id="favshops" style="grid-column:span 12" draggable="true">
-        <div class="mv-mod-head mv-mod-head-drag">
-          <span class="mv-mod-drag">&#x2837;</span>
-          <span class="mv-mod-title">My Favorite Shops</span>
-          <span class="mv-mod-link" onclick="N('cardshops',document.getElementById('nav-cardshops'))">View All Shops &rsaquo;</span>
-        </div>
-        <div class="mv-mod-body" id="mvFavShopsBody" style="padding:12px 14px">
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)">Loading...</div>
-        </div>
-      </div>
 
     </div><!-- end #mv-dash -->
 
@@ -8011,7 +8000,7 @@ function renderMyVault(){
     _renderBrandChart(data);
     _renderActivityFeed(data);
     _renderIsoPostModule();
-    _renderFavShops();
+
     const si=document.getElementById('mv3-search-input'); if(si) si.value='';
     _renderVaultGrid(data);
     _patchVaultThumbnails(data);
@@ -8025,29 +8014,6 @@ function renderMyVault(){
   });
 }
 
-async function _renderFavShops(){
-  const body=document.getElementById('mvFavShopsBody');
-  if(!body) return;
-  const user=window._authUser;
-  if(!user){body.innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)">Sign in to see your favorite shops.</div>';return;}
-  try{
-    const favs=await fetch(_SURL+'/shop_favorites?user_id=eq.'+user.id+'&select=shop_id',{headers:_sbH()}).then(r=>r.json());
-    if(!favs.length){
-      body.innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)">No favorite shops yet. Browse <span style="color:var(--blue);cursor:pointer" onclick="N(\'cardshops\',document.getElementById(\'nav-cardshops\'))">Card Shops</span> to add some.</div>';
-      return;
-    }
-    const ids=favs.map(f=>f.shop_id);
-    const shops=await fetch(_SURL+'/card_shops?id=in.('+ids.join(',')+')&select=id,name,city,state,region',{headers:{apikey:_SKEY}}).then(r=>r.json());
-    body.innerHTML='<div style="display:flex;gap:10px;flex-wrap:wrap">'+shops.map(s=>`
-      <div style="background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.15);border-radius:8px;padding:10px 14px;min-width:180px;cursor:pointer;transition:border-color .2s" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='rgba(0,170,255,0.15)'" onclick="N('cardshops',document.getElementById('nav-cardshops'))">
-        <div style="font-family:Bebas Neue,sans-serif;font-size:15px;color:var(--white);letter-spacing:.5px">${s.name}</div>
-        <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text)">${s.city||''}${s.city&&s.state?', ':''}${s.state||''}</div>
-      </div>
-    `).join('')+'</div>';
-  }catch(e){
-    body.innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)">Could not load favorite shops.</div>';
-  }
-}
 
 let _pchartMode='cost', _vchartMode='paid', _chartVaultData=null;
 

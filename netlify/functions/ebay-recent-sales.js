@@ -104,7 +104,7 @@ async function searchSoldListings(token, query, env) {
   // first regardless of whether it was the user's actual card.
   const params = new URLSearchParams({
     q: query,
-    filter: 'buyingOptions:{FIXED_PRICE|AUCTION},conditionIds:{2750|3000}',
+    filter: 'buyingOptions:{FIXED_PRICE|AUCTION}',
     limit: '50',
   });
 

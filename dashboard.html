@@ -8459,12 +8459,14 @@ function _renderVaultGrid(data){
 window._mvEbayCache = window._mvEbayCache || {};
 const _MV_CACHE_TTL = 6*60*60*1000; // 6h
 function _mvCacheKey(row){
+  const run = parseInt(row.serial_total) || 0;
   return [
     (row.player||'').toLowerCase().trim(),
     String((row.year||'')).slice(0,4),
     (row.set_name||row.set||'').toLowerCase().trim(),
     String(row.card_number||'').replace(/^#/,''),
-    (row.variation||row.parallel||'Base').toLowerCase().trim()
+    (row.variation||row.parallel||'Base').toLowerCase().trim(),
+    run > 0 ? '/'+run : ''
   ].join('|');
 }
 function _mvCacheGet(key){
@@ -8492,13 +8494,16 @@ async function _mvFetchEbayAvg(row){
   const cached = _mvCacheGet(key);
   if(cached !== null) return cached;
   const isMtg = String(row.brand||'').toLowerCase().includes('wizards');
+  const varLabel = row.variation || row.parallel || 'Base';
+  const runNum = parseInt(row.serial_total) || 0;
+  const variation = (runNum > 0 && varLabel.toLowerCase() !== 'base') ? `${varLabel} /${runNum}` : varLabel;
   const payload = {
     player:      row.player || '',
     year:        isMtg ? '' : ((row.year||'').toString().slice(0,4) || ''),
     brand:       row.brand || '',
     set_name:    row.set_name || row.set || '',
     card_number: String(row.card_number||'').replace(/^#/,''),
-    variation:   row.variation || row.parallel || 'Base'
+    variation:   variation
   };
   if(!payload.player){
     if(!window._mvDbgLogged){ window._mvDbgLogged=true; console.warn('[mvEbay] skip — no player on row', row); }

@@ -3104,10 +3104,20 @@ async function logOut(){
           <span class="mv-mod-drag">&#x2837;</span>
           <span class="mv-mod-title">Collection Breakdown</span>
         </div>
-        <div class="mv-mod-body" style="padding:10px 14px 14px">
-          <div style="display:flex;gap:12px;align-items:center">
-            <svg id="mv-bchart-svg" viewBox="0 0 140 140" style="width:120px;min-width:120px;height:120px;display:block;flex-shrink:0"></svg>
-            <div id="mv-bchart-legend" style="flex:1;min-width:0"></div>
+        <div class="mv-mod-body" style="padding:10px 14px 14px;position:relative;min-height:110px">
+          <!-- Donut — dead center of the box -->
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:0">
+            <svg id="mv-bchart-svg" viewBox="0 0 110 110" style="width:90px;height:90px;display:block"></svg>
+          </div>
+          <div style="display:flex;align-items:center;position:relative;z-index:1;min-height:100px">
+            <!-- Card count -->
+            <div style="flex-shrink:0;padding-left:1px;padding-right:36px;text-align:center;border-right:1px solid rgba(0,170,255,0.1)">
+              <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Total Cards</div>
+              <div style="font-family:Bebas Neue,sans-serif;font-size:56px;color:var(--white);line-height:1;letter-spacing:1px" id="mv-bchart-count">—</div>
+              <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);margin-top:2px">in My Vault</div>
+            </div>
+            <!-- Legend -->
+            <div id="mv-bchart-legend" style="margin-left:auto;margin-right:-10px"></div>
           </div>
         </div>
       </div>
@@ -8245,7 +8255,10 @@ function _renderBrandChart(data){
   const hasMultipleSports=Object.keys(bySport).length>1;
   const total=data.length;
   const entries=Object.entries(byBrand).sort((a,b)=>b[1]-a[1]);
-  const cx=55,cy=65,R=52,r=28;
+  // Update total card count display
+  const countEl=document.getElementById('mv-bchart-count');
+  if(countEl) countEl.textContent=total;
+  const cx=55,cy=55,R=48,r=32;
   let startA=-Math.PI/2,paths='',legendHtml='';
   // Multi-sport header — clean flex, no translateX transforms
   if(hasMultipleSports){
@@ -8269,12 +8282,20 @@ function _renderBrandChart(data){
     const safe=brand.replace(/'/g,"\\'").replace(/"/g,'&quot;');
     paths+=`<path d="M${x1.toFixed(1)},${y1.toFixed(1)} A${R},${R} 0 ${large},1 ${x2.toFixed(1)},${y2.toFixed(1)} L${xi1.toFixed(1)},${yi1.toFixed(1)} A${r},${r} 0 ${large},0 ${xi2.toFixed(1)},${yi2.toFixed(1)} Z" fill="${color}" stroke="#0D1F33" stroke-width="1.5" opacity="0.88" style="cursor:pointer" onclick="_openBrandDetail('${safe}')"><title>${brand}: ${count} cards (${pct}%)</title></path>`;
     // Clean legend row — no translateX transforms, proper flex, compact sizing
-    legendHtml+=`<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;cursor:pointer" onclick="_openBrandDetail('${safe}')"><div style="width:10px;height:10px;border-radius:2px;background:${color};flex-shrink:0"></div><div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:#7A95AE;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600">${brand}</div><div style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:#fff;flex-shrink:0">${count}</div><div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:#7A95AE;flex-shrink:0;width:28px;text-align:right">${pct}%</div></div>`;
+    legendHtml+=`<div style="width:8px;height:8px;border-radius:2px;background:${color};cursor:pointer" onclick="_openBrandDetail('${safe}')"></div><div style="font-size:11px;color:#7A95AE;font-weight:600;cursor:pointer" onclick="_openBrandDetail('${safe}')">${brand}</div><div style="font-size:11px;color:#7A95AE;text-align:right;padding-left:5px">-</div><div style="font-family:Bebas Neue,sans-serif;font-size:12px;color:#fff;text-align:left;padding-left:10px">${count}</div><div style="font-size:10px;color:#7A95AE;text-align:left">${pct}%</div>`;
     startA=endA;
   });
-  paths+=`<text x="${cx}" y="${cy-7}" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-size="12" fill="#7A95AE" letter-spacing="1">CARDS</text><text x="${cx}" y="${cy+18}" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="33" fill="#fff">${total}</text>`;
+  // No text inside donut — card count is displayed separately
   svgEl.innerHTML=paths;
-  if(legEl) legEl.innerHTML=legendHtml;
+  if(legEl){
+    legEl.style.display='grid';
+    legEl.style.gridTemplateColumns='12px auto 1fr 50px 26px';
+    legEl.style.alignItems='center';
+    legEl.style.gap='0 5px';
+    legEl.style.rowGap='4px';
+    legEl.style.fontFamily='Barlow Condensed,sans-serif';
+    legEl.innerHTML=legendHtml;
+  }
 }
 
 function _renderActivityFeed(data){

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Collection Breakdown — Redesign Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#00AAFF;--green:#00E887;--white:#FFFFFF;--chrome:#B0BEC5;--muted-text:#7A95AE;--deep1:#0D1F33;--deep2:#112840;--deep3:#143050;--deep-border:rgba(0,170,255,0.15)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--deep1);color:var(--white);font-family:'Barlow',sans-serif;font-size:15px}
+
+.container{max-width:900px;margin:0 auto;padding:30px 24px}
+.mockup-note{font-family:Barlow Condensed,sans-serif;font-size:11px;color:rgba(255,170,0,0.7);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;padding:4px 8px;background:rgba(255,170,0,0.06);border:1px solid rgba(255,170,0,0.15);border-radius:4px;display:inline-block}
+.mockup-divider{border:none;border-top:1px dashed rgba(255,170,0,0.2);margin:30px 0}
+
+.mv-mod{background:var(--deep2);border:1px solid rgba(0,170,255,0.18);border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.4)}
+.mv-mod-head{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid rgba(0,170,255,0.1)}
+.mv-mod-drag{color:rgba(122,149,174,0.18);font-size:14px;flex-shrink:0}
+.mv-mod-title{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(122,149,174,0.6);flex:1;font-weight:600}
+.mv-mod-body{padding:10px 14px 14px}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="mockup-note">BEFORE — Current Layout</div>
+  <div style="max-width:380px;margin-bottom:12px">
+    <div class="mv-mod">
+      <div class="mv-mod-head">
+        <span class="mv-mod-drag">&#x2837;</span>
+        <span class="mv-mod-title">Collection Breakdown</span>
+      </div>
+      <div class="mv-mod-body">
+        <div style="display:flex;gap:12px;align-items:center">
+          <svg viewBox="0 0 140 140" style="width:120px;min-width:120px;height:120px;display:block;flex-shrink:0">
+            <path d="M55,13 A52,52 0 1,1 20.5,96.5 L38.5,82.5 A28,28 0 1,0 55,37 Z" fill="#00AAFF" stroke="#0D1F33" stroke-width="1.5" opacity="0.88"/>
+            <path d="M20.5,96.5 A52,52 0 0,1 38,18 L42,40 A28,28 0 0,0 38.5,82.5 Z" fill="#00E887" stroke="#0D1F33" stroke-width="1.5" opacity="0.88"/>
+            <path d="M38,18 A52,52 0 0,1 55,13 L55,37 A28,28 0 0,0 42,40 Z" fill="#FFB81C" stroke="#0D1F33" stroke-width="1.5" opacity="0.88"/>
+            <text x="55" y="58" text-anchor="middle" font-family="Barlow Condensed" font-size="12" fill="#7A95AE" letter-spacing="1">CARDS</text>
+            <text x="55" y="83" text-anchor="middle" font-family="Bebas Neue" font-size="33" fill="#fff">23</text>
+          </svg>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><div style="width:10px;height:10px;border-radius:2px;background:#00AAFF;flex-shrink:0"></div><div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:#7A95AE;flex:1;font-weight:600">Topps</div><div style="font-family:Bebas Neue,sans-serif;font-size:13px;color:#fff;flex-shrink:0">19</div><div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:#7A95AE;flex-shrink:0;width:28px;text-align:right">83%</div></div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><div style="width:10px;height:10px;border-radius:2px;background:#00E887;flex-shrink:0"></div><div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:#7A95AE;flex:1;font-weight:600">Leaf</div><div style="font-family:Bebas Neue,sans-serif;font-size:13px;color:#fff;flex-shrink:0">3</div><div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:#7A95AE;flex-shrink:0;width:28px;text-align:right">13%</div></div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><div style="width:10px;height:10px;border-radius:2px;background:#FFB81C;flex-shrink:0"></div><div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:#7A95AE;flex:1;font-weight:600">Bowman</div><div style="font-family:Bebas Neue,sans-serif;font-size:13px;color:#fff;flex-shrink:0">1</div><div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:#7A95AE;flex-shrink:0;width:28px;text-align:right">4%</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="mockup-divider">
+
+  <div class="mockup-note">AFTER — Redesigned Layout</div>
+  <div style="max-width:380px;margin-bottom:12px">
+    <div class="mv-mod">
+      <div class="mv-mod-head">
+        <span class="mv-mod-drag">&#x2837;</span>
+        <span class="mv-mod-title">Collection Breakdown</span>
+      </div>
+      <div class="mv-mod-body" style="padding:10px 14px 14px;position:relative;min-height:110px">
+        <!-- Donut — dead center of the entire box -->
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:0">
+          <svg viewBox="0 0 110 110" style="width:90px;height:90px;display:block">
+            <path d="M55,7 A48,48 0 1,1 22,88 L34,76 A32,32 0 1,0 55,23 Z" fill="#00AAFF" stroke="#0D1F33" stroke-width="1.5" opacity="0.88"/>
+            <path d="M22,88 A48,48 0 0,1 38,11 L43,28 A32,32 0 0,0 34,76 Z" fill="#00E887" stroke="#0D1F33" stroke-width="1.5" opacity="0.88"/>
+            <path d="M38,11 A48,48 0 0,1 55,7 L55,23 A32,32 0 0,0 43,28 Z" fill="#FFB81C" stroke="#0D1F33" stroke-width="1.5" opacity="0.88"/>
+          </svg>
+        </div>
+        <!-- Card count (left) + Legend (right) -->
+        <div style="display:flex;align-items:center;position:relative;z-index:1;min-height:100px">
+          <!-- Card count -->
+          <div style="flex-shrink:0;padding-left:1px;padding-right:36px;text-align:center;border-right:1px solid rgba(0,170,255,0.1)">
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Total Cards</div>
+            <div style="font-family:Bebas Neue,sans-serif;font-size:56px;color:var(--white);line-height:1;letter-spacing:1px">23</div>
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);margin-top:2px">in My Vault</div>
+          </div>
+          <!-- Legend — pushed to far right -->
+          <div style="margin-left:auto;display:grid;grid-template-columns:12px auto 1fr 50px 26px;align-items:center;gap:0 5px;row-gap:4px;font-family:Barlow Condensed,sans-serif;padding-right:4px;margin-right:-10px">
+            <div style="width:8px;height:8px;border-radius:2px;background:#00AAFF"></div>
+            <div style="font-size:11px;color:#7A95AE;font-weight:600">Topps</div>
+            <div style="font-size:11px;color:#7A95AE;text-align:right;padding-left:5px">-</div>
+            <div style="font-family:Bebas Neue,sans-serif;font-size:12px;color:#fff;text-align:left;padding-left:10px">19</div>
+            <div style="font-size:10px;color:#7A95AE;text-align:left">83%</div>
+
+            <div style="width:8px;height:8px;border-radius:2px;background:#00E887"></div>
+            <div style="font-size:11px;color:#7A95AE;font-weight:600">Leaf</div>
+            <div style="font-size:11px;color:#7A95AE;text-align:right;padding-left:5px">-</div>
+            <div style="font-family:Bebas Neue,sans-serif;font-size:12px;color:#fff;text-align:left;padding-left:10px">3</div>
+            <div style="font-size:10px;color:#7A95AE;text-align:left">13%</div>
+
+            <div style="width:8px;height:8px;border-radius:2px;background:#FFB81C"></div>
+            <div style="font-size:11px;color:#7A95AE;font-weight:600">Bowman</div>
+            <div style="font-size:11px;color:#7A95AE;text-align:right;padding-left:5px">-</div>
+            <div style="font-family:Bebas Neue,sans-serif;font-size:12px;color:#fff;text-align:left;padding-left:10px">1</div>
+            <div style="font-size:10px;color:#7A95AE;text-align:left">4%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTES -->
+  <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);line-height:1.8;margin-top:20px">
+    <strong style="color:var(--blue)">Changes:</strong><br>
+    &bull; Big card count on the LEFT (15px from wall), separated by a subtle divider<br>
+    &bull; Donut + legend pushed RIGHT, tighter together (6px gap instead of 12px)<br>
+    &bull; Donut slightly smaller (90px vs 120px) to save space<br>
+    &bull; "CARDS" label removed from donut center — the big number on the left handles that now<br>
+    &bull; Percentages stay tight against legend labels
+  </div>
+
+</div>
+</body>
+</html>

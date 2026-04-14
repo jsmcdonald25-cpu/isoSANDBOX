@@ -11561,7 +11561,7 @@ function ivOpenCard(row){
           const lbl = x.subsection
             ? x.subsection
             : x.insert_name
-              ? x.insert_name + ' — ' + (x.section||x.category||'')
+              ? x.insert_name
               : (x.section||x.category||'Base');
           if(seen[lbl]) return;
           seen[lbl] = true;
@@ -11616,7 +11616,7 @@ function ivOpenCard(row){
 
       // FALLBACK: just the single clicked row
       if(!vars.length){
-        const baseLabel = row.insert_name ? row.insert_name + ' — ' + row.category : (row.category||'Base');
+        const baseLabel = row.insert_name ? row.insert_name : (row.category||'Base');
         const clr = _varPillColor(baseLabel);
         vars.push({label:baseLabel, color:clr.color, glow:clr.glow,
           run:null, isBase:clr.isBase||false, lastSale:'—', isos:0, pop:null, watching:null,

@@ -4590,7 +4590,7 @@ async function logOut(){
     <!-- Variation Name (the missing parallel) -->
     <div class="vm-section">
       <div class="vm-label">Variation / Parallel Name <span class="req">*</span> <span style="color:rgba(255,59,48,0.6);font-size:10px">&#8212; What's missing from the list?</span></div>
-      <input class="vm-input" type="text" id="mcVariationName" placeholder="e.g. Golden Hour, Ice, Sapphire..." style="font-size:15px;font-weight:600;color:var(--red)">
+      <input class="vm-input" type="text" id="mcVariationName" placeholder="e.g. GOLDEN HOUR, ICE, SAPPHIRE..." style="font-size:15px;font-weight:600;color:var(--red);text-transform:uppercase">
       <div class="vm-error" id="mcVarError">Please enter the variation name.</div>
     </div>
 
@@ -7607,7 +7607,7 @@ async function submitMissingCard(){
   let valid = true;
 
   // Variation name required
-  const varName = document.getElementById('mcVariationName').value.trim();
+  const varName = document.getElementById('mcVariationName').value.trim().toUpperCase();
   if(!varName){ document.getElementById('mcVarError').style.display='block'; valid=false; }
   else { document.getElementById('mcVarError').style.display='none'; }
 

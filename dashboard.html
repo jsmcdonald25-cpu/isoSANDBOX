@@ -27,9 +27,18 @@ window._sb = window.supabase.createClient(
   'https://jyfaegmnzkarlcximxjo.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA'
 );
+// ── Supabase config ──
+// NOTE: The anon key is required by the Supabase JS client for auth (login/signup).
+// This is by design — RLS policies on each table control what data is accessible.
+// All sensitive operations (payments, admin actions) are server-side via Netlify functions.
 const _SURL='https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1';
 const _SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
-function _sbH(){return{apikey:_SKEY,Authorization:'Bearer '+(window._userAccessToken||_SKEY)};}
+function _sbH(){
+  // Always prefer user token over anon key — anon key only for unauthenticated catalog reads
+  const token = window._userAccessToken;
+  if(!token) return {apikey:_SKEY,Authorization:'Bearer '+_SKEY};
+  return {apikey:_SKEY,Authorization:'Bearer '+token};
+}
 async function _rGet(tb,q){const r=await fetch(_SURL+'/'+tb+'?'+q,{headers:_sbH()});if(!r.ok)throw new Error('GET '+tb+' '+r.status);return r.json();}
 // Resolve pseudo-table key (e.g. pokemon_cards__Base, mtg_lorwyn_eclipsed__commander) to real Supabase table name
 function _ivRealTable(t){const s=IV_SETS&&IV_SETS.find(x=>x.table===t);if(s&&s.pokemonCols) return 'pokemon_cards'; return t.includes('__')?t.split('__')[0]:t;}
@@ -1686,7 +1695,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
   </div>
 </div>
 <!-- AUTH GATE -->
-<div id="gate" style="position:fixed;inset:0;background:#0D1F33;z-index:99999;display:none;align-items:center;justify-content:center;flex-direction:column;">
+<div id="gate" style="position:fixed;inset:0;background:#0D1F33;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;">
   <div style="width:100%;max-width:400px;padding:0 24px;text-align:center">
     <div style="font-family:Bebas Neue,sans-serif;font-size:38px;letter-spacing:4px;margin-bottom:4px"><span style="color:white">GRAIL</span><span style="color:#00AAFF">ISO</span></div>
     <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#7A95AE;margin-bottom:28px">Private Alpha</div>
@@ -1901,6 +1910,10 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
       if(gate){ gate.style.display='flex'; gate.style.pointerEvents='auto'; }
       window._ownerMode = false;
       window._authUser = null;
+      window._userAccessToken = null;
+      window._isAdmin = false;
+      window._vaultData = null;
+      window._myIsosData = null;
     }
   });
 })();
@@ -1925,13 +1938,7 @@ async function initUserProfile(user){
   // Owner mode — role flag in profiles table
   window._ownerMode = (role === 'owner');
 
-  // Bootstrap admin — auto-promote these emails on login
-  const ADMIN_EMAILS = ['scott@grailiso.com','jsmcdonald25@gmail.com'];
-  if(profile && !profile.is_admin && ADMIN_EMAILS.includes((user.email||'').toLowerCase())){
-    try { await _rPatch('profiles','id=eq.'+user.id,{is_admin:true}); profile.is_admin = true; } catch(e){}
-  }
-
-  // Admin mode — is_admin flag OR owner
+  // Admin mode — is_admin flag in profiles table OR owner role
   window._isAdmin = (profile?.is_admin === true || role === 'owner' || role === 'admin');
 
   // Populate sidebar
@@ -1979,6 +1986,9 @@ async function initUserProfile(user){
   }
   // Preload ISO count for the chip — silent, no nav side effects
   (async()=>{ try{ const r=await _rGet('isos','select=id,status&user_id=eq.'+user.id+'&status=in.(active,matched)&limit=100'); const n=(r||[]).length; const el=document.getElementById('mv-active-isos'); if(el) el.textContent=n||'0'; const b=document.getElementById('navBadge-myisos'); if(b){b.textContent=n||'';b.style.display=n?'':'none';} }catch(e){} })();
+
+  // Alpha sandbox notice — skip for admins
+  if(!window._isAdmin) _showAlphaNotice();
 }
 
 // &#9472;&#9472; Log out &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
@@ -3796,8 +3806,14 @@ async function logOut(){
         </div>
       </div>
       <div style="margin-top:12px">
-        <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Source <span style="color:rgba(122,149,174,0.5);text-transform:none;letter-spacing:0">(eBay, LCS, hobby box, etc.)</span></div>
-        <input class="vm-input" type="text" id="dupSource" placeholder="e.g. eBay, COMC, Local Card Shop">
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);margin-bottom:4px">Source</div>
+        <div class="vm-source-grid">
+          <div class="vm-source-btn" id="dupSrcEbay" onclick="_dupSelectSource('ebay')">eBay</div>
+          <div class="vm-source-btn" id="dupSrcLcs" onclick="_dupSelectSource('lcs')">LCS</div>
+          <div class="vm-source-btn" id="dupSrcFacebook" onclick="_dupSelectSource('facebook')">Facebook</div>
+          <div class="vm-source-btn" id="dupSrcOther" onclick="_dupSelectSource('other_source')">Other</div>
+        </div>
+        <input type="hidden" id="dupSource">
       </div>
       <!-- Serial # — only shown when source card has a print run. Each copy
            of a numbered card has its own serial, so this is required not
@@ -5172,7 +5188,18 @@ function toggleTheme(isLight){
 (function(){try{if(localStorage.getItem('grailiso-theme')==='light'){document.documentElement.classList.add('light');var cb=document.getElementById('themeToggle');if(cb)cb.checked=true;var dl=document.getElementById('theme-dark-lbl');var ll=document.getElementById('theme-light-lbl');if(dl)dl.classList.remove('active');if(ll)ll.classList.add('active');}}catch(e){}})();
 
 let _navSuppressHistory = false;
+
+// Pages that require authentication — everything else is gated
+const _PUBLIC_PAGES = ['guide'];
+function _requiresAuth(id){ return !_PUBLIC_PAGES.includes(id); }
+
 function N(id,el){
+  // ── Auth guard: block protected pages if not logged in ──
+  if(_requiresAuth(id) && !window._authUser){
+    const gate = document.getElementById('gate');
+    if(gate){ gate.style.display='flex'; gate.style.pointerEvents='auto'; }
+    return;
+  }
   if(id !== 'carddetail') window._prevSection = window._currentSection || null;
   window._currentSection = id; // track so token-refresh doesn't reset nav
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
@@ -9823,7 +9850,11 @@ function openAddDuplicateModal(){
   ['dupAcqBought','dupAcqPulled','dupAcqTrade'].forEach(id=>{
     const e=document.getElementById(id); if(e){ e.style.background=''; e.style.borderColor='var(--deep-border)'; }
   });
-  document.getElementById('dupSource').value = src.purchase_source || '';
+  const prevSrc = src.purchase_source || '';
+  ['dupSrcEbay','dupSrcLcs','dupSrcFacebook','dupSrcOther'].forEach(id=>{
+    const e=document.getElementById(id); if(e) e.classList.remove('selected');
+  });
+  if(prevSrc) _dupSelectSource(prevSrc); else document.getElementById('dupSource').value = '';
   document.getElementById('dupPrice').value  = '';
   document.getElementById('dupDate').value   = new Date().toISOString().slice(0,10);
   document.getElementById('dupErr').style.display = 'none';
@@ -9852,6 +9883,14 @@ function closeAddDuplicateModal(){
   const ov = document.getElementById('addDupOverlay');
   if(ov) ov.style.display = 'none';
   document.body.style.overflow = '';
+}
+function _dupSelectSource(val){
+  document.getElementById('dupSource').value = val;
+  ['dupSrcEbay','dupSrcLcs','dupSrcFacebook','dupSrcOther'].forEach(id=>{
+    const e=document.getElementById(id); if(e) e.classList.remove('selected');
+  });
+  const map={ebay:'dupSrcEbay',lcs:'dupSrcLcs',facebook:'dupSrcFacebook',other_source:'dupSrcOther'};
+  const el=document.getElementById(map[val]); if(el) el.classList.add('selected');
 }
 function _dupSetAcq(kind, el){
   _dupAcq = kind;
@@ -12476,6 +12515,13 @@ function _navDragEnd(){ this.style.opacity='1'; document.querySelectorAll('.drag
 history.pushState({panel:'overview'}, '', window.location.href);
 window.addEventListener('popstate', function(e){
   const id = (e.state && e.state.panel) ? e.state.panel : 'overview';
+  // ── Auth guard on back-button navigation ──
+  if(_requiresAuth(id) && !window._authUser){
+    const gate = document.getElementById('gate');
+    if(gate){ gate.style.display='flex'; gate.style.pointerEvents='auto'; }
+    history.pushState({panel:id}, '', window.location.href);
+    return;
+  }
   const el = document.querySelector('[onclick*="' + id + '"]') || null;
   _navSuppressHistory = true;
   N(id, el);
@@ -14462,7 +14508,7 @@ async function txnConfirmReceipt(txnId){
     const payRows = await _rGet('payments','select=stripe_payment_intent_id,amount_held&transaction_id=eq.'+txnId+'&status=eq.held&limit=1');
     if(payRows && payRows[0] && payRows[0].stripe_payment_intent_id){
       await fetch('/.netlify/functions/capture-payment', {
-        method:'POST', headers:{'Content-Type':'application/json'},
+        method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+(window._userAccessToken||'')},
         body:JSON.stringify({ transactionId:txnId, paymentIntentId:payRows[0].stripe_payment_intent_id })
       });
     }
@@ -14735,7 +14781,7 @@ async function acceptOffer(offerId){
 
       const holdRes = await fetch('/.netlify/functions/create-payment-hold', {
         method:'POST',
-        headers:{'Content-Type':'application/json'},
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+(window._userAccessToken||'')},
         body:JSON.stringify({
           transactionId: txnId,
           buyerId: user.id,
@@ -16211,5 +16257,31 @@ function startTour() {
 .tour-highlight{position:relative;z-index:100000;box-shadow:0 0 0 4px #00AAFF,0 0 20px rgba(0,170,255,0.5)!important;border-radius:8px;transition:box-shadow .3s}
 @keyframes tour-arrow-pulse{0%,100%{opacity:1;transform:translateX(0)}50%{opacity:0.6;transform:translateX(6px)}}
 </style>
+
+<!-- ── Alpha Sandbox Notice ──────────────────────────────── -->
+<div id="alpha-notice-bg" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100001;align-items:center;justify-content:center">
+<div style="background:#0D1F33;border:1px solid #00AAFF;border-radius:12px;max-width:520px;width:90%;padding:32px 28px;text-align:center;box-shadow:0 0 40px rgba(0,170,255,0.25)">
+<div style="font-size:28px;font-weight:700;color:#fff;margin-bottom:4px">&#9888;&#65039; Alpha Sandbox</div>
+<div style="font-size:13px;color:#66B2FF;margin-bottom:18px;letter-spacing:0.5px">isosandbox.com</div>
+<div style="font-size:14px;color:#ccc;line-height:1.6;margin-bottom:20px;text-align:left">
+This is the <strong style="color:#fff">alpha testing environment</strong> for GrailISO. Features, data, and functionality are under active development and may change or be reset at any time without notice.<br><br>
+By continuing to use this site you acknowledge and agree that:
+</div>
+<ul style="font-size:13px;color:#aaa;text-align:left;line-height:1.7;margin:0 0 20px 18px;padding:0">
+<li>This is <strong style="color:#ccc">not a production release</strong> — it is a sandbox for testing purposes only.</li>
+<li>Data entered during the alpha may be <strong style="color:#ccc">modified, migrated, or deleted</strong> as development progresses.</li>
+<li>GrailISO makes <strong style="color:#ccc">no guarantees</strong> regarding uptime, data retention, or feature availability.</li>
+<li>You will not hold GrailISO liable for any loss of data, interruptions, or changes to the platform during the alpha period.</li>
+<li>Feedback and bug reports are welcome and help shape the final product.</li>
+</ul>
+<button onclick="document.getElementById('alpha-notice-bg').style.display='none'" style="background:linear-gradient(135deg,#00AAFF,#0055AA);color:#fff;border:none;border-radius:8px;padding:12px 40px;font-size:15px;font-weight:600;cursor:pointer;letter-spacing:0.3px">I Understand — Continue</button>
+</div>
+</div>
+<script>
+function _showAlphaNotice(){
+  const el=document.getElementById('alpha-notice-bg');
+  if(el) el.style.display='flex';
+}
+</script>
 </body>
 </html>

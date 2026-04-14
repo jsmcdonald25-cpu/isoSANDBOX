@@ -9,6 +9,7 @@
 // ============================================================
 
 const Stripe = require('stripe');
+const { verifyAuth } = require('./utils/verify-auth');
 
 exports.handler = async (event) => {
   const headers = {
@@ -26,12 +27,34 @@ exports.handler = async (event) => {
     return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
   }
 
+  // ── Auth: verify the caller is a logged-in user ──
+  const authedUser = await verifyAuth(event);
+  if (!authedUser) {
+    return { statusCode: 401, headers, body: JSON.stringify({ error: 'Unauthorized' }) };
+  }
+
   try {
     const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
     const { transactionId, paymentIntentId, amountToCapture } = JSON.parse(event.body || '{}');
 
-    if (!paymentIntentId) {
-      return { statusCode: 400, headers, body: JSON.stringify({ error: 'paymentIntentId required' }) };
+    if (!paymentIntentId || !transactionId) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'paymentIntentId and transactionId required' }) };
+    }
+
+    // ── Verify the transaction belongs to the authenticated user ──
+    const supabaseUrl = process.env.SUPABASE_URL || 'https://jyfaegmnzkarlcximxjo.supabase.co';
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
+
+    if (supabaseServiceKey) {
+      const txnCheck = await fetch(
+        `${supabaseUrl}/rest/v1/transactions?id=eq.${transactionId}&select=buyer_id,seller_id&limit=1`,
+        { headers: { 'apikey': supabaseServiceKey, 'Authorization': `Bearer ${supabaseServiceKey}` } }
+      );
+      const txnRows = await txnCheck.json();
+      const txn = txnRows && txnRows[0];
+      if (!txn || (txn.buyer_id !== authedUser.id && txn.seller_id !== authedUser.id)) {
+        return { statusCode: 403, headers, body: JSON.stringify({ error: 'Transaction does not belong to this user' }) };
+      }
     }
 
     // Capture — optionally with a different amount (e.g., if grading fee was added)
@@ -43,9 +66,6 @@ exports.handler = async (event) => {
     const paymentIntent = await stripe.paymentIntents.capture(paymentIntentId, captureParams);
 
     // Update Supabase records
-    const supabaseUrl = process.env.SUPABASE_URL || 'https://jyfaegmnzkarlcximxjo.supabase.co';
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
-
     if (supabaseServiceKey && transactionId) {
       const capturedAmount = paymentIntent.amount_received / 100;
 

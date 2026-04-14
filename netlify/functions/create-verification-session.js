@@ -8,11 +8,12 @@
 // ============================================================
 
 const Stripe = require('stripe');
+const { verifyAuth } = require('./utils/verify-auth');
 
 exports.handler = async (event) => {
   const headers = {
     'Access-Control-Allow-Origin': 'https://grailiso.com',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Content-Type': 'application/json',
   };
@@ -25,9 +26,20 @@ exports.handler = async (event) => {
     return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
   }
 
+  // ── Auth: verify the caller is a logged-in user ──
+  const authedUser = await verifyAuth(event);
+  if (!authedUser) {
+    return { statusCode: 401, headers, body: JSON.stringify({ error: 'Unauthorized' }) };
+  }
+
   try {
     const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
     const { userId, email } = JSON.parse(event.body || '{}');
+
+    // ── Ensure the userId matches the authenticated user ──
+    if (userId !== authedUser.id) {
+      return { statusCode: 403, headers, body: JSON.stringify({ error: 'User mismatch' }) };
+    }
 
     if (!userId || !email) {
       return {

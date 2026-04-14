@@ -1943,11 +1943,6 @@ async function gateLogin() {
     // Check owner role
     const profiles = await _get('profiles', `id=eq.${data.user.id}&select=username,role,is_admin&limit=1`);
     const p = profiles && profiles[0];
-    // Bootstrap admin — auto-promote these emails
-    const ADMIN_EMAILS = ['scott@grailiso.com','jsmcdonald25@gmail.com'];
-    if(p && !p.is_admin && ADMIN_EMAILS.includes(email.toLowerCase())){
-      try { await _patch('profiles',`id=eq.${data.user.id}`,{is_admin:true}); p.is_admin = true; } catch(e){}
-    }
     if (!p || (p.role !== 'owner' && p.is_admin !== true)) {
       await _sb.auth.signOut();
       errEl.textContent = 'Access denied. Owner account required.';
@@ -3854,7 +3849,7 @@ async function alphaApproveAndInvite(id) {
     // 2) Send magic link via Netlify function
     const inviteRes = await fetch('/.netlify/functions/send-alpha-invite', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (_token || '') },
       body: JSON.stringify({ email: row.email, signupId: row.id })
     });
 
@@ -3880,7 +3875,7 @@ async function alphaResendInvite(id) {
   try {
     const inviteRes = await fetch('/.netlify/functions/send-alpha-invite', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (_token || '') },
       body: JSON.stringify({ email: row.email, signupId: row.id })
     });
 

@@ -8,13 +8,14 @@
 // ============================================================
 
 const Stripe = require('stripe');
+const { verifyAuth } = require('./utils/verify-auth');
 
 const FREE_ISO_CREDITS = 5;
 
 exports.handler = async (event) => {
   const headers = {
     'Access-Control-Allow-Origin': 'https://grailiso.com',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Content-Type': 'application/json',
   };
@@ -27,6 +28,12 @@ exports.handler = async (event) => {
     return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
   }
 
+  // ── Auth: verify the caller is a logged-in user ──
+  const authedUser = await verifyAuth(event);
+  if (!authedUser) {
+    return { statusCode: 401, headers, body: JSON.stringify({ error: 'Unauthorized' }) };
+  }
+
   try {
     const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
     const {
@@ -35,6 +42,11 @@ exports.handler = async (event) => {
       stripeCustomerId,
       paymentMethodId,
     } = JSON.parse(event.body || '{}');
+
+    // ── Ensure the userId matches the authenticated user ──
+    if (userId !== authedUser.id) {
+      return { statusCode: 403, headers, body: JSON.stringify({ error: 'User mismatch' }) };
+    }
 
     if (!userId || !setupIntentId || !stripeCustomerId) {
       return {
@@ -63,7 +75,7 @@ exports.handler = async (event) => {
     // Update Supabase profile using service key (bypasses RLS)
     // SUPABASE_SERVICE_KEY is the service_role key — NOT the anon key
     // Get it from Supabase Dashboard → Settings → API → service_role
-    const supabaseUrl = 'https://wqorfvumiljrbpjwsmal.supabase.co';
+    const supabaseUrl = process.env.SUPABASE_URL || 'https://jyfaegmnzkarlcximxjo.supabase.co';
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
 
     const profileUpdate = await fetch(

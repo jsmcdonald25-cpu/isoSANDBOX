@@ -10,6 +10,7 @@
 // ============================================================
 
 const Stripe = require('stripe');
+const { verifyAuth } = require('./utils/verify-auth');
 
 exports.handler = async (event) => {
   const headers = {
@@ -25,6 +26,12 @@ exports.handler = async (event) => {
 
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
+  }
+
+  // ── Auth: verify the caller is a logged-in user ──
+  const authedUser = await verifyAuth(event);
+  if (!authedUser) {
+    return { statusCode: 401, headers, body: JSON.stringify({ error: 'Unauthorized' }) };
   }
 
   try {
@@ -44,6 +51,11 @@ exports.handler = async (event) => {
         headers,
         body: JSON.stringify({ error: 'Missing required fields: transactionId, buyerId, amount' }),
       };
+    }
+
+    // ── Ensure the buyerId matches the authenticated user ──
+    if (buyerId !== authedUser.id) {
+      return { statusCode: 403, headers, body: JSON.stringify({ error: 'User mismatch' }) };
     }
 
     if (amount < 1) {

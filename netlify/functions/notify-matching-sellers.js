@@ -10,10 +10,12 @@
 // SETUP: SUPABASE_SERVICE_KEY in Netlify env vars
 // ============================================================
 
+const { verifyAuth } = require('./utils/verify-auth');
+
 exports.handler = async (event) => {
   const headers = {
     'Access-Control-Allow-Origin': 'https://grailiso.com',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Content-Type': 'application/json',
   };
@@ -24,6 +26,12 @@ exports.handler = async (event) => {
 
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
+  }
+
+  // ── Auth: verify the caller is a logged-in user ──
+  const authedUser = await verifyAuth(event);
+  if (!authedUser) {
+    return { statusCode: 401, headers, body: JSON.stringify({ error: 'Unauthorized' }) };
   }
 
   try {
@@ -38,7 +46,7 @@ exports.handler = async (event) => {
       maxPrice,
     } = JSON.parse(event.body || '{}');
 
-    const supabaseUrl = 'https://wqorfvumiljrbpjwsmal.supabase.co';
+    const supabaseUrl = process.env.SUPABASE_URL || 'https://jyfaegmnzkarlcximxjo.supabase.co';
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
 
     // Query seller_preferences where sport overlaps

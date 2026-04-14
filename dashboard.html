@@ -725,7 +725,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .cd-pill .pill-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--deep3);border:1px solid rgba(0,170,255,0.3);border-radius:6px;padding:5px 10px;font-size:10px;font-weight:400;letter-spacing:0;color:var(--chrome);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s;z-index:20;box-shadow:0 4px 12px rgba(0,0,0,0.4)}
 .cd-pill .pill-tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:rgba(0,170,255,0.3)}
 .cd-pill:hover .pill-tip{opacity:1}
-.cd-pill{padding:5px 8px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.3px;cursor:pointer;transition:all .25s;border:1.5px solid transparent;user-select:none;position:relative;overflow:hidden;text-align:center;white-space:nowrap;text-overflow:ellipsis}
+.cd-pill{padding:5px 10px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:all .25s;border:1.5px solid transparent;user-select:none;position:relative;overflow:hidden;text-align:center;white-space:nowrap}
 .cd-pill.active{color:#fff}
 .cd-pill:not(.active){background:rgba(0,0,0,0.2);color:var(--muted-text);border-color:var(--deep-border)}
 .cd-pill:not(.active):hover{border-color:rgba(0,170,255,0.4);color:var(--white)}
@@ -11487,6 +11487,7 @@ function _varPillColor(label){
   if(l.includes('green'))                        return {color:'#00E887',glow:'rgba(0,232,135,0.4)'};
   if(l.includes('purple'))                       return {color:'#A855F7',glow:'rgba(168,85,247,0.4)'};
   if(l.includes('orange'))                       return {color:'#FF8C00',glow:'rgba(255,140,0,0.4)'};
+  if(l.includes('bronze'))                       return {color:'#CC5500',glow:'rgba(204,85,0,0.4)'};
   if(l.includes('black'))                        return {color:'#888EA8',glow:'rgba(136,142,168,0.4)'};
   if(l.includes('white'))                        return {color:'#FFFFFF',glow:'rgba(255,255,255,0.3)'};
   if(l.includes('pink'))                         return {color:'#FF6FD8',glow:'rgba(255,111,216,0.4)'};
@@ -12247,9 +12248,14 @@ async function _cdRefreshEbayPrice(){
     if(btn){ btn.disabled = false; btn.innerHTML = '&#8635; Push for Current Pricing'; btn.style.opacity = ''; }
     return;
   }
-  // Get current variation label from the active pill
-  const activePill = document.querySelector('.cd-pill.active, .cd-var-pills .active');
-  const varLabel = activePill ? (activePill.textContent||'').trim() : 'Base';
+  // Get current variation from the data array, not DOM textContent (which includes tooltip/run text)
+  const vars = window._cdVars || [];
+  const activeIdx = vars.findIndex((v,i) => {
+    const pill = document.getElementById('cd-pill-'+i);
+    return pill && pill.classList.contains('active');
+  });
+  const v = activeIdx >= 0 ? vars[activeIdx] : null;
+  const varLabel = v ? (v.run ? `${v.label} /${v.run}` : v.label) : 'Base';
   await _cdLoadEbayListings(card, varLabel);
   if(btn){ btn.disabled = false; btn.innerHTML = '&#8635; Push for Current Pricing'; btn.style.opacity = ''; }
 }

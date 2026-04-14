@@ -10,6 +10,8 @@
 //        (Dashboard → Settings → API → service_role key)
 // ============================================================
 
+const { verifyAuth } = require('./utils/verify-auth');
+
 exports.handler = async (event) => {
   const headers = {
     'Access-Control-Allow-Origin': 'https://grailiso.com',
@@ -24,6 +26,26 @@ exports.handler = async (event) => {
 
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
+  }
+
+  // ── Auth: verify the caller is a logged-in admin ──
+  const authedUser = await verifyAuth(event);
+  if (!authedUser) {
+    return { statusCode: 401, headers, body: JSON.stringify({ error: 'Unauthorized' }) };
+  }
+
+  // Check admin status via profile
+  const supabaseUrl = process.env.SUPABASE_URL || 'https://jyfaegmnzkarlcximxjo.supabase.co';
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
+  if (supabaseServiceKey) {
+    const profRes = await fetch(`${supabaseUrl}/rest/v1/profiles?id=eq.${authedUser.id}&select=is_admin,role&limit=1`, {
+      headers: { 'apikey': supabaseServiceKey, 'Authorization': `Bearer ${supabaseServiceKey}` },
+    });
+    const profiles = await profRes.json();
+    const p = profiles && profiles[0];
+    if (!p || (p.is_admin !== true && p.role !== 'owner')) {
+      return { statusCode: 403, headers, body: JSON.stringify({ error: 'Admin access required' }) };
+    }
   }
 
   try {

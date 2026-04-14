@@ -987,6 +987,9 @@ const FN = '/.netlify/functions';
 // INIT
 // ============================================================
 const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+async function _getAuthHeader(){
+  try{const{data}=await sbClient.auth.getSession();return data?.session?.access_token?'Bearer '+data.session.access_token:'';}catch(e){return '';}
+}
 const stripe   = Stripe(STRIPE_PUBLISHABLE_KEY);
 const elements = stripe.elements({
   appearance: {
@@ -1315,7 +1318,7 @@ async function startVerification() {
   try {
     const res = await fetch(`${FN}/create-verification-session`, {
       method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': await _getAuthHeader() },
       body:    JSON.stringify({ userId: currentUser.id, email: currentUser.email }),
     });
 
@@ -1417,7 +1420,7 @@ async function saveCard() {
 
     const siRes = await fetch(`${FN}/create-setup-intent`, {
       method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': await _getAuthHeader() },
       body:    JSON.stringify({
         userId:    currentUser.id,
         email:     currentUser.email,
@@ -1448,7 +1451,7 @@ async function saveCard() {
 
     const grantRes = await fetch(`${FN}/grant-iso-credits`, {
       method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': await _getAuthHeader() },
       body:    JSON.stringify({
         userId:          currentUser.id,
         setupIntentId:   setupIntent.id,

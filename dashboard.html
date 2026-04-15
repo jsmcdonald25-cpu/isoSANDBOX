@@ -1363,6 +1363,23 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 @keyframes mcl-holo{0%{background-position:0% 0%}25%{background-position:100% 50%}50%{background-position:50% 100%}75%{background-position:0% 50%}100%{background-position:0% 0%}}
 @keyframes mcl-glint{0%{background-position:200% 0}100%{background-position:-100% 0}}
 
+/* ── My Card Library grid density ── */
+.mcl-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:8px}
+.mcl-grid.cols-6{grid-template-columns:repeat(6,1fr);gap:14px}
+.mcl-grid .iv-grid-card .iv-grid-img{height:120px}
+.mcl-grid.cols-6 .iv-grid-card .iv-grid-img{height:170px}
+.mcl-grid .iv-grid-info{padding:6px 8px 8px}
+.mcl-grid.cols-6 .iv-grid-info{padding:8px 10px 10px}
+.mcl-grid .iv-grid-player{font-size:11px}
+.mcl-grid.cols-6 .iv-grid-player{font-size:13px}
+.mcl-grid .iv-grid-price{font-size:13px}
+.mcl-grid.cols-6 .iv-grid-price{font-size:16px}
+/* MCL list */
+.mcl-list-header,.mcl-list-row{display:grid;grid-template-columns:55px 1.3fr 100px 1fr 70px 70px 70px;gap:0;align-items:center;padding:5px 10px;line-height:1.15}
+.mcl-list-header{border-bottom:1px solid var(--deep-border);font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)}
+.mcl-list-row{border-bottom:1px solid rgba(0,170,255,.07);cursor:pointer;transition:background .15s;font-family:Barlow Condensed,sans-serif}
+.mcl-list-row:hover{background:rgba(0,170,255,.06)}
+
 .mv-grid-title{font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:1.5px;color:var(--white)}
 .mv-grid-ctrl{display:flex;gap:8px;align-items:center}
 .mv-gsearch-wrap{position:relative}
@@ -3252,6 +3269,55 @@ async function logOut(){
     <span id="mv-ticker-gain" style="display:none"></span>
     <span id="mv-ticker-top" style="display:none"></span>
 
+  </div>
+
+  <!-- ═══════════════ MY CARD LIBRARY ═══════════════ -->
+  <div class="panel" id="panel-mycollection">
+    <!-- Back -->
+    <div class="cd-back-btn" onclick="N('myvault',document.querySelector('[onclick*=myvault]'))">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Back to My Vault</span>
+    </div>
+    <!-- Toolbar: search + pills + sort + set filter + view toggle + density + stats -->
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px;padding:6px 0;border-bottom:1px solid var(--deep-border)">
+      <div class="iv-card-search-wrap" style="max-width:220px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--muted-text);flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="mclSearch" placeholder="Search player, card #, or team..." oninput="_mclFilter()" autocomplete="off"/>
+      </div>
+      <div class="iv-pill-row" id="mclCatPills" style="gap:5px">
+        <div class="chip active" onclick="_mclCatFilter('all',this)">All</div>
+        <div class="chip" onclick="_mclCatFilter('Base',this)">Base</div>
+        <div class="chip" onclick="_mclCatFilter('Insert',this)">Inserts</div>
+        <div class="chip" onclick="_mclCatFilter('Auto',this)">Autos</div>
+        <div class="chip" onclick="_mclCatFilter('Rookie',this)">Rookies</div>
+        <div class="chip" onclick="_mclCatFilter('forsale',this)">For Sale</div>
+      </div>
+      <select id="mclSort" onchange="_mclFilter()" style="background:rgba(0,0,0,0.25);border:1px solid var(--deep-border);border-radius:6px;padding:5px 10px;color:var(--white);font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:.5px;outline:none;cursor:pointer">
+        <option value="card_number">Sort: Card #</option>
+        <option value="player_asc">Sort: Player A-Z</option>
+        <option value="team">Sort: Team</option>
+        <option value="set">Sort: Set</option>
+        <option value="value_desc">Sort: Value (High)</option>
+        <option value="value_asc">Sort: Value (Low)</option>
+        <option value="paid_desc">Sort: Price Paid</option>
+        <option value="gl_desc">Sort: Gain/Loss</option>
+        <option value="date_desc">Sort: Date Added</option>
+      </select>
+      <select id="mclSetFilter" onchange="_mclFilter()" style="background:rgba(0,0,0,0.25);border:1px solid var(--deep-border);border-radius:6px;padding:5px 10px;color:var(--white);font-family:Barlow Condensed,sans-serif;font-size:12px;outline:none;cursor:pointer;max-width:180px">
+        <option value="">All Sets</option>
+      </select>
+      <div class="iv-view-toggle">
+        <button class="iv-view-btn" id="mclBtnList" onclick="_mclSetView('list')">&#9776; List</button>
+        <button class="iv-view-btn active" id="mclBtnGrid" onclick="_mclSetView('grid')">&#8862; Grid</button>
+      </div>
+      <div class="iv-view-toggle">
+        <button class="iv-view-btn active" id="mclBtn10" onclick="_mclSetDensity(10)">10</button>
+        <button class="iv-view-btn" id="mclBtn6" onclick="_mclSetDensity(6)">6</button>
+      </div>
+      <div id="mclStats" style="margin-left:auto;display:flex;align-items:center;gap:6px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);white-space:nowrap"></div>
+    </div>
+    <!-- Card area -->
+    <div id="mclCardArea"></div>
   </div>
 
   <div class="panel" id="panel-myvaultcard">
@@ -5485,6 +5551,7 @@ function N(id,el){
   if(id==='mytxns')loadMyTransactions();
   if(id==='sellermatches')loadSellerMatches();
   if(id==='activelistings')loadActiveListings();
+  if(id==='mycollection')initMyCollection();
   if(id==='cardshops')_loadLeaflet().then(()=>initCardShops());
   if(id==='shopprofile')_loadLeaflet().then(()=>renderShopProfile());
   if(id==='cardshows')_loadLeaflet().then(()=>initCardShows());
@@ -10248,6 +10315,135 @@ function closeAddDuplicateModal(){
   if(ov) ov.style.display = 'none';
   document.body.style.overflow = '';
 }
+// ── My Card Library ──────────────────────────────────────
+let _mclView='grid', _mclDensity=10, _mclCat='all', _mclFiltered=[];
+
+function initMyCollection(){
+  const data = window._vaultData || [];
+  if(!data.length){ document.getElementById('mclCardArea').innerHTML='<div style="text-align:center;padding:60px 20px;color:var(--muted-text);font-size:14px">No cards in your vault yet.</div>'; return; }
+  // Populate set filter dropdown
+  const setFilter = document.getElementById('mclSetFilter');
+  const sets = [...new Set(data.map(c=>c.set_name||'').filter(Boolean))].sort();
+  setFilter.innerHTML = '<option value="">All Sets</option>' + sets.map(s=>`<option value="${s}">${s}</option>`).join('');
+  _mclFilter();
+}
+
+function _mclCatFilter(cat, el){
+  _mclCat = cat;
+  document.querySelectorAll('#mclCatPills .chip').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  _mclFilter();
+}
+
+function _mclSetView(v){
+  _mclView = v;
+  document.getElementById('mclBtnList').classList.toggle('active', v==='list');
+  document.getElementById('mclBtnGrid').classList.toggle('active', v==='grid');
+  _mclRender();
+}
+
+function _mclSetDensity(n){
+  _mclDensity = n;
+  document.getElementById('mclBtn10').classList.toggle('active', n===10);
+  document.getElementById('mclBtn6').classList.toggle('active', n===6);
+  _mclRender();
+}
+
+function _mclFilter(){
+  const data = window._vaultData || [];
+  const search = (document.getElementById('mclSearch').value||'').toLowerCase();
+  const setVal = document.getElementById('mclSetFilter').value;
+  const sort = document.getElementById('mclSort').value;
+
+  let filtered = data.filter(c=>{
+    if(_mclCat==='forsale') return c.is_for_sale;
+    if(_mclCat==='Base') return (c.category||c.variation||'').toLowerCase()==='base';
+    if(_mclCat==='Insert') return /insert/i.test(c.category||c.variation||'');
+    if(_mclCat==='Auto') return /auto/i.test(c.category||c.variation||'');
+    if(_mclCat==='Rookie') return c.is_rookie;
+    return true;
+  });
+  if(search) filtered = filtered.filter(c=>(c.player||'').toLowerCase().includes(search)||(c.card_number||'').toLowerCase().includes(search)||(c.team||'').toLowerCase().includes(search));
+  if(setVal) filtered = filtered.filter(c=>c.set_name===setVal);
+
+  // Sort
+  const num = s => parseFloat(s)||0;
+  const cmp = {
+    card_number: (a,b)=>String(a.card_number||'').localeCompare(String(b.card_number||''),undefined,{numeric:true}),
+    player_asc:  (a,b)=>(a.player||'').localeCompare(b.player||''),
+    team:        (a,b)=>(a.team||'').localeCompare(b.team||''),
+    set:         (a,b)=>(a.set_name||'').localeCompare(b.set_name||''),
+    value_desc:  (a,b)=>num(b.estimated_value)-num(a.estimated_value),
+    value_asc:   (a,b)=>num(a.estimated_value)-num(b.estimated_value),
+    paid_desc:   (a,b)=>num(b.price_paid)-num(a.price_paid),
+    gl_desc:     (a,b)=>(num(b.estimated_value)-num(b.price_paid))-(num(a.estimated_value)-num(a.price_paid)),
+    date_desc:   (a,b)=>(b.created_at||'').localeCompare(a.created_at||''),
+  };
+  if(cmp[sort]) filtered.sort(cmp[sort]);
+  _mclFiltered = filtered;
+
+  // Stats
+  const totalVal = filtered.reduce((s,c)=>s+num(c.estimated_value),0);
+  const totalPaid = filtered.reduce((s,c)=>s+num(c.price_paid),0);
+  const gl = totalVal - totalPaid;
+  const setsCount = new Set(filtered.map(c=>c.set_name).filter(Boolean)).size;
+  const statsEl = document.getElementById('mclStats');
+  if(statsEl) statsEl.innerHTML=`<strong style="color:var(--white)">${filtered.length}</strong> cards · <strong style="color:var(--white)">${setsCount}</strong> sets <span style="color:var(--deep-border);margin:0 2px">|</span> <span style="font-family:Bebas Neue,sans-serif;font-size:14px;color:var(--blue)">$${totalVal.toFixed(2)}</span> Value <span style="color:var(--deep-border);margin:0 2px">|</span> <span style="font-family:Bebas Neue,sans-serif;font-size:14px;color:var(--white)">$${totalPaid.toFixed(2)}</span> Paid <span style="color:var(--deep-border);margin:0 2px">|</span> <span style="font-family:Bebas Neue,sans-serif;font-size:14px;color:${gl>=0?'var(--green)':'var(--red)'}">${gl>=0?'+':''}$${gl.toFixed(2)}</span> Gain/Loss`;
+
+  _mclRender();
+}
+
+function _mclRender(){
+  const el = document.getElementById('mclCardArea');
+  if(!el) return;
+  const data = _mclFiltered;
+  if(!data.length){ el.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted-text);font-size:13px">No cards match your filters.</div>'; return; }
+
+  if(_mclView==='list'){
+    const header = `<div class="mcl-list-header"><div>#</div><div>Player</div><div>Team</div><div>Set</div><div style="text-align:right">Paid</div><div style="text-align:right">Value</div><div style="text-align:right">Gain/Loss</div></div>`;
+    const rows = data.map((c,i)=>{
+      const paid = parseFloat(c.price_paid)||0;
+      const val = parseFloat(c.estimated_value)||0;
+      const gl = val - paid;
+      const badges = [];
+      if(c.is_rookie) badges.push('<span style="background:rgba(0,170,255,0.12);color:var(--blue);font-size:9px;padding:2px 6px;border-radius:3px;font-weight:700;margin-left:4px">RC</span>');
+      if(/auto/i.test(c.category||c.variation||'')) badges.push('<span style="background:rgba(255,184,0,0.12);color:var(--gold);font-size:9px;padding:2px 6px;border-radius:3px;font-weight:700;margin-left:4px">AUTO</span>');
+      if(c.is_for_sale) badges.push('<span style="background:rgba(0,232,135,0.12);color:var(--green);font-size:9px;padding:2px 6px;border-radius:3px;font-weight:700;margin-left:4px">FOR SALE</span>');
+      const idx = (window._vaultData||[]).indexOf(c);
+      return `<div class="mcl-list-row" onclick="openVaultCard(${idx})"><div style="font-size:12px;color:var(--blue)">${c.card_number||'—'}</div><div><span style="font-size:13px;font-weight:700">${c.player||'—'}</span>${badges.join('')}</div><div style="font-size:12px;color:var(--muted-text)">${c.team||''}</div><div style="font-size:11px;color:var(--muted-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.set_name||''}</div><div style="font-size:13px;font-weight:700;text-align:right;color:var(--white)">$${paid.toFixed(2)}</div><div style="font-size:13px;font-weight:700;text-align:right;color:var(--blue)">$${val.toFixed(2)}</div><div style="font-size:13px;font-weight:700;text-align:right;color:${gl>=0?'var(--green)':'var(--red)'}">${gl>=0?'+':''}$${gl.toFixed(2)}</div></div>`;
+    }).join('');
+    el.innerHTML = header + rows;
+  } else {
+    const densityCls = _mclDensity===6 ? 'mcl-grid cols-6' : 'mcl-grid';
+    const cards = data.map((c,i)=>{
+      const val = parseFloat(c.estimated_value)||0;
+      const paid = parseFloat(c.price_paid)||0;
+      const gl = val - paid;
+      const img = c.front_image_url;
+      const ph = window._GRAIL_PH||'';
+      const idx = (window._vaultData||[]).indexOf(c);
+      const fsBadge = c.is_for_sale ? `<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,232,135,0.15);padding:3px 0;text-align:center;font-size:10px;letter-spacing:1px;color:var(--green);font-weight:600;font-family:Barlow Condensed,sans-serif">FOR SALE</div>` : '';
+      const badges = [];
+      if(c.is_rookie) badges.push('<span style="background:rgba(0,170,255,0.12);color:var(--blue);font-size:9px;padding:2px 6px;border-radius:3px;font-weight:700">RC</span>');
+      if(/auto/i.test(c.category||c.variation||'')) badges.push('<span style="background:rgba(255,184,0,0.12);color:var(--gold);font-size:9px;padding:2px 6px;border-radius:3px;font-weight:700">AUTO</span>');
+      return `<div class="iv-grid-card${c.is_for_sale?' for-sale':''}" onclick="openVaultCard(${idx})" style="cursor:pointer">
+        <div class="iv-grid-img">${img?`<img src="${img}" loading="lazy" style="width:100%;height:100%;object-fit:cover">`:`<div style="font-size:38px;color:rgba(122,149,174,0.12)">&#9918;</div>`}${fsBadge}</div>
+        <div class="iv-grid-info">
+          <div class="iv-grid-player">${c.player||'—'}</div>
+          <div class="iv-grid-num">#${c.card_number||'—'}</div>
+          <div class="iv-grid-cat" style="font-size:10px;color:var(--muted-text)">${c.variation||c.category||'Base'} · ${c.set_name||''}</div>
+          ${badges.length?'<div style="display:flex;gap:3px;margin-top:3px">'+badges.join('')+'</div>':''}
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:5px">
+            <div class="iv-grid-price">$${val.toFixed(2)}</div>
+            <div style="font-size:10px;font-weight:600;color:${gl>=0?'var(--green)':'var(--red)'}">${gl>=0?'+':''}$${gl.toFixed(2)}</div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    el.innerHTML = `<div class="${densityCls}">${cards}</div>`;
+  }
+}
+
 function _dupSelectSource(val){
   document.getElementById('dupSource').value = val;
   ['dupSrcEbay','dupSrcLcs','dupSrcFacebook','dupSrcOther'].forEach(id=>{

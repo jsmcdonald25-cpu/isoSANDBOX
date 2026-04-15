@@ -1966,13 +1966,18 @@ async function initUserProfile(user){
   const acctUsername = document.getElementById('acct-username');
   const acctEmail    = document.getElementById('acct-email');
   const acctRole     = document.getElementById('acct-role');
-  if(acctFirst)    acctFirst.textContent    = profile?.first_name || '';
-  if(acctLast)     acctLast.textContent     = profile?.last_name  || '';
+  const meta = user.user_metadata || {};
+  if(acctFirst)    acctFirst.textContent    = profile?.first_name || meta.first_name || '';
+  if(acctLast)     acctLast.textContent     = profile?.last_name  || meta.last_name  || '';
   if(acctUsername) acctUsername.textContent = profile?.username ? '@'+profile.username : '—';
   if(acctEmail)    acctEmail.textContent    = user.email || '';
   if(acctRole)     acctRole.textContent     = role === 'owner' ? 'Owner / Admin' : role === 'admin' ? 'Admin' : 'Collector / Buyer';
   const acctCreditsEl = document.getElementById('acct-credits');
   if(acctCreditsEl) acctCreditsEl.textContent = credits;
+
+  // Populate address fields from profile
+  const addrFields = ['billing_street','billing_city','billing_state','billing_zip','shipping_street','shipping_city','shipping_state','shipping_zip'];
+  addrFields.forEach(f=>{ const el=document.getElementById('acct-'+f); if(el) el.value = profile?.[f] || ''; });
 
   // Show / hide admin nav items
   // My Vault is the landing page — ONLY on first login, not on token refresh
@@ -3983,9 +3988,9 @@ async function logOut(){
     <div class="two-col">
       <div class="card-block"><div class="card-block-title"><div class="dot"></div> Profile</div>
         <div class="acct-grid">
-          <div class="af"><div class="af-label">First Name</div><div class="af-val" id="acct-first">Jason</div></div>
-          <div class="af"><div class="af-label">Last Name</div><div class="af-val" id="acct-last">McDonald</div></div>
-          <div class="af" style="grid-column:1/-1"><div class="af-label">Username</div><div class="af-val" id="acct-username" style="color:var(--blue)">@jsmcdonald25</div></div>
+          <div class="af"><div class="af-label">First Name</div><div class="af-val" id="acct-first"></div></div>
+          <div class="af"><div class="af-label">Last Name</div><div class="af-val" id="acct-last"></div></div>
+          <div class="af" style="grid-column:1/-1"><div class="af-label">Username</div><div class="af-val" id="acct-username" style="color:var(--blue)"></div></div>
           <div class="af" style="grid-column:1/-1"><div class="af-label">Email <span style="font-size:9px;color:var(--muted-text);letter-spacing:1px">— PRIVATE, NEVER SHOWN</span></div><div class="af-val" id="acct-email"></div></div>
           <div class="af" style="grid-column:1/-1"><div class="af-label">Role</div><div class="af-val" id="acct-role">Collector / Buyer</div></div>
         </div>
@@ -3997,6 +4002,35 @@ async function logOut(){
           <button class="btn btn-ghost btn-sm" onclick="T('Credit packs launch with the marketplace. Contact us for early access.')">5 Credits &#8212; $5</button>
           <button class="btn btn-ghost btn-sm" onclick="T('Credit packs launch with the marketplace. Contact us for early access.')">10 Credits &#8212; $10</button>
           <button class="btn btn-primary btn-sm" onclick="T('Credit packs launch with the marketplace. Contact us for early access.')">25 Credits &#8212; $25</button>
+        </div>
+      </div>
+    </div>
+    <!-- Addresses -->
+    <div class="two-col">
+      <div class="card-block">
+        <div class="card-block-title"><div class="dot" style="background:var(--blue)"></div> Billing Address <span style="font-size:9px;color:var(--red);letter-spacing:1px;margin-left:6px">REQUIRED</span></div>
+        <div class="acct-grid">
+          <div class="af" style="grid-column:1/-1"><div class="af-label">Street Address</div><input class="vm-input" type="text" id="acct-billing_street" placeholder="123 Main St, Apt 4"></div>
+          <div class="af"><div class="af-label">City</div><input class="vm-input" type="text" id="acct-billing_city" placeholder="Nashville"></div>
+          <div class="af"><div class="af-label">State</div><input class="vm-input" type="text" id="acct-billing_state" placeholder="TN" maxlength="2" style="text-transform:uppercase"></div>
+          <div class="af"><div class="af-label">ZIP Code</div><input class="vm-input" type="text" id="acct-billing_zip" placeholder="37201" maxlength="10"></div>
+        </div>
+        <div style="margin-top:10px">
+          <label style="display:flex;align-items:center;gap:8px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);cursor:pointer">
+            <input type="checkbox" id="acct-same-address" onchange="_acctCopyBilling(this.checked)" style="accent-color:var(--blue)"> Shipping address same as billing
+          </label>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="_acctSaveAddresses()" style="margin-top:12px" id="acct-addr-save-btn">SAVE ADDRESSES</button>
+        <div id="acct-addr-err" style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--red);margin-top:6px;display:none"></div>
+        <div id="acct-addr-ok" style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--green);margin-top:6px;display:none"></div>
+      </div>
+      <div class="card-block">
+        <div class="card-block-title"><div class="dot" style="background:var(--blue)"></div> Shipping Address <span style="font-size:9px;color:var(--red);letter-spacing:1px;margin-left:6px">REQUIRED</span></div>
+        <div class="acct-grid" id="acct-shipping-fields">
+          <div class="af" style="grid-column:1/-1"><div class="af-label">Street Address</div><input class="vm-input" type="text" id="acct-shipping_street" placeholder="123 Main St, Apt 4"></div>
+          <div class="af"><div class="af-label">City</div><input class="vm-input" type="text" id="acct-shipping_city" placeholder="Nashville"></div>
+          <div class="af"><div class="af-label">State</div><input class="vm-input" type="text" id="acct-shipping_state" placeholder="TN" maxlength="2" style="text-transform:uppercase"></div>
+          <div class="af"><div class="af-label">ZIP Code</div><input class="vm-input" type="text" id="acct-shipping_zip" placeholder="37201" maxlength="10"></div>
         </div>
       </div>
     </div>
@@ -13553,6 +13587,52 @@ async function _updateMarketPrice(card, variation, newPrice, acqType, sbHeaders,
 }
 
 // ── Seller Preferences ──────────────────────────────────────────────────────
+// ── Address helpers ──
+function _acctCopyBilling(checked){
+  const fields = ['street','city','state','zip'];
+  const shipBlock = document.getElementById('acct-shipping-fields');
+  if(checked){
+    fields.forEach(f=>{
+      const src = document.getElementById('acct-billing_'+f);
+      const dst = document.getElementById('acct-shipping_'+f);
+      if(src && dst){ dst.value = src.value; dst.disabled = true; dst.style.opacity='0.5'; }
+    });
+  } else {
+    fields.forEach(f=>{
+      const dst = document.getElementById('acct-shipping_'+f);
+      if(dst){ dst.disabled = false; dst.style.opacity='1'; }
+    });
+  }
+}
+async function _acctSaveAddresses(){
+  const errEl = document.getElementById('acct-addr-err');
+  const okEl = document.getElementById('acct-addr-ok');
+  errEl.style.display='none'; okEl.style.display='none';
+  const bs = document.getElementById('acct-billing_street').value.trim();
+  const bc = document.getElementById('acct-billing_city').value.trim();
+  const bst = document.getElementById('acct-billing_state').value.trim().toUpperCase();
+  const bz = document.getElementById('acct-billing_zip').value.trim();
+  if(!bs || !bc || !bst || !bz){ errEl.textContent='All billing address fields are required.'; errEl.style.display='block'; return; }
+  const same = document.getElementById('acct-same-address').checked;
+  const ss = same ? bs : document.getElementById('acct-shipping_street').value.trim();
+  const sc = same ? bc : document.getElementById('acct-shipping_city').value.trim();
+  const sst = same ? bst : document.getElementById('acct-shipping_state').value.trim().toUpperCase();
+  const sz = same ? bz : document.getElementById('acct-shipping_zip').value.trim();
+  if(!ss || !sc || !sst || !sz){ errEl.textContent='All shipping address fields are required.'; errEl.style.display='block'; return; }
+  const btn = document.getElementById('acct-addr-save-btn');
+  btn.disabled=true; btn.textContent='SAVING…';
+  try {
+    const {data:{user}} = await window._sb.auth.getUser();
+    if(!user) throw new Error('Not signed in');
+    await _rPatch('profiles','id=eq.'+user.id,{
+      billing_street:bs, billing_city:bc, billing_state:bst, billing_zip:bz,
+      shipping_street:ss, shipping_city:sc, shipping_state:sst, shipping_zip:sz
+    });
+    okEl.textContent='Addresses saved.'; okEl.style.display='block';
+  } catch(e){ errEl.textContent='Failed to save: '+e.message; errEl.style.display='block'; }
+  btn.disabled=false; btn.textContent='SAVE ADDRESSES';
+}
+
 let _sellerSports = [];
 
 function toggleSellerMode(on){

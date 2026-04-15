@@ -1975,7 +1975,9 @@ async function initUserProfile(user){
   const acctCreditsEl = document.getElementById('acct-credits');
   if(acctCreditsEl) acctCreditsEl.textContent = credits;
 
-  // Populate address fields from profile
+  // Populate phone + address fields from profile
+  const phoneEl = document.getElementById('acct-phone');
+  if(phoneEl) phoneEl.value = profile?.phone || '';
   const addrFields = ['billing_street','billing_city','billing_state','billing_zip','shipping_street','shipping_city','shipping_state','shipping_zip'];
   addrFields.forEach(f=>{ const el=document.getElementById('acct-'+f); if(el) el.value = profile?.[f] || ''; });
 
@@ -3992,6 +3994,7 @@ async function logOut(){
           <div class="af"><div class="af-label">Last Name</div><div class="af-val" id="acct-last"></div></div>
           <div class="af" style="grid-column:1/-1"><div class="af-label">Username</div><div class="af-val" id="acct-username" style="color:var(--blue)"></div></div>
           <div class="af" style="grid-column:1/-1"><div class="af-label">Email <span style="font-size:9px;color:var(--muted-text);letter-spacing:1px">— PRIVATE, NEVER SHOWN</span></div><div class="af-val" id="acct-email"></div></div>
+          <div class="af" style="grid-column:1/-1"><div class="af-label">Phone <span style="font-size:9px;color:var(--muted-text);letter-spacing:1px">— PRIVATE, NEVER SHOWN</span></div><input class="vm-input" type="tel" id="acct-phone" placeholder="(615) 555-1234" style="margin-top:4px"></div>
           <div class="af" style="grid-column:1/-1"><div class="af-label">Role</div><div class="af-val" id="acct-role">Collector / Buyer</div></div>
         </div>
         <div style="margin-top:14px"><button class="btn btn-ghost" onclick="T('Profile editing launches with the next update.')">Edit Profile</button></div>
@@ -13624,7 +13627,9 @@ async function _acctSaveAddresses(){
   try {
     const {data:{user}} = await window._sb.auth.getUser();
     if(!user) throw new Error('Not signed in');
+    const phone = document.getElementById('acct-phone').value.trim() || null;
     await _rPatch('profiles','id=eq.'+user.id,{
+      phone:phone,
       billing_street:bs, billing_city:bc, billing_state:bst, billing_zip:bz,
       shipping_street:ss, shipping_city:sc, shipping_state:sst, shipping_zip:sz
     });

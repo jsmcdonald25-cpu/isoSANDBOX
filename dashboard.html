@@ -23,10 +23,15 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <!-- Leaflet deferred — only loaded when Card Shops or Card Shows panel opens -->
-<script data-cfasync="false" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.103.1/dist/umd/supabase.js"></script>
-<script data-cfasync="false" src="https://unpkg.com/@supabase/supabase-js@2.103.1/dist/umd/supabase.js" nomodule></script>
+<script data-cfasync="false" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.103.1/dist/umd/supabase.js" onerror="var s=document.createElement('script');s.src='https://unpkg.com/@supabase/supabase-js@2.103.1/dist/umd/supabase.js';document.head.appendChild(s);"></script>
 <script data-cfasync="false">
-if(!window.supabase){document.getElementById('gate').innerHTML='<div style="text-align:center;padding:40px;color:#FF3B5C;font-family:Barlow Condensed,sans-serif;font-size:16px">Failed to load — please refresh the page.<br><button onclick="location.reload()" style="margin-top:16px;padding:10px 24px;background:#00AAFF;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px">Refresh</button></div>';}
+if(!window.supabase){
+  document.addEventListener('DOMContentLoaded',function(){
+    var g=document.getElementById('gate');
+    if(g) g.innerHTML='<div style="text-align:center;padding:40px;color:#FF3B5C;font-family:Barlow Condensed,sans-serif;font-size:16px">Failed to load — please refresh the page.<br><button onclick="location.reload()" style="margin-top:16px;padding:10px 24px;background:#00AAFF;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px">Refresh</button></div>';
+  });
+  throw new Error('Supabase JS failed to load');
+}
 window._sb = window.supabase.createClient(
   'https://jyfaegmnzkarlcximxjo.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA'

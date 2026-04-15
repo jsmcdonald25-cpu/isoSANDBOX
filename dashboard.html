@@ -12307,29 +12307,28 @@ function closeCommunityPanel(){
 }
 
 // &#9472;&#9472; ISOVault Market Price Cache (per set load) &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
-window._ivMarketCache = {}; // card_number → avg price paid
+window._ivMarketCache = {}; // card_number → avg price
+window._ivEbayCached = {};  // card_number → true (fresh cache exists)
 
 async function _ivLoadMarketPrices(table){
   window._ivMarketCache = {};
+  window._ivEbayCached = {};
+  const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+  const SB = 'https://jyfaegmnzkarlcximxjo.supabase.co';
+  const setDef = (IV_SETS||[]).find(s => s.table === table);
+  const setBrand = setDef ? setDef.brand : null;
+  const cardNums = Array.from(new Set((_ivData||[]).map(c => (c.card_number||'').toString()).filter(Boolean)));
+  if(!cardNums.length) return;
+
+  // STEP 1: Vault prices (user-paid — takes priority over eBay)
   try {
-    // Build list of card numbers loaded for this set, scoped by brand to avoid cross-set collisions
-    const setDef = (IV_SETS||[]).find(s => s.table === table);
-    const setBrand = setDef ? setDef.brand : null;
-    const cardNums = Array.from(new Set((_ivData||[]).map(c => (c.card_number||'').toString()).filter(Boolean)));
-    if(!cardNums.length) return;
-    const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
-    // Chunk card_numbers to avoid URL length limits (~200 per request)
     const CHUNK = 200;
     for(let i = 0; i < cardNums.length; i += CHUNK){
       const chunk = cardNums.slice(i, i + CHUNK);
       const inList = chunk.map(n => `"${n.replace(/"/g,'\\"')}"`).join(',');
-      let url = 'https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault'
-        + '?select=card_number,price_paid,variation,brand'
+      let url = SB+'/rest/v1/vault?select=card_number,price_paid,variation,brand'
         + '&card_number=in.(' + encodeURIComponent(inList) + ')'
-        + '&acquisition_type=in.(bought_single,pulled)'
-        + '&price_paid=not.is.null'
-        + '&market_excluded=not.is.true'
-        + '&limit=1000';
+        + '&acquisition_type=in.(bought_single,pulled)&price_paid=not.is.null&market_excluded=not.is.true&limit=1000';
       if(setBrand) url += '&brand=eq.' + encodeURIComponent(setBrand);
       const r = await fetch(url, { headers:{ 'apikey': SKEY, 'Authorization': 'Bearer ' + SKEY } });
       if(!r.ok) continue;
@@ -12342,12 +12341,83 @@ async function _ivLoadMarketPrices(table){
         window._ivMarketCache[k].n   += 1;
       });
     }
-    // Collapse to avg
     Object.keys(window._ivMarketCache).forEach(k => {
       const v = window._ivMarketCache[k];
       window._ivMarketCache[k] = v.n ? (v.sum / v.n) : null;
     });
-  } catch(e){ console.warn('Market cache error:', e); }
+  } catch(e){ console.warn('Vault price error:', e); }
+
+  // STEP 2: eBay price cache from Supabase (instant read, no eBay API call)
+  try {
+    const CHUNK = 200;
+    for(let i = 0; i < cardNums.length; i += CHUNK){
+      const chunk = cardNums.slice(i, i + CHUNK);
+      const inList = chunk.map(n => `"${n.replace(/"/g,'\\"')}"`).join(',');
+      const url = SB+'/rest/v1/ebay_price_cache?select=card_number,avg_price,last_fetched'
+        + '&set_table=eq.' + encodeURIComponent(table)
+        + '&card_number=in.(' + encodeURIComponent(inList) + ')&limit=1000';
+      const r = await fetch(url, { headers:{ 'apikey': SKEY, 'Authorization': 'Bearer ' + SKEY } });
+      if(!r.ok) continue;
+      const data = await r.json();
+      if(!data || !data.length) continue;
+      data.forEach(row => {
+        const k = (row.card_number||'').toString();
+        // eBay cache fills gaps where no vault price exists
+        if(!window._ivMarketCache[k] && row.avg_price != null){
+          window._ivMarketCache[k] = parseFloat(row.avg_price);
+        }
+        // Track fresh cache entries (< 24h old) so we don't re-fetch
+        if(row.last_fetched){
+          const age = Date.now() - new Date(row.last_fetched).getTime();
+          if(age < 24*60*60*1000) window._ivEbayCached[k] = true;
+        }
+      });
+    }
+  } catch(e){ console.warn('eBay cache read error:', e); }
+
+  // STEP 3: Fire eBay API for uncached cards (background, non-blocking)
+  const uncached = cardNums.filter(n => !window._ivMarketCache[n] && !window._ivEbayCached[n]);
+  if(uncached.length && setDef){
+    _ivFetchEbayBatch(uncached, setDef, table);
+  }
+}
+
+// ── Background eBay batch fetcher (25 cards per request) ─────────────
+async function _ivFetchEbayBatch(nums, setDef, table){
+  const BATCH = 25;
+  const cardMap = {};
+  (_ivData||[]).forEach(c => { cardMap[(c.card_number||'').toString()] = c; });
+
+  for(let i = 0; i < nums.length; i += BATCH){
+    const batch = nums.slice(i, i + BATCH);
+    const cards = batch.map(n => {
+      const c = cardMap[n];
+      return { card_number: n, player: c ? (c.player||c.player_name||'') : '' };
+    }).filter(c => c.player);
+    if(!cards.length) continue;
+
+    try {
+      const resp = await fetch('/.netlify/functions/ebay-set-prices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cards, set_table: table,
+          year: setDef.year||null, brand: setDef.brand||null,
+          set_name: setDef.name||setDef.label||null
+        })
+      });
+      if(!resp.ok) continue;
+      const data = await resp.json();
+      if(data.results){
+        data.results.forEach(r => {
+          if(r.avg_price != null && !window._ivMarketCache[r.card_number]){
+            window._ivMarketCache[r.card_number] = r.avg_price;
+          }
+        });
+        _ivRenderCards(); // Re-render with new prices as they arrive
+      }
+    } catch(e){ console.warn('eBay batch error:', e); }
+  }
 }
 
 // &#9472;&#9472; Error Report Modal &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;

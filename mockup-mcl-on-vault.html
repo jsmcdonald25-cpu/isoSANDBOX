@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Card Library — Full Frame Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#00AAFF;--white:#FFFFFF;--muted-text:#7A95AE;--deep1:#0D1F33;--deep2:#112840;--deep3:#143050;--deep-border:rgba(0,170,255,0.15);--green:#00E887;--red:#FF3B5C;--gold:#FFB800;--sidebar-w:240px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--deep1);color:var(--white);font-family:'Barlow Condensed',sans-serif;display:flex;height:100vh;overflow:hidden}
+
+/* ── Sidebar ── */
+.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--deep2);border-right:1px solid var(--deep-border);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-logo{padding:12px 16px;border-bottom:1px solid var(--deep-border);text-align:center}
+.sidebar-logo-text{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px}
+.sidebar-logo-text span:first-child{color:var(--white)}
+.sidebar-logo-text span:last-child{color:var(--blue)}
+.sidebar-user{padding:14px 20px;border-bottom:1px solid var(--deep-border);display:flex;align-items:center;gap:10px}
+.user-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--blue),#0055AA);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:var(--white)}
+.user-name{font-size:14px;font-weight:600;color:var(--white)}
+.user-tier{font-size:10px;color:var(--muted-text);letter-spacing:.5px}
+.sidebar-credits{margin:12px 14px;background:rgba(0,170,255,.08);border:1px solid var(--deep-border);border-radius:8px;padding:11px 13px;display:flex;align-items:center;justify-content:space-between}
+.credits-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)}
+.credits-value{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--blue);letter-spacing:1px}
+.credits-sub{font-size:9px;color:var(--muted-text)}
+.credits-add{width:28px;height:28px;border-radius:50%;background:rgba(0,170,255,.15);border:1px solid rgba(0,170,255,.3);color:var(--blue);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.sidebar-nav{flex:1;overflow-y:auto;padding:6px 0}
+.nav-item{display:flex;align-items:center;gap:11px;padding:9px 20px;cursor:pointer;transition:background .15s;border-left:2px solid transparent}
+.nav-item:hover{background:rgba(0,170,255,.04)}
+.nav-item.active{background:rgba(0,170,255,.08);border-left-color:var(--blue)}
+.nav-item.active .nav-label{color:var(--white)}
+.nav-item.active .nav-icon{color:var(--blue)}
+.nav-icon{width:16px;height:16px;color:var(--muted-text);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.nav-icon svg{width:100%;height:100%}
+.nav-label{font-size:14px;font-weight:500;color:var(--muted-text);letter-spacing:.3px;transition:color .15s}
+.nav-badge{font-family:'Bebas Neue',sans-serif;font-size:11px;background:var(--blue);color:var(--white);padding:1px 7px;border-radius:10px;margin-left:auto}
+.nav-bottom{margin-top:auto;border-top:1px solid var(--deep-border);padding:6px 0}
+
+/* ── Main ── */
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+
+/* ── Ticker ── */
+.ticker-wrap{background:var(--deep2);border-bottom:1px solid var(--deep-border);overflow:hidden;display:flex;align-items:center;flex-shrink:0}
+.ticker-label{background:var(--blue);padding:8px 12px;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;color:white;white-space:nowrap;flex-shrink:0}
+.ticker-scroll{flex:1;overflow:hidden;padding:8px 14px}
+.ticker-inner{display:flex;gap:28px;animation:ticker 32s linear infinite;white-space:nowrap}
+.ticker-inner span{font-size:12px;letter-spacing:.3px}
+.ticker-inner .up{color:var(--green)}
+.ticker-inner .down{color:var(--red)}
+.ticker-inner .name{color:var(--white);font-weight:600}
+.ticker-inner .set{color:var(--muted-text)}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── Content area ── */
+.content{flex:1;padding:16px 28px 60px;overflow-y:auto}
+
+/* ── Page header ── */
+.mcl-back{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--blue);cursor:pointer;margin-bottom:10px;letter-spacing:.5px}
+.mcl-back:hover{text-decoration:underline}
+
+/* ── Toolbar — search + stats + pills all on one line ── */
+.mcl-toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px;padding:6px 0;border-bottom:1px solid var(--deep-border);position:sticky;top:0;z-index:50;background:var(--deep1)}
+.mcl-search-wrap{display:flex;align-items:center;gap:8px;background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;padding:0 12px;min-width:180px;max-width:240px;flex:1;transition:border-color .2s}
+.mcl-search-wrap:focus-within{border-color:var(--blue)}
+.mcl-search-wrap input{flex:1;background:none;border:none;outline:none;font-size:14px;color:var(--white);padding:9px 8px}
+.mcl-search-wrap input::placeholder{color:var(--muted-text)}
+.mcl-info{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted-text);white-space:nowrap}
+.mcl-info strong{color:var(--white)}
+.mcl-info .sep{color:var(--deep-border);margin:0 2px}
+.mcl-info .val{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:.5px}
+
+.mcl-filter-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.iv-pill-row{display:flex;gap:5px;flex-wrap:wrap}
+.chip{background:rgba(0,0,0,0.2);border:1px solid var(--deep-border);border-radius:6px;padding:5px 11px;font-size:12px;color:var(--muted-text);cursor:pointer;transition:all .2s;letter-spacing:.5px}
+.chip:hover{border-color:rgba(0,170,255,0.4);color:var(--white)}
+.chip.active{border-color:var(--blue);background:rgba(0,170,255,0.1);color:var(--white)}
+.iv-view-toggle{display:flex;gap:4px;margin-left:auto}
+.iv-view-btn{background:rgba(0,0,0,.2);border:1px solid var(--deep-border);border-radius:6px;padding:7px 12px;font-size:12px;letter-spacing:.5px;color:var(--muted-text);cursor:pointer;transition:all .2s}
+.iv-view-btn:hover{border-color:rgba(0,170,255,.3);color:var(--white)}
+.iv-view-btn.active{background:rgba(0,170,255,.1);border-color:var(--blue);color:var(--white)}
+.mcl-sort{background:rgba(0,0,0,0.25);border:1px solid var(--deep-border);border-radius:6px;padding:5px 10px;color:var(--white);font-size:12px;letter-spacing:.5px;outline:none;cursor:pointer}
+.mcl-set-filter{background:rgba(0,0,0,0.25);border:1px solid var(--deep-border);border-radius:6px;padding:5px 10px;color:var(--white);font-size:12px;outline:none;cursor:pointer;max-width:180px}
+
+/* ── Grid ── */
+.iv-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:8px}
+.iv-grid.cols-6{grid-template-columns:repeat(6,1fr);gap:14px}
+.iv-grid-card{background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .2s}
+.iv-grid-card:hover{border-color:rgba(0,170,255,.4);transform:translateY(-2px)}
+.iv-grid-card.for-sale{border-color:rgba(0,232,135,0.3)}
+.iv-grid-img{width:100%;height:120px;background:linear-gradient(135deg,#112840,#1a3a5c);display:flex;align-items:center;justify-content:center;font-size:38px;color:rgba(122,149,174,0.12);position:relative;overflow:hidden}
+.iv-grid-count{position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.7);border:1px solid rgba(0,170,255,0.3);border-radius:6px;padding:2px 7px;font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:1px;color:var(--blue)}
+.iv-grid-fs{position:absolute;bottom:0;left:0;right:0;background:rgba(0,232,135,0.15);padding:3px 0;text-align:center;font-size:10px;letter-spacing:1px;color:var(--green);font-weight:600}
+.iv-grid-info{padding:6px 8px 8px}
+.iv-grid-player{font-size:11px;font-weight:700;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iv-grid-num{font-size:11px;color:var(--blue);margin-top:2px}
+.iv-grid-cat{font-size:10px;color:var(--muted-text)}
+.iv-grid-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:5px}
+.iv-grid.cols-6 .iv-grid-img{height:170px}
+.iv-grid.cols-6 .iv-grid-info{padding:8px 10px 10px}
+.iv-grid.cols-6 .iv-grid-player{font-size:13px}
+.iv-grid.cols-6 .iv-grid-num{font-size:12px}
+.iv-grid.cols-6 .iv-grid-cat{font-size:11px}
+.iv-grid.cols-6 .iv-grid-price{font-size:16px}
+.iv-grid-price{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:.5px;color:var(--blue)}
+.iv-grid-gl{font-size:10px;font-weight:600}
+.iv-grid-badges{display:flex;gap:3px;margin-top:3px}
+.badge-sm{font-size:9px;letter-spacing:.5px;padding:2px 6px;border-radius:3px;font-weight:700;display:inline-block}
+
+/* ── List ── */
+.iv-checklist{display:flex;flex-direction:column;gap:0}
+.iv-row{display:grid;grid-template-columns:55px 1.3fr 100px 1fr 70px 70px 70px;gap:0;align-items:center;padding:5px 10px;border-bottom:1px solid rgba(0,170,255,.07);cursor:pointer;transition:background .15s;line-height:1.15}
+.iv-row:hover{background:rgba(0,170,255,.06)}
+.iv-row.header{border-bottom:1px solid var(--deep-border);cursor:default;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text)}
+.iv-row.header:hover{background:none}
+.iv-row-num{font-size:12px;color:var(--blue);letter-spacing:.5px}
+.iv-row-player{font-size:13px;font-weight:700;color:var(--white)}
+.iv-row-team{font-size:12px;color:var(--muted-text)}
+.iv-row-set{font-size:11px;color:var(--muted-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iv-row-price{font-size:13px;font-weight:700;text-align:right;white-space:nowrap}
+
+/* ── Scores bar ── */
+.scores-bar{position:fixed;bottom:0;right:0;left:var(--sidebar-w);background:var(--deep2);border-top:1px solid var(--deep-border);padding:6px 16px;display:flex;gap:16px;overflow-x:auto;font-size:10px;color:var(--muted-text);z-index:100}
+.score-item{display:flex;gap:6px;align-items:center;white-space:nowrap;flex-shrink:0}
+.score-league{font-weight:700;color:var(--blue);letter-spacing:1px}
+</style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══ -->
+<div class="sidebar">
+  <div class="sidebar-logo"><div class="sidebar-logo-text"><span>GRAIL</span><span>ISO</span></div></div>
+  <div class="sidebar-user">
+    <div class="user-avatar">SM</div>
+    <div><div class="user-name">@jsmcdonald25</div><div class="user-tier">Alpha Member</div></div>
+  </div>
+  <div class="sidebar-credits">
+    <div><div class="credits-label">ISO Credits</div><div class="credits-value">645</div><div class="credits-sub">$1 per post · 645 left</div></div>
+    <button class="credits-add">+</button>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-item"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></div><span class="nav-label">My Vault</span></div>
+    <div class="nav-item"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div><span class="nav-label">Post ISO</span></div>
+    <div class="nav-item"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div><span class="nav-label">ISOVault</span></div>
+    <div class="nav-item"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div><span class="nav-label">OpenISO</span><span class="nav-badge">5</span></div>
+    <div class="nav-item"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span class="nav-label">Market Data</span></div>
+    <div class="nav-item"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="1" width="18" height="22" rx="3"/><rect x="6" y="7" width="12" height="13" rx="1"/><line x1="8" y1="4" x2="16" y2="4"/></svg></div><span class="nav-label">Slab Lab</span></div>
+    <div class="nav-item"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="14" width="4" height="8" rx="1"/><rect x="9" y="9" width="4" height="13" rx="1"/><rect x="16" y="4" width="4" height="18" rx="1"/></svg></div><span class="nav-label">Leaderboard</span></div>
+    <div class="nav-item"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><span class="nav-label">Card Shops</span></div>
+    <div class="nav-item"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><span class="nav-label">Card Shows</span></div>
+  </nav>
+  <div class="nav-bottom">
+    <div class="nav-item"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><span class="nav-label">Help</span></div>
+    <div class="nav-item"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09"/></svg></div><span class="nav-label">Account</span></div>
+    <div class="nav-item"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div><span class="nav-label">Log Out</span></div>
+  </div>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker-label">LIVE</div>
+    <div class="ticker-scroll">
+      <div class="ticker-inner">
+        <span><span class="name">Ichiro</span> <span class="set">· 2025 Art of Stealing · #AOS-15</span> · <span class="up">$40.50</span> <span class="up">+0.0%</span></span>
+        <span>&#x2B25;</span>
+        <span><span class="name">Ken Griffey Jr.</span> <span class="set">· 2025 Bob Ross · Sap Green · #54</span> · <span class="up">$85.00</span> <span class="up">+0.0%</span></span>
+        <span>&#x2B25;</span>
+        <span><span class="name">Carlos Narvaez</span> <span class="set">· 2026 Series 1 · Gold · #344</span> · <span class="up">$3.10</span> <span class="up">+0.0%</span></span>
+        <span>&#x2B25;</span>
+        <span><span class="name">Mike Trout</span> <span class="set">· 2025 Bob Ross · Auto · #AUTO-12</span> · <span class="up">$89.00</span> <span class="up">+0.0%</span></span>
+        <span>&#x2B25;</span>
+        <span><span class="name">Shohei Ohtani</span> <span class="set">· 2026 Series 1 · #200</span> · <span class="up">$12.40</span> <span class="up">+0.0%</span></span>
+        <span>&#x2B25;</span>
+        <!-- duplicate for seamless loop -->
+        <span><span class="name">Ichiro</span> <span class="set">· 2025 Art of Stealing · #AOS-15</span> · <span class="up">$40.50</span> <span class="up">+0.0%</span></span>
+        <span>&#x2B25;</span>
+        <span><span class="name">Ken Griffey Jr.</span> <span class="set">· 2025 Bob Ross · Sap Green · #54</span> · <span class="up">$85.00</span> <span class="up">+0.0%</span></span>
+        <span>&#x2B25;</span>
+        <span><span class="name">Carlos Narvaez</span> <span class="set">· 2026 Series 1 · Gold · #344</span> · <span class="up">$3.10</span> <span class="up">+0.0%</span></span>
+        <span>&#x2B25;</span>
+        <span><span class="name">Mike Trout</span> <span class="set">· 2025 Bob Ross · Auto · #AUTO-12</span> · <span class="up">$89.00</span> <span class="up">+0.0%</span></span>
+        <span>&#x2B25;</span>
+        <span><span class="name">Shohei Ohtani</span> <span class="set">· 2026 Series 1 · #200</span> · <span class="up">$12.40</span> <span class="up">+0.0%</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- BACK -->
+    <div class="mcl-back">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to My Vault
+    </div>
+
+    <!-- SINGLE TOOLBAR LINE: search + pills + sort + set filter + view toggle + stats -->
+    <div class="mcl-toolbar">
+      <div class="mcl-search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--muted-text);flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search player, card #, or team...">
+      </div>
+      <div class="iv-pill-row">
+        <div class="chip active" onclick="this.parentElement.querySelectorAll('.chip').forEach(p=>p.classList.remove('active'));this.classList.add('active')">All</div>
+        <div class="chip" onclick="this.parentElement.querySelectorAll('.chip').forEach(p=>p.classList.remove('active'));this.classList.add('active')">Base</div>
+        <div class="chip" onclick="this.parentElement.querySelectorAll('.chip').forEach(p=>p.classList.remove('active'));this.classList.add('active')">Inserts</div>
+        <div class="chip" onclick="this.parentElement.querySelectorAll('.chip').forEach(p=>p.classList.remove('active'));this.classList.add('active')">Autos</div>
+        <div class="chip" onclick="this.parentElement.querySelectorAll('.chip').forEach(p=>p.classList.remove('active'));this.classList.add('active')">Rookies</div>
+        <div class="chip" onclick="this.parentElement.querySelectorAll('.chip').forEach(p=>p.classList.remove('active'));this.classList.add('active')">For Sale</div>
+      </div>
+      <select class="mcl-sort">
+        <option>Sort: Card #</option>
+        <option>Sort: Player A-Z</option>
+        <option>Sort: Team</option>
+        <option>Sort: Set</option>
+        <option>Sort: Value (High)</option>
+        <option>Sort: Value (Low)</option>
+        <option>Sort: Price Paid</option>
+        <option>Sort: Gain/Loss</option>
+        <option>Sort: Date Added</option>
+      </select>
+      <select class="mcl-set-filter">
+        <option>All Sets</option>
+        <option>2026 Topps Series 1</option>
+        <option>2025 Topps Bob Ross</option>
+        <option>2025 Art of Stealing</option>
+        <option>2021 Topps Series 1</option>
+      </select>
+      <div class="iv-view-toggle">
+        <button class="iv-view-btn" id="btnList" onclick="showList()">&#9776; List</button>
+        <button class="iv-view-btn active" id="btnGrid" onclick="showGrid()">&#8862; Grid</button>
+      </div>
+      <div class="iv-view-toggle">
+        <button class="iv-view-btn active" id="btn10" onclick="setDensity(10)">10</button>
+        <button class="iv-view-btn" id="btn6" onclick="setDensity(6)">6</button>
+      </div>
+      <div class="mcl-info">
+        <strong>12</strong> cards · <strong>4</strong> sets
+        <span class="sep">|</span>
+        <span class="val" style="color:var(--blue)">$283.42</span> Value
+        <span class="sep">|</span>
+        <span class="val" style="color:var(--white)">$196.80</span> Paid
+        <span class="sep">|</span>
+        <span class="val" style="color:var(--green)">+$86.62</span> Gain/Loss
+      </div>
+    </div>
+
+    <!-- GRID VIEW (default) -->
+    <div id="gridView">
+      <div class="iv-grid">
+        <div class="iv-grid-card"><div class="iv-grid-img">&#9918;<div class="iv-grid-count">2x</div></div><div class="iv-grid-info"><div class="iv-grid-player">Ichiro</div><div class="iv-grid-num">#AOS-15</div><div class="iv-grid-cat">Insert · Art of Stealing</div><div class="iv-grid-bottom"><div class="iv-grid-price">$40.50</div><div class="iv-grid-gl" style="color:var(--muted-text)">$0.00</div></div></div></div>
+        <div class="iv-grid-card"><div class="iv-grid-img">&#9918;</div><div class="iv-grid-info"><div class="iv-grid-player">Ken Griffey Jr.</div><div class="iv-grid-num">#54</div><div class="iv-grid-cat">Sap Green · Bob Ross</div><div class="iv-grid-badges"><span class="badge-sm" style="background:rgba(0,232,135,0.12);color:var(--green)">PARALLEL</span></div><div class="iv-grid-bottom"><div class="iv-grid-price">$85.00</div><div class="iv-grid-gl" style="color:var(--green)">+$7.12</div></div></div></div>
+        <div class="iv-grid-card"><div class="iv-grid-img">&#9918;</div><div class="iv-grid-info"><div class="iv-grid-player">Carlos Narvaez</div><div class="iv-grid-num">#344</div><div class="iv-grid-cat">Gold · 2026 Series 1</div><div class="iv-grid-badges"><span class="badge-sm" style="background:rgba(255,184,0,0.12);color:var(--gold)">GOLD</span></div><div class="iv-grid-bottom"><div class="iv-grid-price">$3.10</div><div class="iv-grid-gl" style="color:var(--green)">+$0.65</div></div></div></div>
+        <div class="iv-grid-card for-sale"><div class="iv-grid-img">&#9918;<div class="iv-grid-fs">FOR SALE · $15</div></div><div class="iv-grid-info"><div class="iv-grid-player">Ichiro</div><div class="iv-grid-num">#86BC-78</div><div class="iv-grid-cat">Insert · 1986 Chrome</div><div class="iv-grid-bottom"><div class="iv-grid-price">$9.62</div><div class="iv-grid-gl" style="color:var(--green)">+$3.08</div></div></div></div>
+        <div class="iv-grid-card"><div class="iv-grid-img">&#9918;</div><div class="iv-grid-info"><div class="iv-grid-player">Shohei Ohtani</div><div class="iv-grid-num">#200</div><div class="iv-grid-cat">Base · 2026 Series 1</div><div class="iv-grid-badges"><span class="badge-sm" style="background:rgba(0,170,255,0.12);color:var(--blue)">RC</span></div><div class="iv-grid-bottom"><div class="iv-grid-price">$12.40</div><div class="iv-grid-gl" style="color:var(--green)">+$7.90</div></div></div></div>
+        <div class="iv-grid-card"><div class="iv-grid-img">&#9918;</div><div class="iv-grid-info"><div class="iv-grid-player">Mike Trout</div><div class="iv-grid-num">#AUTO-12</div><div class="iv-grid-cat">Auto · Bob Ross</div><div class="iv-grid-badges"><span class="badge-sm" style="background:rgba(255,184,0,0.12);color:var(--gold)">AUTO</span></div><div class="iv-grid-bottom"><div class="iv-grid-price">$89.00</div><div class="iv-grid-gl" style="color:var(--green)">+$44.00</div></div></div></div>
+        <div class="iv-grid-card"><div class="iv-grid-img">&#9918;</div><div class="iv-grid-info"><div class="iv-grid-player">Fernando Tatis Jr.</div><div class="iv-grid-num">#1</div><div class="iv-grid-cat">Base · 2021 Series 1</div><div class="iv-grid-bottom"><div class="iv-grid-price">$1.80</div><div class="iv-grid-gl" style="color:var(--red)">-$0.20</div></div></div></div>
+        <div class="iv-grid-card"><div class="iv-grid-img">&#9918;</div><div class="iv-grid-info"><div class="iv-grid-player">Juan Soto</div><div class="iv-grid-num">#RR-5</div><div class="iv-grid-cat">Relic · 2026 Series 1</div><div class="iv-grid-badges"><span class="badge-sm" style="background:rgba(255,59,92,0.12);color:var(--red)">RELIC</span></div><div class="iv-grid-bottom"><div class="iv-grid-price">$22.50</div><div class="iv-grid-gl" style="color:var(--green)">+$4.50</div></div></div></div>
+        <div class="iv-grid-card"><div class="iv-grid-img">&#9918;</div><div class="iv-grid-info"><div class="iv-grid-player">Ronald Acuna Jr.</div><div class="iv-grid-num">#150</div><div class="iv-grid-cat">Base · 2026 Series 1</div><div class="iv-grid-bottom"><div class="iv-grid-price">$5.20</div><div class="iv-grid-gl" style="color:var(--green)">+$2.70</div></div></div></div>
+        <div class="iv-grid-card"><div class="iv-grid-img">&#9918;</div><div class="iv-grid-info"><div class="iv-grid-player">Mookie Betts</div><div class="iv-grid-num">#13</div><div class="iv-grid-cat">Base · 2021 Series 1</div><div class="iv-grid-bottom"><div class="iv-grid-price">$2.30</div><div class="iv-grid-gl" style="color:var(--green)">+$0.80</div></div></div></div>
+        <div class="iv-grid-card"><div class="iv-grid-img">&#9918;</div><div class="iv-grid-info"><div class="iv-grid-player">Julio Rodriguez</div><div class="iv-grid-num">#75</div><div class="iv-grid-cat">Insert · Bob Ross</div><div class="iv-grid-bottom"><div class="iv-grid-price">$8.50</div><div class="iv-grid-gl" style="color:var(--green)">+$3.50</div></div></div></div>
+        <div class="iv-grid-card"><div class="iv-grid-img">&#9918;</div><div class="iv-grid-info"><div class="iv-grid-player">Bobby Witt Jr.</div><div class="iv-grid-num">#22</div><div class="iv-grid-cat">Base · 2026 Series 1</div><div class="iv-grid-badges"><span class="badge-sm" style="background:rgba(0,170,255,0.12);color:var(--blue)">RC</span></div><div class="iv-grid-bottom"><div class="iv-grid-price">$3.50</div><div class="iv-grid-gl" style="color:var(--green)">+$1.50</div></div></div></div>
+      </div>
+    </div>
+
+    <!-- LIST VIEW (hidden) -->
+    <div id="listView" style="display:none">
+      <div class="iv-checklist">
+        <div class="iv-row header"><div>#</div><div>Player</div><div>Team</div><div>Set</div><div style="text-align:right">Paid</div><div style="text-align:right">Value</div><div style="text-align:right">Gain/Loss</div></div>
+        <div class="iv-row"><div class="iv-row-num">AOS-15</div><div><span class="iv-row-player">Ichiro</span> <span class="badge-sm" style="background:rgba(0,170,255,0.12);color:var(--blue)">INSERT</span></div><div class="iv-row-team">Seattle Mariners</div><div class="iv-row-set">2025 Art of Stealing</div><div class="iv-row-price" style="color:var(--white)">$40.50</div><div class="iv-row-price" style="color:var(--blue)">$40.50</div><div class="iv-row-price" style="color:var(--muted-text)">$0.00</div></div>
+        <div class="iv-row"><div class="iv-row-num">54</div><div><span class="iv-row-player">Ken Griffey Jr.</span> <span class="badge-sm" style="background:rgba(0,232,135,0.12);color:var(--green)">PARALLEL</span></div><div class="iv-row-team">Seattle Mariners</div><div class="iv-row-set">2025 Bob Ross · Sap Green</div><div class="iv-row-price" style="color:var(--white)">$77.88</div><div class="iv-row-price" style="color:var(--blue)">$85.00</div><div class="iv-row-price" style="color:var(--green)">+$7.12</div></div>
+        <div class="iv-row"><div class="iv-row-num">344</div><div><span class="iv-row-player">Carlos Narvaez</span> <span class="badge-sm" style="background:rgba(255,184,0,0.12);color:var(--gold)">GOLD</span></div><div class="iv-row-team">Cleveland Guardians</div><div class="iv-row-set">2026 Series 1</div><div class="iv-row-price" style="color:var(--white)">$2.45</div><div class="iv-row-price" style="color:var(--blue)">$3.10</div><div class="iv-row-price" style="color:var(--green)">+$0.65</div></div>
+        <div class="iv-row"><div class="iv-row-num">86BC-78</div><div><span class="iv-row-player">Ichiro</span> <span class="badge-sm" style="background:rgba(0,170,255,0.12);color:var(--blue)">INSERT</span> <span class="badge-sm" style="background:rgba(0,232,135,0.12);color:var(--green)">FOR SALE</span></div><div class="iv-row-team">Seattle Mariners</div><div class="iv-row-set">2021 S1 · 1986 Chrome</div><div class="iv-row-price" style="color:var(--white)">$6.54</div><div class="iv-row-price" style="color:var(--blue)">$9.62</div><div class="iv-row-price" style="color:var(--green)">+$3.08</div></div>
+        <div class="iv-row"><div class="iv-row-num">200</div><div><span class="iv-row-player">Shohei Ohtani</span> <span class="badge-sm" style="background:rgba(0,170,255,0.12);color:var(--blue)">RC</span></div><div class="iv-row-team">Los Angeles Dodgers</div><div class="iv-row-set">2026 Series 1</div><div class="iv-row-price" style="color:var(--white)">$4.50</div><div class="iv-row-price" style="color:var(--blue)">$12.40</div><div class="iv-row-price" style="color:var(--green)">+$7.90</div></div>
+        <div class="iv-row"><div class="iv-row-num">AUTO-12</div><div><span class="iv-row-player">Mike Trout</span> <span class="badge-sm" style="background:rgba(255,184,0,0.12);color:var(--gold)">AUTO</span></div><div class="iv-row-team">Angels</div><div class="iv-row-set">2025 Bob Ross</div><div class="iv-row-price" style="color:var(--white)">$45.00</div><div class="iv-row-price" style="color:var(--blue)">$89.00</div><div class="iv-row-price" style="color:var(--green)">+$44.00</div></div>
+        <div class="iv-row"><div class="iv-row-num">1</div><div><span class="iv-row-player">Fernando Tatis Jr.</span></div><div class="iv-row-team">San Diego Padres</div><div class="iv-row-set">2021 Series 1</div><div class="iv-row-price" style="color:var(--white)">$2.00</div><div class="iv-row-price" style="color:var(--blue)">$1.80</div><div class="iv-row-price" style="color:var(--red)">-$0.20</div></div>
+        <div class="iv-row"><div class="iv-row-num">RR-5</div><div><span class="iv-row-player">Juan Soto</span> <span class="badge-sm" style="background:rgba(255,59,92,0.12);color:var(--red)">RELIC</span></div><div class="iv-row-team">New York Mets</div><div class="iv-row-set">2026 Series 1</div><div class="iv-row-price" style="color:var(--white)">$18.00</div><div class="iv-row-price" style="color:var(--blue)">$22.50</div><div class="iv-row-price" style="color:var(--green)">+$4.50</div></div>
+        <div class="iv-row"><div class="iv-row-num">150</div><div><span class="iv-row-player">Ronald Acuna Jr.</span></div><div class="iv-row-team">Atlanta Braves</div><div class="iv-row-set">2026 Series 1</div><div class="iv-row-price" style="color:var(--white)">$2.50</div><div class="iv-row-price" style="color:var(--blue)">$5.20</div><div class="iv-row-price" style="color:var(--green)">+$2.70</div></div>
+        <div class="iv-row"><div class="iv-row-num">13</div><div><span class="iv-row-player">Mookie Betts</span></div><div class="iv-row-team">Los Angeles Dodgers</div><div class="iv-row-set">2021 Series 1</div><div class="iv-row-price" style="color:var(--white)">$1.50</div><div class="iv-row-price" style="color:var(--blue)">$2.30</div><div class="iv-row-price" style="color:var(--green)">+$0.80</div></div>
+        <div class="iv-row"><div class="iv-row-num">75</div><div><span class="iv-row-player">Julio Rodriguez</span> <span class="badge-sm" style="background:rgba(0,170,255,0.12);color:var(--blue)">INSERT</span></div><div class="iv-row-team">Seattle Mariners</div><div class="iv-row-set">2025 Bob Ross</div><div class="iv-row-price" style="color:var(--white)">$5.00</div><div class="iv-row-price" style="color:var(--blue)">$8.50</div><div class="iv-row-price" style="color:var(--green)">+$3.50</div></div>
+        <div class="iv-row"><div class="iv-row-num">22</div><div><span class="iv-row-player">Bobby Witt Jr.</span> <span class="badge-sm" style="background:rgba(0,170,255,0.12);color:var(--blue)">RC</span></div><div class="iv-row-team">Kansas City Royals</div><div class="iv-row-set">2026 Series 1</div><div class="iv-row-price" style="color:var(--white)">$2.00</div><div class="iv-row-price" style="color:var(--blue)">$3.50</div><div class="iv-row-price" style="color:var(--green)">+$1.50</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCORES BAR -->
+<div class="scores-bar">
+  <div class="score-item"><span class="score-league">MLB</span> ARI @ BAL TBD</div>
+  <div class="score-item"><span class="score-league">MLB</span> CHC @ PHI TBD</div>
+  <div class="score-item"><span class="score-league">NBA</span> MIA @ CHA TBD</div>
+  <div class="score-item"><span class="score-league">NHL</span> NJ @ BOS TBD</div>
+  <div class="score-item"><span class="score-league">NFL</span> SEA @ NE 29-13 FINAL</div>
+</div>
+
+<script>
+function setDensity(n){
+  var grid=document.querySelector('.iv-grid');
+  if(!grid) return;
+  if(n===6){
+    grid.classList.add('cols-6');
+    document.getElementById('btn6').classList.add('active');
+    document.getElementById('btn10').classList.remove('active');
+  } else {
+    grid.classList.remove('cols-6');
+    document.getElementById('btn10').classList.add('active');
+    document.getElementById('btn6').classList.remove('active');
+  }
+}
+function showList(){
+  document.getElementById('listView').style.display='block';
+  document.getElementById('gridView').style.display='none';
+  document.getElementById('btnList').classList.add('active');
+  document.getElementById('btnGrid').classList.remove('active');
+}
+function showGrid(){
+  document.getElementById('listView').style.display='none';
+  document.getElementById('gridView').style.display='block';
+  document.getElementById('btnGrid').classList.add('active');
+  document.getElementById('btnList').classList.remove('active');
+}
+</script>
+</body>
+</html>

@@ -4046,6 +4046,150 @@ async function logOut(){
         <button class="btn btn-primary" id="sellerSaveBtn" onclick="saveSellerPrefs()" style="margin-top:8px">SAVE SELLER SETTINGS</button>
       </div>
     </div>
+    <!-- ── Legal ────────────────────────────────── -->
+    <div class="card-block">
+      <div class="card-block-title"><div class="dot" style="background:#7A95AE"></div> Legal</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('legal-tos').style.display=document.getElementById('legal-tos').style.display==='none'?'block':'none'">Terms of Service</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('legal-privacy').style.display=document.getElementById('legal-privacy').style.display==='none'?'block':'none'">Privacy Policy</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('legal-contact').style.display=document.getElementById('legal-contact').style.display==='none'?'block':'none'">Contact</button>
+      </div>
+      <!-- TERMS OF SERVICE -->
+      <div id="legal-tos" style="display:none;margin-top:18px;padding:24px;background:rgba(0,0,0,0.2);border:1px solid var(--deep-border);border-radius:10px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);line-height:1.7;max-height:600px;overflow-y:auto">
+        <div style="font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:2px;color:var(--white);margin-bottom:4px">TERMS OF SERVICE</div>
+        <div style="font-size:11px;color:#7A95AE;margin-bottom:16px">Last Updated: April 15, 2026</div>
+        <p>Subject to the terms and conditions of this agreement (this &ldquo;Agreement&rdquo;), GrailISO (&ldquo;GrailISO,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) provides access to and use of the GrailISO web application, mobile progressive web application, and related software and services located at isosandbox.com (the &ldquo;Platform&rdquo;), which may include trading card collection management, card identification, marketplace features, card grading tools, pricing data, and other tools and functionalities. &ldquo;You&rdquo; or &ldquo;User&rdquo; refers to any individual accessing or using the Platform.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">1. ACCEPTANCE</p>
+        <p>BY ACCESSING AND/OR USING THE PLATFORM, OR BY CREATING AN ACCOUNT, YOU: (A) ACKNOWLEDGE THAT YOU HAVE READ AND UNDERSTAND THIS AGREEMENT; (B) AGREE TO ACCEPT THIS AGREEMENT; AND (C) AGREE THAT YOU ARE LEGALLY BOUND BY ALL TERMS AND CONDITIONS SET FORTH HEREIN. YOU REPRESENT AND WARRANT THAT YOU ARE AT LEAST 18 YEARS OF AGE OR THE AGE OF MAJORITY IN YOUR JURISDICTION. IF YOU DO NOT AGREE WITH THESE TERMS, YOU MUST NOT ACCESS OR USE THE PLATFORM.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">2. ALPHA/SANDBOX STATUS</p>
+        <p>The Platform is currently in an alpha testing phase. You acknowledge and agree that: (a) the Platform is provided &ldquo;as is&rdquo; for testing purposes only and is not a final production release; (b) features, data, and functionality are under active development and may change, be modified, or be removed at any time without notice; (c) data entered during the alpha period may be modified, migrated, or deleted as development progresses; (d) GrailISO makes no guarantees regarding uptime, data retention, feature availability, or platform stability during the alpha period; and (e) you will not hold GrailISO liable for any loss of data, service interruptions, or changes to the Platform during the alpha period. We may discontinue the alpha at any time for any reason without notice or liability.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">3. CHANGES TO THIS AGREEMENT</p>
+        <p>We may revise and update this Agreement from time to time in our sole discretion. Material changes will be communicated via notice within the Platform or by email. Material changes take effect thirty (30) days following notice. Your continued use of the Platform following posting of a revised Agreement constitutes acceptance. You must discontinue use if you do not agree to the revised Agreement.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">4. ACCOUNT REGISTRATION AND SECURITY</p>
+        <p>To access the Platform you must create an account with a valid email address and password. You are responsible for: (a) maintaining the confidentiality of your login credentials; (b) all activity that occurs under your account; (c) notifying us immediately of any unauthorized access to your account. You may not create multiple accounts, share your credentials, or permit others to access your account. We reserve the right to disable any account at any time in our sole discretion. Accessing the Platform without proper credentials is strictly prohibited and constitutes a breach of this Agreement.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">5. PERMITTED USE AND RESTRICTIONS</p>
+        <p>We grant you a non-exclusive, non-transferable, revocable right to access and use the Platform for personal, non-commercial card collection management purposes. You must not: (a) copy, modify, adapt, or create derivative works of the Platform; (b) reverse engineer, decompile, or attempt to derive source code; (c) rent, lease, sell, sublicense, or distribute access to the Platform; (d) use the Platform to develop competing products or services; (e) use automated means (bots, scrapers, crawlers) to access the Platform or extract data; (f) bypass or disable any security or access controls; (g) upload or transmit harmful code, malware, or illegal content; (h) access or use the Platform in any way that violates any applicable law or infringes third-party rights; (i) download, cache, or create offline copies of Platform data for the purpose of creating a standalone database; (j) harass, threaten, or harm other users; (k) publish false, misleading, defamatory, or objectionable content; or (l) aid or assist any person in taking any action prohibited by this section.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">6. MARKETPLACE AND TRANSACTIONS</p>
+        <p>The Platform may facilitate peer-to-peer transactions between users (&ldquo;Marketplace&rdquo;). GrailISO is not a party to any transaction between users. We do not guarantee the quality, safety, legality, or authenticity of any card listed or sold through the Marketplace. Users are solely responsible for their transactions. All sales are final unless otherwise agreed between buyer and seller. GrailISO may charge service fees, ISO Credit costs, or transaction fees as disclosed on the Platform. Payment processing is handled by third-party providers (e.g., Stripe) subject to their own terms. GrailISO is not liable for any disputes between buyers and sellers and provides no escrow, insurance, or guarantee of payment.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">7. ISO CREDITS</p>
+        <p>ISO Credits are a non-refundable, non-transferable virtual currency used within the Platform. Credits have no cash value and cannot be exchanged for cash. We reserve the right to modify credit pricing, allocation, and usage rules at any time. Unused credits may expire or be forfeited upon account termination. Credits are purchased at your own risk during the alpha period.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">8. PRICING AND MARKET DATA</p>
+        <p>The Platform may display estimated card values, market pricing, and other financial data sourced from third-party APIs (including eBay Browse API) and internal algorithms. ALL PRICING AND MARKET DATA IS PROVIDED FOR INFORMATIONAL PURPOSES ONLY AND DOES NOT CONSTITUTE FINANCIAL ADVICE, AN APPRAISAL, OR A GUARANTEE OF VALUE. GrailISO makes no representations or warranties regarding the accuracy, completeness, or timeliness of any pricing data. You should not rely solely on Platform pricing data for buying, selling, or investment decisions.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">9. INTELLECTUAL PROPERTY</p>
+        <p>All right, title, and interest in and to the Platform, including all software, design, content, trademarks, logos, and intellectual property (collectively, &ldquo;GrailISO IP&rdquo;), are and remain the exclusive property of GrailISO. Nothing in this Agreement grants you any rights to GrailISO IP except the limited access right described in Section 5. You may not use the GrailISO name, logo, or branding without prior written consent. Card images, player names, team logos, and similar content displayed on the Platform may be the property of third parties (e.g., Topps, Panini, MLB, NBA, NFL, NHL) and are displayed under fair use or licensed terms.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">10. YOUR DATA AND CONTENT</p>
+        <p>You retain ownership of data and content you submit to the Platform (&ldquo;Your Data&rdquo;), including card images you upload, collection data, and profile information. By submitting Your Data, you grant GrailISO a non-exclusive, worldwide, royalty-free license to use, store, process, display, and transmit Your Data as necessary to operate and improve the Platform. You represent that you have all rights necessary to submit Your Data and that Your Data does not violate any law or third-party right. We may use anonymized, aggregated data derived from your usage for analytics, research, and Platform improvement.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">11. PROVENANCE AND IDENTITY VERIFICATION</p>
+        <p>The Platform may include card provenance tracking and identity verification features. Provenance records reflect data as submitted by users and are not independently verified unless otherwise indicated. GrailISO does not guarantee the authenticity, ownership history, or condition of any card based on provenance data. Identity verification is provided by third-party services (e.g., Stripe Identity) and is subject to their terms and limitations. Verification status does not constitute an endorsement or guarantee of any user&rsquo;s trustworthiness.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">12. THIRD-PARTY SERVICES AND LINKS</p>
+        <p>The Platform may integrate with or link to third-party services including eBay, Stripe, ESPN, Discord, and others. Your use of such services is subject to their respective terms. GrailISO is not responsible for the availability, accuracy, or content of third-party services and disclaims all liability arising from your use thereof.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">13. DISCLAIMER OF WARRANTIES</p>
+        <p>THE PLATFORM AND ALL CONTENT, DATA, AND SERVICES ARE PROVIDED &ldquo;AS IS&rdquo; AND &ldquo;AS AVAILABLE&rdquo; WITHOUT ANY WARRANTIES OF ANY KIND, WHETHER EXPRESS, IMPLIED, OR STATUTORY, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT. WE DO NOT WARRANT THAT THE PLATFORM WILL BE UNINTERRUPTED, ERROR-FREE, SECURE, OR FREE OF HARMFUL COMPONENTS, OR THAT ANY DATA OR PRICING INFORMATION WILL BE ACCURATE, RELIABLE, COMPLETE, OR CURRENT.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">14. LIMITATION OF LIABILITY</p>
+        <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL GRAILISO, ITS OWNERS, OFFICERS, EMPLOYEES, AGENTS, OR AFFILIATES BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF PROFITS, DATA, GOODWILL, OR OTHER INTANGIBLE LOSSES, ARISING OUT OF OR IN CONNECTION WITH YOUR USE OF OR INABILITY TO USE THE PLATFORM, REGARDLESS OF THE THEORY OF LIABILITY. OUR TOTAL AGGREGATE LIABILITY FOR ALL CLAIMS ARISING OUT OF OR RELATING TO THIS AGREEMENT SHALL NOT EXCEED THE GREATER OF (A) THE AMOUNT YOU HAVE PAID TO GRAILISO IN THE TWELVE (12) MONTHS PRECEDING THE CLAIM, OR (B) ONE HUNDRED DOLLARS ($100). THIS LIMITATION APPLIES WHETHER THE CLAIM IS BASED ON CONTRACT, TORT, NEGLIGENCE, STRICT LIABILITY, OR ANY OTHER THEORY.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">15. INDEMNIFICATION</p>
+        <p>You agree to defend, indemnify, and hold harmless GrailISO and its owners, officers, employees, and agents from and against any claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys&rsquo; fees) arising from: (a) your use of the Platform; (b) your violation of this Agreement; (c) your violation of any law or third-party right; (d) any content or data you submit to the Platform; or (e) any transaction you conduct through the Marketplace.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">16. TERMINATION</p>
+        <p>We may suspend or terminate your account and access to the Platform at any time, with or without cause, with or without notice. You may terminate your account at any time by contacting us. Upon termination: (a) all rights granted to you under this Agreement terminate immediately; (b) you must cease all use of the Platform; (c) we may delete Your Data in accordance with our data retention policies; and (d) any accrued obligations and the provisions of Sections 9, 10, 13, 14, 15, and 18 survive termination.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">17. GOVERNING LAW AND DISPUTES</p>
+        <p>This Agreement is governed by the laws of the State of Tennessee without regard to its conflicts of law provisions. Any legal action arising from this Agreement shall be brought exclusively in the federal or state courts located in Nashville, Tennessee. You consent to the personal jurisdiction of such courts and waive any objections to venue. ANY CLAIM ARISING OUT OF OR RELATING TO THIS AGREEMENT MUST BE BROUGHT WITHIN ONE (1) YEAR AFTER THE CAUSE OF ACTION ACCRUES OR BE PERMANENTLY BARRED.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">18. GENERAL PROVISIONS</p>
+        <p>(a) <strong style="color:#ccc">Entire Agreement.</strong> This Agreement constitutes the entire agreement between you and GrailISO regarding the Platform and supersedes all prior agreements. (b) <strong style="color:#ccc">Severability.</strong> If any provision is found unenforceable, the remaining provisions remain in full force. (c) <strong style="color:#ccc">Waiver.</strong> Failure to enforce any provision does not constitute a waiver. (d) <strong style="color:#ccc">Assignment.</strong> You may not assign this Agreement without our written consent. We may assign this Agreement freely. (e) <strong style="color:#ccc">Force Majeure.</strong> Neither party is liable for delays caused by events beyond reasonable control. (f) <strong style="color:#ccc">No Third-Party Beneficiaries.</strong> This Agreement is for the sole benefit of the parties. (g) <strong style="color:#ccc">Notices.</strong> We may send notices via email to the address associated with your account or via the Platform.</p>
+
+        <p style="margin-top:16px;color:#7A95AE;font-size:11px">Questions about these Terms? Contact us at <strong style="color:var(--blue)">legal@grailiso.com</strong></p>
+      </div>
+      <!-- PRIVACY POLICY -->
+      <div id="legal-privacy" style="display:none;margin-top:18px;padding:24px;background:rgba(0,0,0,0.2);border:1px solid var(--deep-border);border-radius:10px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);line-height:1.7;max-height:600px;overflow-y:auto">
+        <div style="font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:2px;color:var(--white);margin-bottom:4px">PRIVACY POLICY</div>
+        <div style="font-size:11px;color:#7A95AE;margin-bottom:16px">Last Updated: April 15, 2026</div>
+        <p>GrailISO (&ldquo;we,&rdquo; &ldquo;us,&rdquo; &ldquo;our&rdquo;) operates the Platform at isosandbox.com. This Privacy Policy describes how we collect, use, store, and protect your information.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">1. INFORMATION WE COLLECT</p>
+        <p><strong style="color:#ccc">Account Information:</strong> Name, email address, username, password (hashed), role preferences, and sports interests provided during registration.<br>
+        <strong style="color:#ccc">Collection Data:</strong> Card information you add to your vault including card details, images, purchase prices, dates acquired, sources, serial numbers, and provenance data.<br>
+        <strong style="color:#ccc">Transaction Data:</strong> ISO posts, marketplace listings, offers, and transaction history.<br>
+        <strong style="color:#ccc">Identity Verification Data:</strong> When you elect to verify your identity, data is processed by Stripe Identity, a third-party provider. We receive only the verification status (verified/not verified) and do not store identity documents, biometric data, or government-issued ID images on our servers.<br>
+        <strong style="color:#ccc">Payment Data:</strong> Payment processing is handled by Stripe. We do not store credit card numbers, CVVs, or full payment credentials. We retain only transaction references and amounts.<br>
+        <strong style="color:#ccc">Usage Data:</strong> IP address, browser type, device information, pages visited, features used, and session duration collected automatically for analytics and security purposes.<br>
+        <strong style="color:#ccc">Card Images:</strong> Front and back images of cards you upload are stored in our cloud storage (Supabase) and associated with your account.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">2. HOW WE USE YOUR INFORMATION</p>
+        <p>We use your information to: (a) provide, maintain, and improve the Platform; (b) process transactions and manage your account; (c) display your public username and collection data to other users as part of Platform features (e.g., OpenISO, Leaderboard); (d) send service-related notifications; (e) match buyers and sellers anonymously through the ISO system; (f) generate aggregated, anonymized analytics to improve the Platform; (g) detect and prevent fraud, abuse, and security threats; and (h) comply with legal obligations.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">3. INFORMATION SHARING</p>
+        <p>We do not sell your personal information. We may share information with: (a) <strong style="color:#ccc">Service providers</strong> who assist in operating the Platform (Supabase for database/authentication, Stripe for payments, Netlify for hosting, eBay Browse API for pricing data); (b) <strong style="color:#ccc">Other users</strong> — your username, public collection data, and marketplace listings are visible to other Platform users. Your email address is never displayed publicly; (c) <strong style="color:#ccc">Law enforcement</strong> — if required by law, subpoena, court order, or to protect our rights, safety, or property; (d) <strong style="color:#ccc">Business transfers</strong> — in connection with a merger, acquisition, or sale of assets.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">4. DATA STORAGE AND SECURITY</p>
+        <p>Your data is stored on Supabase (hosted on AWS infrastructure) with encryption at rest and in transit. Authentication tokens are stored locally in your browser&rsquo;s localStorage. We implement commercially reasonable security measures including Row Level Security (RLS) policies, encrypted connections (HTTPS/TLS), and server-side authentication for sensitive operations. However, no method of electronic storage or transmission is 100% secure, and we cannot guarantee absolute security.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">5. DATA RETENTION</p>
+        <p>We retain your account and collection data for as long as your account is active. Upon account deletion, we will delete or anonymize your personal information within thirty (30) days, except where retention is required by law or for legitimate business purposes (e.g., transaction records, dispute resolution). Cached pricing data from third-party APIs is refreshed periodically and is not permanently associated with your account.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">6. YOUR RIGHTS</p>
+        <p>Depending on your jurisdiction, you may have the right to: (a) access the personal information we hold about you; (b) request correction of inaccurate information; (c) request deletion of your personal information; (d) object to or restrict certain processing; (e) data portability; and (f) withdraw consent where processing is based on consent. To exercise these rights, contact us at <strong style="color:var(--blue)">privacy@grailiso.com</strong>. We will respond within thirty (30) days.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">7. CALIFORNIA PRIVACY RIGHTS (CCPA)</p>
+        <p>If you are a California resident, you have the right to: (a) know what personal information we collect, use, and disclose; (b) request deletion of your personal information; (c) opt out of the sale of personal information (we do not sell personal information); and (d) not be discriminated against for exercising your privacy rights.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">8. CHILDREN&rsquo;S PRIVACY</p>
+        <p>The Platform is not intended for individuals under the age of 18. We do not knowingly collect personal information from children under 18. If we become aware that we have collected information from a child under 18, we will take steps to delete such information promptly.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">9. THIRD-PARTY SERVICES</p>
+        <p>The Platform integrates with third-party services that have their own privacy policies, including Supabase (database/auth), Stripe (payments/identity), eBay (pricing data), ESPN (scores), Netlify (hosting), and Leaflet/CartoDB (maps). We encourage you to review the privacy policies of these services.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">10. COOKIES AND LOCAL STORAGE</p>
+        <p>The Platform uses browser localStorage to store authentication tokens and user preferences (e.g., theme selection, tour completion status). We do not use third-party tracking cookies, advertising cookies, or analytics cookies. No cookie consent banner is required as we do not use cookies for tracking or advertising purposes.</p>
+
+        <p style="color:var(--white);font-weight:600;margin-top:14px">11. CHANGES TO THIS POLICY</p>
+        <p>We may update this Privacy Policy from time to time. Material changes will be communicated via the Platform or email. Continued use after changes constitutes acceptance.</p>
+
+        <p style="margin-top:16px;color:#7A95AE;font-size:11px">Questions about privacy? Contact us at <strong style="color:var(--blue)">privacy@grailiso.com</strong></p>
+      </div>
+      <!-- CONTACT -->
+      <div id="legal-contact" style="display:none;margin-top:18px;padding:24px;background:rgba(0,0,0,0.2);border:1px solid var(--deep-border);border-radius:10px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);line-height:1.7">
+        <div style="font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:2px;color:var(--white);margin-bottom:14px">CONTACT</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div>
+            <div style="font-weight:600;color:var(--white);margin-bottom:6px">General Inquiries</div>
+            <div><strong style="color:var(--blue)">hello@grailiso.com</strong></div>
+          </div>
+          <div>
+            <div style="font-weight:600;color:var(--white);margin-bottom:6px">Legal</div>
+            <div><strong style="color:var(--blue)">legal@grailiso.com</strong></div>
+          </div>
+          <div>
+            <div style="font-weight:600;color:var(--white);margin-bottom:6px">Privacy</div>
+            <div><strong style="color:var(--blue)">privacy@grailiso.com</strong></div>
+          </div>
+          <div>
+            <div style="font-weight:600;color:var(--white);margin-bottom:6px">Support</div>
+            <div><strong style="color:var(--blue)">support@grailiso.com</strong></div>
+          </div>
+        </div>
+        <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--deep-border)">
+          <div style="font-weight:600;color:var(--white);margin-bottom:6px">Press &amp; Media</div>
+          <div>For press inquiries, media requests, and partnership opportunities, contact <strong style="color:var(--blue)">press@grailiso.com</strong></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ═══════════════ CARD SHOPS ═══════════════ -->
@@ -12516,6 +12660,26 @@ function _navDrop(e){
 function _navDragEnd(){ this.style.opacity='1'; document.querySelectorAll('.drag-over').forEach(el=>el.classList.remove('drag-over')); _navDragSrc=null; }
 
 // N() is the original function — no override needed
+
+// ── Deep-link hash handler for legal pages ──
+(function(){
+  const h = window.location.hash;
+  if(h === '#tos' || h === '#privacy' || h === '#contact'){
+    const waitForAuth = setInterval(()=>{
+      if(window._authUser || document.getElementById('gate')?.style.display==='flex'){
+        clearInterval(waitForAuth);
+        if(window._authUser){
+          N('account', document.getElementById('nav-account'));
+          const map = {'#tos':'legal-tos','#privacy':'legal-privacy','#contact':'legal-contact'};
+          const el = document.getElementById(map[h]);
+          if(el){ el.style.display='block'; el.scrollIntoView({behavior:'smooth',block:'start'}); }
+        }
+        history.replaceState(null,'',window.location.pathname);
+      }
+    }, 200);
+    setTimeout(()=>clearInterval(waitForAuth), 10000);
+  }
+})();
 
 // &#9472;&#9472; Trap browser back button — never leave the app &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 history.pushState({panel:'overview'}, '', window.location.href);

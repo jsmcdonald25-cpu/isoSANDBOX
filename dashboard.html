@@ -5380,10 +5380,13 @@ function _requiresAuth(id){ return !_PUBLIC_PAGES.includes(id); }
 
 function N(id,el){
   // ── Auth guard: block protected pages if not logged in ──
+  // Check both _authUser AND gate visibility — if gate is already hidden, user passed auth
   if(_requiresAuth(id) && !window._authUser){
     const gate = document.getElementById('gate');
-    if(gate){ gate.style.display='flex'; gate.style.pointerEvents='auto'; }
-    return;
+    if(gate && gate.style.display !== 'none'){
+      gate.style.display='flex'; gate.style.pointerEvents='auto';
+      return;
+    }
   }
   if(id !== 'carddetail') window._prevSection = window._currentSection || null;
   window._currentSection = id; // track so token-refresh doesn't reset nav
@@ -12729,9 +12732,11 @@ window.addEventListener('popstate', function(e){
   // ── Auth guard on back-button navigation ──
   if(_requiresAuth(id) && !window._authUser){
     const gate = document.getElementById('gate');
-    if(gate){ gate.style.display='flex'; gate.style.pointerEvents='auto'; }
-    history.pushState({panel:id}, '', window.location.href);
-    return;
+    if(gate && gate.style.display !== 'none'){
+      gate.style.display='flex'; gate.style.pointerEvents='auto';
+      history.pushState({panel:id}, '', window.location.href);
+      return;
+    }
   }
   const el = document.querySelector('[onclick*="' + id + '"]') || null;
   _navSuppressHistory = true;

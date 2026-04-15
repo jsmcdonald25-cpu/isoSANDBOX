@@ -11704,7 +11704,7 @@ async function _ivLoadAndShowCards(setDef){
     ? 'card_name,card_number,set_name,series,rarity,card_type,national_dex_number,image_small,image_hires'
     : '*';
 
-  let all = [], from = 0, PAGE = 5000, err = null;
+  let all = [], from = 0, PAGE = 1000, err = null;
   while(true){
     const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
     const url = 'https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/'+realTable
@@ -11977,7 +11977,7 @@ function _ivRenderChecklist(){
   const _defPar = (_ivSet && _ivSet.defaultParallels && _ivSet.defaultParallels.length) ? _ivSet.defaultParallels : null;
 
   window._ivRowCache = {};
-  const rows = _ivFiltered.slice(0, 1500).map((r, idx)=>{
+  const rows = _ivFiltered.slice(0, 2500).map((r, idx)=>{
     window._ivRowCache[idx] = r;
     const cat = (r.category||'Base').toLowerCase();
     const catClass = cat.includes('auto') ? 'iv-cat-auto' : cat.includes('insert') ? 'iv-cat-insert' : r.is_rookie ? 'iv-cat-rookie' : 'iv-cat-base';
@@ -12020,7 +12020,7 @@ function _ivRenderChecklist(){
   }).join('');
 
   el.innerHTML = `<div class="iv-checklist">${header}${rows}</div>`
-    + (_ivFiltered.length > 1500 ? `<div class="iv-meta" style="text-align:center;margin-top:10px">Showing 1,500 of ${_ivFiltered.length.toLocaleString()} — refine your search</div>` : '');
+    + (_ivFiltered.length > 2500 ? `<div class="iv-meta" style="text-align:center;margin-top:10px">Showing 2,500 of ${_ivFiltered.length.toLocaleString()} — refine your search</div>` : '');
   el.onclick = function(e){
     try {
       var row = e.target.closest('[data-rowidx]');

@@ -4551,6 +4551,15 @@ async function logOut(){
       <div class="vm-error" id="varError">Please select a variation.</div>
     </div>
 
+    <!-- Provenance: Auto type (shown only when active variation is_auto) -->
+    <div class="vm-section" id="vmAutoTypeSection" style="display:none">
+      <div class="vm-label">Autograph Type <span class="req">*</span> <span style="color:rgba(0,170,255,0.5);font-size:10px">&#8212; ON-CARD OR STICKER?</span></div>
+      <div class="vm-source-grid">
+        <div class="vm-source-btn" id="vmAutoOnCard" onclick="_vmSelectAutoType('on_card')">&#9997;&#65039; On-Card</div>
+        <div class="vm-source-btn" id="vmAutoSticker" onclick="_vmSelectAutoType('sticker')">&#128203; Sticker</div>
+      </div>
+      <div class="vm-error" id="vmAutoTypeError" style="display:none">Please select auto type.</div>
+    </div>
     <!-- Provenance: Autograph pen color (shown only when active variation is_auto) -->
     <div class="vm-section" id="vmProvPenColorSection" style="display:none">
       <div class="vm-label">Pen Color <span class="req">*</span> <span style="color:rgba(0,170,255,0.5);font-size:10px">&#8212; PROVENANCE: REQUIRED FOR AUTOS</span></div>
@@ -6778,13 +6787,17 @@ function openVaultModal(card){
     const el=document.getElementById(id); if(el) el.classList.remove('selected');
   });
   // Reset provenance fields
-  ['vmProvPenColorSection','vmProvLcsSection','vmProvRipLcsSection'].forEach(id=>{
+  window._vmAutoType = null;
+  ['vmAutoOnCard','vmAutoSticker'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.classList.remove('selected');
+  });
+  ['vmAutoTypeSection','vmProvPenColorSection','vmProvLcsSection','vmProvRipLcsSection'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.style.display='none';
   });
   ['vmProvPenColor','vmProvLcsName','vmProvLcsCity','vmProvLcsState','vmProvRipLcsName','vmProvRipLcsCity','vmProvRipLcsState'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.value='';
   });
-  ['vmProvPenColorError','vmProvLcsError'].forEach(id=>{
+  ['vmAutoTypeError','vmProvPenColorError','vmProvLcsError'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.style.display='none';
   });
   window._vmProvState = null;
@@ -7209,7 +7222,9 @@ function _updateModalForVariation(){
     }
   }
 
-  // Show/hide pen-color section
+  // Show/hide auto type + pen-color sections
+  const autoTypeSec = document.getElementById('vmAutoTypeSection');
+  if(autoTypeSec) autoTypeSec.style.display = isAuto ? 'block' : 'none';
   const penSec = document.getElementById('vmProvPenColorSection');
   if(penSec) penSec.style.display = isAuto ? 'block' : 'none';
 
@@ -7223,6 +7238,15 @@ function _updateModalForVariation(){
   };
 }
 
+function _vmSelectAutoType(val){
+  window._vmAutoType = val;
+  ['vmAutoOnCard','vmAutoSticker'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.classList.remove('selected');
+  });
+  const map = {on_card:'vmAutoOnCard', sticker:'vmAutoSticker'};
+  const el = document.getElementById(map[val]); if(el) el.classList.add('selected');
+  document.getElementById('vmAutoTypeError').style.display='none';
+}
 function selectAcqType(type){
   vmAcq = type;
   vmSource = null;
@@ -7356,9 +7380,11 @@ async function submitVault(){
       document.getElementById('vmAskingError').style.display='block'; valid=false;
     }
   }
-  // Provenance validation — pen color required when active variation is auto
+  // Provenance validation — auto type + pen color required when active variation is auto
   const _provState = window._vmProvState || null;
   if(_provState && _provState.isAuto){
+    if(!window._vmAutoType){ document.getElementById('vmAutoTypeError').style.display='block'; valid=false; }
+    else { document.getElementById('vmAutoTypeError').style.display='none'; }
     const pen = (document.getElementById('vmProvPenColor')||{}).value;
     if(!pen){ document.getElementById('vmProvPenColorError').style.display='block'; valid=false; }
     else { document.getElementById('vmProvPenColorError').style.display='none'; }
@@ -7565,6 +7591,7 @@ async function submitVault(){
           pack_product:    (vmAcq === 'pulled') ? (document.getElementById('vmPackType').value||null) : null,
           pack_retailer:   null,
           // Auto
+          auto_type:       _ps.isAuto ? (window._vmAutoType || null) : null,
           pen_color:       _ps.isAuto ? (document.getElementById('vmProvPenColor').value || null) : null,
           price:           pricePaid || null,
           notes:           null,

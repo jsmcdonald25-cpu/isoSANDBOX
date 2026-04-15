@@ -4546,18 +4546,21 @@ async function logOut(){
     <div class="vm-sub" id="vmSub">Upload front &amp; back of your card to add it to your personal library.</div>
 
     <!-- Card Info -->
-    <div class="vm-card-info" id="vmCardInfo" style="display:none">
+    <div class="vm-card-info" id="vmCardInfo" style="display:none;text-align:center">
       <div class="vm-card-name" id="vmCardName"></div>
       <div class="vm-card-detail" id="vmCardDetail"></div>
     </div>
 
-    <!-- Catalog pic notice (shown when card already has a catalog image) -->
-    <div class="vm-section" id="vmCatalogPicNotice" style="display:none">
-      <div style="background:rgba(0,232,135,0.08);border:1px solid rgba(0,232,135,0.2);border-radius:8px;padding:14px;display:flex;align-items:flex-start;gap:12px">
-        <div style="font-size:22px;flex-shrink:0">&#128444;&#65039;</div>
-        <div>
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:700;color:var(--white);margin-bottom:3px">Catalog Image Available</div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--chrome);line-height:1.5">This card already has a catalog image &#8212; no photo upload needed. Just confirm your acquisition details and price paid below.</div>
+    <!-- Card preview images (shown when catalog image exists) -->
+    <div id="vmCatalogPicNotice" style="display:none;margin-bottom:16px">
+      <div style="display:flex;justify-content:center;gap:50px;padding:14px;background:rgba(0,0,0,0.15);border:1px solid var(--deep-border);border-radius:10px">
+        <div id="vmPreviewFront" style="width:120px;height:168px;border-radius:6px;overflow:hidden;border:1px solid rgba(0,170,255,0.2);background:linear-gradient(135deg,#112840,#1a3a5c);display:flex;align-items:center;justify-content:center;position:relative">
+          <div style="font-size:40px;color:rgba(122,149,174,0.15)">&#9918;</div>
+          <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);padding:3px 0;text-align:center;font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">Front</div>
+        </div>
+        <div id="vmPreviewBack" style="width:120px;height:168px;border-radius:6px;overflow:hidden;border:1px solid rgba(0,170,255,0.2);background:linear-gradient(135deg,#112840,#1a3a5c);display:flex;align-items:center;justify-content:center;position:relative">
+          <div style="font-size:40px;color:rgba(122,149,174,0.15)">&#9918;</div>
+          <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);padding:3px 0;text-align:center;font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">Back</div>
         </div>
       </div>
     </div>
@@ -4584,23 +4587,30 @@ async function logOut(){
       <div class="vm-error" id="photoError">Both front and back photos are required.</div>
     </div>
 
-    <!-- Serial Number (shown only for numbered cards) -->
-    <div class="vm-section" id="vmSerialSection" style="display:none">
-      <div class="vm-label">Your Serial Number <span class="req">*</span> <span style="color:rgba(0,170,255,0.5);font-size:10px">&#8212; REQUIRED FOR NUMBERED CARDS</span></div>
-      <div class="vm-serial-row">
-        <input class="vm-input" type="number" id="vmSerialNum" min="1" placeholder="e.g. 47" oninput="validateSerial()">
-        <div class="vm-serial-of" id="vmSerialOf">/ &#8212;</div>
+    <!-- Parallel + Serial on one line -->
+    <div id="vmParallelSerialRow" style="display:none;margin-bottom:16px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end">
+        <!-- Variation Selector -->
+        <div id="vmVariationSection">
+          <div class="vm-label">Which parallel? <span class="req">*</span></div>
+          <div style="position:relative" id="vmVarSelectWrap">
+            <div id="vmVarColorDot" style="display:none;position:absolute;left:12px;top:50%;transform:translateY(-50%);width:12px;height:12px;border-radius:50%;border:1px solid rgba(255,255,255,0.2);z-index:1"></div>
+            <select class="vm-input" id="vmVariationSelect" style="cursor:pointer" onchange="_updateModalForVariation()">
+              <option value="">Select parallel...</option>
+            </select>
+          </div>
+          <div class="vm-error" id="varError">Please select a parallel.</div>
+        </div>
+        <!-- Serial Number -->
+        <div id="vmSerialSection" style="display:none">
+          <div class="vm-label">Serial # <span class="req">*</span></div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input class="vm-input" type="number" id="vmSerialNum" min="1" placeholder="e.g. 47" oninput="validateSerial()" style="flex:1;text-align:center">
+            <div class="vm-serial-of" id="vmSerialOf" style="white-space:nowrap">/ &#8212;</div>
+          </div>
+          <div class="vm-error" id="serialError">Please enter your specific card number.</div>
+        </div>
       </div>
-      <div class="vm-error" id="serialError">Please enter your specific card number.</div>
-    </div>
-
-    <!-- Variation Selector -->
-    <div class="vm-section" id="vmVariationSection" style="display:none">
-      <div class="vm-label">Which parallel? <span class="req">*</span></div>
-      <select class="vm-input" id="vmVariationSelect" style="cursor:pointer" onchange="_updateModalForVariation()">
-        <option value="">Select parallel...</option>
-      </select>
-      <div class="vm-error" id="varError">Please select a parallel.</div>
     </div>
 
     <!-- Provenance: Auto type (shown only when active variation is_auto) -->
@@ -4714,10 +4724,9 @@ async function logOut(){
     <!-- Price &#8212; MANDATORY (label changes by acq type) -->
     <div class="vm-section" id="vmPriceSection" style="display:none">
       <div class="vm-price-wrap">
-        <div class="vm-label" style="margin-bottom:10px" id="vmPriceLabel">Price Paid <span class="req">*</span></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
           <div>
-            <div class="vm-label" style="margin-bottom:5px;font-size:10px" id="vmPriceSubLabel">Amount (USD) <span class="req">*</span></div>
+            <div class="vm-label" style="margin-bottom:5px;font-size:10px" id="vmPriceSubLabel">Amount Paid (USD) <span class="req">*</span></div>
             <input class="vm-input" type="number" id="vmPricePaid" min="0" step="0.01" placeholder="0.00" style="font-size:18px;font-family:Bebas Neue,sans-serif;letter-spacing:1px;color:var(--blue)" oninput="document.getElementById('priceError').style.display='none'"/>
           </div>
           <div>
@@ -6888,7 +6897,9 @@ function openVaultModal(card){
     // Populate variation selector
     const varSec = document.getElementById('vmVariationSection');
     const varSel = document.getElementById('vmVariationSelect');
+    const psRow = document.getElementById('vmParallelSerialRow');
     if(card.variations && card.variations.length > 1){
+      if(psRow) psRow.style.display = 'block';
       varSec.style.display = 'block';
       // Get currently active variation
       const activeIdx = window._cdActiveVarIdx || 0;
@@ -6896,7 +6907,23 @@ function openVaultModal(card){
         const run = v.run ? ' /'+v.run : '';
         return `<option value="${v.label}" ${i===activeIdx?'selected':''}>${v.label}${run}</option>`;
       }).join('');
+      // Color dot matches selected pill
+      const activeVar = card.variations[activeIdx];
+      const dot = document.getElementById('vmVarColorDot');
+      if(dot && activeVar && activeVar.color){
+        dot.style.display='block';
+        dot.style.background=activeVar.color;
+        varSel.style.paddingLeft='32px';
+        varSel.style.borderColor=activeVar.color;
+        varSel.style.boxShadow='0 0 8px '+(activeVar.glow||'rgba(255,255,255,0.15)');
+      } else if(dot){
+        dot.style.display='none';
+        varSel.style.paddingLeft='';
+        varSel.style.borderColor='';
+        varSel.style.boxShadow='';
+      }
     } else {
+      if(psRow) psRow.style.display = 'none';
       varSec.style.display = 'none';
       varSel.innerHTML = '<option value="Base">Base</option>';
     }
@@ -6906,6 +6933,16 @@ function openVaultModal(card){
       // Path 2: catalog image exists — no upload needed
       document.getElementById('vmPhotoSection').style.display='none';
       document.getElementById('vmCatalogPicNotice').style.display='block';
+      // Populate front/back preview images
+      const _pf=document.getElementById('vmPreviewFront');
+      const _pb=document.getElementById('vmPreviewBack');
+      const _varImgs=card._varImages||card.var_images||{};
+      const _varKey=Object.keys(_varImgs)[0];
+      const _vi=_varKey?_varImgs[_varKey]:{};
+      const _fUrl=_vi.front||card._vaultFrontUrl||card.front_img||null;
+      const _bUrl=_vi.back||card._vaultBackUrl||card.back_img||null;
+      if(_pf) _pf.innerHTML=_fUrl?`<img src="${_fUrl}" style="width:100%;height:100%;object-fit:cover"><div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);padding:3px 0;text-align:center;font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">Front</div>`:'<div style="font-size:40px;color:rgba(122,149,174,0.15)">&#9918;</div><div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);padding:3px 0;text-align:center;font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">Front</div>';
+      if(_pb) _pb.innerHTML=_bUrl?`<img src="${_bUrl}" style="width:100%;height:100%;object-fit:cover"><div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);padding:3px 0;text-align:center;font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">Back</div>`:'<div style="font-size:40px;color:rgba(122,149,174,0.15)">&#9918;</div><div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);padding:3px 0;text-align:center;font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-text)">Back</div>';
       vmFrontFile=null; vmBackFile=null; // skip upload validation
     } else {
       // Path 1: no catalog image — user must upload
@@ -6917,6 +6954,7 @@ function openVaultModal(card){
     if(card.run){
       document.getElementById('vmSerialSection').style.display='block';
       document.getElementById('vmSerialOf').textContent=`/ ${card.run}`;
+      if(psRow) psRow.style.display = 'block';
     } else {
       document.getElementById('vmSerialSection').style.display='none';
     }
@@ -7242,6 +7280,24 @@ function _updateModalForVariation(){
   const label = v ? v.label : (vmCard.parallel || '');
   const isAuto = /\bauto\b|autograph/i.test(label);
 
+  // Update color dot to match selected variation
+  const dot = document.getElementById('vmVarColorDot');
+  if(dot && v && v.color){
+    dot.style.display='block';
+    dot.style.background=v.color;
+    sel.style.paddingLeft='32px';
+    sel.style.borderColor=v.color;
+    sel.style.boxShadow='0 0 8px '+(v.glow||'rgba(255,255,255,0.15)');
+  } else if(dot){
+    dot.style.display='none';
+    sel.style.paddingLeft='';
+    sel.style.borderColor='';
+    sel.style.boxShadow='';
+  }
+
+  // Show parent row when serial is visible
+  const psRow = document.getElementById('vmParallelSerialRow');
+
   // Refresh serial section visibility based on the SELECTED variation
   const serialSec = document.getElementById('vmSerialSection');
   const serialOf  = document.getElementById('vmSerialOf');
@@ -7249,6 +7305,7 @@ function _updateModalForVariation(){
     if(run){
       serialSec.style.display = 'block';
       serialOf.textContent = `/ ${run}`;
+      if(psRow) psRow.style.display = 'block';
     } else {
       serialSec.style.display = 'none';
     }
@@ -7325,10 +7382,10 @@ function selectAcqType(type){
   const subLabelEl= document.getElementById('vmPriceSubLabel');
   const noteEl    = document.getElementById('vmPriceNote');
   const priceLabels = {
-    bought_single: { label:'Price Paid <span class="req">*</span>', sub:'Amount (USD) <span class="req">*</span>', note:'Price paid feeds the market value engine &#8212; required to track ROI' },
-    pulled:        { label:'Rip Cost <span class="req">*</span>', sub:'Pack / Box cost (USD) <span class="req">*</span>', note:'Pack/box cost feeds the market index &#8212; helps calculate cost-per-pull averages' },
-    trade:         { label:'Trade Value <span class="req">*</span> <span style="font-size:10px;color:rgba(0,170,255,0.5)">&#8212; YOUR ESTIMATE</span>', sub:'Estimated card value (USD) <span class="req">*</span>', note:'Trade values are stored as soft market signals &#8212; weighted lower than direct sales' },
-    other:         { label:'Cost <span class="req">*</span>', sub:'Amount paid (USD) &#8212; enter 0 if free', note:'Recorded for your own tracking. Does not affect market price engine.' },
+    bought_single: { sub:'Amount Paid (USD) <span class="req">*</span>', note:'Price paid feeds the market value engine &#8212; required to track ROI' },
+    pulled:        { sub:'Pack / Box Cost (USD) <span class="req">*</span>', note:'Pack/box cost feeds the market index &#8212; helps calculate cost-per-pull averages' },
+    trade:         { sub:'Estimated Trade Value (USD) <span class="req">*</span>', note:'Trade values are stored as soft market signals &#8212; weighted lower than direct sales' },
+    other:         { sub:'Amount Paid (USD) &#8212; enter 0 if free', note:'Recorded for your own tracking. Does not affect market price engine.' },
   };
   const lbl = priceLabels[type] || priceLabels['other'];
   if(labelEl)    labelEl.innerHTML    = lbl.label;

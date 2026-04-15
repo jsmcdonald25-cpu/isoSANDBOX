@@ -850,7 +850,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .flag-stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--white)}
 .flag-stat-label{font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--muted-text);margin-top:3px}
 /* Market price in ISOVault list */
-.iv-row-price{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--blue);font-weight:700;text-align:right;white-space:nowrap}
+.iv-row-price{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--blue);font-weight:700;text-align:center;white-space:nowrap}
 .iv-row-price.no-data{color:rgba(122,149,174,0.3);font-size:11px}
 /* Global bug report button */
 .bug-report-btn{position:fixed;bottom:56px;right:16px;z-index:9000;background:rgba(13,31,51,0.92);border:1px solid rgba(255,59,92,0.35);border-radius:8px;padding:7px 13px;display:flex;align-items:center;gap:7px;cursor:pointer;transition:all .2s;backdrop-filter:blur(4px)}
@@ -909,7 +909,16 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .iv-set-count{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--blue);margin-top:8px;font-weight:700}
 /* Card toolbar */
 .iv-card-toolbar{display:flex;gap:10px;align-items:center;margin-bottom:8px;flex-wrap:wrap;position:sticky;top:28px;z-index:50;background:var(--deep1);padding:6px 0;border-bottom:1px solid var(--deep-border)}
-.iv-card-search-wrap{flex:1;min-width:200px;display:flex;align-items:center;gap:8px;background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;padding:0 12px;transition:border-color .2s}
+.iv-card-search-wrap{min-width:160px;max-width:280px;display:flex;align-items:center;gap:8px;background:var(--deep2);border:1px solid var(--deep-border);border-radius:8px;padding:0 12px;transition:border-color .2s}
+.iv-color-key{display:flex;align-items:center;gap:3px;margin-left:auto}
+.iv-ck-label{font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);margin-right:4px;white-space:nowrap}
+.iv-ck-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;opacity:0.85;cursor:default}
+.iv-par-blocks{display:flex;flex-wrap:wrap;gap:2px;align-items:center}
+.iv-par-blk{width:10px;height:10px;border-radius:2px;flex-shrink:0;opacity:0.85}
+.iv-owned{text-align:center;font-family:Barlow Condensed,sans-serif;font-size:13px}
+.iv-owned-check{color:var(--green);font-weight:700;font-size:14px}
+.iv-owned-count{color:var(--green);font-size:12px;font-weight:700;background:rgba(0,232,135,0.1);padding:1px 6px;border-radius:8px}
+.iv-owned-none{color:rgba(122,149,174,0.15)}
 .iv-card-search-wrap:focus-within{border-color:var(--blue)}
 .iv-card-search-wrap input{flex:1;background:none;border:none;outline:none;font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--white);padding:9px 8px}
 .iv-card-search-wrap input::placeholder{color:var(--muted-text)}
@@ -3392,6 +3401,19 @@ async function logOut(){
           <option value="category">Sort: Category</option>
           <option value="mkt">Sort: Market Price</option>
         </select>
+        <div class="iv-color-key" id="ivColorKey">
+          <span class="iv-ck-label">Parallel Colors:</span>
+          <div class="iv-ck-dot" style="background:#00AAFF" title="Base"></div>
+          <div class="iv-ck-dot" style="background:#FFD700" title="Gold"></div>
+          <div class="iv-ck-dot" style="background:#C0C0C0" title="Silver"></div>
+          <div class="iv-ck-dot" style="background:#FF3B5C" title="Red"></div>
+          <div class="iv-ck-dot" style="background:#00E887" title="Green"></div>
+          <div class="iv-ck-dot" style="background:#FF8C00" title="Orange"></div>
+          <div class="iv-ck-dot" style="background:#A855F7" title="Purple"></div>
+          <div class="iv-ck-dot" style="background:#FF6FD8" title="Pink"></div>
+          <div class="iv-ck-dot" style="background:#888EA8" title="Black"></div>
+          <div class="iv-ck-dot" style="background:#00E5FF" title="Refractor"></div>
+        </div>
       </div>
       <div class="iv-meta" id="ivMeta"></div>
       <div id="ivCardList"></div>
@@ -11631,14 +11653,33 @@ function _ivRenderChecklist(){
   const hStyle = 'cursor:pointer;color:var(--muted-text);font-size:12px;letter-spacing:1px;user-select:none;font-weight:600';
   const activeStyle = (col) => _ivSortCol === col ? ';color:var(--blue)' : '';
 
-  const header = `<div class="iv-row" style="cursor:default;border-bottom:1px solid rgba(0,170,255,.15);padding-bottom:6px;margin-bottom:2px;grid-template-columns:70px 2fr 1.2fr 100px 100px 60px">
+  const _colTpl = '70px 2fr 1.2fr 90px 110px 80px 50px 40px';
+  const header = `<div class="iv-row" style="cursor:default;border-bottom:1px solid rgba(0,170,255,.15);padding-bottom:6px;margin-bottom:2px;grid-template-columns:${_colTpl}">
     <div onclick="_ivSortBy('card_number')" style="${hStyle}${activeStyle('card_number')}">CARD #${arrow('card_number')}</div>
     <div onclick="_ivSortBy('player')" style="${hStyle}${activeStyle('player')}">PLAYER${arrow('player')}</div>
     <div onclick="_ivSortBy('team')" style="${hStyle}${activeStyle('team')}">TEAM${arrow('team')}</div>
     <div onclick="_ivSortBy('category')" style="${hStyle}${activeStyle('category')}">CATEGORY${arrow('category')}</div>
-    <div onclick="_ivSortBy('mkt')" style="${hStyle}${activeStyle('mkt')}">MKT AVG${arrow('mkt')}</div>
-    <div style="font-size:10px;letter-spacing:1px;color:var(--muted-text);font-family:Barlow Condensed,sans-serif;text-align:center">PIC</div>
+    <div style="${hStyle}">COLORS</div>
+    <div onclick="_ivSortBy('mkt')" style="${hStyle}${activeStyle('mkt')};text-align:center">MKT AVG${arrow('mkt')}</div>
+    <div style="${hStyle};text-align:center">OWNED</div>
+    <div style="font-size:12px;letter-spacing:1px;color:var(--muted-text);font-family:Barlow Condensed,sans-serif;text-align:center;font-weight:600">PIC</div>
   </div>`;
+
+  // Build vault ownership index: card_number → count (for OWNED column)
+  const _ownIndex = {};
+  const _setLabel = _ivSet ? (_ivSet.label||_ivSet.name||'') : '';
+  (window._vaultData||[]).forEach(v=>{
+    if(!v.card_number) return;
+    // Match by set_name similarity (vault stores set_name, catalog uses iv_sets label)
+    const vs = (v.set_name||'').toLowerCase();
+    const sl = _setLabel.toLowerCase();
+    if(sl && !vs.includes(sl) && !sl.includes(vs)) return;
+    const k = String(v.card_number).replace(/^#/,'');
+    _ownIndex[k] = (_ownIndex[k]||0) + 1;
+  });
+
+  // Get set-level default parallels for color blocks
+  const _defPar = (_ivSet && _ivSet.defaultParallels && _ivSet.defaultParallels.length) ? _ivSet.defaultParallels : null;
 
   window._ivRowCache = {};
   const rows = _ivFiltered.slice(0, 500).map((r, idx)=>{
@@ -11653,12 +11694,32 @@ function _ivRenderChecklist(){
     const priceHtml = mktPrice
       ? `<div class="iv-row-price">$${Number(mktPrice).toFixed(2)}</div>`
       : `<div class="iv-row-price no-data">—</div>`;
-    return `<div class="iv-row" style="grid-template-columns:70px 2fr 1.2fr 100px 100px 60px;cursor:pointer" data-rowidx="${idx}">
+
+    // COLORS: build parallel color blocks
+    let _parColors = [];
+    if(r.variations && Array.isArray(r.variations) && r.variations.length){
+      r.variations.forEach(p=>{ const c=_varPillColor(p.label||'Base'); _parColors.push({color:c.color,label:p.label||'Base',run:p.run}); });
+    } else if(_defPar){
+      _defPar.forEach(p=>{ const lbl=p.label||p; const c=_varPillColor(lbl); _parColors.push({color:c.color,label:lbl,run:p.run||null}); });
+    } else {
+      _parColors.push({color:'#00AAFF',label:'Base',run:null});
+    }
+    const colorsHtml = `<div class="iv-par-blocks">${_parColors.map(p=>`<div class="iv-par-blk" style="background:${p.color}" title="${p.label}${p.run?' /'+p.run:''}"></div>`).join('')}</div>`;
+
+    // OWNED: check vault
+    const ownCt = _ownIndex[cardKey] || 0;
+    const ownHtml = ownCt > 1 ? `<div class="iv-owned"><span class="iv-owned-count">${ownCt}x</span></div>`
+      : ownCt === 1 ? `<div class="iv-owned"><span class="iv-owned-check">&#10003;</span></div>`
+      : `<div class="iv-owned"><span class="iv-owned-none">—</span></div>`;
+
+    return `<div class="iv-row" style="grid-template-columns:${_colTpl};cursor:pointer" data-rowidx="${idx}">
       <div class="iv-row-num">${r.card_number||'—'}</div>
       <div><div class="iv-row-player">${r.player||'—'}</div>${sub}</div>
       <div class="iv-row-team">${r.team||'—'}</div>
       <div class="iv-row-cat"><span class="iv-row-cat-badge ${catClass}">${catLabel}</span></div>
+      ${colorsHtml}
       ${priceHtml}
+      ${ownHtml}
       <div style="text-align:center">${hasImg ? '<span style="color:var(--green);font-size:11px;font-family:Barlow Condensed,sans-serif;letter-spacing:.5px">YES</span>' : '<span style="color:rgba(122,149,174,0.3);font-size:11px;font-family:Barlow Condensed,sans-serif">—</span>'}</div>
     </div>`;
   }).join('');

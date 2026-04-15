@@ -1364,10 +1364,10 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 @keyframes mcl-glint{0%{background-position:200% 0}100%{background-position:-100% 0}}
 
 /* ── My Card Library grid density ── */
-.mcl-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:8px}
-.mcl-grid.cols-6{grid-template-columns:repeat(6,1fr);gap:14px}
-.mcl-grid .iv-grid-card .iv-grid-img{height:120px}
-.mcl-grid.cols-6 .iv-grid-card .iv-grid-img{height:170px}
+.mcl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px}
+.mcl-grid.cols-6{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.mcl-grid .iv-grid-card .iv-grid-img{height:130px}
+.mcl-grid.cols-6 .iv-grid-card .iv-grid-img{height:190px}
 .mcl-grid .iv-grid-info{padding:6px 8px 8px}
 .mcl-grid.cols-6 .iv-grid-info{padding:8px 10px 10px}
 .mcl-grid .iv-grid-player{font-size:11px}

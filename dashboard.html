@@ -9271,8 +9271,8 @@ let _cdCatalogFrontBlob=null, _cdCatalogBackBlob=null;
 async function openCardDetail(cardId){
   const c = CARDS.find(x=>x && x.id===cardId);
   if(!c) return;
-  // If not entering from My Vault, reset the context flag
-  if(!window._cdFromMyVault){ window._cdFromMyVault = false; _cdSetMyVaultContext(false); }
+  // Always reset vault context when entering from ISOVault (not My Vault)
+  window._cdFromMyVault = false; _cdSetMyVaultContext(false);
   // _cdDbCardNum may have been set by ivOpenCard (ISOVault path) — preserve it.
   // If opening directly (not from ISOVault), clear so fallback uses card's own number.
   if(!window._cdDbCardNum) window._cdDbCardNum = null;

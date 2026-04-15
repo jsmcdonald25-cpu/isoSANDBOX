@@ -89,7 +89,31 @@ function buildSearchQuery({ player, year, brand, set_name, card_number, variatio
   // Variation: include if not base
   const v = String(variation || '').trim();
   const isBase = !v || ['base','raw','base cards'].includes(v.toLowerCase());
-  if (!isBase) parts.push(v);
+  if (!isBase) {
+    // Insert/subset variations (e.g. "1986 Topps Baseball Chrome — Insert")
+    // contain the real subset identity. Strip the " — Insert/Parallel/…" suffix
+    // and use the subset name INSTEAD of the parent set to avoid bloated queries.
+    const dashSplit = v.split(/\s*[—–-]\s*/);
+    const suffix = (dashSplit[1] || '').toLowerCase();
+    const isInsertLabel = ['insert', 'parallel', 'short print', 'base cards'].includes(suffix)
+      || dashSplit.length > 1;
+    if (isInsertLabel && dashSplit[0].length > 3) {
+      // Replace the parent set in parts with the subset name
+      const subsetName = dashSplit[0].trim();
+      const setIdx = parts.indexOf(setOnly);
+      if (setIdx !== -1) {
+        // Clean subset: strip year/brand that may be embedded
+        let cleanSub = subsetName;
+        if (yearStr && cleanSub.startsWith(yearStr)) cleanSub = cleanSub.slice(yearStr.length).trim();
+        if (brandStr && cleanSub.toLowerCase().startsWith(brandStr.toLowerCase())) cleanSub = cleanSub.slice(brandStr.length).trim();
+        parts[setIdx] = cleanSub;
+      } else {
+        parts.push(subsetName);
+      }
+    } else {
+      parts.push(v);
+    }
+  }
 
   // Grade (PSA 10, BGS 9.5, etc.)
   if (grade && !['Raw','raw','Base','base',''].includes(grade)) parts.push(grade);

@@ -2227,7 +2227,7 @@ async function logOut(){
             <div class="sp-title" style="margin-bottom:0">SELECT CARD</div>
           </div>
         </div>
-        <div class="sp-sub" id="s3sub" style="margin-bottom:12px">Select a set on the left, then pick the exact variant.</div>
+        <div class="sp-sub" id="s3sub" style="margin-bottom:12px">Select a set on the left, then pick the exact parallel.</div>
         <div class="s3-layout">
           <div class="s3-set-list" id="s3SetList">
             <div class="s3-msg">Search a player in Step 2 first.</div>
@@ -2254,7 +2254,7 @@ async function logOut(){
               <span id="s3CIsos" style="display:none"></span>
             </div>
             <div id="s3VarSection" style="display:none">
-              <div class="s3-var-label">Choose Variant</div>
+              <div class="s3-var-label">Choose Parallel</div>
               <div class="s3-variants" id="s3Variants"></div>
               <div style="margin-top:10px">
                 <button class="btn btn-ghost btn-sm" id="s3ViewISOBtn" style="display:none;width:100%;justify-content:center" onclick="s3ViewInISOVault()">
@@ -2322,7 +2322,7 @@ async function logOut(){
       <div class="step-line"></div>
       <div class="step-item"><div class="step-circle soon" id="p2sc3">3</div><span class="step-text" id="p2st3">Card</span></div>
       <div class="step-line"></div>
-      <div class="step-item"><div class="step-circle soon" id="p2sc4">4</div><span class="step-text" id="p2st4">Variant</span></div>
+      <div class="step-item"><div class="step-circle soon" id="p2sc4">4</div><span class="step-text" id="p2st4">Parallel</span></div>
       <div class="step-line"></div>
       <div class="step-item"><div class="step-circle soon" id="p2sc5">5</div><span class="step-text" id="p2st5">Grade</span></div>
       <div class="step-line"></div>
@@ -2391,7 +2391,7 @@ async function logOut(){
       <div class="sp" id="p2sp6">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
           <button class="btn btn-ghost btn-sm" onclick="p2Go(5)">&#8592; Card</button>
-          <div class="sp-title" id="p2VarStepTitle" style="margin-bottom:0">SELECT VARIANT</div>
+          <div class="sp-title" id="p2VarStepTitle" style="margin-bottom:0">SELECT PARALLEL</div>
         </div>
         <!-- Card viewer preview — shows the card image so user confirms visually -->
         <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px">
@@ -2429,7 +2429,7 @@ async function logOut(){
         </div>
         <!-- Serial # removed — buyer doesn't own the card yet, no serial to provide -->
         <div class="fg"><label class="fl">Additional Notes (optional)</label><textarea class="fc" id="p2Notes" rows="3" style="resize:vertical" placeholder="Cert number, jersey number parallel, auto quality, specific condition details..."></textarea></div>
-        <div style="display:flex;justify-content:space-between;margin-top:20px"><button class="btn btn-ghost" onclick="p2Go(6)">&#8592; Variant</button><button class="btn btn-primary" onclick="p2GoReview()">Next &#8212; Review &#8594;</button></div>
+        <div style="display:flex;justify-content:space-between;margin-top:20px"><button class="btn btn-ghost" onclick="p2Go(6)">&#8592; Parallel</button><button class="btn btn-primary" onclick="p2GoReview()">Next &#8212; Review &#8594;</button></div>
       </div>
       <!-- Step 8 — Freeform fallback -->
       <div class="sp" id="p2sp8">
@@ -2443,7 +2443,7 @@ async function logOut(){
           <div class="fg"><label class="fl">Card #</label><input class="fc" id="p2FfNum" placeholder="e.g. 25"></div>
           <div class="fg"><label class="fl">Player</label><input class="fc" id="p2FfPlayer" placeholder="e.g. Paul Skenes"></div>
         </div>
-        <div class="fg"><label class="fl">Variant / Parallel</label><input class="fc" id="p2FfVar" placeholder="e.g. Gold /50"></div>
+        <div class="fg"><label class="fl">Parallel</label><input class="fc" id="p2FfVar" placeholder="e.g. Gold /50"></div>
         <div style="display:flex;justify-content:space-between;margin-top:20px"><button class="btn btn-ghost" onclick="p2Go(1)">&#8592; Start over</button><button class="btn btn-primary" onclick="p2Go(7)">Next: Grade &amp; Price &#8594;</button></div>
       </div>
       <!-- Step 9 (review) -->
@@ -2458,7 +2458,7 @@ async function logOut(){
           <div class="is-row"><span class="is-label">Set</span><span class="is-val" id="p2RSet">&#8212;</span></div>
           <div class="is-row" id="p2RSubsetRow" style="display:none"><span class="is-label">Subset</span><span class="is-val" id="p2RSubset">&#8212;</span></div>
           <div class="is-row"><span class="is-label">Card</span><span class="is-val" id="p2RCard">&#8212;</span></div>
-          <div class="is-row"><span class="is-label">Variant</span><span class="is-val" id="p2RVar">&#8212;</span></div>
+          <div class="is-row"><span class="is-label">Parallel</span><span class="is-val" id="p2RVar">&#8212;</span></div>
           <div class="is-row" id="p2RSerialRow" style="display:none"><span class="is-label">Serial #</span><span class="is-val" id="p2RSerial">&#8212;</span></div>
           <div class="is-row"><span class="is-label">ISO/GRADE</span><span class="is-val" id="p2RGrade">PSA 10</span></div>
           <div class="is-row"><span class="is-label">Price Range</span><span class="is-val" id="p2RPrice">&#8212;</span></div>
@@ -2727,7 +2727,7 @@ async function logOut(){
         <div style="display:flex;gap:16px;margin-top:10px">
           <div><div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;color:var(--muted-text)">WANTS</div><div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--blue)" id="srWantGrade"></div></div>
           <div><div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;color:var(--muted-text)">MAX BID</div><div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--green)" id="srMaxBid"></div></div>
-          <div><div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;color:var(--muted-text)">VARIATION</div><div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--white)" id="srVariation"></div></div>
+          <div><div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1px;color:var(--muted-text)">PARALLEL</div><div style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--white)" id="srVariation"></div></div>
         </div>
         <div id="srBuyerNotes" style="display:none;margin-top:8px;font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);font-style:italic"></div>
       </div>
@@ -2871,7 +2871,7 @@ async function logOut(){
           </div>
         </div>
         <div class="lc-modal-warning" id="lcWarning">&mdash;</div>
-        <div class="lc-modal-help">If your price is intentional (rare condition, error variation, hot card), proceed. Otherwise edit and try again.</div>
+        <div class="lc-modal-help">If your price is intentional (rare condition, error parallel, hot card), proceed. Otherwise edit and try again.</div>
       </div>
       <div class="lc-modal-actions">
         <button class="lc-modal-btn lc-modal-btn-cancel" onclick="_lcDeny()">Cancel &mdash; Edit Price</button>
@@ -3236,7 +3236,7 @@ async function logOut(){
           <div class="mvc-set" id="mvcSet">—</div>
         </div>
         <div class="mvc-row">
-          <div><div class="mvc-label">Variation</div><div class="mvc-val blue" id="mvcVariation">—</div></div>
+          <div><div class="mvc-label">Parallel</div><div class="mvc-val blue" id="mvcVariation">—</div></div>
           <div style="text-align:right"><div class="mvc-label">Card #</div><div class="mvc-val" id="mvcNum">—</div></div>
         </div>
         <div class="mvc-row">
@@ -3478,7 +3478,7 @@ async function logOut(){
         <div class="cd-drag-block" data-block-id="variation-pills">
           <div class="cd-drag-handle">&#9776;</div>
           <div>
-            <div class="cd-var-label" id="cd-var-label">Variations &#8212; Click to Switch View</div>
+            <div class="cd-var-label" id="cd-var-label">Parallels &#8212; Click to Switch View</div>
             <div class="cd-var-pills" id="cd-pills"></div>
           </div>
         </div>
@@ -3537,7 +3537,7 @@ async function logOut(){
                 <div class="cd-report-btn-icon">&#128681;</div>
                 <div class="cd-report-btn-text">
                   <div class="cd-report-btn-label">Report an Error</div>
-                  <div class="cd-report-btn-sub">Wrong data, missing variation, bad image?</div>
+                  <div class="cd-report-btn-sub">Wrong data, missing parallel, bad image?</div>
                 </div>
                 <div class="cd-report-badge">+1 CREDIT</div>
               </div>
@@ -3547,7 +3547,7 @@ async function logOut(){
             <div class="cd-report-btn-icon">&#128681;</div>
             <div class="cd-report-btn-text">
               <div class="cd-report-btn-label">Report an Error</div>
-              <div class="cd-report-btn-sub">Wrong info, missing variation, bad image?</div>
+              <div class="cd-report-btn-sub">Wrong info, missing parallel, bad image?</div>
             </div>
             <div class="cd-report-badge">+1 CREDIT</div>
           </div>
@@ -3568,7 +3568,7 @@ async function logOut(){
               <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;color:rgba(0,170,255,0.4);margin-bottom:6px">RECENT SUBMISSIONS</div>
               <div id="cd-mkt-sales-rows"></div>
             </div>
-            <div class="cd-watching" id="cd-watching-row" style="display:none"><span>&#128065;</span>&nbsp;<strong id="cd-watching-ct">&#8212;</strong>&nbsp;collectors watching this variation right now</div>
+            <div class="cd-watching" id="cd-watching-row" style="display:none"><span>&#128065;</span>&nbsp;<strong id="cd-watching-ct">&#8212;</strong>&nbsp;collectors watching this parallel right now</div>
             <div id="cd-mkt-tagline" style="display:none;font-family:'Barlow Condensed',sans-serif;font-size:10px;color:rgba(122,149,174,0.4);letter-spacing:.5px;margin-top:8px">Market price built from collector vault submissions &#183; Built by collectors, for collectors</div>
           </div>
         </div>
@@ -3870,10 +3870,10 @@ async function logOut(){
       <div class="err-modal-sub">Help us keep ISOVault accurate. Manual review by our team &#8212; responses within 48 hours.</div>
       <div class="err-field-label">Card</div>
       <div class="err-readonly" id="errCardName">&#8212;</div>
-      <div class="err-field-label">Variation</div>
+      <div class="err-field-label">Parallel</div>
       <div class="err-readonly" id="errVariation">&#8212;</div>
       <div class="err-field-label">What's wrong? <span style="color:var(--red)">*</span></div>
-      <textarea class="err-textarea" id="errNoteBox" placeholder="Describe the error &#8212; wrong card number, incorrect variation name, bad image, missing parallel, wrong print run, etc."></textarea>
+      <textarea class="err-textarea" id="errNoteBox" placeholder="Describe the error &#8212; wrong card number, incorrect parallel name, bad image, missing parallel, wrong print run, etc."></textarea>
       <div class="vm-error" id="errNoteError" style="display:none;margin-top:6px">Please describe the error before submitting.</div>
       <div class="err-disclaimer">
         <strong>&#127873; Finder's Fee &#8212; 5 Credits</strong><br>
@@ -4542,11 +4542,11 @@ async function logOut(){
 
     <!-- Variation Selector -->
     <div class="vm-section" id="vmVariationSection" style="display:none">
-      <div class="vm-label">Which variation? <span class="req">*</span></div>
+      <div class="vm-label">Which parallel? <span class="req">*</span></div>
       <select class="vm-input" id="vmVariationSelect" style="cursor:pointer" onchange="_updateModalForVariation()">
-        <option value="">Select variation...</option>
+        <option value="">Select parallel...</option>
       </select>
-      <div class="vm-error" id="varError">Please select a variation.</div>
+      <div class="vm-error" id="varError">Please select a parallel.</div>
     </div>
 
     <!-- Provenance: Auto type (shown only when active variation is_auto) -->
@@ -4771,7 +4771,7 @@ async function logOut(){
   <div class="vault-modal">
     <button class="vm-close" onclick="closeMissingCardModal()">&times;</button>
     <div class="vm-title" style="color:var(--red)">&#128680; SUBMIT MISSING CARD</div>
-    <div class="vm-sub" id="mcSub">Don't see your variation? Submit it for admin review. Upload your card and fill in the details below.</div>
+    <div class="vm-sub" id="mcSub">Don't see your parallel? Submit it for admin review. Upload your card and fill in the details below.</div>
 
     <!-- Card context (auto-filled from current card) -->
     <div class="vm-card-info" id="mcCardInfo" style="display:none">
@@ -4781,9 +4781,9 @@ async function logOut(){
 
     <!-- Variation Name (the missing parallel) -->
     <div class="vm-section">
-      <div class="vm-label">Variation / Parallel Name <span class="req">*</span> <span style="color:rgba(255,59,48,0.6);font-size:10px">&#8212; What's missing from the list?</span></div>
+      <div class="vm-label">Parallel Name <span class="req">*</span> <span style="color:rgba(255,59,48,0.6);font-size:10px">&#8212; What's missing from the list?</span></div>
       <input class="vm-input" type="text" id="mcVariationName" placeholder="e.g. GOLDEN HOUR, ICE, SAPPHIRE..." style="font-size:15px;font-weight:600;color:var(--red);text-transform:uppercase">
-      <div class="vm-error" id="mcVarError">Please enter the variation name.</div>
+      <div class="vm-error" id="mcVarError">Please enter the parallel name.</div>
     </div>
 
     <!-- Apply to entire set (admin only) -->
@@ -5748,7 +5748,7 @@ function p2PickCard(c){
   P2_STATE.subset  = c.subset || '';
   P2_STATE._dbRow  = c._dbRow || null;
   const t = document.getElementById('p2VarStepTitle');
-  if(t) t.textContent = 'SELECT VARIANT — '+c.num+' '+c.player.toUpperCase();
+  if(t) t.textContent = 'SELECT PARALLEL — '+c.num+' '+c.player.toUpperCase();
   // Populate card viewer image on variant step
   const imgWrap = document.getElementById('p2VarCardImg');
   if(imgWrap && c._dbRow){
@@ -5796,7 +5796,7 @@ function p2RenderVariantGrid(){
   // Always add OTHER at the end
   variants.push({
     name: 'OTHER',
-    meta: 'Admin will build this variant',
+    meta: 'Admin will build this parallel',
     color: 'repeating-linear-gradient(45deg,#7A95AE,#7A95AE 4px,#143050 4px,#143050 8px)',
     isOther: true,
     _run: null
@@ -5826,7 +5826,7 @@ function p2RenderVariantGrid(){
     noteWrap.style.cssText = 'display:none;margin-top:14px;padding:12px 14px;background:rgba(255,184,77,0.08);border:1px solid rgba(255,184,77,0.3);border-radius:8px';
     noteWrap.innerHTML =
         '<div style="font-family:Bebas Neue,sans-serif;font-size:12px;letter-spacing:1.2px;color:#FFB84D;margin-bottom:6px">DESCRIBE THE VARIANT</div>'
-      + '<div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-bottom:8px">Admin will review and add this parallel to the catalog. Your ISO posts immediately and gets matched once the variant is built.</div>'
+      + '<div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-bottom:8px">Admin will review and add this parallel to the catalog. Your ISO posts immediately and gets matched once the parallel is built.</div>'
       + '<input class="fc" id="p2OtherDesc" placeholder="e.g. Pink Mojo Refractor /75, Black Shimmer SSP, Jersey #/10..." oninput="P2_STATE.variantOther=this.value">';
     grid.parentNode.insertBefore(noteWrap, grid.nextSibling);
   }
@@ -5896,7 +5896,7 @@ function p2PickVariant(v, el){
   }
   const nextBtn = document.getElementById('p2VarNextBtn');
   if(nextBtn){ nextBtn.disabled = false; nextBtn.style.opacity='1'; nextBtn.style.cursor='pointer'; }
-  } catch(e){ console.error('p2PickVariant error:', e); T('Error selecting variant: '+e.message); }
+  } catch(e){ console.error('p2PickVariant error:', e); T('Error selecting parallel: '+e.message); }
 }
 
 // ── Phase B: submit ISO from v2 flow ─────────────────────────────────────
@@ -5905,7 +5905,7 @@ async function p2SubmitISO(){
   if(errEl) errEl.style.display = 'none';
   const S = P2_STATE;
   if(!S.card || !S.variant){
-    if(errEl){ errEl.textContent = 'Go back and select a card and variant.'; errEl.style.display='block'; }
+    if(errEl){ errEl.textContent = 'Go back and select a card and parallel.'; errEl.style.display='block'; }
     return;
   }
   // ── HARD RULE: card must have front AND back catalog images ──
@@ -6200,13 +6200,13 @@ async function renderCardRes(){
   });
   sets.sort((a,b)=>b.year - a.year);
 
-  subEl.textContent = results.length+' card'+(results.length!==1?'s':'')+' found across '+sets.length+' set'+(sets.length!==1?'s':'')+'. Select a set then pick the variant.';
+  subEl.textContent = results.length+' card'+(results.length!==1?'s':'')+' found across '+sets.length+' set'+(sets.length!==1?'s':'')+'. Select a set then pick the parallel.';
   listEl.innerHTML = sets.map(s=>{
     const vc = results.filter(c=>String(c.year)===String(s.year)&&c.brand===s.brand&&c.set===s.set).length;
     return '<div class="s3-set-row" onclick="s3SelectSet(this,'+JSON.stringify(s.key).replace(/"/g,'&quot;')+')">'
       +'<div class="s3-set-year">'+s.year+'</div>'
       +'<div class="s3-set-name">'+s.set+'</div>'
-      +'<div class="s3-set-brand">'+s.brand+' &middot; '+vc+' variant'+(vc!==1?'s':'')+'</div>'
+      +'<div class="s3-set-brand">'+s.brand+' &middot; '+vc+' parallel'+(vc!==1?'s':'')+'</div>'
       +'</div>';
   }).join('');
 
@@ -7749,7 +7749,7 @@ function openMissingCardModal(){
   const sub=_$('mcSub');
   if(sub) sub.textContent = window._isAdmin
     ? 'Add a missing variation directly to the catalog. Upload images and fill in the details below.'
-    : "Don't see your variation? Submit it for admin review. Upload your card and fill in the details below.";
+    : "Don't see your parallel? Submit it for admin review. Upload your card and fill in the details below.";
 
   // Show "Apply to entire set" toggle for admins only; reset state on every open
   const setWideSec = _$('mcSetWideSection');
@@ -9903,7 +9903,7 @@ function _buildVariationPills(c){
   });
 
   if(!window._cdFromMyVault){
-    html += `<div style="margin-top:4px"><div class="cd-missing-btn" onclick="openMissingCardModal()">&#10133; Missing Variant<span class="missing-tooltip">Help build ISOVault — earn +1 credit!<br><span style="font-size:10px;color:var(--muted-text)">Submit cards we don't have yet</span></span></div></div>`;
+    html += `<div style="margin-top:4px"><div class="cd-missing-btn" onclick="openMissingCardModal()">&#10133; Missing Parallel<span class="missing-tooltip">Help build ISOVault — earn +1 credit!<br><span style="font-size:10px;color:var(--muted-text)">Submit cards we don't have yet</span></span></div></div>`;
   }
 
   pillsEl.innerHTML = html;
@@ -16352,7 +16352,7 @@ const GUIDE_FEATURES = [
   { title:'Post ISO', desc:'Create a new buy request. Choose your sport, set, player, and parallel — then broadcast it to every seller on the platform.', nav:'post', icon:'&#10133;' },
   { title:'Market Data', desc:'Live bid, ask, and last-sale pricing across the hobby. See what cards are selling for right now.', nav:'market', icon:'&#128200;' },
   { title:'Card Detail', desc:'Click any card in ISOVault to see every parallel, upload your own images, check eBay market prices, and add it to your vault — all from one screen.', nav:'library', icon:'&#127183;' },
-  { title:'Missing Variant', desc:'Found a parallel that\'s not in ISOVault yet? Submit it with photos from inside ISOVault. You help build the database, you earn credits.', nav:'library', icon:'&#128269;' },
+  { title:'Missing Parallel', desc:'Found a parallel that\'s not in ISOVault yet? Submit it with photos from inside ISOVault. You help build the database, you earn credits.', nav:'library', icon:'&#128269;' },
   { title:'Slab Lab', desc:'Tools and resources for graded card collectors. Understand population reports, grading standards, and slab authentication.', nav:'isoticker', icon:'&#129534;' },
   { title:'Leaderboard', desc:'See top contributors — who\'s adding the most cards, submitting variants, and building ISOVault for everyone.', nav:'leaderboard', icon:'&#127942;' },
   { title:'Card Shops', desc:'Find local card shops near you with our nationwide directory. See hours, reviews, and what they carry.', nav:'cardshops', icon:'&#127978;' },

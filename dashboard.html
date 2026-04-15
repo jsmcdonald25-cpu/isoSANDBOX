@@ -3362,6 +3362,13 @@ async function logOut(){
           <button class="iv-view-btn active" id="ivBtnList" onclick="ivSetView('list',this)">&#9776; Checklist</button>
           <button class="iv-view-btn" id="ivBtnGrid" onclick="ivSetView('grid',this)">&#8862; Grid</button>
         </div>
+        <select id="ivGridSort" onchange="_ivSortBy(this.value)" style="display:none;background:rgba(0,0,0,0.25);border:1px solid var(--deep-border);border-radius:6px;padding:5px 10px;color:var(--white);font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:.5px;outline:none;cursor:pointer">
+          <option value="card_number">Sort: Card #</option>
+          <option value="player">Sort: Player</option>
+          <option value="team">Sort: Team</option>
+          <option value="category">Sort: Category</option>
+          <option value="mkt">Sort: Market Price</option>
+        </select>
       </div>
       <div class="iv-meta" id="ivMeta"></div>
       <div id="ivCardList"></div>
@@ -11886,6 +11893,9 @@ function ivSetView(view, el){
   _ivView = view;
   document.querySelectorAll('.iv-view-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
+  // Show sort dropdown in grid mode (checklist has clickable column headers)
+  const gs = document.getElementById('ivGridSort');
+  if(gs){ gs.style.display = view === 'grid' ? 'inline-block' : 'none'; gs.value = _ivSortCol; }
   _ivRenderCards();
 }
 

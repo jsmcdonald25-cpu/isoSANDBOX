@@ -18,9 +18,11 @@
 <meta http-equiv="Expires" content="0" />
 <meta name="cf-rocket-loader" content="disabled" />
 <title>GrailISO &#8212; Buyer Dashboard</title>
+<link rel="preconnect" href="https://jyfaegmnzkarlcximxjo.supabase.co" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script data-cfasync="false" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Leaflet deferred — only loaded when Card Shops or Card Shows panel opens -->
 <script data-cfasync="false" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script data-cfasync="false">
 window._sb = window.supabase.createClient(
@@ -5408,9 +5410,9 @@ function N(id,el){
   if(id==='mytxns')loadMyTransactions();
   if(id==='sellermatches')loadSellerMatches();
   if(id==='activelistings')loadActiveListings();
-  if(id==='cardshops')initCardShops();
-  if(id==='shopprofile')renderShopProfile();
-  if(id==='cardshows')initCardShows();
+  if(id==='cardshops')_loadLeaflet().then(()=>initCardShops());
+  if(id==='shopprofile')_loadLeaflet().then(()=>renderShopProfile());
+  if(id==='cardshows')_loadLeaflet().then(()=>initCardShows());
   if(id==='guide')renderGuide();
   // Push panel state into browser history so mouse back button steps through panels
   if(!_navSuppressHistory){
@@ -15616,6 +15618,24 @@ function _csAssignPins(shops,regionKey){
   return shops.map(s=>({...s,_dist:_geoDist(center.lat,center.lng,s.lat,s.lng)}))
     .sort((a,b)=>a._dist-b._dist)
     .map((s,i)=>({...s,_pin:i+1}));
+}
+
+// ── Lazy-load Leaflet (map library) on first use ──
+let _leafletReady = null;
+function _loadLeaflet(){
+  if(window.L) return Promise.resolve();
+  if(_leafletReady) return _leafletReady;
+  _leafletReady = new Promise((resolve)=>{
+    const css = document.createElement('link');
+    css.rel='stylesheet'; css.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(css);
+    const js = document.createElement('script');
+    js.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    js.onload=()=>resolve();
+    js.onerror=()=>resolve(); // degrade gracefully
+    document.head.appendChild(js);
+  });
+  return _leafletReady;
 }
 
 function _csInitMap(){

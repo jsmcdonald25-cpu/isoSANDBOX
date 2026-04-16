@@ -812,6 +812,7 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .adm-var{background:rgba(255,140,0,0.08);border-color:rgba(255,140,0,0.2);color:#FF8C00}
 .adm-rename{background:rgba(0,170,255,0.06);border-color:rgba(0,170,255,0.15);color:var(--blue)}
 .adm-color{background:rgba(155,89,182,0.08);border-color:rgba(155,89,182,0.2);color:#9B59B6}
+.adm-log{background:rgba(255,215,0,0.08);border-color:rgba(255,215,0,0.2);color:#FFD700}
 /* Error report modal */
 .err-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:10001;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
 .err-modal{background:var(--deep2);border:1px solid rgba(255,59,92,0.25);border-radius:14px;width:100%;max-width:520px;padding:28px;position:relative}
@@ -3727,6 +3728,8 @@ async function logOut(){
                 <button class="cd-admin-btn adm-var" onclick="cdAdminDeleteVariation()">DEL VAR</button>
                 <button class="cd-admin-btn adm-rename" onclick="cdAdminRenameVariation()">RENAME</button>
                 <button class="cd-admin-btn adm-color" onclick="cdAdminRecolorVariation()">RECOLOR</button>
+                <button class="cd-admin-btn adm-img" onclick="cdAdminEbayImg()">EBAY IMG</button>
+                <button class="cd-admin-btn adm-log" onclick="cdAdminShowLog()">LOG</button>
               </div>
             </div>
           </div>
@@ -11869,6 +11872,15 @@ function _ivApplyCardFilters(){
       (r.insert_name||'').toLowerCase().includes(q) ||
       (r.team||'').toLowerCase().includes(q)
     );
+    // Sort by relevance: card_number prefix match first, then player, then insert_name/team
+    rows.sort((a,b)=>{
+      const aNum = String(a.card_number||'').toLowerCase().startsWith(q) ? 0 : 1;
+      const bNum = String(b.card_number||'').toLowerCase().startsWith(q) ? 0 : 1;
+      if(aNum !== bNum) return aNum - bNum;
+      const aPlayer = (a.player||'').toLowerCase().includes(q) ? 0 : 1;
+      const bPlayer = (b.player||'').toLowerCase().includes(q) ? 0 : 1;
+      return aPlayer - bPlayer;
+    });
   }
   if(_ivImgFilter === 'with') rows = rows.filter(r=>r.var_images && Object.keys(r.var_images).length > 0);
   else if(_ivImgFilter === 'without') rows = rows.filter(r=>!r.var_images || Object.keys(r.var_images).length === 0);
@@ -14720,6 +14732,299 @@ async function cdAdminRecolorVariation(){
     }
   };
 }
+
+// ── eBay Image Pull (Admin) ─────────────────────────────────────────────────
+async function cdAdminEbayImg(){
+  const c = window._cdCard;
+  if(!c){ T('No card selected.'); return; }
+  const table = await _cdEnsureSetTable(c);
+  const cardNum = window._cdDbCardNum || (c.cardNum != null ? String(c.cardNum).replace('#','') : (c._cardNumber||''));
+  if(!table || !cardNum){ T('Cannot identify set table.'); return; }
+  const vars = window._cdVars || [];
+  const activeVar = vars[window._cdActiveVar||0];
+  const varLabel = activeVar ? activeVar.label : 'Base';
+
+  // Remove existing overlay
+  let existing = document.getElementById('adm-ebayimg-overlay');
+  if(existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'adm-ebayimg-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:10001;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);overflow-y:auto';
+  const modal = document.createElement('div');
+  modal.style.cssText = 'background:var(--deep2);border:1px solid rgba(0,232,135,0.25);border-radius:14px;width:100%;max-width:700px;padding:24px;position:relative;max-height:90vh;overflow-y:auto';
+  modal.innerHTML = `
+    <div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--white);margin-bottom:4px">EBAY IMAGE PULL</div>
+    <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:16px">${c.player} · #${cardNum} · ${varLabel}</div>
+    <div id="eip-status" style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--blue);margin-bottom:12px">Searching eBay...</div>
+    <div id="eip-gallery" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px"></div>
+    <div id="eip-selected-wrap" style="display:none;margin-bottom:16px;padding:14px;border:1px solid rgba(0,232,135,0.25);border-radius:10px;background:rgba(0,232,135,0.04)">
+      <div style="font-size:10px;font-weight:700;color:var(--green);letter-spacing:1px;margin-bottom:8px;font-family:Barlow Condensed,sans-serif">SELECTED IMAGE</div>
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <img id="eip-selected-img" style="width:120px;height:168px;object-fit:contain;border-radius:6px;background:rgba(0,0,0,0.3)">
+        <div style="flex:1">
+          <div id="eip-selected-title" style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--text2);margin-bottom:8px;line-height:1.4"></div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-bottom:8px">This image will be saved as the <strong style="color:var(--green)">${varLabel}</strong> front image.</div>
+          <div style="display:flex;gap:8px">
+            <button id="eip-save-btn" onclick="window._eipSave()" style="padding:8px 16px;border-radius:6px;background:var(--green);border:none;color:#fff;font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;cursor:pointer">SAVE TO CATALOG</button>
+            <button onclick="window._eipClearSelection()" style="padding:8px 12px;border-radius:6px;background:transparent;border:1px solid var(--deep-border);color:var(--muted-text);font-family:Barlow Condensed,sans-serif;font-size:12px;cursor:pointer">Change</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="eip-msg" style="font-family:Barlow Condensed,sans-serif;font-size:12px;text-align:center;margin-bottom:8px"></div>
+    <div style="text-align:right">
+      <button onclick="document.getElementById('adm-ebayimg-overlay').remove()" style="padding:8px 18px;border-radius:6px;background:transparent;border:1px solid var(--deep-border);color:var(--muted-text);font-family:Barlow Condensed,sans-serif;font-size:13px;cursor:pointer">Close</button>
+    </div>
+  `;
+  overlay.appendChild(modal);
+  overlay.onclick = (e) => { if(e.target === overlay) overlay.remove(); };
+  document.body.appendChild(overlay);
+
+  // State
+  let _eipSelectedUrl = null;
+  let _eipSelectedTitle = '';
+
+  window._eipClearSelection = function(){
+    _eipSelectedUrl = null;
+    document.getElementById('eip-selected-wrap').style.display = 'none';
+    document.querySelectorAll('.eip-thumb').forEach(t => t.style.border = '2px solid transparent');
+  };
+
+  // Search eBay
+  const isBase = !varLabel || ['Base','base','BASE'].includes(varLabel);
+  const payload = {
+    player: c.player,
+    year: c.year || null,
+    brand: c.brand || null,
+    set_name: c.set || null,
+    card_number: String(cardNum).replace(/^#/,''),
+    variation: isBase ? null : varLabel,
+  };
+
+  try {
+    const r = await fetch('/.netlify/functions/ebay-recent-sales', {
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)
+    });
+    if(!r.ok) throw new Error('eBay search failed: '+r.status);
+    const data = await r.json();
+    const items = data.items || [];
+
+    if(!items.length){
+      document.getElementById('eip-status').textContent = 'No eBay listings found for this card.';
+      document.getElementById('eip-status').style.color = 'var(--red)';
+      return;
+    }
+
+    document.getElementById('eip-status').textContent = `Found ${items.length} listing${items.length===1?'':'s'} — click an image to select it`;
+    document.getElementById('eip-status').style.color = 'var(--green)';
+
+    const gallery = document.getElementById('eip-gallery');
+    gallery.innerHTML = items.filter(it => it.imageUrl).map((it, i) => `
+      <div class="eip-thumb" data-idx="${i}" onclick="window._eipSelect(${i})" style="border:2px solid transparent;border-radius:8px;overflow:hidden;cursor:pointer;background:rgba(0,0,0,0.3);transition:border-color .15s;position:relative">
+        <img src="${it.imageUrl}" style="width:100%;height:180px;object-fit:contain;display:block" onerror="this.parentElement.style.display='none'">
+        <div style="padding:6px 8px;font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${(it.title||'').slice(0,50)}</div>
+        <div style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.7);color:var(--green);font-family:Bebas Neue,sans-serif;font-size:12px;padding:2px 6px;border-radius:4px">$${it.price||'?'}</div>
+      </div>
+    `).join('');
+
+    // Store items for selection
+    window._eipItems = items;
+
+    window._eipSelect = function(idx){
+      const it = items[idx];
+      if(!it || !it.imageUrl) return;
+      _eipSelectedUrl = it.imageUrl;
+      _eipSelectedTitle = it.title || '';
+      document.getElementById('eip-selected-img').src = _eipSelectedUrl;
+      document.getElementById('eip-selected-title').textContent = _eipSelectedTitle;
+      document.getElementById('eip-selected-wrap').style.display = 'block';
+      document.querySelectorAll('.eip-thumb').forEach(t => t.style.border = '2px solid transparent');
+      const thumb = document.querySelector(`.eip-thumb[data-idx="${idx}"]`);
+      if(thumb) thumb.style.border = '2px solid var(--green)';
+      document.getElementById('eip-msg').textContent = '';
+    };
+
+  } catch(e){
+    document.getElementById('eip-status').textContent = 'Error: '+e.message;
+    document.getElementById('eip-status').style.color = 'var(--red)';
+  }
+
+  // Save handler — downloads the eBay image, uploads to Supabase Storage, updates var_images
+  window._eipSave = async function(){
+    if(!_eipSelectedUrl){ document.getElementById('eip-msg').style.color='var(--red)'; document.getElementById('eip-msg').textContent='Select an image first.'; return; }
+    const btn = document.getElementById('eip-save-btn');
+    btn.disabled = true;
+    btn.textContent = 'DOWNLOADING...';
+    const msg = document.getElementById('eip-msg');
+    msg.textContent = '';
+
+    try {
+      // 1) Fetch the eBay image as blob
+      const imgResp = await fetch(_eipSelectedUrl);
+      if(!imgResp.ok) throw new Error('Could not download image from eBay');
+      const blob = await imgResp.blob();
+
+      btn.textContent = 'UPLOADING...';
+
+      // 2) Upload to Supabase Storage
+      const safeName = (s) => (s||'').replace(/[^a-zA-Z0-9_\-]/g, '_').toLowerCase();
+      const path = `catalog/${safeName(table)}/${safeName(String(cardNum))}/${safeName(varLabel)}_front.jpg`;
+      const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+      const SB_REST = 'https://jyfaegmnzkarlcximxjo.supabase.co';
+      const userToken = window._userAccessToken || ANON_KEY;
+
+      const upRes = await fetch(`${SB_REST}/storage/v1/object/card-images/${path}`, {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + userToken, 'apikey': ANON_KEY, 'Content-Type': blob.type || 'image/jpeg', 'x-upsert': 'true', 'cache-control': '3600' },
+        body: blob,
+      });
+      if(!upRes.ok){ const e = await upRes.json().catch(()=>({})); throw new Error(e.message || 'Upload failed: '+upRes.status); }
+      const publicUrl = `${SB_REST}/storage/v1/object/public/card-images/${path}`;
+
+      btn.textContent = 'SAVING...';
+
+      // 3) Update var_images in the set table
+      const rows = await _rGet(table, 'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
+      const vi = (rows && rows[0] && rows[0].var_images) || {};
+      if(!vi[varLabel]) vi[varLabel] = {};
+      vi[varLabel].front = publicUrl;
+      await _rPatch(table, 'card_number=eq.'+encodeURIComponent(cardNum), {var_images: vi});
+
+      // 4) Update local state
+      if(c._varImages) { if(!c._varImages[varLabel]) c._varImages[varLabel]={}; c._varImages[varLabel].front = publicUrl; }
+      else { c._varImages = {[varLabel]:{front:publicUrl}}; }
+      // Refresh the 3D viewer
+      _cdSetViewerImages(publicUrl, (vi[varLabel].back || null));
+
+      // 5) Log admin action
+      try {
+        await _rPost('admin_actions', {
+          admin_id: window._authUser?.id||null,
+          admin_name: window._authUser?.username||window._authUser?.email?.split('@')[0]||'unknown',
+          action_type: 'image_uploaded',
+          table_name: table,
+          card_number: cardNum,
+          player: c.player||null,
+          before_data: null,
+          after_data: {variation: varLabel, source: 'ebay', ebay_url: _eipSelectedUrl, listing_title: _eipSelectedTitle},
+          note: 'eBay image pull',
+          created_at: new Date().toISOString()
+        }, null);
+      } catch(e){}
+
+      btn.textContent = '✓ SAVED!';
+      btn.style.background = '#00C851';
+      msg.style.color = 'var(--green)';
+      msg.textContent = 'Image saved to catalog. Refresh card to see it in the viewer.';
+      T('eBay image saved for '+varLabel);
+
+      setTimeout(()=>{ document.getElementById('adm-ebayimg-overlay')?.remove(); }, 1500);
+    } catch(e){
+      msg.style.color = 'var(--red)';
+      msg.textContent = 'Failed: '+e.message;
+      btn.disabled = false;
+      btn.textContent = 'SAVE TO CATALOG';
+    }
+  };
+}
+
+// ── Admin Activity Log (Dashboard) ─────────────────────────────────────────
+async function cdAdminShowLog(){
+  let existing = document.getElementById('adm-log-overlay');
+  if(existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'adm-log-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:10001;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)';
+  const modal = document.createElement('div');
+  modal.style.cssText = 'background:var(--deep2);border:1px solid rgba(255,215,0,0.2);border-radius:14px;width:100%;max-width:800px;padding:24px;position:relative;max-height:90vh;display:flex;flex-direction:column';
+  modal.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div>
+        <div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--white)">ADMIN ACTIVITY LOG</div>
+        <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text)">Last 200 actions</div>
+      </div>
+      <button onclick="document.getElementById('adm-log-overlay').remove()" style="background:none;border:none;color:var(--muted-text);font-size:22px;cursor:pointer;padding:4px 8px">&#215;</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <input id="alog-search" placeholder="Search player, card#, admin..." oninput="window._alogRender()" style="flex:1;min-width:160px;background:rgba(0,0,0,0.25);border:1px solid var(--deep-border);border-radius:6px;padding:7px 10px;color:var(--white);font-family:Barlow Condensed,sans-serif;font-size:13px;outline:none">
+      <select id="alog-type" onchange="window._alogRender()" style="background:rgba(0,0,0,0.25);border:1px solid var(--deep-border);border-radius:6px;padding:7px 10px;color:var(--white);font-family:Barlow Condensed,sans-serif;font-size:12px;cursor:pointer">
+        <option value="">All types</option>
+        <option value="card_added">Added</option>
+        <option value="card_edited">Edited</option>
+        <option value="card_deleted">Deleted</option>
+        <option value="card_approved">Approved</option>
+        <option value="card_rejected">Rejected</option>
+        <option value="image_uploaded">Image</option>
+      </select>
+    </div>
+    <div id="alog-loading" style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--blue);text-align:center;padding:20px">Loading...</div>
+    <div id="alog-body" style="flex:1;overflow-y:auto;min-height:0"></div>
+  `;
+  overlay.appendChild(modal);
+  overlay.onclick = (e) => { if(e.target === overlay) overlay.remove(); };
+  document.body.appendChild(overlay);
+
+  // Fetch logs
+  try {
+    const logs = await _rGet('admin_actions', 'select=*&order=created_at.desc&limit=200');
+    window._alogData = logs || [];
+    document.getElementById('alog-loading').style.display = 'none';
+    window._alogRender();
+  } catch(e){
+    document.getElementById('alog-loading').textContent = 'Error: '+e.message;
+    document.getElementById('alog-loading').style.color = 'var(--red)';
+  }
+}
+
+window._alogRender = function(){
+  const search = (document.getElementById('alog-search')?.value || '').toLowerCase();
+  const typeF = document.getElementById('alog-type')?.value || '';
+  const body = document.getElementById('alog-body');
+  if(!body) return;
+
+  let items = window._alogData || [];
+  if(typeF) items = items.filter(a => a.action_type === typeF);
+  if(search) items = items.filter(a =>
+    (a.player||'').toLowerCase().includes(search) ||
+    (a.card_number||'').toLowerCase().includes(search) ||
+    (a.admin_name||'').toLowerCase().includes(search) ||
+    (a.table_name||'').toLowerCase().includes(search) ||
+    (a.note||'').toLowerCase().includes(search)
+  );
+
+  if(!items.length){
+    body.innerHTML = '<div style="text-align:center;padding:30px;font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text)">No matching actions found.</div>';
+    return;
+  }
+
+  const badgeMap = {
+    card_added:     {label:'ADDED',    bg:'rgba(0,232,135,0.15)', color:'var(--green)'},
+    card_edited:    {label:'EDITED',   bg:'rgba(0,170,255,0.15)', color:'var(--blue)'},
+    card_deleted:   {label:'DELETED',  bg:'rgba(255,59,92,0.15)', color:'var(--red)'},
+    card_approved:  {label:'APPROVED', bg:'rgba(0,232,135,0.15)', color:'var(--green)'},
+    card_rejected:  {label:'REJECTED', bg:'rgba(255,59,92,0.15)', color:'var(--red)'},
+    image_uploaded: {label:'IMAGE',    bg:'rgba(255,215,0,0.15)', color:'#FFD700'},
+  };
+
+  body.innerHTML = items.map(a => {
+    const dt = a.created_at ? new Date(a.created_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true}) : '—';
+    const b = badgeMap[a.action_type] || {label:a.action_type||'?', bg:'rgba(136,136,136,0.15)', color:'#888'};
+    const hasDetail = a.before_data || a.after_data || a.note;
+    return `
+      <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04)${hasDetail?' cursor:pointer':''}" ${hasDetail ? `onclick="this.querySelector('.alog-detail').style.display=this.querySelector('.alog-detail').style.display==='none'?'block':'none'"` : ''}>
+        <div style="min-width:90px;font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);padding-top:2px">${dt}</div>
+        <div style="min-width:70px"><span style="display:inline-block;padding:2px 8px;border-radius:10px;font-family:Barlow Condensed,sans-serif;font-size:10px;font-weight:700;letter-spacing:.5px;background:${b.bg};color:${b.color}">${b.label}</span></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--white)">${a.player||'—'} <span style="color:var(--muted-text)">#${a.card_number||'—'}</span></div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text)">${a.table_name||'—'} · ${a.admin_name||'—'}${a.note ? ' · '+a.note : ''}</div>
+          <div class="alog-detail" style="display:none;margin-top:8px;padding:8px;background:rgba(0,0,0,0.25);border-radius:6px;font-family:monospace;font-size:10px;color:var(--text2);white-space:pre-wrap;max-height:200px;overflow-y:auto">${a.before_data ? 'BEFORE: '+JSON.stringify(a.before_data,null,2)+'\n\n' : ''}${a.after_data ? 'AFTER: '+JSON.stringify(a.after_data,null,2) : ''}${a.note && !a.before_data && !a.after_data ? a.note : ''}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+};
 
 // ── Edit Listing / Delist ───────────────────────────────────────────────────
 let _editListingIdx = null;

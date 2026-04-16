@@ -6511,8 +6511,8 @@ async function _isoPlayerFetch(q){
 
   names.sort((a,b)=>a.name.localeCompare(b.name));
   res.innerHTML = names.slice(0,12).map(p=>
-    `<div class="pr" onclick="pickP('${p.name.replace(/'/g,"\\'")}','${p.team.replace(/'/g,"\\'")}','',0)">
-      <div><div class="pr-name">${p.name}</div><div class="pr-meta">${p.team||''}</div></div>
+    `<div class="pr" onclick="pickP('${_h(p.name).replace(/'/g,"\\'")}','${_h(p.team).replace(/'/g,"\\'")}','',0)">
+      <div><div class="pr-name">${_h(p.name)}</div><div class="pr-meta">${_h(p.team||'')}</div></div>
     </div>`
   ).join('')
   + (names.length>12?`<div class="pr" style="color:rgba(0,170,255,0.4);font-size:11px;letter-spacing:1px;cursor:default">${names.length} results — keep typing to narrow</div>`:'');
@@ -6587,7 +6587,7 @@ async function renderCardRes(){
   _s3Cards = results;
 
   if(!results.length){
-    listEl.innerHTML = '<div class="s3-msg">No cards found for <strong>'+ISO.player+'</strong> — check spelling or try a different sport.</div>';
+    listEl.innerHTML = '<div class="s3-msg">No cards found for <strong>'+_h(ISO.player)+'</strong> — check spelling or try a different sport.</div>';
     return;
   }
 
@@ -6875,6 +6875,7 @@ function libType(type,el){
 // &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
 // UTILS
 // &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+function _h(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function C(el){el.closest('.filter-row').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');}
 let _tt;
 function T(msg){const t=document.getElementById('toast');document.getElementById('toastText').textContent=msg;t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),3000);}
@@ -12600,7 +12601,7 @@ function ivSearchSets(q){
   if(!el) return;
 
   if(!matched.length){
-    el.innerHTML = '<div class="iv-empty">No sets match "'+q+'" — try a player name, year, or brand</div>';
+    el.innerHTML = '<div class="iv-empty">No sets match "'+_h(q)+'" — try a player name, year, or brand</div>';
     return;
   }
 
@@ -12703,17 +12704,17 @@ async function _ivPlayerAutocomplete(q){
   }
 
   if(!names.length){
-    dropdown.innerHTML = '<div style="padding:10px 14px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)">No players found matching "'+q+'"</div>';
+    dropdown.innerHTML = '<div style="padding:10px 14px;font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text)">No players found matching "'+_h(q)+'"</div>';
     return;
   }
 
   names.sort();
   dropdown.innerHTML = names.slice(0,12).map(name=>`
-    <div onclick="ivPlayerSearchGo('${name.replace(/'/g,"\\'")}')"
+    <div onclick="ivPlayerSearchGo('${_h(name).replace(/'/g,"\\'")}')"
       style="padding:10px 14px;cursor:pointer;border-bottom:1px solid rgba(0,170,255,0.07);font-family:Barlow Condensed,sans-serif;font-size:15px;font-weight:600;color:var(--white);transition:background .1s"
       onmouseover="this.style.background='rgba(0,170,255,0.08)'" onmouseout="this.style.background=''">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--blue);margin-right:8px;vertical-align:middle"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      ${name}
+      ${_h(name)}
     </div>`).join('')
     + (names.length > 12 ? `<div style="padding:8px 14px;font-family:Barlow Condensed,sans-serif;font-size:11px;color:rgba(0,170,255,0.4);letter-spacing:1px">${names.length} matches — keep typing to narrow</div>` : '');
 }
@@ -14144,7 +14145,7 @@ function _renderISOList(){
   if(!rows.length){
     list.style.display='block';
     list.innerHTML='<div style="text-align:center;padding:40px 20px;font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text)">'
-      +(searchVal ? 'No ISOs match "'+searchVal+'"' : (_isoTab==='mine'?'You haven\'t posted any ISOs yet.':'No active ISOs right now.'))+'</div>';
+      +(searchVal ? 'No ISOs match "'+_h(searchVal)+'"' : (_isoTab==='mine'?'You haven\'t posted any ISOs yet.':'No active ISOs right now.'))+'</div>';
     return;
   }
   list.style.display='block';
@@ -14153,9 +14154,9 @@ function _renderISOList(){
   list.innerHTML = rows.map((iso, idx)=>{
     const posted   = iso.created_at ? _isoTimeAgo(iso.created_at) : '';
     const maxPrice = iso.max_price ? '$'+parseFloat(iso.max_price).toLocaleString() : '—';
-    const player   = iso.player || iso.card_name || 'Unknown Card';
-    const parallel = iso.parallel || '';
-    const grade    = iso.grade ? ' · '+iso.grade : '';
+    const player   = _h(iso.player || iso.card_name || 'Unknown Card');
+    const parallel = _h(iso.parallel || '');
+    const grade    = iso.grade ? ' · '+_h(iso.grade) : '';
     const sport    = iso.sport || '';
     const cardName = iso.card_name || '';
     const isExpired = iso.expires_at && new Date(iso.expires_at) < new Date();
@@ -14225,14 +14226,14 @@ async function openISODetail(idx){
 
   const userId = window._authUser?.id;
   const isMine = iso.user_id === userId;
-  const player = iso.player || iso.card_name || 'Unknown';
-  const parallel = iso.parallel || 'Base';
-  const cardName = iso.card_name || '';
-  const grade = iso.grade || 'Any';
+  const player = _h(iso.player || iso.card_name || 'Unknown');
+  const parallel = _h(iso.parallel || 'Base');
+  const cardName = _h(iso.card_name || '');
+  const grade = _h(iso.grade || 'Any');
   const maxP = iso.max_price ? '$'+parseFloat(iso.max_price).toLocaleString() : '—';
   const minP = iso.min_price ? '$'+parseFloat(iso.min_price).toLocaleString() : '—';
   const posted = iso.created_at ? new Date(iso.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
-  const notes = iso.notes || '';
+  const notes = _h(iso.notes || '');
 
   // Actions: owner gets cancel/refresh, other users get Make Offer
   const actions = isMine
@@ -16782,7 +16783,7 @@ function openOfferReview(isoIdx){
         : 'Raw';
       const certStr = o.cert_number ? ' · Cert #'+o.cert_number : '';
       const priceStr = '$'+parseFloat(o.asking_price).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
-      const condStr = o.condition_notes ? '<div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-top:4px;font-style:italic">"'+o.condition_notes+'"</div>' : '';
+      const condStr = o.condition_notes ? '<div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-top:4px;font-style:italic">"'+_h(o.condition_notes)+'"</div>' : '';
       return `<div style="background:var(--deep2);border:1px solid rgba(0,232,135,0.2);border-radius:10px;padding:14px;margin-bottom:10px">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
           <div>
@@ -17225,7 +17226,7 @@ async function loadContributorLeaderboard(){
     const MILESTONES = [{threshold:100,bonus:25,label:'&#127942; 100 Club'},{threshold:50,bonus:15,label:'&#11088; 50 Club'},{threshold:25,bonus:10,label:'&#128293; 25 Club'},{threshold:10,bonus:5,label:'&#127775; 10 Club'}];
     const rankColors = ['var(--blue)','var(--chrome)','#CD7F32'];
     el.innerHTML = sorted.map(([uid, count], i) => {
-      const username = profiles[uid] || uid.slice(0,8);
+      const username = _h(profiles[uid] || uid.slice(0,8));
       const rankColor = i < 3 ? rankColors[i] : 'var(--muted-text)';
       const milestone = MILESTONES.find(m => count >= m.threshold);
       const badge = milestone ? `<span style="font-size:9px;background:rgba(255,200,60,0.12);color:#FFC83C;border:1px solid rgba(255,200,60,0.25);border-radius:3px;padding:1px 5px;margin-left:6px">${milestone.label}</span>` : '';
@@ -17828,19 +17829,19 @@ function renderShopProfile(){
 
   // Address
   document.getElementById('spAddr').innerHTML=
-    `📍 ${s.addr}`+
+    `📍 ${_h(s.addr)}`+
     `<span style="margin-left:4px;display:inline-flex;align-items:center;gap:4px;font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:600;color:var(--green)"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px rgba(0,232,135,0.5);display:inline-block"></span> Open Now</span>`;
 
   // Meta row: type tags + phone + verified
-  const types=s.types.map(t=>`<span style="font-family:Barlow Condensed,sans-serif;font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(0,170,255,0.1);color:var(--blue);letter-spacing:.5px;font-weight:500">${t}</span>`).join('');
+  const types=s.types.map(t=>`<span style="font-family:Barlow Condensed,sans-serif;font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(0,170,255,0.1);color:var(--blue);letter-spacing:.5px;font-weight:500">${_h(t)}</span>`).join('');
   document.getElementById('spMeta').innerHTML=types+
-    (s.phone?`<span style="margin-left:4px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);display:flex;align-items:center;gap:4px">📞 <span style="color:var(--white)">${s.phone}</span></span>`:'')+
+    (s.phone?`<span style="margin-left:4px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);display:flex;align-items:center;gap:4px">📞 <span style="color:var(--white)">${_h(s.phone)}</span></span>`:'')+
     `<span style="display:inline-flex;align-items:center;gap:3px;font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:.5px;color:var(--green);background:rgba(0,232,135,0.1);padding:2px 7px;border-radius:4px;font-weight:600">✓ VERIFIED</span>`;
 
   // Actions
   document.getElementById('spActions').innerHTML=
     `<button class="cs-fav-btn" onclick="csToggleFav('${sid}')" title="Favorite">${isFav?'❤️':'♡'}</button>`+
-    `<button class="btn btn-ghost btn-sm" onclick="openShopReview('${sid}','${s.name.replace(/'/g,"\\'")}')">RATE</button>`+
+    `<button class="btn btn-ghost btn-sm" onclick="openShopReview('${sid}','${_h(s.name).replace(/'/g,"\\'")}')">RATE</button>`+
     `<button class="btn btn-primary btn-sm">CONTACT</button>`;
 
   // Mini map

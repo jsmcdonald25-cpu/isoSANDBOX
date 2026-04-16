@@ -163,6 +163,7 @@ function summarizePricing(results) {
       condition: i.condition || null,
       imageUrl: (i.image && i.image.imageUrl) || null,
       itemUrl: i.itemWebUrl || null,
+      itemId: i.itemId || null,
     }))
     .filter((i) => i.price > 0);
 

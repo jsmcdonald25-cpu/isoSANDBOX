@@ -14748,50 +14748,113 @@ async function cdAdminEbayImg(){
   let existing = document.getElementById('adm-ebayimg-overlay');
   if(existing) existing.remove();
 
+  const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+  const SB_REST = 'https://jyfaegmnzkarlcximxjo.supabase.co';
+  const userToken = window._userAccessToken || ANON_KEY;
+  const safeName = (s) => (s||'').replace(/[^a-zA-Z0-9_\-]/g, '_').toLowerCase();
+
   const overlay = document.createElement('div');
   overlay.id = 'adm-ebayimg-overlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:10001;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);overflow-y:auto';
   const modal = document.createElement('div');
-  modal.style.cssText = 'background:var(--deep2);border:1px solid rgba(0,232,135,0.25);border-radius:14px;width:100%;max-width:700px;padding:24px;position:relative;max-height:90vh;overflow-y:auto';
+  modal.style.cssText = 'background:var(--deep2);border:1px solid rgba(0,232,135,0.25);border-radius:14px;width:100%;max-width:750px;padding:24px;position:relative;max-height:90vh;overflow-y:auto';
   modal.innerHTML = `
-    <div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--white);margin-bottom:4px">EBAY IMAGE PULL</div>
-    <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:16px">${c.player} · #${cardNum} · ${varLabel}</div>
-    <div id="eip-status" style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--blue);margin-bottom:12px">Searching eBay...</div>
-    <div id="eip-gallery" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px"></div>
-    <div id="eip-selected-wrap" style="display:none;margin-bottom:16px;padding:14px;border:1px solid rgba(0,232,135,0.25);border-radius:10px;background:rgba(0,232,135,0.04)">
-      <div style="font-size:10px;font-weight:700;color:var(--green);letter-spacing:1px;margin-bottom:8px;font-family:Barlow Condensed,sans-serif">SELECTED IMAGE</div>
-      <div style="display:flex;gap:12px;align-items:flex-start">
-        <img id="eip-selected-img" style="width:120px;height:168px;object-fit:contain;border-radius:6px;background:rgba(0,0,0,0.3)">
-        <div style="flex:1">
-          <div id="eip-selected-title" style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--text2);margin-bottom:8px;line-height:1.4"></div>
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-bottom:8px">This image will be saved as the <strong style="color:var(--green)">${varLabel}</strong> front image.</div>
-          <div style="display:flex;gap:8px">
-            <button id="eip-save-btn" onclick="window._eipSave()" style="padding:8px 16px;border-radius:6px;background:var(--green);border:none;color:#fff;font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;cursor:pointer">SAVE TO CATALOG</button>
-            <button onclick="window._eipClearSelection()" style="padding:8px 12px;border-radius:6px;background:transparent;border:1px solid var(--deep-border);color:var(--muted-text);font-family:Barlow Condensed,sans-serif;font-size:12px;cursor:pointer">Change</button>
-          </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      <div style="font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:2px;color:var(--white)">EBAY IMAGE PULL</div>
+      <button onclick="document.getElementById('adm-ebayimg-overlay').remove()" style="background:none;border:none;color:var(--muted-text);font-size:22px;cursor:pointer;padding:4px 8px">&#215;</button>
+    </div>
+    <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-bottom:6px">${c.player} · #${cardNum} · ${varLabel}</div>
+    <div id="eip-saved-status" style="display:none;font-family:Barlow Condensed,sans-serif;font-size:12px;margin-bottom:10px;padding:8px 12px;border-radius:6px"></div>
+
+    <!-- SCREEN 1: Listing grid -->
+    <div id="eip-screen1">
+      <div id="eip-status" style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--blue);margin-bottom:12px">Searching eBay...</div>
+      <div id="eip-gallery" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px"></div>
+    </div>
+
+    <!-- SCREEN 2: All images for a single listing -->
+    <div id="eip-screen2" style="display:none">
+      <div style="margin-bottom:12px">
+        <button id="eip-back-btn" onclick="window._eipBackToListings()" style="padding:6px 14px;border-radius:6px;background:transparent;border:1px solid var(--deep-border);color:var(--blue);font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:.5px">&#9664; BACK TO LISTINGS</button>
+      </div>
+      <div id="eip-listing-title" style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--white);margin-bottom:4px;line-height:1.4"></div>
+      <div id="eip-listing-price" style="font-family:Bebas Neue,sans-serif;font-size:16px;color:var(--green);margin-bottom:12px"></div>
+      <div id="eip-loading-images" style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--blue);margin-bottom:12px">Loading all images...</div>
+      <div style="font-size:10px;font-weight:700;color:var(--muted-text);letter-spacing:1px;margin-bottom:8px;font-family:Barlow Condensed,sans-serif">CLICK AN IMAGE TO SAVE AS FRONT OR BACK</div>
+      <div id="eip-all-images" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:16px"></div>
+    </div>
+
+    <!-- SCREEN 3: Crop + Save as front or back -->
+    <div id="eip-screen3" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <button onclick="window._eipBackToImages()" style="padding:6px 14px;border-radius:6px;background:transparent;border:1px solid var(--deep-border);color:var(--blue);font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:.5px">&#9664; BACK TO IMAGES</button>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="eip-reset-crop" onclick="window._eipResetCrop()" style="padding:5px 10px;border-radius:5px;background:transparent;border:1px solid var(--deep-border);color:var(--muted-text);font-family:Barlow Condensed,sans-serif;font-size:11px;cursor:pointer">RESET CROP</button>
+          <span style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text)">Drag on image to crop</span>
         </div>
       </div>
-    </div>
-    <div id="eip-msg" style="font-family:Barlow Condensed,sans-serif;font-size:12px;text-align:center;margin-bottom:8px"></div>
-    <div style="text-align:right">
-      <button onclick="document.getElementById('adm-ebayimg-overlay').remove()" style="padding:8px 18px;border-radius:6px;background:transparent;border:1px solid var(--deep-border);color:var(--muted-text);font-family:Barlow Condensed,sans-serif;font-size:13px;cursor:pointer">Close</button>
+      <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+        <div style="flex:1;min-width:250px;max-width:400px">
+          <div style="position:relative;background:rgba(0,0,0,0.3);border-radius:8px;overflow:hidden">
+            <canvas id="eip-crop-canvas" style="width:100%;display:block;cursor:crosshair;border-radius:8px"></canvas>
+          </div>
+          <div id="eip-crop-info" style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-top:6px;text-align:center">Full image — drag to select crop area</div>
+        </div>
+        <div style="min-width:180px;flex:0 0 auto">
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--white);margin-bottom:6px">PREVIEW</div>
+          <canvas id="eip-crop-preview" style="width:140px;height:196px;border-radius:6px;background:rgba(0,0,0,0.3);display:block;margin-bottom:16px"></canvas>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--white);margin-bottom:12px">Save as:</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <button id="eip-save-front-btn" onclick="window._eipSaveSide('front')" style="padding:12px 16px;border-radius:8px;background:rgba(0,170,255,0.12);border:2px solid rgba(0,170,255,0.3);color:var(--blue);font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .15s;text-align:left">&#x1F4F7; FRONT</button>
+            <button id="eip-save-back-btn" onclick="window._eipSaveSide('back')" style="padding:12px 16px;border-radius:8px;background:rgba(255,140,0,0.12);border:2px solid rgba(255,140,0,0.3);color:#FF8C00;font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .15s;text-align:left">&#x1F504; BACK</button>
+          </div>
+          <div id="eip-save-msg" style="margin-top:12px;font-family:Barlow Condensed,sans-serif;font-size:12px"></div>
+        </div>
+      </div>
     </div>
   `;
   overlay.appendChild(modal);
   overlay.onclick = (e) => { if(e.target === overlay) overlay.remove(); };
   document.body.appendChild(overlay);
 
-  // State
-  let _eipSelectedUrl = null;
-  let _eipSelectedTitle = '';
+  // ── State ──
+  let _eipItems = [];
+  let _eipCurrentListing = null;
+  let _eipAllImages = [];
+  let _eipPickedUrl = null;
 
-  window._eipClearSelection = function(){
-    _eipSelectedUrl = null;
-    document.getElementById('eip-selected-wrap').style.display = 'none';
-    document.querySelectorAll('.eip-thumb').forEach(t => t.style.border = '2px solid transparent');
+  // ── Navigation ──
+  window._eipBackToListings = function(){
+    document.getElementById('eip-screen1').style.display = 'block';
+    document.getElementById('eip-screen2').style.display = 'none';
+    document.getElementById('eip-screen3').style.display = 'none';
+  };
+  window._eipBackToImages = function(){
+    document.getElementById('eip-screen2').style.display = 'block';
+    document.getElementById('eip-screen3').style.display = 'none';
   };
 
-  // Search eBay
+  // ── Saved status bar (persists across screens) ──
+  function _eipShowSaved(side, url){
+    const el = document.getElementById('eip-saved-status');
+    // Read current state
+    const curFront = el.dataset.front || '';
+    const curBack = el.dataset.back || '';
+    if(side==='front') el.dataset.front = 'yes'; else el.dataset.back = 'yes';
+    const hasFront = el.dataset.front === 'yes';
+    const hasBack = el.dataset.back === 'yes';
+    let txt = '';
+    if(hasFront && hasBack) txt = '&#10003; FRONT saved &nbsp;·&nbsp; &#10003; BACK saved — both images done!';
+    else if(hasFront) txt = '&#10003; FRONT saved — now find a good BACK image';
+    else if(hasBack) txt = '&#10003; BACK saved — now find a good FRONT image';
+    el.innerHTML = txt;
+    el.style.display = 'block';
+    el.style.background = (hasFront && hasBack) ? 'rgba(0,232,135,0.1)' : 'rgba(0,170,255,0.08)';
+    el.style.color = (hasFront && hasBack) ? 'var(--green)' : 'var(--blue)';
+    el.style.border = '1px solid ' + ((hasFront && hasBack) ? 'rgba(0,232,135,0.25)' : 'rgba(0,170,255,0.2)');
+  }
+
+  // ── SCREEN 1: Search + show listings ──
   const isBase = !varLabel || ['Base','base','BASE'].includes(varLabel);
   const payload = {
     player: c.player,
@@ -14808,72 +14871,295 @@ async function cdAdminEbayImg(){
     });
     if(!r.ok) throw new Error('eBay search failed: '+r.status);
     const data = await r.json();
-    const items = data.items || [];
+    _eipItems = data.items || [];
 
-    if(!items.length){
+    if(!_eipItems.length){
       document.getElementById('eip-status').textContent = 'No eBay listings found for this card.';
       document.getElementById('eip-status').style.color = 'var(--red)';
       return;
     }
 
-    document.getElementById('eip-status').textContent = `Found ${items.length} listing${items.length===1?'':'s'} — click an image to select it`;
+    document.getElementById('eip-status').innerHTML = `Found ${_eipItems.length} listing${_eipItems.length===1?'':'s'} — <strong>click a listing</strong> to see all its photos`;
     document.getElementById('eip-status').style.color = 'var(--green)';
 
     const gallery = document.getElementById('eip-gallery');
-    gallery.innerHTML = items.filter(it => it.imageUrl).map((it, i) => `
-      <div class="eip-thumb" data-idx="${i}" onclick="window._eipSelect(${i})" style="border:2px solid transparent;border-radius:8px;overflow:hidden;cursor:pointer;background:rgba(0,0,0,0.3);transition:border-color .15s;position:relative">
+    gallery.innerHTML = _eipItems.filter(it => it.imageUrl).map((it, i) => `
+      <div class="eip-thumb" data-idx="${i}" onclick="window._eipOpenListing(${i})" style="border:2px solid transparent;border-radius:8px;overflow:hidden;cursor:pointer;background:rgba(0,0,0,0.3);transition:all .15s;position:relative">
         <img src="${it.imageUrl}" style="width:100%;height:180px;object-fit:contain;display:block" onerror="this.parentElement.style.display='none'">
-        <div style="padding:6px 8px;font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${(it.title||'').slice(0,50)}</div>
+        <div style="padding:6px 8px;font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${(it.title||'').slice(0,60)}</div>
         <div style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.7);color:var(--green);font-family:Bebas Neue,sans-serif;font-size:12px;padding:2px 6px;border-radius:4px">$${it.price||'?'}</div>
       </div>
     `).join('');
-
-    // Store items for selection
-    window._eipItems = items;
-
-    window._eipSelect = function(idx){
-      const it = items[idx];
-      if(!it || !it.imageUrl) return;
-      _eipSelectedUrl = it.imageUrl;
-      _eipSelectedTitle = it.title || '';
-      document.getElementById('eip-selected-img').src = _eipSelectedUrl;
-      document.getElementById('eip-selected-title').textContent = _eipSelectedTitle;
-      document.getElementById('eip-selected-wrap').style.display = 'block';
-      document.querySelectorAll('.eip-thumb').forEach(t => t.style.border = '2px solid transparent');
-      const thumb = document.querySelector(`.eip-thumb[data-idx="${idx}"]`);
-      if(thumb) thumb.style.border = '2px solid var(--green)';
-      document.getElementById('eip-msg').textContent = '';
-    };
-
   } catch(e){
     document.getElementById('eip-status').textContent = 'Error: '+e.message;
     document.getElementById('eip-status').style.color = 'var(--red)';
   }
 
-  // Save handler — downloads the eBay image, uploads to Supabase Storage, updates var_images
-  window._eipSave = async function(){
-    if(!_eipSelectedUrl){ document.getElementById('eip-msg').style.color='var(--red)'; document.getElementById('eip-msg').textContent='Select an image first.'; return; }
-    const btn = document.getElementById('eip-save-btn');
+  // ── SCREEN 2: Click a listing → load all images ──
+  window._eipOpenListing = async function(idx){
+    const it = _eipItems[idx];
+    if(!it) return;
+    _eipCurrentListing = it;
+
+    document.getElementById('eip-screen1').style.display = 'none';
+    document.getElementById('eip-screen2').style.display = 'block';
+    document.getElementById('eip-screen3').style.display = 'none';
+
+    document.getElementById('eip-listing-title').textContent = it.title || 'Untitled';
+    document.getElementById('eip-listing-price').textContent = '$' + (it.price||'?');
+    document.getElementById('eip-loading-images').style.display = 'block';
+    document.getElementById('eip-all-images').innerHTML = '';
+
+    // Always include the primary image
+    _eipAllImages = [it.imageUrl];
+
+    // Try to get additional images via item lookup
+    if(it.itemId){
+      try {
+        // Extract legacy item ID from Browse API format (v1|123456789|0)
+        let legacyId = it.itemId;
+        const parts = legacyId.split('|');
+        if(parts.length >= 2) legacyId = parts[1];
+
+        const r2 = await fetch('/.netlify/functions/ebay-item-lookup', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({itemId: legacyId})
+        });
+        if(r2.ok){
+          const detail = await r2.json();
+          // Primary image from detail (might be higher res)
+          if(detail.imageUrl) _eipAllImages = [detail.imageUrl];
+          // Additional images
+          if(detail.additionalImages && detail.additionalImages.length){
+            _eipAllImages = _eipAllImages.concat(detail.additionalImages);
+          }
+        }
+      } catch(e){ console.warn('Item detail fetch failed, using primary only:', e); }
+    } else if(it.itemUrl){
+      // Try extracting item ID from URL
+      try {
+        const urlMatch = it.itemUrl.match(/itm\/(?:[^\/]*\/)?(\d+)/);
+        if(urlMatch){
+          const r2 = await fetch('/.netlify/functions/ebay-item-lookup', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({itemId: urlMatch[1]})
+          });
+          if(r2.ok){
+            const detail = await r2.json();
+            if(detail.imageUrl) _eipAllImages = [detail.imageUrl];
+            if(detail.additionalImages && detail.additionalImages.length){
+              _eipAllImages = _eipAllImages.concat(detail.additionalImages);
+            }
+          }
+        }
+      } catch(e){ console.warn('Item URL lookup failed:', e); }
+    }
+
+    document.getElementById('eip-loading-images').style.display = 'none';
+
+    const imgGrid = document.getElementById('eip-all-images');
+    if(_eipAllImages.length === 1){
+      imgGrid.innerHTML = `
+        <div onclick="window._eipPickImage(0)" style="border:2px solid transparent;border-radius:8px;overflow:hidden;cursor:pointer;background:rgba(0,0,0,0.3);transition:all .15s;position:relative">
+          <img src="${_eipAllImages[0]}" style="width:100%;height:250px;object-fit:contain;display:block">
+          <div style="position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,0.7);color:var(--blue);font-family:Barlow Condensed,sans-serif;font-size:11px;padding:2px 8px;border-radius:4px">Image 1 of 1</div>
+        </div>
+        <div style="grid-column:1/-1;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);padding:8px 0">Only 1 image available for this listing. Use &#9664; BACK TO LISTINGS to try a different listing that may have more photos.</div>
+      `;
+    } else {
+      imgGrid.innerHTML = _eipAllImages.map((url, i) => `
+        <div onclick="window._eipPickImage(${i})" style="border:2px solid transparent;border-radius:8px;overflow:hidden;cursor:pointer;background:rgba(0,0,0,0.3);transition:all .15s;position:relative">
+          <img src="${url}" style="width:100%;height:250px;object-fit:contain;display:block" onerror="this.parentElement.style.display='none'">
+          <div style="position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,0.7);color:var(--blue);font-family:Barlow Condensed,sans-serif;font-size:11px;padding:2px 8px;border-radius:4px">Image ${i+1} of ${_eipAllImages.length}</div>
+        </div>
+      `).join('');
+    }
+  };
+
+  // ── SCREEN 3: Pick image → save as front or back ──
+  // ── Crop state ──
+  let _eipCropImg = null;       // HTMLImageElement loaded
+  let _eipCropRect = null;      // {x,y,w,h} in image-pixel coords (null = full image)
+  let _eipDragging = false;
+  let _eipDragStart = null;
+
+  window._eipPickImage = function(idx){
+    _eipPickedUrl = _eipAllImages[idx];
+    if(!_eipPickedUrl) return;
+    document.getElementById('eip-screen2').style.display = 'none';
+    document.getElementById('eip-screen3').style.display = 'block';
+    document.getElementById('eip-save-msg').textContent = '';
+    const fb = document.getElementById('eip-save-front-btn');
+    const bb = document.getElementById('eip-save-back-btn');
+    fb.disabled = false; fb.textContent = '\uD83D\uDCF7 FRONT';
+    bb.disabled = false; bb.textContent = '\uD83D\uDD04 BACK';
+    fb.style.background = 'rgba(0,170,255,0.12)'; fb.style.borderColor = 'rgba(0,170,255,0.3)'; fb.style.color = 'var(--blue)';
+    bb.style.background = 'rgba(255,140,0,0.12)'; bb.style.borderColor = 'rgba(255,140,0,0.3)'; bb.style.color = '#FF8C00';
+
+    // Load image into canvas
+    _eipCropRect = null;
+    _eipCropImg = new Image();
+    _eipCropImg.crossOrigin = 'anonymous';
+    _eipCropImg.onload = function(){
+      _eipDrawCrop();
+      _eipDrawPreview();
+    };
+    _eipCropImg.src = _eipPickedUrl;
+  };
+
+  function _eipDrawCrop(){
+    const canvas = document.getElementById('eip-crop-canvas');
+    if(!canvas || !_eipCropImg) return;
+    const img = _eipCropImg;
+    // Size canvas to fit container while maintaining aspect ratio
+    const maxW = canvas.parentElement.clientWidth || 380;
+    const scale = maxW / img.naturalWidth;
+    const dispW = Math.floor(img.naturalWidth * scale);
+    const dispH = Math.floor(img.naturalHeight * scale);
+    canvas.width = dispW;
+    canvas.height = dispH;
+    canvas.style.height = dispH + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, dispW, dispH);
+    // Draw crop overlay
+    if(_eipCropRect){
+      const r = _eipCropRect;
+      const sx = dispW / img.naturalWidth, sy = dispH / img.naturalHeight;
+      const rx = r.x*sx, ry = r.y*sy, rw = r.w*sx, rh = r.h*sy;
+      // Dim outside
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+      ctx.fillRect(0, 0, dispW, ry);
+      ctx.fillRect(0, ry, rx, rh);
+      ctx.fillRect(rx+rw, ry, dispW-rx-rw, rh);
+      ctx.fillRect(0, ry+rh, dispW, dispH-ry-rh);
+      // Border
+      ctx.strokeStyle = '#00E887';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(rx, ry, rw, rh);
+      // Corner handles
+      ctx.fillStyle = '#00E887';
+      [[rx,ry],[rx+rw,ry],[rx,ry+rh],[rx+rw,ry+rh]].forEach(([cx,cy])=>{
+        ctx.fillRect(cx-4, cy-4, 8, 8);
+      });
+    }
+  }
+
+  function _eipDrawPreview(){
+    const preview = document.getElementById('eip-crop-preview');
+    if(!preview || !_eipCropImg) return;
+    const img = _eipCropImg;
+    const sx = _eipCropRect ? _eipCropRect.x : 0;
+    const sy = _eipCropRect ? _eipCropRect.y : 0;
+    const sw = _eipCropRect ? _eipCropRect.w : img.naturalWidth;
+    const sh = _eipCropRect ? _eipCropRect.h : img.naturalHeight;
+    // Preview at 140x196 (card ratio ~5:7)
+    preview.width = 280; preview.height = 392;
+    const pctx = preview.getContext('2d');
+    pctx.clearRect(0, 0, 280, 392);
+    pctx.drawImage(img, sx, sy, sw, sh, 0, 0, 280, 392);
+    const info = document.getElementById('eip-crop-info');
+    if(info) info.textContent = _eipCropRect ? `Cropped: ${sw}×${sh}px` : 'Full image — drag to select crop area';
+  }
+
+  // Mouse/touch crop on canvas
+  (function(){
+    const getCanvas = () => document.getElementById('eip-crop-canvas');
+    function canvasCoords(e, canvas){
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+    function toImgCoords(cx, cy, canvas){
+      if(!_eipCropImg) return {x:0,y:0};
+      const scaleX = _eipCropImg.naturalWidth / canvas.width;
+      const scaleY = _eipCropImg.naturalHeight / canvas.height;
+      return { x: Math.round(cx * scaleX), y: Math.round(cy * scaleY) };
+    }
+    function onDown(e){
+      const canvas = getCanvas();
+      if(!canvas || !_eipCropImg) return;
+      e.preventDefault();
+      _eipDragging = true;
+      _eipDragStart = canvasCoords(e, canvas);
+      _eipCropRect = null;
+      _eipDrawCrop();
+    }
+    function onMove(e){
+      if(!_eipDragging) return;
+      const canvas = getCanvas();
+      if(!canvas) return;
+      e.preventDefault();
+      const cur = canvasCoords(e, canvas);
+      const sx = Math.min(_eipDragStart.x, cur.x), sy = Math.min(_eipDragStart.y, cur.y);
+      const ex = Math.max(_eipDragStart.x, cur.x), ey = Math.max(_eipDragStart.y, cur.y);
+      const imgStart = toImgCoords(sx, sy, canvas);
+      const imgEnd = toImgCoords(ex, ey, canvas);
+      _eipCropRect = {
+        x: Math.max(0, imgStart.x),
+        y: Math.max(0, imgStart.y),
+        w: Math.min(_eipCropImg.naturalWidth - imgStart.x, imgEnd.x - imgStart.x),
+        h: Math.min(_eipCropImg.naturalHeight - imgStart.y, imgEnd.y - imgStart.y)
+      };
+      if(_eipCropRect.w < 10 || _eipCropRect.h < 10) _eipCropRect = null;
+      _eipDrawCrop();
+      _eipDrawPreview();
+    }
+    function onUp(e){
+      if(!_eipDragging) return;
+      _eipDragging = false;
+      _eipDrawPreview();
+    }
+    // Attach to document — canvas gets recreated, so delegate
+    document.addEventListener('mousedown', (e)=>{ if(e.target && e.target.id === 'eip-crop-canvas') onDown(e); });
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+    document.addEventListener('touchstart', (e)=>{ if(e.target && e.target.id === 'eip-crop-canvas') onDown(e); }, {passive:false});
+    document.addEventListener('touchmove', (e)=>{ if(_eipDragging) onMove(e); }, {passive:false});
+    document.addEventListener('touchend', onUp);
+  })();
+
+  window._eipResetCrop = function(){
+    _eipCropRect = null;
+    _eipDrawCrop();
+    _eipDrawPreview();
+  };
+
+  // ── Get cropped blob from canvas ──
+  function _eipGetCroppedBlob(){
+    return new Promise((resolve) => {
+      if(!_eipCropImg){ resolve(null); return; }
+      const outCanvas = document.createElement('canvas');
+      const sx = _eipCropRect ? _eipCropRect.x : 0;
+      const sy = _eipCropRect ? _eipCropRect.y : 0;
+      const sw = _eipCropRect ? _eipCropRect.w : _eipCropImg.naturalWidth;
+      const sh = _eipCropRect ? _eipCropRect.h : _eipCropImg.naturalHeight;
+      outCanvas.width = sw;
+      outCanvas.height = sh;
+      const ctx = outCanvas.getContext('2d');
+      ctx.drawImage(_eipCropImg, sx, sy, sw, sh, 0, 0, sw, sh);
+      outCanvas.toBlob((b) => resolve(b), 'image/jpeg', 0.92);
+    });
+  }
+
+  window._eipSaveSide = async function(side){
+    if(!_eipPickedUrl) return;
+    const btnId = side==='front' ? 'eip-save-front-btn' : 'eip-save-back-btn';
+    const btn = document.getElementById(btnId);
     btn.disabled = true;
-    btn.textContent = 'DOWNLOADING...';
-    const msg = document.getElementById('eip-msg');
+    btn.textContent = 'CROPPING...';
+    const msg = document.getElementById('eip-save-msg');
     msg.textContent = '';
 
     try {
-      // 1) Fetch the eBay image as blob
-      const imgResp = await fetch(_eipSelectedUrl);
-      if(!imgResp.ok) throw new Error('Could not download image from eBay');
-      const blob = await imgResp.blob();
+      // 1) Get cropped image as blob
+      const blob = await _eipGetCroppedBlob();
+      if(!blob) throw new Error('Could not generate cropped image');
 
       btn.textContent = 'UPLOADING...';
 
       // 2) Upload to Supabase Storage
-      const safeName = (s) => (s||'').replace(/[^a-zA-Z0-9_\-]/g, '_').toLowerCase();
-      const path = `catalog/${safeName(table)}/${safeName(String(cardNum))}/${safeName(varLabel)}_front.jpg`;
-      const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
-      const SB_REST = 'https://jyfaegmnzkarlcximxjo.supabase.co';
-      const userToken = window._userAccessToken || ANON_KEY;
-
+      const path = `catalog/${safeName(table)}/${safeName(String(cardNum))}/${safeName(varLabel)}_${side}.jpg`;
       const upRes = await fetch(`${SB_REST}/storage/v1/object/card-images/${path}`, {
         method: 'POST',
         headers: { 'Authorization': 'Bearer ' + userToken, 'apikey': ANON_KEY, 'Content-Type': blob.type || 'image/jpeg', 'x-upsert': 'true', 'cache-control': '3600' },
@@ -14884,47 +15170,48 @@ async function cdAdminEbayImg(){
 
       btn.textContent = 'SAVING...';
 
-      // 3) Update var_images in the set table
+      // 3) Update var_images
       const rows = await _rGet(table, 'select=var_images&card_number=eq.'+encodeURIComponent(cardNum)+'&limit=1');
       const vi = (rows && rows[0] && rows[0].var_images) || {};
       if(!vi[varLabel]) vi[varLabel] = {};
-      vi[varLabel].front = publicUrl;
+      vi[varLabel][side] = publicUrl;
       await _rPatch(table, 'card_number=eq.'+encodeURIComponent(cardNum), {var_images: vi});
 
       // 4) Update local state
-      if(c._varImages) { if(!c._varImages[varLabel]) c._varImages[varLabel]={}; c._varImages[varLabel].front = publicUrl; }
-      else { c._varImages = {[varLabel]:{front:publicUrl}}; }
-      // Refresh the 3D viewer
-      _cdSetViewerImages(publicUrl, (vi[varLabel].back || null));
+      if(!c._varImages) c._varImages = {};
+      if(!c._varImages[varLabel]) c._varImages[varLabel] = {};
+      c._varImages[varLabel][side] = publicUrl;
+      // Refresh 3D viewer
+      _cdSetViewerImages(vi[varLabel].front || null, vi[varLabel].back || null);
 
-      // 5) Log admin action
+      // 5) Log
       try {
         await _rPost('admin_actions', {
           admin_id: window._authUser?.id||null,
           admin_name: window._authUser?.username||window._authUser?.email?.split('@')[0]||'unknown',
           action_type: 'image_uploaded',
-          table_name: table,
-          card_number: cardNum,
-          player: c.player||null,
+          table_name: table, card_number: cardNum, player: c.player||null,
           before_data: null,
-          after_data: {variation: varLabel, source: 'ebay', ebay_url: _eipSelectedUrl, listing_title: _eipSelectedTitle},
-          note: 'eBay image pull',
+          after_data: {variation: varLabel, side: side, source: 'ebay', ebay_url: _eipPickedUrl, listing_title: (_eipCurrentListing||{}).title||''},
+          note: 'eBay image pull — '+side,
           created_at: new Date().toISOString()
         }, null);
       } catch(e){}
 
-      btn.textContent = '✓ SAVED!';
-      btn.style.background = '#00C851';
+      btn.textContent = side==='front' ? '✓ FRONT SAVED' : '✓ BACK SAVED';
+      btn.style.background = 'rgba(0,232,135,0.15)';
+      btn.style.borderColor = 'rgba(0,232,135,0.4)';
+      btn.style.color = 'var(--green)';
       msg.style.color = 'var(--green)';
-      msg.textContent = 'Image saved to catalog. Refresh card to see it in the viewer.';
-      T('eBay image saved for '+varLabel);
+      msg.textContent = (side==='front' ? 'Front' : 'Back') + ' image saved! Go back to pick another image or close.';
+      _eipShowSaved(side, publicUrl);
+      T((side==='front'?'Front':'Back')+' image saved for '+varLabel);
 
-      setTimeout(()=>{ document.getElementById('adm-ebayimg-overlay')?.remove(); }, 1500);
     } catch(e){
       msg.style.color = 'var(--red)';
       msg.textContent = 'Failed: '+e.message;
       btn.disabled = false;
-      btn.textContent = 'SAVE TO CATALOG';
+      btn.textContent = side==='front' ? '\uD83D\uDCF7 SAVE AS FRONT' : '\uD83D\uDD04 SAVE AS BACK';
     }
   };
 }

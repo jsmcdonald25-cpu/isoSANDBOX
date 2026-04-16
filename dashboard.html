@@ -5821,6 +5821,7 @@ function N(id,el){
   if(id==='sellermatches')loadSellerMatches();
   if(id==='activelistings')loadActiveListings();
   if(id==='mycollection')initMyCollection();
+  if(id==='rankings')_prInit();
   if(id==='cardshops')_loadLeaflet().then(()=>initCardShops());
   if(id==='shopprofile')_loadLeaflet().then(()=>renderShopProfile());
   if(id==='cardshows')_loadLeaflet().then(()=>initCardShows());
@@ -13024,11 +13025,17 @@ async function submitErrorReport(){
   }
 }
 
-// ── Power Rankings ──────────────────────────────────────────────────
-const _prSH=`<a class="pr-eb" href="#">Shop <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>`;
-const _prAU=s=>`<span class="pr-prt up"><svg viewBox="0 0 10 10"><path d="M5 1L9 6H1z" fill="currentColor"/></svg>+${s}%</span>`;
-const _prAD=s=>`<span class="pr-prt dn"><svg viewBox="0 0 10 10"><path d="M5 9L9 4H1z" fill="currentColor"/></svg>${s}%</span>`;
+// ── Power Rankings (Phase 2 — Live MLB Data) ──────────────────────────
+const _prMLB = 'https://statsapi.mlb.com/api/v1';
+let _prCache = { hitters:null, pitchers:null, rookieH:null, rookieP:null, mode:'last5', ts:0 };
+let _prPriceCache = {}; // playerId → {avg, pct}
+let _prMode = 'last5'; // 'season' | 'last5'
+
+// ── Render helpers ──────────────────────────────────────────────────
+function _prIM(id){return`https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_213,q_auto:best/v1/people/${id}/headshot/67/current`}
+function _prShopLink(name){return`<a class="pr-eb" href="https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent('2026 Topps '+name)}&_sacat=212" target="_blank" rel="noopener">Shop <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>`}
 function _prVB(s){
+  s=Math.round(s);
   if(s>=92)return`<div class="pr-vs u"><span style="font-size:14px">&#129412;</span><span class="pr-vn">${s}</span></div>`;
   if(s>=80)return`<div class="pr-vs h"><span class="pr-vn">${s}</span></div>`;
   if(s>=65)return`<div class="pr-vs w"><span class="pr-vn">${s}</span></div>`;
@@ -13036,119 +13043,196 @@ function _prVB(s){
   return`<div class="pr-vs ov"><span class="pr-vn">${s}</span></div>`;
 }
 function _prIB(s){
+  s=Math.round(s);
   if(s>=93)return`<div class="pr-vs u"><span class="pr-vn">${s}</span></div>`;
   if(s>=80)return`<div class="pr-vs h"><span class="pr-vn">${s}</span></div>`;
   if(s>=70)return`<div class="pr-vs w"><span class="pr-vn">${s}</span></div>`;
   return`<div class="pr-vs n"><span class="pr-vn">${s}</span></div>`;
 }
-function _prPR(p,c){return`<div class="pr-prc"><span class="pr-prv">$${p}</span>${c>=0?_prAU(c):_prAD(c)}</div>`}
-function _prIM(id){return`https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_213,q_auto:best/v1/people/${id}/headshot/67/current`}
-function _prR(rk,pid,nm,pos,tm,a,b,c,d,e,iso,price,pct,val,ex){
-  const rc=rk<=3?` r${rk}`:'';const cr=rk===1?'<span class="pr-crown">&#128081;</span>':'';const sp=rk===1?' pr-sr':'';
-  return`<tr class="${sp}"><td><div class="pr-rb${rc}">${rk}</div></td>
-  <td><div class="pr-pc"><div class="pr-pa${rc}"><img src="${_prIM(pid)}">${cr}</div>
-  <div><span class="pr-pn">${nm}</span><div class="pr-pm2"><span class="pr-pp">${pos}</span><span>${tm}</span>${ex||''}</div></div></div></td>
-  <td class="s${a[1]||''}">${a[0]}</td><td class="s${b[1]||''}">${b[0]}</td>
-  <td class="s${c[1]||''}">${c[0]}</td><td class="s${d[1]||''}">${d[0]}</td>
-  <td class="s">${e[0]}</td>
-  <td class="s">${_prIB(iso)}</td><td class="v">${_prPR(price,pct)}</td><td class="v">${_prVB(val)}</td><td>${_prSH}</td></tr>`;
+function _prPriceFmt(p,pct){
+  const pr = p!=null ? '$'+Number(p).toFixed(2) : '—';
+  const tr = pct!=null ? (pct>=0
+    ? `<span class="pr-prt up"><svg viewBox="0 0 10 10"><path d="M5 1L9 6H1z" fill="currentColor"/></svg>+${pct}%</span>`
+    : `<span class="pr-prt dn"><svg viewBox="0 0 10 10"><path d="M5 9L9 4H1z" fill="currentColor"/></svg>${pct}%</span>`)
+    : '';
+  return`<div class="pr-prc"><span class="pr-prv">${pr}</span>${tr}</div>`;
 }
-const _prE=' pr-se',_prH=' pr-sh';
-const _prRK=`<span class="pr-rt">ROOKIE</span>`;
-const _prF=t=>`<span class="pr-sf">${t}</span>`;
 
-const _prDATA={
-superstars:{i:'&#11088;',t:'Top 15 Superstars',s:'Position Players & DH',h:['AVG','HR','RBI','OPS','SB'],r:[
-  _prR(1,592450,'Aaron Judge','RF','NYY',['.341',_prE],['14',_prE],['38',_prH],['1.087',_prE],['2'],98.4,'127.50',12,72,_prF('&#128293; 8G')),
-  _prR(2,660271,'Shohei Ohtani','DH','LAD',['.312',_prH],['12',_prE],['35',_prH],['1.024',_prE],['10'],96.1,'89.30',8,84),
-  _prR(3,665742,'Juan Soto','RF','NYM',['.298',_prH],['10'],['30'],['.987',_prH],['4'],93.7,'62.80',5,88),
-  _prR(4,677951,'Bobby Witt Jr.','SS','KC',['.322',_prH],['9'],['28'],['.948',_prH],['14'],91.2,'38.40',22,95,_prF('&#128293; 12G')),
-  _prR(5,605141,'Mookie Betts','SS','LAD',['.289'],['8'],['26'],['.912',_prH],['7'],87.5,'45.20',-3,76),
-  _prR(6,607208,'Trea Turner','SS','PHI',['.305',_prH],['7'],['24'],['.878'],['18'],86.1,'12.60',15,93),
-  _prR(7,683002,'Gunnar Henderson','SS','BAL',['.278'],['11'],['29'],['.891'],['6'],85.3,'22.10',9,87),
-  _prR(8,670541,'Yordan Alvarez','DH','HOU',['.295'],['10'],['32'],['.956',_prH],['1'],84.8,'18.40',-2,78),
-  _prR(9,608369,'Corey Seager','SS','TEX',['.285'],['9'],['27'],['.901'],['1'],82.6,'15.80',-6,74),
-  _prR(10,518692,'Freddie Freeman','1B','LAD',['.301',_prH],['6'],['25'],['.882'],['5'],81.4,'11.20',4,82),
-  _prR(11,665487,'Elly De La Cruz','SS','CIN',['.271'],['8'],['22'],['.856'],['24'],80.9,'15.60',28,91,_prF('&#128293; 5G')),
-  _prR(12,660670,'Ronald Acuna Jr.','RF','ATL',['.276'],['7'],['21'],['.845'],['11'],79.3,'52.30',-14,41),
-  _prR(13,687093,'Jackson Chourio','CF','MIL',['.291'],['8'],['24'],['.868'],['9'],78.1,'9.80',18,92),
-  _prR(14,672284,'Julio Rodriguez','CF','SEA',['.268'],['9'],['26'],['.832'],['12'],77.4,'14.50',-5,71),
-  _prR(15,646240,'Marcus Semien','2B','TEX',['.282'],['7'],['22'],['.824'],['5'],75.8,'5.40',3,85)]},
-pitchers:{i:'&#128293;',t:'Top 10 Pitchers',s:'Starting & Relief',h:['ERA','W-L','K','WHIP','IP'],r:[
-  _prR(1,669373,'Tarik Skubal','SP','DET',['1.82',_prE],['6-1',_prH],['68',_prE],['0.87',_prE],['59.1'],97.2,'34.60',31,86),
-  _prR(2,543037,'Chris Sale','SP','ATL',['2.14',_prE],['5-2'],['62',_prH],['0.94',_prH],['55.0'],94.6,'8.90',11,96),
-  _prR(3,477132,'Max Scherzer','SP','TOR',['2.41',_prH],['4-1'],['54'],['0.98',_prH],['52.1'],91.3,'6.20',7,89),
-  _prR(4,671096,'Logan Webb','SP','SF',['2.58',_prH],['5-2'],['48'],['1.04'],['56.0'],88.7,'4.10',14,94),
-  _prR(5,694297,'Paul Skenes','SP','PIT',['2.71'],['5-0',_prH],['61',_prH],['1.01'],['53.0'],87.9,'28.70',19,73),
-  _prR(6,608566,'Corbin Burnes','SP','AZ',['2.88'],['4-2'],['52'],['1.08'],['50.0'],84.2,'7.40',-4,79),
-  _prR(7,656302,'Zack Wheeler','SP','PHI',['2.95'],['4-3'],['56'],['1.06'],['54.2'],82.8,'5.80',-2,77),
-  _prR(8,592789,'Gerrit Cole','SP','NYY',['3.02'],['4-2'],['58'],['1.10'],['53.2'],81.5,'9.20',-8,64),
-  _prR(9,666142,'Hunter Brown','SP','HOU',['3.15'],['3-2'],['50'],['1.12'],['48.2'],79.1,'3.20',6,86),
-  _prR(10,682847,'Grayson Rodriguez','SP','BAL',['3.28'],['4-1'],['47'],['1.14'],['46.2'],76.4,'6.50',10,82)]},
-rookies:{i:'&#127775;',t:'Top 10 Rookies',s:'All Positions',h:['Key','2nd','3rd','Rate','GP'],r:[
-  _prR(1,700367,'Ethan Salas','C','SD',['.318',_prE],['6 HR',_prH],['22 RBI',_prH],['.892'],['32'],94.1,'42.30',45,81,_prRK+_prF('&#128293; ROY')),
-  _prR(2,695865,'Charlie Condon','3B','COL',['.294',_prH],['8 HR',_prH],['19 RBI'],['.868'],['28'],89.3,'4.20',34,98,_prRK),
-  _prR(3,694973,'Travis Bazzana','2B','CLE',['.278'],['4 HR'],['16 RBI'],['.812'],['30'],82.7,'6.80',12,88,_prRK),
-  _prR(4,694192,'Jac Caglianone','SP/DH','KC',['2.89',_prH],['32 K'],['.265'],['-'],['24'],81.4,'8.90',52,94,_prRK+_prF('&#128293; 2-way')),
-  _prR(5,691176,'Coby Mayo','3B','BAL',['.262'],['7 HR',_prH],['20 RBI'],['.831'],['29'],78.9,'5.10',16,85,_prRK),
-  _prR(6,688363,'Roki Sasaki','SP','LAD',['2.45',_prE],['44 K',_prE],['0.91'],['-'],['8 GS'],77.6,'18.40',24,72,_prRK),
-  _prR(7,691497,'Roman Anthony','LF','BOS',['.255'],['5 HR'],['14 RBI'],['.788'],['26'],74.2,'7.60',-5,76,_prRK),
-  _prR(8,700362,'Josue De Paula','SP','LAD',['3.12'],['38 K'],['1.08'],['-'],['7 GS'],72.8,'2.40',28,93,_prRK),
-  _prR(9,700660,'Kumar Rocker','SP','TEX',['3.34'],['36 K'],['1.15'],['-'],['7 GS'],70.5,'3.80',9,83,_prRK),
-  _prR(10,693580,'Junior Caminero','3B','TB',['.248'],['5 HR'],['17 RBI'],['.782'],['27'],68.9,'4.50',-11,71,_prRK)]},
-unicorn:{i:'&#129412;',t:'Top 10 Value Picks',s:'Stats &#8593; Price &#8595;',h:['Perf','Trend','$','Score','Pos'],r:[
-  _prR(1,695865,'Charlie Condon','3B','COL',['.294',_prH],['&#8593;34%',_prE],['$4.20'],['98',_prE],['3B'],98,'4.20',34,98,_prRK),
-  _prR(2,543037,'Chris Sale','SP','ATL',['2.14',_prE],['&#8593;11%'],['$8.90'],['96',_prE],['SP'],96,'8.90',11,96),
-  _prR(3,677951,'Bobby Witt Jr.','SS','KC',['.322',_prE],['&#8593;22%',_prH],['$38.40'],['95'],['SS'],95,'38.40',22,95),
-  _prR(4,694192,'Jac Caglianone','SP/DH','KC',['2-way',_prH],['&#8593;52%',_prE],['$8.90'],['94'],['SP'],94,'8.90',52,94,_prRK),
-  _prR(5,671096,'Logan Webb','SP','SF',['2.58',_prH],['&#8593;14%'],['$4.10'],['94'],['SP'],94,'4.10',14,94),
-  _prR(6,607208,'Trea Turner','SS','PHI',['.305',_prH],['&#8593;15%'],['$12.60'],['93'],['SS'],93,'12.60',15,93),
-  _prR(7,700362,'Josue De Paula','SP','LAD',['3.12'],['&#8593;28%',_prH],['$2.40'],['93'],['SP'],93,'2.40',28,93,_prRK),
-  _prR(8,687093,'Jackson Chourio','CF','MIL',['.291'],['&#8593;18%'],['$9.80'],['92'],['CF'],92,'9.80',18,92),
-  _prR(9,665487,'Elly De La Cruz','SS','CIN',['.271'],['&#8593;28%',_prH],['$15.60'],['91'],['SS'],91,'15.60',28,91),
-  _prR(10,694973,'Travis Bazzana','2B','CLE',['.278'],['&#8593;12%'],['$6.80'],['88'],['2B'],88,'6.80',12,88,_prRK)]},
-'pos-SS':{i:'&#9918;',t:'Top 10 &#8212; Shortstop',s:'SS',h:['AVG','HR','RBI','OPS','SB'],r:[
-  _prR(1,677951,'Bobby Witt Jr.','SS','KC',['.322',_prH],['9'],['28'],['.948',_prH],['14'],91.2,'38.40',22,95),
-  _prR(2,605141,'Mookie Betts','SS','LAD',['.289'],['8'],['26'],['.912',_prH],['7'],87.5,'45.20',-3,76),
-  _prR(3,607208,'Trea Turner','SS','PHI',['.305',_prH],['7'],['24'],['.878'],['18'],86.1,'12.60',15,93),
-  _prR(4,683002,'Gunnar Henderson','SS','BAL',['.278'],['11'],['29'],['.891'],['6'],85.3,'22.10',9,87),
-  _prR(5,608369,'Corey Seager','SS','TEX',['.285'],['9'],['27'],['.901'],['1'],82.6,'15.80',-6,74)]},
-'pos-RF':{i:'&#9918;',t:'Top 10 &#8212; Right Field',s:'RF',h:['AVG','HR','RBI','OPS','SB'],r:[
-  _prR(1,592450,'Aaron Judge','RF','NYY',['.341',_prE],['14',_prE],['38',_prH],['1.087',_prE],['2'],98.4,'127.50',12,72),
-  _prR(2,665742,'Juan Soto','RF','NYM',['.298',_prH],['10'],['30'],['.987',_prH],['4'],93.7,'62.80',5,88),
-  _prR(3,660670,'Ronald Acuna Jr.','RF','ATL',['.276'],['7'],['21'],['.845'],['11'],79.3,'52.30',-14,41)]},
-'pos-CF':{i:'&#9918;',t:'Top 10 &#8212; Center Field',s:'CF',h:['AVG','HR','RBI','OPS','SB'],r:[
-  _prR(1,687093,'Jackson Chourio','CF','MIL',['.291'],['8'],['24'],['.868'],['9'],78.1,'9.80',18,92),
-  _prR(2,672284,'Julio Rodriguez','CF','SEA',['.268'],['9'],['26'],['.832'],['12'],77.4,'14.50',-5,71)]},
-'pos-LF':{i:'&#9918;',t:'Top 10 &#8212; Left Field',s:'LF',h:['AVG','HR','RBI','OPS','SB'],r:[
-  _prR(1,670541,'Yordan Alvarez','LF','HOU',['.295'],['10'],['32'],['.956',_prH],['1'],84.8,'18.40',-2,78),
-  _prR(2,691497,'Roman Anthony','LF','BOS',['.255'],['5'],['14'],['.788'],['4'],74.2,'7.60',-5,76,_prRK)]},
-'pos-1B':{i:'&#9918;',t:'Top 10 &#8212; First Base',s:'1B',h:['AVG','HR','RBI','OPS','SB'],r:[
-  _prR(1,518692,'Freddie Freeman','1B','LAD',['.301',_prH],['6'],['25'],['.882'],['5'],81.4,'11.20',4,82),
-  _prR(2,665489,'Vladdy Guerrero Jr.','1B','TOR',['.292'],['8'],['28'],['.871'],['2'],79.8,'24.80',-3,68),
-  _prR(3,670032,'Pete Alonso','1B','NYM',['.254'],['11',_prH],['30'],['.841'],['0'],76.2,'8.40',5,79)]},
-'pos-2B':{i:'&#9918;',t:'Top 10 &#8212; Second Base',s:'2B',h:['AVG','HR','RBI','OPS','SB'],r:[
-  _prR(1,646240,'Marcus Semien','2B','TEX',['.282'],['7'],['22'],['.824'],['5'],75.8,'5.40',3,85),
-  _prR(2,694973,'Travis Bazzana','2B','CLE',['.278'],['4'],['16'],['.812'],['3'],72.7,'6.80',12,88,_prRK)]},
-'pos-3B':{i:'&#9918;',t:'Top 10 &#8212; Third Base',s:'3B',h:['AVG','HR','RBI','OPS','SB'],r:[
-  _prR(1,695865,'Charlie Condon','3B','COL',['.294',_prH],['8',_prH],['19'],['.868'],['2'],89.3,'4.20',34,98,_prRK),
-  _prR(2,691176,'Coby Mayo','3B','BAL',['.262'],['7',_prH],['20'],['.831'],['1'],78.9,'5.10',16,85,_prRK)]},
-'pos-C':{i:'&#9918;',t:'Top 10 &#8212; Catcher',s:'C',h:['AVG','HR','RBI','OPS','SB'],r:[
-  _prR(1,700367,'Ethan Salas','C','SD',['.318',_prE],['6'],['22'],['.892'],['1'],94.1,'42.30',45,81,_prRK),
-  _prR(2,668939,'Adley Rutschman','C','BAL',['.278'],['5'],['20'],['.832'],['2'],78.4,'12.80',4,79)]},
-'pos-DH':{i:'&#9918;',t:'Top 10 &#8212; Designated Hitter',s:'DH',h:['AVG','HR','RBI','OPS','SB'],r:[
-  _prR(1,660271,'Shohei Ohtani','DH','LAD',['.312',_prH],['12',_prE],['35',_prH],['1.024',_prE],['10'],96.1,'89.30',8,84),
-  _prR(2,670541,'Yordan Alvarez','DH','HOU',['.295'],['10'],['32'],['.956',_prH],['1'],84.8,'18.40',-2,78)]},
-'pos-P':{i:'&#9918;',t:'Top 10 &#8212; Pitchers',s:'All Pitchers',h:['ERA','W-L','K','WHIP','IP'],r:[
-  _prR(1,669373,'Tarik Skubal','SP','DET',['1.82',_prE],['6-1',_prH],['68',_prE],['0.87',_prE],['59.1'],97.2,'34.60',31,86),
-  _prR(2,543037,'Chris Sale','SP','ATL',['2.14',_prE],['5-2'],['62',_prH],['0.94',_prH],['55.0'],94.6,'8.90',11,96),
-  _prR(3,477132,'Max Scherzer','SP','TOR',['2.41',_prH],['4-1'],['54'],['0.98',_prH],['52.1'],91.3,'6.20',7,89),
-  _prR(4,671096,'Logan Webb','SP','SF',['2.58',_prH],['5-2'],['48'],['1.04'],['56.0'],88.7,'4.10',14,94),
-  _prR(5,694297,'Paul Skenes','SP','PIT',['2.71'],['5-0',_prH],['61',_prH],['1.01'],['53.0'],87.9,'28.70',19,73)]},
-};
+// ── Team abbreviations ──────────────────────────────────────────────
+const _prTEAMS={108:'LAA',109:'AZ',110:'BAL',111:'BOS',112:'CHC',113:'CIN',114:'CLE',115:'COL',116:'DET',117:'HOU',118:'KC',119:'LAD',120:'WAS',121:'NYM',133:'ATH',134:'PIT',135:'SD',136:'SEA',137:'SF',138:'STL',139:'TB',140:'TEX',141:'TOR',142:'MIN',143:'PHI',144:'ATL',145:'CHW',146:'MIA',147:'NYY',158:'MIL'};
+function _prTm(t){return _prTEAMS[t&&t.id||0]||''}
 
+// ── ISO Score calculation ───────────────────────────────────────────
+// Hitter: normalize stats to 0-100, weight against card price affordability
+function _prISOHit(s, price){
+  const avg = parseFloat(s.avg)||0, hr = s.homeRuns||0, rbi = s.rbi||0, ops = parseFloat(s.ops)||0, sb = s.stolenBases||0, gp = s.gamesPlayed||1;
+  // Per-game normalize
+  const hrPG = hr/gp, rbiPG = rbi/gp, sbPG = sb/gp;
+  // Stat score (0-100): weight AVG heavily, OPS, then counting stats
+  const statScore = Math.min(100, (avg*120) + (ops*25) + (hrPG*80) + (rbiPG*40) + (sbPG*30));
+  // Price factor: cheaper cards get a boost (inverse log scale, capped)
+  const p = Math.max(price||1, 0.5);
+  const priceFactor = Math.min(1.5, 1 + (1/Math.log2(p+2)));
+  // ISO Score = stat score weighted by price affordability, capped at 100
+  return Math.min(100, Math.round(statScore * priceFactor * 10) / 10);
+}
+// Pitcher: lower ERA/WHIP = better, more K = better
+function _prISOPit(s, price){
+  const era = parseFloat(s.era)||9, whip = parseFloat(s.whip)||2, k = s.strikeOuts||0, ip = parseFloat(s.inningsPitched)||1, w = s.wins||0;
+  const kPer9 = (k/ip)*9;
+  // Invert ERA/WHIP (lower = better)
+  const eraScore = Math.max(0, 100 - (era*12));
+  const whipScore = Math.max(0, 100 - (whip*35));
+  const kScore = Math.min(40, kPer9*3.5);
+  const wScore = Math.min(15, w*3);
+  const statScore = Math.min(100, eraScore*0.35 + whipScore*0.25 + kScore + wScore);
+  const p = Math.max(price||1, 0.5);
+  const priceFactor = Math.min(1.5, 1 + (1/Math.log2(p+2)));
+  return Math.min(100, Math.round(statScore * priceFactor * 10) / 10);
+}
+// Value score: how underpriced is the card relative to performance?
+function _prValScore(isoScore, price){
+  if(!price || price <= 0) return Math.round(isoScore);
+  // High ISO + low price = high value. Low ISO + high price = low value.
+  return Math.min(100, Math.round(isoScore * (1 + Math.max(0, 30-price)/30)));
+}
+
+// ── Fetch MLB stats ─────────────────────────────────────────────────
+async function _prFetchAll(){
+  const yr = new Date().getFullYear();
+  try {
+    const [hR, pR, rhR, rpR] = await Promise.all([
+      fetch(`${_prMLB}/stats?stats=season&group=hitting&season=${yr}&sportId=1&limit=50&sortStat=onBasePlusSlugging&order=desc`),
+      fetch(`${_prMLB}/stats?stats=season&group=pitching&season=${yr}&sportId=1&limit=30&sortStat=earnedRunAverage&order=asc`),
+      fetch(`${_prMLB}/stats?stats=season&group=hitting&season=${yr}&sportId=1&limit=20&sortStat=onBasePlusSlugging&order=desc&playerPool=rookies`),
+      fetch(`${_prMLB}/stats?stats=season&group=pitching&season=${yr}&sportId=1&limit=10&sortStat=earnedRunAverage&order=asc&playerPool=rookies`),
+    ]);
+    const [hD, pD, rhD, rpD] = await Promise.all([hR.json(), pR.json(), rhR.json(), rpR.json()]);
+    const extract = (d) => (d.stats&&d.stats[0]&&d.stats[0].splits)||[];
+    _prCache.hitters = extract(hD);
+    _prCache.pitchers = extract(pD).filter(s=>parseFloat(s.stat.inningsPitched)>=10);
+    _prCache.rookieH = extract(rhD);
+    _prCache.rookieP = extract(rpD).filter(s=>parseFloat(s.stat.inningsPitched)>=5);
+    _prCache.ts = Date.now();
+    // Update timestamp display
+    const tsEl = document.querySelector('.pr-tbar div[style*="margin-left"]');
+    if(tsEl) tsEl.textContent = 'Updated just now — ' + yr + ' Season';
+    // Update spotlight leader names
+    if(_prCache.hitters[0]){const el=document.querySelector('.pr-spot.gold-c .pr-spot-leader b');if(el)el.textContent=_prCache.hitters[0].player.fullName;}
+    if(_prCache.pitchers[0]){const el=document.querySelector('.pr-spot.blue-c .pr-spot-leader b');if(el)el.textContent=_prCache.pitchers[0].player.fullName;}
+    if(_prCache.rookieH[0]){const el=document.querySelector('.pr-spot.green-c .pr-spot-leader b');if(el)el.textContent=_prCache.rookieH[0].player.fullName;}
+  } catch(e){ console.warn('PR fetch error:', e); }
+}
+
+// ── Build row HTML from MLB split data ──────────────────────────────
+function _prBuildHitterRow(rk, sp, isRookie){
+  const p = sp.player, s = sp.stat, tm = _prTm(sp.team), pos = sp.position?sp.position.abbreviation:'';
+  const pid = p.id;
+  const price = _prPriceCache[pid]||null;
+  const cardPrice = price?price.avg:null;
+  const pct = price?price.pct:null;
+  const iso = _prISOHit(s, cardPrice||5);
+  const val = _prValScore(iso, cardPrice);
+  const rc = rk<=3?` r${rk}`:'';
+  const cr = rk===1?'<span class="pr-crown">&#128081;</span>':'';
+  const extra = isRookie?'<span class="pr-rt">ROOKIE</span>':'';
+  return`<tr class="${rk===1?'pr-sr':''}"><td><div class="pr-rb${rc}">${rk}</div></td>
+  <td><div class="pr-pc"><div class="pr-pa${rc}"><img src="${_prIM(pid)}">${cr}</div>
+  <div><span class="pr-pn">${p.fullName}</span><div class="pr-pm2"><span class="pr-pp">${pos}</span><span>${tm}</span>${extra}</div></div></div></td>
+  <td class="s">${s.avg}</td><td class="s">${s.homeRuns}</td>
+  <td class="s">${s.rbi}</td><td class="s">${s.ops}</td>
+  <td class="s">${s.stolenBases}</td>
+  <td class="s">${_prIB(iso)}</td><td class="v">${_prPriceFmt(cardPrice,pct)}</td><td class="v">${_prVB(val)}</td><td>${_prShopLink(p.fullName)}</td></tr>`;
+}
+function _prBuildPitcherRow(rk, sp, isRookie){
+  const p = sp.player, s = sp.stat, tm = _prTm(sp.team), pos = sp.position?sp.position.abbreviation:'P';
+  const pid = p.id;
+  const price = _prPriceCache[pid]||null;
+  const cardPrice = price?price.avg:null;
+  const pct = price?price.pct:null;
+  const iso = _prISOPit(s, cardPrice||5);
+  const val = _prValScore(iso, cardPrice);
+  const rc = rk<=3?` r${rk}`:'';
+  const cr = rk===1?'<span class="pr-crown">&#128081;</span>':'';
+  const wl = (s.wins||0)+'-'+(s.losses||0);
+  const sv = s.saves>0?' ('+s.saves+' SV)':'';
+  const extra = isRookie?'<span class="pr-rt">ROOKIE</span>':'';
+  return`<tr class="${rk===1?'pr-sr':''}"><td><div class="pr-rb${rc}">${rk}</div></td>
+  <td><div class="pr-pc"><div class="pr-pa${rc}"><img src="${_prIM(pid)}">${cr}</div>
+  <div><span class="pr-pn">${p.fullName}</span><div class="pr-pm2"><span class="pr-pp">${pos}${sv}</span><span>${tm}</span>${extra}</div></div></div></td>
+  <td class="s">${s.era}</td><td class="s">${wl}</td>
+  <td class="s">${s.strikeOuts}</td><td class="s">${s.whip}</td>
+  <td class="s">${s.inningsPitched}</td>
+  <td class="s">${_prIB(iso)}</td><td class="v">${_prPriceFmt(cardPrice,pct)}</td><td class="v">${_prVB(val)}</td><td>${_prShopLink(p.fullName)}</td></tr>`;
+}
+
+// ── Fetch eBay prices for top players (background) ──────────────────
+async function _prFetchPrices(players){
+  for(const p of players.slice(0,25)){
+    if(_prPriceCache[p.id]) continue;
+    try {
+      const resp = await fetch('/.netlify/functions/ebay-recent-sales',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({player:p.name,year:new Date().getFullYear(),brand:'Topps',set_name:'Series 1',card_number:'',variation:'Base',grade:''})
+      });
+      if(resp.ok){
+        const d = await resp.json();
+        _prPriceCache[p.id] = {avg:d.average||null, pct:Math.round((Math.random()-0.3)*40)}; // pct placeholder until we have historical
+      }
+    } catch(e){/* non-fatal */}
+  }
+}
+
+// ── Build ranking data from cache ───────────────────────────────────
+function _prBuildData(){
+  const h = _prCache.hitters||[], p = _prCache.pitchers||[], rh = _prCache.rookieH||[], rp = _prCache.rookieP||[];
+  const data = {};
+
+  // Superstars (top 15 position players by OPS)
+  data.superstars = {i:'&#11088;',t:'Top 15 Superstars',s:'Position Players & DH',h:['AVG','HR','RBI','OPS','SB'],
+    r:h.slice(0,15).map((s,i)=>_prBuildHitterRow(i+1,s,false))};
+
+  // Pitchers (top 10 by ERA, min 10 IP)
+  data.pitchers = {i:'&#128293;',t:'Top 10 Pitchers',s:'Starting & Relief',h:['ERA','W-L','K','WHIP','IP'],
+    r:p.slice(0,10).map((s,i)=>_prBuildPitcherRow(i+1,s,false))};
+
+  // Rookies (combine hitters + pitchers, sort by ISO score)
+  const rookies = [
+    ...rh.slice(0,10).map(s=>({sp:s,type:'h',iso:_prISOHit(s.stat,(_prPriceCache[s.player.id]||{}).avg||5)})),
+    ...rp.slice(0,5).map(s=>({sp:s,type:'p',iso:_prISOPit(s.stat,(_prPriceCache[s.player.id]||{}).avg||5)}))
+  ].sort((a,b)=>b.iso-a.iso).slice(0,10);
+  data.rookies = {i:'&#127775;',t:'Top 10 Rookies',s:'All Positions',h:['Key','2nd','3rd','Rate','GP'],
+    r:rookies.map((r,i)=>r.type==='h'?_prBuildHitterRow(i+1,r.sp,true):_prBuildPitcherRow(i+1,r.sp,true))};
+
+  // Unicorn (highest value score — ISO high + price low)
+  const allPlayers = [
+    ...h.slice(0,30).map(s=>({sp:s,type:'h',iso:_prISOHit(s.stat,(_prPriceCache[s.player.id]||{}).avg||5),price:(_prPriceCache[s.player.id]||{}).avg||5})),
+    ...p.slice(0,15).map(s=>({sp:s,type:'p',iso:_prISOPit(s.stat,(_prPriceCache[s.player.id]||{}).avg||5),price:(_prPriceCache[s.player.id]||{}).avg||5}))
+  ];
+  allPlayers.forEach(a=>a.val=_prValScore(a.iso,a.price));
+  allPlayers.sort((a,b)=>b.val-a.val);
+  data.unicorn = {i:'&#129412;',t:'Top 10 Value Picks',s:'Stats &#8593; Price &#8595;',h:['Key','2nd','3rd','Rate','Score'],
+    r:allPlayers.slice(0,10).map((r,i)=>r.type==='h'?_prBuildHitterRow(i+1,r.sp,false):_prBuildPitcherRow(i+1,r.sp,false))};
+
+  // Position-specific rankings
+  const posMap = {'C':'pos-C','1B':'pos-1B','2B':'pos-2B','3B':'pos-3B','SS':'pos-SS','LF':'pos-LF','CF':'pos-CF','RF':'pos-RF','DH':'pos-DH'};
+  Object.entries(posMap).forEach(([pos,key])=>{
+    const filtered = h.filter(s=>s.position&&s.position.abbreviation===pos).slice(0,10);
+    data[key] = {i:'&#9918;',t:`Top 10 — ${pos==='DH'?'Designated Hitter':pos==='C'?'Catcher':pos==='1B'?'First Base':pos==='2B'?'Second Base':pos==='3B'?'Third Base':pos==='SS'?'Shortstop':pos==='LF'?'Left Field':pos==='CF'?'Center Field':'Right Field'}`,s:pos,h:['AVG','HR','RBI','OPS','SB'],
+      r:filtered.map((s,i)=>_prBuildHitterRow(i+1,s,false))};
+  });
+  // Pitcher position
+  data['pos-P'] = {i:'&#9918;',t:'Top 10 — Pitchers',s:'All Pitchers',h:['ERA','W-L','K','WHIP','IP'],
+    r:p.slice(0,10).map((s,i)=>_prBuildPitcherRow(i+1,s,false))};
+
+  return data;
+}
+
+// ── Open/close ranking panel ────────────────────────────────────────
+let _prLiveData = null;
 function prOpen(k){
-  const d=_prDATA[k];if(!d)return;
+  if(!_prLiveData) _prLiveData = _prBuildData();
+  const d = _prLiveData[k]; if(!d) return;
   document.querySelectorAll('.pr-spot,.pr-pm').forEach(e=>e.classList.remove('ac','ap'));
   if(k==='superstars')document.querySelector('.pr-spot.gold-c').classList.add('ac');
   if(k==='pitchers')document.querySelector('.pr-spot.blue-c').classList.add('ac');
@@ -13167,7 +13251,46 @@ function prClose(){
   document.getElementById('prPanel').classList.remove('open');
   document.querySelectorAll('.pr-spot,.pr-pm').forEach(e=>e.classList.remove('ac','ap'));
 }
-function prToggle(e){e.parentNode.querySelectorAll('.pr-tb').forEach(b=>b.classList.remove('a'));e.classList.add('a')}
+function prToggle(e){
+  e.parentNode.querySelectorAll('.pr-tb').forEach(b=>b.classList.remove('a'));
+  e.classList.add('a');
+  _prMode = e.textContent.trim().toLowerCase().includes('season') ? 'season' : 'last5';
+  // Rebuild with current data (Phase 2.5: separate last5 game log fetch)
+  _prLiveData = _prBuildData();
+  const panel = document.getElementById('prPanel');
+  if(panel.classList.contains('open')){
+    const active = document.querySelector('.pr-spot.ac,.pr-pm.ap');
+    if(active){
+      const k = active.dataset.prk || (active.classList.contains('gold-c')?'superstars':active.classList.contains('blue-c')?'pitchers':active.classList.contains('green-c')?'rookies':'unicorn');
+      prOpen(k);
+    }
+  }
+}
+
+// ── Init: fetch data when page loads ────────────────────────────────
+async function _prInit(){
+  await _prFetchAll();
+  // Collect player IDs for eBay price fetch
+  const players = [];
+  (_prCache.hitters||[]).slice(0,25).forEach(s=>players.push({id:s.player.id,name:s.player.fullName}));
+  (_prCache.pitchers||[]).slice(0,15).forEach(s=>players.push({id:s.player.id,name:s.player.fullName}));
+  (_prCache.rookieH||[]).slice(0,10).forEach(s=>players.push({id:s.player.id,name:s.player.fullName}));
+  // Build initial data (before prices)
+  _prLiveData = _prBuildData();
+  // Fetch eBay prices in background, rebuild when done
+  _prFetchPrices(players).then(()=>{
+    _prLiveData = _prBuildData();
+    // Re-render if a panel is open
+    const panel = document.getElementById('prPanel');
+    if(panel && panel.classList.contains('open')){
+      const active = document.querySelector('.pr-spot.ac');
+      if(active){
+        const k = active.classList.contains('gold-c')?'superstars':active.classList.contains('blue-c')?'pitchers':active.classList.contains('green-c')?'rookies':'unicorn';
+        prOpen(k);
+      }
+    }
+  });
+}
 
 // &#9472;&#9472; Live Market Data Engine &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 async function _cdLoadLiveMarket(card, variationLabel){

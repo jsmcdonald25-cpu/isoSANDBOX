@@ -3233,9 +3233,7 @@ async function logOut(){
         <h1>MLB <span class="pr-accent" id="prPowerWord">POWER</span> RANKINGS</h1>
         <p class="pr-hero-sub">Performance meets price &#8212; find the next unicorn before anyone else</p>
         <div class="pr-hero-tags">
-          <div class="pr-tag live">Live Stats</div>
-          <div class="pr-tag">2026 Season</div>
-          <div class="pr-tag">eBay Price Index</div>
+          <div class="pr-tag live">Live Data</div>
         </div>
       </div>
     </div>
@@ -3246,7 +3244,7 @@ async function logOut(){
         <button class="pr-tb" onclick="prToggle(this)">Season</button>
         <button class="pr-tb a" onclick="prToggle(this)">Last 5 Games</button>
       </div>
-      <div style="margin-left:auto;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text)">Updated 4h ago</div>
+      <div id="prDateNotice" style="margin-left:auto;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text)">Loading rankings...</div>
     </div>
 
     <!-- SPOTLIGHT CARDS -->
@@ -3258,7 +3256,7 @@ async function logOut(){
           <div class="pr-spot-big">&#11088; Top 15</div>
           <div class="pr-spot-title">Superstars</div>
           <div class="pr-spot-desc">Position Players &amp; DH</div>
-          <div class="pr-spot-leader">Currently #1: <b>Aaron Judge</b></div>
+          <div class="pr-spot-leader">Currently #1: <b>Loading...</b></div>
           <div class="pr-spot-cta">View Rankings <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
         </div>
       </div>
@@ -3269,7 +3267,7 @@ async function logOut(){
           <div class="pr-spot-big">&#128293; Top 10</div>
           <div class="pr-spot-title">Pitchers</div>
           <div class="pr-spot-desc">Starting &amp; Relief</div>
-          <div class="pr-spot-leader">Currently #1: <b>Tarik Skubal</b></div>
+          <div class="pr-spot-leader">Currently #1: <b>Loading...</b></div>
           <div class="pr-spot-cta">View Rankings <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
         </div>
       </div>
@@ -3280,7 +3278,7 @@ async function logOut(){
           <div class="pr-spot-big">&#127775; Top 10</div>
           <div class="pr-spot-title">Rookies</div>
           <div class="pr-spot-desc">The Next Generation</div>
-          <div class="pr-spot-leader">Currently #1: <b>Ethan Salas</b></div>
+          <div class="pr-spot-leader">Currently #1: <b>Loading...</b></div>
           <div class="pr-spot-cta">View Rankings <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
         </div>
       </div>
@@ -3291,7 +3289,7 @@ async function logOut(){
           <div class="pr-spot-big">&#129412; Top 10</div>
           <div class="pr-spot-title">Unicorn Alert</div>
           <div class="pr-spot-desc">Best Value Picks</div>
-          <div class="pr-spot-leader">Currently #1: <b>Charlie Condon</b></div>
+          <div class="pr-spot-leader">Currently #1: <b>Loading...</b></div>
           <div class="pr-spot-cta">View Rankings <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
         </div>
       </div>
@@ -13115,7 +13113,7 @@ async function _prFetchAll(){
     _prCache.rookieP = extract(rpD).filter(s=>parseFloat(s.stat.inningsPitched)>=5);
     _prCache.ts = Date.now();
     // Update timestamp display
-    const tsEl = document.querySelector('.pr-tbar div[style*="margin-left"]');
+    const tsEl = document.getElementById('prDateNotice');
     if(tsEl) tsEl.textContent = 'Updated just now — ' + yr + ' Season';
     // Update spotlight leader names
     if(_prCache.hitters[0]){const el=document.querySelector('.pr-spot.gold-c .pr-spot-leader b');if(el)el.textContent=_prCache.hitters[0].player.fullName;}
@@ -13291,7 +13289,7 @@ async function _prInit(){
     const dataDate = cacheRows[0].data_date;
     _prBuildFromCache(cacheRows, dataDate);
     // Update timestamp
-    const tsEl = document.querySelector('.pr-tbar div[style*="margin-left"]');
+    const tsEl = document.getElementById('prDateNotice');
     if(tsEl) tsEl.textContent = 'Rankings as of ' + new Date(dataDate+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
   } else {
     // No cache — fall back to live API (first run or cache empty)
@@ -13302,7 +13300,7 @@ async function _prInit(){
     (_prCache.hitters||[]).slice(0,25).forEach(s=>players.push({id:s.player.id,name:s.player.fullName}));
     (_prCache.pitchers||[]).slice(0,15).forEach(s=>players.push({id:s.player.id,name:s.player.fullName}));
     _prFetchPrices(players).then(()=>{ _prLiveData = _prBuildData(); });
-    const tsEl = document.querySelector('.pr-tbar div[style*="margin-left"]');
+    const tsEl = document.getElementById('prDateNotice');
     if(tsEl) tsEl.textContent = 'Live data — ' + new Date().getFullYear() + ' Season';
   }
 }

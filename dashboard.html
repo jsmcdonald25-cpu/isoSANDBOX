@@ -221,6 +221,137 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
   0%,100%{box-shadow:0 0 0 0 rgba(255,59,92,0.0), 0 0 8px rgba(255,59,92,0.3)}
   50%{box-shadow:0 0 0 4px rgba(255,59,92,0.2), 0 0 14px rgba(255,59,92,0.5)}
 }
+/* ═══ POWER RANKINGS ═══ */
+.pr-hero{position:relative;height:280px;overflow:hidden;background:#030a14;margin:-24px -24px 0}
+.pr-beam{position:absolute;top:-80px;width:500px;height:500px;opacity:0;animation:prBeamIn 1.2s ease-out forwards}
+.pr-beam.l{left:-100px;background:conic-gradient(from 220deg,transparent 0deg,rgba(255,215,0,0.07) 6deg,rgba(255,215,0,0.03) 12deg,transparent 18deg);animation-delay:.2s}
+.pr-beam.r{right:-100px;background:conic-gradient(from 310deg,transparent 0deg,rgba(0,170,255,0.07) 6deg,rgba(0,170,255,0.03) 12deg,transparent 18deg);animation-delay:.4s}
+.pr-beam.c{left:50%;transform:translateX(-50%);top:-120px;width:600px;height:600px;background:conic-gradient(from 265deg,transparent 0deg,rgba(255,255,255,0.025) 8deg,transparent 16deg);animation-delay:.1s}
+@keyframes prBeamIn{from{opacity:0}to{opacity:1}}
+.pr-haze{position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(to top,var(--deep1),transparent);z-index:5}
+.pr-flare{position:absolute;top:30px;left:18%;width:180px;height:180px;background:radial-gradient(circle,rgba(255,215,0,0.08) 0%,transparent 60%);opacity:0;animation:prFlareIn 2s .6s ease-out forwards;filter:blur(20px)}
+.pr-flare2{position:absolute;top:20px;right:22%;width:120px;height:120px;background:radial-gradient(circle,rgba(0,170,255,0.06) 0%,transparent 60%);opacity:0;animation:prFlareIn 2s .8s ease-out forwards;filter:blur(15px)}
+@keyframes prFlareIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+.pr-hero-content{position:relative;z-index:10;padding:50px 44px 0;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.pr-hero h1{font-family:'Bebas Neue',sans-serif;font-size:72px;letter-spacing:8px;line-height:.9;background:linear-gradient(180deg,#fff 0%,var(--chrome) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;opacity:0;animation:prTitleIn .8s .3s ease-out forwards;filter:drop-shadow(0 4px 20px rgba(0,0,0,0.5))}
+@keyframes prTitleIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.pr-hero h1 .pr-accent{background:linear-gradient(90deg,#CC0000,#CC0000,#FFFFFF,#FFFFFF,#003DA5,#003DA5,#CC0000,#CC0000,#FFFFFF,#FFFFFF,#003DA5,#003DA5);background-size:400%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:prShimmer 8s linear infinite;display:inline-block}
+@keyframes prShimmer{to{background-position:200%}}
+.pr-hero-sub{color:var(--chrome);font-family:Barlow Condensed,sans-serif;font-size:18px;margin-top:8px;opacity:0;animation:prTitleIn .8s .5s ease-out forwards}
+.pr-hero-tags{display:flex;gap:10px;margin-top:14px;opacity:0;animation:prTitleIn .6s .7s ease-out forwards;justify-content:center}
+.pr-tag{padding:4px 14px;border-radius:20px;font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:600;background:rgba(0,170,255,0.08);border:1px solid rgba(0,170,255,0.2);color:var(--blue-bright)}
+.pr-tag.live{background:rgba(0,232,135,0.08);border-color:rgba(0,232,135,0.2);color:var(--green);display:flex;align-items:center;gap:6px}
+.pr-tag.live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
+.pr-tbar{display:flex;align-items:center;gap:8px;padding:14px 20px;background:rgba(17,40,64,0.7);backdrop-filter:blur(12px);border-bottom:1px solid var(--deep-border);position:sticky;top:0;z-index:50;margin:0 -24px}
+.pr-tg{display:flex;background:var(--deep1);border-radius:8px;overflow:hidden;border:1px solid var(--deep-border)}
+.pr-tb{padding:8px 24px;font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:600;letter-spacing:.5px;color:var(--muted-text);cursor:pointer;transition:.2s;border:none;background:none;text-transform:uppercase}
+.pr-tb.a{background:var(--blue);color:#fff;box-shadow:0 0 12px var(--blue-glow)}
+.pr-tb:hover:not(.a){color:#fff;background:rgba(0,170,255,0.08)}
+.pr-spots{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:28px 20px 16px}
+.pr-spot{position:relative;border-radius:16px;overflow:hidden;cursor:pointer;height:220px;transition:transform .4s cubic-bezier(.2,.8,.3,1),box-shadow .4s;opacity:0;animation:prCardIn .7s ease-out forwards;background:var(--deep2);border:1px solid var(--deep-border)}
+.pr-spot:nth-child(1){animation-delay:.3s}.pr-spot:nth-child(2){animation-delay:.45s}.pr-spot:nth-child(3){animation-delay:.6s}.pr-spot:nth-child(4){animation-delay:.75s}
+@keyframes prCardIn{from{opacity:0;transform:translateY(30px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.pr-spot:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 16px 48px rgba(0,0,0,0.6)}
+.pr-spot.ac{box-shadow:0 0 0 2px var(--blue),0 0 30px rgba(0,170,255,0.15)}
+.pr-spot .pr-glow{position:absolute;bottom:0;left:0;right:0;height:60px;opacity:.5;z-index:1}
+.pr-spot.gold-c .pr-glow{background:linear-gradient(to top,rgba(255,215,0,0.2),transparent)}
+.pr-spot.blue-c .pr-glow{background:linear-gradient(to top,rgba(0,170,255,0.2),transparent)}
+.pr-spot.green-c .pr-glow{background:linear-gradient(to top,rgba(0,232,135,0.2),transparent)}
+.pr-spot.pink-c .pr-glow{background:linear-gradient(to top,rgba(255,110,199,0.2),transparent)}
+.pr-spot-line{position:absolute;top:0;left:0;right:0;height:3px;z-index:3}
+.pr-spot.gold-c .pr-spot-line{background:linear-gradient(90deg,#FFD700,rgba(255,215,0,0.1))}
+.pr-spot.blue-c .pr-spot-line{background:linear-gradient(90deg,var(--blue),rgba(0,170,255,0.1))}
+.pr-spot.green-c .pr-spot-line{background:linear-gradient(90deg,var(--green),rgba(0,232,135,0.1))}
+.pr-spot.pink-c .pr-spot-line{background:linear-gradient(90deg,#FF6EC7,rgba(255,110,199,0.1))}
+.pr-spot-inner{position:relative;z-index:2;padding:16px 20px;height:100%;display:flex;flex-direction:column;justify-content:center}
+.pr-spot-big{font-family:Barlow Condensed,sans-serif;font-size:13px;letter-spacing:2px;font-weight:700;text-transform:uppercase}
+.pr-spot-title{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:3px;line-height:1;margin-top:2px}
+.pr-spot-desc{font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--chrome);margin-top:4px;font-weight:500}
+.pr-spot-leader{font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-top:10px}
+.pr-spot-leader b{color:var(--chrome);font-weight:600}
+.pr-spot-cta{display:flex;align-items:center;gap:4px;margin-top:10px;font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:.25s}
+.pr-spot.gold-c .pr-spot-big,.pr-spot.gold-c .pr-spot-title,.pr-spot.gold-c .pr-spot-cta{color:#FFD700}
+.pr-spot.blue-c .pr-spot-big,.pr-spot.blue-c .pr-spot-title,.pr-spot.blue-c .pr-spot-cta{color:var(--blue-bright)}
+.pr-spot.green-c .pr-spot-big,.pr-spot.green-c .pr-spot-title,.pr-spot.green-c .pr-spot-cta{color:var(--green)}
+.pr-spot.pink-c .pr-spot-big,.pr-spot.pink-c .pr-spot-title,.pr-spot.pink-c .pr-spot-cta{color:#FF6EC7}
+.pr-spot-cta svg{width:16px;height:16px;transition:transform .25s}.pr-spot:hover .pr-spot-cta svg{transform:translateX(4px)}
+.pr-spot-tip{position:absolute;top:14px;right:14px;z-index:4;padding:5px 12px;border-radius:8px;background:rgba(0,0,0,0.8);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.08);font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--chrome);letter-spacing:.3px;opacity:0;transform:translateY(-4px);transition:.25s;pointer-events:none}
+.pr-spot:hover .pr-spot-tip{opacity:1;transform:translateY(0)}
+.pr-field-section{padding:32px 20px 10px;display:flex;flex-direction:column;align-items:center}
+.pr-field-label{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:4px;color:var(--muted-text);margin-bottom:16px;opacity:0;animation:prTitleIn .6s 1s forwards}
+.pr-field-label span{color:var(--blue-bright)}
+.pr-field{position:relative;width:780px;height:560px;border-radius:24px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5),inset 0 0 80px rgba(0,0,0,0.3);opacity:0;animation:prFieldIn 1.2s 1.1s ease-out forwards;max-width:100%}
+@keyframes prFieldIn{from{opacity:0;transform:scale(.94) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.pr-field-grass{position:absolute;inset:0;background:radial-gradient(ellipse 120% 90% at 50% 70%,#1a6b2a 0%,#156622 25%,#115a1c 50%,#0d4a16 75%,#0a3a10 100%)}
+.pr-field-grass::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,0.03) 0px,rgba(255,255,255,0.03) 24px,transparent 24px,transparent 48px);transform:perspective(500px) rotateX(30deg);transform-origin:50% 100%}
+.pr-field-grass::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 50% 50%,rgba(0,232,135,0.04),transparent)}
+.pr-dirt{position:absolute;width:280px;height:250px;top:63%;left:50%;transform:translate(-50%,-50%) rotate(45deg);background:radial-gradient(circle,rgba(139,90,43,0.22) 0%,rgba(101,67,33,0.1) 60%,transparent 100%);border-radius:10px;z-index:1}
+.pr-mound{position:absolute;top:60%;left:50%;transform:translate(-50%,-50%);width:50px;height:50px;border-radius:50%;background:radial-gradient(circle,rgba(139,90,43,0.3) 0%,rgba(139,90,43,0.1) 70%,transparent 100%);z-index:1}
+.pr-of-glow{position:absolute;top:3%;left:8%;right:8%;height:6px;border-radius:0 0 50% 50%;background:linear-gradient(90deg,transparent,rgba(0,170,255,0.08) 20%,rgba(0,170,255,0.12) 50%,rgba(0,170,255,0.08) 80%,transparent);filter:blur(2px);z-index:2}
+.pr-fsvg{position:absolute;inset:0;z-index:3}
+.pr-pm{position:absolute;z-index:10;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:all .3s cubic-bezier(.2,.8,.3,1);transform:translate(-50%,-50%)}
+.pr-pm:hover{transform:translate(-50%,-50%) scale(1.15)}
+.pr-pm.ap{z-index:15}
+.pr-pm.ap .pr-pm-dot{background:var(--blue);box-shadow:0 0 20px var(--blue-glow),0 0 40px rgba(0,170,255,0.15);border-color:var(--blue-bright);animation:prRingP 2s ease infinite}
+.pr-pm.ap .pr-pm-lbl{color:var(--blue-bright)}
+@keyframes prRingP{0%,100%{box-shadow:0 0 16px var(--blue-glow),0 4px 12px rgba(0,0,0,.4)}50%{box-shadow:0 0 28px var(--blue-glow),0 4px 12px rgba(0,0,0,.4)}}
+.pr-pm-dot{width:40px;height:40px;border-radius:50%;background:rgba(13,31,51,0.9);border:2px solid rgba(0,170,255,0.35);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,0.5)}
+.pr-pm:hover .pr-pm-dot{background:rgba(0,170,255,0.15);border-color:var(--blue);box-shadow:0 0 16px var(--blue-glow)}
+.pr-pm-abbr{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1.5px;color:var(--blue-bright)}
+.pr-pm-lbl{margin-top:4px;font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:600;color:var(--chrome);text-shadow:0 2px 8px rgba(0,0,0,.9);transition:color .2s;text-align:center;letter-spacing:.3px}
+.pr-rp{margin:20px 0 50px;border-radius:20px;background:linear-gradient(145deg,rgba(17,40,64,0.9),rgba(13,31,51,0.95));backdrop-filter:blur(16px);border:1px solid var(--deep-border);overflow:hidden;max-height:0;opacity:0;transition:max-height .5s cubic-bezier(.4,0,.2,1),opacity .4s}
+.pr-rp.open{max-height:3000px;opacity:1}
+.pr-rp-head{display:flex;align-items:center;gap:14px;padding:22px 28px 16px;border-bottom:1px solid var(--deep-border);background:rgba(0,0,0,0.15)}
+.pr-rp-icon{font-size:24px}
+.pr-rp-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px}
+.pr-rp-sub{font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-left:auto;margin-right:12px}
+.pr-rp-x{width:34px;height:34px;border-radius:10px;border:1px solid var(--deep-border);background:rgba(0,0,0,0.2);color:var(--muted-text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:.2s}
+.pr-rp-x:hover{background:rgba(255,59,92,0.15);color:var(--red);border-color:var(--red)}
+.pr-tbl{width:100%;border-collapse:separate;border-spacing:0}
+.pr-tbl thead th{padding:10px 14px;font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);text-align:left;border-bottom:1px solid var(--deep-border);background:rgba(0,0,0,0.1)}
+.pr-tbl thead th.s{text-align:center}.pr-tbl thead th.v{text-align:right}
+.pr-tbl tbody tr{transition:.25s;cursor:pointer}
+.pr-tbl tbody tr:hover{background:rgba(0,170,255,0.05)}
+.pr-tbl tbody tr:hover .pr-pn{color:var(--blue-bright)}
+.pr-tbl tbody td{padding:11px 14px;border-bottom:1px solid rgba(0,170,255,0.04);vertical-align:middle;font-family:Barlow Condensed,sans-serif;font-size:14px}
+.pr-tbl tbody td.s{text-align:center;font-weight:500}.pr-tbl tbody td.v{text-align:right}
+.pr-rb{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:16px;background:var(--deep3);color:var(--chrome);border:1px solid var(--deep-border)}
+.pr-rb.r1{background:linear-gradient(135deg,#FFD700,#FFA500);color:#1a1a1a;border:none;box-shadow:0 0 14px rgba(255,215,0,0.4);animation:prGp 3s ease infinite}
+@keyframes prGp{0%,100%{box-shadow:0 0 14px rgba(255,215,0,0.4)}50%{box-shadow:0 0 24px rgba(255,215,0,0.4)}}
+.pr-rb.r2{background:linear-gradient(135deg,#C0C0C0,#999);color:#1a1a1a;border:none}
+.pr-rb.r3{background:linear-gradient(135deg,#CD7F32,#A0622E);color:#1a1a1a;border:none}
+.pr-pc{display:flex;align-items:center;gap:12px}
+.pr-pa{width:44px;height:44px;border-radius:12px;overflow:hidden;background:var(--deep3);border:2px solid var(--deep-border);flex-shrink:0;position:relative}
+.pr-pa img{width:100%;height:100%;object-fit:cover}
+.pr-pa.r1{border-color:#FFD700;box-shadow:0 0 10px rgba(255,215,0,0.2)}.pr-pa.r2{border-color:#999}.pr-pa.r3{border-color:#A0622E}
+.pr-pn{font-weight:600;font-size:15px;transition:color .2s}
+.pr-pm2{font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);display:flex;gap:8px;align-items:center}
+.pr-pp{padding:1px 6px;border-radius:4px;font-size:10px;font-weight:700;background:rgba(0,170,255,0.1);color:var(--blue);border:1px solid rgba(0,170,255,0.15)}
+.pr-rt{padding:1px 6px;border-radius:4px;font-size:10px;font-weight:700;background:rgba(0,232,135,0.1);color:var(--green);border:1px solid rgba(0,232,135,0.2)}
+.pr-sf{font-size:11px;color:#FF6B35;font-weight:700}
+.pr-se{color:#FFD700;font-weight:700;text-shadow:0 0 6px rgba(255,215,0,0.2)}
+.pr-sh{color:var(--green);font-weight:700}
+.pr-vs{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;font-weight:700;font-size:13px}
+.pr-vs.u{background:linear-gradient(135deg,rgba(255,110,199,0.12),rgba(123,104,238,0.12));border:1px solid rgba(255,110,199,0.25);color:#FF6EC7;animation:prUg 2s ease infinite alternate}
+@keyframes prUg{0%{box-shadow:0 0 6px rgba(255,110,199,0.15)}100%{box-shadow:0 0 14px rgba(123,104,238,0.2)}}
+.pr-vs.h{background:rgba(0,232,135,0.08);border:1px solid rgba(0,232,135,0.2);color:var(--green)}
+.pr-vs.w{background:rgba(0,170,255,0.08);border:1px solid rgba(0,170,255,0.15);color:var(--blue-bright)}
+.pr-vs.n{background:rgba(176,190,197,0.06);border:1px solid rgba(176,190,197,0.1);color:var(--chrome)}
+.pr-vs.ov{background:rgba(255,59,92,0.08);border:1px solid rgba(255,59,92,0.15);color:var(--red)}
+.pr-vn{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px}
+.pr-prc{display:flex;flex-direction:column;align-items:flex-end;gap:1px}
+.pr-prv{font-weight:600;font-size:14px}
+.pr-prt{font-size:11px;display:flex;align-items:center;gap:3px}
+.pr-prt.up{color:var(--green)}.pr-prt.dn{color:var(--red)}
+.pr-prt svg{width:10px;height:10px}
+.pr-sr td{border-bottom:1px solid rgba(255,215,0,0.1)!important}
+.pr-crown{position:absolute;top:-6px;right:-4px;font-size:12px;animation:prCb 2s ease-in-out infinite}
+@keyframes prCb{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-3px) rotate(5deg)}}
+.pr-eb{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:6px;font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:600;background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.15);color:var(--blue);cursor:pointer;transition:.25s;text-decoration:none}
+.pr-eb:hover{background:var(--blue);color:#fff;box-shadow:0 0 14px var(--blue-glow)}
+.pr-eb svg{width:12px;height:12px}
+@media(max-width:1200px){.pr-spots{grid-template-columns:repeat(2,1fr)}.pr-field{width:100%;max-width:640px;height:480px}}
+@media(max-width:768px){.pr-hero{height:220px}.pr-hero h1{font-size:44px}.pr-hero-content{padding:30px 20px 0}.pr-spots{grid-template-columns:1fr;padding:16px}.pr-spot{height:180px}.pr-field-section{padding:16px}.pr-field{width:100%;height:400px}.pr-rp{margin:12px 0 24px}.pr-tbar{padding:10px 16px;flex-wrap:wrap}}
 .content{flex:1;overflow-y:auto;padding:24px;padding-bottom:58px;background:var(--deep1)}
 .content::-webkit-scrollbar{width:5px}
 .content::-webkit-scrollbar-thumb{background:var(--deep-border);border-radius:3px}
@@ -2137,6 +2268,12 @@ async function logOut(){
       <span class="nav-label">Market Data</span>
     </div>
 
+    <div class="nav-item" id="nav-rankings" onclick="N('rankings',this)">
+      <div class="nav-drag-handle">&#10303;</div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+      <span class="nav-label">Power Rankings</span>
+    </div>
+
     <div class="nav-item" id="nav-slablab" onclick="openSlabLab()">
       <div class="nav-drag-handle">&#10303;</div>
       <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="1" width="18" height="22" rx="3"/><rect x="6" y="7" width="12" height="13" rx="1"/><line x1="8" y1="4" x2="16" y2="4"/></svg></div>
@@ -3085,6 +3222,134 @@ async function logOut(){
   </div>
 
   <!-- MARKET DATA -->
+  <!-- POWER RANKINGS -->
+  <div class="panel" id="panel-rankings">
+    <!-- HERO -->
+    <div class="pr-hero">
+      <div class="pr-beam l"></div><div class="pr-beam c"></div><div class="pr-beam r"></div>
+      <div class="pr-flare"></div><div class="pr-flare2"></div>
+      <div class="pr-haze"></div>
+      <div class="pr-hero-content">
+        <h1>MLB <span class="pr-accent" id="prPowerWord">POWER</span> RANKINGS</h1>
+        <p class="pr-hero-sub">Performance meets price &#8212; find the next unicorn before anyone else</p>
+        <div class="pr-hero-tags">
+          <div class="pr-tag live">Live Stats</div>
+          <div class="pr-tag">2026 Season</div>
+          <div class="pr-tag">eBay Price Index</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOGGLE -->
+    <div class="pr-tbar">
+      <div class="pr-tg">
+        <button class="pr-tb" onclick="prToggle(this)">Season</button>
+        <button class="pr-tb a" onclick="prToggle(this)">Last 5 Games</button>
+      </div>
+      <div style="margin-left:auto;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text)">Updated 4h ago</div>
+    </div>
+
+    <!-- SPOTLIGHT CARDS -->
+    <div class="pr-spots">
+      <div class="pr-spot gold-c" onclick="prOpen('superstars')">
+        <div class="pr-spot-line"></div><div class="pr-glow"></div>
+        <div class="pr-spot-inner">
+          <div class="pr-spot-tip">Updates daily based on all-player performance</div>
+          <div class="pr-spot-big">&#11088; Top 15</div>
+          <div class="pr-spot-title">Superstars</div>
+          <div class="pr-spot-desc">Position Players &amp; DH</div>
+          <div class="pr-spot-leader">Currently #1: <b>Aaron Judge</b></div>
+          <div class="pr-spot-cta">View Rankings <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        </div>
+      </div>
+      <div class="pr-spot blue-c" onclick="prOpen('pitchers')">
+        <div class="pr-spot-line"></div><div class="pr-glow"></div>
+        <div class="pr-spot-inner">
+          <div class="pr-spot-tip">Updates daily based on pitching performance</div>
+          <div class="pr-spot-big">&#128293; Top 10</div>
+          <div class="pr-spot-title">Pitchers</div>
+          <div class="pr-spot-desc">Starting &amp; Relief</div>
+          <div class="pr-spot-leader">Currently #1: <b>Tarik Skubal</b></div>
+          <div class="pr-spot-cta">View Rankings <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        </div>
+      </div>
+      <div class="pr-spot green-c" onclick="prOpen('rookies')">
+        <div class="pr-spot-line"></div><div class="pr-glow"></div>
+        <div class="pr-spot-inner">
+          <div class="pr-spot-tip">Updates daily based on rookie performance</div>
+          <div class="pr-spot-big">&#127775; Top 10</div>
+          <div class="pr-spot-title">Rookies</div>
+          <div class="pr-spot-desc">The Next Generation</div>
+          <div class="pr-spot-leader">Currently #1: <b>Ethan Salas</b></div>
+          <div class="pr-spot-cta">View Rankings <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        </div>
+      </div>
+      <div class="pr-spot pink-c" onclick="prOpen('unicorn')">
+        <div class="pr-spot-line"></div><div class="pr-glow"></div>
+        <div class="pr-spot-inner">
+          <div class="pr-spot-tip">Stats rising + card price still low = BUY signal</div>
+          <div class="pr-spot-big">&#129412; Top 10</div>
+          <div class="pr-spot-title">Unicorn Alert</div>
+          <div class="pr-spot-desc">Best Value Picks</div>
+          <div class="pr-spot-leader">Currently #1: <b>Charlie Condon</b></div>
+          <div class="pr-spot-cta">View Rankings <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIAMOND -->
+    <div class="pr-field-section">
+      <div class="pr-field-label">TAP A <span>POSITION</span> ON THE FIELD</div>
+      <div class="pr-field">
+        <div class="pr-field-grass"></div>
+        <div class="pr-dirt"></div>
+        <div class="pr-mound"></div>
+        <div class="pr-of-glow"></div>
+        <svg class="pr-fsvg" viewBox="0 0 780 560" fill="none">
+          <line x1="390" y1="448" x2="60" y2="60" stroke="rgba(255,255,255,0.05)" stroke-width="1.5"/>
+          <line x1="390" y1="448" x2="720" y2="60" stroke="rgba(255,255,255,0.05)" stroke-width="1.5"/>
+          <path d="M90 200 Q 390 -10 690 200" stroke="rgba(255,255,255,0.035)" stroke-width="1.5" fill="none"/>
+          <path d="M390 448 L499 370 L390 280 L281 370 Z" stroke="rgba(0,170,255,0.1)" stroke-width="1.5" fill="none"/>
+          <path d="M390 448 L499 370 L390 280 L281 370 Z" stroke="rgba(0,170,255,0.18)" stroke-width="1.5" fill="none" stroke-dasharray="6 10"><animate attributeName="stroke-dashoffset" from="0" to="-32" dur="2s" repeatCount="indefinite"/></path>
+          <rect x="383" y="273" width="14" height="14" transform="rotate(45 390 280)" fill="rgba(255,255,255,0.18)" rx="1"/>
+          <rect x="492" y="363" width="14" height="14" transform="rotate(45 499 370)" fill="rgba(255,255,255,0.18)" rx="1"/>
+          <rect x="274" y="363" width="14" height="14" transform="rotate(45 281 370)" fill="rgba(255,255,255,0.18)" rx="1"/>
+          <polygon points="390,452 383,445 383,439 397,439 397,445" fill="rgba(255,255,255,0.22)"/>
+        </svg>
+        <div class="pr-pm" style="left:calc(25% + 30px);top:calc(30% - 20px)" onclick="prOpen('pos-LF')" data-prk="pos-LF"><div class="pr-pm-dot"><span class="pr-pm-abbr">LF</span></div><div class="pr-pm-lbl">Left Field</div></div>
+        <div class="pr-pm" style="left:50%;top:calc(16% + 30px)" onclick="prOpen('pos-CF')" data-prk="pos-CF"><div class="pr-pm-dot"><span class="pr-pm-abbr">CF</span></div><div class="pr-pm-lbl">Center Field</div></div>
+        <div class="pr-pm" style="left:calc(75% - 30px);top:calc(30% - 20px)" onclick="prOpen('pos-RF')" data-prk="pos-RF"><div class="pr-pm-dot"><span class="pr-pm-abbr">RF</span></div><div class="pr-pm-lbl">Right Field</div></div>
+        <div class="pr-pm" style="left:43%;top:52%" onclick="prOpen('pos-SS')" data-prk="pos-SS"><div class="pr-pm-dot"><span class="pr-pm-abbr">SS</span></div><div class="pr-pm-lbl">Shortstop</div></div>
+        <div class="pr-pm" style="left:37%;top:67%" onclick="prOpen('pos-3B')" data-prk="pos-3B"><div class="pr-pm-dot"><span class="pr-pm-abbr">3B</span></div><div class="pr-pm-lbl">Third Base</div></div>
+        <div class="pr-pm" style="left:57%;top:52%" onclick="prOpen('pos-2B')" data-prk="pos-2B"><div class="pr-pm-dot"><span class="pr-pm-abbr">2B</span></div><div class="pr-pm-lbl">Second Base</div></div>
+        <div class="pr-pm" style="left:63%;top:67%" onclick="prOpen('pos-1B')" data-prk="pos-1B"><div class="pr-pm-dot"><span class="pr-pm-abbr">1B</span></div><div class="pr-pm-lbl">First Base</div></div>
+        <div class="pr-pm" style="left:50%;top:85%" onclick="prOpen('pos-C')" data-prk="pos-C"><div class="pr-pm-dot"><span class="pr-pm-abbr">C</span></div><div class="pr-pm-lbl">Catcher</div></div>
+        <div class="pr-pm" style="left:50%;top:60%" onclick="prOpen('pos-P')" data-prk="pos-P"><div class="pr-pm-dot"><span class="pr-pm-abbr">P</span></div><div class="pr-pm-lbl">Pitcher</div></div>
+        <div class="pr-pm" style="left:62%;top:84%" onclick="prOpen('pos-DH')" data-prk="pos-DH"><div class="pr-pm-dot" style="border-style:dashed"><span class="pr-pm-abbr">DH</span></div><div class="pr-pm-lbl">Designated</div></div>
+      </div>
+    </div>
+
+    <!-- RANKING PANEL -->
+    <div class="pr-rp" id="prPanel">
+      <div class="pr-rp-head">
+        <div class="pr-rp-icon" id="prIcon">&#11088;</div>
+        <div class="pr-rp-title" id="prTitle">Top 15 Superstars</div>
+        <div class="pr-rp-sub" id="prSub">Position Players</div>
+        <button class="pr-rp-x" onclick="prClose()">&#10005;</button>
+      </div>
+      <table class="pr-tbl">
+        <thead><tr>
+          <th style="width:40px">#</th><th>Player</th>
+          <th class="s" id="prH1">AVG</th><th class="s" id="prH2">HR</th>
+          <th class="s" id="prH3">RBI</th><th class="s" id="prH4">OPS</th>
+          <th class="s" id="prH5">SB</th>
+          <th class="s">ISO</th><th class="v">Card $</th><th class="v">Value</th><th style="width:70px"></th>
+        </tr></thead>
+        <tbody id="prBody"></tbody>
+      </table>
+    </div>
+  </div>
+
   <div class="panel" id="panel-market">
     <div class="ticker-wrap"><div class="ticker-label">LIVE</div><div class="ticker-scroll"><div class="ticker-inner" id="ticker"></div></div></div>
     <div class="filter-row"><div class="chip active" onclick="C(this)">All</div><div class="chip" onclick="C(this)">Rookies</div><div class="chip" onclick="C(this)">Autos</div><div class="chip" onclick="C(this)">Numbered</div><div class="chip" onclick="C(this)">Vintage</div><div class="chip" onclick="C(this)">Top Movers</div></div>
@@ -5501,6 +5766,7 @@ const PM={
   cardshops:{t:'CARD SHOPS',s:'Find local card shops near you'},
   shopprofile:{t:'SHOP PROFILE',s:'Card shop details'},
   cardshows:{t:'CARD SHOWS',s:'Upcoming card shows & events'},
+  rankings:{t:'POWER RANKINGS',s:'Performance meets price'},
   guide:{t:'FEATURE GUIDE',s:'Learn what every feature does'},
 };
 function toggleTheme(isLight){
@@ -12757,6 +13023,151 @@ async function submitErrorReport(){
     document.getElementById('errProgress').style.display = 'none';
   }
 }
+
+// ── Power Rankings ──────────────────────────────────────────────────
+const _prSH=`<a class="pr-eb" href="#">Shop <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>`;
+const _prAU=s=>`<span class="pr-prt up"><svg viewBox="0 0 10 10"><path d="M5 1L9 6H1z" fill="currentColor"/></svg>+${s}%</span>`;
+const _prAD=s=>`<span class="pr-prt dn"><svg viewBox="0 0 10 10"><path d="M5 9L9 4H1z" fill="currentColor"/></svg>${s}%</span>`;
+function _prVB(s){
+  if(s>=92)return`<div class="pr-vs u"><span style="font-size:14px">&#129412;</span><span class="pr-vn">${s}</span></div>`;
+  if(s>=80)return`<div class="pr-vs h"><span class="pr-vn">${s}</span></div>`;
+  if(s>=65)return`<div class="pr-vs w"><span class="pr-vn">${s}</span></div>`;
+  if(s>=50)return`<div class="pr-vs n"><span class="pr-vn">${s}</span></div>`;
+  return`<div class="pr-vs ov"><span class="pr-vn">${s}</span></div>`;
+}
+function _prIB(s){
+  if(s>=93)return`<div class="pr-vs u"><span class="pr-vn">${s}</span></div>`;
+  if(s>=80)return`<div class="pr-vs h"><span class="pr-vn">${s}</span></div>`;
+  if(s>=70)return`<div class="pr-vs w"><span class="pr-vn">${s}</span></div>`;
+  return`<div class="pr-vs n"><span class="pr-vn">${s}</span></div>`;
+}
+function _prPR(p,c){return`<div class="pr-prc"><span class="pr-prv">$${p}</span>${c>=0?_prAU(c):_prAD(c)}</div>`}
+function _prIM(id){return`https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_213,q_auto:best/v1/people/${id}/headshot/67/current`}
+function _prR(rk,pid,nm,pos,tm,a,b,c,d,e,iso,price,pct,val,ex){
+  const rc=rk<=3?` r${rk}`:'';const cr=rk===1?'<span class="pr-crown">&#128081;</span>':'';const sp=rk===1?' pr-sr':'';
+  return`<tr class="${sp}"><td><div class="pr-rb${rc}">${rk}</div></td>
+  <td><div class="pr-pc"><div class="pr-pa${rc}"><img src="${_prIM(pid)}">${cr}</div>
+  <div><span class="pr-pn">${nm}</span><div class="pr-pm2"><span class="pr-pp">${pos}</span><span>${tm}</span>${ex||''}</div></div></div></td>
+  <td class="s${a[1]||''}">${a[0]}</td><td class="s${b[1]||''}">${b[0]}</td>
+  <td class="s${c[1]||''}">${c[0]}</td><td class="s${d[1]||''}">${d[0]}</td>
+  <td class="s">${e[0]}</td>
+  <td class="s">${_prIB(iso)}</td><td class="v">${_prPR(price,pct)}</td><td class="v">${_prVB(val)}</td><td>${_prSH}</td></tr>`;
+}
+const _prE=' pr-se',_prH=' pr-sh';
+const _prRK=`<span class="pr-rt">ROOKIE</span>`;
+const _prF=t=>`<span class="pr-sf">${t}</span>`;
+
+const _prDATA={
+superstars:{i:'&#11088;',t:'Top 15 Superstars',s:'Position Players & DH',h:['AVG','HR','RBI','OPS','SB'],r:[
+  _prR(1,592450,'Aaron Judge','RF','NYY',['.341',_prE],['14',_prE],['38',_prH],['1.087',_prE],['2'],98.4,'127.50',12,72,_prF('&#128293; 8G')),
+  _prR(2,660271,'Shohei Ohtani','DH','LAD',['.312',_prH],['12',_prE],['35',_prH],['1.024',_prE],['10'],96.1,'89.30',8,84),
+  _prR(3,665742,'Juan Soto','RF','NYM',['.298',_prH],['10'],['30'],['.987',_prH],['4'],93.7,'62.80',5,88),
+  _prR(4,677951,'Bobby Witt Jr.','SS','KC',['.322',_prH],['9'],['28'],['.948',_prH],['14'],91.2,'38.40',22,95,_prF('&#128293; 12G')),
+  _prR(5,605141,'Mookie Betts','SS','LAD',['.289'],['8'],['26'],['.912',_prH],['7'],87.5,'45.20',-3,76),
+  _prR(6,607208,'Trea Turner','SS','PHI',['.305',_prH],['7'],['24'],['.878'],['18'],86.1,'12.60',15,93),
+  _prR(7,683002,'Gunnar Henderson','SS','BAL',['.278'],['11'],['29'],['.891'],['6'],85.3,'22.10',9,87),
+  _prR(8,670541,'Yordan Alvarez','DH','HOU',['.295'],['10'],['32'],['.956',_prH],['1'],84.8,'18.40',-2,78),
+  _prR(9,608369,'Corey Seager','SS','TEX',['.285'],['9'],['27'],['.901'],['1'],82.6,'15.80',-6,74),
+  _prR(10,518692,'Freddie Freeman','1B','LAD',['.301',_prH],['6'],['25'],['.882'],['5'],81.4,'11.20',4,82),
+  _prR(11,665487,'Elly De La Cruz','SS','CIN',['.271'],['8'],['22'],['.856'],['24'],80.9,'15.60',28,91,_prF('&#128293; 5G')),
+  _prR(12,660670,'Ronald Acuna Jr.','RF','ATL',['.276'],['7'],['21'],['.845'],['11'],79.3,'52.30',-14,41),
+  _prR(13,687093,'Jackson Chourio','CF','MIL',['.291'],['8'],['24'],['.868'],['9'],78.1,'9.80',18,92),
+  _prR(14,672284,'Julio Rodriguez','CF','SEA',['.268'],['9'],['26'],['.832'],['12'],77.4,'14.50',-5,71),
+  _prR(15,646240,'Marcus Semien','2B','TEX',['.282'],['7'],['22'],['.824'],['5'],75.8,'5.40',3,85)]},
+pitchers:{i:'&#128293;',t:'Top 10 Pitchers',s:'Starting & Relief',h:['ERA','W-L','K','WHIP','IP'],r:[
+  _prR(1,669373,'Tarik Skubal','SP','DET',['1.82',_prE],['6-1',_prH],['68',_prE],['0.87',_prE],['59.1'],97.2,'34.60',31,86),
+  _prR(2,543037,'Chris Sale','SP','ATL',['2.14',_prE],['5-2'],['62',_prH],['0.94',_prH],['55.0'],94.6,'8.90',11,96),
+  _prR(3,477132,'Max Scherzer','SP','TOR',['2.41',_prH],['4-1'],['54'],['0.98',_prH],['52.1'],91.3,'6.20',7,89),
+  _prR(4,671096,'Logan Webb','SP','SF',['2.58',_prH],['5-2'],['48'],['1.04'],['56.0'],88.7,'4.10',14,94),
+  _prR(5,694297,'Paul Skenes','SP','PIT',['2.71'],['5-0',_prH],['61',_prH],['1.01'],['53.0'],87.9,'28.70',19,73),
+  _prR(6,608566,'Corbin Burnes','SP','AZ',['2.88'],['4-2'],['52'],['1.08'],['50.0'],84.2,'7.40',-4,79),
+  _prR(7,656302,'Zack Wheeler','SP','PHI',['2.95'],['4-3'],['56'],['1.06'],['54.2'],82.8,'5.80',-2,77),
+  _prR(8,592789,'Gerrit Cole','SP','NYY',['3.02'],['4-2'],['58'],['1.10'],['53.2'],81.5,'9.20',-8,64),
+  _prR(9,666142,'Hunter Brown','SP','HOU',['3.15'],['3-2'],['50'],['1.12'],['48.2'],79.1,'3.20',6,86),
+  _prR(10,682847,'Grayson Rodriguez','SP','BAL',['3.28'],['4-1'],['47'],['1.14'],['46.2'],76.4,'6.50',10,82)]},
+rookies:{i:'&#127775;',t:'Top 10 Rookies',s:'All Positions',h:['Key','2nd','3rd','Rate','GP'],r:[
+  _prR(1,700367,'Ethan Salas','C','SD',['.318',_prE],['6 HR',_prH],['22 RBI',_prH],['.892'],['32'],94.1,'42.30',45,81,_prRK+_prF('&#128293; ROY')),
+  _prR(2,695865,'Charlie Condon','3B','COL',['.294',_prH],['8 HR',_prH],['19 RBI'],['.868'],['28'],89.3,'4.20',34,98,_prRK),
+  _prR(3,694973,'Travis Bazzana','2B','CLE',['.278'],['4 HR'],['16 RBI'],['.812'],['30'],82.7,'6.80',12,88,_prRK),
+  _prR(4,694192,'Jac Caglianone','SP/DH','KC',['2.89',_prH],['32 K'],['.265'],['-'],['24'],81.4,'8.90',52,94,_prRK+_prF('&#128293; 2-way')),
+  _prR(5,691176,'Coby Mayo','3B','BAL',['.262'],['7 HR',_prH],['20 RBI'],['.831'],['29'],78.9,'5.10',16,85,_prRK),
+  _prR(6,688363,'Roki Sasaki','SP','LAD',['2.45',_prE],['44 K',_prE],['0.91'],['-'],['8 GS'],77.6,'18.40',24,72,_prRK),
+  _prR(7,691497,'Roman Anthony','LF','BOS',['.255'],['5 HR'],['14 RBI'],['.788'],['26'],74.2,'7.60',-5,76,_prRK),
+  _prR(8,700362,'Josue De Paula','SP','LAD',['3.12'],['38 K'],['1.08'],['-'],['7 GS'],72.8,'2.40',28,93,_prRK),
+  _prR(9,700660,'Kumar Rocker','SP','TEX',['3.34'],['36 K'],['1.15'],['-'],['7 GS'],70.5,'3.80',9,83,_prRK),
+  _prR(10,693580,'Junior Caminero','3B','TB',['.248'],['5 HR'],['17 RBI'],['.782'],['27'],68.9,'4.50',-11,71,_prRK)]},
+unicorn:{i:'&#129412;',t:'Top 10 Value Picks',s:'Stats &#8593; Price &#8595;',h:['Perf','Trend','$','Score','Pos'],r:[
+  _prR(1,695865,'Charlie Condon','3B','COL',['.294',_prH],['&#8593;34%',_prE],['$4.20'],['98',_prE],['3B'],98,'4.20',34,98,_prRK),
+  _prR(2,543037,'Chris Sale','SP','ATL',['2.14',_prE],['&#8593;11%'],['$8.90'],['96',_prE],['SP'],96,'8.90',11,96),
+  _prR(3,677951,'Bobby Witt Jr.','SS','KC',['.322',_prE],['&#8593;22%',_prH],['$38.40'],['95'],['SS'],95,'38.40',22,95),
+  _prR(4,694192,'Jac Caglianone','SP/DH','KC',['2-way',_prH],['&#8593;52%',_prE],['$8.90'],['94'],['SP'],94,'8.90',52,94,_prRK),
+  _prR(5,671096,'Logan Webb','SP','SF',['2.58',_prH],['&#8593;14%'],['$4.10'],['94'],['SP'],94,'4.10',14,94),
+  _prR(6,607208,'Trea Turner','SS','PHI',['.305',_prH],['&#8593;15%'],['$12.60'],['93'],['SS'],93,'12.60',15,93),
+  _prR(7,700362,'Josue De Paula','SP','LAD',['3.12'],['&#8593;28%',_prH],['$2.40'],['93'],['SP'],93,'2.40',28,93,_prRK),
+  _prR(8,687093,'Jackson Chourio','CF','MIL',['.291'],['&#8593;18%'],['$9.80'],['92'],['CF'],92,'9.80',18,92),
+  _prR(9,665487,'Elly De La Cruz','SS','CIN',['.271'],['&#8593;28%',_prH],['$15.60'],['91'],['SS'],91,'15.60',28,91),
+  _prR(10,694973,'Travis Bazzana','2B','CLE',['.278'],['&#8593;12%'],['$6.80'],['88'],['2B'],88,'6.80',12,88,_prRK)]},
+'pos-SS':{i:'&#9918;',t:'Top 10 &#8212; Shortstop',s:'SS',h:['AVG','HR','RBI','OPS','SB'],r:[
+  _prR(1,677951,'Bobby Witt Jr.','SS','KC',['.322',_prH],['9'],['28'],['.948',_prH],['14'],91.2,'38.40',22,95),
+  _prR(2,605141,'Mookie Betts','SS','LAD',['.289'],['8'],['26'],['.912',_prH],['7'],87.5,'45.20',-3,76),
+  _prR(3,607208,'Trea Turner','SS','PHI',['.305',_prH],['7'],['24'],['.878'],['18'],86.1,'12.60',15,93),
+  _prR(4,683002,'Gunnar Henderson','SS','BAL',['.278'],['11'],['29'],['.891'],['6'],85.3,'22.10',9,87),
+  _prR(5,608369,'Corey Seager','SS','TEX',['.285'],['9'],['27'],['.901'],['1'],82.6,'15.80',-6,74)]},
+'pos-RF':{i:'&#9918;',t:'Top 10 &#8212; Right Field',s:'RF',h:['AVG','HR','RBI','OPS','SB'],r:[
+  _prR(1,592450,'Aaron Judge','RF','NYY',['.341',_prE],['14',_prE],['38',_prH],['1.087',_prE],['2'],98.4,'127.50',12,72),
+  _prR(2,665742,'Juan Soto','RF','NYM',['.298',_prH],['10'],['30'],['.987',_prH],['4'],93.7,'62.80',5,88),
+  _prR(3,660670,'Ronald Acuna Jr.','RF','ATL',['.276'],['7'],['21'],['.845'],['11'],79.3,'52.30',-14,41)]},
+'pos-CF':{i:'&#9918;',t:'Top 10 &#8212; Center Field',s:'CF',h:['AVG','HR','RBI','OPS','SB'],r:[
+  _prR(1,687093,'Jackson Chourio','CF','MIL',['.291'],['8'],['24'],['.868'],['9'],78.1,'9.80',18,92),
+  _prR(2,672284,'Julio Rodriguez','CF','SEA',['.268'],['9'],['26'],['.832'],['12'],77.4,'14.50',-5,71)]},
+'pos-LF':{i:'&#9918;',t:'Top 10 &#8212; Left Field',s:'LF',h:['AVG','HR','RBI','OPS','SB'],r:[
+  _prR(1,670541,'Yordan Alvarez','LF','HOU',['.295'],['10'],['32'],['.956',_prH],['1'],84.8,'18.40',-2,78),
+  _prR(2,691497,'Roman Anthony','LF','BOS',['.255'],['5'],['14'],['.788'],['4'],74.2,'7.60',-5,76,_prRK)]},
+'pos-1B':{i:'&#9918;',t:'Top 10 &#8212; First Base',s:'1B',h:['AVG','HR','RBI','OPS','SB'],r:[
+  _prR(1,518692,'Freddie Freeman','1B','LAD',['.301',_prH],['6'],['25'],['.882'],['5'],81.4,'11.20',4,82),
+  _prR(2,665489,'Vladdy Guerrero Jr.','1B','TOR',['.292'],['8'],['28'],['.871'],['2'],79.8,'24.80',-3,68),
+  _prR(3,670032,'Pete Alonso','1B','NYM',['.254'],['11',_prH],['30'],['.841'],['0'],76.2,'8.40',5,79)]},
+'pos-2B':{i:'&#9918;',t:'Top 10 &#8212; Second Base',s:'2B',h:['AVG','HR','RBI','OPS','SB'],r:[
+  _prR(1,646240,'Marcus Semien','2B','TEX',['.282'],['7'],['22'],['.824'],['5'],75.8,'5.40',3,85),
+  _prR(2,694973,'Travis Bazzana','2B','CLE',['.278'],['4'],['16'],['.812'],['3'],72.7,'6.80',12,88,_prRK)]},
+'pos-3B':{i:'&#9918;',t:'Top 10 &#8212; Third Base',s:'3B',h:['AVG','HR','RBI','OPS','SB'],r:[
+  _prR(1,695865,'Charlie Condon','3B','COL',['.294',_prH],['8',_prH],['19'],['.868'],['2'],89.3,'4.20',34,98,_prRK),
+  _prR(2,691176,'Coby Mayo','3B','BAL',['.262'],['7',_prH],['20'],['.831'],['1'],78.9,'5.10',16,85,_prRK)]},
+'pos-C':{i:'&#9918;',t:'Top 10 &#8212; Catcher',s:'C',h:['AVG','HR','RBI','OPS','SB'],r:[
+  _prR(1,700367,'Ethan Salas','C','SD',['.318',_prE],['6'],['22'],['.892'],['1'],94.1,'42.30',45,81,_prRK),
+  _prR(2,668939,'Adley Rutschman','C','BAL',['.278'],['5'],['20'],['.832'],['2'],78.4,'12.80',4,79)]},
+'pos-DH':{i:'&#9918;',t:'Top 10 &#8212; Designated Hitter',s:'DH',h:['AVG','HR','RBI','OPS','SB'],r:[
+  _prR(1,660271,'Shohei Ohtani','DH','LAD',['.312',_prH],['12',_prE],['35',_prH],['1.024',_prE],['10'],96.1,'89.30',8,84),
+  _prR(2,670541,'Yordan Alvarez','DH','HOU',['.295'],['10'],['32'],['.956',_prH],['1'],84.8,'18.40',-2,78)]},
+'pos-P':{i:'&#9918;',t:'Top 10 &#8212; Pitchers',s:'All Pitchers',h:['ERA','W-L','K','WHIP','IP'],r:[
+  _prR(1,669373,'Tarik Skubal','SP','DET',['1.82',_prE],['6-1',_prH],['68',_prE],['0.87',_prE],['59.1'],97.2,'34.60',31,86),
+  _prR(2,543037,'Chris Sale','SP','ATL',['2.14',_prE],['5-2'],['62',_prH],['0.94',_prH],['55.0'],94.6,'8.90',11,96),
+  _prR(3,477132,'Max Scherzer','SP','TOR',['2.41',_prH],['4-1'],['54'],['0.98',_prH],['52.1'],91.3,'6.20',7,89),
+  _prR(4,671096,'Logan Webb','SP','SF',['2.58',_prH],['5-2'],['48'],['1.04'],['56.0'],88.7,'4.10',14,94),
+  _prR(5,694297,'Paul Skenes','SP','PIT',['2.71'],['5-0',_prH],['61',_prH],['1.01'],['53.0'],87.9,'28.70',19,73)]},
+};
+
+function prOpen(k){
+  const d=_prDATA[k];if(!d)return;
+  document.querySelectorAll('.pr-spot,.pr-pm').forEach(e=>e.classList.remove('ac','ap'));
+  if(k==='superstars')document.querySelector('.pr-spot.gold-c').classList.add('ac');
+  if(k==='pitchers')document.querySelector('.pr-spot.blue-c').classList.add('ac');
+  if(k==='rookies')document.querySelector('.pr-spot.green-c').classList.add('ac');
+  if(k==='unicorn')document.querySelector('.pr-spot.pink-c').classList.add('ac');
+  document.querySelectorAll(`[data-prk="${k}"]`).forEach(e=>e.classList.add('ap'));
+  document.getElementById('prIcon').innerHTML=d.i;
+  document.getElementById('prTitle').textContent=d.t;
+  document.getElementById('prSub').textContent=d.s;
+  d.h.forEach((v,i)=>{const e=document.getElementById('prH'+(i+1));if(e)e.textContent=v});
+  document.getElementById('prBody').innerHTML=d.r.join('');
+  document.getElementById('prPanel').classList.add('open');
+  setTimeout(()=>document.getElementById('prPanel').scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+function prClose(){
+  document.getElementById('prPanel').classList.remove('open');
+  document.querySelectorAll('.pr-spot,.pr-pm').forEach(e=>e.classList.remove('ac','ap'));
+}
+function prToggle(e){e.parentNode.querySelectorAll('.pr-tb').forEach(b=>b.classList.remove('a'));e.classList.add('a')}
 
 // &#9472;&#9472; Live Market Data Engine &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 async function _cdLoadLiveMarket(card, variationLabel){

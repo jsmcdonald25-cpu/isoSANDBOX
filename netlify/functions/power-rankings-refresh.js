@@ -145,6 +145,64 @@ async function getPrevRanks() {
   } catch (e) { return {}; }
 }
 
+// ── eBay pricing helpers ────────────────────────────────────
+const EBAY_AUTH_URL = 'https://api.ebay.com/identity/v1/oauth2/token';
+const EBAY_BROWSE_URL = 'https://api.ebay.com/buy/browse/v1/item_summary/search';
+
+function httpsRequest(url, options, body) {
+  return new Promise((resolve, reject) => {
+    const u = typeof url === 'string' ? new URL(url) : url;
+    const req = https.request(u, options, (res) => {
+      let data = '';
+      res.on('data', (c) => (data += c));
+      res.on('end', () => resolve({ statusCode: res.statusCode, body: data }));
+    });
+    req.on('error', reject);
+    if (body) req.write(body);
+    req.end();
+  });
+}
+
+async function getEbayToken() {
+  const clientId = process.env.EBAY_CLIENT_ID;
+  const clientSecret = process.env.EBAY_CLIENT_SECRET;
+  if (!clientId || !clientSecret) return null;
+  const creds = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+  const postBody = 'grant_type=client_credentials&scope=https%3A%2F%2Fapi.ebay.com%2Foauth%2Fapi_scope';
+  const url = new URL(EBAY_AUTH_URL);
+  const res = await httpsRequest(url, {
+    method: 'POST', hostname: url.hostname, path: url.pathname,
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', Authorization: `Basic ${creds}`, 'Content-Length': Buffer.byteLength(postBody) },
+  }, postBody);
+  if (res.statusCode !== 200) { console.warn('[PR] eBay auth failed:', res.statusCode); return null; }
+  return JSON.parse(res.body).access_token;
+}
+
+async function ebayAvgPrice(token, playerName) {
+  const yr = new Date().getFullYear();
+  const q = encodeURIComponent(`${yr} Topps ${playerName}`);
+  const url = new URL(`${EBAY_BROWSE_URL}?q=${q}&filter=buyingOptions:{FIXED_PRICE|AUCTION}&limit=30`);
+  const res = await httpsRequest(url, {
+    method: 'GET', hostname: url.hostname, path: `${url.pathname}${url.search}`,
+    headers: { Authorization: `Bearer ${token}`, 'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US', 'Content-Type': 'application/json' },
+  });
+  if (res.statusCode !== 200) return null;
+  const data = JSON.parse(res.body);
+  const prices = (data.itemSummaries || [])
+    .filter(i => i.price && i.price.value)
+    .map(i => parseFloat(i.price.value))
+    .filter(p => p > 0);
+  if (!prices.length) return null;
+  // Trim outliers (top/bottom 10%) when 10+ items
+  prices.sort((a, b) => a - b);
+  let trimmed = prices;
+  if (prices.length >= 10) {
+    const cut = Math.floor(prices.length * 0.1);
+    trimmed = prices.slice(cut, prices.length - cut);
+  }
+  return Math.round((trimmed.reduce((a, b) => a + b, 0) / trimmed.length) * 100) / 100;
+}
+
 // ── Main refresh logic ──────────────────────────────────────
 async function refreshRankings() {
   const yr = new Date().getFullYear();
@@ -222,6 +280,46 @@ async function refreshRankings() {
 
   console.log(`[PR Refresh] Game logs fetched for ${Object.keys(last5Map).length} players`);
 
+  // 3b. Fetch eBay avg prices for unique players
+  const _priceMap = {}; // playerId → avg price
+  try {
+    const ebayToken = await getEbayToken();
+    if (ebayToken) {
+      // Collect unique players — top hitters + pitchers + rookies
+      const pricePlayers = [];
+      const seenPids = new Set();
+      const addPlayer = (s) => {
+        if (!seenPids.has(s.player.id)) {
+          seenPids.add(s.player.id);
+          pricePlayers.push({ id: s.player.id, name: s.player.fullName });
+        }
+      };
+      hitters.slice(0, 30).forEach(addPlayer);
+      pitchers.slice(0, 15).forEach(addPlayer);
+      rookieHitters.slice(0, 15).forEach(addPlayer);
+      rookiePitchers.slice(0, 10).forEach(addPlayer);
+
+      console.log(`[PR Refresh] Fetching eBay prices for ${pricePlayers.length} players`);
+
+      // Batch 5 at a time to stay within rate limits
+      for (let i = 0; i < pricePlayers.length; i += 5) {
+        const batch = pricePlayers.slice(i, i + 5);
+        const results = await Promise.all(batch.map(async (p) => {
+          try {
+            const avg = await ebayAvgPrice(ebayToken, p.name);
+            return { id: p.id, avg };
+          } catch (e) { return { id: p.id, avg: null }; }
+        }));
+        results.forEach(r => { if (r.avg != null) _priceMap[r.id] = r.avg; });
+      }
+      console.log(`[PR Refresh] eBay prices fetched: ${Object.keys(_priceMap).length} players with prices`);
+    } else {
+      console.warn('[PR Refresh] No eBay credentials — skipping price fetch');
+    }
+  } catch (e) {
+    console.warn('[PR Refresh] eBay pricing failed (non-fatal):', e.message);
+  }
+
   // 4. Build rankings for all categories
   const rows = [];
 
@@ -233,7 +331,8 @@ async function refreshRankings() {
     const seasonStats = split.stat;
     const l5 = last5Map[pid];
     const last5Stats = type === 'h' ? (l5 && l5.hitting) : (l5 && l5.pitching);
-    const price = 5; // Placeholder — eBay pricing runs separately
+    // Price filled in later by eBay fetch pass; use placeholder for initial sort
+    const price = _priceMap[pid] || 5;
     const isoSeason = type === 'h' ? isoHit(seasonStats, price) : isoPit(seasonStats, price);
     const isoLast5 = last5Stats ? (type === 'h' ? isoHit(last5Stats, price) : isoPit(last5Stats, price)) : isoSeason;
     const valSeason = valScore(isoSeason, price);
@@ -255,32 +354,35 @@ async function refreshRankings() {
       iso_score_last5: isoLast5,
       value_score_season: valSeason,
       value_score_last5: valLast5,
-      card_price: null,
+      card_price: _priceMap[pid] || null,
       card_price_pct: null,
       is_rookie: isRookie,
       data_date: today,
     };
   }
 
+  // Helper: get price for a split's player
+  const _pp = (s) => _priceMap[s.player.id] || 5;
+
   // Superstars (top 15 hitters by ISO score)
-  const supersSorted = [...hitters].sort((a, b) => isoHit(b.stat, 5) - isoHit(a.stat, 5));
+  const supersSorted = [...hitters].sort((a, b) => isoHit(b.stat, _pp(b)) - isoHit(a.stat, _pp(a)));
   supersSorted.slice(0, 15).forEach((s, i) => rows.push(buildRow(s, 'h', 'superstars', i + 1, i + 1, false)));
 
   // Pitchers (top 10 by ISO score)
-  const pitchersSorted = [...pitchers].sort((a, b) => isoPit(b.stat, 5) - isoPit(a.stat, 5));
+  const pitchersSorted = [...pitchers].sort((a, b) => isoPit(b.stat, _pp(b)) - isoPit(a.stat, _pp(a)));
   pitchersSorted.slice(0, 10).forEach((s, i) => rows.push(buildRow(s, 'p', 'pitchers', i + 1, i + 1, false)));
 
   // Rookies (combined hitters + pitchers, top 10)
   const rookieAll = [
-    ...rookieHitters.map(s => ({ sp: s, type: 'h', iso: isoHit(s.stat, 5) })),
-    ...rookiePitchers.map(s => ({ sp: s, type: 'p', iso: isoPit(s.stat, 5) })),
+    ...rookieHitters.map(s => ({ sp: s, type: 'h', iso: isoHit(s.stat, _pp(s)) })),
+    ...rookiePitchers.map(s => ({ sp: s, type: 'p', iso: isoPit(s.stat, _pp(s)) })),
   ].sort((a, b) => b.iso - a.iso);
   rookieAll.slice(0, 10).forEach((r, i) => rows.push(buildRow(r.sp, r.type, 'rookies', i + 1, i + 1, true)));
 
   // Unicorn (value picks — high ISO + low price)
   const allForValue = [
-    ...hitters.slice(0, 50).map(s => ({ sp: s, type: 'h', val: valScore(isoHit(s.stat, 5), 5) })),
-    ...pitchers.slice(0, 25).map(s => ({ sp: s, type: 'p', val: valScore(isoPit(s.stat, 5), 5) })),
+    ...hitters.slice(0, 50).map(s => ({ sp: s, type: 'h', val: valScore(isoHit(s.stat, _pp(s)), _pp(s)) })),
+    ...pitchers.slice(0, 25).map(s => ({ sp: s, type: 'p', val: valScore(isoPit(s.stat, _pp(s)), _pp(s)) })),
   ].sort((a, b) => b.val - a.val);
   allForValue.slice(0, 10).forEach((r, i) => rows.push(buildRow(r.sp, r.type, 'unicorn', i + 1, i + 1, false)));
 
@@ -288,7 +390,7 @@ async function refreshRankings() {
   const positions = ['C', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'DH'];
   positions.forEach(pos => {
     const filtered = hitters.filter(s => s.position && s.position.abbreviation === pos);
-    filtered.sort((a, b) => isoHit(b.stat, 5) - isoHit(a.stat, 5));
+    filtered.sort((a, b) => isoHit(b.stat, _pp(b)) - isoHit(a.stat, _pp(a)));
     filtered.slice(0, 10).forEach((s, i) => rows.push(buildRow(s, 'h', 'pos-' + pos, i + 1, i + 1, false)));
   });
 

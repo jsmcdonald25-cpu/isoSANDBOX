@@ -13167,19 +13167,30 @@ function _prBuildPitcherRow(rk, sp, isRookie){
 
 // ── Fetch eBay prices for top players (background) ──────────────────
 async function _prFetchPrices(players){
-  for(const p of players.slice(0,25)){
-    if(_prPriceCache[p.id]) continue;
-    try {
-      const resp = await fetch('/.netlify/functions/ebay-recent-sales',{
-        method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({player:p.name,year:new Date().getFullYear(),brand:'Topps',set_name:'Series 1',card_number:'',variation:'Base',grade:''})
-      });
-      if(resp.ok){
-        const d = await resp.json();
-        _prPriceCache[p.id] = {avg:d.average||null, pct:Math.round((Math.random()-0.3)*40)}; // pct placeholder until we have historical
-      }
-    } catch(e){/* non-fatal */}
-  }
+  // Fetch eBay base card prices for all ranked players.
+  // Search by player name + current year only — no brand/set hardcode,
+  // so we get real market data regardless of which set they appear in.
+  const yr = new Date().getFullYear();
+  const CONCURRENCY = 5;
+  const queue = players.filter(p => !_prPriceCache[p.id]);
+  let idx = 0;
+  const worker = async () => {
+    while(idx < queue.length){
+      const p = queue[idx++];
+      if(!p) break;
+      try {
+        const resp = await fetch('/.netlify/functions/ebay-recent-sales',{
+          method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({player:p.name, year:yr, brand:'', set_name:'', card_number:'', variation:'Base', grade:''})
+        });
+        if(resp.ok){
+          const d = await resp.json();
+          _prPriceCache[p.id] = {avg:d.average||null, pct:null};
+        }
+      } catch(e){/* non-fatal */}
+    }
+  };
+  await Promise.all(Array.from({length:Math.min(CONCURRENCY, queue.length)}, worker));
 }
 
 // ── Build ranking data from cache ───────────────────────────────────
@@ -13296,10 +13307,12 @@ async function _prInit(){
     // No cache — fall back to live API (first run or cache empty)
     await _prFetchAll();
     _prLiveData = _prBuildData();
-    // Fire eBay prices in background
+    // Fire eBay prices in background — include all ranked players
     const players = [];
-    (_prCache.hitters||[]).slice(0,25).forEach(s=>players.push({id:s.player.id,name:s.player.fullName}));
-    (_prCache.pitchers||[]).slice(0,15).forEach(s=>players.push({id:s.player.id,name:s.player.fullName}));
+    const seen = new Set();
+    [_prCache.hitters||[], _prCache.pitchers||[], _prCache.rookieH||[], _prCache.rookieP||[]].forEach(arr=>{
+      arr.forEach(s=>{ if(!seen.has(s.player.id)){ seen.add(s.player.id); players.push({id:s.player.id,name:s.player.fullName}); } });
+    });
     _prFetchPrices(players).then(()=>{ _prLiveData = _prBuildData(); });
     const tsEl = document.getElementById('prDateNotice');
     if(tsEl) tsEl.textContent = 'Live data — ' + new Date().getFullYear() + ' Season';

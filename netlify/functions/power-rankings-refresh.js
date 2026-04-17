@@ -448,10 +448,23 @@ exports.handler = async (event) => {
 
   try {
     const result = await refreshRankings();
+
+    // Also refresh player profiles + ISO signals
+    let profileResult = null;
+    try {
+      const ppModule = require('./player-profiles');
+      const fakeEvent = { httpMethod: 'POST', body: JSON.stringify({}) };
+      const ppRes = await ppModule.handler(fakeEvent);
+      profileResult = JSON.parse(ppRes.body || '{}');
+      console.log(`[PR Refresh] Player profiles: ${profileResult.total||0} profiles, ${profileResult.strong_buy||0} STRONG BUY, ${profileResult.buy||0} BUY, ${profileResult.sell||0} SELL`);
+    } catch (ppErr) {
+      console.warn('[PR Refresh] Player profiles refresh failed (non-fatal):', ppErr.message);
+    }
+
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ success: true, ...result }),
+      body: JSON.stringify({ success: true, ...result, profiles: profileResult }),
     };
   } catch (err) {
     console.error('[PR Refresh] Fatal error:', err);

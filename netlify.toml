@@ -7,7 +7,7 @@
   publish = "/"
 
 [functions]
-  timeout = 26
+  node_bundler = "esbuild"
 
 # ── REDIRECTS ──────────────────────────────────────────────
 # Root → dashboard

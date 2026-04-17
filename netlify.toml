@@ -6,6 +6,9 @@
 [build]
   publish = "/"
 
+[functions]
+  timeout = 26
+
 # ── REDIRECTS ──────────────────────────────────────────────
 # Root → dashboard
 [[redirects]]

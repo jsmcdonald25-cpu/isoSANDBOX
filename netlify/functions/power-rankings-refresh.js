@@ -449,14 +449,27 @@ exports.handler = async (event) => {
   try {
     const result = await refreshRankings();
 
-    // Also refresh player profiles + ISO signals
+    // Also refresh player profiles + ISO signals via HTTP call
     let profileResult = null;
     try {
-      const ppModule = require('./player-profiles');
-      const fakeEvent = { httpMethod: 'POST', body: JSON.stringify({}) };
-      const ppRes = await ppModule.handler(fakeEvent);
+      const ppUrl = 'https://isosandbox.com/.netlify/functions/player-profiles';
+      const ppRes = await new Promise((resolve, reject) => {
+        const body = JSON.stringify({});
+        const u = new URL(ppUrl);
+        const req = https.request(u, {
+          method: 'POST', hostname: u.hostname, path: u.pathname,
+          headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
+        }, (res) => {
+          let data = '';
+          res.on('data', c => data += c);
+          res.on('end', () => resolve({ status: res.statusCode, body: data }));
+        });
+        req.on('error', reject);
+        req.write(body);
+        req.end();
+      });
       profileResult = JSON.parse(ppRes.body || '{}');
-      console.log(`[PR Refresh] Player profiles: ${profileResult.total||0} profiles, ${profileResult.strong_buy||0} STRONG BUY, ${profileResult.buy||0} BUY, ${profileResult.sell||0} SELL`);
+      console.log(`[PR Refresh] Player profiles: ${profileResult.total||0} profiles, BUY:${profileResult.buy||0} SELL:${profileResult.sell||0}`);
     } catch (ppErr) {
       console.warn('[PR Refresh] Player profiles refresh failed (non-fatal):', ppErr.message);
     }

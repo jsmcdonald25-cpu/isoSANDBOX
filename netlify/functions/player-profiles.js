@@ -2,10 +2,12 @@
 // GrailISO — Player Profiles + ISO Projections
 // netlify/functions/player-profiles.js
 // ============================================================
-// Fetches MLB season stats + projected stats (unnamed source),
-// calculates BUY/HOLD/SELL signals, writes to Supabase players table.
+// Compares LAST YEAR's full season stats vs THIS YEAR's projections
+// to generate BUY/HOLD/SELL card investment signals.
 //
-// Designed to run within Netlify's 26s timeout.
+// The arbitrage: cards are priced on last year's performance.
+// If projections say a player is about to break out, BUY before
+// the market catches up. If regression is coming, SELL now.
 // ============================================================
 
 const https = require('https');
@@ -49,8 +51,6 @@ function httpReq(url, method, bodyStr, headers) {
 
 // ── Team maps ──────────────────────────────────────────────
 const MLB_TEAMS = {108:'LAA',109:'AZ',110:'BAL',111:'BOS',112:'CHC',113:'CIN',114:'CLE',115:'COL',116:'DET',117:'HOU',118:'KC',119:'LAD',120:'WAS',121:'NYM',133:'ATH',134:'PIT',135:'SD',136:'SEA',137:'SF',138:'STL',139:'TB',140:'TEX',141:'TOR',142:'MIN',143:'PHI',144:'ATL',145:'CHW',146:'MIA',147:'NYY',158:'MIL'};
-const FANTASY_TEAMS = {1:'BAL',2:'BOS',3:'LAA',4:'CHW',5:'CLE',6:'DET',7:'KC',8:'MIL',9:'MIN',10:'NYY',11:'ATH',12:'SEA',13:'TEX',14:'TOR',15:'ATL',16:'CHC',17:'CIN',18:'HOU',19:'LAD',20:'WAS',21:'NYM',22:'PHI',23:'PIT',24:'STL',25:'SD',26:'SF',27:'COL',28:'MIA',29:'AZ',30:'TB'};
-const FANTASY_POS = {1:'SP',2:'C',3:'1B',4:'2B',5:'3B',6:'SS',7:'LF',8:'CF',9:'RF',10:'DH',11:'RP'};
 
 // ── Fetch projections ──────────────────────────────────────
 async function fetchProjections(yr) {
@@ -105,20 +105,123 @@ async function fetchProjections(yr) {
   });
 }
 
-// ── BUY/HOLD/SELL signal ───────────────────────────────────
-function calcSignal(actual, proj) {
-  if (!actual || !proj) return { signal: 'HOLD', strength: 'moderate', score: 0 };
-  let delta = 0;
-  if (proj.avg && actual.avg) delta += (parseFloat(proj.avg) - parseFloat(actual.avg)) * 200;
-  if (proj.hr != null && actual.homeRuns != null) delta += (proj.hr - actual.homeRuns) * 0.5;
-  if (proj.rbi != null && actual.rbi != null) delta += (proj.rbi - actual.rbi) * 0.3;
-  if (proj.ops && actual.ops) delta += (parseFloat(proj.ops) - parseFloat(actual.ops)) * 50;
-  if (proj.era && actual.era) delta -= (parseFloat(proj.era) - parseFloat(actual.era)) * 5;
-  if (proj.strikeouts != null && actual.strikeOuts != null) delta += (proj.strikeouts - actual.strikeOuts) * 0.2;
-  if (proj.whip && actual.whip) delta -= (parseFloat(proj.whip) - parseFloat(actual.whip)) * 20;
-  const score = Math.max(-100, Math.min(100, Math.round(delta)));
-  const signal = score >= 15 ? 'BUY' : score <= -15 ? 'SELL' : 'HOLD';
-  return { signal, strength: Math.abs(score) >= 30 ? 'strong' : 'moderate', score };
+// ── Card Investment Signal Engine ──────────────────────────
+// Compares last year's FULL season to this year's PROJECTION.
+// Cards are priced on past performance — the signal finds
+// where the market hasn't caught up to the projection yet.
+//
+// STRONG BUY  — Major breakout projected, card underpriced
+// BUY         — Stats trending up, market hasn't adjusted
+// HOLD        — Fair value, no clear edge
+// SELL        — Regression coming, market still inflated
+// STRONG SELL — Major decline projected, dump now
+//
+function calcSignal(lastYearStats, projectedStats, playerType) {
+  if (!lastYearStats || !projectedStats) return { signal: 'HOLD', strength: 'neutral', score: 0, reason: 'No projection data' };
+
+  let score = 0;
+  const reasons = [];
+
+  if (playerType === 'hitter') {
+    // AVG delta — massive signal. +.030 is a huge breakout
+    const lastAvg = parseFloat(lastYearStats.avg) || 0;
+    const projAvg = parseFloat(projectedStats.avg) || 0;
+    if (lastAvg > 0 && projAvg > 0) {
+      const avgDelta = projAvg - lastAvg;
+      score += avgDelta * 300; // .030 jump = +9 points
+      if (avgDelta >= 0.020) reasons.push(`AVG +${(avgDelta*1000).toFixed(0)} pts`);
+      if (avgDelta <= -0.020) reasons.push(`AVG ${(avgDelta*1000).toFixed(0)} pts`);
+    }
+
+    // HR delta — 10+ HR jump is significant
+    const lastHR = lastYearStats.homeRuns || 0;
+    const projHR = projectedStats.hr || 0;
+    if (lastHR > 0 || projHR > 0) {
+      const hrDelta = projHR - lastHR;
+      score += hrDelta * 1.2; // +10 HR = +12 points
+      if (hrDelta >= 5) reasons.push(`+${hrDelta} HR`);
+      if (hrDelta <= -5) reasons.push(`${hrDelta} HR`);
+    }
+
+    // RBI delta
+    const lastRBI = lastYearStats.rbi || 0;
+    const projRBI = projectedStats.rbi || 0;
+    if (lastRBI > 0 || projRBI > 0) {
+      const rbiDelta = projRBI - lastRBI;
+      score += rbiDelta * 0.4;
+      if (Math.abs(rbiDelta) >= 15) reasons.push(`${rbiDelta>0?'+':''}${rbiDelta} RBI`);
+    }
+
+    // OPS delta — .050+ is big
+    const lastOPS = parseFloat(lastYearStats.ops) || 0;
+    const projOPS = parseFloat(projectedStats.ops) || 0;
+    if (lastOPS > 0 && projOPS > 0) {
+      const opsDelta = projOPS - lastOPS;
+      score += opsDelta * 80;
+      if (opsDelta >= 0.040) reasons.push(`OPS +${(opsDelta*1000).toFixed(0)}`);
+      if (opsDelta <= -0.040) reasons.push(`OPS ${(opsDelta*1000).toFixed(0)}`);
+    }
+
+    // SB delta — speed is trending more valuable
+    const lastSB = lastYearStats.stolenBases || 0;
+    const projSB = projectedStats.sb || 0;
+    if (lastSB > 0 || projSB > 0) {
+      score += (projSB - lastSB) * 0.5;
+    }
+
+  } else {
+    // PITCHER signals — lower ERA/WHIP = better (invert delta)
+
+    // ERA delta — 0.50+ drop is huge
+    const lastERA = parseFloat(lastYearStats.era) || 0;
+    const projERA = parseFloat(projectedStats.era) || 0;
+    if (lastERA > 0 && projERA > 0) {
+      const eraDelta = lastERA - projERA; // positive = improvement
+      score += eraDelta * 10;
+      if (eraDelta >= 0.40) reasons.push(`ERA -${eraDelta.toFixed(2)}`);
+      if (eraDelta <= -0.40) reasons.push(`ERA +${Math.abs(eraDelta).toFixed(2)}`);
+    }
+
+    // K delta
+    const lastK = lastYearStats.strikeOuts || 0;
+    const projK = projectedStats.strikeouts || 0;
+    if (lastK > 0 || projK > 0) {
+      const kDelta = projK - lastK;
+      score += kDelta * 0.3;
+      if (kDelta >= 20) reasons.push(`+${kDelta} K`);
+      if (kDelta <= -20) reasons.push(`${kDelta} K`);
+    }
+
+    // W delta
+    const lastW = lastYearStats.wins || 0;
+    const projW = projectedStats.wins || 0;
+    if (lastW > 0 || projW > 0) {
+      score += (projW - lastW) * 2;
+    }
+
+    // WHIP delta — lower = better
+    const lastWHIP = parseFloat(lastYearStats.whip) || 0;
+    const projWHIP = parseFloat(projectedStats.whip) || 0;
+    if (lastWHIP > 0 && projWHIP > 0) {
+      const whipDelta = lastWHIP - projWHIP; // positive = improvement
+      score += whipDelta * 25;
+      if (whipDelta >= 0.10) reasons.push(`WHIP -${whipDelta.toFixed(2)}`);
+      if (whipDelta <= -0.10) reasons.push(`WHIP +${Math.abs(whipDelta).toFixed(2)}`);
+    }
+  }
+
+  // Clamp to -100 to +100
+  score = Math.max(-100, Math.min(100, Math.round(score)));
+
+  // 5-tier signal
+  let signal, strength;
+  if (score >= 25)       { signal = 'STRONG BUY';  strength = 'strong'; }
+  else if (score >= 8)   { signal = 'BUY';         strength = 'moderate'; }
+  else if (score <= -25) { signal = 'STRONG SELL';  strength = 'strong'; }
+  else if (score <= -8)  { signal = 'SELL';         strength = 'moderate'; }
+  else                   { signal = 'HOLD';         strength = 'neutral'; }
+
+  return { signal, strength, score, reason: reasons.join(' · ') || 'Marginal change' };
 }
 
 // ── Main ───────────────────────────────────────────────────
@@ -134,26 +237,39 @@ exports.handler = async (event) => {
 
   try {
     const yr = new Date().getFullYear();
-    console.log(`[PP] Starting refresh for ${yr}`);
+    const lastYr = yr - 1;
+    console.log(`[PP] Refresh: comparing ${lastYr} actuals vs ${yr} projections`);
 
-    // 1. Fetch MLB season stats — 2 fast bulk calls
-    const [hData, pData] = await Promise.all([
+    // 1. Fetch LAST YEAR's full season stats (the baseline — what cards are priced on)
+    //    AND this year's stats (for current context)
+    const [hLast, pLast, hThis, pThis] = await Promise.all([
+      httpGet(`${MLB}/stats?stats=season&group=hitting&season=${lastYr}&sportId=1&limit=300&sortStat=onBasePlusSlugging&order=desc`),
+      httpGet(`${MLB}/stats?stats=season&group=pitching&season=${lastYr}&sportId=1&limit=150&sortStat=earnedRunAverage&order=asc`),
       httpGet(`${MLB}/stats?stats=season&group=hitting&season=${yr}&sportId=1&limit=200&sortStat=onBasePlusSlugging&order=desc`),
       httpGet(`${MLB}/stats?stats=season&group=pitching&season=${yr}&sportId=1&limit=100&sortStat=earnedRunAverage&order=asc`),
     ]);
 
     const extract = (d) => (d && d.stats && d.stats[0] && d.stats[0].splits) || [];
-    const hitters = extract(hData).filter(s => s.stat.gamesPlayed >= 3);
-    const pitchers = extract(pData).filter(s => parseFloat(s.stat.inningsPitched) >= 5);
-    console.log(`[PP] ${hitters.length} hitters, ${pitchers.length} pitchers`);
 
-    // 2. Fetch projections — 1 call
+    // Last year's stats keyed by player ID
+    const lastYearHitters = {};
+    extract(hLast).forEach(s => { lastYearHitters[s.player.id] = s.stat; });
+    const lastYearPitchers = {};
+    extract(pLast).filter(s => parseFloat(s.stat.inningsPitched) >= 20).forEach(s => { lastYearPitchers[s.player.id] = s.stat; });
+
+    // This year's roster (tells us who is active + current team/position)
+    const hitters = extract(hThis).filter(s => s.stat.gamesPlayed >= 1);
+    const pitchers = extract(pThis).filter(s => parseFloat(s.stat.inningsPitched) >= 1);
+
+    console.log(`[PP] ${lastYr}: ${Object.keys(lastYearHitters).length}H/${Object.keys(lastYearPitchers).length}P | ${yr}: ${hitters.length}H/${pitchers.length}P`);
+
+    // 2. Fetch projections for this year
     const projections = await fetchProjections(yr);
     console.log(`[PP] ${projections.length} projections`);
     const projByName = {};
     projections.forEach(p => { projByName[p.name] = p.projected; });
 
-    // 3. Build profiles from stats (name, team, position all come from stats endpoint)
+    // 3. Build profiles: compare last year actual → this year projected
     const profiles = [];
     const seen = new Set();
 
@@ -162,8 +278,9 @@ exports.handler = async (event) => {
       if (seen.has(pid)) return;
       seen.add(pid);
       const name = s.player.fullName;
+      const lastStats = lastYearHitters[pid] || null;
       const proj = projByName[name.toLowerCase()] || null;
-      const sig = calcSignal(s.stat, proj);
+      const sig = calcSignal(lastStats, proj, 'hitter');
       const tm = s.team ? (MLB_TEAMS[s.team.id] || '') : '';
       const pos = s.position ? s.position.abbreviation : '';
       profiles.push({
@@ -175,7 +292,7 @@ exports.handler = async (event) => {
         active: true,
         headshot_url: `https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/${pid}/headshot/67/current`,
         player_type: 'hitter',
-        season_stats: s.stat,
+        season_stats: lastStats || s.stat,
         projected_stats: proj,
         projection_delta: sig.score,
         iso_signal: sig.signal,
@@ -189,8 +306,9 @@ exports.handler = async (event) => {
       if (seen.has(pid)) return;
       seen.add(pid);
       const name = s.player.fullName;
+      const lastStats = lastYearPitchers[pid] || null;
       const proj = projByName[name.toLowerCase()] || null;
-      const sig = calcSignal(s.stat, proj);
+      const sig = calcSignal(lastStats, proj, 'pitcher');
       const tm = s.team ? (MLB_TEAMS[s.team.id] || '') : '';
       const pos = s.position ? s.position.abbreviation : 'P';
       profiles.push({
@@ -202,7 +320,7 @@ exports.handler = async (event) => {
         active: true,
         headshot_url: `https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/${pid}/headshot/67/current`,
         player_type: 'pitcher',
-        season_stats: s.stat,
+        season_stats: lastStats || s.stat,
         projected_stats: proj,
         projection_delta: sig.score,
         iso_signal: sig.signal,
@@ -211,9 +329,12 @@ exports.handler = async (event) => {
       });
     });
 
-    console.log(`[PP] ${profiles.length} profiles, ${profiles.filter(p=>p.projected_stats).length} with projections`);
+    const buys = profiles.filter(p => p.iso_signal.includes('BUY'));
+    const sells = profiles.filter(p => p.iso_signal.includes('SELL'));
+    const holds = profiles.filter(p => p.iso_signal === 'HOLD');
+    console.log(`[PP] ${profiles.length} profiles | BUY:${buys.length} HOLD:${holds.length} SELL:${sells.length}`);
 
-    // 4. Upsert to Supabase in 1-2 batches
+    // 4. Upsert to Supabase
     let upserted = 0;
     for (let i = 0; i < profiles.length; i += 100) {
       const chunk = profiles.slice(i, i + 100);
@@ -232,17 +353,25 @@ exports.handler = async (event) => {
       else console.error(`[PP] Upsert error: ${res.status} ${res.body.slice(0, 300)}`);
     }
 
-    console.log(`[PP] Done — ${upserted} upserted`);
+    // Top BUY and SELL picks for logging
+    const topBuys = buys.sort((a,b) => b.projection_delta - a.projection_delta).slice(0,10).map(p => `${p.full_name} (${p.iso_signal} ${p.projection_delta>0?'+':''}${p.projection_delta})`);
+    const topSells = sells.sort((a,b) => a.projection_delta - b.projection_delta).slice(0,10).map(p => `${p.full_name} (${p.iso_signal} ${p.projection_delta})`);
+
     return {
       statusCode: 200, headers,
       body: JSON.stringify({
         success: true,
+        comparison: `${lastYr} actuals vs ${yr} projections`,
         total: profiles.length,
         upserted,
         with_projections: profiles.filter(p => p.projected_stats).length,
+        strong_buy: profiles.filter(p => p.iso_signal === 'STRONG BUY').length,
         buy: profiles.filter(p => p.iso_signal === 'BUY').length,
-        hold: profiles.filter(p => p.iso_signal === 'HOLD').length,
+        hold: holds.length,
         sell: profiles.filter(p => p.iso_signal === 'SELL').length,
+        strong_sell: profiles.filter(p => p.iso_signal === 'STRONG SELL').length,
+        top_buys: topBuys,
+        top_sells: topSells,
       }),
     };
   } catch (err) {

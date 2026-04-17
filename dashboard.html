@@ -344,6 +344,11 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .pr-prt{font-size:11px;display:flex;align-items:center;gap:3px}
 .pr-prt.up{color:var(--green)}.pr-prt.dn{color:var(--red)}
 .pr-prt svg{width:10px;height:10px}
+.pr-sig{display:inline-block;padding:2px 8px;border-radius:10px;font-family:Barlow Condensed,sans-serif;font-size:10px;font-weight:700;letter-spacing:.5px}
+.pr-sig.buy{background:rgba(0,232,135,0.15);color:var(--green);border:1px solid rgba(0,232,135,0.3)}
+.pr-sig.hold{background:rgba(255,215,0,0.12);color:#FFD700;border:1px solid rgba(255,215,0,0.25)}
+.pr-sig.sell{background:rgba(255,59,92,0.15);color:var(--red);border:1px solid rgba(255,59,92,0.3)}
+.pr-sig.strong{font-size:11px;padding:3px 10px}
 .pr-sr td{border-bottom:1px solid rgba(255,215,0,0.1)!important}
 .pr-crown{position:absolute;top:-6px;right:-4px;font-size:12px;animation:prCb 2s ease-in-out infinite}
 @keyframes prCb{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-3px) rotate(5deg)}}
@@ -3341,7 +3346,7 @@ async function logOut(){
           <th class="s" id="prH1">AVG</th><th class="s" id="prH2">HR</th>
           <th class="s" id="prH3">RBI</th><th class="s" id="prH4">OPS</th>
           <th class="s" id="prH5">SB</th>
-          <th class="s">ISO</th><th class="v">Card $</th><th class="v">Value</th><th style="width:70px"></th>
+          <th class="s">ISO</th><th class="v">Card $</th><th class="v">Value</th><th class="s">Signal</th><th style="width:70px"></th>
         </tr></thead>
         <tbody id="prBody"></tbody>
       </table>
@@ -13057,6 +13062,34 @@ function _prPriceFmt(p,pct){
   return`<div class="pr-prc"><span class="pr-prv">${pr}</span>${tr}</div>`;
 }
 
+// ── ISO Signal (BUY/HOLD/SELL from player projections) ─────────────
+let _prPlayerProfiles = null; // mlb_id → {iso_signal, iso_signal_strength, projection_delta, projected_stats}
+
+async function _prLoadProfiles(){
+  if(_prPlayerProfiles) return;
+  try {
+    const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+    const r = await fetch(`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/players?select=mlb_id,iso_signal,iso_signal_strength,projection_delta,projected_stats&limit=500`,
+      {headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}});
+    if(r.ok){
+      const data = await r.json();
+      _prPlayerProfiles = {};
+      (data||[]).forEach(p => { _prPlayerProfiles[p.mlb_id] = p; });
+    }
+  } catch(e){ console.warn('Player profiles load failed:', e); }
+}
+
+function _prSignalBadge(mlbId){
+  if(!_prPlayerProfiles) return '';
+  const p = _prPlayerProfiles[mlbId];
+  if(!p || !p.iso_signal) return '';
+  const sig = p.iso_signal.toLowerCase();
+  const strong = p.iso_signal_strength === 'strong' ? ' strong' : '';
+  const delta = p.projection_delta || 0;
+  const arrow = delta > 0 ? '&#9650;' : delta < 0 ? '&#9660;' : '';
+  return `<span class="pr-sig ${sig}${strong}" title="ISO Projection: ${delta>0?'+':''}${delta}">${p.iso_signal}${arrow}</span>`;
+}
+
 // ── Team abbreviations ──────────────────────────────────────────────
 const _prTEAMS={108:'LAA',109:'AZ',110:'BAL',111:'BOS',112:'CHC',113:'CIN',114:'CLE',115:'COL',116:'DET',117:'HOU',118:'KC',119:'LAD',120:'WAS',121:'NYM',133:'ATH',134:'PIT',135:'SD',136:'SEA',137:'SF',138:'STL',139:'TB',140:'TEX',141:'TOR',142:'MIN',143:'PHI',144:'ATL',145:'CHW',146:'MIA',147:'NYY',158:'MIL'};
 function _prTm(t){return _prTEAMS[t&&t.id||0]||''}
@@ -13141,7 +13174,7 @@ function _prBuildHitterRow(rk, sp, isRookie){
   <td class="s">${s.avg}</td><td class="s">${s.homeRuns}</td>
   <td class="s">${s.rbi}</td><td class="s">${s.ops}</td>
   <td class="s">${s.stolenBases}</td>
-  <td class="s">${_prIB(iso)}</td><td class="v">${_prPriceFmt(cardPrice,pct)}</td><td class="v">${_prVB(val)}</td><td>${_prShopLink(p.fullName)}</td></tr>`;
+  <td class="s">${_prIB(iso)}</td><td class="v">${_prPriceFmt(cardPrice,pct)}</td><td class="v">${_prVB(val)}</td><td>${_prSignalBadge(pid)}</td><td>${_prShopLink(p.fullName)}</td></tr>`;
 }
 function _prBuildPitcherRow(rk, sp, isRookie){
   const p = sp.player, s = sp.stat, tm = _prTm(sp.team), pos = sp.position?sp.position.abbreviation:'P';
@@ -13162,7 +13195,7 @@ function _prBuildPitcherRow(rk, sp, isRookie){
   <td class="s">${s.era}</td><td class="s">${wl}</td>
   <td class="s">${s.strikeOuts}</td><td class="s">${s.whip}</td>
   <td class="s">${s.inningsPitched}</td>
-  <td class="s">${_prIB(iso)}</td><td class="v">${_prPriceFmt(cardPrice,pct)}</td><td class="v">${_prVB(val)}</td><td>${_prShopLink(p.fullName)}</td></tr>`;
+  <td class="s">${_prIB(iso)}</td><td class="v">${_prPriceFmt(cardPrice,pct)}</td><td class="v">${_prVB(val)}</td><td>${_prSignalBadge(pid)}</td><td>${_prShopLink(p.fullName)}</td></tr>`;
 }
 
 // ── Fetch eBay prices for top players (background) ──────────────────
@@ -13285,6 +13318,9 @@ async function _prInit(){
   const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
   const SB = 'https://jyfaegmnzkarlcximxjo.supabase.co';
 
+  // Load player profiles (BUY/HOLD/SELL signals) in parallel
+  _prLoadProfiles();
+
   // Try reading from Supabase cache first
   let cacheRows = null;
   try {
@@ -13391,7 +13427,7 @@ function _prBuildFromCache(rows, dataDate){
       <td><div class="pr-pc"><div class="pr-pa${rc}"><img src="${_prIM(r.player_id)}">${cr}</div>
       <div><span class="pr-pn">${r.player_name}</span><div class="pr-pm2"><span class="pr-pp">${r.position||''}</span><span>${r.team||''}</span>${extra}</div></div></div></td>
       ${statCells}
-      <td class="s">${_prIB(iso||0)}</td><td class="v">${_prPriceFmt(price,pct)}</td><td class="v">${_prVB(val||0)}</td><td>${_prShopLink(r.player_name)}</td></tr>`;
+      <td class="s">${_prIB(iso||0)}</td><td class="v">${_prPriceFmt(price,pct)}</td><td class="v">${_prVB(val||0)}</td><td>${_prSignalBadge(r.player_id)}</td><td>${_prShopLink(r.player_name)}</td></tr>`;
     });
 
     _prLiveData[cat] = {i:meta.i, t:meta.t, s:meta.s, h:meta.h, r:htmlRows};

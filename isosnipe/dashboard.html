@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ISOsnipe Dashboard</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#080c16;color:#e0e6f0;font-family:'Segoe UI',system-ui,sans-serif;padding:0}
+
+.topbar{background:#0d111f;border-bottom:1px solid #1a2540;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:sticky;top:0;z-index:100}
+.topbar h1{font-size:1.4rem;background:linear-gradient(135deg,#00ff88,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.topbar .meta{font-size:.75rem;color:#6b7280}
+
+.controls{background:#0d111f;border-bottom:1px solid #1a2540;padding:16px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.ctrl{display:flex;flex-direction:column;gap:4px}
+.ctrl label{font-size:.7rem;color:#6b7280;text-transform:uppercase;letter-spacing:1px;display:flex;justify-content:space-between}
+.ctrl label .val{color:#00d4ff;font-weight:700;font-size:.8rem}
+.ctrl input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;background:#1a2540;outline:none}
+.ctrl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#00d4ff;cursor:pointer;box-shadow:0 0 8px #00d4ff66}
+.ctrl select{background:#111827;color:#e0e6f0;border:1px solid #1f2937;border-radius:8px;padding:6px 10px;font-size:.85rem}
+
+.filters{padding:12px 24px;display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid #0d111f}
+.pill{padding:6px 14px;border-radius:16px;font-size:.75rem;font-weight:600;cursor:pointer;border:1px solid #1f2937;color:#6b7280;transition:all .2s}
+.pill:hover{border-color:#7b61ff;color:#7b61ff}
+.pill.active{background:#7b61ff22;border-color:#7b61ff;color:#7b61ff}
+.pill.snipe-pill.active{background:#00ff8822;border-color:#00ff88;color:#00ff88}
+
+.stats{display:flex;gap:12px;padding:16px 24px;flex-wrap:wrap}
+.stat{background:#111827;border:1px solid #1f2937;border-radius:10px;padding:12px 20px;text-align:center;min-width:100px}
+.stat .n{font-size:1.4rem;font-weight:700}.stat .l{font-size:.65rem;color:#6b7280;margin-top:2px}
+.s1 .n{color:#00ff88}.s2 .n{color:#7b61ff}.s3 .n{color:#ff4488}.s4 .n{color:#ffd700}
+
+.results{padding:0 24px 40px}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+th{text-align:left;padding:10px;border-bottom:2px solid #1f2937;color:#6b7280;font-size:.68rem;text-transform:uppercase;letter-spacing:.8px;cursor:pointer;user-select:none;white-space:nowrap}
+th:hover{color:#00d4ff}th.sorted{color:#00d4ff}
+td{padding:8px 10px;border-bottom:1px solid #0d111f;vertical-align:middle}
+tr:hover{background:#111827}
+tr.sr{background:#00ff8806}tr.sr:hover{background:#00ff8812}
+.thumb{width:48px;height:48px;object-fit:contain;border-radius:4px;background:#111827}
+a{color:#00d4ff;text-decoration:none}a:hover{text-decoration:underline}
+.badge{padding:2px 8px;border-radius:5px;font-size:.65rem;font-weight:700;white-space:nowrap}
+.bs{background:#00ff8818;color:#00ff88}.bm{background:#7b61ff18;color:#7b61ff}
+.bb{background:#ffd70018;color:#ffd700}.ba{background:#ff6b3518;color:#ff6b35}
+.bp{background:#00d4ff12;color:#00d4ff;font-size:.6rem}
+.price{color:#00ff88;font-weight:700;white-space:nowrap}
+.mp{color:#6b7280;white-space:nowrap}
+.dp{color:#00ff88;font-weight:700}.dn{color:#ff4444;font-weight:700}
+.sc{color:#ffd700;font-weight:700}
+.tc{max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.empty{text-align:center;padding:60px;color:#6b7280}
+</style>
+</head><body>
+
+<div class="topbar">
+  <div><h1>ISOsnipe</h1><div class="meta" id="lr">Loading...</div></div>
+  <div class="meta" id="sc"></div>
+</div>
+
+<div class="controls">
+  <div class="ctrl"><label>Min Price <span class="val" id="v1">$15</span></label><input type="range" id="s1" min="5" max="95" value="15"></div>
+  <div class="ctrl"><label>Max Price <span class="val" id="v2">$98</span></label><input type="range" id="s2" min="20" max="150" value="98"></div>
+  <div class="ctrl"><label>Min Delta % Below Market <span class="val" id="v3">50%</span></label><input type="range" id="s3" min="10" max="90" value="50" step="5"></div>
+  <div class="ctrl"><label>BIN Weight <span class="val" id="v4">75%</span></label><input type="range" id="s4" min="0" max="100" value="75" step="5"></div>
+  <div class="ctrl"><label>Player</label><select id="fp"><option value="all">All Players</option></select></div>
+  <div class="ctrl"><label>Parallel</label><select id="fr"><option value="all">All Parallels</option></select></div>
+</div>
+
+<div class="filters">
+  <div class="pill active" onclick="tf('all',this)">All</div>
+  <div class="pill snipe-pill" onclick="tf('snipe',this)">Snipes Only</div>
+  <div class="pill" onclick="tf('market',this)">Market Only</div>
+  <div class="pill" onclick="tf('bin',this)">BIN Only</div>
+  <div class="pill" onclick="tf('auction',this)">Auction Only</div>
+</div>
+
+<div class="stats">
+  <div class="stat s1"><div class="n" id="c1">-</div><div class="l">Snipes</div></div>
+  <div class="stat s2"><div class="n" id="c2">-</div><div class="l">Market</div></div>
+  <div class="stat s3"><div class="n" id="c3">-</div><div class="l">Avg Delta</div></div>
+  <div class="stat s4"><div class="n" id="c4">-</div><div class="l">Total Cost</div></div>
+  <div class="stat"><div class="n" id="c5">-</div><div class="l">Shown</div></div>
+  <div class="stat"><div class="n" id="c6">-</div><div class="l">BIN</div></div>
+</div>
+
+<div class="results">
+<table>
+<thead><tr>
+  <th></th>
+  <th data-s="searchType" onclick="sb('searchType')">Type</th>
+  <th data-s="type" onclick="sb('type')">Format</th>
+  <th data-s="player" onclick="sb('player')">Player</th>
+  <th data-s="parallel" onclick="sb('parallel')">Parallel</th>
+  <th data-s="card" onclick="sb('card')">Card</th>
+  <th onclick="sb('title')">Listing</th>
+  <th data-s="price" onclick="sb('price')">Price</th>
+  <th data-s="marketAvg" onclick="sb('marketAvg')">Market</th>
+  <th data-s="delta" onclick="sb('delta')">Delta</th>
+  <th data-s="score" onclick="sb('score')">Score</th>
+</tr></thead>
+<tbody id="tb"><tr><td colspan="11" class="empty">Loading snipe-latest.json...</td></tr></tbody>
+</table>
+</div>
+
+<script>
+let D=[],F=[],tff='all',sf='delta',sd=-1;
+
+fetch('results/snipe-latest.json').then(r=>r.json()).then(d=>{
+  D=d.results||[];
+  document.getElementById('lr').textContent='Last run: '+new Date(d.timestamp).toLocaleString();
+  document.getElementById('sc').textContent=d.searchCount+' searches | '+D.length+' raw results';
+  const ps=[...new Set(D.map(h=>h.player))].sort();
+  ps.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;document.getElementById('fp').appendChild(o)});
+  const prs=[...new Set(D.map(h=>h.parallel))].sort();
+  prs.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;document.getElementById('fr').appendChild(o)});
+  af();
+}).catch(()=>{document.getElementById('tb').innerHTML='<tr><td colspan="11" class="empty">No data. Run: node isosnipe/snipe.js</td></tr>'});
+
+['s1','s2','s3','s4'].forEach(id=>{document.getElementById(id).addEventListener('input',af)});
+['fp','fr'].forEach(id=>{document.getElementById(id).addEventListener('change',af)});
+
+function tf(f,el){tff=f;document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');af()}
+function sb(f){if(sf===f)sd*=-1;else{sf=f;sd=-1}document.querySelectorAll('th').forEach(t=>t.classList.remove('sorted'));const th=document.querySelector(`th[data-s="${f}"]`);if(th)th.classList.add('sorted');af()}
+
+function af(){
+  const minP=+document.getElementById('s1').value,maxP=+document.getElementById('s2').value,minD=+document.getElementById('s3').value,bw=+document.getElementById('s4').value/100;
+  const pf=document.getElementById('fp').value,rf=document.getElementById('fr').value;
+  document.getElementById('v1').textContent='$'+minP;
+  document.getElementById('v2').textContent='$'+maxP;
+  document.getElementById('v3').textContent=minD+'%';
+  document.getElementById('v4').textContent=Math.round(bw*100)+'%';
+
+  F=D.filter(h=>{
+    if(h.price<minP||h.price>maxP)return false;
+    if(h.delta<minD)return false;
+    if(pf!=='all'&&h.player!==pf)return false;
+    if(rf!=='all'&&h.parallel!==rf)return false;
+    if(tff==='snipe'&&!h.isMisspelling)return false;
+    if(tff==='market'&&h.isMisspelling)return false;
+    if(tff==='bin'&&h.type!=='BIN')return false;
+    if(tff==='auction'&&h.type!=='AUCTION')return false;
+    return true;
+  });
+  F.forEach(h=>{const w=h.type==='BIN'?bw:(1-bw);h.score=parseFloat((h.delta*w).toFixed(1))});
+  F.sort((a,b)=>{let av=a[sf],bv=b[sf];if(typeof av==='string')return sd*av.localeCompare(bv);return sd*(av-bv)});
+  render();
+}
+
+function render(){
+  const sn=F.filter(h=>h.isMisspelling),mk=F.filter(h=>!h.isMisspelling),bn=F.filter(h=>h.type==='BIN');
+  document.getElementById('c1').textContent=sn.length;
+  document.getElementById('c2').textContent=mk.length;
+  document.getElementById('c5').textContent=F.length;
+  document.getElementById('c6').textContent=bn.length;
+  document.getElementById('c3').textContent=F.length?(F.reduce((s,h)=>s+h.delta,0)/F.length).toFixed(0)+'%':'-';
+  document.getElementById('c4').textContent=F.length?'$'+F.reduce((s,h)=>s+h.price,0).toFixed(0):'-';
+  const tb=document.getElementById('tb');
+  if(!F.length){tb.innerHTML='<tr><td colspan="11" class="empty">No results match. Adjust sliders.</td></tr>';return}
+  tb.innerHTML=F.slice(0,100).map(h=>`<tr class="${h.isMisspelling?'sr':''}">
+    <td>${h.image?`<img src="${h.image}" class="thumb" loading="lazy">`:''}</td>
+    <td><span class="badge ${h.isMisspelling?'bs':'bm'}">${h.searchType}</span></td>
+    <td><span class="badge ${h.type==='BIN'?'bb':'ba'}">${h.type}</span></td>
+    <td>${h.player}</td>
+    <td><span class="badge bp">${h.parallel}</span></td>
+    <td style="font-size:.72rem;color:#8892a8">${h.card}</td>
+    <td class="tc"><a href="${h.url}" target="_blank" title="${h.title}">${h.title.substring(0,60)}</a></td>
+    <td class="price">$${h.price.toFixed(2)}</td>
+    <td class="mp">$${h.marketAvg}</td>
+    <td class="${h.delta>0?'dp':'dn'}">${h.delta>0?'+':''}${h.delta}%</td>
+    <td class="sc">${h.score}</td>
+  </tr>`).join('');
+}
+</script>
+</body></html>

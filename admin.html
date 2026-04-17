@@ -384,6 +384,22 @@ tr:hover td { background: var(--bg); }
 .pbi-modal-table th { text-align: left; padding: 5px 8px; font-size: 9px; color: var(--text2); font-weight: 700; letter-spacing: .5px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
 .pbi-modal-table td { padding: 5px 8px; border-bottom: 1px solid var(--border); }
 .pbi-modal-table tr:last-child td { border-bottom: none; }
+/* ISOsnipe */
+.sn-pill{padding:5px 12px;border-radius:14px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--surface);color:var(--text2);transition:all .15s}
+.sn-pill:hover{border-color:var(--blue);color:var(--blue)}
+.sn-pill.active{background:var(--blue-light);border-color:var(--blue);color:var(--blue)}
+.sn-snipe{background:var(--green-light);color:var(--green);font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px}
+.sn-market{background:var(--purple-light);color:var(--purple);font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px}
+.sn-bin{background:var(--yellow-light);color:var(--yellow);font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px}
+.sn-auc{background:var(--red-light);color:var(--red);font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px}
+.sn-par{background:var(--blue-light);color:var(--blue);font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px}
+.sn-delta-pos{color:var(--green);font-weight:700}
+.sn-delta-neg{color:var(--red);font-weight:700}
+.sn-score{color:var(--yellow);font-weight:700}
+.sn-price{color:var(--green);font-weight:700}
+.sn-thumb{width:40px;height:40px;object-fit:contain;border-radius:4px;background:var(--surface2)}
+.sn-row-snipe{background:rgba(5,150,105,0.04)}
+.sn-row-snipe:hover{background:rgba(5,150,105,0.08)}
 </style>
 </head>
 <body>
@@ -501,6 +517,11 @@ tr:hover td { background: var(--bg); }
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
       Message Center
       <span id="msg-nav-badge" style="margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;display:none">0</span>
+    </div>
+
+    <div class="nav-item" onclick="nav('isosnipe',this);loadIsoSnipe()" style="color:var(--green)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+      ISOsnipe
     </div>
 
     <div class="sidebar-footer">
@@ -1828,6 +1849,93 @@ tr:hover td { background: var(--bg); }
           </div>
           <input type="hidden" id="srd-id">
         </div>
+      </div>
+    </div>
+
+    <!-- ── ISOSNIPE ── -->
+    <div class="panel" id="panel-isosnipe">
+      <div class="panel-header">
+        <div class="panel-eyebrow" style="color:var(--green)">Revenue Tool</div>
+        <div class="panel-title">ISOsnipe</div>
+        <div class="panel-sub">eBay keyword arbitrage — find mispriced cards via misspellings. Seed money engine.</div>
+      </div>
+
+      <!-- Controls -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px;padding:16px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border)">
+        <div>
+          <label style="font-size:11px;font-weight:600;color:var(--text2);display:flex;justify-content:space-between">Min Price <span id="snMinPV" style="color:var(--blue)">$15</span></label>
+          <input type="range" id="snMinP" min="5" max="95" value="15" style="width:100%">
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:600;color:var(--text2);display:flex;justify-content:space-between">Max Price <span id="snMaxPV" style="color:var(--blue)">$98</span></label>
+          <input type="range" id="snMaxP" min="20" max="150" value="98" style="width:100%">
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:600;color:var(--text2);display:flex;justify-content:space-between">Min Delta % <span id="snDeltaV" style="color:var(--blue)">50%</span></label>
+          <input type="range" id="snDelta" min="10" max="90" value="50" step="5" style="width:100%">
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:600;color:var(--text2);display:flex;justify-content:space-between">BIN Weight <span id="snBinWV" style="color:var(--blue)">75%</span></label>
+          <input type="range" id="snBinW" min="0" max="100" value="75" step="5" style="width:100%">
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:600;color:var(--text2)">Player</label>
+          <select id="snPlayer" style="width:100%;padding:6px;border:1px solid var(--border2);border-radius:var(--radius);font-size:13px"><option value="all">All Players</option></select>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:600;color:var(--text2)">Parallel</label>
+          <select id="snParallel" style="width:100%;padding:6px;border:1px solid var(--border2);border-radius:var(--radius);font-size:13px"><option value="all">All Parallels</option></select>
+        </div>
+      </div>
+
+      <!-- Filter pills -->
+      <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+        <button class="sn-pill active" onclick="snSetType('all',this)">All</button>
+        <button class="sn-pill" onclick="snSetType('snipe',this)" style="border-color:var(--green)">Snipes Only</button>
+        <button class="sn-pill" onclick="snSetType('market',this)">Market</button>
+        <button class="sn-pill" onclick="snSetType('bin',this)">BIN</button>
+        <button class="sn-pill" onclick="snSetType('auction',this)">Auction</button>
+      </div>
+
+      <!-- Stats row -->
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+        <div style="background:var(--green-light);border:1px solid var(--green);border-radius:var(--radius);padding:10px 16px;text-align:center;min-width:90px">
+          <div style="font-size:20px;font-weight:800;color:var(--green)" id="snStatSnipes">-</div><div style="font-size:10px;color:var(--text2)">Snipes</div>
+        </div>
+        <div style="background:var(--purple-light);border:1px solid var(--purple);border-radius:var(--radius);padding:10px 16px;text-align:center;min-width:90px">
+          <div style="font-size:20px;font-weight:800;color:var(--purple)" id="snStatMarket">-</div><div style="font-size:10px;color:var(--text2)">Market</div>
+        </div>
+        <div style="background:var(--red-light);border:1px solid var(--red);border-radius:var(--radius);padding:10px 16px;text-align:center;min-width:90px">
+          <div style="font-size:20px;font-weight:800;color:var(--red)" id="snStatDelta">-</div><div style="font-size:10px;color:var(--text2)">Avg Delta</div>
+        </div>
+        <div style="background:var(--yellow-light);border:1px solid var(--yellow);border-radius:var(--radius);padding:10px 16px;text-align:center;min-width:90px">
+          <div style="font-size:20px;font-weight:800;color:var(--yellow)" id="snStatCost">-</div><div style="font-size:10px;color:var(--text2)">Total Cost</div>
+        </div>
+        <div style="background:var(--blue-light);border:1px solid var(--blue);border-radius:var(--radius);padding:10px 16px;text-align:center;min-width:90px">
+          <div style="font-size:20px;font-weight:800;color:var(--blue)" id="snStatShown">-</div><div style="font-size:10px;color:var(--text2)">Shown</div>
+        </div>
+      </div>
+
+      <div id="snLastRun" style="font-size:11px;color:var(--text3);margin-bottom:8px"></div>
+
+      <!-- Table -->
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th style="width:48px"></th>
+            <th style="cursor:pointer" onclick="snSort('searchType')">Type</th>
+            <th style="cursor:pointer" onclick="snSort('type')">Format</th>
+            <th style="cursor:pointer" onclick="snSort('player')">Player</th>
+            <th style="cursor:pointer" onclick="snSort('parallel')">Parallel</th>
+            <th>Card</th>
+            <th>Listing</th>
+            <th style="cursor:pointer" onclick="snSort('price')">Price</th>
+            <th style="cursor:pointer" onclick="snSort('marketAvg')">Market</th>
+            <th style="cursor:pointer" onclick="snSort('delta')">Delta</th>
+            <th style="cursor:pointer" onclick="snSort('score')">Score</th>
+          </tr></thead>
+          <tbody id="snTbody"><tr><td colspan="11" style="text-align:center;padding:40px;color:var(--text3)">Click "ISOsnipe" to load data...</td></tr></tbody>
+        </table>
       </div>
     </div>
 
@@ -5428,6 +5536,104 @@ function pbiToggleLock() {
     grid.querySelectorAll('.pbi-tile').forEach(t => { if(t.dataset.savedClick) { t.setAttribute('onclick', t.dataset.savedClick); delete t.dataset.savedClick; } });
     pbiSaveOrder();
   }
+}
+
+// ── ISOSNIPE ──
+let _snData=[], _snFiltered=[], _snTypeF='all', _snSortF='delta', _snSortD=-1;
+
+async function loadIsoSnipe(){
+  const tb=document.getElementById('snTbody');
+  tb.innerHTML='<tr><td colspan="11" style="text-align:center;padding:40px;color:var(--text3)">Loading snipe data...</td></tr>';
+  try{
+    const res=await fetch('/isosnipe/results/snipe-latest.json');
+    if(!res.ok) throw new Error('No data file');
+    const d=await res.json();
+    _snData=d.results||[];
+    document.getElementById('snLastRun').textContent='Last scan: '+new Date(d.timestamp).toLocaleString()+' | '+d.searchCount+' searches | '+_snData.length+' raw results';
+    // populate dropdowns
+    const pSel=document.getElementById('snPlayer');
+    const rSel=document.getElementById('snParallel');
+    pSel.innerHTML='<option value="all">All Players</option>';
+    rSel.innerHTML='<option value="all">All Parallels</option>';
+    [...new Set(_snData.map(h=>h.player))].sort().forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;pSel.appendChild(o)});
+    [...new Set(_snData.map(h=>h.parallel))].sort().forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;rSel.appendChild(o)});
+    snApply();
+  }catch(e){
+    tb.innerHTML='<tr><td colspan="11" style="text-align:center;padding:40px;color:var(--red)">No snipe data found. Run: node isosnipe/snipe.js</td></tr>';
+  }
+}
+
+// slider listeners
+['snMinP','snMaxP','snDelta','snBinW'].forEach(id=>{
+  document.getElementById(id)?.addEventListener('input',snApply);
+});
+['snPlayer','snParallel'].forEach(id=>{
+  document.getElementById(id)?.addEventListener('change',snApply);
+});
+
+function snSetType(f,el){
+  _snTypeF=f;
+  document.querySelectorAll('.sn-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  snApply();
+}
+function snSort(f){
+  if(_snSortF===f)_snSortD*=-1; else{_snSortF=f;_snSortD=-1}
+  snApply();
+}
+
+function snApply(){
+  const minP=+document.getElementById('snMinP').value;
+  const maxP=+document.getElementById('snMaxP').value;
+  const minD=+document.getElementById('snDelta').value;
+  const bw=+document.getElementById('snBinW').value/100;
+  const pf=document.getElementById('snPlayer').value;
+  const rf=document.getElementById('snParallel').value;
+  document.getElementById('snMinPV').textContent='$'+minP;
+  document.getElementById('snMaxPV').textContent='$'+maxP;
+  document.getElementById('snDeltaV').textContent=minD+'%';
+  document.getElementById('snBinWV').textContent=Math.round(bw*100)+'%';
+
+  _snFiltered=_snData.filter(h=>{
+    if(h.price<minP||h.price>maxP)return false;
+    if(h.delta<minD)return false;
+    if(pf!=='all'&&h.player!==pf)return false;
+    if(rf!=='all'&&h.parallel!==rf)return false;
+    if(_snTypeF==='snipe'&&!h.isMisspelling)return false;
+    if(_snTypeF==='market'&&h.isMisspelling)return false;
+    if(_snTypeF==='bin'&&h.type!=='BIN')return false;
+    if(_snTypeF==='auction'&&h.type!=='AUCTION')return false;
+    return true;
+  });
+  _snFiltered.forEach(h=>{const w=h.type==='BIN'?bw:(1-bw);h.score=parseFloat((h.delta*w).toFixed(1))});
+  _snFiltered.sort((a,b)=>{let av=a[_snSortF],bv=b[_snSortF];if(typeof av==='string')return _snSortD*av.localeCompare(bv);return _snSortD*(av-bv)});
+  snRender();
+}
+
+function snRender(){
+  const sn=_snFiltered.filter(h=>h.isMisspelling);
+  const mk=_snFiltered.filter(h=>!h.isMisspelling);
+  document.getElementById('snStatSnipes').textContent=sn.length;
+  document.getElementById('snStatMarket').textContent=mk.length;
+  document.getElementById('snStatShown').textContent=_snFiltered.length;
+  document.getElementById('snStatDelta').textContent=_snFiltered.length?(_snFiltered.reduce((s,h)=>s+h.delta,0)/_snFiltered.length).toFixed(0)+'%':'-';
+  document.getElementById('snStatCost').textContent=_snFiltered.length?'$'+_snFiltered.reduce((s,h)=>s+h.price,0).toFixed(0):'-';
+
+  const tb=document.getElementById('snTbody');
+  if(!_snFiltered.length){tb.innerHTML='<tr><td colspan="11" style="text-align:center;padding:30px;color:var(--text3)">No results match filters. Adjust sliders.</td></tr>';return}
+  tb.innerHTML=_snFiltered.slice(0,100).map(h=>`<tr class="${h.isMisspelling?'sn-row-snipe':''}">
+    <td>${h.image?`<img src="${h.image}" class="sn-thumb" loading="lazy">`:''}</td>
+    <td><span class="${h.isMisspelling?'sn-snipe':'sn-market'}">${h.searchType}</span></td>
+    <td><span class="${h.type==='BIN'?'sn-bin':'sn-auc'}">${h.type}</span></td>
+    <td style="font-weight:600">${h.player}</td>
+    <td><span class="sn-par">${h.parallel}</span></td>
+    <td style="font-size:11px;color:var(--text2)">${h.card||''}</td>
+    <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><a href="${h.url}" target="_blank" title="${h.title}" style="color:var(--blue)">${h.title.substring(0,55)}</a></td>
+    <td class="sn-price">$${h.price.toFixed(2)}</td>
+    <td style="color:var(--text3)">$${h.marketAvg}</td>
+    <td class="${h.delta>0?'sn-delta-pos':'sn-delta-neg'}">${h.delta>0?'+':''}${h.delta}%</td>
+    <td class="sn-score">${h.score}</td>
+  </tr>`).join('');
 }
 
 </script>

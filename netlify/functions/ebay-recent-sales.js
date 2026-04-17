@@ -151,10 +151,51 @@ async function searchSoldListings(token, query, env) {
   return JSON.parse(res.body);
 }
 
+// ── Fake/junk card filter ────────────────────────────────────
+// Hardcoded floor — always blocked. Admin can add more via ebay_blocklist table.
+const JUNK_TERMS = [
+  'custom', 'reprint', 'facsimile', 'novelty', 'fantasy card',
+  'art card', 'aceo', 'tc card', 'unofficial', 'not real',
+  'fan made', 'fanmade', 'homemade', 'home made', 'gag gift',
+  'limited edit', 'replica', 'counterfeit', 'bootleg',
+  'custom blast', 'art print', 'fan art', 'proxy',
+];
+
+// Cache admin blocklist (refreshed once per cold start)
+let _blocklistCache = null;
+let _blocklistTs = 0;
+const BLOCKLIST_TTL = 5 * 60 * 1000; // 5 min cache
+
+async function getBlocklist() {
+  if (_blocklistCache && (Date.now() - _blocklistTs) < BLOCKLIST_TTL) return _blocklistCache;
+  try {
+    const SB = 'https://jyfaegmnzkarlcximxjo.supabase.co';
+    const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+    const url = `${SB}/rest/v1/ebay_blocklist?select=term&limit=500`;
+    const res = await new Promise((resolve, reject) => {
+      https.get(url, { headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY } }, (r) => {
+        let d = ''; r.on('data', c => d += c); r.on('end', () => resolve(d));
+      }).on('error', reject);
+    });
+    const rows = JSON.parse(res);
+    _blocklistCache = (rows || []).map(r => r.term.toLowerCase());
+    _blocklistTs = Date.now();
+  } catch (e) { _blocklistCache = []; _blocklistTs = Date.now(); }
+  return _blocklistCache;
+}
+
+function isJunkListing(title, adminTerms) {
+  if (!title) return false;
+  const t = title.toLowerCase();
+  if (JUNK_TERMS.some(term => t.includes(term))) return true;
+  if (adminTerms && adminTerms.some(term => t.includes(term))) return true;
+  return false;
+}
+
 // ── Summarize pricing from results ──────────────────────────
-function summarizePricing(results) {
+function summarizePricing(results, adminTerms) {
   const items = (results.itemSummaries || [])
-    .filter((i) => i.price && i.price.value)
+    .filter((i) => i.price && i.price.value && !isJunkListing(i.title, adminTerms))
     .map((i) => ({
       title: i.title,
       price: parseFloat(i.price.value),
@@ -234,15 +275,18 @@ exports.handler = async (event) => {
     const envKey = (process.env.EBAY_ENVIRONMENT || 'production').toLowerCase();
     const env = EBAY_ENV[envKey] || EBAY_ENV.production;
 
-    // 1. Get OAuth token
-    const token = await getEbayToken(clientId, clientSecret, env);
+    // 1. Get OAuth token + blocklist in parallel
+    const [token, adminTerms] = await Promise.all([
+      getEbayToken(clientId, clientSecret, env),
+      getBlocklist(),
+    ]);
 
     // 2. Build query and search
     const query = buildSearchQuery({ player, year, brand, set_name, card_number, variation, grade });
     const results = await searchSoldListings(token, query, env);
 
-    // 3. Summarize pricing
-    const summary = summarizePricing(results);
+    // 3. Summarize pricing (filters junk via hardcoded + admin blocklist)
+    const summary = summarizePricing(results, adminTerms);
     summary.query = query; // Include for debugging/transparency
 
     return {

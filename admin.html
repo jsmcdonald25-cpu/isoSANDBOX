@@ -1913,6 +1913,22 @@ tr:hover td { background: var(--bg); }
         <div style="background:var(--blue-light);border:1px solid var(--blue);border-radius:var(--radius);padding:10px 16px;text-align:center;min-width:90px">
           <div style="font-size:20px;font-weight:800;color:var(--blue)" id="snStatShown">-</div><div style="font-size:10px;color:var(--text2)">Shown</div>
         </div>
+        <div style="background:rgba(255,59,92,0.06);border:1px solid var(--red);border-radius:var(--radius);padding:10px 16px;text-align:center;min-width:90px;cursor:pointer" onclick="snToggleBlocklist()">
+          <div style="font-size:20px;font-weight:800;color:var(--red)" id="snStatBlocked">-</div><div style="font-size:10px;color:var(--text2)">Blocked</div>
+        </div>
+      </div>
+
+      <!-- Blocklist panel (toggled) -->
+      <div id="snBlocklistPanel" style="display:none;margin-bottom:16px;padding:16px;background:var(--surface2);border:1px solid rgba(255,59,92,0.2);border-radius:var(--radius)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div style="font-size:13px;font-weight:700;color:var(--red);letter-spacing:.5px">BLOCKED TERMS</div>
+          <div style="font-size:11px;color:var(--text3)">Listings with these words are filtered from all eBay results</div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <input id="snBlockInput" placeholder="e.g. custom blast, facsimile, art card..." style="flex:1;padding:8px 12px;border:1px solid var(--border2);border-radius:var(--radius);font-size:13px;background:var(--surface);color:var(--text)" onkeydown="if(event.key==='Enter')snAddBlockTerm()">
+          <button onclick="snAddBlockTerm()" style="padding:8px 16px;border-radius:var(--radius);background:var(--red);border:none;color:#fff;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.5px">+ ADD</button>
+        </div>
+        <div id="snBlockTerms" style="display:flex;flex-wrap:wrap;gap:6px"></div>
       </div>
 
       <div id="snLastRun" style="font-size:11px;color:var(--text3);margin-bottom:8px"></div>
@@ -5539,6 +5555,62 @@ function pbiToggleLock() {
 
 // ── ISOSNIPE ──
 let _snData=[], _snFiltered=[], _snTypeF='all', _snSortF='delta', _snSortD=-1;
+let _snBlockTerms = [];
+
+// ── Blocklist ──
+function snToggleBlocklist(){
+  const p = document.getElementById('snBlocklistPanel');
+  p.style.display = p.style.display === 'none' ? 'block' : 'none';
+  if(p.style.display === 'block') snLoadBlocklist();
+}
+
+async function snLoadBlocklist(){
+  try {
+    const r = await _get('ebay_blocklist', 'select=id,term&order=created_at.desc&limit=200');
+    _snBlockTerms = r || [];
+    document.getElementById('snStatBlocked').textContent = _snBlockTerms.length;
+    snRenderBlockTerms();
+  } catch(e){ console.warn('Blocklist load failed:', e); }
+}
+
+function snRenderBlockTerms(){
+  const el = document.getElementById('snBlockTerms');
+  if(!_snBlockTerms.length){
+    el.innerHTML = '<span style="font-size:12px;color:var(--text3)">No blocked terms yet. Add terms above to filter junk eBay listings.</span>';
+    return;
+  }
+  el.innerHTML = _snBlockTerms.map(t =>
+    `<span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:16px;background:rgba(255,59,92,0.08);border:1px solid rgba(255,59,92,0.2);font-size:12px;font-weight:600;color:var(--red)">
+      ${t.term}
+      <span onclick="snRemoveBlockTerm(${t.id})" style="cursor:pointer;opacity:0.6;font-size:14px" title="Remove">&times;</span>
+    </span>`
+  ).join('');
+}
+
+async function snAddBlockTerm(){
+  const input = document.getElementById('snBlockInput');
+  const raw = input.value.trim().toLowerCase();
+  if(!raw) return;
+  // Support comma-separated for bulk add
+  const terms = raw.split(',').map(t => t.trim()).filter(t => t.length > 0);
+  for(const term of terms){
+    if(_snBlockTerms.some(t => t.term === term)) continue;
+    try {
+      await _post('ebay_blocklist', { term, created_at: new Date().toISOString() });
+    } catch(e){ toast('Failed to add: '+term, 'error'); }
+  }
+  input.value = '';
+  await snLoadBlocklist();
+  toast(terms.length + ' term' + (terms.length===1?'':'s') + ' added', 'success');
+}
+
+async function snRemoveBlockTerm(id){
+  try {
+    await _delete('ebay_blocklist', 'id=eq.'+id);
+    await snLoadBlocklist();
+    toast('Term removed', 'success');
+  } catch(e){ toast('Remove failed', 'error'); }
+}
 
 async function loadIsoSnipe(){
   const tb=document.getElementById('snTbody');

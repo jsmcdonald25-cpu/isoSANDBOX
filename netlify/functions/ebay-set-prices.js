@@ -12,6 +12,39 @@
 
 const https = require('https');
 
+// ── Fake/junk card filter ────────────────────────────────────
+const JUNK_TERMS = [
+  'custom', 'reprint', 'facsimile', 'novelty', 'fantasy card',
+  'art card', 'aceo', 'tc card', 'unofficial', 'not real',
+  'fan made', 'fanmade', 'homemade', 'home made', 'gag gift',
+  'limited edit', 'replica', 'counterfeit', 'bootleg',
+  'custom blast', 'art print', 'fan art', 'proxy',
+];
+let _blocklistCache = null;
+let _blocklistTs = 0;
+async function getBlocklist() {
+  if (_blocklistCache && (Date.now() - _blocklistTs) < 300000) return _blocklistCache;
+  try {
+    const SB = 'https://jyfaegmnzkarlcximxjo.supabase.co';
+    const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+    const res = await new Promise((resolve, reject) => {
+      https.get(`${SB}/rest/v1/ebay_blocklist?select=term&limit=500`, { headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY } }, (r) => {
+        let d = ''; r.on('data', c => d += c); r.on('end', () => resolve(d));
+      }).on('error', reject);
+    });
+    _blocklistCache = (JSON.parse(res) || []).map(r => r.term.toLowerCase());
+    _blocklistTs = Date.now();
+  } catch (e) { _blocklistCache = []; _blocklistTs = Date.now(); }
+  return _blocklistCache;
+}
+function isJunkListing(title, adminTerms) {
+  if (!title) return false;
+  const t = title.toLowerCase();
+  if (JUNK_TERMS.some(term => t.includes(term))) return true;
+  if (adminTerms && adminTerms.some(term => t.includes(term))) return true;
+  return false;
+}
+
 // ── eBay API endpoints ──────────────────────────────────────
 const EBAY_ENV = {
   production: {
@@ -76,7 +109,7 @@ function buildQuery({ player, year, brand, set_name, card_number }) {
 }
 
 // ── Search eBay for a single card ───────────────────────────
-async function searchCard(token, query, env) {
+async function searchCard(token, query, env, adminTerms) {
   const params = new URLSearchParams({
     q: query,
     filter: 'buyingOptions:{FIXED_PRICE|AUCTION}',
@@ -96,7 +129,7 @@ async function searchCard(token, query, env) {
   if (res.statusCode !== 200) return null;
   const data = JSON.parse(res.body);
   const items = (data.itemSummaries || [])
-    .filter(i => i.price && i.price.value)
+    .filter(i => i.price && i.price.value && !isJunkListing(i.title, adminTerms))
     .map(i => parseFloat(i.price.value))
     .filter(p => p > 0);
   if (!items.length) return { avg: null, low: null, high: null, count: 0 };
@@ -165,7 +198,10 @@ exports.handler = async (event) => {
 
     const envKey = (process.env.EBAY_ENVIRONMENT || 'production').toLowerCase();
     const env = EBAY_ENV[envKey] || EBAY_ENV.production;
-    const token = await getEbayToken(clientId, clientSecret, env);
+    const [token, adminTerms] = await Promise.all([
+      getEbayToken(clientId, clientSecret, env),
+      getBlocklist(),
+    ]);
 
     const results = [];
     const cacheRows = [];
@@ -180,7 +216,7 @@ exports.handler = async (event) => {
         card_number: card.card_number,
       });
 
-      const pricing = await searchCard(token, query, env);
+      const pricing = await searchCard(token, query, env, adminTerms);
 
       const entry = {
         card_number: String(card.card_number),

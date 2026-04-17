@@ -145,6 +145,20 @@ async function getPrevRanks() {
   } catch (e) { return {}; }
 }
 
+// ── Fake/junk card filter ────────────────────────────────────
+const JUNK_TERMS = [
+  'custom', 'reprint', 'facsimile', 'novelty', 'fantasy card',
+  'art card', 'aceo', 'tc card', 'unofficial', 'not real',
+  'fan made', 'fanmade', 'homemade', 'home made', 'gag gift',
+  'limited edit', 'replica', 'counterfeit', 'bootleg',
+  'custom blast', 'art print', 'fan art', 'proxy',
+];
+function isJunkListing(title) {
+  if (!title) return false;
+  const t = title.toLowerCase();
+  return JUNK_TERMS.some(term => t.includes(term));
+}
+
 // ── eBay pricing helpers ────────────────────────────────────
 const EBAY_AUTH_URL = 'https://api.ebay.com/identity/v1/oauth2/token';
 const EBAY_BROWSE_URL = 'https://api.ebay.com/buy/browse/v1/item_summary/search';
@@ -189,7 +203,7 @@ async function ebayAvgPrice(token, playerName) {
   if (res.statusCode !== 200) return null;
   const data = JSON.parse(res.body);
   const prices = (data.itemSummaries || [])
-    .filter(i => i.price && i.price.value)
+    .filter(i => i.price && i.price.value && !isJunkListing(i.title))
     .map(i => parseFloat(i.price.value))
     .filter(p => p > 0);
   if (!prices.length) return null;

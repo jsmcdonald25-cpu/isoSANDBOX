@@ -194,8 +194,10 @@ async function getEbayToken() {
 
 async function ebayAvgPrice(token, playerName) {
   const yr = new Date().getFullYear();
-  const q = encodeURIComponent(`${yr} Topps ${playerName}`);
-  const url = new URL(`${EBAY_BROWSE_URL}?q=${q}&filter=buyingOptions:{FIXED_PRICE|AUCTION}&limit=30`);
+  // Try current year + player name (no brand lock — catches Topps, Bowman, Panini, etc.)
+  // Add "baseball card" to filter out non-card results
+  const q = encodeURIComponent(`${yr} ${playerName} baseball card`);
+  const url = new URL(`${EBAY_BROWSE_URL}?q=${q}&filter=buyingOptions:{FIXED_PRICE|AUCTION}&limit=40`);
   const res = await httpsRequest(url, {
     method: 'GET', hostname: url.hostname, path: `${url.pathname}${url.search}`,
     headers: { Authorization: `Bearer ${token}`, 'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US', 'Content-Type': 'application/json' },
@@ -204,6 +206,7 @@ async function ebayAvgPrice(token, playerName) {
   const data = JSON.parse(res.body);
   const prices = (data.itemSummaries || [])
     .filter(i => i.price && i.price.value && !isJunkListing(i.title))
+    .filter(i => parseFloat(i.price.value) < 500) // Cap: skip graded/1-of-1 outliers for avg base card price
     .map(i => parseFloat(i.price.value))
     .filter(p => p > 0);
   if (!prices.length) return null;

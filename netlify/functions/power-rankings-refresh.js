@@ -405,27 +405,31 @@ async function refreshRankings() {
   // Helper: get price for a split's player
   const _pp = (s) => _priceMap[s.player.id] || 5;
 
-  // Superstars (top 15 hitters by ISO score)
+  // Superstars — Hitters (top 15)
   const supersSorted = [...hitters].sort((a, b) => isoHit(b.stat, _pp(b)) - isoHit(a.stat, _pp(a)));
-  supersSorted.slice(0, 15).forEach((s, i) => rows.push(buildRow(s, 'h', 'superstars', i + 1, i + 1, false)));
+  supersSorted.slice(0, 15).forEach((s, i) => rows.push(buildRow(s, 'h', 'superstars-h', i + 1, i + 1, false)));
 
-  // Pitchers (top 10 by ISO score)
+  // Superstars — Pitchers (top 10)
   const pitchersSorted = [...pitchers].sort((a, b) => isoPit(b.stat, _pp(b)) - isoPit(a.stat, _pp(a)));
-  pitchersSorted.slice(0, 10).forEach((s, i) => rows.push(buildRow(s, 'p', 'pitchers', i + 1, i + 1, false)));
+  pitchersSorted.slice(0, 10).forEach((s, i) => rows.push(buildRow(s, 'p', 'superstars-p', i + 1, i + 1, false)));
 
-  // Rookies (combined hitters + pitchers, top 10)
-  const rookieAll = [
-    ...rookieHitters.map(s => ({ sp: s, type: 'h', iso: isoHit(s.stat, _pp(s)) })),
-    ...rookiePitchers.map(s => ({ sp: s, type: 'p', iso: isoPit(s.stat, _pp(s)) })),
-  ].sort((a, b) => b.iso - a.iso);
-  rookieAll.slice(0, 10).forEach((r, i) => rows.push(buildRow(r.sp, r.type, 'rookies', i + 1, i + 1, true)));
+  // Rookies — Hitters (top 10)
+  const rookieHSorted = [...rookieHitters].sort((a, b) => isoHit(b.stat, _pp(b)) - isoHit(a.stat, _pp(a)));
+  rookieHSorted.slice(0, 10).forEach((s, i) => rows.push(buildRow(s, 'h', 'rookies-h', i + 1, i + 1, true)));
 
-  // Unicorn (value picks — high ISO + low price)
-  const allForValue = [
-    ...hitters.slice(0, 50).map(s => ({ sp: s, type: 'h', val: valScore(isoHit(s.stat, _pp(s)), _pp(s)) })),
-    ...pitchers.slice(0, 25).map(s => ({ sp: s, type: 'p', val: valScore(isoPit(s.stat, _pp(s)), _pp(s)) })),
-  ].sort((a, b) => b.val - a.val);
-  allForValue.slice(0, 10).forEach((r, i) => rows.push(buildRow(r.sp, r.type, 'unicorn', i + 1, i + 1, false)));
+  // Rookies — Pitchers (top 10)
+  const rookiePSorted = [...rookiePitchers].sort((a, b) => isoPit(b.stat, _pp(b)) - isoPit(a.stat, _pp(a)));
+  rookiePSorted.slice(0, 10).forEach((s, i) => rows.push(buildRow(s, 'p', 'rookies-p', i + 1, i + 1, true)));
+
+  // Unicorn — Hitters (top 10 value)
+  const unicornH = hitters.slice(0, 50).map(s => ({ sp: s, val: valScore(isoHit(s.stat, _pp(s)), _pp(s)) }))
+    .sort((a, b) => b.val - a.val);
+  unicornH.slice(0, 10).forEach((r, i) => rows.push(buildRow(r.sp, 'h', 'unicorn-h', i + 1, i + 1, false)));
+
+  // Unicorn — Pitchers (top 10 value)
+  const unicornP = pitchers.slice(0, 25).map(s => ({ sp: s, val: valScore(isoPit(s.stat, _pp(s)), _pp(s)) }))
+    .sort((a, b) => b.val - a.val);
+  unicornP.slice(0, 10).forEach((r, i) => rows.push(buildRow(r.sp, 'p', 'unicorn-p', i + 1, i + 1, false)));
 
   // Position-specific (hitters by position)
   const positions = ['C', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'DH'];
@@ -439,7 +443,7 @@ async function refreshRankings() {
   pitchersSorted.slice(0, 10).forEach((s, i) => rows.push(buildRow(s, 'p', 'pos-P', i + 1, i + 1, false)));
 
   // 5. Recalculate last5 ranks using actual last5 ISO scores
-  const categories = ['superstars', 'pitchers', 'rookies', 'unicorn', ...positions.map(p => 'pos-' + p), 'pos-P'];
+  const categories = ['superstars-h', 'superstars-p', 'rookies-h', 'rookies-p', 'unicorn-h', 'unicorn-p', ...positions.map(p => 'pos-' + p), 'pos-P'];
   categories.forEach(cat => {
     const catRows = rows.filter(r => r.category === cat);
     catRows.sort((a, b) => b.iso_score_last5 - a.iso_score_last5);

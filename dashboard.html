@@ -3262,7 +3262,7 @@ async function logOut(){
 
     <!-- SPOTLIGHT CARDS -->
     <div class="pr-spots">
-      <div class="pr-spot gold-c" onclick="prOpen('superstars')">
+      <div class="pr-spot gold-c" onclick="prOpen('superstars-h')">
         <div class="pr-spot-line"></div><div class="pr-glow"></div>
         <div class="pr-spot-inner">
           <div class="pr-spot-tip">Updates daily based on all-player performance</div>
@@ -3273,18 +3273,18 @@ async function logOut(){
           <div class="pr-spot-cta">View Rankings <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
         </div>
       </div>
-      <div class="pr-spot blue-c" onclick="prOpen('pitchers')">
+      <div class="pr-spot blue-c" onclick="prOpen('superstars-p')">
         <div class="pr-spot-line"></div><div class="pr-glow"></div>
         <div class="pr-spot-inner">
           <div class="pr-spot-tip">Updates daily based on pitching performance</div>
           <div class="pr-spot-big">&#128293; Top 10</div>
-          <div class="pr-spot-title">Pitchers</div>
+          <div class="pr-spot-title">Star Pitchers</div>
           <div class="pr-spot-desc">Starting &amp; Relief</div>
           <div class="pr-spot-leader">Currently #1: <b>Loading...</b></div>
           <div class="pr-spot-cta">View Rankings <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
         </div>
       </div>
-      <div class="pr-spot green-c" onclick="prOpen('rookies')">
+      <div class="pr-spot green-c" onclick="prOpen('rookies-h')">
         <div class="pr-spot-line"></div><div class="pr-glow"></div>
         <div class="pr-spot-inner">
           <div class="pr-spot-tip">Updates daily based on rookie performance</div>
@@ -3295,7 +3295,7 @@ async function logOut(){
           <div class="pr-spot-cta">View Rankings <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
         </div>
       </div>
-      <div class="pr-spot pink-c" onclick="prOpen('unicorn')">
+      <div class="pr-spot pink-c" onclick="prOpen('unicorn-h')">
         <div class="pr-spot-line"></div><div class="pr-glow"></div>
         <div class="pr-spot-inner">
           <div class="pr-spot-tip">Stats rising + card price still low = BUY signal</div>
@@ -13361,31 +13361,35 @@ function _prBuildData(){
   const h = _prCache.hitters||[], p = _prCache.pitchers||[], rh = _prCache.rookieH||[], rp = _prCache.rookieP||[];
   const data = {};
 
-  // Superstars (top 15 position players by OPS)
-  data.superstars = {i:'&#11088;',t:'Top 15 Superstars',s:'Position Players & DH',h:['AVG','HR','RBI','OPS','SB'],
+  // Superstars — Hitters
+  data['superstars-h'] = {i:'&#11088;',t:'Top 15 Superstars',s:'Hitters',h:['AVG','HR','RBI','OPS','SB'],
     r:h.slice(0,15).map((s,i)=>_prBuildHitterRow(i+1,s,false))};
 
-  // Pitchers (top 10 by ERA, min 10 IP)
-  data.pitchers = {i:'&#128293;',t:'Top 10 Pitchers',s:'Starting & Relief',h:['ERA','W-L','K','WHIP','IP'],
+  // Superstars — Pitchers
+  data['superstars-p'] = {i:'&#11088;',t:'Top 10 Superstars',s:'Pitchers',h:['ERA','W-L','K','WHIP','IP'],
     r:p.slice(0,10).map((s,i)=>_prBuildPitcherRow(i+1,s,false))};
 
-  // Rookies (combine hitters + pitchers, sort by ISO score)
-  const rookies = [
-    ...rh.slice(0,10).map(s=>({sp:s,type:'h',iso:_prISOHit(s.stat,(_prPriceCache[s.player.id]||{}).avg||5)})),
-    ...rp.slice(0,5).map(s=>({sp:s,type:'p',iso:_prISOPit(s.stat,(_prPriceCache[s.player.id]||{}).avg||5)}))
-  ].sort((a,b)=>b.iso-a.iso).slice(0,10);
-  data.rookies = {i:'&#127775;',t:'Top 10 Rookies',s:'All Positions',h:['Key','2nd','3rd','Rate','GP'],
-    r:rookies.map((r,i)=>r.type==='h'?_prBuildHitterRow(i+1,r.sp,true):_prBuildPitcherRow(i+1,r.sp,true))};
+  // Rookies — Hitters
+  data['rookies-h'] = {i:'&#127775;',t:'Top 10 Rookies',s:'Hitters',h:['AVG','HR','RBI','OPS','SB'],
+    r:rh.slice(0,10).map((s,i)=>_prBuildHitterRow(i+1,s,true))};
 
-  // Unicorn (highest value score — ISO high + price low)
-  const allPlayers = [
-    ...h.slice(0,30).map(s=>({sp:s,type:'h',iso:_prISOHit(s.stat,(_prPriceCache[s.player.id]||{}).avg||5),price:(_prPriceCache[s.player.id]||{}).avg||5})),
-    ...p.slice(0,15).map(s=>({sp:s,type:'p',iso:_prISOPit(s.stat,(_prPriceCache[s.player.id]||{}).avg||5),price:(_prPriceCache[s.player.id]||{}).avg||5}))
-  ];
-  allPlayers.forEach(a=>a.val=_prValScore(a.iso,a.price));
-  allPlayers.sort((a,b)=>b.val-a.val);
-  data.unicorn = {i:'&#129412;',t:'Top 10 Value Picks',s:'Stats &#8593; Price &#8595;',h:['Key','2nd','3rd','Rate','Score'],
-    r:allPlayers.slice(0,10).map((r,i)=>r.type==='h'?_prBuildHitterRow(i+1,r.sp,false):_prBuildPitcherRow(i+1,r.sp,false))};
+  // Rookies — Pitchers
+  data['rookies-p'] = {i:'&#127775;',t:'Top 10 Rookies',s:'Pitchers',h:['ERA','W-L','K','WHIP','IP'],
+    r:rp.slice(0,10).map((s,i)=>_prBuildPitcherRow(i+1,s,true))};
+
+  // Unicorn — Hitters
+  const uniH = h.slice(0,30).map(s=>({sp:s,iso:_prISOHit(s.stat,(_prPriceCache[s.player.id]||{}).avg||5),price:(_prPriceCache[s.player.id]||{}).avg||5}));
+  uniH.forEach(a=>a.val=_prValScore(a.iso,a.price));
+  uniH.sort((a,b)=>b.val-a.val);
+  data['unicorn-h'] = {i:'&#129412;',t:'Top 10 Value Picks',s:'Hitters',h:['AVG','HR','RBI','OPS','SB'],
+    r:uniH.slice(0,10).map((r,i)=>_prBuildHitterRow(i+1,r.sp,false))};
+
+  // Unicorn — Pitchers
+  const uniP = p.slice(0,15).map(s=>({sp:s,iso:_prISOPit(s.stat,(_prPriceCache[s.player.id]||{}).avg||5),price:(_prPriceCache[s.player.id]||{}).avg||5}));
+  uniP.forEach(a=>a.val=_prValScore(a.iso,a.price));
+  uniP.sort((a,b)=>b.val-a.val);
+  data['unicorn-p'] = {i:'&#129412;',t:'Top 10 Value Picks',s:'Pitchers',h:['ERA','W-L','K','WHIP','IP'],
+    r:uniP.slice(0,10).map((r,i)=>_prBuildPitcherRow(i+1,r.sp,false))};
 
   // Position-specific rankings
   const posMap = {'C':'pos-C','1B':'pos-1B','2B':'pos-2B','3B':'pos-3B','SS':'pos-SS','LF':'pos-LF','CF':'pos-CF','RF':'pos-RF','DH':'pos-DH'};
@@ -13407,14 +13411,25 @@ function prOpen(k){
   if(!_prLiveData) _prLiveData = _prBuildData();
   const d = _prLiveData[k]; if(!d) return;
   document.querySelectorAll('.pr-spot,.pr-pm').forEach(e=>e.classList.remove('ac','ap'));
-  if(k==='superstars')document.querySelector('.pr-spot.gold-c').classList.add('ac');
-  if(k==='pitchers')document.querySelector('.pr-spot.blue-c').classList.add('ac');
-  if(k==='rookies')document.querySelector('.pr-spot.green-c').classList.add('ac');
-  if(k==='unicorn')document.querySelector('.pr-spot.pink-c').classList.add('ac');
+  const base = k.replace(/-[hp]$/,'');
+  if(base==='superstars'&&k.endsWith('-h'))document.querySelector('.pr-spot.gold-c').classList.add('ac');
+  if(base==='superstars'&&k.endsWith('-p'))document.querySelector('.pr-spot.blue-c').classList.add('ac');
+  if(base==='rookies')document.querySelector('.pr-spot.green-c').classList.add('ac');
+  if(base==='unicorn')document.querySelector('.pr-spot.pink-c').classList.add('ac');
   document.querySelectorAll(`[data-prk="${k}"]`).forEach(e=>e.classList.add('ap'));
   document.getElementById('prIcon').innerHTML=d.i;
   document.getElementById('prTitle').textContent=d.t;
-  document.getElementById('prSub').textContent=d.s;
+  // Add hitter/pitcher toggle for split categories
+  const hasPair = ['superstars','rookies','unicorn'].includes(base);
+  const subEl = document.getElementById('prSub');
+  if(hasPair){
+    const hKey = base+'-h', pKey = base+'-p';
+    const isH = k.endsWith('-h');
+    subEl.innerHTML = `<span class="pr-hp-tab${isH?' pr-hp-a':''}" onclick="prOpen('${hKey}')" style="cursor:pointer;padding:3px 10px;border-radius:4px;font-size:12px;letter-spacing:1px;margin-right:6px;${isH?'background:var(--blue);color:#fff':'color:var(--muted-text)'}">HITTERS</span>`
+      + `<span class="pr-hp-tab${!isH?' pr-hp-a':''}" onclick="prOpen('${pKey}')" style="cursor:pointer;padding:3px 10px;border-radius:4px;font-size:12px;letter-spacing:1px;${!isH?'background:var(--blue);color:#fff':'color:var(--muted-text)'}">PITCHERS</span>`;
+  } else {
+    subEl.textContent = d.s;
+  }
   d.h.forEach((v,i)=>{const e=document.getElementById('prH'+(i+1));if(e)e.textContent=v});
   document.getElementById('prBody').innerHTML=d.r.join('');
   document.getElementById('prPanel').classList.add('open');
@@ -13436,7 +13451,7 @@ function prToggle(e){
     if(panel && panel.classList.contains('open')){
       const active = document.querySelector('.pr-spot.ac,.pr-pm.ap');
       if(active){
-        const k = active.dataset&&active.dataset.prk || (active.classList.contains('gold-c')?'superstars':active.classList.contains('blue-c')?'pitchers':active.classList.contains('green-c')?'rookies':'unicorn');
+        const k = active.dataset&&active.dataset.prk || (active.classList.contains('gold-c')?'superstars-h':active.classList.contains('blue-c')?'superstars-p':active.classList.contains('green-c')?'rookies-h':'unicorn-h');
         prOpen(k);
       }
     }
@@ -13505,10 +13520,12 @@ function _prBuildFromCache(rows, dataDate){
   });
 
   const catMeta = {
-    superstars:{i:'&#11088;',t:'Top 15 Superstars',s:'Position Players & DH',h:['AVG','HR','RBI','OPS','SB'],type:'h'},
-    pitchers:{i:'&#128293;',t:'Top 10 Pitchers',s:'Starting & Relief',h:['ERA','W-L','K','WHIP','IP'],type:'p'},
-    rookies:{i:'&#127775;',t:'Top 10 Rookies',s:'All Positions',h:['Key','2nd','3rd','Rate','GP'],type:'mixed'},
-    unicorn:{i:'&#129412;',t:'Top 10 Value Picks',s:'Stats &#8593; Price &#8595;',h:['Key','2nd','3rd','Rate','Score'],type:'mixed'},
+    'superstars-h':{i:'&#11088;',t:'Top 15 Superstars',s:'Hitters',h:['AVG','HR','RBI','OPS','SB'],type:'h'},
+    'superstars-p':{i:'&#11088;',t:'Top 10 Superstars',s:'Pitchers',h:['ERA','W-L','K','WHIP','IP'],type:'p'},
+    'rookies-h':{i:'&#127775;',t:'Top 10 Rookies',s:'Hitters',h:['AVG','HR','RBI','OPS','SB'],type:'h'},
+    'rookies-p':{i:'&#127775;',t:'Top 10 Rookies',s:'Pitchers',h:['ERA','W-L','K','WHIP','IP'],type:'p'},
+    'unicorn-h':{i:'&#129412;',t:'Top 10 Value Picks',s:'Hitters',h:['AVG','HR','RBI','OPS','SB'],type:'h'},
+    'unicorn-p':{i:'&#129412;',t:'Top 10 Value Picks',s:'Pitchers',h:['ERA','W-L','K','WHIP','IP'],type:'p'},
     'pos-C':{i:'&#9918;',t:'Top 10 — Catcher',s:'C',h:['AVG','HR','RBI','OPS','SB'],type:'h'},
     'pos-1B':{i:'&#9918;',t:'Top 10 — First Base',s:'1B',h:['AVG','HR','RBI','OPS','SB'],type:'h'},
     'pos-2B':{i:'&#9918;',t:'Top 10 — Second Base',s:'2B',h:['AVG','HR','RBI','OPS','SB'],type:'h'},
@@ -13577,10 +13594,10 @@ function _prBuildFromCache(rows, dataDate){
     const el = document.querySelector(sel);
     if(el && groups[cat] && groups[cat][0]) el.textContent = groups[cat][0].player_name;
   };
-  updateBadge('.pr-spot.gold-c .pr-spot-leader b', 'superstars');
-  updateBadge('.pr-spot.blue-c .pr-spot-leader b', 'pitchers');
-  updateBadge('.pr-spot.green-c .pr-spot-leader b', 'rookies');
-  updateBadge('.pr-spot.pink-c .pr-spot-leader b', 'unicorn');
+  updateBadge('.pr-spot.gold-c .pr-spot-leader b', 'superstars-h');
+  updateBadge('.pr-spot.blue-c .pr-spot-leader b', 'superstars-p');
+  updateBadge('.pr-spot.green-c .pr-spot-leader b', 'rookies-h');
+  updateBadge('.pr-spot.pink-c .pr-spot-leader b', 'unicorn-h');
 }
 
 // &#9472;&#9472; Live Market Data Engine &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;

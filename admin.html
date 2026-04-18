@@ -289,6 +289,20 @@ tr:hover td { background: var(--bg); }
   .grid-3 { grid-template-columns: 1fr 1fr; }
   .pbi-grid { grid-template-columns: repeat(3, 1fr) !important; }
 }
+@media (max-width: 768px) {
+  .sidebar { position: fixed; left: -260px; width: 240px; transition: left .2s; z-index: 1000; }
+  .sidebar.open { left: 0; }
+  .main { margin-left: 0 !important; padding: 12px !important; }
+  .panel-header { padding: 0; }
+  .grid-2 { grid-template-columns: 1fr !important; }
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .pbi-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  #snBlocklistPanel { padding: 10px !important; }
+  /* Mobile hamburger */
+  .mob-ham { display: flex !important; }
+  .mob-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; }
+  .mob-overlay.open { display: block; }
+}
 @media (max-width: 600px) {
   .pbi-grid { grid-template-columns: repeat(2, 1fr) !important; }
 }
@@ -428,6 +442,9 @@ tr:hover td { background: var(--bg); }
 
 <!-- ── APP ── -->
 <div id="app">
+  <!-- Mobile hamburger -->
+  <button class="mob-ham" onclick="document.querySelector('.sidebar').classList.toggle('open');document.querySelector('.mob-overlay').classList.toggle('open')" style="display:none;position:fixed;top:10px;left:10px;z-index:998;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 10px;cursor:pointer;color:var(--text);font-size:18px;align-items:center;justify-content:center">&#9776;</button>
+  <div class="mob-overlay" onclick="document.querySelector('.sidebar').classList.remove('open');this.classList.remove('open')"></div>
   <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-logo">
@@ -2119,6 +2136,9 @@ function nav(id, el) {
   const panel = document.getElementById('panel-' + id);
   if (panel) panel.classList.add('active');
   if (el) el.classList.add('active');
+  // Close mobile sidebar
+  document.querySelector('.sidebar')?.classList.remove('open');
+  document.querySelector('.mob-overlay')?.classList.remove('open');
 }
 
 // ── OVERVIEW ──

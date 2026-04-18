@@ -206,17 +206,13 @@ async function ebayAvgPrice(token, playerName) {
   const data = JSON.parse(res.body);
   const prices = (data.itemSummaries || [])
     .filter(i => i.price && i.price.value && !isJunkListing(i.title))
-    .filter(i => parseFloat(i.price.value) < 500) // Cap: skip graded/1-of-1 outliers for avg base card price
     .map(i => parseFloat(i.price.value))
-    .filter(p => p > 0);
+    .filter(p => p >= 0.99) // Floor: cut junk lots, damaged, combo listings
+    .sort((a, b) => a - b);
+  // Drop top 2 most expensive (graded slabs, parallels, autos that skew the avg)
+  if (prices.length > 4) prices.splice(-2);
   if (!prices.length) return null;
-  // Trim outliers (top/bottom 10%) when 10+ items
-  prices.sort((a, b) => a - b);
-  let trimmed = prices;
-  if (prices.length >= 10) {
-    const cut = Math.floor(prices.length * 0.1);
-    trimmed = prices.slice(cut, prices.length - cut);
-  }
+  const trimmed = prices;
   return Math.round((trimmed.reduce((a, b) => a + b, 0) / trimmed.length) * 100) / 100;
 }
 

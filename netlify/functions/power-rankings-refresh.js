@@ -101,7 +101,8 @@ function isoPit(s, price) {
 // ── Value Score ─────────────────────────────────────────────
 function valScore(iso, price) {
   if (!price || price <= 0) return Math.round(iso);
-  return Math.min(1000, Math.round(iso * (1 + Math.max(0, 30 - price) / 30)));
+  const priceMod = 1 + Math.max(-0.3, Math.min(0.2, (10 - price) / 50));
+  return Math.min(1000, Math.round(iso * priceMod));
 }
 
 // ── Aggregate last 5 game stats from game log ───────────────

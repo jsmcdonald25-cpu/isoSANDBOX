@@ -232,10 +232,19 @@ async function refreshRankings() {
   ]);
 
   const extract = (d) => (d && d.stats && d.stats[0] && d.stats[0].splits) || [];
-  const hitters = extract(hData).filter(s => s.stat.gamesPlayed >= 5);
-  const pitchers = extract(pData).filter(s => parseFloat(s.stat.inningsPitched) >= 10);
-  const rookieHitters = extract(rhData);
-  const rookiePitchers = extract(rpData).filter(s => parseFloat(s.stat.inningsPitched) >= 5);
+  // Dedup by player ID — MLB API returns separate splits for traded players
+  function dedup(splits) {
+    const seen = new Set();
+    return splits.filter(s => {
+      if (seen.has(s.player.id)) return false;
+      seen.add(s.player.id);
+      return true;
+    });
+  }
+  const hitters = dedup(extract(hData).filter(s => s.stat.gamesPlayed >= 5));
+  const pitchers = dedup(extract(pData).filter(s => parseFloat(s.stat.inningsPitched) >= 10));
+  const rookieHitters = dedup(extract(rhData));
+  const rookiePitchers = dedup(extract(rpData).filter(s => parseFloat(s.stat.inningsPitched) >= 5));
 
   console.log(`[PR Refresh] Season: ${hitters.length} hitters, ${pitchers.length} pitchers, ${rookieHitters.length} rookie H, ${rookiePitchers.length} rookie P`);
 

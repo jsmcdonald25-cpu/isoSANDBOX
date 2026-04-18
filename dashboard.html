@@ -13230,23 +13230,25 @@ function _prTm(t){return _prTEAMS[t&&t.id||0]||''}
 function _prISOHit(s, price){
   const avg = parseFloat(s.avg)||0, hr = s.homeRuns||0, rbi = s.rbi||0, ops = parseFloat(s.ops)||0, sb = s.stolenBases||0, gp = s.gamesPlayed||1;
   const hrPG = hr/gp, rbiPG = rbi/gp, sbPG = sb/gp;
-  // Stat score (0-1000): wider spread for differentiation
-  const statScore = Math.min(1000, (avg*1200) + (ops*250) + (hrPG*800) + (rbiPG*400) + (sbPG*300));
+  // Elite line (.330/40HR/120RBI/1.000OPS/20SB over 162GP) should score ~850-900
+  // Average starter (.260/15HR/60RBI/.750OPS/5SB) should score ~400-500
+  const statScore = (avg*400) + (ops*120) + (hrPG*200) + (rbiPG*100) + (sbPG*80);
   const p = Math.max(price||1, 0.5);
-  const priceFactor = Math.min(1.5, 1 + (1/Math.log2(p+2)));
+  const priceFactor = Math.min(1.3, 1 + (1/Math.log2(p+2))*0.5);
   return Math.min(1000, Math.round(statScore * priceFactor));
 }
 // Pitcher: lower ERA/WHIP = better, more K = better
 function _prISOPit(s, price){
   const era = parseFloat(s.era)||9, whip = parseFloat(s.whip)||2, k = s.strikeOuts||0, ip = parseFloat(s.inningsPitched)||1, w = s.wins||0;
   const kPer9 = (k/ip)*9;
-  const eraScore = Math.max(0, 1000 - (era*120));
-  const whipScore = Math.max(0, 1000 - (whip*350));
-  const kScore = Math.min(400, kPer9*35);
-  const wScore = Math.min(150, w*30);
-  const statScore = Math.min(1000, eraScore*0.35 + whipScore*0.25 + kScore + wScore);
+  // Elite ace (2.00 ERA/0.90 WHIP/12 K9/18W) should score ~850-900
+  const eraScore = Math.max(0, 500 - (era*60));
+  const whipScore = Math.max(0, 400 - (whip*150));
+  const kScore = Math.min(200, kPer9*18);
+  const wScore = Math.min(80, w*15);
+  const statScore = eraScore + whipScore*0.6 + kScore + wScore;
   const p = Math.max(price||1, 0.5);
-  const priceFactor = Math.min(1.5, 1 + (1/Math.log2(p+2)));
+  const priceFactor = Math.min(1.3, 1 + (1/Math.log2(p+2))*0.5);
   return Math.min(1000, Math.round(statScore * priceFactor));
 }
 // Value score: how underpriced is the card relative to performance?

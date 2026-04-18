@@ -1,13 +1,12 @@
 // ============================================================
-// GrailISO — Player Profiles + ISO Projections
+// GrailISO — Player Profiles + ISO Signals
 // netlify/functions/player-profiles.js
 // ============================================================
-// Compares LAST YEAR's full season stats vs THIS YEAR's projections
-// to generate BUY/HOLD/SELL card investment signals.
+// Compares LAST YEAR's stats through the same # of games as THIS
+// YEAR to generate BUY/HOLD/SELL card investment signals.
 //
-// The arbitrage: cards are priced on last year's performance.
-// If projections say a player is about to break out, BUY before
-// the market catches up. If regression is coming, SELL now.
+// Vets: 2025 game log sliced to same GP as 2026 → compare
+// Rookies: 2025 MiLB stats (weighted ~85% for AAA) vs 2026 MLB
 // ============================================================
 
 const https = require('https');
@@ -49,171 +48,164 @@ function httpReq(url, method, bodyStr, headers) {
   });
 }
 
-// ── Team maps ──────────────────────────────────────────────
+// ── Team map ──────────────────────────────────────────────
 const MLB_TEAMS = {108:'LAA',109:'AZ',110:'BAL',111:'BOS',112:'CHC',113:'CIN',114:'CLE',115:'COL',116:'DET',117:'HOU',118:'KC',119:'LAD',120:'WAS',121:'NYM',133:'ATH',134:'PIT',135:'SD',136:'SEA',137:'SF',138:'STL',139:'TB',140:'TEX',141:'TOR',142:'MIN',143:'PHI',144:'ATL',145:'CHW',146:'MIA',147:'NYY',158:'MIL'};
 
-// ── Fetch projections ──────────────────────────────────────
-async function fetchProjections(yr) {
-  const url = `https://lm-api-reads.fantasy.espn.com/apis/v3/games/flb/seasons/${yr}/segments/0/leaguedefaults/3?view=kona_player_info`;
-  const filterHeader = JSON.stringify({
-    players: {
-      limit: 300,
-      sortPercOwned: { sortAsc: false, sortPriority: 1 },
-      filterStatsForSourceIds: { value: [`00${yr}`] },
-      filterSlotIds: { value: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14] },
-    }
+// ── Aggregate game log to stats through N games ───────────
+function aggHitting(games) {
+  if (!games.length) return null;
+  let ab = 0, h = 0, hr = 0, rbi = 0, sb = 0, bb = 0, gp = games.length;
+  games.forEach(g => {
+    const s = g.stat;
+    ab += s.atBats || 0; h += s.hits || 0; hr += s.homeRuns || 0;
+    rbi += s.rbi || 0; sb += s.stolenBases || 0; bb += s.baseOnBalls || 0;
   });
-
-  return new Promise((resolve) => {
-    const u = new URL(url);
-    const req = https.request(u, {
-      method: 'GET', hostname: u.hostname, path: u.pathname + u.search,
-      headers: { 'X-Fantasy-Filter': filterHeader, 'Accept': 'application/json' },
-    }, (res) => {
-      let data = '';
-      res.on('data', (c) => (data += c));
-      res.on('end', () => {
-        try {
-          const parsed = JSON.parse(data);
-          const players = (parsed.players || []).map(p => {
-            const info = p.player || {};
-            const stats = (info.stats || []).find(s => s.id === `00${yr}`);
-            const proj = stats ? stats.stats || {} : {};
-            return {
-              name: (info.fullName || '').toLowerCase(),
-              projected: {
-                avg: proj[2] ? proj[2].toFixed(3) : null,
-                hr: Math.round(proj[5] || 0) || null,
-                rbi: Math.round(proj[6] || 0) || null,
-                sb: Math.round(proj[11] || 0) || null,
-                ops: proj[19] ? proj[19].toFixed(3) : null,
-                runs: Math.round(proj[20] || 0) || null,
-                era: proj[22] ? proj[22].toFixed(2) : null,
-                wins: Math.round(proj[26] || 0) || null,
-                strikeouts: Math.round(proj[32] || 0) || null,
-                ip: proj[34] ? proj[34].toFixed(1) : null,
-                whip: proj[36] ? proj[36].toFixed(2) : null,
-              }
-            };
-          });
-          resolve(players);
-        } catch (e) { console.warn('[Proj] Parse failed:', e.message); resolve([]); }
-      });
-    });
-    req.on('error', () => resolve([]));
-    req.end();
-  });
+  const avg = ab > 0 ? (h / ab).toFixed(3) : '.000';
+  const obp = (ab + bb) > 0 ? ((h + bb) / (ab + bb)).toFixed(3) : '.000';
+  const slg = ab > 0 ? ((h + hr * 3) / ab).toFixed(3) : '.000';
+  const ops = (parseFloat(obp) + parseFloat(slg)).toFixed(3);
+  return { avg, homeRuns: hr, rbi, ops, stolenBases: sb, gamesPlayed: gp, atBats: ab, hits: h };
 }
 
-// ── Card Investment Signal Engine ──────────────────────────
-// Compares last year's FULL season to this year's PROJECTION.
-// Cards are priced on past performance — the signal finds
-// where the market hasn't caught up to the projection yet.
-//
-// STRONG BUY  — Major breakout projected, card underpriced
-// BUY         — Stats trending up, market hasn't adjusted
-// HOLD        — Fair value, no clear edge
-// SELL        — Regression coming, market still inflated
-// STRONG SELL — Major decline projected, dump now
-//
-function calcSignal(lastYearStats, projectedStats, playerType) {
-  if (!lastYearStats || !projectedStats) return { signal: 'HOLD', strength: 'neutral', score: 0, reason: 'No projection data' };
+function aggPitching(games) {
+  if (!games.length) return null;
+  let ip = 0, er = 0, k = 0, w = 0, l = 0, ha = 0, bb = 0, sv = 0, gp = games.length;
+  games.forEach(g => {
+    const s = g.stat;
+    ip += parseFloat(s.inningsPitched) || 0; er += s.earnedRuns || 0;
+    k += s.strikeOuts || 0; w += s.wins || 0; l += s.losses || 0;
+    ha += s.hits || 0; bb += s.baseOnBalls || 0; sv += s.saves || 0;
+  });
+  const era = ip > 0 ? ((er / ip) * 9).toFixed(2) : '0.00';
+  const whip = ip > 0 ? ((ha + bb) / ip).toFixed(2) : '0.00';
+  return { era, wins: w, losses: l, strikeOuts: k, whip, inningsPitched: ip.toFixed(1), saves: sv, gamesPlayed: gp };
+}
+
+// ── MiLB weight factors ───────────────────────────────────
+// MiLB stats inflate vs MLB. These factors scale them down.
+const MILB_WEIGHT = {
+  11: 0.87, // AAA → ~87% of MLB equivalent
+  12: 0.78, // AA  → ~78%
+  13: 0.70, // A+  → ~70%
+  14: 0.62, // A   → ~62%
+};
+
+function weightMiLBHitting(stats, sportId) {
+  if (!stats) return null;
+  const w = MILB_WEIGHT[sportId] || 0.80;
+  return {
+    avg: (parseFloat(stats.avg) * w).toFixed(3),
+    homeRuns: Math.round((stats.homeRuns || 0) * w),
+    rbi: Math.round((stats.rbi || 0) * w),
+    ops: (parseFloat(stats.ops) * w).toFixed(3),
+    stolenBases: Math.round((stats.stolenBases || 0) * w),
+    gamesPlayed: stats.gamesPlayed || 0,
+    _milbLevel: sportId,
+    _milbWeight: w,
+  };
+}
+
+function weightMiLBPitching(stats, sportId) {
+  if (!stats) return null;
+  const w = MILB_WEIGHT[sportId] || 0.80;
+  // For pitchers, ERA/WHIP go UP when weighted (worse in MLB)
+  const invW = 1 + (1 - w); // e.g. AAA: 1.13
+  return {
+    era: (parseFloat(stats.era) * invW).toFixed(2),
+    wins: Math.round((stats.wins || 0) * w),
+    losses: stats.losses || 0,
+    strikeOuts: Math.round((stats.strikeOuts || 0) * w),
+    whip: (parseFloat(stats.whip) * invW).toFixed(2),
+    inningsPitched: stats.inningsPitched || '0.0',
+    saves: stats.saves || 0,
+    gamesPlayed: stats.gamesPlayed || 0,
+    _milbLevel: sportId,
+    _milbWeight: w,
+  };
+}
+
+// ── Signal calculation ────────────────────────────────────
+// Compares baseline (last year same point OR weighted MiLB)
+// vs current year actual stats. Positive = improving = BUY.
+function calcSignal(baseline, current, playerType) {
+  if (!baseline || !current) return { signal: 'HOLD', strength: 'neutral', score: 0, reason: 'Insufficient data' };
 
   let score = 0;
   const reasons = [];
 
   if (playerType === 'hitter') {
-    // AVG delta — massive signal. +.030 is a huge breakout
-    const lastAvg = parseFloat(lastYearStats.avg) || 0;
-    const projAvg = parseFloat(projectedStats.avg) || 0;
-    if (lastAvg > 0 && projAvg > 0) {
-      const avgDelta = projAvg - lastAvg;
-      score += avgDelta * 300; // .030 jump = +9 points
-      if (avgDelta >= 0.020) reasons.push(`AVG +${(avgDelta*1000).toFixed(0)} pts`);
-      if (avgDelta <= -0.020) reasons.push(`AVG ${(avgDelta*1000).toFixed(0)} pts`);
+    const baseAvg = parseFloat(baseline.avg) || 0;
+    const currAvg = parseFloat(current.avg) || 0;
+    if (baseAvg > 0 && currAvg > 0) {
+      const d = currAvg - baseAvg;
+      score += d * 300;
+      if (d >= 0.020) reasons.push(`AVG +${(d * 1000).toFixed(0)} pts`);
+      if (d <= -0.020) reasons.push(`AVG ${(d * 1000).toFixed(0)} pts`);
     }
 
-    // HR delta — 10+ HR jump is significant
-    const lastHR = lastYearStats.homeRuns || 0;
-    const projHR = projectedStats.hr || 0;
-    if (lastHR > 0 || projHR > 0) {
-      const hrDelta = projHR - lastHR;
-      score += hrDelta * 1.2; // +10 HR = +12 points
-      if (hrDelta >= 5) reasons.push(`+${hrDelta} HR`);
-      if (hrDelta <= -5) reasons.push(`${hrDelta} HR`);
+    const baseHR = baseline.homeRuns || 0;
+    const currHR = current.homeRuns || 0;
+    const baseGP = baseline.gamesPlayed || 1;
+    const currGP = current.gamesPlayed || 1;
+    // Compare HR rate per game
+    const hrRateDelta = (currHR / currGP) - (baseHR / baseGP);
+    score += hrRateDelta * 80;
+    if (hrRateDelta >= 0.1) reasons.push(`HR pace +${(hrRateDelta * currGP).toFixed(0)}`);
+    if (hrRateDelta <= -0.1) reasons.push(`HR pace ${(hrRateDelta * currGP).toFixed(0)}`);
+
+    const baseRBI = baseline.rbi || 0;
+    const currRBI = current.rbi || 0;
+    const rbiRateDelta = (currRBI / currGP) - (baseRBI / baseGP);
+    score += rbiRateDelta * 40;
+
+    const baseOPS = parseFloat(baseline.ops) || 0;
+    const currOPS = parseFloat(current.ops) || 0;
+    if (baseOPS > 0 && currOPS > 0) {
+      const d = currOPS - baseOPS;
+      score += d * 80;
+      if (d >= 0.040) reasons.push(`OPS +${(d * 1000).toFixed(0)}`);
+      if (d <= -0.040) reasons.push(`OPS ${(d * 1000).toFixed(0)}`);
     }
 
-    // RBI delta
-    const lastRBI = lastYearStats.rbi || 0;
-    const projRBI = projectedStats.rbi || 0;
-    if (lastRBI > 0 || projRBI > 0) {
-      const rbiDelta = projRBI - lastRBI;
-      score += rbiDelta * 0.4;
-      if (Math.abs(rbiDelta) >= 15) reasons.push(`${rbiDelta>0?'+':''}${rbiDelta} RBI`);
-    }
-
-    // OPS delta — .050+ is big
-    const lastOPS = parseFloat(lastYearStats.ops) || 0;
-    const projOPS = parseFloat(projectedStats.ops) || 0;
-    if (lastOPS > 0 && projOPS > 0) {
-      const opsDelta = projOPS - lastOPS;
-      score += opsDelta * 80;
-      if (opsDelta >= 0.040) reasons.push(`OPS +${(opsDelta*1000).toFixed(0)}`);
-      if (opsDelta <= -0.040) reasons.push(`OPS ${(opsDelta*1000).toFixed(0)}`);
-    }
-
-    // SB delta — speed is trending more valuable
-    const lastSB = lastYearStats.stolenBases || 0;
-    const projSB = projectedStats.sb || 0;
-    if (lastSB > 0 || projSB > 0) {
-      score += (projSB - lastSB) * 0.5;
-    }
+    const baseSB = baseline.stolenBases || 0;
+    const currSB = current.stolenBases || 0;
+    score += ((currSB / currGP) - (baseSB / baseGP)) * 30;
 
   } else {
-    // PITCHER signals — lower ERA/WHIP = better (invert delta)
-
-    // ERA delta — 0.50+ drop is huge
-    const lastERA = parseFloat(lastYearStats.era) || 0;
-    const projERA = parseFloat(projectedStats.era) || 0;
-    if (lastERA > 0 && projERA > 0) {
-      const eraDelta = lastERA - projERA; // positive = improvement
-      score += eraDelta * 10;
-      if (eraDelta >= 0.40) reasons.push(`ERA -${eraDelta.toFixed(2)}`);
-      if (eraDelta <= -0.40) reasons.push(`ERA +${Math.abs(eraDelta).toFixed(2)}`);
+    // Pitcher — lower ERA/WHIP = better
+    const baseERA = parseFloat(baseline.era) || 0;
+    const currERA = parseFloat(current.era) || 0;
+    if (baseERA > 0 && currERA > 0) {
+      const d = baseERA - currERA; // positive = improvement
+      score += d * 10;
+      if (d >= 0.40) reasons.push(`ERA -${d.toFixed(2)}`);
+      if (d <= -0.40) reasons.push(`ERA +${Math.abs(d).toFixed(2)}`);
     }
 
-    // K delta
-    const lastK = lastYearStats.strikeOuts || 0;
-    const projK = projectedStats.strikeouts || 0;
-    if (lastK > 0 || projK > 0) {
-      const kDelta = projK - lastK;
-      score += kDelta * 0.3;
-      if (kDelta >= 20) reasons.push(`+${kDelta} K`);
-      if (kDelta <= -20) reasons.push(`${kDelta} K`);
-    }
+    const baseK = baseline.strikeOuts || 0;
+    const currK = current.strikeOuts || 0;
+    const baseGP = baseline.gamesPlayed || 1;
+    const currGP = current.gamesPlayed || 1;
+    const kRateDelta = (currK / currGP) - (baseK / baseGP);
+    score += kRateDelta * 5;
+    if (kRateDelta >= 1) reasons.push(`K/G +${kRateDelta.toFixed(1)}`);
 
-    // W delta
-    const lastW = lastYearStats.wins || 0;
-    const projW = projectedStats.wins || 0;
-    if (lastW > 0 || projW > 0) {
-      score += (projW - lastW) * 2;
-    }
+    const baseW = baseline.wins || 0;
+    const currW = current.wins || 0;
+    score += ((currW / currGP) - (baseW / baseGP)) * 20;
 
-    // WHIP delta — lower = better
-    const lastWHIP = parseFloat(lastYearStats.whip) || 0;
-    const projWHIP = parseFloat(projectedStats.whip) || 0;
-    if (lastWHIP > 0 && projWHIP > 0) {
-      const whipDelta = lastWHIP - projWHIP; // positive = improvement
-      score += whipDelta * 25;
-      if (whipDelta >= 0.10) reasons.push(`WHIP -${whipDelta.toFixed(2)}`);
-      if (whipDelta <= -0.10) reasons.push(`WHIP +${Math.abs(whipDelta).toFixed(2)}`);
+    const baseWHIP = parseFloat(baseline.whip) || 0;
+    const currWHIP = parseFloat(current.whip) || 0;
+    if (baseWHIP > 0 && currWHIP > 0) {
+      const d = baseWHIP - currWHIP;
+      score += d * 25;
+      if (d >= 0.10) reasons.push(`WHIP -${d.toFixed(2)}`);
+      if (d <= -0.10) reasons.push(`WHIP +${Math.abs(d).toFixed(2)}`);
     }
   }
 
-  // Clamp to -100 to +100
   score = Math.max(-100, Math.min(100, Math.round(score)));
 
-  // 5-tier signal
   let signal, strength;
   if (score >= 25)       { signal = 'STRONG BUY';  strength = 'strong'; }
   else if (score >= 8)   { signal = 'BUY';         strength = 'moderate'; }
@@ -238,103 +230,115 @@ exports.handler = async (event) => {
   try {
     const yr = new Date().getFullYear();
     const lastYr = yr - 1;
-    console.log(`[PP] Refresh: comparing ${lastYr} actuals vs ${yr} projections`);
+    console.log(`[PP] Refresh: ${lastYr} same-point stats vs ${yr} actuals`);
 
-    // 1. Fetch LAST YEAR's full season stats (the baseline — what cards are priced on)
-    //    AND this year's stats (for current context)
-    const [hLast, pLast, hThis, pThis] = await Promise.all([
-      httpGet(`${MLB}/stats?stats=season&group=hitting&season=${lastYr}&sportId=1&limit=300&sortStat=onBasePlusSlugging&order=desc`),
-      httpGet(`${MLB}/stats?stats=season&group=pitching&season=${lastYr}&sportId=1&limit=150&sortStat=earnedRunAverage&order=asc`),
-      httpGet(`${MLB}/stats?stats=season&group=hitting&season=${yr}&sportId=1&limit=200&sortStat=onBasePlusSlugging&order=desc`),
-      httpGet(`${MLB}/stats?stats=season&group=pitching&season=${yr}&sportId=1&limit=100&sortStat=earnedRunAverage&order=asc`),
+    // 1. Fetch THIS YEAR's current stats (tells us who is active + GP count)
+    const [hThis, pThis] = await Promise.all([
+      httpGet(`${MLB}/stats?stats=season&group=hitting&season=${yr}&sportId=1&limit=300&sortStat=onBasePlusSlugging&order=desc`),
+      httpGet(`${MLB}/stats?stats=season&group=pitching&season=${yr}&sportId=1&limit=150&sortStat=earnedRunAverage&order=asc`),
     ]);
 
     const extract = (d) => (d && d.stats && d.stats[0] && d.stats[0].splits) || [];
+    const hitters = extract(hThis).filter(s => s.stat.gamesPlayed >= 3);
+    const pitchers = extract(pThis).filter(s => parseFloat(s.stat.inningsPitched) >= 3);
 
-    // Last year's stats keyed by player ID
-    const lastYearHitters = {};
-    extract(hLast).forEach(s => { lastYearHitters[s.player.id] = s.stat; });
-    const lastYearPitchers = {};
-    extract(pLast).filter(s => parseFloat(s.stat.inningsPitched) >= 20).forEach(s => { lastYearPitchers[s.player.id] = s.stat; });
+    // Dedup by player ID
+    const seenH = new Set();
+    const dedupH = hitters.filter(s => { if (seenH.has(s.player.id)) return false; seenH.add(s.player.id); return true; });
+    const seenP = new Set();
+    const dedupP = pitchers.filter(s => { if (seenP.has(s.player.id)) return false; seenP.add(s.player.id); return true; });
 
-    // This year's roster (tells us who is active + current team/position)
-    const hitters = extract(hThis).filter(s => s.stat.gamesPlayed >= 1);
-    const pitchers = extract(pThis).filter(s => parseFloat(s.stat.inningsPitched) >= 1);
+    console.log(`[PP] ${yr}: ${dedupH.length} hitters, ${dedupP.length} pitchers`);
 
-    console.log(`[PP] ${lastYr}: ${Object.keys(lastYearHitters).length}H/${Object.keys(lastYearPitchers).length}P | ${yr}: ${hitters.length}H/${pitchers.length}P`);
-
-    // 2. Fetch projections for this year
-    const projections = await fetchProjections(yr);
-    console.log(`[PP] ${projections.length} projections`);
-    const projByName = {};
-    projections.forEach(p => { projByName[p.name] = p.projected; });
-
-    // 3. Build profiles: compare last year actual → this year projected
+    // 2. For each active player, fetch LAST YEAR's game log and slice to same GP
+    //    Also check if they're a rookie (no last year MLB stats → use MiLB)
     const profiles = [];
-    const seen = new Set();
+    const allPlayers = [
+      ...dedupH.slice(0, 150).map(s => ({ split: s, type: 'hitter' })),
+      ...dedupP.slice(0, 75).map(s => ({ split: s, type: 'pitcher' })),
+    ];
 
-    hitters.forEach(s => {
-      const pid = s.player.id;
-      if (seen.has(pid)) return;
-      seen.add(pid);
-      const name = s.player.fullName;
-      const lastStats = lastYearHitters[pid] || null;
-      const proj = projByName[name.toLowerCase()] || null;
-      const sig = calcSignal(lastStats, proj, 'hitter');
-      const tm = s.team ? (MLB_TEAMS[s.team.id] || '') : '';
-      const pos = s.position ? s.position.abbreviation : '';
-      profiles.push({
-        mlb_id: pid,
-        full_name: name,
-        position: pos,
-        team: tm,
-        team_id: s.team ? s.team.id : null,
-        active: true,
-        headshot_url: `https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/${pid}/headshot/67/current`,
-        player_type: 'hitter',
-        season_stats: lastStats || s.stat,
-        projected_stats: proj,
-        projection_delta: sig.score,
-        iso_signal: sig.signal,
-        iso_signal_strength: sig.strength,
-        updated_at: new Date().toISOString(),
-      });
-    });
+    // Batch 10 at a time
+    for (let i = 0; i < allPlayers.length; i += 10) {
+      const batch = allPlayers.slice(i, i + 10);
+      const results = await Promise.all(batch.map(async ({ split, type }) => {
+        const pid = split.player.id;
+        const name = split.player.fullName;
+        const currentStats = split.stat;
+        const currentGP = currentStats.gamesPlayed || 1;
+        const tm = split.team ? (MLB_TEAMS[split.team.id] || '') : '';
+        const pos = split.position ? split.position.abbreviation : (type === 'pitcher' ? 'P' : '');
 
-    pitchers.forEach(s => {
-      const pid = s.player.id;
-      if (seen.has(pid)) return;
-      seen.add(pid);
-      const name = s.player.fullName;
-      const lastStats = lastYearPitchers[pid] || null;
-      const proj = projByName[name.toLowerCase()] || null;
-      const sig = calcSignal(lastStats, proj, 'pitcher');
-      const tm = s.team ? (MLB_TEAMS[s.team.id] || '') : '';
-      const pos = s.position ? s.position.abbreviation : 'P';
-      profiles.push({
-        mlb_id: pid,
-        full_name: name,
-        position: pos,
-        team: tm,
-        team_id: s.team ? s.team.id : null,
-        active: true,
-        headshot_url: `https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/${pid}/headshot/67/current`,
-        player_type: 'pitcher',
-        season_stats: lastStats || s.stat,
-        projected_stats: proj,
-        projection_delta: sig.score,
-        iso_signal: sig.signal,
-        iso_signal_strength: sig.strength,
-        updated_at: new Date().toISOString(),
-      });
-    });
+        let baseline = null;
+        let isRookie = false;
+        let baselineSource = 'mlb_yoy'; // 'mlb_yoy' or 'milb_weighted'
+
+        try {
+          // Try last year's MLB game log
+          const group = type === 'hitter' ? 'hitting' : 'pitching';
+          const logData = await httpGet(`${MLB}/people/${pid}/stats?stats=gameLog&group=${group}&season=${lastYr}&sportId=1`);
+          const games = (logData && logData.stats && logData.stats[0] && logData.stats[0].splits) || [];
+
+          if (games.length >= 5) {
+            // Vet path: slice to same # of games as current year
+            const sliced = games.slice(0, currentGP);
+            baseline = type === 'hitter' ? aggHitting(sliced) : aggPitching(sliced);
+          } else {
+            // Rookie path: try MiLB stats from last year
+            isRookie = true;
+            baselineSource = 'milb_weighted';
+
+            // Try AAA first, then AA, then A+
+            for (const sportId of [11, 12, 13]) {
+              const milbData = await httpGet(`${MLB}/people/${pid}/stats?stats=season&group=${group}&season=${lastYr}&sportId=${sportId}`);
+              const milbSplits = (milbData && milbData.stats && milbData.stats[0] && milbData.stats[0].splits) || [];
+              if (milbSplits.length && milbSplits[0].stat) {
+                const milbStats = milbSplits[0].stat;
+                if (type === 'hitter' && (milbStats.gamesPlayed || 0) >= 10) {
+                  baseline = weightMiLBHitting(milbStats, sportId);
+                  break;
+                } else if (type === 'pitcher' && parseFloat(milbStats.inningsPitched || 0) >= 10) {
+                  baseline = weightMiLBPitching(milbStats, sportId);
+                  break;
+                }
+              }
+            }
+          }
+        } catch (e) { /* non-fatal — player gets HOLD */ }
+
+        const sig = calcSignal(baseline, currentStats, type);
+
+        return {
+          mlb_id: pid,
+          full_name: name,
+          position: pos,
+          team: tm,
+          team_id: split.team ? split.team.id : null,
+          active: true,
+          headshot_url: `https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_426,q_auto:best/v1/people/${pid}/headshot/67/current`,
+          player_type: type,
+          is_rookie: isRookie,
+          baseline_source: baselineSource,
+          baseline_stats: baseline,
+          season_stats: currentStats,
+          projected_stats: null, // no longer using ESPN projections
+          projection_delta: sig.score,
+          iso_signal: sig.signal,
+          iso_signal_strength: sig.strength,
+          signal_reason: sig.reason,
+          updated_at: new Date().toISOString(),
+        };
+      }));
+
+      results.forEach(r => { if (r) profiles.push(r); });
+    }
 
     const buys = profiles.filter(p => p.iso_signal.includes('BUY'));
     const sells = profiles.filter(p => p.iso_signal.includes('SELL'));
     const holds = profiles.filter(p => p.iso_signal === 'HOLD');
     console.log(`[PP] ${profiles.length} profiles | BUY:${buys.length} HOLD:${holds.length} SELL:${sells.length}`);
 
-    // 4. Upsert to Supabase
+    // 3. Upsert to Supabase
     let upserted = 0;
     for (let i = 0; i < profiles.length; i += 100) {
       const chunk = profiles.slice(i, i + 100);
@@ -353,20 +357,21 @@ exports.handler = async (event) => {
       else console.error(`[PP] Upsert error: ${res.status} ${res.body.slice(0, 300)}`);
     }
 
-    // Top BUY and SELL picks for logging
-    const topBuys = buys.sort((a,b) => b.projection_delta - a.projection_delta).slice(0,10).map(p => `${p.full_name} (${p.iso_signal} ${p.projection_delta>0?'+':''}${p.projection_delta})`);
-    const topSells = sells.sort((a,b) => a.projection_delta - b.projection_delta).slice(0,10).map(p => `${p.full_name} (${p.iso_signal} ${p.projection_delta})`);
+    const topBuys = buys.sort((a, b) => b.projection_delta - a.projection_delta).slice(0, 10)
+      .map(p => `${p.full_name} (${p.iso_signal} ${p.projection_delta > 0 ? '+' : ''}${p.projection_delta}${p.is_rookie ? ' ROOKIE' : ''})`);
+    const topSells = sells.sort((a, b) => a.projection_delta - b.projection_delta).slice(0, 10)
+      .map(p => `${p.full_name} (${p.iso_signal} ${p.projection_delta})`);
 
     return {
       statusCode: 200, headers,
       body: JSON.stringify({
         success: true,
-        comparison: `${lastYr} actuals vs ${yr} projections`,
+        method: `${lastYr} same-point-in-season stats vs ${yr} actuals (MiLB weighted for rookies)`,
         total: profiles.length,
         upserted,
-        with_projections: profiles.filter(p => p.projected_stats).length,
+        rookies: profiles.filter(p => p.is_rookie).length,
         strong_buy: profiles.filter(p => p.iso_signal === 'STRONG BUY').length,
-        buy: profiles.filter(p => p.iso_signal === 'BUY').length,
+        buy: buys.length,
         hold: holds.length,
         sell: profiles.filter(p => p.iso_signal === 'SELL').length,
         strong_sell: profiles.filter(p => p.iso_signal === 'STRONG SELL').length,

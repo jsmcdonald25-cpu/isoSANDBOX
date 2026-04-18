@@ -247,9 +247,9 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .pr-tb{padding:8px 24px;font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:600;letter-spacing:.5px;color:var(--muted-text);cursor:pointer;transition:.2s;border:none;background:none;text-transform:uppercase}
 .pr-tb.a{background:var(--blue);color:#fff;box-shadow:0 0 12px var(--blue-glow)}
 .pr-tb:hover:not(.a){color:#fff;background:rgba(0,170,255,0.08)}
-.pr-spots{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:28px 20px 16px}
+.pr-spots{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:28px 20px 16px}
 .pr-spot{position:relative;border-radius:16px;overflow:hidden;cursor:pointer;height:220px;transition:transform .4s cubic-bezier(.2,.8,.3,1),box-shadow .4s;opacity:0;animation:prCardIn .7s ease-out forwards;background:var(--deep2);border:1px solid var(--deep-border)}
-.pr-spot:nth-child(1){animation-delay:.3s}.pr-spot:nth-child(2){animation-delay:.45s}.pr-spot:nth-child(3){animation-delay:.6s}.pr-spot:nth-child(4){animation-delay:.75s}
+.pr-spot:nth-child(1){animation-delay:.3s}.pr-spot:nth-child(2){animation-delay:.45s}.pr-spot:nth-child(3){animation-delay:.6s}
 @keyframes prCardIn{from{opacity:0;transform:translateY(30px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
 .pr-spot:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 16px 48px rgba(0,0,0,0.6)}
 .pr-spot.ac{box-shadow:0 0 0 2px var(--blue),0 0 30px rgba(0,170,255,0.15)}
@@ -3269,17 +3269,6 @@ async function logOut(){
           <div class="pr-spot-big">&#11088; Top 15</div>
           <div class="pr-spot-title">Superstars</div>
           <div class="pr-spot-desc">Position Players &amp; DH</div>
-          <div class="pr-spot-leader">Currently #1: <b>Loading...</b></div>
-          <div class="pr-spot-cta">View Rankings <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-        </div>
-      </div>
-      <div class="pr-spot blue-c" onclick="prOpen('superstars-p')">
-        <div class="pr-spot-line"></div><div class="pr-glow"></div>
-        <div class="pr-spot-inner">
-          <div class="pr-spot-tip">Updates daily based on pitching performance</div>
-          <div class="pr-spot-big">&#128293; Top 10</div>
-          <div class="pr-spot-title">Star Pitchers</div>
-          <div class="pr-spot-desc">Starting &amp; Relief</div>
           <div class="pr-spot-leader">Currently #1: <b>Loading...</b></div>
           <div class="pr-spot-cta">View Rankings <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
         </div>
@@ -13412,8 +13401,7 @@ function prOpen(k){
   const d = _prLiveData[k]; if(!d) return;
   document.querySelectorAll('.pr-spot,.pr-pm').forEach(e=>e.classList.remove('ac','ap'));
   const base = k.replace(/-[hp]$/,'');
-  if(base==='superstars'&&k.endsWith('-h'))document.querySelector('.pr-spot.gold-c').classList.add('ac');
-  if(base==='superstars'&&k.endsWith('-p'))document.querySelector('.pr-spot.blue-c').classList.add('ac');
+  if(base==='superstars')document.querySelector('.pr-spot.gold-c').classList.add('ac');
   if(base==='rookies')document.querySelector('.pr-spot.green-c').classList.add('ac');
   if(base==='unicorn')document.querySelector('.pr-spot.pink-c').classList.add('ac');
   document.querySelectorAll(`[data-prk="${k}"]`).forEach(e=>e.classList.add('ap'));
@@ -13451,7 +13439,7 @@ function prToggle(e){
     if(panel && panel.classList.contains('open')){
       const active = document.querySelector('.pr-spot.ac,.pr-pm.ap');
       if(active){
-        const k = active.dataset&&active.dataset.prk || (active.classList.contains('gold-c')?'superstars-h':active.classList.contains('blue-c')?'superstars-p':active.classList.contains('green-c')?'rookies-h':'unicorn-h');
+        const k = active.dataset&&active.dataset.prk || (active.classList.contains('gold-c')?'superstars-h':active.classList.contains('green-c')?'rookies-h':'unicorn-h');
         prOpen(k);
       }
     }
@@ -13595,7 +13583,6 @@ function _prBuildFromCache(rows, dataDate){
     if(el && groups[cat] && groups[cat][0]) el.textContent = groups[cat][0].player_name;
   };
   updateBadge('.pr-spot.gold-c .pr-spot-leader b', 'superstars-h');
-  updateBadge('.pr-spot.blue-c .pr-spot-leader b', 'superstars-p');
   updateBadge('.pr-spot.green-c .pr-spot-leader b', 'rookies-h');
   updateBadge('.pr-spot.pink-c .pr-spot-leader b', 'unicorn-h');
 }

@@ -32,6 +32,24 @@ function httpGet(url) {
   });
 }
 
+function httpDelete(url, headers) {
+  return new Promise((resolve, reject) => {
+    const u = new URL(url);
+    const req = https.request(u, {
+      method: 'DELETE',
+      hostname: u.hostname,
+      path: u.pathname + u.search,
+      headers: { ...headers },
+    }, (res) => {
+      let data = '';
+      res.on('data', (c) => (data += c));
+      res.on('end', () => resolve({ statusCode: res.statusCode, body: data }));
+    });
+    req.on('error', reject);
+    req.end();
+  });
+}
+
 function httpPost(url, body, headers) {
   return new Promise((resolve, reject) => {
     const u = new URL(url);
@@ -441,8 +459,16 @@ async function refreshRankings() {
 
   console.log(`[PR Refresh] Built ${rows.length} ranking rows`);
 
-  // 7. Upsert to Supabase
-  // Batch in chunks of 100
+  // 7. Delete today's existing rows first, then insert fresh
+  try {
+    const delRes = await httpDelete(`${SB_URL}/rest/v1/power_rankings_cache?data_date=eq.${today}`, {
+      'apikey': SB_KEY,
+      'Authorization': `Bearer ${SB_KEY}`,
+    });
+    console.log(`[PR Refresh] Deleted old rows for ${today}: ${delRes.statusCode}`);
+  } catch (e) { console.warn('[PR Refresh] Delete failed (non-fatal):', e.message); }
+
+  // Insert fresh rows in chunks of 100
   for (let i = 0; i < rows.length; i += 100) {
     const chunk = rows.slice(i, i + 100);
     const body = JSON.stringify(chunk);

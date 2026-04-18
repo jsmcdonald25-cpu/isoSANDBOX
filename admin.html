@@ -5635,6 +5635,8 @@ async function snRemoveBlockTerm(id){
 async function loadIsoSnipe(){
   const tb=document.getElementById('snTbody');
   tb.innerHTML='<tr><td colspan="11" style="text-align:center;padding:40px;color:var(--text3)">Loading snipe data...</td></tr>';
+  // Load blocklist so filters apply immediately
+  await snLoadBlocklist();
   try{
     const res=await fetch('/isosnipe/results/snipe-latest.json');
     if(!res.ok) throw new Error('No data file');
@@ -5685,6 +5687,9 @@ function snApply(){
   document.getElementById('snDeltaV').textContent=minD+'%';
   document.getElementById('snBinWV').textContent=Math.round(bw*100)+'%';
 
+  // Build combined blocklist: admin terms from DB
+  const blockTerms = (_snBlockTerms||[]).map(t => t.term.toLowerCase());
+
   _snFiltered=_snData.filter(h=>{
     if(h.price<minP||h.price>maxP)return false;
     if(h.delta<minD)return false;
@@ -5694,6 +5699,11 @@ function snApply(){
     if(_snTypeF==='market'&&h.isMisspelling)return false;
     if(_snTypeF==='bin'&&h.type!=='BIN')return false;
     if(_snTypeF==='auction'&&h.type!=='AUCTION')return false;
+    // Filter blocked terms from listing titles
+    if(blockTerms.length && h.title){
+      const t = h.title.toLowerCase();
+      if(blockTerms.some(term => t.includes(term))) return false;
+    }
     return true;
   });
   _snFiltered.forEach(h=>{const w=h.type==='BIN'?bw:(1-bw);h.score=parseFloat((h.delta*w).toFixed(1))});

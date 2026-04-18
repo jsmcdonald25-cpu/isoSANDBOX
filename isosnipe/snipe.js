@@ -231,8 +231,14 @@ function processResults(items, target, isMisspelling) {
     if (price < 5) continue;
 
     const title = item.title || '';
-    // Filter junk listings + digital cards
+    // Filter junk listings + digital cards + fake/custom cards
     if (/\b(lot|you pick|your choice|mystery|repack|break|bunt|digital|topps digital|e-pack|nft|virtual card)\b/i.test(title)) continue;
+    const tLow = title.toLowerCase();
+    const JUNK = ['custom','reprint','facsimile','novelty','fantasy card','art card','aceo','tc card',
+      'unofficial','not real','fan made','fanmade','homemade','gag gift','limited edit','replica',
+      'counterfeit','bootleg','custom blast','art print','fan art','proxy','karat','gold plated',
+      'gold foil signature','sketch card','keychain','mix n match','novelty card'];
+    if (JUNK.some(j => tLow.includes(j))) continue;
 
     const isBIN = item.buyingOptions?.includes('FIXED_PRICE');
     const delta = ((target.marketAvg - price) / target.marketAvg) * 100;

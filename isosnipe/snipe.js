@@ -279,26 +279,62 @@ async function run() {
   let searchCount = 0;
 
   for (const target of TARGETS) {
-    console.log(`── ${target.player} | ${target.card} (${target.parallel}) | Market: $${target.marketAvg} ──`);
-
-    // Correct searches (2 max per target)
+    // ── STEP 1: Run correct searches to get REAL market average ──
+    const marketPrices = [];
+    const correctHits = [];
     for (const q of target.correct.slice(0, 2)) {
       process.stdout.write(`  [market] "${q.substring(0,50)}..." `);
       const bin = await searchEbay(token, q, 'BIN');
       const auc = await searchEbay(token, q, 'AUCTION');
+      // Collect prices from legitimate listings for market calc
+      [...bin, ...auc].forEach(item => {
+        const p = parseFloat(item.price?.value || 0);
+        const title = (item.title || '').toLowerCase();
+        const JUNK = ['custom','reprint','facsimile','novelty','fantasy card','art card','aceo','tc card',
+          'unofficial','not real','fan made','fanmade','homemade','gag gift','limited edit','replica',
+          'counterfeit','bootleg','custom blast','art print','fan art','proxy','karat','gold plated',
+          'gold foil signature','sketch card','keychain','mix n match','novelty card'];
+        if (p > 0 && !JUNK.some(j => title.includes(j))) marketPrices.push(p);
+      });
       const h = processResults([...bin, ...auc], target, false);
-      allHits.push(...h);
+      correctHits.push(...h);
       searchCount += 2;
       console.log(`(${h.length} hits)`);
       await sleep(400);
     }
 
-    // Misspelling searches (all)
+    // ── STEP 2: Calculate real market average (trimmed mean) ──
+    let realMarketAvg = target.marketAvg; // fallback to hardcoded if no data
+    if (marketPrices.length >= 3) {
+      marketPrices.sort((a, b) => a - b);
+      // Trim top/bottom 20% to remove outliers
+      const trim = Math.floor(marketPrices.length * 0.2);
+      const trimmed = marketPrices.slice(trim, marketPrices.length - trim);
+      if (trimmed.length > 0) {
+        realMarketAvg = Math.round((trimmed.reduce((a, b) => a + b, 0) / trimmed.length) * 100) / 100;
+      }
+    } else if (marketPrices.length > 0) {
+      // Too few to trim — just use median
+      marketPrices.sort((a, b) => a - b);
+      realMarketAvg = marketPrices[Math.floor(marketPrices.length / 2)];
+    }
+
+    console.log(`── ${target.player} | ${target.card} (${target.parallel}) | Market: $${realMarketAvg} (was $${target.marketAvg}, ${marketPrices.length} comps) ──`);
+
+    // ── STEP 3: Recalculate correct hit deltas with real market avg ──
+    const liveTarget = { ...target, marketAvg: realMarketAvg };
+    correctHits.forEach(h => {
+      h.marketAvg = realMarketAvg;
+      h.delta = parseFloat(((realMarketAvg - h.price) / realMarketAvg * 100).toFixed(1));
+    });
+    allHits.push(...correctHits);
+
+    // ── STEP 4: Misspelling searches using real market avg ──
     for (const q of target.misspellings) {
       process.stdout.write(`  [SNIPE] "${q.substring(0,50)}..." `);
       const bin = await searchEbay(token, q, 'BIN');
       const auc = await searchEbay(token, q, 'AUCTION');
-      const h = processResults([...bin, ...auc], target, true);
+      const h = processResults([...bin, ...auc], liveTarget, true);
       allHits.push(...h);
       searchCount += 2;
       console.log(`(${h.length} hits)`);

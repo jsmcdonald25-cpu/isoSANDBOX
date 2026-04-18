@@ -438,8 +438,98 @@ nav {
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
 /* ═══════════════════════════════════════
-   SCREEN 3 — ISObiometrics REPORT
+   SCREEN 3 — ISObiometrics WORKBENCH
    ═══════════════════════════════════════ */
+.wb-layout { display: grid; grid-template-columns: 1fr 380px; gap: 24px; margin-bottom: 32px; align-items: start; }
+.wb-card-area { position: relative; }
+.wb-card-wrap {
+  position: relative; width: 100%; aspect-ratio: 2.5/3.5;
+  background: #111; border-radius: 12px; overflow: hidden; cursor: crosshair;
+}
+.wb-card-wrap img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; border-radius: 12px; }
+.wb-card-wrap canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2;
+}
+.wb-side-toggle { display: flex; gap: 2px; margin-top: 12px; background: rgba(0,0,0,0.3); border-radius: 6px; overflow: hidden; width: fit-content; }
+
+/* Loupe */
+.wb-loupe {
+  position: absolute; width: 160px; height: 160px; border-radius: 50%;
+  border: 3px solid var(--iso); box-shadow: 0 0 20px rgba(0,170,255,0.3);
+  overflow: hidden; pointer-events: none; z-index: 10; display: none;
+  background: #000;
+}
+.wb-loupe img { position: absolute; transform-origin: top left; }
+
+/* Toolbar */
+.wb-panel { position: sticky; top: 80px; }
+.wb-toolbar {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px;
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: 12px; padding: 12px;
+}
+.wb-tool-btn {
+  flex: 1; min-width: 70px; padding: 10px 6px; border-radius: 8px;
+  border: 1px solid var(--card-border); background: transparent;
+  color: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.15s;
+  text-align: center; font-family: var(--font-ui); font-size: 11px;
+  font-weight: 600; letter-spacing: 0.5px;
+}
+.wb-tool-btn:hover { border-color: rgba(0,170,255,0.3); color: var(--iso); }
+.wb-tool-btn.active { background: rgba(0,170,255,0.1); border-color: var(--iso); color: var(--iso); }
+.wb-tool-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+
+/* Detail panel */
+.wb-detail {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: 12px; padding: 20px; min-height: 200px;
+}
+.wb-detail-title {
+  font-family: var(--font-head); font-size: 16px; letter-spacing: 2px;
+  color: var(--iso); margin-bottom: 12px;
+}
+.wb-detail-content { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.6; }
+
+/* Corner magnifier panels */
+.wb-corners { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.wb-corner-panel {
+  background: rgba(0,0,0,0.3); border: 1px solid var(--card-border);
+  border-radius: 8px; overflow: hidden; position: relative;
+}
+.wb-corner-panel canvas { width: 100%; aspect-ratio: 1; display: block; }
+.wb-corner-label {
+  position: absolute; top: 4px; left: 6px;
+  font-family: var(--font-head); font-size: 11px; letter-spacing: 1px;
+  color: rgba(255,255,255,0.5); background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px;
+}
+.wb-corner-score {
+  position: absolute; bottom: 4px; right: 6px;
+  font-family: var(--font-head); font-size: 14px; letter-spacing: 1px;
+  padding: 2px 8px; border-radius: 4px; background: rgba(0,0,0,0.6);
+}
+
+/* Edge severity bar */
+.wb-edge-bar {
+  display: flex; align-items: center; gap: 8px; padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.wb-edge-bar:last-child { border-bottom: none; }
+.wb-edge-name { font-family: var(--font-head); font-size: 13px; letter-spacing: 1px; width: 60px; }
+.wb-edge-track { flex: 1; height: 8px; border-radius: 4px; background: rgba(255,255,255,0.06); overflow: hidden; }
+.wb-edge-fill { height: 100%; border-radius: 4px; transition: width 0.4s; }
+.wb-edge-pct { font-family: var(--font-head); font-size: 13px; letter-spacing: 1px; width: 40px; text-align: right; }
+
+/* Centering display */
+.wb-center-ratios { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.wb-ratio-box {
+  background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px; text-align: center;
+}
+.wb-ratio-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; color: rgba(255,255,255,0.4); margin-bottom: 4px; text-transform: uppercase; }
+.wb-ratio-val { font-family: var(--font-head); font-size: 28px; letter-spacing: 1px; }
+.wb-ratio-good { color: var(--success); }
+.wb-ratio-ok { color: var(--warn); }
+.wb-ratio-bad { color: var(--danger); }
+
 .report-header { text-align: center; margin-bottom: 48px; }
 .report-title {
   font-family: var(--font-head); font-size: clamp(36px, 5vw, 56px);
@@ -600,6 +690,10 @@ nav {
   .report-meta { flex-direction: column; gap: 4px; }
   .pipeline-bar { flex-wrap: wrap; }
   .pipeline-step { min-width: 80px; }
+  .wb-layout { grid-template-columns: 1fr; }
+  .wb-panel { position: static; }
+  .wb-toolbar { flex-wrap: wrap; }
+  .wb-corners { grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
@@ -864,33 +958,72 @@ nav {
 </div>
 
 <!-- ═══════════════════════════════════════
-     SCREEN 3 — ISObiometrics REPORT
+     SCREEN 3 — ISObiometrics WORKBENCH
      ═══════════════════════════════════════ -->
 <div class="screen" id="screen-report">
   <div class="report-header">
     <div class="report-title">ISO<span class="accent">biometrics</span></div>
-    <div class="report-sub">Full condition analysis &mdash; 144 grid points x 12 categories x front + back</div>
+    <div class="report-sub">Interactive condition analysis &mdash; 8 overlay tools on your card</div>
     <div class="report-meta" id="reportMeta">
       <span><strong>Scanned:</strong> <span id="reportDate"></span></span>
+      <span id="reportScoreBadge" style="font-family:var(--font-head);font-size:16px;letter-spacing:2px;color:var(--iso)"></span>
     </div>
   </div>
 
   <!-- Delta comparison (shows for scan 2+) -->
-  <div class="delta-bar hidden" id="deltaBar">
-    <div style="font-family:var(--font-head);font-size:13px;letter-spacing:2px;color:rgba(255,255,255,0.3)">DELTA vs PREVIOUS</div>
-  </div>
+  <div class="delta-bar hidden" id="deltaBar"></div>
 
-  <div class="report-top">
-    <div class="report-big-score">
-      <div class="rbs-label">ISOGRADING SCORE</div>
-      <div class="rbs-number" id="reportScore">--</div>
-      <div class="rbs-equiv" id="reportEquiv">--</div>
-      <div class="rbs-equiv-sub" id="reportEquivRange"></div>
+  <!-- WORKBENCH -->
+  <div class="wb-layout">
+    <!-- LEFT: Card image with overlay -->
+    <div class="wb-card-area">
+      <div class="wb-card-wrap" id="wbCardWrap">
+        <img id="wbCardImg" alt="Card">
+        <canvas id="wbOverlayCanvas"></canvas>
+        <div class="wb-loupe" id="wbLoupe"><img id="wbLoupeImg"></div>
+      </div>
+      <div class="wb-side-toggle">
+        <button class="side-btn active" id="wbBtnFront" onclick="wbSwitchSide('front')">FRONT</button>
+        <button class="side-btn" id="wbBtnBack" onclick="wbSwitchSide('back')">BACK</button>
+      </div>
+      <!-- Corner magnifier panels (shown when corner tool active) -->
+      <div class="wb-corners" id="wbCorners" style="display:none">
+        <div class="wb-corner-panel"><canvas id="wbCornerTL"></canvas><div class="wb-corner-label">TL</div><div class="wb-corner-score" id="wbCornerScoreTL"></div></div>
+        <div class="wb-corner-panel"><canvas id="wbCornerTR"></canvas><div class="wb-corner-label">TR</div><div class="wb-corner-score" id="wbCornerScoreTR"></div></div>
+        <div class="wb-corner-panel"><canvas id="wbCornerBL"></canvas><div class="wb-corner-label">BL</div><div class="wb-corner-score" id="wbCornerScoreBL"></div></div>
+        <div class="wb-corner-panel"><canvas id="wbCornerBR"></canvas><div class="wb-corner-label">BR</div><div class="wb-corner-score" id="wbCornerScoreBR"></div></div>
+      </div>
     </div>
-    <div class="report-cats" id="reportCats"></div>
+
+    <!-- RIGHT: Toolbar + Detail -->
+    <div class="wb-panel">
+      <div class="wb-toolbar" id="wbToolbar">
+        <button class="wb-tool-btn active" data-tool="centering" onclick="wbSetTool('centering')"><span class="wb-tool-icon">&#9783;</span>Center</button>
+        <button class="wb-tool-btn" data-tool="corners" onclick="wbSetTool('corners')"><span class="wb-tool-icon">&#9698;</span>Corners</button>
+        <button class="wb-tool-btn" data-tool="edges" onclick="wbSetTool('edges')"><span class="wb-tool-icon">&#9644;</span>Edges</button>
+        <button class="wb-tool-btn" data-tool="surface" onclick="wbSetTool('surface')"><span class="wb-tool-icon">&#128270;</span>Surface</button>
+        <button class="wb-tool-btn" data-tool="heatmap" onclick="wbSetTool('heatmap')"><span class="wb-tool-icon">&#9632;</span>Heatmap</button>
+        <button class="wb-tool-btn" data-tool="borders" onclick="wbSetTool('borders')"><span class="wb-tool-icon">&#9634;</span>Borders</button>
+        <button class="wb-tool-btn" data-tool="print" onclick="wbSetTool('print')"><span class="wb-tool-icon">&#9677;</span>Print</button>
+        <button class="wb-tool-btn" data-tool="loupe" onclick="wbSetTool('loupe')"><span class="wb-tool-icon">&#128269;</span>Loupe</button>
+      </div>
+
+      <!-- Score summary (always visible) -->
+      <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:16px;margin-bottom:12px;text-align:center">
+        <div style="font-family:var(--font-head);font-size:11px;letter-spacing:3px;color:rgba(255,255,255,0.3);margin-bottom:4px">ISOGRADING SCORE</div>
+        <div style="font-family:var(--font-head);font-size:44px;letter-spacing:2px;color:var(--grail);line-height:1" id="wbScore">--</div>
+        <div style="font-family:var(--font-head);font-size:14px;color:var(--iso);letter-spacing:1px;margin-top:4px" id="wbGrade"></div>
+      </div>
+
+      <!-- Tool detail panel -->
+      <div class="wb-detail" id="wbDetail">
+        <div class="wb-detail-title" id="wbDetailTitle">CENTERING ANALYSIS</div>
+        <div class="wb-detail-content" id="wbDetailContent"></div>
+      </div>
+    </div>
   </div>
 
-  <!-- Grade equiv bar -->
+  <!-- Grade equiv bar (below workbench) -->
   <div class="report-section">
     <div class="report-section-title">TRADITIONAL GRADE EQUIVALENT</div>
     <div class="equiv-scale">
@@ -916,26 +1049,14 @@ nav {
     </div>
   </div>
 
-  <!-- Heatmaps -->
+  <!-- Category breakdown -->
   <div class="report-section">
-    <div class="report-section-title">CONDITION HEATMAPS &mdash; FRONT</div>
-    <div class="heatmap-grid" id="reportHeatmapFront"></div>
-  </div>
-  <div class="report-section">
-    <div class="report-section-title">CONDITION HEATMAPS &mdash; BACK</div>
-    <div class="heatmap-grid" id="reportHeatmapBack"></div>
-  </div>
-  <div class="hm-legend">
-    <div class="hm-legend-item"><div class="hm-legend-swatch hm-perfect"></div> Perfect</div>
-    <div class="hm-legend-item"><div class="hm-legend-swatch hm-good"></div> Good</div>
-    <div class="hm-legend-item"><div class="hm-legend-swatch hm-ok"></div> OK</div>
-    <div class="hm-legend-item"><div class="hm-legend-swatch hm-minor"></div> Minor</div>
-    <div class="hm-legend-item"><div class="hm-legend-swatch hm-issue"></div> Issue</div>
-    <div class="hm-legend-item"><div class="hm-legend-swatch hm-severe"></div> Severe</div>
+    <div class="report-section-title">CATEGORY BREAKDOWN</div>
+    <div class="report-cats" id="reportCats"></div>
   </div>
 
   <!-- Findings -->
-  <div class="report-section" style="margin-top:32px">
+  <div class="report-section">
     <div class="report-section-title">FINDINGS &amp; DEDUCTIONS</div>
     <div class="findings" id="reportFindings"></div>
   </div>
@@ -1568,6 +1689,13 @@ function delay(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
 /* ═══════════════════════════════════════
    ISObiometrics REPORT BUILDER
    ═══════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   WORKBENCH — OVERLAY TOOLS
+   ═══════════════════════════════════════ */
+var wbActiveTool = 'centering';
+var wbActiveSide = 'front';
+var wbCenteringData = { lr: 50, tb: 50 }; // simulated
+
 function buildReport() {
   if (!cardResult) return;
 
@@ -1575,12 +1703,522 @@ function buildReport() {
   var grade = cardResult.grade;
 
   document.getElementById('reportDate').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-  document.getElementById('reportScore').textContent = total;
-  document.getElementById('reportEquiv').textContent = '\u2248 ' + grade.label + ' ' + grade.grade;
-  document.getElementById('reportEquivRange').textContent = grade.range + ' range';
+  document.getElementById('wbScore').textContent = total;
+  document.getElementById('wbGrade').textContent = '\u2248 ' + grade.label + ' ' + grade.grade;
+  document.getElementById('reportScoreBadge').textContent = total + ' / 1000 \u2248 ' + grade.label;
   document.getElementById('equivMarker').style.left = (total / 1000 * 100) + '%';
 
-  // Category cards (Big 4)
+  // Set card image
+  document.getElementById('wbCardImg').src = wbActiveSide === 'front' ? imgFront : imgBack;
+
+  // Simulate centering data from score
+  var cPct = cardResult.breakdown.centering / E.DEFAULT_WEIGHTS.centering;
+  wbCenteringData.lr = cPct > 0.95 ? 50 : cPct > 0.9 ? Math.round(48 + Math.random() * 4) : Math.round(43 + Math.random() * 6);
+  wbCenteringData.tb = cPct > 0.93 ? 50 : cPct > 0.88 ? Math.round(47 + Math.random() * 5) : Math.round(42 + Math.random() * 7);
+
+  // Category breakdown cards
+  buildCategoryCards();
+
+  // Findings table
+  buildFindingsTable();
+
+  // Delta bar
+  if (previousResult) {
+    var delta = E.computeDelta(previousResult, cardResult);
+    var deltaBar = document.getElementById('deltaBar');
+    deltaBar.classList.remove('hidden');
+    var deltaHtml = '<div style="font-family:var(--font-head);font-size:13px;letter-spacing:2px;color:rgba(255,255,255,0.3)">DELTA vs PREVIOUS</div>';
+    deltaHtml += '<div class="delta-item">Total: <span class="delta-val ' + (delta.total > 0 ? 'delta-pos' : delta.total < 0 ? 'delta-neg' : 'delta-zero') + '">' + (delta.total > 0 ? '+' : '') + delta.total + '</span></div>';
+    deltaBar.innerHTML = deltaHtml;
+  }
+
+  // Init overlay
+  wbSetTool('centering');
+
+  // Init loupe events
+  initLoupe();
+}
+
+function wbSwitchSide(side) {
+  wbActiveSide = side;
+  document.getElementById('wbCardImg').src = side === 'front' ? imgFront : imgBack;
+  document.getElementById('wbBtnFront').classList.toggle('active', side === 'front');
+  document.getElementById('wbBtnBack').classList.toggle('active', side === 'back');
+  wbRenderOverlay();
+}
+
+function wbSetTool(tool) {
+  wbActiveTool = tool;
+  document.querySelectorAll('.wb-tool-btn').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.tool === tool);
+  });
+  // Show/hide corner panels
+  document.getElementById('wbCorners').style.display = tool === 'corners' ? 'grid' : 'none';
+  // Show/hide loupe
+  document.getElementById('wbLoupe').style.display = 'none';
+  document.getElementById('wbCardWrap').style.cursor = tool === 'loupe' ? 'none' : 'crosshair';
+
+  wbRenderOverlay();
+  wbUpdateDetail();
+}
+
+function wbRenderOverlay() {
+  var canvas = document.getElementById('wbOverlayCanvas');
+  var wrap = document.getElementById('wbCardWrap');
+  var w = wrap.clientWidth;
+  var h = wrap.clientHeight;
+  canvas.width = w;
+  canvas.height = h;
+  var ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, w, h);
+
+  if (wbActiveTool === 'centering') renderCentering(ctx, w, h);
+  else if (wbActiveTool === 'corners') renderCorners(ctx, w, h);
+  else if (wbActiveTool === 'edges') renderEdges(ctx, w, h);
+  else if (wbActiveTool === 'surface') renderSurface(ctx, w, h);
+  else if (wbActiveTool === 'heatmap') renderHeatmapOverlay(ctx, w, h);
+  else if (wbActiveTool === 'borders') renderBorders(ctx, w, h);
+  else if (wbActiveTool === 'print') renderPrint(ctx, w, h);
+  // loupe has no canvas overlay — handled by mouse events
+}
+
+// ── CENTERING TOOL ──────────────────────────────────────────────
+function renderCentering(ctx, w, h) {
+  var lr = wbCenteringData.lr;
+  var tb = wbCenteringData.tb;
+
+  // Border percentages
+  var leftPct = lr / 100;
+  var topPct = tb / 100;
+
+  // Draw nested rectangles (like physical centering tool)
+  var levels = [0.04, 0.08, 0.12, 0.16, 0.20, 0.25];
+  levels.forEach(function(inset, i) {
+    var x = w * inset;
+    var y = h * inset;
+    var rw = w - 2 * x;
+    var rh = h - 2 * y;
+    ctx.strokeStyle = i % 2 === 0 ? 'rgba(0,170,255,0.5)' : 'rgba(0,170,255,0.25)';
+    ctx.lineWidth = i % 2 === 0 ? 1.5 : 1;
+    ctx.setLineDash(i % 2 === 0 ? [] : [4, 4]);
+    ctx.strokeRect(x, y, rw, rh);
+  });
+  ctx.setLineDash([]);
+
+  // Center crosshair
+  ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(w / 2, 0); ctx.lineTo(w / 2, h);
+  ctx.moveTo(0, h / 2); ctx.lineTo(w, h / 2);
+  ctx.stroke();
+
+  // Actual center point based on centering offset
+  var cx = w * leftPct;
+  var cy = h * topPct;
+  ctx.strokeStyle = 'rgba(255,68,68,0.8)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(cx - 12, cy); ctx.lineTo(cx + 12, cy);
+  ctx.moveTo(cx, cy - 12); ctx.lineTo(cx, cy + 12);
+  ctx.stroke();
+
+  // L/R labels
+  ctx.font = '600 14px Barlow Condensed';
+  ctx.fillStyle = lr >= 45 && lr <= 55 ? '#00CC66' : lr >= 40 && lr <= 60 ? '#FF8C00' : '#FF4444';
+  ctx.textAlign = 'center';
+  ctx.fillText(lr + '/' + (100 - lr), w / 2, h - 8);
+
+  // T/B labels
+  ctx.save();
+  ctx.translate(w - 8, h / 2);
+  ctx.rotate(Math.PI / 2);
+  ctx.fillStyle = tb >= 45 && tb <= 55 ? '#00CC66' : tb >= 40 && tb <= 60 ? '#FF8C00' : '#FF4444';
+  ctx.fillText(tb + '/' + (100 - tb), 0, 0);
+  ctx.restore();
+
+  // 60/40 warning glow
+  if (lr < 40 || lr > 60 || tb < 40 || tb > 60) {
+    ctx.strokeStyle = 'rgba(255,68,68,0.4)';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(2, 2, w - 4, h - 4);
+  }
+}
+
+// ── CORNER MAGNIFIER ────────────────────────────────────────────
+function renderCorners(ctx, w, h) {
+  var cornerSize = Math.min(w, h) * 0.15;
+  var corners = [
+    { label: 'TL', x: 0, y: 0, cx: 0, cy: 0 },
+    { label: 'TR', x: w - cornerSize, y: 0, cx: w, cy: 0 },
+    { label: 'BL', x: 0, y: h - cornerSize, cx: 0, cy: h },
+    { label: 'BR', x: w - cornerSize, y: h - cornerSize, cx: w, cy: h }
+  ];
+
+  // Get corner scores from cell data
+  var data = rawCellData[wbActiveSide];
+  var cornerScores = getCornerScores(data);
+
+  corners.forEach(function(c, i) {
+    // Highlight box on main card
+    var color = cornerScores[i] >= 0.95 ? '#00CC66' : cornerScores[i] >= 0.80 ? '#FF8C00' : '#FF4444';
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(c.x + 1, c.y + 1, cornerSize - 2, cornerSize - 2);
+
+    // Corner angle indicator (90° square)
+    ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+    ctx.lineWidth = 1;
+    var sq = 20;
+    ctx.strokeRect(c.cx - (c.cx > 0 ? sq : 0), c.cy - (c.cy > 0 ? sq : 0), sq, sq);
+  });
+
+  // Render zoomed corners into panels
+  renderCornerPanels(cornerScores);
+}
+
+function getCornerScores(data) {
+  if (!data) return [1, 1, 1, 1];
+  // Average corners score for cells in each corner zone
+  var zones = [
+    [[0,0],[0,1],[1,0],[1,1]],         // TL
+    [[0,10],[0,11],[1,10],[1,11]],      // TR
+    [[10,0],[10,1],[11,0],[11,1]],      // BL
+    [[10,10],[10,11],[11,10],[11,11]]    // BR
+  ];
+  return zones.map(function(cells) {
+    var sum = 0;
+    cells.forEach(function(rc) {
+      var idx = rc[0] * 12 + rc[1];
+      sum += (data[idx] && data[idx].corners != null) ? data[idx].corners : 1.0;
+    });
+    return sum / cells.length;
+  });
+}
+
+function renderCornerPanels(scores) {
+  var img = document.getElementById('wbCardImg');
+  if (!img.naturalWidth) return;
+
+  var labels = ['TL', 'TR', 'BL', 'BR'];
+  var ids = ['wbCornerTL', 'wbCornerTR', 'wbCornerBL', 'wbCornerBR'];
+  var scoreIds = ['wbCornerScoreTL', 'wbCornerScoreTR', 'wbCornerScoreBL', 'wbCornerScoreBR'];
+  var cropSize = Math.min(img.naturalWidth, img.naturalHeight) * 0.2;
+
+  var crops = [
+    { sx: 0, sy: 0 },
+    { sx: img.naturalWidth - cropSize, sy: 0 },
+    { sx: 0, sy: img.naturalHeight - cropSize },
+    { sx: img.naturalWidth - cropSize, sy: img.naturalHeight - cropSize }
+  ];
+
+  ids.forEach(function(id, i) {
+    var canvas = document.getElementById(id);
+    canvas.width = 200; canvas.height = 200;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img, crops[i].sx, crops[i].sy, cropSize, cropSize, 0, 0, 200, 200);
+
+    // Score badge
+    var pct = Math.round(scores[i] * 100);
+    var el = document.getElementById(scoreIds[i]);
+    el.textContent = pct + '%';
+    el.style.color = pct >= 95 ? '#00CC66' : pct >= 80 ? '#FF8C00' : '#FF4444';
+  });
+}
+
+// ── EDGE SCANNER ────────────────────────────────────────────────
+function renderEdges(ctx, w, h) {
+  var data = rawCellData[wbActiveSide];
+  var edgeScores = getEdgeScores(data);
+  var edges = [
+    { label: 'TOP', x1: 0, y1: 0, x2: w, y2: 0, score: edgeScores[0] },
+    { label: 'RIGHT', x1: w, y1: 0, x2: w, y2: h, score: edgeScores[1] },
+    { label: 'BOTTOM', x1: 0, y1: h, x2: w, y2: h, score: edgeScores[2] },
+    { label: 'LEFT', x1: 0, y1: 0, x2: 0, y2: h, score: edgeScores[3] }
+  ];
+
+  edges.forEach(function(e) {
+    var color = e.score >= 0.95 ? '#00CC66' : e.score >= 0.80 ? '#FF8C00' : '#FF4444';
+    var thickness = e.score >= 0.95 ? 3 : e.score >= 0.80 ? 5 : 8;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = thickness;
+    ctx.globalAlpha = 0.6;
+    ctx.beginPath();
+    ctx.moveTo(e.x1, e.y1);
+    ctx.lineTo(e.x2, e.y2);
+    ctx.stroke();
+  });
+  ctx.globalAlpha = 1;
+}
+
+function getEdgeScores(data) {
+  if (!data) return [1, 1, 1, 1];
+  // Top row, right col, bottom row, left col
+  var zones = [
+    Array.from({length: 12}, function(_, c) { return [0, c]; }),  // top
+    Array.from({length: 12}, function(_, r) { return [r, 11]; }), // right
+    Array.from({length: 12}, function(_, c) { return [11, c]; }), // bottom
+    Array.from({length: 12}, function(_, r) { return [r, 0]; })   // left
+  ];
+  return zones.map(function(cells) {
+    var sum = 0;
+    cells.forEach(function(rc) {
+      var idx = rc[0] * 12 + rc[1];
+      sum += (data[idx] && data[idx].edges != null) ? data[idx].edges : 1.0;
+    });
+    return sum / cells.length;
+  });
+}
+
+// ── SURFACE INSPECTOR ───────────────────────────────────────────
+function renderSurface(ctx, w, h) {
+  var findings = allFindings[wbActiveSide] || [];
+  var surfaceFindings = findings.filter(function(f) {
+    return f.category === 'surface' || f.category === 'surface_micro' || f.category === 'print_registration';
+  });
+
+  surfaceFindings.forEach(function(f) {
+    var rc = E.indexToRowCol(f.cellIndex);
+    var cellW = w / 12;
+    var cellH = h / 12;
+    var cx = (rc.col + 0.5) * cellW;
+    var cy = (rc.row + 0.5) * cellH;
+    var radius = Math.min(cellW, cellH) * 0.4;
+
+    // Pin marker
+    var color = f.severity === 'severe' ? '#FF4444' : f.severity === 'major' ? '#FF8C00' : '#FFCC00';
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.fillStyle = color + '40';
+    ctx.fill();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Dot center
+    ctx.beginPath();
+    ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+    ctx.fillStyle = color;
+    ctx.fill();
+  });
+}
+
+// ── HEATMAP ON CARD ─────────────────────────────────────────────
+function renderHeatmapOverlay(ctx, w, h) {
+  var data = rawCellData[wbActiveSide];
+  if (!data) return;
+
+  var cellW = w / 12;
+  var cellH = h / 12;
+  var hmColors = [
+    'rgba(0,204,102,0.05)', 'rgba(0,204,102,0.15)', 'rgba(0,170,255,0.12)',
+    'rgba(255,140,0,0.20)', 'rgba(255,68,68,0.25)', 'rgba(255,68,68,0.45)'
+  ];
+
+  // Average Big 4 for each cell
+  for (var i = 0; i < E.CELL_COUNT; i++) {
+    var rc = E.indexToRowCol(i);
+    var avg = 0;
+    E.BIG4.forEach(function(cat) {
+      avg += (data[i][cat] != null ? data[i][cat] : 1.0);
+    });
+    avg /= 4;
+
+    var sev = avg >= 0.95 ? 0 : avg >= 0.85 ? 1 : avg >= 0.70 ? 2 : avg >= 0.50 ? 3 : avg >= 0.25 ? 4 : 5;
+    ctx.fillStyle = hmColors[sev];
+    ctx.fillRect(rc.col * cellW, rc.row * cellH, cellW, cellH);
+
+    // Grid lines
+    ctx.strokeStyle = 'rgba(0,170,255,0.08)';
+    ctx.lineWidth = 0.5;
+    ctx.strokeRect(rc.col * cellW, rc.row * cellH, cellW, cellH);
+  }
+}
+
+// ── BORDER CONSISTENCY ──────────────────────────────────────────
+function renderBorders(ctx, w, h) {
+  // Simulated border thickness measurements
+  var borderW = w * 0.04;
+  var variance = Math.random() * 0.02;
+
+  var sides = [
+    { x: 0, y: 0, w: w, h: borderW, label: 'Top' },
+    { x: w - borderW, y: 0, w: borderW, h: h, label: 'Right' },
+    { x: 0, y: h - borderW - variance * h, w: w, h: borderW + variance * h, label: 'Bottom' },
+    { x: 0, y: 0, w: borderW + variance * w * 0.5, h: h, label: 'Left' }
+  ];
+
+  sides.forEach(function(s) {
+    ctx.fillStyle = 'rgba(0,170,255,0.15)';
+    ctx.fillRect(s.x, s.y, s.w, s.h);
+    ctx.strokeStyle = 'rgba(0,170,255,0.5)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(s.x, s.y, s.w, s.h);
+  });
+
+  // Measurement lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([2, 2]);
+  // Top measurement
+  ctx.beginPath(); ctx.moveTo(w * 0.3, 0); ctx.lineTo(w * 0.3, borderW); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(w * 0.7, 0); ctx.lineTo(w * 0.7, borderW); ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+// ── PRINT REGISTRATION ─────────────────────────────────────────
+function renderPrint(ctx, w, h) {
+  var data = rawCellData[wbActiveSide];
+  if (!data) return;
+
+  // Highlight cells with print registration issues
+  var cellW = w / 12;
+  var cellH = h / 12;
+
+  for (var i = 0; i < E.CELL_COUNT; i++) {
+    var score = data[i].print_registration != null ? data[i].print_registration : 1.0;
+    if (score < 0.85) {
+      var rc = E.indexToRowCol(i);
+      var cx = (rc.col + 0.5) * cellW;
+      var cy = (rc.row + 0.5) * cellH;
+
+      // Shift vector arrow
+      var shiftX = (1 - score) * cellW * 0.4 * (Math.random() > 0.5 ? 1 : -1);
+      var shiftY = (1 - score) * cellH * 0.3 * (Math.random() > 0.5 ? 1 : -1);
+
+      ctx.strokeStyle = 'rgba(187,102,255,0.6)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + shiftX, cy + shiftY);
+      ctx.stroke();
+
+      // Arrowhead
+      ctx.fillStyle = 'rgba(187,102,255,0.8)';
+      ctx.beginPath();
+      ctx.arc(cx + shiftX, cy + shiftY, 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+}
+
+// ── LOUPE / ZOOM ────────────────────────────────────────────────
+function initLoupe() {
+  var wrap = document.getElementById('wbCardWrap');
+  var loupe = document.getElementById('wbLoupe');
+  var loupeImg = document.getElementById('wbLoupeImg');
+  var cardImg = document.getElementById('wbCardImg');
+
+  wrap.addEventListener('mousemove', function(e) {
+    if (wbActiveTool !== 'loupe') return;
+    loupe.style.display = 'block';
+
+    var rect = wrap.getBoundingClientRect();
+    var x = e.clientX - rect.left;
+    var y = e.clientY - rect.top;
+
+    // Position loupe
+    loupe.style.left = (x - 80) + 'px';
+    loupe.style.top = (y - 80) + 'px';
+
+    // Scale and position the image inside loupe (6x zoom)
+    var zoom = 6;
+    var imgW = cardImg.naturalWidth;
+    var imgH = cardImg.naturalHeight;
+    var scaleX = imgW / rect.width;
+    var scaleY = imgH / rect.height;
+
+    loupeImg.src = cardImg.src;
+    loupeImg.style.width = (rect.width * zoom) + 'px';
+    loupeImg.style.height = (rect.height * zoom) + 'px';
+    loupeImg.style.left = -(x * zoom - 80) + 'px';
+    loupeImg.style.top = -(y * zoom - 80) + 'px';
+  });
+
+  wrap.addEventListener('mouseleave', function() {
+    loupe.style.display = 'none';
+  });
+}
+
+// ── DETAIL PANEL UPDATES ────────────────────────────────────────
+function wbUpdateDetail() {
+  var title = document.getElementById('wbDetailTitle');
+  var content = document.getElementById('wbDetailContent');
+
+  if (wbActiveTool === 'centering') {
+    title.textContent = 'CENTERING ANALYSIS';
+    var lr = wbCenteringData.lr;
+    var tb = wbCenteringData.tb;
+    var lrClass = lr >= 45 && lr <= 55 ? 'wb-ratio-good' : lr >= 40 && lr <= 60 ? 'wb-ratio-ok' : 'wb-ratio-bad';
+    var tbClass = tb >= 45 && tb <= 55 ? 'wb-ratio-good' : tb >= 40 && tb <= 60 ? 'wb-ratio-ok' : 'wb-ratio-bad';
+    content.innerHTML =
+      '<div class="wb-center-ratios">' +
+        '<div class="wb-ratio-box"><div class="wb-ratio-label">Left / Right</div><div class="wb-ratio-val ' + lrClass + '">' + lr + '/' + (100 - lr) + '</div></div>' +
+        '<div class="wb-ratio-box"><div class="wb-ratio-label">Top / Bottom</div><div class="wb-ratio-val ' + tbClass + '">' + tb + '/' + (100 - tb) + '</div></div>' +
+      '</div>' +
+      '<div style="margin-top:12px;font-size:12px;color:rgba(255,255,255,0.35)">Nested rectangles show border zones. Red crosshair indicates actual center offset. 60/40 or worse triggers warning glow.</div>';
+  } else if (wbActiveTool === 'corners') {
+    title.textContent = 'CORNER ANALYSIS';
+    var scores = getCornerScores(rawCellData[wbActiveSide]);
+    var labels = ['Top-Left', 'Top-Right', 'Bottom-Left', 'Bottom-Right'];
+    content.innerHTML = scores.map(function(s, i) {
+      var pct = Math.round(s * 100);
+      var color = pct >= 95 ? '#00CC66' : pct >= 80 ? '#FF8C00' : '#FF4444';
+      var desc = pct >= 95 ? 'Sharp, clean' : pct >= 80 ? 'Minor softness' : 'Wear detected';
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04)">' +
+        '<span>' + labels[i] + '</span><span style="color:' + color + ';font-family:var(--font-head);font-size:14px">' + pct + '% \u2014 ' + desc + '</span></div>';
+    }).join('');
+  } else if (wbActiveTool === 'edges') {
+    title.textContent = 'EDGE ANALYSIS';
+    var eScores = getEdgeScores(rawCellData[wbActiveSide]);
+    var eLabels = ['Top', 'Right', 'Bottom', 'Left'];
+    content.innerHTML = eScores.map(function(s, i) {
+      var pct = Math.round(s * 100);
+      var color = pct >= 95 ? '#00CC66' : pct >= 80 ? '#FF8C00' : '#FF4444';
+      return '<div class="wb-edge-bar">' +
+        '<div class="wb-edge-name">' + eLabels[i] + '</div>' +
+        '<div class="wb-edge-track"><div class="wb-edge-fill" style="width:' + pct + '%;background:' + color + '"></div></div>' +
+        '<div class="wb-edge-pct" style="color:' + color + '">' + pct + '%</div></div>';
+    }).join('');
+  } else if (wbActiveTool === 'surface') {
+    title.textContent = 'SURFACE INSPECTOR';
+    var findings = (allFindings[wbActiveSide] || []).filter(function(f) {
+      return f.category === 'surface' || f.category === 'surface_micro' || f.category === 'print_registration';
+    });
+    if (!findings.length) {
+      content.innerHTML = '<div style="color:var(--success);font-weight:600">No surface defects detected</div>';
+    } else {
+      content.innerHTML = findings.map(function(f) {
+        var color = f.severity === 'severe' ? '#FF4444' : f.severity === 'major' ? '#FF8C00' : '#FFCC00';
+        return '<div style="padding:8px;margin-bottom:6px;border-radius:6px;border-left:3px solid ' + color + ';background:rgba(255,68,68,0.06)">' +
+          '<strong style="color:var(--grail)">' + f.coords + '</strong> \u2014 ' + f.description +
+          '<span style="float:right;color:' + color + ';font-family:var(--font-head);font-size:12px">' + f.severity.toUpperCase() + '</span></div>';
+      }).join('');
+    }
+  } else if (wbActiveTool === 'heatmap') {
+    title.textContent = '144-CELL HEATMAP';
+    content.innerHTML = '<div style="color:rgba(255,255,255,0.4)">Condition heatmap overlaid on card image. Colors show averaged Big 4 category scores per cell.</div>' +
+      '<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">' +
+      '<span style="color:#00CC66">\u25A0 Perfect</span>' +
+      '<span style="color:#00CC66;opacity:0.6">\u25A0 Good</span>' +
+      '<span style="color:#00AAFF">\u25A0 OK</span>' +
+      '<span style="color:#FF8C00">\u25A0 Minor</span>' +
+      '<span style="color:#FF4444">\u25A0 Issue</span>' +
+      '<span style="color:#FF4444;opacity:0.8">\u25A0 Severe</span></div>';
+  } else if (wbActiveTool === 'borders') {
+    title.textContent = 'BORDER CONSISTENCY';
+    content.innerHTML = '<div style="color:rgba(255,255,255,0.4)">Blue zones show measured border thickness. Uneven borders indicate potential off-center cutting or trimming.</div>';
+  } else if (wbActiveTool === 'print') {
+    title.textContent = 'PRINT REGISTRATION';
+    content.innerHTML = '<div style="color:rgba(255,255,255,0.4)">Purple arrows show color layer shift direction and magnitude. Longer arrows = more misregistration. Affects print quality scoring.</div>';
+  } else if (wbActiveTool === 'loupe') {
+    title.textContent = 'INTERACTIVE LOUPE';
+    content.innerHTML = '<div style="color:rgba(255,255,255,0.4)">Move your mouse over the card image to inspect any area at 6x magnification. Look for: surface scratches, print dots, edge fiber, corner radius.</div>';
+  }
+}
+
+// ── CATEGORY CARDS + FINDINGS (below workbench) ─────────────────
+function buildCategoryCards() {
   var catContainer = document.getElementById('reportCats');
   catContainer.innerHTML = E.BIG4.map(function(cat) {
     var val = Math.round(cardResult.breakdown[cat]);
@@ -1592,11 +2230,10 @@ function buildReport() {
         '<div class="rcc-score" style="color:' + CAT_COLORS[cat] + '">' + val + '<span style="font-size:14px;opacity:0.4">/' + maxW + '</span></div>' +
       '</div>' +
       '<div class="rcc-bar"><div class="rcc-bar-fill" style="width:' + pct + '%;background:' + CAT_COLORS[cat] + '"></div></div>' +
-      '<div class="rcc-detail">' + getCatDetail(cat) + '</div>' +
     '</div>';
   }).join('');
 
-  // Secondary categories summary
+  // Secondary categories
   var secondaryCats = E.CATEGORIES.filter(function(c) { return E.BIG4.indexOf(c) === -1; });
   var secHtml = '<div class="report-cat-card" style="grid-column:1/-1">' +
     '<div class="rcc-header"><div class="rcc-name" style="color:rgba(255,255,255,0.5)">SECONDARY CATEGORIES</div></div>' +
@@ -1611,90 +2248,15 @@ function buildReport() {
   });
   secHtml += '</div></div>';
   catContainer.innerHTML += secHtml;
-
-  // Delta bar
-  if (previousResult) {
-    var delta = E.computeDelta(previousResult, cardResult);
-    var deltaBar = document.getElementById('deltaBar');
-    deltaBar.classList.remove('hidden');
-    var deltaHtml = '<div style="font-family:var(--font-head);font-size:13px;letter-spacing:2px;color:rgba(255,255,255,0.3)">DELTA vs SCAN ' + (currentScanNum - 1) + '</div>';
-    deltaHtml += '<div class="delta-item">Total: <span class="delta-val ' + (delta.total > 0 ? 'delta-pos' : delta.total < 0 ? 'delta-neg' : 'delta-zero') + '">' + (delta.total > 0 ? '+' : '') + delta.total + '</span></div>';
-    E.BIG4.forEach(function(cat) {
-      var d = delta[cat];
-      deltaHtml += '<div class="delta-item">' + cap(cat) + ': <span class="delta-val ' + (d > 0 ? 'delta-pos' : d < 0 ? 'delta-neg' : 'delta-zero') + '">' + (d > 0 ? '+' : '') + d + '</span></div>';
-    });
-    deltaBar.innerHTML = deltaHtml;
-  }
-
-  // Heatmaps (Big 4)
-  buildHeatmaps('reportHeatmapFront', 'front');
-  buildHeatmaps('reportHeatmapBack', 'back');
-
-  // Findings
-  buildFindingsTable();
-}
-
-function getCatDetail(cat) {
-  var val = cardResult.breakdown[cat];
-  var maxW = E.DEFAULT_WEIGHTS[cat];
-  var pct = val / maxW;
-  if (cat === 'centering') {
-    var lr = pct > 0.95 ? '50/50' : pct > 0.9 ? '51/49' : '53/47';
-    var tb = pct > 0.93 ? '50/50' : pct > 0.88 ? '52/48' : '55/45';
-    return 'L/R: ' + lr + ' | T/B: ' + tb + '<br>Front + Back averaged';
-  }
-  if (cat === 'corners') {
-    return pct > 0.95 ? 'All four corners sharp and clean' : pct > 0.88 ? '1 minor soft corner detected' : 'Multiple corner issues detected';
-  }
-  if (cat === 'edges') {
-    return pct > 0.95 ? 'All edges clean and intact' : pct > 0.88 ? 'Minor edge wear at 1-2 locations' : 'Edge wear on multiple sides';
-  }
-  if (cat === 'surface') {
-    return pct > 0.95 ? 'Surface clean \u2014 no defects' : pct > 0.88 ? 'Minor surface imperfection' : 'Surface defects present';
-  }
-  return '';
-}
-
-function buildHeatmaps(containerId, side) {
-  var container = document.getElementById(containerId);
-  container.innerHTML = '';
-  var data = rawCellData[side];
-  if (!data) { container.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:14px;padding:20px">No data</div>'; return; }
-
-  E.BIG4.forEach(function(cat) {
-    var heatmap = E.buildHeatmap(data, cat);
-    var hmClasses = ['hm-perfect', 'hm-good', 'hm-ok', 'hm-minor', 'hm-issue', 'hm-severe'];
-
-    var panel = document.createElement('div');
-    panel.className = 'heatmap-panel';
-    panel.innerHTML = '<div class="hm-label" style="color:' + CAT_COLORS[cat] + '">' + cat.toUpperCase() + '</div><div class="hm-card"><div class="hm-grid"></div></div>';
-    container.appendChild(panel);
-
-    var hmGrid = panel.querySelector('.hm-grid');
-    for (var i = 0; i < E.CELL_COUNT; i++) {
-      var cell = document.createElement('div');
-      cell.className = 'hm-cell ' + hmClasses[heatmap[i]];
-      hmGrid.appendChild(cell);
-    }
-  });
 }
 
 function buildFindingsTable() {
   var all = [];
   ['front', 'back'].forEach(function(side) {
     (allFindings[side] || []).forEach(function(f) {
-      all.push({
-        side: side,
-        coords: f.coords,
-        category: f.category,
-        description: f.description,
-        severity: f.severity,
-        rawScore: f.rawScore
-      });
+      all.push({ side: side, coords: f.coords, category: f.category, description: f.description, severity: f.severity });
     });
   });
-
-  // Sort by severity
   var sevOrder = { severe: 0, major: 1, minor: 2, info: 3 };
   all.sort(function(a, b) { return (sevOrder[a.severity] || 3) - (sevOrder[b.severity] || 3); });
 
@@ -1703,23 +2265,17 @@ function buildFindingsTable() {
     fContainer.innerHTML = '<div style="text-align:center;padding:20px;color:var(--success);font-family:var(--font-head);font-size:18px;letter-spacing:2px">NO ISSUES DETECTED</div>';
     return;
   }
-
-  var html = all.map(function(f) {
+  fContainer.innerHTML = all.map(function(f) {
     var impactClass = f.severity === 'severe' || f.severity === 'major' ? 'impact-major' : 'impact-minor';
     return '<div class="finding-item">' +
       '<div class="finding-loc">' + f.coords + '</div>' +
       '<div class="finding-desc"><strong>' + f.category + ':</strong> ' + f.description + ' (' + f.side + ')</div>' +
-      '<div class="finding-impact ' + impactClass + '">' + f.severity.toUpperCase() + '</div>' +
-    '</div>';
-  }).join('');
-
-  html += '<div class="finding-item finding-total">' +
+      '<div class="finding-impact ' + impactClass + '">' + f.severity.toUpperCase() + '</div></div>';
+  }).join('') +
+  '<div class="finding-item finding-total">' +
     '<div class="finding-loc" style="color:var(--grail)">TOTAL</div>' +
-    '<div class="finding-desc"><strong style="color:var(--grail)">' + all.length + ' findings across front + back</strong></div>' +
-    '<div class="finding-impact" style="color:var(--danger);font-size:16px">' + all.length + ' issues</div>' +
-  '</div>';
-
-  fContainer.innerHTML = html;
+    '<div class="finding-desc"><strong style="color:var(--grail)">' + all.length + ' findings</strong></div>' +
+    '<div class="finding-impact" style="color:var(--danger)">' + all.length + '</div></div>';
 }
 
 /* ═══════════════════════════════════════

@@ -103,6 +103,91 @@ const TARGETS = [
   { player:'Daniel Susac', card:'Auto (any)', parallel:'Autograph', marketAvg:55,
     correct:['Daniel Susac auto','Daniel Susac autograph'],
     misspellings:['Daniel Susac autogragh','Susac auot card','Danial Susac auto','Daniel Susak autograph','Sussac auto card'] },
+
+  // ── MOISÉS BALLESTEROS ──
+  { player:'Moises Ballesteros', card:'1st Bowman', parallel:'Base', marketAvg:12,
+    correct:['Moises Ballesteros 1st Bowman','Ballesteros Bowman 1st'],
+    misspellings:['Moises Balesteros bowman','Ballesteros 1st bowmen','Moses Ballesteros bowman','Moises Bayesteros 1st','Balesteros bowman chrome'] },
+  { player:'Moises Ballesteros', card:'1st Bowman Chrome', parallel:'Chrome', marketAvg:22,
+    correct:['Moises Ballesteros Bowman Chrome','Ballesteros 1st Chrome'],
+    misspellings:['Ballesteros bowman crome','Moises Balesteros chrome','Moses Ballesteros crome','Ballesteros bowmen chrome'] },
+  { player:'Moises Ballesteros', card:'Auto (any)', parallel:'Autograph', marketAvg:45,
+    correct:['Moises Ballesteros auto','Ballesteros autograph'],
+    misspellings:['Ballesteros autogragh','Moises Balesteros auto','Moses Ballesteros autograph','Ballesteros auot card'] },
+
+  // ── GEORGE VALERA ──
+  { player:'George Valera', card:'1st Bowman', parallel:'Base', marketAvg:10,
+    correct:['George Valera 1st Bowman','Valera Bowman 1st'],
+    misspellings:['George Valera bowmen','Georg Valera bowman','George Valerra bowman','Valera 1st bowmen'] },
+  { player:'George Valera', card:'1st Bowman Chrome', parallel:'Chrome', marketAvg:18,
+    correct:['George Valera Bowman Chrome','Valera 1st Chrome'],
+    misspellings:['Valera bowman crome','George Valerra chrome','Georg Valera crome','Valera bowmen chrome'] },
+  { player:'George Valera', card:'Auto (any)', parallel:'Autograph', marketAvg:35,
+    correct:['George Valera auto','Valera autograph card'],
+    misspellings:['Valera autogragh','George Valerra auto','Georg Valera autograph','Valera auot'] },
+
+  // ── KEVIN MCGONIGLE ──
+  { player:'Kevin McGonigle', card:'1st Bowman', parallel:'Base', marketAvg:8,
+    correct:['Kevin McGonigle 1st Bowman','McGonigle Bowman 1st'],
+    misspellings:['Kevin McGonigle bowmen','McGonigal bowman','Kevin McGoniggal bowman','McGongle 1st bowman'] },
+  { player:'Kevin McGonigle', card:'1st Bowman Chrome', parallel:'Chrome', marketAvg:15,
+    correct:['Kevin McGonigle Bowman Chrome','McGonigle Chrome 1st'],
+    misspellings:['McGonigle bowman crome','Kevin McGonigal chrome','McGoniggal bowman crome','McGongle chrome'] },
+  { player:'Kevin McGonigle', card:'Auto (any)', parallel:'Autograph', marketAvg:30,
+    correct:['Kevin McGonigle auto','McGonigle autograph'],
+    misspellings:['McGonigle autogragh','Kevin McGonigal auto','McGoniggal autograph','McGongle auot'] },
+
+  // ── CHASE DELAUTER ──
+  { player:'Chase DeLauter', card:'1st Bowman', parallel:'Base', marketAvg:15,
+    correct:['Chase DeLauter 1st Bowman','DeLauter Bowman 1st'],
+    misspellings:['Chase Delauter bowmen','Chase De Lauter bowman','Chase DeLaughter bowman','Delauter 1st bowmen','Chase Delaughter bowman'] },
+  { player:'Chase DeLauter', card:'1st Bowman Chrome', parallel:'Chrome', marketAvg:28,
+    correct:['Chase DeLauter Bowman Chrome','DeLauter Chrome 1st'],
+    misspellings:['DeLauter bowman crome','Chase Delauter crome','De Lauter bowman chrome','DeLaughter crome'] },
+  { player:'Chase DeLauter', card:'Auto (any)', parallel:'Autograph', marketAvg:50,
+    correct:['Chase DeLauter auto','DeLauter autograph'],
+    misspellings:['DeLauter autogragh','Chase Delauter auto','DeLaughter autograph','De Lauter auot','Chase Delaughter auto'] },
+
+  // ── MUNETAKA MURAKAMI ──
+  { player:'Munetaka Murakami', card:'Rookie Card (any)', parallel:'Base', marketAvg:20,
+    correct:['Munetaka Murakami rookie card','Murakami RC 2026'],
+    misspellings:['Munetaka Murkami rookie','Munekata Murakami RC','Murakami rooky card','Munetaka Murikami rookie'] },
+  { player:'Munetaka Murakami', card:'Auto (any)', parallel:'Autograph', marketAvg:60,
+    correct:['Munetaka Murakami auto','Murakami autograph'],
+    misspellings:['Murakami autogragh','Munetaka Murkami auto','Munekata Murakami autograph','Murikami auot','Murakami signatured'] },
+  { player:'Munetaka Murakami', card:'Chrome/Refractor', parallel:'Refractor', marketAvg:40,
+    correct:['Murakami refractor','Munetaka Murakami chrome refractor'],
+    misspellings:['Murakami refactor','Murkami refracter','Murakami crome refractor','Munekata Murakami refractor'] },
+
+  // ── JJ WETHERHOLT ──
+  { player:'JJ Wetherholt', card:'1st Bowman', parallel:'Base', marketAvg:25,
+    correct:['JJ Wetherholt 1st Bowman','Wetherholt Bowman 1st'],
+    misspellings:['JJ Wetherholt bowmen','JJ Weatherholt bowman','Wetherholt 1st bowmen','JJ Wetherhold bowman','JJ Wetherhalt bowman'] },
+  { player:'JJ Wetherholt', card:'1st Bowman Chrome', parallel:'Chrome', marketAvg:45,
+    correct:['JJ Wetherholt Bowman Chrome','Wetherholt Chrome 1st'],
+    misspellings:['Wetherholt bowman crome','JJ Weatherholt chrome','Wetherhold crome','JJ Wetherhalt bowman chrome'] },
+  { player:'JJ Wetherholt', card:'Auto (any)', parallel:'Autograph', marketAvg:75,
+    correct:['JJ Wetherholt auto','Wetherholt autograph'],
+    misspellings:['Wetherholt autogragh','JJ Weatherholt auto','Wetherhold autograph','JJ Wetherhalt auot','Wetherholt signatured'] },
+
+  // ── JUSTIN CRAWFORD ──
+  { player:'Justin Crawford', card:'1st Bowman', parallel:'Base', marketAvg:12,
+    correct:['Justin Crawford 1st Bowman','Crawford Bowman 1st'],
+    misspellings:['Justin Crawfrod bowman','Justin Crowford bowman','Crawford bowmen 1st','Justin Craford bowman'] },
+  { player:'Justin Crawford', card:'1st Bowman Chrome', parallel:'Chrome', marketAvg:22,
+    correct:['Justin Crawford Bowman Chrome','Crawford Chrome 1st'],
+    misspellings:['Crawford bowman crome','Justin Crawfrod chrome','Crowford crome','Justin Craford chrome'] },
+  { player:'Justin Crawford', card:'Auto (any)', parallel:'Autograph', marketAvg:40,
+    correct:['Justin Crawford auto','Crawford autograph'],
+    misspellings:['Crawford autogragh','Justin Crawfrod auto','Crowford autograph','Justin Craford auot'] },
+
+  // ── TANNER MURRAY ──
+  { player:'Tanner Murray', card:'1st Bowman', parallel:'Base', marketAvg:8,
+    correct:['Tanner Murray 1st Bowman','Murray Bowman 1st'],
+    misspellings:['Tanner Murry bowman','Tanner Murray bowmen','Taner Murray bowman','Murray 1st bowmen'] },
+  { player:'Tanner Murray', card:'Auto (any)', parallel:'Autograph', marketAvg:25,
+    correct:['Tanner Murray auto','Murray autograph card'],
+    misspellings:['Murray autogragh','Tanner Murry auto','Taner Murray autograph','Murray auot card'] },
 ];
 
 // ─── EBAY AUTH ──────────────────────────────────────────

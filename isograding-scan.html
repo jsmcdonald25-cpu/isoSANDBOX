@@ -257,6 +257,19 @@ nav {
   font-family: var(--font-ui); line-height: 28px;
 }
 .upload-box.has-image .remove-btn { display: block; }
+.rotate-controls {
+  position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+  display: none; gap: 6px; z-index: 3; background: rgba(0,0,0,0.7);
+  border-radius: 8px; padding: 4px 8px;
+}
+.upload-box.has-image .rotate-controls { display: flex; }
+.rotate-btn {
+  width: 32px; height: 32px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08); color: #fff; font-size: 16px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s; font-family: var(--font-ui);
+}
+.rotate-btn:hover { background: var(--iso); color: #000; border-color: var(--iso); }
 
 /* ═══════════════════════════════════════
    SCREEN 2 — GRID SCAN
@@ -662,6 +675,11 @@ nav {
       <div class="upload-box" id="uploadFront" onclick="document.getElementById('fileFront').click()">
         <input type="file" id="fileFront" accept="image/*">
         <button class="remove-btn" onclick="event.stopPropagation();removeImage('front')">&times;</button>
+        <div class="rotate-controls">
+          <button class="rotate-btn" onclick="event.stopPropagation();rotateImage('front',-90)" title="Rotate left">&#8634;</button>
+          <button class="rotate-btn" onclick="event.stopPropagation();rotateImage('front',90)" title="Rotate right">&#8635;</button>
+          <button class="rotate-btn" onclick="event.stopPropagation();flipImage('front')" title="Flip horizontal">&#8646;</button>
+        </div>
         <div class="upload-placeholder">
           <div class="icon">&#128247;</div>
           <div class="label">CARD FRONT</div>
@@ -672,6 +690,11 @@ nav {
       <div class="upload-box" id="uploadBack" onclick="document.getElementById('fileBack').click()">
         <input type="file" id="fileBack" accept="image/*">
         <button class="remove-btn" onclick="event.stopPropagation();removeImage('back')">&times;</button>
+        <div class="rotate-controls">
+          <button class="rotate-btn" onclick="event.stopPropagation();rotateImage('back',-90)" title="Rotate left">&#8634;</button>
+          <button class="rotate-btn" onclick="event.stopPropagation();rotateImage('back',90)" title="Rotate right">&#8635;</button>
+          <button class="rotate-btn" onclick="event.stopPropagation();flipImage('back')" title="Flip horizontal">&#8646;</button>
+        </div>
         <div class="upload-placeholder">
           <div class="icon">&#128247;</div>
           <div class="label">CARD BACK</div>
@@ -1162,8 +1185,12 @@ function handleFile(file, side) {
 function removeImage(side) {
   if (side === 'front') imgFront = null; else imgBack = null;
   document.getElementById('upload' + cap(side)).classList.remove('has-image');
-  document.getElementById('preview' + cap(side)).src = '';
+  var preview = document.getElementById('preview' + cap(side));
+  preview.src = '';
+  preview.style.transform = '';
   document.getElementById('file' + cap(side)).value = '';
+  imgRotation[side] = 0;
+  imgFlipped[side] = false;
   checkUploadReady();
 }
 
@@ -1172,6 +1199,57 @@ function checkUploadReady() {
 }
 
 function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+/* ═══════════════════════════════════════
+   ROTATE / FLIP IMAGE
+   ═══════════════════════════════════════ */
+var imgRotation = { front: 0, back: 0 };
+var imgFlipped = { front: false, back: false };
+
+function rotateImage(side, degrees) {
+  imgRotation[side] = (imgRotation[side] + degrees + 360) % 360;
+  applyTransform(side);
+}
+
+function flipImage(side) {
+  imgFlipped[side] = !imgFlipped[side];
+  applyTransform(side);
+}
+
+function applyTransform(side) {
+  var preview = document.getElementById('preview' + cap(side));
+  var rot = imgRotation[side];
+  var flip = imgFlipped[side];
+  var transform = 'rotate(' + rot + 'deg)' + (flip ? ' scaleX(-1)' : '');
+  preview.style.transform = transform;
+}
+
+// Bake rotation/flip into the actual image data before scan
+function bakeImageTransform(dataUrl, side) {
+  return new Promise(function(resolve) {
+    var rot = imgRotation[side];
+    var flip = imgFlipped[side];
+    if (rot === 0 && !flip) { resolve(dataUrl); return; }
+
+    var img = new Image();
+    img.onload = function() {
+      var rad = rot * Math.PI / 180;
+      var swap = (rot === 90 || rot === 270);
+      var cw = swap ? img.height : img.width;
+      var ch = swap ? img.width : img.height;
+      var canvas = document.createElement('canvas');
+      canvas.width = cw;
+      canvas.height = ch;
+      var ctx = canvas.getContext('2d');
+      ctx.translate(cw / 2, ch / 2);
+      ctx.rotate(rad);
+      if (flip) ctx.scale(-1, 1);
+      ctx.drawImage(img, -img.width / 2, -img.height / 2);
+      resolve(canvas.toDataURL('image/jpeg', 0.92));
+    };
+    img.src = dataUrl;
+  });
+}
 
 /* ═══════════════════════════════════════
    PIPELINE MANAGEMENT
@@ -1238,7 +1316,13 @@ function goScreen(name) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function beginScan() {
+async function beginScan() {
+  // Bake any rotation/flip into the actual image data
+  if (imgFront) imgFront = await bakeImageTransform(imgFront, 'front');
+  if (imgBack) imgBack = await bakeImageTransform(imgBack, 'back');
+  // Reset transforms on preview elements
+  imgRotation.front = 0; imgRotation.back = 0;
+  imgFlipped.front = false; imgFlipped.back = false;
   document.querySelector('[data-screen="scan"]').classList.remove('locked');
   goScreen('scan');
 }

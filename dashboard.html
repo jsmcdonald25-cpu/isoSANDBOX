@@ -3308,6 +3308,26 @@ async function logOut(){
       </div>
     </div>
 
+    <!-- RANKING PANEL -->
+    <div class="pr-rp" id="prPanel">
+      <div class="pr-rp-head">
+        <div class="pr-rp-icon" id="prIcon">&#11088;</div>
+        <div class="pr-rp-title" id="prTitle">Top 15 Superstars</div>
+        <div class="pr-rp-sub" id="prSub">Position Players</div>
+        <button class="pr-rp-x" onclick="prClose()">&#10005;</button>
+      </div>
+      <table class="pr-tbl">
+        <thead><tr>
+          <th style="width:40px">#</th><th>Player</th>
+          <th class="s" id="prH1">AVG</th><th class="s" id="prH2">HR</th>
+          <th class="s" id="prH3">RBI</th><th class="s" id="prH4">OPS</th>
+          <th class="s" id="prH5">SB</th>
+          <th class="s">ISO</th><th class="v">Card $</th><th class="v">Value</th><th class="s">Signal</th><th style="width:70px"></th>
+        </tr></thead>
+        <tbody id="prBody"></tbody>
+      </table>
+    </div>
+
     <!-- DIAMOND -->
     <div class="pr-field-section">
       <div class="pr-field-label">TAP A <span>POSITION</span> ON THE FIELD</div>
@@ -3338,26 +3358,6 @@ async function logOut(){
         <div class="pr-pm" style="left:50%;top:60%" onclick="prOpen('pos-P')" data-prk="pos-P"><div class="pr-pm-dot"><span class="pr-pm-abbr">P</span></div><div class="pr-pm-lbl">Pitcher</div></div>
         <div class="pr-pm" style="left:62%;top:84%" onclick="prOpen('pos-DH')" data-prk="pos-DH"><div class="pr-pm-dot" style="border-style:dashed"><span class="pr-pm-abbr">DH</span></div><div class="pr-pm-lbl">Designated</div></div>
       </div>
-    </div>
-
-    <!-- RANKING PANEL -->
-    <div class="pr-rp" id="prPanel">
-      <div class="pr-rp-head">
-        <div class="pr-rp-icon" id="prIcon">&#11088;</div>
-        <div class="pr-rp-title" id="prTitle">Top 15 Superstars</div>
-        <div class="pr-rp-sub" id="prSub">Position Players</div>
-        <button class="pr-rp-x" onclick="prClose()">&#10005;</button>
-      </div>
-      <table class="pr-tbl">
-        <thead><tr>
-          <th style="width:40px">#</th><th>Player</th>
-          <th class="s" id="prH1">AVG</th><th class="s" id="prH2">HR</th>
-          <th class="s" id="prH3">RBI</th><th class="s" id="prH4">OPS</th>
-          <th class="s" id="prH5">SB</th>
-          <th class="s">ISO</th><th class="v">Card $</th><th class="v">Value</th><th class="s">Signal</th><th style="width:70px"></th>
-        </tr></thead>
-        <tbody id="prBody"></tbody>
-      </table>
     </div>
   </div>
 

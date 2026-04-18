@@ -77,10 +77,10 @@ function isoHit(s, price) {
   const avg = parseFloat(s.avg) || 0, hr = s.homeRuns || 0, rbi = s.rbi || 0;
   const ops = parseFloat(s.ops) || 0, sb = s.stolenBases || 0, gp = s.gamesPlayed || 1;
   const hrPG = hr / gp, rbiPG = rbi / gp, sbPG = sb / gp;
-  const statScore = Math.min(100, (avg * 120) + (ops * 25) + (hrPG * 80) + (rbiPG * 40) + (sbPG * 30));
+  const statScore = Math.min(1000, (avg * 1200) + (ops * 250) + (hrPG * 800) + (rbiPG * 400) + (sbPG * 300));
   const p = Math.max(price || 1, 0.5);
   const priceFactor = Math.min(1.5, 1 + (1 / Math.log2(p + 2)));
-  return Math.min(100, Math.round(statScore * priceFactor * 10) / 10);
+  return Math.min(1000, Math.round(statScore * priceFactor));
 }
 
 // ── ISO Score: Pitchers ─────────────────────────────────────
@@ -88,20 +88,20 @@ function isoPit(s, price) {
   const era = parseFloat(s.era) || 9, whip = parseFloat(s.whip) || 2;
   const k = s.strikeOuts || 0, ip = parseFloat(s.inningsPitched) || 1, w = s.wins || 0;
   const kPer9 = (k / ip) * 9;
-  const eraScore = Math.max(0, 100 - (era * 12));
-  const whipScore = Math.max(0, 100 - (whip * 35));
-  const kScore = Math.min(40, kPer9 * 3.5);
-  const wScore = Math.min(15, w * 3);
-  const statScore = Math.min(100, eraScore * 0.35 + whipScore * 0.25 + kScore + wScore);
+  const eraScore = Math.max(0, 1000 - (era * 120));
+  const whipScore = Math.max(0, 1000 - (whip * 350));
+  const kScore = Math.min(400, kPer9 * 35);
+  const wScore = Math.min(150, w * 30);
+  const statScore = Math.min(1000, eraScore * 0.35 + whipScore * 0.25 + kScore + wScore);
   const p = Math.max(price || 1, 0.5);
   const priceFactor = Math.min(1.5, 1 + (1 / Math.log2(p + 2)));
-  return Math.min(100, Math.round(statScore * priceFactor * 10) / 10);
+  return Math.min(1000, Math.round(statScore * priceFactor));
 }
 
 // ── Value Score ─────────────────────────────────────────────
 function valScore(iso, price) {
   if (!price || price <= 0) return Math.round(iso);
-  return Math.min(100, Math.round(iso * (1 + Math.max(0, 30 - price) / 30)));
+  return Math.min(1000, Math.round(iso * (1 + Math.max(0, 30 - price) / 30)));
 }
 
 // ── Aggregate last 5 game stats from game log ───────────────

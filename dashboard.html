@@ -13047,19 +13047,19 @@ let _prMode = 'last5'; // 'season' | 'last5'
 function _prIM(id){return`https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_213,q_auto:best/v1/people/${id}/headshot/67/current`}
 function _prShopLink(name){return`<a class="pr-eb" href="https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent('2026 Topps '+name)}&_sacat=212" target="_blank" rel="noopener">Shop <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>`}
 function _prVB(s){
-  s=Math.round(s);
-  if(s>=92)return`<div class="pr-vs u"><span style="font-size:14px">&#129412;</span><span class="pr-vn">${s}</span></div>`;
-  if(s>=80)return`<div class="pr-vs h"><span class="pr-vn">${s}</span></div>`;
-  if(s>=65)return`<div class="pr-vs w"><span class="pr-vn">${s}</span></div>`;
-  if(s>=50)return`<div class="pr-vs n"><span class="pr-vn">${s}</span></div>`;
-  return`<div class="pr-vs ov"><span class="pr-vn">${s}</span></div>`;
+  const d=(s/10).toFixed(1);
+  if(s>=920)return`<div class="pr-vs u"><span style="font-size:14px">&#129412;</span><span class="pr-vn">${d}</span></div>`;
+  if(s>=800)return`<div class="pr-vs h"><span class="pr-vn">${d}</span></div>`;
+  if(s>=650)return`<div class="pr-vs w"><span class="pr-vn">${d}</span></div>`;
+  if(s>=500)return`<div class="pr-vs n"><span class="pr-vn">${d}</span></div>`;
+  return`<div class="pr-vs ov"><span class="pr-vn">${d}</span></div>`;
 }
 function _prIB(s){
-  s=Math.round(s);
-  if(s>=93)return`<div class="pr-vs u"><span class="pr-vn">${s}</span></div>`;
-  if(s>=80)return`<div class="pr-vs h"><span class="pr-vn">${s}</span></div>`;
-  if(s>=70)return`<div class="pr-vs w"><span class="pr-vn">${s}</span></div>`;
-  return`<div class="pr-vs n"><span class="pr-vn">${s}</span></div>`;
+  const d=(s/10).toFixed(1);
+  if(s>=930)return`<div class="pr-vs u"><span class="pr-vn">${d}</span></div>`;
+  if(s>=800)return`<div class="pr-vs h"><span class="pr-vn">${d}</span></div>`;
+  if(s>=700)return`<div class="pr-vs w"><span class="pr-vn">${d}</span></div>`;
+  return`<div class="pr-vs n"><span class="pr-vn">${d}</span></div>`;
 }
 function _prPriceFmt(p,pct){
   const pr = p!=null ? '$'+Number(p).toFixed(2) : '—';
@@ -13229,35 +13229,30 @@ function _prTm(t){return _prTEAMS[t&&t.id||0]||''}
 // Hitter: normalize stats to 0-100, weight against card price affordability
 function _prISOHit(s, price){
   const avg = parseFloat(s.avg)||0, hr = s.homeRuns||0, rbi = s.rbi||0, ops = parseFloat(s.ops)||0, sb = s.stolenBases||0, gp = s.gamesPlayed||1;
-  // Per-game normalize
   const hrPG = hr/gp, rbiPG = rbi/gp, sbPG = sb/gp;
-  // Stat score (0-100): weight AVG heavily, OPS, then counting stats
-  const statScore = Math.min(100, (avg*120) + (ops*25) + (hrPG*80) + (rbiPG*40) + (sbPG*30));
-  // Price factor: cheaper cards get a boost (inverse log scale, capped)
+  // Stat score (0-1000): wider spread for differentiation
+  const statScore = Math.min(1000, (avg*1200) + (ops*250) + (hrPG*800) + (rbiPG*400) + (sbPG*300));
   const p = Math.max(price||1, 0.5);
   const priceFactor = Math.min(1.5, 1 + (1/Math.log2(p+2)));
-  // ISO Score = stat score weighted by price affordability, capped at 100
-  return Math.min(100, Math.round(statScore * priceFactor * 10) / 10);
+  return Math.min(1000, Math.round(statScore * priceFactor));
 }
 // Pitcher: lower ERA/WHIP = better, more K = better
 function _prISOPit(s, price){
   const era = parseFloat(s.era)||9, whip = parseFloat(s.whip)||2, k = s.strikeOuts||0, ip = parseFloat(s.inningsPitched)||1, w = s.wins||0;
   const kPer9 = (k/ip)*9;
-  // Invert ERA/WHIP (lower = better)
-  const eraScore = Math.max(0, 100 - (era*12));
-  const whipScore = Math.max(0, 100 - (whip*35));
-  const kScore = Math.min(40, kPer9*3.5);
-  const wScore = Math.min(15, w*3);
-  const statScore = Math.min(100, eraScore*0.35 + whipScore*0.25 + kScore + wScore);
+  const eraScore = Math.max(0, 1000 - (era*120));
+  const whipScore = Math.max(0, 1000 - (whip*350));
+  const kScore = Math.min(400, kPer9*35);
+  const wScore = Math.min(150, w*30);
+  const statScore = Math.min(1000, eraScore*0.35 + whipScore*0.25 + kScore + wScore);
   const p = Math.max(price||1, 0.5);
   const priceFactor = Math.min(1.5, 1 + (1/Math.log2(p+2)));
-  return Math.min(100, Math.round(statScore * priceFactor * 10) / 10);
+  return Math.min(1000, Math.round(statScore * priceFactor));
 }
 // Value score: how underpriced is the card relative to performance?
 function _prValScore(isoScore, price){
   if(!price || price <= 0) return Math.round(isoScore);
-  // High ISO + low price = high value. Low ISO + high price = low value.
-  return Math.min(100, Math.round(isoScore * (1 + Math.max(0, 30-price)/30)));
+  return Math.min(1000, Math.round(isoScore * (1 + Math.max(0, 30-price)/30)));
 }
 
 // ── Fetch MLB stats ─────────────────────────────────────────────────

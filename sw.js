@@ -1,5 +1,6 @@
-const CACHE_NAME = 'grailiso-shell-v7';
-const SHELL_ASSETS = ['/dashboard.html', '/manifest.json', '/icons/icon-192.png', '/icons/icon-512.png'];
+const CACHE_NAME = 'grailiso-shell-v8';
+const SHELL_ASSETS = ['/dashboard.html', '/manifest.json', '/icons/icon-192.png', '/icons/icon-512.png',
+  '/isograding-scan.html', '/js/isograding-engine.js', '/js/jsqr.min.js', '/js/qrcode-generator.min.js'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(SHELL_ASSETS)));

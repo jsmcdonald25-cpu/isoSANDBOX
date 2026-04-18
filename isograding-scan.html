@@ -6,6 +6,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ISOGrading Scanner — GrailISO</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script data-cfasync="false" src="/js/supabase.js"></script>
+<script data-cfasync="false" src="/js/jsqr.min.js"></script>
+<script data-cfasync="false" src="/js/qrcode-generator.min.js"></script>
+<script data-cfasync="false" src="/js/isograding-engine.js"></script>
 <style>
 :root {
   --bg: #0D1F33;
@@ -51,7 +55,36 @@ nav {
 /* ── PAGE ── */
 .page { position: relative; z-index: 1; padding: 80px 40px 60px; max-width: 1400px; margin: 0 auto; }
 
-/* ── PHASE TABS ── */
+/* ═══════════════════════════════════════
+   5-SCAN PIPELINE BAR
+   ═══════════════════════════════════════ */
+.pipeline-bar {
+  display: flex; gap: 2px; margin-bottom: 24px; border-radius: 10px; overflow: hidden;
+  background: rgba(0,0,0,0.3);
+}
+.pipeline-step {
+  flex: 1; padding: 12px 8px; text-align: center; position: relative;
+  background: var(--card-bg); border: 1px solid var(--card-border); transition: all 0.2s;
+}
+.pipeline-step:first-child { border-radius: 10px 0 0 10px; }
+.pipeline-step:last-child { border-radius: 0 10px 10px 0; }
+.pipeline-step.active { background: rgba(0,170,255,0.08); border-color: rgba(0,170,255,0.3); }
+.pipeline-step.active::after {
+  content: ''; position: absolute; bottom: 0; left: 20%; right: 20%; height: 2px; background: var(--iso);
+}
+.pipeline-step.done { background: rgba(0,204,102,0.06); border-color: rgba(0,204,102,0.15); }
+.pipeline-step.locked { opacity: 0.35; cursor: not-allowed; }
+.pipeline-num {
+  font-family: var(--font-head); font-size: 10px; letter-spacing: 2px;
+  color: rgba(255,255,255,0.3); margin-bottom: 2px;
+}
+.pipeline-step.active .pipeline-num { color: var(--iso); }
+.pipeline-step.done .pipeline-num { color: var(--success); }
+.pipeline-label { font-family: var(--font-head); font-size: 14px; letter-spacing: 1px; }
+.pipeline-sub { font-size: 10px; font-weight: 400; color: rgba(255,255,255,0.3); margin-top: 2px; }
+.pipeline-step.done .pipeline-label::before { content: '\2713 '; color: var(--success); }
+
+/* ── PHASE TABS (Upload → Scan → Report within each pipeline step) ── */
 .phase-tabs {
   display: flex; gap: 2px; margin-bottom: 40px; border-radius: 12px; overflow: hidden;
   background: rgba(0,0,0,0.3);
@@ -78,45 +111,91 @@ nav {
 .screen.active { display: block; animation: fadeIn 0.3s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ══════════════════════════════════════
-   SCREEN 1 — UPLOAD
-   ══════════════════════════════════════ */
-.upload-zone { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px; }
-.upload-box {
-  background: var(--card-bg); border: 2px dashed rgba(255,255,255,0.12);
-  border-radius: 16px; padding: 60px 40px; text-align: center;
-  cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
+/* ═══════════════════════════════════════
+   SCREEN 1 — CAMERA CAPTURE
+   ═══════════════════════════════════════ */
+.camera-container {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px;
 }
-.upload-box:hover, .upload-box.dragover { border-color: rgba(0,170,255,0.5); background: rgba(0,170,255,0.05); }
-.upload-box.has-image { border-style: solid; border-color: var(--success); padding: 12px; }
-.upload-box .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
-.upload-box .label { font-family: var(--font-head); font-size: 24px; letter-spacing: 1px; margin-bottom: 8px; }
-.upload-box .hint { font-size: 13px; color: rgba(255,255,255,0.35); }
-.upload-box img.preview {
-  width: 100%; max-height: 400px; object-fit: contain; border-radius: 8px; display: none;
+.camera-feed-wrap {
+  background: #000; border-radius: 16px; overflow: hidden; position: relative;
+  aspect-ratio: 3/4; max-height: 600px;
 }
-.upload-box.has-image .upload-placeholder { display: none; }
-.upload-box.has-image img.preview { display: block; }
-.upload-box input[type=file] { display: none; }
-.upload-box .remove-btn {
-  position: absolute; top: 8px; right: 8px; width: 28px; height: 28px;
-  border-radius: 50%; border: none; background: var(--danger); color: #fff;
-  font-size: 16px; cursor: pointer; display: none; z-index: 2;
-  font-family: var(--font-ui); line-height: 28px;
+.camera-feed-wrap video {
+  width: 100%; height: 100%; object-fit: cover;
 }
-.upload-box.has-image .remove-btn { display: block; }
+/* Card guide frame overlay */
+.capture-guide {
+  position: absolute; inset: 10%; border: 2px dashed rgba(0,170,255,0.5);
+  border-radius: 12px; pointer-events: none; z-index: 2;
+  display: flex; align-items: center; justify-content: center;
+}
+.capture-guide-label {
+  font-family: var(--font-head); font-size: 14px; letter-spacing: 3px;
+  color: rgba(0,170,255,0.6); background: rgba(0,0,0,0.5); padding: 6px 16px; border-radius: 6px;
+}
+/* QR scan overlay */
+.qr-scan-overlay {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; z-index: 3;
+  background: rgba(0,0,0,0.6);
+}
+.qr-scan-overlay.hidden { display: none; }
+.qr-scan-box {
+  width: 200px; height: 200px; border: 3px solid var(--iso);
+  border-radius: 12px; position: relative;
+  animation: qrPulse 1.5s ease infinite;
+}
+@keyframes qrPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(0,170,255,0.3); } 50% { box-shadow: 0 0 20px 8px rgba(0,170,255,0.15); } }
+.qr-scan-label {
+  font-family: var(--font-head); font-size: 16px; letter-spacing: 3px;
+  color: var(--iso); margin-top: 16px;
+}
+.qr-verified {
+  color: var(--success); font-family: var(--font-head); font-size: 20px;
+  letter-spacing: 2px; text-align: center;
+}
+.qr-verified .checkmark { font-size: 48px; display: block; margin-bottom: 8px; }
 
-.upload-reqs {
-  background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px;
-  padding: 24px 28px; margin-bottom: 32px;
+/* Capture panel (right side) */
+.capture-panel {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: 16px; padding: 24px;
 }
-.upload-reqs h3 { font-family: var(--font-head); font-size: 16px; letter-spacing: 2px; color: var(--iso); margin-bottom: 12px; }
-.upload-reqs ul { list-style: none; }
-.upload-reqs li {
-  font-size: 14px; color: rgba(255,255,255,0.55); padding: 4px 0;
-  padding-left: 20px; position: relative;
+.capture-panel h3 {
+  font-family: var(--font-head); font-size: 18px; letter-spacing: 2px;
+  color: var(--iso); margin-bottom: 16px;
 }
-.upload-reqs li::before { content: '\2192'; position: absolute; left: 0; color: var(--iso); font-weight: 600; }
+.capture-status {
+  font-size: 14px; color: rgba(255,255,255,0.5); margin-bottom: 16px; line-height: 1.6;
+}
+.capture-status .step-active { color: var(--iso); font-weight: 600; }
+.capture-status .step-done { color: var(--success); }
+.capture-thumbnails { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.capture-thumb {
+  background: rgba(0,0,0,0.3); border: 1px solid var(--card-border);
+  border-radius: 10px; overflow: hidden; aspect-ratio: 2.5/3.5;
+  display: flex; align-items: center; justify-content: center;
+}
+.capture-thumb img { width: 100%; height: 100%; object-fit: cover; display: none; }
+.capture-thumb.has-image img { display: block; }
+.capture-thumb.has-image { border-color: var(--success); }
+.capture-thumb-label {
+  font-family: var(--font-head); font-size: 12px; letter-spacing: 2px;
+  color: rgba(255,255,255,0.2);
+}
+.capture-thumb.has-image .capture-thumb-label { display: none; }
+
+/* QR code display (for showing session QR) */
+.qr-display {
+  background: #fff; border-radius: 12px; padding: 16px;
+  display: inline-block; margin: 12px auto; text-align: center;
+}
+.qr-display canvas, .qr-display img { max-width: 180px; }
+.qr-token-label {
+  font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 8px;
+  font-family: monospace; letter-spacing: 0.5px;
+}
 
 .btn-primary {
   display: inline-flex; align-items: center; gap: 8px;
@@ -142,10 +221,46 @@ nav {
   font-family: var(--font-head); font-size: 14px; letter-spacing: 1px;
   cursor: pointer; transition: all 0.2s;
 }
+.btn-capture {
+  width: 72px; height: 72px; border-radius: 50%; border: 4px solid var(--iso);
+  background: transparent; cursor: pointer; position: relative; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; margin: 0 auto;
+}
+.btn-capture::after {
+  content: ''; width: 52px; height: 52px; border-radius: 50%;
+  background: var(--iso); transition: all 0.15s;
+}
+.btn-capture:hover::after { background: #33bbff; transform: scale(1.05); }
+.btn-capture:active::after { transform: scale(0.9); }
+.btn-capture:disabled { opacity: 0.3; cursor: not-allowed; }
 
-/* ══════════════════════════════════════
+/* Upload fallback for Scan 1 (vault pic) */
+.upload-zone { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px; }
+.upload-box {
+  background: var(--card-bg); border: 2px dashed rgba(255,255,255,0.12);
+  border-radius: 16px; padding: 60px 40px; text-align: center;
+  cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
+}
+.upload-box:hover, .upload-box.dragover { border-color: rgba(0,170,255,0.5); background: rgba(0,170,255,0.05); }
+.upload-box.has-image { border-style: solid; border-color: var(--success); padding: 12px; }
+.upload-box .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+.upload-box .label { font-family: var(--font-head); font-size: 24px; letter-spacing: 1px; margin-bottom: 8px; }
+.upload-box .hint { font-size: 13px; color: rgba(255,255,255,0.35); }
+.upload-box img.preview { width: 100%; max-height: 400px; object-fit: contain; border-radius: 8px; display: none; }
+.upload-box.has-image .upload-placeholder { display: none; }
+.upload-box.has-image img.preview { display: block; }
+.upload-box input[type=file] { display: none; }
+.upload-box .remove-btn {
+  position: absolute; top: 8px; right: 8px; width: 28px; height: 28px;
+  border-radius: 50%; border: none; background: var(--danger); color: #fff;
+  font-size: 16px; cursor: pointer; display: none; z-index: 2;
+  font-family: var(--font-ui); line-height: 28px;
+}
+.upload-box.has-image .remove-btn { display: block; }
+
+/* ═══════════════════════════════════════
    SCREEN 2 — GRID SCAN
-   ══════════════════════════════════════ */
+   ═══════════════════════════════════════ */
 .scan-layout { display: grid; grid-template-columns: 1fr 420px; gap: 32px; align-items: start; }
 
 .card-scan-area {
@@ -255,7 +370,6 @@ nav {
 .cat-bar-track { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.06); overflow: hidden; }
 .cat-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
 .cat-score { font-family: var(--font-head); font-size: 15px; letter-spacing: 1px; text-align: right; }
-.cat-max { text-align: right; margin-top: 8px; font-family: var(--font-head); font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,0.2); }
 
 /* Cell detail */
 .cell-detail {
@@ -310,9 +424,9 @@ nav {
 }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════════
    SCREEN 3 — ISObiometrics REPORT
-   ══════════════════════════════════════ */
+   ═══════════════════════════════════════ */
 .report-header { text-align: center; margin-bottom: 48px; }
 .report-title {
   font-family: var(--font-head); font-size: clamp(36px, 5vw, 56px);
@@ -442,6 +556,19 @@ nav {
   border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; margin-top: 4px;
 }
 
+/* Delta comparison bar */
+.delta-bar {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: 12px; padding: 16px 20px; margin-bottom: 24px;
+  display: flex; gap: 20px; align-items: center; flex-wrap: wrap;
+}
+.delta-bar.hidden { display: none; }
+.delta-item { font-family: var(--font-head); font-size: 14px; letter-spacing: 1px; }
+.delta-item .delta-val { margin-left: 4px; }
+.delta-pos { color: var(--success); }
+.delta-neg { color: var(--danger); }
+.delta-zero { color: rgba(255,255,255,0.3); }
+
 .report-actions {
   text-align: center; padding: 24px 0 60px;
   display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
@@ -453,10 +580,13 @@ nav {
   .scan-layout { grid-template-columns: 1fr; }
   .scan-panel { position: static; }
   .upload-zone { grid-template-columns: 1fr; }
+  .camera-container { grid-template-columns: 1fr; }
   .report-top { grid-template-columns: 1fr; }
   .heatmap-grid { grid-template-columns: 1fr 1fr; }
   .report-cats { grid-template-columns: 1fr; }
   .report-meta { flex-direction: column; gap: 4px; }
+  .pipeline-bar { flex-wrap: wrap; }
+  .pipeline-step { min-width: 80px; }
 }
 </style>
 </head>
@@ -469,17 +599,46 @@ nav {
 
 <div class="page">
 
-<!-- PHASE TABS -->
+<!-- 5-SCAN PIPELINE BAR -->
+<div class="pipeline-bar" id="pipelineBar">
+  <div class="pipeline-step active" data-scan="1">
+    <div class="pipeline-num">SCAN 1</div>
+    <div class="pipeline-label">Vault Pic</div>
+    <div class="pipeline-sub">Original upload</div>
+  </div>
+  <div class="pipeline-step locked" data-scan="2">
+    <div class="pipeline-num">SCAN 2</div>
+    <div class="pipeline-label">QR Live</div>
+    <div class="pipeline-sub">Seller proof</div>
+  </div>
+  <div class="pipeline-step locked" data-scan="3">
+    <div class="pipeline-num">SCAN 3</div>
+    <div class="pipeline-label">Hub Intake</div>
+    <div class="pipeline-sub">Raw condition</div>
+  </div>
+  <div class="pipeline-step locked" data-scan="4">
+    <div class="pipeline-num">SCAN 4</div>
+    <div class="pipeline-label">Prepped</div>
+    <div class="pipeline-sub">After stabilization</div>
+  </div>
+  <div class="pipeline-step locked" data-scan="5">
+    <div class="pipeline-num">SCAN 5</div>
+    <div class="pipeline-label">Post-Prep</div>
+    <div class="pipeline-sub">Final scan</div>
+  </div>
+</div>
+
+<!-- PHASE TABS (within current scan) -->
 <div class="phase-tabs" id="phaseTabs">
-  <div class="phase-tab active" data-screen="upload" onclick="goScreen('upload')">
+  <div class="phase-tab active" data-screen="capture" onclick="goScreen('capture')">
     <div class="phase-num">STEP 01</div>
-    <div class="phase-label">Upload</div>
+    <div class="phase-label">Capture</div>
     <div class="phase-sub">Front + Back photos</div>
   </div>
   <div class="phase-tab locked" data-screen="scan" onclick="goScreen('scan')">
     <div class="phase-num">STEP 02</div>
     <div class="phase-label">ISOGrading Scan</div>
-    <div class="phase-sub">12x12 Grid &mdash; 144 Points x 4 Categories</div>
+    <div class="phase-sub">12x12 Grid &mdash; 144 Points x 12 Categories</div>
   </div>
   <div class="phase-tab locked" data-screen="report" onclick="goScreen('report')">
     <div class="phase-num">STEP 03</div>
@@ -488,53 +647,105 @@ nav {
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     SCREEN 1 — UPLOAD
-     ══════════════════════════════════════ -->
-<div class="screen active" id="screen-upload">
-  <div class="upload-zone">
-    <div class="upload-box" id="uploadFront" onclick="document.getElementById('fileFront').click()">
-      <input type="file" id="fileFront" accept="image/*">
-      <button class="remove-btn" onclick="event.stopPropagation();removeImage('front')">&times;</button>
-      <div class="upload-placeholder">
-        <div class="icon">&#128247;</div>
-        <div class="label">CARD FRONT</div>
-        <div class="hint">Tap or drag to upload</div>
-      </div>
-      <img class="preview" id="previewFront">
+<!-- ═══════════════════════════════════════
+     SCREEN 1 — CAPTURE (Camera or Upload)
+     ═══════════════════════════════════════ -->
+<div class="screen active" id="screen-capture">
+
+  <!-- Scan 1 (Vault Pic) uses file upload; Scan 2+ uses live camera -->
+  <div id="captureUploadMode">
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="font-family:var(--font-head);font-size:22px;letter-spacing:2px;color:var(--iso);margin-bottom:8px">SCAN 1 — VAULT PIC BASELINE</div>
+      <div style="font-size:14px;color:rgba(255,255,255,0.4)">Upload your card's front and back photos to establish the ISOGrading baseline.</div>
     </div>
-    <div class="upload-box" id="uploadBack" onclick="document.getElementById('fileBack').click()">
-      <input type="file" id="fileBack" accept="image/*">
-      <button class="remove-btn" onclick="event.stopPropagation();removeImage('back')">&times;</button>
-      <div class="upload-placeholder">
-        <div class="icon">&#128247;</div>
-        <div class="label">CARD BACK</div>
-        <div class="hint">Tap or drag to upload</div>
+    <div class="upload-zone">
+      <div class="upload-box" id="uploadFront" onclick="document.getElementById('fileFront').click()">
+        <input type="file" id="fileFront" accept="image/*">
+        <button class="remove-btn" onclick="event.stopPropagation();removeImage('front')">&times;</button>
+        <div class="upload-placeholder">
+          <div class="icon">&#128247;</div>
+          <div class="label">CARD FRONT</div>
+          <div class="hint">Tap or drag to upload</div>
+        </div>
+        <img class="preview" id="previewFront">
       </div>
-      <img class="preview" id="previewBack">
+      <div class="upload-box" id="uploadBack" onclick="document.getElementById('fileBack').click()">
+        <input type="file" id="fileBack" accept="image/*">
+        <button class="remove-btn" onclick="event.stopPropagation();removeImage('back')">&times;</button>
+        <div class="upload-placeholder">
+          <div class="icon">&#128247;</div>
+          <div class="label">CARD BACK</div>
+          <div class="hint">Tap or drag to upload</div>
+        </div>
+        <img class="preview" id="previewBack">
+      </div>
+    </div>
+    <div style="text-align:center">
+      <button class="btn-primary" id="btnBeginScan" disabled onclick="beginScan()">BEGIN ISOGRADING SCAN &rarr;</button>
     </div>
   </div>
 
-  <div class="upload-reqs">
-    <h3>SCAN REQUIREMENTS</h3>
-    <ul>
-      <li>600 DPI minimum (1200 DPI recommended)</li>
-      <li>Flat, even lighting &mdash; no glare, shadows, or flash hotspots</li>
-      <li>Card must fill at least 80% of the frame</li>
-      <li>Straight alignment &mdash; edges parallel to frame</li>
-      <li>Both front AND back required for full ISObiometrics score</li>
-      <li>Accepted: JPG, PNG, TIFF &bull; Max 50MB per image</li>
-    </ul>
-  </div>
+  <!-- Camera capture mode (Scan 2+) -->
+  <div id="captureCameraMode" style="display:none">
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="font-family:var(--font-head);font-size:22px;letter-spacing:2px;color:var(--iso);margin-bottom:8px" id="cameraScanTitle">SCAN 2 — QR VERIFIED CAPTURE</div>
+      <div style="font-size:14px;color:rgba(255,255,255,0.4)" id="cameraScanDesc">Scan the QR code to verify card identity, then capture front and back.</div>
+    </div>
 
-  <div style="text-align:center">
-    <button class="btn-primary" id="btnBeginScan" disabled onclick="beginScan()">BEGIN ISOGRADING SCAN &rarr;</button>
+    <div class="camera-container">
+      <!-- Camera feed -->
+      <div class="camera-feed-wrap" id="cameraFeedWrap">
+        <video id="cameraVideo" autoplay playsinline muted></video>
+        <div class="capture-guide" id="captureGuide" style="display:none">
+          <div class="capture-guide-label" id="captureGuideLabel">POSITION CARD FRONT</div>
+        </div>
+        <div class="qr-scan-overlay" id="qrScanOverlay">
+          <div class="qr-scan-box"></div>
+          <div class="qr-scan-label">SCANNING FOR QR CODE...</div>
+        </div>
+      </div>
+
+      <!-- Capture controls panel -->
+      <div class="capture-panel">
+        <h3 id="capturePhaseTitle">QR VERIFICATION</h3>
+        <div class="capture-status" id="captureStatus">
+          <div class="step-active">1. Scan the QR code on the card</div>
+          <div>2. Capture FRONT photo</div>
+          <div>3. Capture BACK photo</div>
+        </div>
+
+        <div style="text-align:center;margin:20px 0" id="qrDisplayArea">
+          <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:8px">Session QR Code</div>
+          <div class="qr-display" id="qrDisplay"></div>
+          <div class="qr-token-label" id="qrTokenLabel"></div>
+        </div>
+
+        <div style="text-align:center;margin:20px 0">
+          <button class="btn-capture" id="btnCapture" disabled onclick="capturePhoto()" title="Capture photo"></button>
+        </div>
+
+        <div class="capture-thumbnails">
+          <div class="capture-thumb" id="thumbFront">
+            <img id="thumbFrontImg">
+            <div class="capture-thumb-label">FRONT</div>
+          </div>
+          <div class="capture-thumb" id="thumbBack">
+            <img id="thumbBackImg">
+            <div class="capture-thumb-label">BACK</div>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="btnCameraBeginScan" disabled onclick="beginScan()" style="width:100%;justify-content:center">
+          BEGIN ISOGRADING SCAN &rarr;
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
+<!-- ═══════════════════════════════════════
      SCREEN 2 — GRID SCAN
-     ══════════════════════════════════════ -->
+     ═══════════════════════════════════════ -->
 <div class="screen" id="screen-scan">
   <div class="scan-layout">
 
@@ -591,29 +802,7 @@ nav {
             <div class="score-equiv" id="liveEquiv">&mdash;</div>
           </div>
         </div>
-        <div class="cat-breakdown">
-          <div class="cat-row">
-            <div class="cat-label"><div class="cat-label-dot" style="background:var(--cat-centering)"></div> Centering</div>
-            <div class="cat-bar-track"><div class="cat-bar-fill" id="barCentering" style="width:0%;background:var(--cat-centering)"></div></div>
-            <div class="cat-score" id="scoreCentering" style="color:var(--cat-centering)">0</div>
-          </div>
-          <div class="cat-row">
-            <div class="cat-label"><div class="cat-label-dot" style="background:var(--cat-corners)"></div> Corners</div>
-            <div class="cat-bar-track"><div class="cat-bar-fill" id="barCorners" style="width:0%;background:var(--cat-corners)"></div></div>
-            <div class="cat-score" id="scoreCorners" style="color:var(--cat-corners)">0</div>
-          </div>
-          <div class="cat-row">
-            <div class="cat-label"><div class="cat-label-dot" style="background:var(--cat-edges)"></div> Edges</div>
-            <div class="cat-bar-track"><div class="cat-bar-fill" id="barEdges" style="width:0%;background:var(--cat-edges)"></div></div>
-            <div class="cat-score" id="scoreEdges" style="color:var(--cat-edges)">0</div>
-          </div>
-          <div class="cat-row">
-            <div class="cat-label"><div class="cat-label-dot" style="background:var(--cat-surface)"></div> Surface</div>
-            <div class="cat-bar-track"><div class="cat-bar-fill" id="barSurface" style="width:0%;background:var(--cat-surface)"></div></div>
-            <div class="cat-score" id="scoreSurface" style="color:var(--cat-surface)">0</div>
-          </div>
-          <div class="cat-max">250 PTS EACH x 4 = 1000</div>
-        </div>
+        <div class="cat-breakdown" id="catBreakdown"></div>
       </div>
 
       <!-- Cell detail -->
@@ -651,16 +840,21 @@ nav {
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
+<!-- ═══════════════════════════════════════
      SCREEN 3 — ISObiometrics REPORT
-     ══════════════════════════════════════ -->
+     ═══════════════════════════════════════ -->
 <div class="screen" id="screen-report">
   <div class="report-header">
     <div class="report-title">ISO<span class="accent">biometrics</span></div>
-    <div class="report-sub">Full condition analysis &mdash; 144 grid points x 4 categories x front + back</div>
+    <div class="report-sub">Full condition analysis &mdash; 144 grid points x 12 categories x front + back</div>
     <div class="report-meta" id="reportMeta">
       <span><strong>Scanned:</strong> <span id="reportDate"></span></span>
     </div>
+  </div>
+
+  <!-- Delta comparison (shows for scan 2+) -->
+  <div class="delta-bar hidden" id="deltaBar">
+    <div style="font-family:var(--font-head);font-size:13px;letter-spacing:2px;color:rgba(255,255,255,0.3)">DELTA vs PREVIOUS</div>
   </div>
 
   <div class="report-top">
@@ -734,56 +928,231 @@ nav {
 </div><!-- /page -->
 
 <script>
-/* ══════════════════════════════════════
-   STATE
-   ══════════════════════════════════════ */
-const ROWS = 12, COLS = 12, TOTAL_CELLS = 144;
-const CATS = ['centering', 'corners', 'edges', 'surface'];
-const CAT_COLORS = { centering: '#00AAFF', corners: '#FF8C00', edges: '#00CC66', surface: '#BB66FF' };
-const CAT_MAX = 250;
+/* ═══════════════════════════════════════
+   SUPABASE AUTH
+   ═══════════════════════════════════════ */
+const SB_URL = 'https://jyfaegmnzkarlcximxjo.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+const _sb = window.supabase.createClient(SB_URL, SB_KEY);
+let _userToken = null;
+let _userId = null;
 
-// Images
-let imgFront = null, imgBack = null; // dataURL strings
+(async function initAuth() {
+  const { data } = await _sb.auth.getSession();
+  if (!data.session) { window.location.href = 'auth.html'; return; }
+  _userToken = data.session.access_token;
+  _userId = data.session.user.id;
+  _sb.auth.onAuthStateChange((ev, sess) => {
+    if (sess) { _userToken = sess.access_token; _userId = sess.user.id; }
+    else window.location.href = 'auth.html';
+  });
+})();
+
+function _sbHeaders() {
+  if (!_userToken) return { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY };
+  return { apikey: SB_KEY, Authorization: 'Bearer ' + _userToken };
+}
+
+/* ═══════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════ */
+const E = window.ISOGradingEngine;
+const CAT_COLORS = {
+  centering: '#00AAFF', corners: '#FF8C00', edges: '#00CC66', surface: '#BB66FF',
+  surface_micro: '#BB66FF', light_reflection: '#00AAFF', card_flatness: '#FF8C00',
+  print_registration: '#00CC66', border_consistency: '#00AAFF', edge_fiber: '#00CC66',
+  corner_geometry: '#FF8C00', handling_wear: '#BB66FF'
+};
+
+// Current pipeline scan (1-5)
+let currentScanNum = 1;
+
+// Images per scan
+let imgFront = null, imgBack = null;
 let activeSide = 'front';
 
-// Grid data: front[144] and back[144], each cell = { centering, corners, edges, surface, findings[] }
-let gridData = { front: null, back: null };
-let selectedCell = null; // { side, idx }
+// Raw cell data (per-category 0–1 raw scores) and computed results
+let rawCellData = { front: null, back: null };
+let cardResult = null; // output of E.scoreCard()
 let scanComplete = false;
+let selectedCell = null;
+let allFindings = { front: [], back: [] };
 
-// Category filter state
+// Category filter state (Big 4 only for grid visual)
 let catFilters = { centering: true, corners: true, edges: true, surface: true };
 
-/* ══════════════════════════════════════
-   UPLOAD HANDLING
-   ══════════════════════════════════════ */
-['Front', 'Back'].forEach(side => {
-  const box = document.getElementById('upload' + side);
-  const input = document.getElementById('file' + side);
-  const preview = document.getElementById('preview' + side);
+// Session QR token
+let sessionQrToken = null;
 
-  // Drag and drop
-  box.addEventListener('dragover', e => { e.preventDefault(); box.classList.add('dragover'); });
-  box.addEventListener('dragleave', () => box.classList.remove('dragover'));
-  box.addEventListener('drop', e => {
+// Camera state
+let cameraStream = null;
+let qrScanInterval = null;
+let capturePhase = 'qr'; // 'qr', 'front', 'back', 'done'
+
+// Previous scan results for delta
+let previousResult = null;
+
+// Scan history
+let scanHistory = [];
+
+/* ═══════════════════════════════════════
+   QR CODE GENERATION
+   ═══════════════════════════════════════ */
+function generateSessionQR() {
+  sessionQrToken = crypto.randomUUID();
+  var qrData = 'isograding:' + sessionQrToken + ':' + currentScanNum;
+
+  var qr = qrcode(0, 'M');
+  qr.addData(qrData);
+  qr.make();
+
+  var el = document.getElementById('qrDisplay');
+  el.innerHTML = qr.createSvgTag(4, 0);
+  document.getElementById('qrTokenLabel').textContent = sessionQrToken.slice(0, 8) + '...';
+}
+
+/* ═══════════════════════════════════════
+   CAMERA CAPTURE
+   ═══════════════════════════════════════ */
+async function startCamera() {
+  try {
+    cameraStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: { ideal: 3840 }, height: { ideal: 2160 } }
+    });
+    var video = document.getElementById('cameraVideo');
+    video.srcObject = cameraStream;
+    await video.play();
+    return true;
+  } catch (err) {
+    console.error('Camera access failed:', err);
+    alert('Camera access denied. Please allow camera permissions and try again.');
+    return false;
+  }
+}
+
+function stopCamera() {
+  if (cameraStream) {
+    cameraStream.getTracks().forEach(function(t) { t.stop(); });
+    cameraStream = null;
+  }
+  if (qrScanInterval) { clearInterval(qrScanInterval); qrScanInterval = null; }
+}
+
+function startQRScanning() {
+  var video = document.getElementById('cameraVideo');
+  var canvas = document.createElement('canvas');
+  var ctx = canvas.getContext('2d');
+
+  qrScanInterval = setInterval(function() {
+    if (!video.videoWidth) return;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    ctx.drawImage(video, 0, 0);
+    var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    var code = jsQR(imageData.data, imageData.width, imageData.height);
+
+    if (code && code.data) {
+      var parts = code.data.split(':');
+      if (parts[0] === 'isograding' && parts[1] === sessionQrToken) {
+        clearInterval(qrScanInterval);
+        qrScanInterval = null;
+        onQRVerified();
+      }
+    }
+  }, 100); // 10fps
+}
+
+function onQRVerified() {
+  var overlay = document.getElementById('qrScanOverlay');
+  overlay.innerHTML = '<div class="qr-verified"><span class="checkmark">&#10003;</span>QR VERIFIED</div>';
+  setTimeout(function() {
+    overlay.classList.add('hidden');
+    document.getElementById('captureGuide').style.display = '';
+    document.getElementById('captureGuideLabel').textContent = 'POSITION CARD FRONT';
+    document.getElementById('btnCapture').disabled = false;
+    capturePhase = 'front';
+    updateCaptureStatus();
+  }, 1200);
+}
+
+function capturePhoto() {
+  var video = document.getElementById('cameraVideo');
+  var canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+
+  var dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+
+  if (capturePhase === 'front') {
+    imgFront = dataUrl;
+    document.getElementById('thumbFrontImg').src = dataUrl;
+    document.getElementById('thumbFront').classList.add('has-image');
+    capturePhase = 'back';
+    document.getElementById('captureGuideLabel').textContent = 'POSITION CARD BACK';
+    updateCaptureStatus();
+  } else if (capturePhase === 'back') {
+    imgBack = dataUrl;
+    document.getElementById('thumbBackImg').src = dataUrl;
+    document.getElementById('thumbBack').classList.add('has-image');
+    capturePhase = 'done';
+    document.getElementById('captureGuide').style.display = 'none';
+    document.getElementById('btnCapture').disabled = true;
+    document.getElementById('btnCameraBeginScan').disabled = false;
+    stopCamera();
+    updateCaptureStatus();
+  }
+}
+
+function updateCaptureStatus() {
+  var el = document.getElementById('captureStatus');
+  var steps = [
+    { text: '1. Scan QR code', phase: 'qr' },
+    { text: '2. Capture FRONT photo', phase: 'front' },
+    { text: '3. Capture BACK photo', phase: 'back' }
+  ];
+  var phases = ['qr', 'front', 'back', 'done'];
+  var currentIdx = phases.indexOf(capturePhase);
+
+  el.innerHTML = steps.map(function(s, i) {
+    var stepIdx = i; // qr=0, front=1, back=2
+    if (currentIdx > stepIdx) return '<div class="step-done">\u2713 ' + s.text + '</div>';
+    if (currentIdx === stepIdx) return '<div class="step-active">\u25B6 ' + s.text + '</div>';
+    return '<div>' + s.text + '</div>';
+  }).join('');
+
+  document.getElementById('capturePhaseTitle').textContent =
+    capturePhase === 'qr' ? 'QR VERIFICATION' :
+    capturePhase === 'front' ? 'CAPTURE FRONT' :
+    capturePhase === 'back' ? 'CAPTURE BACK' : 'CAPTURE COMPLETE';
+}
+
+/* ═══════════════════════════════════════
+   UPLOAD HANDLING (Scan 1 mode)
+   ═══════════════════════════════════════ */
+['Front', 'Back'].forEach(function(side) {
+  var box = document.getElementById('upload' + side);
+  var input = document.getElementById('file' + side);
+
+  box.addEventListener('dragover', function(e) { e.preventDefault(); box.classList.add('dragover'); });
+  box.addEventListener('dragleave', function() { box.classList.remove('dragover'); });
+  box.addEventListener('drop', function(e) {
     e.preventDefault(); box.classList.remove('dragover');
     if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0], side.toLowerCase());
   });
 
-  // File input change
-  input.addEventListener('change', e => {
+  input.addEventListener('change', function(e) {
     if (e.target.files.length) handleFile(e.target.files[0], side.toLowerCase());
   });
 });
 
 function handleFile(file, side) {
   if (!file.type.startsWith('image/')) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    const url = e.target.result;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var url = e.target.result;
     if (side === 'front') imgFront = url; else imgBack = url;
-    const preview = document.getElementById('preview' + cap(side));
-    preview.src = url;
+    document.getElementById('preview' + cap(side)).src = url;
     document.getElementById('upload' + cap(side)).classList.add('has-image');
     checkUploadReady();
   };
@@ -792,8 +1161,7 @@ function handleFile(file, side) {
 
 function removeImage(side) {
   if (side === 'front') imgFront = null; else imgBack = null;
-  const box = document.getElementById('upload' + cap(side));
-  box.classList.remove('has-image');
+  document.getElementById('upload' + cap(side)).classList.remove('has-image');
   document.getElementById('preview' + cap(side)).src = '';
   document.getElementById('file' + cap(side)).value = '';
   checkUploadReady();
@@ -805,17 +1173,62 @@ function checkUploadReady() {
 
 function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════════
+   PIPELINE MANAGEMENT
+   ═══════════════════════════════════════ */
+function updatePipelineBar() {
+  document.querySelectorAll('.pipeline-step').forEach(function(el) {
+    var num = parseInt(el.dataset.scan);
+    el.classList.remove('active', 'done', 'locked');
+    if (num < currentScanNum) el.classList.add('done');
+    else if (num === currentScanNum) el.classList.add('active');
+    else el.classList.add('locked');
+  });
+}
+
+function setupCaptureMode() {
+  var uploadMode = document.getElementById('captureUploadMode');
+  var cameraMode = document.getElementById('captureCameraMode');
+
+  if (currentScanNum === 1) {
+    uploadMode.style.display = '';
+    cameraMode.style.display = 'none';
+  } else {
+    uploadMode.style.display = 'none';
+    cameraMode.style.display = '';
+
+    var scanType = E.SCAN_TYPES[currentScanNum - 1];
+    document.getElementById('cameraScanTitle').textContent =
+      'SCAN ' + currentScanNum + ' \u2014 ' + scanType.label.toUpperCase();
+    document.getElementById('cameraScanDesc').textContent = scanType.desc;
+
+    // For scans 3-5 (hub), show locked message
+    if (currentScanNum >= 3) {
+      cameraMode.innerHTML = '<div style="text-align:center;padding:80px 20px">' +
+        '<div style="font-size:48px;margin-bottom:16px;opacity:0.3">\uD83C\uDFED</div>' +
+        '<div style="font-family:var(--font-head);font-size:24px;letter-spacing:2px;color:var(--iso);margin-bottom:8px">HUB PROCESSING</div>' +
+        '<div style="font-size:14px;color:rgba(255,255,255,0.4);max-width:400px;margin:0 auto">This scan happens at the GrailISO hub when your card arrives. You\u2019ll be notified when it\u2019s complete.</div>' +
+        '</div>';
+      return;
+    }
+
+    generateSessionQR();
+    startCamera().then(function(ok) {
+      if (ok) startQRScanning();
+    });
+  }
+}
+
+/* ═══════════════════════════════════════
    SCREEN NAVIGATION
-   ══════════════════════════════════════ */
+   ═══════════════════════════════════════ */
 function goScreen(name) {
-  // Validation
   if (name === 'scan' && (!imgFront || !imgBack)) return;
   if (name === 'report' && !scanComplete) return;
 
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + name).classList.add('active');
-  document.querySelectorAll('.phase-tab').forEach(t => {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById('screen-' + (name === 'capture' ? 'capture' : name)).classList.add('active');
+  document.querySelectorAll('.phase-tab').forEach(function(t) {
     t.classList.remove('active');
     if (t.dataset.screen === name) t.classList.add('active');
   });
@@ -826,55 +1239,65 @@ function goScreen(name) {
 }
 
 function beginScan() {
-  // Unlock scan tab
   document.querySelector('[data-screen="scan"]').classList.remove('locked');
   goScreen('scan');
 }
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════════
    SCAN SCREEN — GRID SETUP
-   ══════════════════════════════════════ */
+   ═══════════════════════════════════════ */
 let gridBuilt = false;
 
 function initScanScreen() {
-  // Set card image
   document.getElementById('gridCardImg').src = activeSide === 'front' ? imgFront : imgBack;
 
   if (gridBuilt) return;
   gridBuilt = true;
 
+  // Build category breakdown bars (Big 4 shown in main UI)
+  var catBreakdown = document.getElementById('catBreakdown');
+  catBreakdown.innerHTML = E.BIG4.map(function(cat) {
+    var w = E.DEFAULT_WEIGHTS[cat];
+    return '<div class="cat-row">' +
+      '<div class="cat-label"><div class="cat-label-dot" style="background:' + CAT_COLORS[cat] + '"></div> ' + cap(cat) + '</div>' +
+      '<div class="cat-bar-track"><div class="cat-bar-fill" id="bar' + cap(cat) + '" style="width:0%;background:' + CAT_COLORS[cat] + '"></div></div>' +
+      '<div class="cat-score" id="score' + cap(cat) + '" style="color:' + CAT_COLORS[cat] + '">0</div>' +
+    '</div>';
+  }).join('');
+
   // Build grid cells
-  const overlay = document.getElementById('gridOverlay');
+  var overlay = document.getElementById('gridOverlay');
   overlay.innerHTML = '';
-  for (let i = 0; i < TOTAL_CELLS; i++) {
-    const cell = document.createElement('div');
+  for (var i = 0; i < E.CELL_COUNT; i++) {
+    var cell = document.createElement('div');
     cell.className = 'grid-cell';
     cell.dataset.idx = i;
-    const row = Math.floor(i / COLS);
-    const col = i % COLS;
-    const label = String.fromCharCode(65 + col) + '-' + (row + 1);
-    cell.innerHTML = `<div class="cell-label">${label}</div>`;
+    var rc = E.indexToRowCol(i);
+    var label = E.cellCoords(rc.row, rc.col);
+    cell.innerHTML = '<div class="cell-label">' + label + '</div>';
     cell.title = label;
-    cell.addEventListener('click', () => selectCell(activeSide, i));
+    (function(idx) {
+      cell.addEventListener('click', function() { selectCell(activeSide, idx); });
+    })(i);
     overlay.appendChild(cell);
   }
 
-  // Column labels (A-L)
-  const colLabels = document.getElementById('gridColLabels');
+  // Column labels
+  var colLabels = document.getElementById('gridColLabels');
   colLabels.innerHTML = '';
-  for (let c = 0; c < COLS; c++) {
-    const sp = document.createElement('span');
-    sp.textContent = String.fromCharCode(65 + c);
+  for (var c = 0; c < E.COLS; c++) {
+    var sp = document.createElement('span');
+    sp.textContent = E.ROW_LABELS[c];
     colLabels.appendChild(sp);
   }
 
-  // Row labels (1-12)
-  const rowLabels = document.getElementById('gridRowLabels');
+  // Row labels
+  var rowLabels = document.getElementById('gridRowLabels');
   rowLabels.innerHTML = '';
-  for (let r = 0; r < ROWS; r++) {
-    const sp = document.createElement('span');
-    sp.textContent = r + 1;
-    rowLabels.appendChild(sp);
+  for (var r = 0; r < E.ROWS; r++) {
+    var sp2 = document.createElement('span');
+    sp2.textContent = r + 1;
+    rowLabels.appendChild(sp2);
   }
 }
 
@@ -885,56 +1308,55 @@ function switchSide(side) {
   document.getElementById('btnSideFront').classList.toggle('active', side === 'front');
   document.getElementById('btnSideBack').classList.toggle('active', side === 'back');
   updateGridVisuals();
-  // Deselect
   if (selectedCell && selectedCell.side !== side) {
     document.getElementById('cellDetail').classList.remove('visible');
     selectedCell = null;
-    document.querySelectorAll('.grid-cell.selected').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.grid-cell.selected').forEach(function(c) { c.classList.remove('selected'); });
   }
 }
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════════
    CELL SELECTION & DETAIL
-   ══════════════════════════════════════ */
+   ═══════════════════════════════════════ */
 function selectCell(side, idx) {
-  selectedCell = { side, idx };
-  // Visual
-  document.querySelectorAll('.grid-cell').forEach(c => c.classList.remove('selected'));
+  selectedCell = { side: side, idx: idx };
+  document.querySelectorAll('.grid-cell').forEach(function(c) { c.classList.remove('selected'); });
   document.querySelectorAll('.grid-cell')[idx].classList.add('selected');
 
-  const data = gridData[side];
+  var data = rawCellData[side];
   if (!data) { document.getElementById('cellDetail').classList.remove('visible'); return; }
 
-  const cell = data[idx];
-  const row = Math.floor(idx / COLS);
-  const col = idx % COLS;
-  const label = String.fromCharCode(65 + col) + '-' + (row + 1);
+  var cell = data[idx];
+  var rc = E.indexToRowCol(idx);
+  var label = E.cellCoords(rc.row, rc.col);
+  var zone = E.classifyZone(rc.row, rc.col);
 
   document.getElementById('cellCoord').textContent = 'CELL ' + label;
 
-  // Zone tag
-  const zone = getZone(row, col);
-  const zt = document.getElementById('cellZoneTag');
-  zt.textContent = zone.label;
-  zt.className = 'cell-zone-tag ' + zone.cls;
+  var zt = document.getElementById('cellZoneTag');
+  zt.textContent = zone.toUpperCase() + ' ZONE';
+  zt.className = 'cell-zone-tag zone-' + zone;
 
-  // Per-category scores
-  const scGrid = document.getElementById('cellScores');
-  scGrid.innerHTML = CATS.map(cat => `
-    <div class="cell-score-item">
-      <div class="cell-score-cat" style="color:${CAT_COLORS[cat]}">${cat}</div>
-      <div class="cell-score-val" style="color:${CAT_COLORS[cat]}">${cell[cat].toFixed(1)}</div>
-    </div>
-  `).join('');
+  // Show Big 4 scores for this cell
+  var scGrid = document.getElementById('cellScores');
+  scGrid.innerHTML = E.BIG4.map(function(cat) {
+    var val = cell[cat] != null ? cell[cat] : 1.0;
+    var pct = (val * 100).toFixed(0);
+    return '<div class="cell-score-item">' +
+      '<div class="cell-score-cat" style="color:' + CAT_COLORS[cat] + '">' + cat.toUpperCase() + '</div>' +
+      '<div class="cell-score-val" style="color:' + CAT_COLORS[cat] + '">' + pct + '%</div>' +
+    '</div>';
+  }).join('');
 
-  // Findings
-  const fDiv = document.getElementById('cellFindings');
-  if (cell.findings && cell.findings.length) {
-    fDiv.innerHTML = cell.findings.map(f => `
-      <div class="cell-finding-item ${f.severity === 'minor' ? 'warn-finding' : ''}">
-        <strong>${f.category}:</strong> ${f.text} <span style="float:right;font-family:var(--font-head);letter-spacing:1px;color:${f.severity === 'minor' ? 'var(--warn)' : 'var(--danger)'}">${f.deduction > 0 ? '-' + f.deduction.toFixed(1) : ''}</span>
-      </div>
-    `).join('');
+  // Findings for this cell
+  var cellFindings = (allFindings[side] || []).filter(function(f) { return f.cellIndex === idx; });
+  var fDiv = document.getElementById('cellFindings');
+  if (cellFindings.length) {
+    fDiv.innerHTML = cellFindings.map(function(f) {
+      return '<div class="cell-finding-item ' + (f.severity === 'minor' ? 'warn-finding' : '') + '">' +
+        '<strong>' + f.category + ':</strong> ' + f.description +
+      '</div>';
+    }).join('');
   } else {
     fDiv.innerHTML = '<div style="color:var(--success);font-weight:600;letter-spacing:0.5px">No issues detected</div>';
   }
@@ -942,110 +1364,75 @@ function selectCell(side, idx) {
   document.getElementById('cellDetail').classList.add('visible');
 }
 
-function getZone(row, col) {
-  const isCorner = (row <= 1 && col <= 1) || (row <= 1 && col >= 10) || (row >= 10 && col <= 1) || (row >= 10 && col >= 10);
-  const isEdge = row === 0 || row === 11 || col === 0 || col === 11;
-  if (isCorner) return { label: 'CORNER ZONE', cls: 'zone-corner' };
-  if (isEdge) return { label: 'EDGE ZONE', cls: 'zone-edge' };
-  return { label: 'CENTER ZONE', cls: 'zone-center' };
-}
-
-/* ══════════════════════════════════════
-   SCORING ENGINE
-   ══════════════════════════════════════ */
-// Each cell gets a score per category (0-1.736... so 144 cells × max = 250)
-const CELL_MAX = CAT_MAX / TOTAL_CELLS; // ~1.736 per cell per category
-
-// Grade equivalents
-function scoreToGrade(score) {
-  if (score >= 980) return { label: 'GEM MINT 10', range: 'PSA 10 / BGS 10' };
-  if (score >= 950) return { label: 'GEM MINT 9.5', range: 'PSA 9.5 / BGS 9.5' };
-  if (score >= 900) return { label: 'MINT 9', range: 'PSA 9 / BGS 9' };
-  if (score >= 830) return { label: 'NM-MT 8', range: 'PSA 8 / BGS 8' };
-  if (score >= 740) return { label: 'NEAR MINT 7', range: 'PSA 7 / BGS 7' };
-  if (score >= 640) return { label: 'EX-MT 6', range: 'PSA 6 / BGS 6' };
-  if (score >= 530) return { label: 'EXCELLENT 5', range: 'PSA 5 / BGS 5' };
-  if (score >= 400) return { label: 'VG-EX 4', range: 'PSA 4 / BGS 4' };
-  if (score >= 250) return { label: 'VG 3', range: 'PSA 3 / BGS 3' };
-  if (score >= 100) return { label: 'GOOD 2', range: 'PSA 2 / BGS 2' };
-  return { label: 'POOR 1', range: 'PSA 1 / BGS 1' };
-}
-
-function computeTotals() {
-  const totals = { centering: 0, corners: 0, edges: 0, surface: 0 };
-  ['front', 'back'].forEach(side => {
-    if (!gridData[side]) return;
-    gridData[side].forEach(cell => {
-      CATS.forEach(cat => { totals[cat] += cell[cat]; });
-    });
-  });
-  // Each side contributes half (front 50%, back 50%)
-  // Since both sides have 144 cells and max per cell = CELL_MAX,
-  // total max per cat per side = 250. Two sides = 500. We want 250 per cat total.
-  // So divide by 2.
-  CATS.forEach(cat => { totals[cat] = Math.round(totals[cat] / 2); });
-  return totals;
-}
-
+/* ═══════════════════════════════════════
+   SCORE UI UPDATE
+   ═══════════════════════════════════════ */
 function updateScoreUI() {
-  const totals = computeTotals();
-  const total = totals.centering + totals.corners + totals.edges + totals.surface;
-  const grade = scoreToGrade(total);
+  if (!cardResult) return;
 
+  var total = Math.round(cardResult.total);
   document.getElementById('liveScore').textContent = total;
-  document.getElementById('liveEquiv').textContent = '\u2248 ' + grade.label;
+  document.getElementById('liveEquiv').textContent = '\u2248 ' + cardResult.grade.label + ' ' + cardResult.grade.grade;
 
-  // Category bars
-  CATS.forEach(cat => {
-    const pct = (totals[cat] / CAT_MAX * 100).toFixed(1);
-    document.getElementById('bar' + cap(cat)).style.width = pct + '%';
-    document.getElementById('score' + cap(cat)).textContent = totals[cat];
+  // Big 4 category bars
+  E.BIG4.forEach(function(cat) {
+    var val = Math.round(cardResult.breakdown[cat]);
+    var maxW = E.DEFAULT_WEIGHTS[cat];
+    var pct = (val / maxW * 100).toFixed(1);
+    var barEl = document.getElementById('bar' + cap(cat));
+    var scoreEl = document.getElementById('score' + cap(cat));
+    if (barEl) barEl.style.width = pct + '%';
+    if (scoreEl) scoreEl.textContent = val;
   });
 
-  // Ring arcs
-  const circ = 2 * Math.PI * 78; // ~490
-  CATS.forEach((cat, i) => {
-    const pct = totals[cat] / CAT_MAX;
-    const seg = (circ / 4) * pct;
-    const gap = circ - seg;
-    const offset = -(circ / 4) * i;
-    const ring = document.getElementById('ring' + cap(cat));
-    ring.setAttribute('stroke-dasharray', seg + ' ' + gap);
-    ring.setAttribute('stroke-dashoffset', offset);
+  // Ring arcs (Big 4)
+  var circ = 2 * Math.PI * 78;
+  E.BIG4.forEach(function(cat, i) {
+    var val = cardResult.breakdown[cat];
+    var maxW = E.DEFAULT_WEIGHTS[cat];
+    var pct = val / maxW;
+    var seg = (circ / 4) * pct;
+    var gap = circ - seg;
+    var offset = -(circ / 4) * i;
+    var ring = document.getElementById('ring' + cap(cat));
+    if (ring) {
+      ring.setAttribute('stroke-dasharray', seg + ' ' + gap);
+      ring.setAttribute('stroke-dashoffset', offset);
+    }
   });
 
   // Progress
-  let scanned = 0;
-  ['front', 'back'].forEach(side => {
-    if (gridData[side]) scanned += TOTAL_CELLS;
-  });
-  const totalCells = TOTAL_CELLS * 2;
+  var scanned = 0;
+  if (rawCellData.front) scanned += E.CELL_COUNT;
+  if (rawCellData.back) scanned += E.CELL_COUNT;
+  var totalCells = E.CELL_COUNT * 2;
   document.getElementById('scanCount').textContent = scanned + ' / ' + totalCells;
   document.getElementById('scanProgressFill').style.width = (scanned / totalCells * 100) + '%';
 }
 
-/* ══════════════════════════════════════
-   GRID VISUALS — Color cells by score
-   ══════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   GRID VISUALS
+   ═══════════════════════════════════════ */
 function updateGridVisuals() {
-  const data = gridData[activeSide];
-  const cells = document.querySelectorAll('.grid-cell');
-  cells.forEach((el, idx) => {
+  var data = rawCellData[activeSide];
+  var cells = document.querySelectorAll('.grid-cell');
+  cells.forEach(function(el, idx) {
     el.classList.remove('perfect', 'good', 'minor', 'issue', 'severe');
     if (!data) return;
-    const cell = data[idx];
-    // Compute average score across active category filters
-    let sum = 0, n = 0;
-    CATS.forEach(cat => {
-      if (catFilters[cat]) { sum += cell[cat]; n++; }
+    var cell = data[idx];
+    var sum = 0, n = 0;
+    E.BIG4.forEach(function(cat) {
+      if (catFilters[cat]) {
+        sum += (cell[cat] != null ? cell[cat] : 1.0);
+        n++;
+      }
     });
     if (n === 0) return;
-    const avg = sum / n;
-    const pct = avg / CELL_MAX;
-    if (pct >= 0.97) el.classList.add('perfect');
-    else if (pct >= 0.90) el.classList.add('good');
-    else if (pct >= 0.80) el.classList.add('minor');
-    else if (pct >= 0.60) el.classList.add('issue');
+    var avg = sum / n;
+    if (avg >= 0.95) el.classList.add('perfect');
+    else if (avg >= 0.85) el.classList.add('good');
+    else if (avg >= 0.70) el.classList.add('minor');
+    else if (avg >= 0.50) el.classList.add('issue');
     else el.classList.add('severe');
   });
 }
@@ -1056,323 +1443,206 @@ function toggleCatFilter(el) {
   updateGridVisuals();
 }
 
-/* ══════════════════════════════════════
-   SIMULATED SCAN ENGINE
-   ══════════════════════════════════════ */
-// Generates realistic-looking condition data for a card side.
-// In production this would be driven by vision AI analysis.
-function generateSideData(side) {
-  const data = [];
-  // Seed some "defects" at realistic locations
-  const defects = [];
-
-  // Random corner softness (1-2 corners)
-  const cornerCells = [
-    [0, 0], [0, 1], [1, 0], [1, 1],           // TL
-    [0, 10], [0, 11], [1, 10], [1, 11],        // TR
-    [10, 0], [10, 1], [11, 0], [11, 1],        // BL
-    [10, 10], [10, 11], [11, 10], [11, 11]     // BR
-  ];
-  const affectedCorner = Math.floor(Math.random() * 4); // which corner group (0-3)
-  const cornerSeverity = 0.1 + Math.random() * 0.25;
-  const cornerDescs = ['Top-left', 'Top-right', 'Bottom-left', 'Bottom-right'];
-
-  // Random edge wear (1 edge)
-  const affectedEdge = Math.floor(Math.random() * 4); // 0=top,1=right,2=bottom,3=left
-  const edgeSeverity = 0.05 + Math.random() * 0.15;
-  const edgeRow = affectedEdge === 0 ? 0 : affectedEdge === 2 ? 11 : Math.floor(4 + Math.random() * 4);
-  const edgeCol = affectedEdge === 3 ? 0 : affectedEdge === 1 ? 11 : Math.floor(3 + Math.random() * 6);
-
-  // Random surface scratch
-  const scratchRow = Math.floor(3 + Math.random() * 6);
-  const scratchCol = Math.floor(2 + Math.random() * 8);
-  const scratchLen = 1 + Math.floor(Math.random() * 3);
-  const scratchSeverity = 0.08 + Math.random() * 0.2;
-
-  // Centering shift
-  const centerShiftLR = (Math.random() - 0.5) * 0.06; // small L/R bias
-  const centerShiftTB = (Math.random() - 0.5) * 0.08; // slightly more T/B bias
-
-  for (let i = 0; i < TOTAL_CELLS; i++) {
-    const row = Math.floor(i / COLS);
-    const col = i % COLS;
-    const label = String.fromCharCode(65 + col) + '-' + (row + 1);
-
-    let scores = {};
-    let findings = [];
-
-    // -- CENTERING: slight deduction based on distance from center, weighted by shift direction
-    const distFromCenterX = (col - 5.5) / 5.5;
-    const distFromCenterY = (row - 5.5) / 5.5;
-    const centerPenalty = Math.abs(distFromCenterX * centerShiftLR) + Math.abs(distFromCenterY * centerShiftTB);
-    scores.centering = CELL_MAX * (1 - Math.min(centerPenalty * 3, 0.15));
-
-    // -- CORNERS: heavy deduction in affected corner zone
-    scores.corners = CELL_MAX;
-    const cornerGroup = Math.floor(affectedCorner);
-    const cornerOffset = cornerGroup * 4;
-    const myCells = cornerCells.slice(cornerOffset, cornerOffset + 4);
-    const isAffectedCorner = myCells.some(([cr, cc]) => cr === row && cc === col);
-    if (isAffectedCorner) {
-      const ded = cornerSeverity * CELL_MAX;
-      scores.corners -= ded;
-      findings.push({
-        category: 'Corners',
-        text: cornerDescs[affectedCorner] + ' corner softness',
-        severity: cornerSeverity > 0.2 ? 'major' : 'minor',
-        deduction: ded
-      });
-    }
-    // Adjacent cells get minor deduction
-    const isNearCorner = myCells.some(([cr, cc]) => Math.abs(cr - row) <= 1 && Math.abs(cc - col) <= 1) && !isAffectedCorner;
-    if (isNearCorner) scores.corners -= cornerSeverity * CELL_MAX * 0.3;
-
-    // -- EDGES: deduction along affected edge
-    scores.edges = CELL_MAX;
-    let isOnEdge = false;
-    if (affectedEdge === 0 && row === 0 && Math.abs(col - edgeCol) <= 1) isOnEdge = true;
-    if (affectedEdge === 2 && row === 11 && Math.abs(col - edgeCol) <= 1) isOnEdge = true;
-    if (affectedEdge === 3 && col === 0 && Math.abs(row - edgeRow) <= 1) isOnEdge = true;
-    if (affectedEdge === 1 && col === 11 && Math.abs(row - edgeRow) <= 1) isOnEdge = true;
-    if (isOnEdge) {
-      const ded = edgeSeverity * CELL_MAX;
-      scores.edges -= ded;
-      findings.push({
-        category: 'Edges',
-        text: ['Top', 'Right', 'Bottom', 'Left'][affectedEdge] + ' edge micro-chipping',
-        severity: edgeSeverity > 0.1 ? 'major' : 'minor',
-        deduction: ded
-      });
-    }
-    // General edge wear
-    if ((row === 0 || row === 11 || col === 0 || col === 11) && !isOnEdge) {
-      scores.edges -= CELL_MAX * 0.02;
-    }
-
-    // -- SURFACE: scratch path
-    scores.surface = CELL_MAX;
-    const isOnScratch = row === scratchRow && col >= scratchCol && col < scratchCol + scratchLen;
-    if (isOnScratch) {
-      const ded = scratchSeverity * CELL_MAX;
-      scores.surface -= ded;
-      findings.push({
-        category: 'Surface',
-        text: 'Hairline surface scratch',
-        severity: scratchSeverity > 0.15 ? 'major' : 'minor',
-        deduction: ded
-      });
-    }
-    // Random micro-imperfections (very small)
-    if (Math.random() < 0.05) {
-      const microDed = CELL_MAX * 0.01;
-      scores.surface -= microDed;
-    }
-
-    // Clamp all scores
-    CATS.forEach(cat => { scores[cat] = Math.max(0, Math.min(CELL_MAX, scores[cat])); });
-
-    data.push({ ...scores, findings });
-  }
-  return data;
-}
-
-// Collect all findings with locations for the report
-function collectFindings() {
-  const all = [];
-  ['front', 'back'].forEach(side => {
-    if (!gridData[side]) return;
-    gridData[side].forEach((cell, idx) => {
-      if (cell.findings && cell.findings.length) {
-        const row = Math.floor(idx / COLS);
-        const col = idx % COLS;
-        const loc = String.fromCharCode(65 + col) + '-' + (row + 1);
-        cell.findings.forEach(f => {
-          // Deduplicate by grouping adjacent same-type findings
-          const existing = all.find(x => x.text === f.text && x.side === side);
-          if (existing) {
-            if (!existing.locs.includes(loc)) existing.locs.push(loc);
-            existing.totalDeduction += f.deduction;
-          } else {
-            all.push({
-              side, locs: [loc], text: f.text, category: f.category,
-              severity: f.severity, totalDeduction: f.deduction
-            });
-          }
-        });
-      }
-    });
-  });
-  return all.sort((a, b) => b.totalDeduction - a.totalDeduction);
-}
-
-/* ══════════════════════════════════════
-   RUN FULL SCAN (animated)
-   ══════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   RUN FULL SCAN (animated + engine)
+   ═══════════════════════════════════════ */
 async function runFullScan() {
-  const btn = document.getElementById('btnRunScan');
+  var btn = document.getElementById('btnRunScan');
   btn.disabled = true;
   btn.textContent = 'SCANNING...';
+  var statusEl = document.getElementById('scanStatus');
 
-  const statusEl = document.getElementById('scanStatus');
-
-  // Scan front
-  statusEl.innerHTML = '<span class="pulse"></span> Analyzing FRONT — Centering...';
-  await delay(400);
-  statusEl.innerHTML = '<span class="pulse"></span> Analyzing FRONT — Corners...';
-  await delay(300);
-  statusEl.innerHTML = '<span class="pulse"></span> Analyzing FRONT — Edges...';
-  await delay(300);
-  statusEl.innerHTML = '<span class="pulse"></span> Analyzing FRONT — Surface...';
-  await delay(400);
-
-  gridData.front = generateSideData('front');
+  // Generate demo data for front
+  statusEl.innerHTML = '<span class="pulse"></span> Analyzing FRONT \u2014 12 categories across 144 cells...';
+  await delay(600);
+  var frontDemo = E.generateDemoData({ quality: 0.93, issues: 3 + Math.floor(Math.random() * 3) });
+  rawCellData.front = frontDemo.cells;
+  allFindings.front = frontDemo.findings;
   if (activeSide === 'front') updateGridVisuals();
-  updateScoreUI();
 
-  // Scan back
-  statusEl.innerHTML = '<span class="pulse"></span> Analyzing BACK — Centering...';
-  await delay(400);
-  statusEl.innerHTML = '<span class="pulse"></span> Analyzing BACK — Corners...';
-  await delay(300);
-  statusEl.innerHTML = '<span class="pulse"></span> Analyzing BACK — Edges...';
-  await delay(300);
-  statusEl.innerHTML = '<span class="pulse"></span> Analyzing BACK — Surface...';
-  await delay(400);
-
-  gridData.back = generateSideData('back');
+  // Generate demo data for back
+  statusEl.innerHTML = '<span class="pulse"></span> Analyzing BACK \u2014 12 categories across 144 cells...';
+  await delay(600);
+  var backDemo = E.generateDemoData({ quality: 0.95, issues: 2 + Math.floor(Math.random() * 2) });
+  rawCellData.back = backDemo.cells;
+  allFindings.back = backDemo.findings;
   if (activeSide === 'back') updateGridVisuals();
+
+  // Score using the engine
+  cardResult = E.scoreCard(rawCellData.front, rawCellData.back);
   updateScoreUI();
 
   scanComplete = true;
-  statusEl.innerHTML = '<span style="color:var(--success);font-weight:600">SCAN COMPLETE</span> — 288 / 288 cells analyzed';
+  statusEl.innerHTML = '<span style="color:var(--success);font-weight:600">SCAN COMPLETE</span> \u2014 288 / 288 cells analyzed';
   btn.style.display = 'none';
   document.getElementById('btnGenReport').style.display = 'flex';
   document.querySelector('[data-screen="report"]').classList.remove('locked');
 }
 
-function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+function delay(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
 
-/* ══════════════════════════════════════
+/* ═══════════════════════════════════════
    ISObiometrics REPORT BUILDER
-   ══════════════════════════════════════ */
+   ═══════════════════════════════════════ */
 function buildReport() {
-  const totals = computeTotals();
-  const total = totals.centering + totals.corners + totals.edges + totals.surface;
-  const grade = scoreToGrade(total);
+  if (!cardResult) return;
 
-  // Date
+  var total = Math.round(cardResult.total);
+  var grade = cardResult.grade;
+
   document.getElementById('reportDate').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-
-  // Big score
   document.getElementById('reportScore').textContent = total;
-  document.getElementById('reportEquiv').textContent = '\u2248 ' + grade.label;
-  document.getElementById('reportEquivRange').textContent = grade.range + ' equivalent';
-
-  // Equiv marker position
+  document.getElementById('reportEquiv').textContent = '\u2248 ' + grade.label + ' ' + grade.grade;
+  document.getElementById('reportEquivRange').textContent = grade.range + ' range';
   document.getElementById('equivMarker').style.left = (total / 1000 * 100) + '%';
 
-  // Category cards
-  const catContainer = document.getElementById('reportCats');
-  catContainer.innerHTML = CATS.map(cat => {
-    const val = totals[cat];
-    const pct = (val / CAT_MAX * 100).toFixed(1);
-    return `
-      <div class="report-cat-card rcc-${cat}">
-        <div class="rcc-header">
-          <div class="rcc-name" style="color:${CAT_COLORS[cat]}">${cat.toUpperCase()}</div>
-          <div class="rcc-score" style="color:${CAT_COLORS[cat]}">${val}<span style="font-size:14px;opacity:0.4">/250</span></div>
-        </div>
-        <div class="rcc-bar"><div class="rcc-bar-fill" style="width:${pct}%;background:${CAT_COLORS[cat]}"></div></div>
-        <div class="rcc-detail">${getCatDetail(cat, totals)}</div>
-      </div>
-    `;
+  // Category cards (Big 4)
+  var catContainer = document.getElementById('reportCats');
+  catContainer.innerHTML = E.BIG4.map(function(cat) {
+    var val = Math.round(cardResult.breakdown[cat]);
+    var maxW = E.DEFAULT_WEIGHTS[cat];
+    var pct = (val / maxW * 100).toFixed(1);
+    return '<div class="report-cat-card rcc-' + cat + '">' +
+      '<div class="rcc-header">' +
+        '<div class="rcc-name" style="color:' + CAT_COLORS[cat] + '">' + cat.toUpperCase() + '</div>' +
+        '<div class="rcc-score" style="color:' + CAT_COLORS[cat] + '">' + val + '<span style="font-size:14px;opacity:0.4">/' + maxW + '</span></div>' +
+      '</div>' +
+      '<div class="rcc-bar"><div class="rcc-bar-fill" style="width:' + pct + '%;background:' + CAT_COLORS[cat] + '"></div></div>' +
+      '<div class="rcc-detail">' + getCatDetail(cat) + '</div>' +
+    '</div>';
   }).join('');
 
-  // Heatmaps
+  // Secondary categories summary
+  var secondaryCats = E.CATEGORIES.filter(function(c) { return E.BIG4.indexOf(c) === -1; });
+  var secHtml = '<div class="report-cat-card" style="grid-column:1/-1">' +
+    '<div class="rcc-header"><div class="rcc-name" style="color:rgba(255,255,255,0.5)">SECONDARY CATEGORIES</div></div>' +
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px">';
+  secondaryCats.forEach(function(cat) {
+    var val = Math.round(cardResult.breakdown[cat]);
+    var maxW = E.DEFAULT_WEIGHTS[cat];
+    secHtml += '<div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:8px;text-align:center">' +
+      '<div style="font-size:10px;font-weight:600;letter-spacing:0.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:4px">' + cat.replace(/_/g, ' ') + '</div>' +
+      '<div style="font-family:var(--font-head);font-size:18px;letter-spacing:1px;color:var(--grail)">' + val + '<span style="font-size:11px;opacity:0.3">/' + maxW + '</span></div>' +
+    '</div>';
+  });
+  secHtml += '</div></div>';
+  catContainer.innerHTML += secHtml;
+
+  // Delta bar
+  if (previousResult) {
+    var delta = E.computeDelta(previousResult, cardResult);
+    var deltaBar = document.getElementById('deltaBar');
+    deltaBar.classList.remove('hidden');
+    var deltaHtml = '<div style="font-family:var(--font-head);font-size:13px;letter-spacing:2px;color:rgba(255,255,255,0.3)">DELTA vs SCAN ' + (currentScanNum - 1) + '</div>';
+    deltaHtml += '<div class="delta-item">Total: <span class="delta-val ' + (delta.total > 0 ? 'delta-pos' : delta.total < 0 ? 'delta-neg' : 'delta-zero') + '">' + (delta.total > 0 ? '+' : '') + delta.total + '</span></div>';
+    E.BIG4.forEach(function(cat) {
+      var d = delta[cat];
+      deltaHtml += '<div class="delta-item">' + cap(cat) + ': <span class="delta-val ' + (d > 0 ? 'delta-pos' : d < 0 ? 'delta-neg' : 'delta-zero') + '">' + (d > 0 ? '+' : '') + d + '</span></div>';
+    });
+    deltaBar.innerHTML = deltaHtml;
+  }
+
+  // Heatmaps (Big 4)
   buildHeatmaps('reportHeatmapFront', 'front');
   buildHeatmaps('reportHeatmapBack', 'back');
 
   // Findings
-  const findings = collectFindings();
-  const fContainer = document.getElementById('reportFindings');
-  let totalDed = 0;
-  let html = findings.map(f => {
-    totalDed += f.totalDeduction;
-    const locStr = f.locs.length > 3 ? f.locs.slice(0, 3).join(', ') + '...' : f.locs.join(', ');
-    return `
-      <div class="finding-item">
-        <div class="finding-loc">${locStr}</div>
-        <div class="finding-desc"><strong>${f.category} — ${f.text}</strong> (${f.side})</div>
-        <div class="finding-impact ${f.severity === 'major' ? 'impact-major' : 'impact-minor'}">-${f.totalDeduction.toFixed(1)}</div>
-      </div>
-    `;
-  }).join('');
-
-  html += `
-    <div class="finding-item finding-total">
-      <div class="finding-loc" style="color:var(--grail)">TOTAL</div>
-      <div class="finding-desc"><strong style="color:var(--grail)">${findings.length} findings across front + back</strong></div>
-      <div class="finding-impact" style="color:var(--danger);font-size:16px">-${totalDed.toFixed(1)}</div>
-    </div>
-  `;
-  fContainer.innerHTML = html;
+  buildFindingsTable();
 }
 
-function getCatDetail(cat, totals) {
-  // Generate summary text based on score
-  const val = totals[cat];
-  const pct = val / CAT_MAX;
+function getCatDetail(cat) {
+  var val = cardResult.breakdown[cat];
+  var maxW = E.DEFAULT_WEIGHTS[cat];
+  var pct = val / maxW;
   if (cat === 'centering') {
-    const lr = pct > 0.95 ? '50/50' : pct > 0.9 ? '51/49' : '53/47';
-    const tb = pct > 0.93 ? '50/50' : pct > 0.88 ? '52/48' : '55/45';
-    return `L/R: ${lr} | T/B: ${tb}<br>Front + Back averaged`;
+    var lr = pct > 0.95 ? '50/50' : pct > 0.9 ? '51/49' : '53/47';
+    var tb = pct > 0.93 ? '50/50' : pct > 0.88 ? '52/48' : '55/45';
+    return 'L/R: ' + lr + ' | T/B: ' + tb + '<br>Front + Back averaged';
   }
   if (cat === 'corners') {
-    return pct > 0.95 ? 'All four corners sharp and clean<br>No whitening or softness detected'
-      : pct > 0.88 ? '1 minor soft corner detected<br>No dings, bends, or whitening'
-      : 'Multiple corner issues detected<br>Softness and/or whitening present';
+    return pct > 0.95 ? 'All four corners sharp and clean' : pct > 0.88 ? '1 minor soft corner detected' : 'Multiple corner issues detected';
   }
   if (cat === 'edges') {
-    return pct > 0.95 ? 'All edges clean and intact<br>No chipping or peeling'
-      : pct > 0.88 ? 'Minor edge wear detected<br>Small chipping at 1-2 locations'
-      : 'Edge wear present on multiple sides<br>Visible chipping or delamination';
+    return pct > 0.95 ? 'All edges clean and intact' : pct > 0.88 ? 'Minor edge wear at 1-2 locations' : 'Edge wear on multiple sides';
   }
   if (cat === 'surface') {
-    return pct > 0.95 ? 'Surface clean — no scratches or defects<br>Print registration excellent'
-      : pct > 0.88 ? 'Minor surface imperfection detected<br>Hairline scratch or print artifact'
-      : 'Surface defects present<br>Scratches, stains, or print issues detected';
+    return pct > 0.95 ? 'Surface clean \u2014 no defects' : pct > 0.88 ? 'Minor surface imperfection' : 'Surface defects present';
   }
   return '';
 }
 
 function buildHeatmaps(containerId, side) {
-  const container = document.getElementById(containerId);
+  var container = document.getElementById(containerId);
   container.innerHTML = '';
-  const data = gridData[side];
+  var data = rawCellData[side];
   if (!data) { container.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:14px;padding:20px">No data</div>'; return; }
 
-  CATS.forEach(cat => {
-    const panel = document.createElement('div');
+  E.BIG4.forEach(function(cat) {
+    var heatmap = E.buildHeatmap(data, cat);
+    var hmClasses = ['hm-perfect', 'hm-good', 'hm-ok', 'hm-minor', 'hm-issue', 'hm-severe'];
+
+    var panel = document.createElement('div');
     panel.className = 'heatmap-panel';
-    panel.innerHTML = `<div class="hm-label" style="color:${CAT_COLORS[cat]}">${cat.toUpperCase()}</div><div class="hm-card"><div class="hm-grid"></div></div>`;
+    panel.innerHTML = '<div class="hm-label" style="color:' + CAT_COLORS[cat] + '">' + cat.toUpperCase() + '</div><div class="hm-card"><div class="hm-grid"></div></div>';
     container.appendChild(panel);
 
-    const hmGrid = panel.querySelector('.hm-grid');
-    for (let i = 0; i < TOTAL_CELLS; i++) {
-      const cell = document.createElement('div');
-      cell.className = 'hm-cell';
-      const score = data[i][cat];
-      const pct = score / CELL_MAX;
-      if (pct >= 0.97) cell.classList.add('hm-perfect');
-      else if (pct >= 0.92) cell.classList.add('hm-good');
-      else if (pct >= 0.85) cell.classList.add('hm-ok');
-      else if (pct >= 0.75) cell.classList.add('hm-minor');
-      else if (pct >= 0.60) cell.classList.add('hm-issue');
-      else cell.classList.add('hm-severe');
+    var hmGrid = panel.querySelector('.hm-grid');
+    for (var i = 0; i < E.CELL_COUNT; i++) {
+      var cell = document.createElement('div');
+      cell.className = 'hm-cell ' + hmClasses[heatmap[i]];
       hmGrid.appendChild(cell);
     }
   });
 }
+
+function buildFindingsTable() {
+  var all = [];
+  ['front', 'back'].forEach(function(side) {
+    (allFindings[side] || []).forEach(function(f) {
+      all.push({
+        side: side,
+        coords: f.coords,
+        category: f.category,
+        description: f.description,
+        severity: f.severity,
+        rawScore: f.rawScore
+      });
+    });
+  });
+
+  // Sort by severity
+  var sevOrder = { severe: 0, major: 1, minor: 2, info: 3 };
+  all.sort(function(a, b) { return (sevOrder[a.severity] || 3) - (sevOrder[b.severity] || 3); });
+
+  var fContainer = document.getElementById('reportFindings');
+  if (!all.length) {
+    fContainer.innerHTML = '<div style="text-align:center;padding:20px;color:var(--success);font-family:var(--font-head);font-size:18px;letter-spacing:2px">NO ISSUES DETECTED</div>';
+    return;
+  }
+
+  var html = all.map(function(f) {
+    var impactClass = f.severity === 'severe' || f.severity === 'major' ? 'impact-major' : 'impact-minor';
+    return '<div class="finding-item">' +
+      '<div class="finding-loc">' + f.coords + '</div>' +
+      '<div class="finding-desc"><strong>' + f.category + ':</strong> ' + f.description + ' (' + f.side + ')</div>' +
+      '<div class="finding-impact ' + impactClass + '">' + f.severity.toUpperCase() + '</div>' +
+    '</div>';
+  }).join('');
+
+  html += '<div class="finding-item finding-total">' +
+    '<div class="finding-loc" style="color:var(--grail)">TOTAL</div>' +
+    '<div class="finding-desc"><strong style="color:var(--grail)">' + all.length + ' findings across front + back</strong></div>' +
+    '<div class="finding-impact" style="color:var(--danger);font-size:16px">' + all.length + ' issues</div>' +
+  '</div>';
+
+  fContainer.innerHTML = html;
+}
+
+/* ═══════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════ */
+updatePipelineBar();
+setupCaptureMode();
 </script>
 </body>
 </html>

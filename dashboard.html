@@ -13333,11 +13333,20 @@ async function _prInit(){
   // Try reading from Supabase cache first
   let cacheRows = null;
   try {
-    const r = await fetch(SB+'/rest/v1/power_rankings_cache?select=*&order=data_date.desc&limit=500',
+    // First get the latest date
+    const dR = await fetch(SB+'/rest/v1/power_rankings_cache?select=data_date&order=data_date.desc&limit=1',
       {headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}});
-    if(r.ok){
-      const data = await r.json();
-      if(data && data.length) cacheRows = data;
+    if(dR.ok){
+      const dData = await dR.json();
+      if(dData && dData.length){
+        const latestDate = dData[0].data_date;
+        const r = await fetch(SB+'/rest/v1/power_rankings_cache?select=*&data_date=eq.'+latestDate+'&limit=500',
+          {headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}});
+        if(r.ok){
+          const data = await r.json();
+          if(data && data.length) cacheRows = data;
+        }
+      }
     }
   } catch(e){ console.warn('PR cache read failed:', e); }
 

@@ -1,0 +1,508 @@
+/**
+ * ISOSerial Provenance Crawler — shared core
+ *
+ * Hits eBay for Topps 2026 Series 1 + Heritage /5 listings, pulls full detail via
+ * Get Item API, normalizes into review queue records, writes to Supabase.
+ *
+ * Called from:
+ *   bootstrap.js  — one-shot local run to seed initial queue
+ *   runner.js     — GitHub Actions cron job (steady-state incremental)
+ *
+ * Data is written to Supabase only. No local JSON artifacts, no repo commits.
+ *
+ * Env vars required (.env at repo root):
+ *   EBAY_CLIENT_ID, EBAY_CLIENT_SECRET     (reused from ISOsnipe)
+ *   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
+ */
+
+require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') });
+
+const EBAY_CLIENT_ID        = process.env.EBAY_CLIENT_ID;
+const EBAY_CLIENT_SECRET    = process.env.EBAY_CLIENT_SECRET;
+const SUPABASE_URL          = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!EBAY_CLIENT_ID || !EBAY_CLIENT_SECRET) {
+  throw new Error('Missing EBAY_CLIENT_ID / EBAY_CLIENT_SECRET in .env');
+}
+if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE) {
+  throw new Error('Missing SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY in .env');
+}
+
+// ─── Sets + query variants ──────────────────────────────────
+// Each set runs multiple queries to cover how sellers actually title listings.
+// "/5" is the primary tell. Sellers often drop the "autograph" word since /5 is
+// already a tiny parallel; we post-filter on the title + description to keep only
+// plausible auto listings.
+const SETS = [
+  {
+    label: 'Series 1',
+    queries: [
+      '2026 Topps Series 1 /5',
+      '2026 Topps Series 1 #/5',
+      '2026 Topps Series 1 auto /5',
+    ],
+  },
+  {
+    label: 'Heritage',
+    queries: [
+      '2026 Topps Heritage /5',
+      '2026 Topps Heritage #/5',
+      '2026 Topps Heritage auto /5',
+    ],
+  },
+];
+
+// eBay Sports Trading Cards category (same one ISOsnipe uses)
+const EBAY_CATEGORY_ID = '261328';
+
+// Minimum price floor — /5 autos shouldn't go below this. Filters junk.
+const PRICE_FLOOR_USD = 5;
+
+// Max listings per query (Browse API cap is 200 per page; we stay lower for speed)
+const LISTINGS_PER_QUERY = 100;
+
+// Pause between API calls (ms). eBay's Browse API is pretty generous but we stay polite.
+const SLEEP_MS = 350;
+
+// Fraud flag thresholds
+const FRAUD_HIGH_PRICE_USD           = 500;   // cards above this get extra scrutiny
+const FRAUD_LOW_FEEDBACK_SCORE       = 10;    // seller feedback count
+const FRAUD_LOW_FEEDBACK_PERCENT     = 98.0;  // seller feedback %
+const FRAUD_VERY_HIGH_PRICE_USD      = 5000;  // always flag above this if any risk signal
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// ─── eBay auth ───────────────────────────────────────────────
+async function getEbayToken() {
+  const credentials = Buffer.from(`${EBAY_CLIENT_ID}:${EBAY_CLIENT_SECRET}`).toString('base64');
+  const res = await fetch('https://api.ebay.com/identity/v1/oauth2/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': `Basic ${credentials}`,
+    },
+    body: 'grant_type=client_credentials&scope=https%3A%2F%2Fapi.ebay.com%2Foauth%2Fapi_scope',
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`eBay auth failed (${res.status}): ${body}`);
+  }
+  return (await res.json()).access_token;
+}
+
+// ─── eBay Browse: search ────────────────────────────────────
+async function searchEbay(token, query) {
+  const filter = [
+    `price:[${PRICE_FLOOR_USD}..]`,
+    'priceCurrency:USD',
+    'deliveryCountry:US',
+  ].join(',');
+
+  const params = new URLSearchParams({
+    q: query,
+    category_ids: EBAY_CATEGORY_ID,
+    filter,
+    limit: String(LISTINGS_PER_QUERY),
+  });
+
+  const res = await fetch(
+    `https://api.ebay.com/buy/browse/v1/item_summary/search?${params}`,
+    {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US',
+      },
+    }
+  );
+
+  if (!res.ok) {
+    if (res.status === 429) {
+      console.warn(`  eBay rate-limited (429) on query "${query}" — backing off`);
+      await sleep(5000);
+      return { items: [], apiCalls: 1 };
+    }
+    if (res.status === 204) return { items: [], apiCalls: 1 };
+    console.warn(`  eBay search failed (${res.status}) on "${query}"`);
+    return { items: [], apiCalls: 1 };
+  }
+
+  const body = await res.json();
+  return { items: body.itemSummaries || [], apiCalls: 1 };
+}
+
+// ─── eBay Browse: get item detail ───────────────────────────
+// Returns { item, apiCalls } or { item: null } on failure
+async function getEbayItem(token, itemId) {
+  const res = await fetch(
+    `https://api.ebay.com/buy/browse/v1/item/${encodeURIComponent(itemId)}`,
+    {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US',
+      },
+    }
+  );
+
+  if (!res.ok) {
+    if (res.status === 429) {
+      await sleep(5000);
+    }
+    return { item: null, apiCalls: 1 };
+  }
+
+  const item = await res.json();
+  return { item, apiCalls: 1 };
+}
+
+// ─── Parse listing → queue record ───────────────────────────
+function parseListingToQueueRecord(searchItem, itemDetail, setLabel) {
+  const title = (itemDetail?.title || searchItem?.title || '').trim();
+  const description = (itemDetail?.description || '').trim();
+  const searchText = `${title}\n${description}`.toLowerCase();
+
+  const price = parseFloat(itemDetail?.price?.value || searchItem?.price?.value || 0);
+
+  // images — primary + gallery
+  const images = [];
+  if (itemDetail?.image?.imageUrl) images.push(itemDetail.image.imageUrl);
+  if (Array.isArray(itemDetail?.additionalImages)) {
+    for (const img of itemDetail.additionalImages) {
+      if (img?.imageUrl) images.push(img.imageUrl);
+    }
+  }
+  if (images.length === 0 && searchItem?.image?.imageUrl) {
+    images.push(searchItem.image.imageUrl);
+  }
+  if (images.length === 0 && searchItem?.thumbnailImages?.[0]?.imageUrl) {
+    images.push(searchItem.thumbnailImages[0].imageUrl);
+  }
+
+  // seller
+  const seller = itemDetail?.seller || searchItem?.seller || {};
+  const sellerUsername = seller.username || null;
+  const sellerFeedbackScore = typeof seller.feedbackScore === 'number' ? seller.feedbackScore : null;
+  const sellerFeedbackPercent = typeof seller.feedbackPercentage === 'string'
+    ? parseFloat(seller.feedbackPercentage)
+    : (typeof seller.feedbackPercentage === 'number' ? seller.feedbackPercentage : null);
+
+  // locations — itemLocation (where the item is) + shipping origin
+  const itemLoc = itemDetail?.itemLocation || {};
+  const shipFrom = itemDetail?.shippingOptions?.[0]?.shipToLocations || {};
+
+  // crawler-inferred guesses
+  const setNameGuess = setLabel;
+
+  // Serial edition guess — default is '/5' since that's our query.
+  // Look for explicit "N/5" patterns first.
+  let serialEditionGuess = '/5';
+  const m = searchText.match(/\b(\d+)\s*\/\s*5\b/);
+  if (m && parseInt(m[1], 10) >= 1 && parseInt(m[1], 10) <= 5) {
+    serialEditionGuess = `${m[1]}/5`;
+  }
+
+  // Auto type
+  let autoTypeGuess = null;
+  if (/\bon[\-\s]?card\b/.test(searchText) && !/sticker/.test(searchText)) autoTypeGuess = 'on-card';
+  else if (/sticker\s*(auto|autograph)/.test(searchText)) autoTypeGuess = 'sticker-auto';
+
+  // Inscription — very loose pattern. Admin confirms at review time.
+  let inscriptionGuess = null;
+  const inscrMatch = searchText.match(
+    /\b(inscribed|inscription|hof\s*(\d{4})?|mvp|roy|cy\s*young|[A-Z][a-z]+\s*\d+:\d+)\b/i
+  );
+  if (inscrMatch) inscriptionGuess = inscrMatch[0];
+
+  // Grade guess
+  let gradeGuess = null;
+  const gradeMatch = searchText.match(/\b(psa|bgs|beckett|sgc|jsa)\s*(10|9\.5|9|8\.5|8|7|6|5|4|3|2|1)\b/i);
+  if (gradeMatch) gradeGuess = `${gradeMatch[1].toUpperCase()} ${gradeMatch[2]}`;
+
+  // Fraud flag computation
+  const fraudReasons = [];
+  if (price >= FRAUD_HIGH_PRICE_USD && sellerFeedbackScore !== null && sellerFeedbackScore < FRAUD_LOW_FEEDBACK_SCORE) {
+    fraudReasons.push('high_price_low_feedback');
+  }
+  if (price >= FRAUD_VERY_HIGH_PRICE_USD) {
+    fraudReasons.push('very_high_price_requires_review');
+  }
+  if (sellerFeedbackPercent !== null && sellerFeedbackPercent < FRAUD_LOW_FEEDBACK_PERCENT) {
+    fraudReasons.push('low_feedback_percent');
+  }
+  if (sellerFeedbackScore === 0) {
+    fraudReasons.push('zero_feedback_seller');
+  }
+  const fraudFlag = fraudReasons.length > 0;
+
+  return {
+    ebay_item_id: searchItem.itemId || itemDetail?.itemId,
+    ebay_url: itemDetail?.itemWebUrl || searchItem?.itemWebUrl || null,
+    title: title || null,
+    description: description || null,
+    price_usd: isFinite(price) && price > 0 ? price : null,
+    image_urls: images,
+    seller_username: sellerUsername,
+    seller_feedback_score: sellerFeedbackScore,
+    seller_feedback_percent: sellerFeedbackPercent,
+    seller_account_age_days: null, // Browse API doesn't expose this
+    item_location_city: itemLoc.city || null,
+    item_location_state: itemLoc.stateOrProvince || null,
+    item_location_country: itemLoc.country || null,
+    ship_from_city: shipFrom.city || null,
+    ship_from_state: shipFrom.stateOrProvince || null,
+    set_name_guess: setNameGuess,
+    serial_edition_guess: serialEditionGuess,
+    auto_type_guess: autoTypeGuess,
+    inscription_guess: inscriptionGuess,
+    grade_guess: gradeGuess,
+    fraud_flag: fraudFlag,
+    fraud_reasons: fraudReasons,
+    raw_browse_response: searchItem || null,
+    raw_get_item_response: itemDetail || null,
+    status: 'pending',
+  };
+}
+
+// ─── Supabase REST helpers ──────────────────────────────────
+const sbHeaders = {
+  'apikey': SUPABASE_SERVICE_ROLE,
+  'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE}`,
+  'Content-Type': 'application/json',
+};
+
+// Returns Set of ebay_item_ids already present in the queue (dedup map).
+async function fetchExistingQueueItemIds(itemIds) {
+  if (itemIds.length === 0) return new Set();
+
+  // PostgREST: ?ebay_item_id=in.(id1,id2,...)  — batch in chunks of 100 to avoid URL length issues
+  const found = new Set();
+  const CHUNK = 100;
+  for (let i = 0; i < itemIds.length; i += CHUNK) {
+    const chunk = itemIds.slice(i, i + CHUNK);
+    const inClause = chunk.map((id) => `"${id}"`).join(',');
+    const url = `${SUPABASE_URL}/rest/v1/iso_serial_queue?select=ebay_item_id&ebay_item_id=in.(${inClause})`;
+    const res = await fetch(url, { headers: sbHeaders });
+    if (!res.ok) {
+      console.warn(`  Supabase dedup lookup failed (${res.status}): ${await res.text()}`);
+      continue;
+    }
+    const rows = await res.json();
+    for (const r of rows) found.add(r.ebay_item_id);
+  }
+  return found;
+}
+
+async function insertQueueRecords(records) {
+  if (records.length === 0) return { inserted: 0, errors: 0 };
+
+  // Insert in chunks; Prefer return=minimal keeps the response small
+  const CHUNK = 50;
+  let inserted = 0;
+  let errors = 0;
+
+  for (let i = 0; i < records.length; i += CHUNK) {
+    const chunk = records.slice(i, i + CHUNK);
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/iso_serial_queue`, {
+      method: 'POST',
+      headers: { ...sbHeaders, 'Prefer': 'return=minimal,resolution=ignore-duplicates' },
+      body: JSON.stringify(chunk),
+    });
+    if (!res.ok) {
+      console.warn(`  Supabase insert chunk failed (${res.status}): ${await res.text()}`);
+      errors += chunk.length;
+    } else {
+      inserted += chunk.length;
+    }
+  }
+  return { inserted, errors };
+}
+
+async function logPull({
+  setSearched,
+  queryString,
+  totalResults,
+  newListings,
+  duplicateListings,
+  apiCallsBrowse,
+  apiCallsGetItem,
+  runtimeSeconds,
+  status,
+  errorMessage,
+  runEnvironment,
+}) {
+  const row = {
+    set_searched: setSearched,
+    query_string: queryString,
+    total_results: totalResults,
+    new_listings: newListings,
+    duplicate_listings: duplicateListings,
+    api_calls_browse: apiCallsBrowse,
+    api_calls_get_item: apiCallsGetItem,
+    runtime_seconds: runtimeSeconds,
+    status,
+    error_message: errorMessage || null,
+    run_environment: runEnvironment,
+  };
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/iso_serial_pulls`, {
+    method: 'POST',
+    headers: { ...sbHeaders, 'Prefer': 'return=minimal' },
+    body: JSON.stringify(row),
+  });
+  if (!res.ok) {
+    console.warn(`  Pull log insert failed (${res.status}): ${await res.text()}`);
+  }
+}
+
+// ─── Crawl one set (all query variants) ─────────────────────
+async function crawlSet({ token, set, runEnvironment }) {
+  const startTs = Date.now();
+  const perSetStats = {
+    setLabel: set.label,
+    totalResults: 0,
+    newListings: 0,
+    duplicateListings: 0,
+    apiCallsBrowse: 0,
+    apiCallsGetItem: 0,
+  };
+
+  // 1. Search across all query variants, collect unique items
+  const seenItemIds = new Map(); // itemId -> searchItem (keep first occurrence)
+  for (const query of set.queries) {
+    console.log(`  Search: "${query}"`);
+    const { items, apiCalls } = await searchEbay(token, query);
+    perSetStats.apiCallsBrowse += apiCalls;
+    perSetStats.totalResults += items.length;
+    for (const it of items) {
+      if (it.itemId && !seenItemIds.has(it.itemId)) {
+        seenItemIds.set(it.itemId, it);
+      }
+    }
+    console.log(`    ${items.length} results (${seenItemIds.size} unique so far)`);
+    await sleep(SLEEP_MS);
+  }
+
+  const uniqueItemIds = Array.from(seenItemIds.keys());
+  if (uniqueItemIds.length === 0) {
+    console.log(`  No listings matched for ${set.label}`);
+    const runtimeSec = (Date.now() - startTs) / 1000;
+    for (const q of set.queries) {
+      await logPull({
+        setSearched: set.label, queryString: q,
+        totalResults: 0, newListings: 0, duplicateListings: 0,
+        apiCallsBrowse: 1, apiCallsGetItem: 0,
+        runtimeSeconds: runtimeSec / set.queries.length,
+        status: 'success', runEnvironment,
+      });
+    }
+    return perSetStats;
+  }
+
+  // 2. Dedupe against existing queue
+  console.log(`  Deduping ${uniqueItemIds.length} items against existing queue…`);
+  const alreadyQueued = await fetchExistingQueueItemIds(uniqueItemIds);
+  perSetStats.duplicateListings = alreadyQueued.size;
+  const newItemIds = uniqueItemIds.filter((id) => !alreadyQueued.has(id));
+  console.log(`    ${newItemIds.length} new, ${alreadyQueued.size} already in queue`);
+
+  if (newItemIds.length === 0) {
+    const runtimeSec = (Date.now() - startTs) / 1000;
+    await logPull({
+      setSearched: set.label, queryString: set.queries.join(' | '),
+      totalResults: perSetStats.totalResults,
+      newListings: 0,
+      duplicateListings: perSetStats.duplicateListings,
+      apiCallsBrowse: perSetStats.apiCallsBrowse,
+      apiCallsGetItem: 0,
+      runtimeSeconds: runtimeSec,
+      status: 'success', runEnvironment,
+    });
+    return perSetStats;
+  }
+
+  // 3. Fetch full detail via Get Item API for each new listing
+  const queueRecords = [];
+  for (const itemId of newItemIds) {
+    const { item: detail, apiCalls } = await getEbayItem(token, itemId);
+    perSetStats.apiCallsGetItem += apiCalls;
+    if (!detail) {
+      console.warn(`    Skipping ${itemId} — Get Item failed`);
+      continue;
+    }
+    const searchItem = seenItemIds.get(itemId);
+    try {
+      const rec = parseListingToQueueRecord(searchItem, detail, set.label);
+      if (rec.ebay_item_id) queueRecords.push(rec);
+    } catch (e) {
+      console.warn(`    Parse failed for ${itemId}: ${e.message}`);
+    }
+    await sleep(SLEEP_MS);
+  }
+
+  // 4. Bulk insert to Supabase
+  const { inserted, errors } = await insertQueueRecords(queueRecords);
+  perSetStats.newListings = inserted;
+  console.log(`  Inserted ${inserted} new queue records (${errors} errors)`);
+
+  // 5. Log pull row
+  const runtimeSec = (Date.now() - startTs) / 1000;
+  await logPull({
+    setSearched: set.label,
+    queryString: set.queries.join(' | '),
+    totalResults: perSetStats.totalResults,
+    newListings: inserted,
+    duplicateListings: perSetStats.duplicateListings,
+    apiCallsBrowse: perSetStats.apiCallsBrowse,
+    apiCallsGetItem: perSetStats.apiCallsGetItem,
+    runtimeSeconds: runtimeSec,
+    status: errors > 0 ? 'partial' : 'success',
+    errorMessage: errors > 0 ? `${errors} insert errors` : null,
+    runEnvironment,
+  });
+
+  return perSetStats;
+}
+
+// ─── Top-level entrypoint ───────────────────────────────────
+async function crawl({ runEnvironment }) {
+  const globalStart = Date.now();
+  console.log(`\n=== ISOSerial Crawler — ${runEnvironment} ===`);
+  console.log(`Time: ${new Date().toISOString()}`);
+
+  const token = await getEbayToken();
+  console.log('✔ eBay authenticated\n');
+
+  const totals = { totalResults: 0, newListings: 0, duplicateListings: 0, apiCallsBrowse: 0, apiCallsGetItem: 0 };
+
+  for (const set of SETS) {
+    console.log(`── ${set.label} ──`);
+    try {
+      const s = await crawlSet({ token, set, runEnvironment });
+      totals.totalResults      += s.totalResults;
+      totals.newListings       += s.newListings;
+      totals.duplicateListings += s.duplicateListings;
+      totals.apiCallsBrowse    += s.apiCallsBrowse;
+      totals.apiCallsGetItem   += s.apiCallsGetItem;
+    } catch (e) {
+      console.error(`  ${set.label} crawl failed: ${e.message}`);
+      const runtimeSec = (Date.now() - globalStart) / 1000;
+      await logPull({
+        setSearched: set.label, queryString: set.queries.join(' | '),
+        totalResults: 0, newListings: 0, duplicateListings: 0,
+        apiCallsBrowse: 0, apiCallsGetItem: 0,
+        runtimeSeconds: runtimeSec,
+        status: 'error', errorMessage: e.message,
+        runEnvironment,
+      });
+    }
+    console.log('');
+  }
+
+  const totalRuntime = ((Date.now() - globalStart) / 1000).toFixed(1);
+  console.log('=== DONE ===');
+  console.log(`Runtime: ${totalRuntime}s`);
+  console.log(`Results seen: ${totals.totalResults} | New: ${totals.newListings} | Dupes: ${totals.duplicateListings}`);
+  console.log(`API calls — Browse: ${totals.apiCallsBrowse}, Get Item: ${totals.apiCallsGetItem}`);
+  console.log('');
+}
+
+module.exports = { crawl };

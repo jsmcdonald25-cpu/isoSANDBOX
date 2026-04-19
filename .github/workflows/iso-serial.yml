@@ -1,0 +1,44 @@
+name: ISOSerial Crawler
+
+# Every 30 minutes on a private repo — stays comfortably under the 2,000
+# free Actions minutes/month cap (≈1,488 billable min/month at 1 min per run).
+#
+# GitHub's cron honors UTC and has no minimum granularity enforcement beyond 5 min.
+# The scheduler also drifts under load, so actual run-to-run gap can be 30–45 min.
+# That's fine — /5 cards don't flip every 10 minutes.
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch: {}      # allow manual trigger from the Actions tab
+
+concurrency:
+  # Skip a run if the previous run is still going. Prevents overlap if a bootstrap
+  # surge causes a run to take longer than 30 min.
+  group: iso-serial-crawler
+  cancel-in-progress: false
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10      # hard cap — we expect <1 min in steady state
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install deps (dotenv only)
+        run: npm ci --omit=dev || npm install --omit=dev
+
+      - name: Run ISOSerial crawler
+        env:
+          EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
+          EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node iso-serial/runner.js

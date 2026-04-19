@@ -30,17 +30,16 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE) {
 }
 
 // ─── Sets + query variants ──────────────────────────────────
-// Each set runs multiple queries to cover how sellers actually title listings.
-// "/5" is the primary tell. Sellers often drop the "autograph" word since /5 is
-// already a tiny parallel; we post-filter on the title + description to keep only
-// plausible auto listings.
+// "/5" is the primary tell. Two queries per set cover how sellers actually title
+// listings — "/5" and "#/5". We do NOT bias toward autographs, since many /5
+// numbered cards are parallels (Flip Stock, Red Chrome Refractor, Red Border)
+// rather than autos.
 const SETS = [
   {
     label: 'Series 1',
     queries: [
       '2026 Topps Series 1 /5',
       '2026 Topps Series 1 #/5',
-      '2026 Topps Series 1 auto /5',
     ],
   },
   {
@@ -48,7 +47,6 @@ const SETS = [
     queries: [
       '2026 Topps Heritage /5',
       '2026 Topps Heritage #/5',
-      '2026 Topps Heritage auto /5',
     ],
   },
 ];

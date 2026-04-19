@@ -6045,10 +6045,12 @@ function sqRender() {
       : q.status === 'tagged_existing' ? '<span style="color:var(--blue);font-weight:700">TAGGED·LINK</span>'
       : q.status === 'skipped' ? '<span style="color:var(--text3)">SKIPPED</span>'
       : q.status;
+    const ebayHref = q.ebay_url ? `href="${q.ebay_url}" target="_blank" rel="noopener" onclick="event.stopPropagation()"` : '';
+    const titleSafe = (q.title || '—').replace(/"/g, '&quot;');
     return `<tr style="cursor:pointer" onclick="sqOpenReview(${q.id})">
-      <td>${img ? `<img src="${img}" style="width:56px;height:56px;object-fit:cover;border-radius:4px" loading="lazy">` : '<div style="width:56px;height:56px;background:var(--surface2);border-radius:4px"></div>'}</td>
+      <td>${img && q.ebay_url ? `<a ${ebayHref} title="Open eBay listing in new tab"><img src="${img}" style="width:56px;height:56px;object-fit:cover;border-radius:4px;display:block" loading="lazy"></a>` : (img ? `<img src="${img}" style="width:56px;height:56px;object-fit:cover;border-radius:4px" loading="lazy">` : '<div style="width:56px;height:56px;background:var(--surface2);border-radius:4px"></div>')}</td>
       <td style="font-size:11px;font-weight:600;color:var(--purple)">${q.set_name_guess || '—'}</td>
-      <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px">${q.title || '—'}</td>
+      <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px">${q.ebay_url ? `<a ${ebayHref} style="color:var(--text);text-decoration:none" title="${titleSafe}">${q.title || '—'} <span style="color:var(--blue);font-size:10px">↗</span></a>` : (q.title || '—')}</td>
       <td style="font-weight:700;color:var(--green)">$${(q.price_usd || 0).toFixed(2)}</td>
       <td style="font-size:11px">${q.seller_username || '—'}</td>
       <td style="font-size:11px;color:var(--text2)">${loc}</td>

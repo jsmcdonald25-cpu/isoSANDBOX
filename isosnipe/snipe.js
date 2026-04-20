@@ -17,6 +17,10 @@ const CONFIG = {
   MAX_BUY: 150,     // pull wide, filter in dashboard
   EBAY_CLIENT_ID: process.env.EBAY_CLIENT_ID,
   EBAY_CLIENT_SECRET: process.env.EBAY_CLIENT_SECRET,
+  SUPABASE_URL: process.env.SUPABASE_URL || 'https://jyfaegmnzkarlcximxjo.supabase.co',
+  SUPABASE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY,
+  DETAIL_CONCURRENCY: 5,        // parallel getItem calls
+  MAX_DETAIL_FETCHES: 600,      // safety cap (eBay limit is 5000/day)
 };
 
 // ─── TARGET CARDS BY SPECIFIC CARD + PARALLEL ───────────
@@ -243,6 +247,11 @@ function processResults(items, target, isMisspelling) {
     const isBIN = item.buyingOptions?.includes('FIXED_PRICE');
     const delta = ((target.marketAvg - price) / target.marketAvg) * 100;
 
+    // Capture stable eBay item id (legacy = pure numeric "12345…")
+    const legacyId = item.legacyItemId
+      || (item.itemId && String(item.itemId).split('|')[1])
+      || null;
+
     hits.push({
       player: target.player,
       card: target.card,
@@ -253,10 +262,17 @@ function processResults(items, target, isMisspelling) {
       delta: parseFloat(delta.toFixed(1)),
       type: isBIN ? 'BIN' : 'AUCTION',
       url: item.itemWebUrl,
+      itemId: legacyId,                   // bare numeric — used as block key
+      itemIdRaw: item.itemId || null,     // full "v1|123|0" form for getItem call
       image: item.thumbnailImages?.[0]?.imageUrl || item.image?.imageUrl || '',
       condition: item.condition || 'Unknown',
+      seller: item.seller?.username || null,
       isMisspelling: isMisspelling,
       searchType: isMisspelling ? 'SNIPE' : 'MARKET',
+      // Filled in step 5 (detail fetch)
+      shortDescription: null,
+      description: null,
+      itemSpecifics: null,
     });
   }
   return hits;
@@ -264,6 +280,83 @@ function processResults(items, target, isMisspelling) {
 
 // ─── RATE LIMIT ─────────────────────────────────────────
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+// ─── REJECTED ITEM# BLOCKLIST (Supabase) ────────────────
+async function fetchRejectedItemIds() {
+  if (!CONFIG.SUPABASE_KEY) {
+    console.log('  [skip] No SUPABASE key — rejection blocklist not loaded');
+    return new Set();
+  }
+  try {
+    const url = `${CONFIG.SUPABASE_URL}/rest/v1/isosnipe_rejections?select=ebay_item_id`;
+    const res = await fetch(url, {
+      headers: {
+        'apikey': CONFIG.SUPABASE_KEY,
+        'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}`,
+      },
+    });
+    if (!res.ok) {
+      console.log(`  [warn] Rejection fetch ${res.status} — skipping blocklist`);
+      return new Set();
+    }
+    const rows = await res.json();
+    return new Set(rows.map(r => String(r.ebay_item_id)));
+  } catch (e) {
+    console.log(`  [warn] Rejection fetch failed: ${e.message}`);
+    return new Set();
+  }
+}
+
+// ─── EBAY GET ITEM (full description + item specifics) ──
+async function getItemDetails(token, itemIdRaw) {
+  if (!itemIdRaw) return null;
+  // eBay expects URL-encoded itemId; itemId already includes "v1|123|0"
+  const url = `https://api.ebay.com/buy/browse/v1/item/${encodeURIComponent(itemIdRaw)}`;
+  try {
+    const res = await fetch(url, {
+      headers: { 'Authorization': `Bearer ${token}`, 'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US' },
+    });
+    if (!res.ok) return null;
+    const d = await res.json();
+    // Strip HTML tags from description and clamp to 4k chars to keep JSON small
+    const stripHtml = s => (s || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 4000);
+    const aspects = {};
+    (d.localizedAspects || []).forEach(a => {
+      if (a.name && a.value) aspects[a.name] = a.value;
+    });
+    return {
+      shortDescription: d.shortDescription || null,
+      description: stripHtml(d.description),
+      itemSpecifics: aspects,
+    };
+  } catch (e) {
+    return null;
+  }
+}
+
+// ─── PARALLEL DETAIL FETCH ──────────────────────────────
+async function fetchAllDetails(token, hits, concurrency) {
+  let done = 0;
+  let i = 0;
+  async function worker() {
+    while (i < hits.length) {
+      const idx = i++;
+      const h = hits[idx];
+      const det = await getItemDetails(token, h.itemIdRaw);
+      if (det) {
+        h.shortDescription = det.shortDescription;
+        h.description = det.description;
+        h.itemSpecifics = det.itemSpecifics;
+      }
+      done++;
+      if (done % 25 === 0) process.stdout.write(`  [details] ${done}/${hits.length}\n`);
+      // small delay so we don't hammer eBay
+      await sleep(120);
+    }
+  }
+  await Promise.all(Array.from({ length: concurrency }, worker));
+  console.log(`  [details] ${done}/${hits.length} ✔`);
+}
 
 // ─── MAIN ───────────────────────────────────────────────
 async function run() {
@@ -274,6 +367,12 @@ async function run() {
   let token;
   try { token = await getEbayToken(); console.log('✔ eBay authenticated\n'); }
   catch (e) { console.error('✘', e.message); process.exit(1); }
+
+  // Pull the rejected item# blocklist BEFORE we start scanning so we can
+  // drop hits early and avoid wasting getItem calls on known bad listings.
+  console.log('Fetching rejected item# blocklist…');
+  const rejectedIds = await fetchRejectedItemIds();
+  console.log(`  ${rejectedIds.size} item#s blocked (permanent reject list)\n`);
 
   const allHits = [];
   let searchCount = 0;
@@ -343,16 +442,36 @@ async function run() {
     console.log('');
   }
 
-  // Dedupe by URL
+  // Dedupe by itemId (preferred) or URL (fallback for items missing itemId)
   const seen = new Set();
-  const unique = allHits.filter(h => { if (seen.has(h.url)) return false; seen.add(h.url); return true; });
+  let unique = allHits.filter(h => {
+    const key = h.itemId || h.url;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  // Drop permanently-rejected item#s (Layer 1 block — exact match)
+  const beforeBlock = unique.length;
+  unique = unique.filter(h => !(h.itemId && rejectedIds.has(String(h.itemId))));
+  const blockedCount = beforeBlock - unique.length;
+  if (blockedCount > 0) console.log(`  [block] dropped ${blockedCount} rejected item#s`);
+
+  // Fetch full description + item specifics for survivors (cap to MAX_DETAIL_FETCHES)
+  const detailTargets = unique.slice(0, CONFIG.MAX_DETAIL_FETCHES).filter(h => h.itemIdRaw);
+  if (detailTargets.length > 0) {
+    console.log(`\nFetching descriptions for ${detailTargets.length} survivors (concurrency ${CONFIG.DETAIL_CONCURRENCY})…`);
+    await fetchAllDetails(token, detailTargets, CONFIG.DETAIL_CONCURRENCY);
+  }
+
   unique.sort((a, b) => b.delta - a.delta);
 
   const snipes = unique.filter(h => h.isMisspelling);
   const market = unique.filter(h => !h.isMisspelling);
 
-  console.log(`=== RESULTS ===`);
+  console.log(`\n=== RESULTS ===`);
   console.log(`Searches: ${searchCount} | Total hits: ${unique.length} | Snipes: ${snipes.length} | Market: ${market.length}`);
+  console.log(`Detail-enriched: ${detailTargets.length} | Blocked item#s: ${rejectedIds.size}`);
 
   if (snipes.length > 0) {
     console.log(`\n🔥 TOP 10 SNIPES:`);

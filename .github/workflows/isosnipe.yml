@@ -1,0 +1,60 @@
+name: ISOsnipe Scan
+
+# Twice daily — 5am + 5pm CDT (UTC-5 during DST, Mar-Nov).
+# When DST ends, swap cron to '0 11,23 * * *' to keep local 5am/5pm.
+# GitHub cron drifts 5-30 min under load — that's fine for daily snipes.
+#
+# Manual trigger always available via the Actions tab → workflow_dispatch.
+
+on:
+  schedule:
+    - cron: '0 10,22 * * *'
+  workflow_dispatch: {}
+
+concurrency:
+  # Skip overlap if a scan is still running when the next cron fires.
+  group: isosnipe-scan
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25      # detail-fetch step can take ~10 min for 600 items
+
+    permissions:
+      contents: write        # needed to commit results JSON back to repo
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install deps
+        run: npm ci --omit=dev || npm install --omit=dev
+
+      - name: Run snipe scan
+        env:
+          EBAY_CLIENT_ID:            ${{ secrets.EBAY_CLIENT_ID }}
+          EBAY_CLIENT_SECRET:        ${{ secrets.EBAY_CLIENT_SECRET }}
+          SUPABASE_URL:              ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node isosnipe/snipe.js
+
+      - name: Build standalone dashboard
+        run: node isosnipe/build-dashboard.js
+
+      - name: Commit results
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add isosnipe/results/snipe-latest.json isosnipe/isosnipe-live.html
+          if git diff --cached --quiet; then
+            echo "No data changes — skipping commit."
+          else
+            git commit -m "ISOsnipe scan: $(date -u +'%Y-%m-%dT%H:%MZ')"
+            git push
+          fi

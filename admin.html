@@ -7456,25 +7456,26 @@ async function snConfirmReject(){
 }
 
 // ─── AI ANALYZE ───────────────────────────────────────────
+// Analysis runs automatically during each scan (GitHub Actions, 5am+5pm CDT)
+// and writes the result to isosnipe/ai-analysis-latest.json. This button just
+// reloads that static file — no live Claude call, no Netlify env vars needed.
 async function snAnalyzeAi(){
   const btn = document.getElementById('snAiRunBtn');
   const meta = document.getElementById('snAiMeta');
-  btn.disabled = true; btn.textContent = 'Analyzing…';
-  meta.textContent = 'Sending rejections to Claude Haiku…';
+  btn.disabled = true; btn.textContent = 'Loading…';
+  meta.textContent = 'Loading latest AI analysis…';
   try {
-    const res = await fetch('/.netlify/functions/isosnipe-analyze', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (_token || '') },
-    });
-    if (!res.ok) throw new Error(await res.text());
+    // Cache-bust so we always pull the newest JSON, never the SW cache.
+    const res = await fetch('/isosnipe/ai-analysis-latest.json?t=' + Date.now());
+    if (!res.ok) throw new Error('No analysis file yet — wait for the next scan cycle (5am / 5pm CDT).');
     const d = await res.json();
     snRenderAi(d);
-    toast('AI analysis complete', 'success');
+    toast('AI analysis loaded', 'success');
   } catch(e) {
-    toast('AI analyze failed: ' + e.message, 'error');
-    meta.textContent = 'Last attempt failed: ' + e.message.slice(0,120);
+    toast('AI load failed: ' + e.message, 'error');
+    meta.textContent = 'Last attempt failed: ' + e.message.slice(0,160);
   } finally {
-    btn.disabled = false; btn.textContent = '↻ Re-analyze';
+    btn.disabled = false; btn.textContent = '↻ Reload analysis';
   }
 }
 
@@ -7872,25 +7873,24 @@ let _sqSortField = 'crawled_at'; // default sort
 let _sqSortDir = -1;             // -1 desc, 1 asc
 
 // ── Serial Queue AI Learn ─────────────────────────────────
+// Runs automatically in iso-serial.yml workflow (every 30 min) and writes
+// isosnipe/queue-ai-analysis-latest.json. Button just reloads the static file.
 async function sqAnalyzeAi() {
   const btn = document.getElementById('sqAiRunBtn');
   const meta = document.getElementById('sqAiMeta');
-  btn.disabled = true; btn.textContent = 'Analyzing…';
-  meta.textContent = 'Sending queue to Claude Haiku…';
+  btn.disabled = true; btn.textContent = 'Loading…';
+  meta.textContent = 'Loading latest queue analysis…';
   try {
-    const res = await fetch('/.netlify/functions/iso-serial-analyze', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (_token || '') },
-    });
-    if (!res.ok) throw new Error(await res.text());
+    const res = await fetch('/isosnipe/queue-ai-analysis-latest.json?t=' + Date.now());
+    if (!res.ok) throw new Error('No analysis file yet — wait for the next crawler tick (~30 min).');
     const d = await res.json();
     sqRenderAi(d);
-    toast('AI analysis complete', 'success');
+    toast('AI analysis loaded', 'success');
   } catch (e) {
-    toast('AI analyze failed: ' + e.message, 'error');
-    meta.textContent = 'Last attempt failed: ' + (e.message || '').slice(0, 120);
+    toast('AI load failed: ' + e.message, 'error');
+    meta.textContent = 'Last attempt failed: ' + (e.message || '').slice(0, 160);
   } finally {
-    btn.disabled = false; btn.textContent = '↻ Re-analyze';
+    btn.disabled = false; btn.textContent = '↻ Reload analysis';
   }
 }
 

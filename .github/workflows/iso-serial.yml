@@ -43,3 +43,23 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: node iso-serial/runner.js
+
+      - name: Run queue AI analysis
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node isosnipe/analyze-queue.js
+        continue-on-error: true
+
+      - name: Commit AI analysis
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add isosnipe/queue-ai-analysis-latest.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "No AI changes — skipping commit."
+          else
+            git commit -m "Queue AI analysis: $(date -u +'%Y-%m-%dT%H:%MZ')"
+            git push
+          fi

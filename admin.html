@@ -2459,6 +2459,22 @@ tr:hover td { background: var(--bg); }
         <button id="sqRunCrawlBtn" onclick="sqRunCrawl()" style="background:var(--purple);color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap">▶ Run crawl now</button>
       </div>
 
+      <!-- ───── AI LEARN PANEL (Serial Queue) ───── -->
+      <div id="sqAiSection" style="background:var(--surface);border:1px solid var(--purple);border-radius:var(--radius);margin-bottom:16px;overflow:hidden">
+        <div style="background:linear-gradient(135deg,var(--purple-light),#fff);padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+          <div>
+            <div style="font-size:14px;font-weight:800;color:var(--purple)">🤖 AI Learn · Pattern Analysis</div>
+            <div id="sqAiMeta" style="font-size:11px;color:var(--text3);margin-top:2px">No analysis yet — click "Analyze queue" to feed Claude Haiku 4.5</div>
+          </div>
+          <button onclick="sqAnalyzeAi()" id="sqAiRunBtn" style="background:var(--purple);color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:700;font-size:12px;cursor:pointer">↻ Analyze queue</button>
+        </div>
+        <div id="sqAiBody" style="padding:16px 18px;display:none">
+          <div id="sqAiBlock" style="margin-bottom:16px"></div>
+          <div id="sqAiInsights" style="margin-bottom:8px"></div>
+          <div id="sqAiBreakdown" style="border-top:1px solid var(--border);padding-top:12px;margin-top:4px"></div>
+        </div>
+      </div>
+
       <!-- Queue table -->
       <div class="table-wrap">
         <table>
@@ -7857,6 +7873,55 @@ let _sqCurrentImages = [];   // images for the lightbox to step through
 let _sqLightboxIndex = 0;
 let _sqSortField = 'crawled_at'; // default sort
 let _sqSortDir = -1;             // -1 desc, 1 asc
+
+// ── Serial Queue AI Learn ─────────────────────────────────
+async function sqAnalyzeAi() {
+  const btn = document.getElementById('sqAiRunBtn');
+  const meta = document.getElementById('sqAiMeta');
+  btn.disabled = true; btn.textContent = 'Analyzing…';
+  meta.textContent = 'Sending queue to Claude Haiku…';
+  try {
+    const res = await fetch('/.netlify/functions/iso-serial-analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (_token || '') },
+    });
+    if (!res.ok) throw new Error(await res.text());
+    const d = await res.json();
+    sqRenderAi(d);
+    toast('AI analysis complete', 'success');
+  } catch (e) {
+    toast('AI analyze failed: ' + e.message, 'error');
+    meta.textContent = 'Last attempt failed: ' + (e.message || '').slice(0, 120);
+  } finally {
+    btn.disabled = false; btn.textContent = '↻ Re-analyze';
+  }
+}
+
+function sqRenderAi(d) {
+  const m = d._meta || {};
+  document.getElementById('sqAiMeta').textContent =
+    `${m.skipped_analyzed||0} skipped + ${m.tagged_analyzed||0} tagged analyzed · ${m.model||''} · ${m.analyzed_at ? new Date(m.analyzed_at).toLocaleString() : ''}`;
+  document.getElementById('sqAiBody').style.display = 'block';
+
+  document.getElementById('sqAiBlock').innerHTML = `
+    <div style="font-size:10px;font-weight:700;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">🚫 Crawler filter suggestions (click to add to blocklist)</div>
+    ${(d.blocklist_terms||[]).map(t => `<span style="display:inline-block;background:var(--red-light);color:var(--red);font-size:11px;font-weight:600;padding:4px 10px;border-radius:12px;margin:2px 4px 2px 0;border:1px solid var(--red)">${t}</span>`).join('') || '<span style="color:var(--text3);font-size:11px">None suggested.</span>'}
+  `;
+
+  document.getElementById('sqAiInsights').innerHTML = `
+    <div style="font-size:10px;font-weight:700;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">💡 Pattern insights</div>
+    ${(d.insights||[]).map(s => `<div style="background:var(--purple-light);border-left:3px solid var(--purple);padding:10px 14px;border-radius:4px;font-size:12px;line-height:1.5;margin-bottom:8px">${s}</div>`).join('') || '<span style="color:var(--text3);font-size:11px">No insights yet.</span>'}
+  `;
+
+  const br = d.skip_breakdown || {};
+  const brEntries = Object.entries(br).sort((a,b) => b[1] - a[1]);
+  document.getElementById('sqAiBreakdown').innerHTML = `
+    <div style="font-size:10px;font-weight:700;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">📊 Skip breakdown</div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--text2)">
+      ${brEntries.map(([k,v]) => `<span>${k.replace(/_/g,' ')} <b style="color:var(--text)">${v}</b></span>`).join('') || '<span style="color:var(--text3)">No breakdown.</span>'}
+    </div>
+  `;
+}
 
 // Manually trigger the iso-serial crawler via GitHub workflow_dispatch.
 async function sqRunCrawl() {

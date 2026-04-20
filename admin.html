@@ -569,6 +569,11 @@ tr:hover td { background: var(--bg); }
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
       User Manager
     </div>
+    <div class="nav-item" onclick="nav('userwatch',this);loadUserWatch()" style="color:var(--yellow)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      User Watch
+      <span id="userwatch-nav-badge" style="margin-left:auto;background:var(--yellow);color:#000;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;display:none">0</span>
+    </div>
     <div class="nav-item" onclick="nav('alpha',this);loadAlphaSignups()">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
       Alpha Testers
@@ -1162,6 +1167,132 @@ tr:hover td { background: var(--bg); }
             </tr></thead>
             <tbody id="users-tbody"></tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ── USER WATCH (admin-only behavioral flags) ── -->
+    <div class="panel" id="panel-userwatch">
+      <div class="panel-header">
+        <div class="panel-eyebrow" style="color:var(--yellow)">Users (private)</div>
+        <div class="panel-title">User Watch</div>
+        <div class="panel-sub">Admin-only behavioral flag log. Tags <em>actions</em>, not people. Enum categories only, no free-text labels. Flags auto-expire after 90 days. Not exposed to users or the AI surfaces seen by users.</div>
+      </div>
+
+      <div style="background:var(--surface2);border:1px solid rgba(255,193,7,0.25);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;font-size:12px;color:var(--text2);line-height:1.5">
+        <strong style="color:var(--yellow)">Ground rules:</strong>
+        We flag observable behaviors (catalog mismatches, price variance, duplicate submissions), never character judgments.
+        No free-text notes. No address/phone. Location snapshot optional.
+        Every add/resolve is logged to the admin action log.
+      </div>
+
+      <div class="search-bar">
+        <input class="input" id="uwf-search" placeholder="Search by username or location…" oninput="uwfFilter()">
+        <select class="input" id="uwf-category-filter" onchange="uwfFilter()" style="max-width:220px">
+          <option value="">All categories</option>
+          <option value="catalog_error">Catalog Error</option>
+          <option value="price_variance">Price Variance</option>
+          <option value="duplicate_submission">Duplicate Submission</option>
+          <option value="provenance_mismatch">Provenance Mismatch</option>
+          <option value="incomplete_info">Incomplete Info</option>
+          <option value="pattern_deviation">Pattern Deviation</option>
+          <option value="manual_review_required">Manual Review</option>
+        </select>
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);white-space:nowrap">
+          <input type="checkbox" id="uwf-show-resolved" onchange="uwfFilter()"> Show resolved
+        </label>
+        <button class="btn btn-ghost" onclick="loadUserWatch()">↻ Refresh</button>
+      </div>
+
+      <div class="card">
+        <div class="loading" id="uwf-loading">Loading flags…</div>
+        <div class="table-wrap" id="uwf-table-wrap" style="display:none">
+          <table>
+            <thead><tr>
+              <th>User</th>
+              <th>Location</th>
+              <th>Category</th>
+              <th>Severity</th>
+              <th>Count</th>
+              <th>First / Last</th>
+              <th>Expires</th>
+              <th>Actions</th>
+            </tr></thead>
+            <tbody id="uwf-tbody"></tbody>
+          </table>
+        </div>
+        <div id="uwf-empty" style="display:none;padding:32px;text-align:center;color:var(--text3);font-size:13px">
+          No active flags. Use the <strong>Flag User</strong> button in User Manager to add one.
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ── USER WATCH: Add Flag modal ── -->
+    <div id="uwf-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:1000;align-items:center;justify-content:center">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;width:min(480px,92vw);max-height:90vh;overflow:auto">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div>
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--yellow);font-weight:700">User Watch</div>
+            <div style="font-size:18px;font-weight:700">Add Behavioral Flag</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="uwfCloseModal()">✕</button>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div>
+            <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">User</label>
+            <div id="uwf-modal-user" style="padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);font-size:13px">—</div>
+          </div>
+
+          <div>
+            <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Category</label>
+            <select class="input" id="uwf-modal-category">
+              <option value="catalog_error">Catalog Error — submitted info doesn't match source</option>
+              <option value="price_variance">Price Variance — price off market by &gt;75%</option>
+              <option value="duplicate_submission">Duplicate Submission — same card flagged twice</option>
+              <option value="provenance_mismatch">Provenance Mismatch — serial/print run conflict</option>
+              <option value="incomplete_info">Incomplete Info — missing required fields</option>
+              <option value="pattern_deviation">Pattern Deviation — behavior outside normal range</option>
+              <option value="manual_review_required">Manual Review Required</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Severity</label>
+            <div style="display:flex;gap:8px">
+              <label style="flex:1;display:flex;align-items:center;gap:6px;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:12px">
+                <input type="radio" name="uwf-sev" value="low" checked> Low
+              </label>
+              <label style="flex:1;display:flex;align-items:center;gap:6px;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:12px">
+                <input type="radio" name="uwf-sev" value="medium"> Medium
+              </label>
+              <label style="flex:1;display:flex;align-items:center;gap:6px;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:12px">
+                <input type="radio" name="uwf-sev" value="high"> High
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Location snapshot (optional — city/state only, NEVER address or phone)</label>
+            <input class="input" id="uwf-modal-location" placeholder="e.g. Nashville, TN" maxlength="60">
+          </div>
+
+          <div>
+            <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Auto-expire</label>
+            <select class="input" id="uwf-modal-expiry">
+              <option value="30">30 days</option>
+              <option value="60">60 days</option>
+              <option value="90" selected>90 days</option>
+              <option value="180">180 days</option>
+            </select>
+          </div>
+
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+            <button class="btn btn-ghost" onclick="uwfCloseModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="uwfSubmitFlag()">Save Flag</button>
+          </div>
         </div>
       </div>
     </div>
@@ -3313,6 +3444,7 @@ function renderUsers(rows) {
             : `<button class="btn btn-sm btn-success" onclick="setAdmin('${u.id}',true)">Make Admin</button>`}
           <button class="btn btn-sm" onclick="openGiveCredits('${u.id}','${(u.username||u.id.slice(0,8)).replace(/'/g,"\\'")}');" style="font-size:10px;background:var(--yellow-light);color:var(--yellow);border:1px solid var(--yellow)">+ Credits</button>
           <button class="btn btn-sm btn-ghost" onclick="viewCreditEvents('${u.id}','${u.username||u.id.slice(0,8)}')" style="font-size:10px">History</button>
+          <button class="btn btn-sm" onclick="uwfOpenModal('${u.id}','${(u.username||'').replace(/'/g,"\\'")}','')" style="font-size:10px;background:rgba(255,193,7,0.12);color:var(--yellow);border:1px solid var(--yellow)" title="Add behavioral flag (admin-only)">⚑ Flag</button>
         </div>
       </td>
     </tr>`;
@@ -3337,6 +3469,188 @@ async function setAdmin(userId, isAdmin) {
   } catch(e) { toast('Error: ' + e.message, 'error'); }
 }
 
+// ── USER WATCH (admin-only behavioral flag log) ──
+const UWF_CATEGORIES = {
+  catalog_error:           { label: 'Catalog Error',         color: 'var(--blue)'   },
+  price_variance:          { label: 'Price Variance',        color: 'var(--purple)' },
+  duplicate_submission:    { label: 'Duplicate Submission',  color: 'var(--yellow)' },
+  provenance_mismatch:     { label: 'Provenance Mismatch',   color: 'var(--red)'    },
+  incomplete_info:         { label: 'Incomplete Info',       color: 'var(--gray)'   },
+  pattern_deviation:       { label: 'Pattern Deviation',     color: 'var(--orange)' },
+  manual_review_required:  { label: 'Manual Review',         color: 'var(--green)'  }
+};
+const UWF_SEV_COLORS = { low: 'var(--text3)', medium: 'var(--yellow)', high: 'var(--red)' };
+
+let _allWatchFlags = [];
+let _uwfModalUser  = null;
+
+async function loadUserWatch() {
+  document.getElementById('uwf-loading').style.display = 'block';
+  document.getElementById('uwf-table-wrap').style.display = 'none';
+  document.getElementById('uwf-empty').style.display = 'none';
+  try {
+    const rows = await _get('user_watch_flags', 'select=*&order=last_flagged_at.desc&limit=500');
+    _allWatchFlags = rows || [];
+    const activeCount = _allWatchFlags.filter(f => !f.resolved).length;
+    const badge = document.getElementById('userwatch-nav-badge');
+    if (badge) {
+      badge.textContent = activeCount;
+      badge.style.display = activeCount > 0 ? 'inline-block' : 'none';
+    }
+    uwfFilter();
+  } catch(e) {
+    document.getElementById('uwf-loading').style.display = 'none';
+    toast('Failed to load watch flags: ' + e.message, 'error');
+  }
+}
+
+function uwfFilter() {
+  const q = (document.getElementById('uwf-search').value || '').toLowerCase();
+  const cat = document.getElementById('uwf-category-filter').value;
+  const showResolved = document.getElementById('uwf-show-resolved').checked;
+  let rows = _allWatchFlags;
+  if (!showResolved) rows = rows.filter(f => !f.resolved);
+  if (cat)           rows = rows.filter(f => f.category === cat);
+  if (q)             rows = rows.filter(f =>
+                       (f.username||'').toLowerCase().includes(q) ||
+                       (f.location||'').toLowerCase().includes(q));
+  uwfRender(rows);
+}
+
+function uwfRender(rows) {
+  document.getElementById('uwf-loading').style.display = 'none';
+  const wrap  = document.getElementById('uwf-table-wrap');
+  const empty = document.getElementById('uwf-empty');
+  const tbody = document.getElementById('uwf-tbody');
+  if (!rows.length) {
+    wrap.style.display = 'none';
+    empty.style.display = 'block';
+    tbody.innerHTML = '';
+    return;
+  }
+  wrap.style.display = 'block';
+  empty.style.display = 'none';
+  tbody.innerHTML = rows.map(f => {
+    const cat  = UWF_CATEGORIES[f.category] || { label: f.category, color: 'var(--gray)' };
+    const sev  = UWF_SEV_COLORS[f.severity] || 'var(--text3)';
+    const first = f.first_flagged_at ? new Date(f.first_flagged_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '—';
+    const last  = f.last_flagged_at  ? new Date(f.last_flagged_at ).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '—';
+    const exp   = f.expires_at ? new Date(f.expires_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+    const resolved = f.resolved;
+    return `<tr style="${resolved?'opacity:0.5':''}">
+      <td>
+        <div style="font-size:13px;font-weight:600">${(f.username||'—').replace(/</g,'&lt;')}</div>
+        <div style="font-size:10px;color:var(--text3);font-family:var(--font)">${(f.user_id||'').slice(0,8)}…</div>
+      </td>
+      <td style="font-size:12px;color:var(--text2)">${f.location ? f.location.replace(/</g,'&lt;') : '—'}</td>
+      <td><span class="badge" style="background:${cat.color};color:#fff">${cat.label}</span></td>
+      <td><span style="font-size:11px;font-weight:700;text-transform:uppercase;color:${sev}">${f.severity}</span></td>
+      <td style="font-size:12px;font-weight:600">${f.count}</td>
+      <td style="font-size:11px;color:var(--text2)">${first} → ${last}</td>
+      <td style="font-size:11px;color:var(--text2)">${exp}</td>
+      <td>
+        <div style="display:flex;gap:4px">
+          ${resolved
+            ? '<span class="badge badge-gray">Resolved</span>'
+            : `<button class="btn btn-sm" onclick="uwfIncrement('${f.id}')" style="font-size:10px">+1</button>
+               <button class="btn btn-sm btn-success" onclick="uwfResolve('${f.id}')" style="font-size:10px">Resolve</button>`}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function uwfOpenModal(userId, username, location) {
+  _uwfModalUser = { id: userId, username: username || '', location: location || '' };
+  document.getElementById('uwf-modal-user').textContent = username ? '@' + username : userId.slice(0,8) + '…';
+  document.getElementById('uwf-modal-category').value = 'catalog_error';
+  document.getElementById('uwf-modal-location').value = location || '';
+  document.getElementById('uwf-modal-expiry').value = '90';
+  document.querySelectorAll('input[name="uwf-sev"]').forEach(r => { r.checked = (r.value === 'low'); });
+  document.getElementById('uwf-modal').style.display = 'flex';
+}
+
+function uwfCloseModal() {
+  document.getElementById('uwf-modal').style.display = 'none';
+  _uwfModalUser = null;
+}
+
+async function uwfSubmitFlag() {
+  if (!_uwfModalUser) return;
+  const category = document.getElementById('uwf-modal-category').value;
+  const severity = document.querySelector('input[name="uwf-sev"]:checked')?.value || 'low';
+  const locInput = document.getElementById('uwf-modal-location').value.trim();
+  const days     = parseInt(document.getElementById('uwf-modal-expiry').value || '90', 10);
+  const expiresAt = new Date(Date.now() + days*24*60*60*1000).toISOString();
+  const now = new Date().toISOString();
+
+  // Upsert-style: if an active flag with same (user, category) exists, increment count
+  const existing = _allWatchFlags.find(f => f.user_id === _uwfModalUser.id && f.category === category && !f.resolved);
+  try {
+    if (existing) {
+      await _patch('user_watch_flags', `id=eq.${existing.id}`, {
+        count: (existing.count || 1) + 1,
+        severity,
+        last_flagged_at: now,
+        expires_at: expiresAt,
+        location: locInput || existing.location || null
+      });
+      await logAdminAction('user_watch_increment', 'user_watch_flags', null, _uwfModalUser.username, existing, { category, severity, count: (existing.count||1)+1 }, `category=${category}`);
+      toast('✓ Flag incremented', 'success');
+    } else {
+      await _post('user_watch_flags', {
+        user_id: _uwfModalUser.id,
+        username: _uwfModalUser.username || '',
+        location: locInput || null,
+        category,
+        severity,
+        count: 1,
+        first_flagged_at: now,
+        last_flagged_at: now,
+        expires_at: expiresAt,
+        resolved: false,
+        created_by: _adminUser?.id || null,
+        created_at: now
+      });
+      await logAdminAction('user_watch_add', 'user_watch_flags', null, _uwfModalUser.username, null, { category, severity }, `category=${category}`);
+      toast('✓ Flag saved', 'success');
+    }
+    uwfCloseModal();
+    loadUserWatch();
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+async function uwfIncrement(flagId) {
+  const f = _allWatchFlags.find(x => x.id === flagId);
+  if (!f) return;
+  const now = new Date().toISOString();
+  try {
+    await _patch('user_watch_flags', `id=eq.${flagId}`, {
+      count: (f.count||1) + 1,
+      last_flagged_at: now
+    });
+    await logAdminAction('user_watch_increment', 'user_watch_flags', null, f.username, f, { count: (f.count||1)+1 }, `category=${f.category}`);
+    toast('✓ +1', 'success');
+    loadUserWatch();
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+async function uwfResolve(flagId) {
+  const f = _allWatchFlags.find(x => x.id === flagId);
+  if (!f) return;
+  if (!confirm('Mark this flag resolved? The AI will treat the user as clean from here.')) return;
+  try {
+    await _patch('user_watch_flags', `id=eq.${flagId}`, {
+      resolved: true,
+      resolved_at: new Date().toISOString(),
+      resolved_by: _adminUser?.id || null
+    });
+    await logAdminAction('user_watch_resolve', 'user_watch_flags', null, f.username, f, { resolved: true }, `category=${f.category}`);
+    toast('✓ Flag resolved', 'success');
+    loadUserWatch();
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', () => {
   // Wire up panel nav to also load data
@@ -3350,7 +3664,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (orig && orig.includes("'market'"))   el.addEventListener('click', () => { loadMarket(); });
     if (orig && orig.includes("'isos'"))     el.addEventListener('click', () => { loadIsos(); });
     if (orig && orig.includes("'credits'"))  el.addEventListener('click', () => { loadCreditEvents(); });
+    if (orig && orig.includes("'userwatch'")) el.addEventListener('click', () => { loadUserWatch(); });
   });
+  // Warm the userwatch badge on load
+  try { loadUserWatch(); } catch(e) {}
 });
 // ── MESSAGE CENTER ──
 let _allReports    = [];

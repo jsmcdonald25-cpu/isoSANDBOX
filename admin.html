@@ -2502,6 +2502,48 @@ async function gateLogin() {
 
 document.getElementById('gatePass').addEventListener('keydown', e => { if (e.key==='Enter') gateLogin(); });
 
+// Restore session on reload (Supabase persists in localStorage) so users don't
+// get logged out every refresh — especially important in the installed PWA.
+async function _tryRestoreSession() {
+  try {
+    const { data: { session } } = await _sb.auth.getSession();
+    if (!session || !session.user) return false;
+    const profiles = await _get('profiles', `id=eq.${session.user.id}&select=username,role,is_admin&limit=1`);
+    const p = profiles && profiles[0];
+    if (!p || (p.role !== 'owner' && p.is_admin !== true)) {
+      await _sb.auth.signOut();
+      return false;
+    }
+    _token = session.access_token;
+    _adminUser = { ...session.user, ...p };
+    try {
+      const provRows = await _get('profiles', `id=eq.${session.user.id}&select=is_provenance_admin&limit=1`);
+      _adminUser.is_provenance_admin = provRows?.[0]?.is_provenance_admin === true;
+    } catch (_) {
+      _adminUser.is_provenance_admin = false;
+    }
+    _scheduleSessionExpiry(session.expires_at);
+    document.getElementById('adminName').textContent = p.username ? '@'+p.username : (session.user.email||'').split('@')[0];
+    document.getElementById('adminAvatar').textContent = (p.username || session.user.email || 'A')[0].toUpperCase();
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    if (_adminUser.is_provenance_admin !== true) {
+      document.querySelectorAll('[onclick*="serialqueue"]').forEach(el => { el.style.display = 'none'; });
+    }
+    loadOverview();
+    pbiLoadDashboard();
+    populateSetDropdowns();
+    loadUsers();
+    loadPendingCards();
+    loadShopReviewsBadge();
+    return true;
+  } catch (e) {
+    console.warn('Session restore failed:', e);
+    return false;
+  }
+}
+_tryRestoreSession();
+
 async function adminLogout() {
   await _sb.auth.signOut();
   location.reload();

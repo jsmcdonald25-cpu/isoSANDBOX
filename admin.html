@@ -2463,7 +2463,7 @@ tr:hover td { background: var(--bg); }
             <div style="font-size:14px;font-weight:800;color:var(--purple)">🤖 AI Learn · Pattern Analysis</div>
             <div id="sqAiMeta" style="font-size:11px;color:var(--text3);margin-top:2px">No analysis yet — click "Analyze queue" to feed Claude Haiku 4.5</div>
           </div>
-          <button onclick="sqAnalyzeAi()" id="sqAiRunBtn" style="background:var(--purple);color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:700;font-size:12px;cursor:pointer">↻ Analyze queue</button>
+          <button onclick="sqAnalyzeAi()" id="sqAiRunBtn" style="background:var(--purple);color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:700;font-size:12px;cursor:pointer">▶ Run analysis</button>
         </div>
         <div id="sqAiBody" style="padding:16px 18px;display:none">
           <div id="sqAiBlock" style="margin-bottom:16px"></div>
@@ -7873,24 +7873,29 @@ let _sqSortField = 'crawled_at'; // default sort
 let _sqSortDir = -1;             // -1 desc, 1 asc
 
 // ── Serial Queue AI Learn ─────────────────────────────────
-// Runs automatically in iso-serial.yml workflow (every 30 min) and writes
-// isosnipe/queue-ai-analysis-latest.json. Button just reloads the static file.
+// Calls /.netlify/functions/iso-serial-analyze live — pulls skipped + tagged
+// queue rows and runs Claude Haiku 4.5 on demand. Requires ANTHROPIC_API_KEY
+// in Netlify env vars (Functions scope).
 async function sqAnalyzeAi() {
   const btn = document.getElementById('sqAiRunBtn');
   const meta = document.getElementById('sqAiMeta');
-  btn.disabled = true; btn.textContent = 'Loading…';
-  meta.textContent = 'Loading latest queue analysis…';
+  btn.disabled = true; btn.textContent = 'Running…';
+  meta.textContent = 'Running live AI analysis…';
   try {
-    const res = await fetch('/isosnipe/queue-ai-analysis-latest.json?t=' + Date.now());
-    if (!res.ok) throw new Error('No analysis file yet — wait for the next crawler tick (~30 min).');
+    const res = await fetch('/.netlify/functions/iso-serial-analyze', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${_token}`, 'Content-Type': 'application/json' },
+      body: '{}',
+    });
     const d = await res.json();
+    if (!res.ok) throw new Error(d.error || d.detail || `HTTP ${res.status}`);
     sqRenderAi(d);
-    toast('AI analysis loaded', 'success');
+    toast('AI analysis complete', 'success');
   } catch (e) {
-    toast('AI load failed: ' + e.message, 'error');
+    toast('AI run failed: ' + e.message, 'error');
     meta.textContent = 'Last attempt failed: ' + (e.message || '').slice(0, 160);
   } finally {
-    btn.disabled = false; btn.textContent = '↻ Reload analysis';
+    btn.disabled = false; btn.textContent = '▶ Run analysis';
   }
 }
 

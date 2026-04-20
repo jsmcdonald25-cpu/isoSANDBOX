@@ -1,29 +1,19 @@
 """
 Reddit scam-pattern scraper for GrailISO admin research.
 
-Purpose: build a pattern library of scam techniques, red flags, and bad-actor
-behaviors from card-community subreddits. Trains admin AI to recognize
-techniques on-platform. Does NOT build a name/blacklist database.
+NO-AUTH version — uses Reddit's public .json endpoints, no app registration needed.
+Rate-limited (gentler than PRAW); fine for personal daily cadence across 6 subs.
 
 Rules (hard):
   - Never store Reddit usernames (author field ignored entirely).
-  - Aggressively strip u/foo, /u/foo, @foo from title + body text.
-  - Strip eBay-handle patterns from body text before storage.
+  - Aggressively strip u/foo, /u/foo, @foo, emails, seller/buyer X handles.
   - Only store posts/comments matching scam-keyword filter.
 
 Usage:
-  Set env vars:
-    REDDIT_CLIENT_ID
-    REDDIT_CLIENT_SECRET
-    REDDIT_USER_AGENT   (e.g. "grailiso-research-bot/0.1 by u/yourhandle")
-    SUPABASE_URL        (e.g. https://jyfaegmnzkarlcximxjo.supabase.co)
-    SUPABASE_SERVICE_ROLE_KEY   (server-side key, needed to bypass RLS for insert)
-
-  Install:
-    pip install -r requirements.txt
-
-  Run:
-    python scrape_reddit_patterns.py [--limit 100] [--dry-run]
+  pip install -r requirements.txt
+  export SUPABASE_URL="https://jyfaegmnzkarlcximxjo.supabase.co"
+  export SUPABASE_SERVICE_ROLE_KEY="..."
+  python scrape_reddit_patterns.py [--limit 100] [--dry-run]
 """
 from __future__ import annotations
 import argparse
@@ -35,7 +25,6 @@ from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
 from typing import Iterable
 
-import praw   # type: ignore
 import requests
 
 
@@ -49,7 +38,6 @@ SUBREDDITS = [
 ]
 
 KEYWORDS = [
-    # scam vocabulary
     "scam", "scammer", "scammed", "scamming",
     "fraud", "fraudulent", "defraud",
     "fake", "faked", "counterfeit", "reprint",
@@ -69,20 +57,18 @@ KEYWORDS = [
     "psa altered", "bgs altered",
 ]
 
-# Match u/foo, /u/foo, @foo — conservative on word chars
 USER_PATTERNS = [
     re.compile(r"\b/?u/[A-Za-z0-9_\-]{3,}", re.IGNORECASE),
     re.compile(r"@[A-Za-z0-9_\-]{3,}"),
 ]
-
-# "seller X", "buyer X", "user X" — strip the handle after
 HANDLE_CONTEXT = re.compile(
     r"\b(seller|buyer|user|member|account|username|handle|ebay id|ebay user)\s+(?:is\s+|named\s+|called\s+)?([A-Za-z0-9_\-]{4,})",
     re.IGNORECASE,
 )
-
-# Email-like (just in case)
 EMAIL_PATTERN = re.compile(r"[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}")
+
+USER_AGENT = "grailiso-research/0.1 (personal research script)"
+BASE = "https://www.reddit.com"
 
 
 def strip_usernames(text: str | None) -> str:
@@ -107,56 +93,87 @@ def keyword_matches(text: str) -> list[str]:
 class Pattern:
     subreddit: str
     post_id: str
-    post_type: str  # 'submission' | 'comment'
+    post_type: str
     title: str | None
     content: str
     permalink: str
     matched_keywords: list[str]
     score: int
     num_comments: int
-    created_utc: str  # iso8601
+    created_utc: str
 
 
-def iter_submissions(reddit: praw.Reddit, sub: str, limit: int) -> Iterable[Pattern]:
-    sr = reddit.subreddit(sub)
-    for s in sr.new(limit=limit):
-        body = s.selftext or ""
-        combined = f"{s.title}\n{body}"
+def fetch_json(url: str, params: dict | None = None, retries: int = 3) -> dict | None:
+    headers = {"User-Agent": USER_AGENT}
+    for attempt in range(retries):
+        try:
+            r = requests.get(url, headers=headers, params=params, timeout=20)
+            if r.status_code == 429:
+                wait = 10 * (attempt + 1)
+                print(f"[rate-limit] 429, sleeping {wait}s...", file=sys.stderr)
+                time.sleep(wait)
+                continue
+            if r.status_code >= 400:
+                print(f"[warn] {url} → {r.status_code}", file=sys.stderr)
+                return None
+            return r.json()
+        except requests.RequestException as e:
+            print(f"[warn] {url} → {e}", file=sys.stderr)
+            time.sleep(3 * (attempt + 1))
+    return None
+
+
+def iter_submissions(sub: str, limit: int) -> Iterable[Pattern]:
+    url = f"{BASE}/r/{sub}/new.json"
+    data = fetch_json(url, params={"limit": min(limit, 100)})
+    if not data:
+        return
+    for child in data.get("data", {}).get("children", []):
+        s = child.get("data", {})
+        title = s.get("title", "") or ""
+        body  = s.get("selftext", "") or ""
+        combined = f"{title}\n{body}"
         kws = keyword_matches(combined)
         if not kws:
             continue
+        permalink = s.get("permalink", "")
         yield Pattern(
             subreddit=sub,
-            post_id=f"t3_{s.id}",
+            post_id=f"t3_{s.get('id','')}",
             post_type="submission",
-            title=strip_usernames(s.title),
-            content=strip_usernames(body) or strip_usernames(s.title),
-            permalink=f"https://www.reddit.com{s.permalink}",
+            title=strip_usernames(title),
+            content=strip_usernames(body) or strip_usernames(title),
+            permalink=f"{BASE}{permalink}" if permalink else "",
             matched_keywords=kws,
-            score=int(s.score or 0),
-            num_comments=int(s.num_comments or 0),
-            created_utc=datetime.fromtimestamp(s.created_utc, tz=timezone.utc).isoformat(),
+            score=int(s.get("score") or 0),
+            num_comments=int(s.get("num_comments") or 0),
+            created_utc=datetime.fromtimestamp(int(s.get("created_utc") or 0), tz=timezone.utc).isoformat(),
         )
 
 
-def iter_comments(reddit: praw.Reddit, sub: str, limit: int) -> Iterable[Pattern]:
-    sr = reddit.subreddit(sub)
-    for c in sr.comments(limit=limit):
-        body = c.body or ""
+def iter_comments(sub: str, limit: int) -> Iterable[Pattern]:
+    url = f"{BASE}/r/{sub}/comments.json"
+    data = fetch_json(url, params={"limit": min(limit, 100)})
+    if not data:
+        return
+    for child in data.get("data", {}).get("children", []):
+        c = child.get("data", {})
+        body = c.get("body", "") or ""
         kws = keyword_matches(body)
         if not kws:
             continue
+        permalink = c.get("permalink", "")
         yield Pattern(
             subreddit=sub,
-            post_id=f"t1_{c.id}",
+            post_id=f"t1_{c.get('id','')}",
             post_type="comment",
             title=None,
             content=strip_usernames(body),
-            permalink=f"https://www.reddit.com{c.permalink}",
+            permalink=f"{BASE}{permalink}" if permalink else "",
             matched_keywords=kws,
-            score=int(c.score or 0),
+            score=int(c.get("score") or 0),
             num_comments=0,
-            created_utc=datetime.fromtimestamp(c.created_utc, tz=timezone.utc).isoformat(),
+            created_utc=datetime.fromtimestamp(int(c.get("created_utc") or 0), tz=timezone.utc).isoformat(),
         )
 
 
@@ -173,7 +190,6 @@ def supabase_upsert(rows: list[Pattern], dry_run: bool = False) -> None:
         "Prefer": "resolution=ignore-duplicates,return=minimal",
     }
     payload = [asdict(r) for r in rows]
-    # Supabase has a 1 MB body limit — chunk at 200 rows
     CHUNK = 200
     for i in range(0, len(payload), CHUNK):
         r = requests.post(endpoint, headers=headers, json=payload[i:i+CHUNK], timeout=30)
@@ -186,43 +202,35 @@ def supabase_upsert(rows: list[Pattern], dry_run: bool = False) -> None:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=100,
-                    help="posts/comments per sub per pass (default 100)")
+                    help="posts/comments per sub per pass (max 100 via JSON endpoint)")
     ap.add_argument("--dry-run", action="store_true",
                     help="print results, do not write to Supabase")
     ap.add_argument("--submissions-only", action="store_true")
     ap.add_argument("--comments-only", action="store_true")
+    ap.add_argument("--pause", type=float, default=3.0,
+                    help="seconds between subs (default 3 — keep it gentle)")
     args = ap.parse_args()
 
-    for key in ("REDDIT_CLIENT_ID", "REDDIT_CLIENT_SECRET", "REDDIT_USER_AGENT"):
-        if not os.environ.get(key):
-            print(f"[error] missing env var: {key}", file=sys.stderr)
-            return 1
     if not args.dry_run:
         for key in ("SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"):
             if not os.environ.get(key):
                 print(f"[error] missing env var: {key}", file=sys.stderr)
                 return 1
 
-    reddit = praw.Reddit(
-        client_id=os.environ["REDDIT_CLIENT_ID"],
-        client_secret=os.environ["REDDIT_CLIENT_SECRET"],
-        user_agent=os.environ["REDDIT_USER_AGENT"],
-    )
-    reddit.read_only = True
-
     all_rows: list[Pattern] = []
     for sub in SUBREDDITS:
         print(f"[scan] r/{sub}")
         try:
             if not args.comments_only:
-                for p in iter_submissions(reddit, sub, args.limit):
+                for p in iter_submissions(sub, args.limit):
                     all_rows.append(p)
+                time.sleep(args.pause)
             if not args.submissions_only:
-                for p in iter_comments(reddit, sub, args.limit):
+                for p in iter_comments(sub, args.limit):
                     all_rows.append(p)
         except Exception as e:
             print(f"[warn] r/{sub} failed: {e}", file=sys.stderr)
-        time.sleep(1)  # gentle pacing
+        time.sleep(args.pause)
 
     print(f"[total] {len(all_rows)} matched patterns across {len(SUBREDDITS)} subs")
 

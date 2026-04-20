@@ -1,7 +1,10 @@
-# Reddit scam-pattern scraper
+# Reddit scam-pattern scraper (no-auth)
 
 Admin-only research tool. Pulls scam/fraud patterns from card subreddits to
 train AI recognition of on-platform scam behavior.
+
+Uses Reddit's public `.json` endpoints — no app registration, no client_id,
+no client_secret. Gentle pacing to avoid rate-limits.
 
 **Rules (enforced in code):**
 - Never stores Reddit usernames.
@@ -11,18 +14,13 @@ train AI recognition of on-platform scam behavior.
 
 ## Setup
 
-1. Register a Reddit "script" app at https://www.reddit.com/prefs/apps →
-   note the `client_id` (under the app name) and `secret`.
+1. Run `Checklist/reddit_patterns_schema.sql` in Supabase (creates the table).
 2. Install deps: `pip install -r requirements.txt`
-3. Run the SQL in `Checklist/reddit_patterns_schema.sql` once in Supabase.
-4. Set env vars (bash example):
+3. Set two env vars (bash):
 
    ```bash
-   export REDDIT_CLIENT_ID=...
-   export REDDIT_CLIENT_SECRET=...
-   export REDDIT_USER_AGENT="grailiso-research/0.1 by u/yourhandle"
    export SUPABASE_URL="https://jyfaegmnzkarlcximxjo.supabase.co"
-   export SUPABASE_SERVICE_ROLE_KEY=...   # admin-side key, bypasses RLS
+   export SUPABASE_SERVICE_ROLE_KEY="..."   # Project Settings → API → service_role
    ```
 
 ## Usage
@@ -39,11 +37,11 @@ python scrape_reddit_patterns.py --submissions-only
 python scrape_reddit_patterns.py --comments-only
 ```
 
-## Scheduling
+## Rate limits
 
-Run on a daily cadence — don't hammer the Reddit API. 100 QPM limit for
-authenticated scripts; one pass across 6 subs is ~12 requests. Use GitHub
-Actions cron (see `.github/workflows/` for the ISOsnipe pattern).
+Reddit throttles anonymous `.json` requests aggressively. If you see `[rate-limit] 429`
+in stderr, the script will back off automatically. For daily use, one run a day with
+`--pause 5` is safe. Don't loop it.
 
 ## Viewing results
 

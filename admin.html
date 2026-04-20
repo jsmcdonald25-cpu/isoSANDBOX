@@ -2119,28 +2119,75 @@ tr:hover td { background: var(--bg); }
             <input id="sqTagPlayerSearch" placeholder="Type to filter players…" oninput="sqFilterPlayers()" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:var(--radius);margin-bottom:6px">
             <select id="sqTagPlayer" onchange="sqLoadCardsForPlayer()" size="6" style="width:100%;padding:4px;border:1px solid var(--border2);border-radius:var(--radius);margin-bottom:12px;font-family:var(--font);font-size:12px"></select>
 
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
               <div>
                 <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Card Number</label>
                 <select id="sqTagCard" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:var(--radius)"></select>
               </div>
               <div>
                 <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Auto Type</label>
-                <select id="sqTagAuto" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:var(--radius)">
+                <select id="sqTagAuto" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:var(--radius)" onchange="sqAutoInkVisibility()">
                   <option value="">None (non-auto parallel)</option>
                   <option value="on-card">On-card</option>
                   <option value="sticker-auto">Sticker auto</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Auto Ink Color</label>
+                <select id="sqTagAutoInk" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:var(--radius)" disabled>
+                  <option value="">—</option>
+                  <option value="Black">Black (default)</option>
+                  <option value="Red">Red</option>
+                  <option value="Blue">Blue</option>
+                  <option value="Gold">Gold</option>
+                  <option value="Silver">Silver</option>
+                  <option value="Green">Green</option>
                 </select>
               </div>
             </div>
 
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
               <div>
-                <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Print Run (denominator)</label>
-                <input list="sqPrintRunOptions" id="sqTagPrintRun" type="number" min="1" value="5" placeholder="e.g. 5" oninput="sqUpdateEditionMax()" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:var(--radius)">
+                <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Parallel</label>
+                <input list="sqParallelOptions" id="sqTagParallel" placeholder="e.g. Chrome Bordered" oninput="sqOnParallelChange()" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:var(--radius)">
+                <datalist id="sqParallelOptions">
+                  <option value="Chrome Refractor">
+                  <option value="Chrome Bordered">
+                  <option value="Chrome Sparkle">
+                  <option value="Flip Stock">
+                  <option value="Deckle Edge">
+                  <option value="Color of the Year">
+                  <option value="Base Bordered">
+                  <option value="Superfractor">
+                </datalist>
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Color</label>
+                <input list="sqColorOptions" id="sqTagColor" placeholder="e.g. Red" oninput="sqInferPrintRunFromParallel()" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:var(--radius)">
+                <datalist id="sqColorOptions">
+                  <option value="Red">
+                  <option value="Orange">
+                  <option value="Gold">
+                  <option value="Black">
+                  <option value="Green">
+                  <option value="Blue">
+                  <option value="Pink">
+                  <option value="Light Blue">
+                  <option value="Silver">
+                  <option value="Dark Gray">
+                  <option value="Dark Green">
+                  <option value="Heritage Orange">
+                </datalist>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+              <div>
+                <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Print Run (max 299)</label>
+                <input list="sqPrintRunOptions" id="sqTagPrintRun" type="number" min="1" max="299" value="5" placeholder="e.g. 5" oninput="sqUpdateEditionMax()" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:var(--radius)">
                 <datalist id="sqPrintRunOptions">
-                  <option value="1"><option value="5"><option value="10"><option value="20">
-                  <option value="25"><option value="50"><option value="75"><option value="99">
+                  <option value="1"><option value="5"><option value="10"><option value="25">
+                  <option value="50"><option value="75"><option value="77"><option value="99">
                   <option value="100"><option value="150"><option value="200"><option value="250">
                 </datalist>
               </div>
@@ -6182,7 +6229,12 @@ async function sqOpenReview(queueId) {
   editionInput.value  = editionGuess;
 
   // Auto type guess
-  if (q.auto_type_guess) document.getElementById('sqTagAuto').value = q.auto_type_guess;
+  document.getElementById('sqTagAuto').value = q.auto_type_guess || '';
+  // Reset parallel/color/auto-ink on each open — admin fills in
+  document.getElementById('sqTagParallel').value = '';
+  document.getElementById('sqTagColor').value = '';
+  document.getElementById('sqTagAutoInk').value = '';
+  sqAutoInkVisibility();
 
   // Grade guess — try to split "PSA 9.5"
   if (q.grade_guess) {
@@ -6335,6 +6387,65 @@ function sqUpdateEditionMax() {
   }
 }
 
+// Toggle the Auto Ink dropdown depending on whether the card is an autograph
+function sqAutoInkVisibility() {
+  const auto = document.getElementById('sqTagAuto').value;
+  const ink = document.getElementById('sqTagAutoInk');
+  if (auto) {
+    ink.disabled = false;
+    if (!ink.value) ink.value = 'Black'; // default to Black for autos
+  } else {
+    ink.disabled = true;
+    ink.value = '';
+  }
+}
+
+// 2026 Topps Heritage parallel→(color→print_run) lookup
+const SQ_PARALLEL_TABLE = {
+  'Chrome Bordered': {
+    'Red': 5, 'Orange': 25, 'Gold': 50, 'Black': 77, 'Green': 99, 'Blue': 150,
+  },
+  'Flip Stock':     { '': 5 },        // unstamped — no color
+  'Color of the Year': { '': 77, 'Heritage Orange': 77, 'Orange': 77 },
+  'Superfractor':   { '': 1 },
+  'Chrome Sparkle': { 'Light Blue': null, 'Pink': null, 'Silver': null }, // exclusives, unnumbered
+};
+
+// When parallel changes, handle Flip Stock N/A behavior + try to infer print run
+function sqOnParallelChange() {
+  const parallel = (document.getElementById('sqTagParallel').value || '').trim();
+  const editionInput = document.getElementById('sqTagEdition');
+  // Flip Stock = unstamped /5. Force print run 5, disable edition #, show N/A.
+  if (parallel.toLowerCase() === 'flip stock') {
+    document.getElementById('sqTagPrintRun').value = 5;
+    editionInput.value = '';
+    editionInput.placeholder = 'N/A — unstamped';
+    editionInput.disabled = true;
+    editionInput.title = 'Flip Stock cards are not numbered. Provenance captured by fingerprint instead.';
+  } else {
+    editionInput.disabled = false;
+    editionInput.title = '';
+    sqInferPrintRunFromParallel();
+  }
+}
+
+// Look up print run from parallel + color combo when both are filled
+function sqInferPrintRunFromParallel() {
+  const parallel = (document.getElementById('sqTagParallel').value || '').trim();
+  const color    = (document.getElementById('sqTagColor').value || '').trim();
+  const printInput = document.getElementById('sqTagPrintRun');
+  // Don't override if Flip Stock — that's handled in sqOnParallelChange
+  if (parallel.toLowerCase() === 'flip stock') return;
+  const lookup = SQ_PARALLEL_TABLE[parallel];
+  if (lookup) {
+    const inferred = (color in lookup) ? lookup[color] : (lookup[''] !== undefined ? lookup[''] : null);
+    if (inferred && inferred > 0) {
+      printInput.value = inferred;
+      sqUpdateEditionMax();
+    }
+  }
+}
+
 async function sqSaveSkip(reason) {
   if (!_sqCurrent) return;
   try {
@@ -6379,11 +6490,29 @@ async function sqSaveTag(mode) {
   const checklistCardId = parseInt(cardOpt.value, 10);
   const cardNumber = cardOpt.getAttribute('data-card') || null;
   const printRun = parseInt(document.getElementById('sqTagPrintRun').value, 10);
-  const editionNum = parseInt(document.getElementById('sqTagEdition').value, 10);
+  const parallelName = (document.getElementById('sqTagParallel').value || '').trim() || null;
+  const parallelColor = (document.getElementById('sqTagColor').value || '').trim() || null;
+  const isFlipStock = (parallelName || '').toLowerCase() === 'flip stock';
+  const editionRaw = document.getElementById('sqTagEdition').value;
+  const editionNum = editionRaw ? parseInt(editionRaw, 10) : null;
+
   if (!printRun || printRun < 1) { toast('Enter a print run', 'err'); return; }
-  if (!editionNum || editionNum < 1 || editionNum > printRun) { toast(`Edition # must be 1–${printRun}`, 'err'); return; }
-  const edition = `${editionNum}/${printRun}`;
+  if (printRun >= 300) { toast('Print runs ≥300 are not tracked. Skip with reason instead.', 'err'); return; }
+
+  // Edition validation: required UNLESS Flip Stock (unstamped)
+  if (!isFlipStock) {
+    if (!editionNum || editionNum < 1 || editionNum > printRun) {
+      toast(`Edition # must be 1–${printRun}`, 'err');
+      return;
+    }
+  }
+
+  const edition = isFlipStock
+    ? `N/A/${printRun}`              // Flip Stock — copy unknown until fingerprint match
+    : `${editionNum}/${printRun}`;
+
   const autoType = document.getElementById('sqTagAuto').value || null;
+  const autoInkColor = autoType ? (document.getElementById('sqTagAutoInk').value || null) : null;
   const graded = document.getElementById('sqTagGraded').value === 'true';
   const gradeCo = document.getElementById('sqTagGradeCo').value || null;
   const gradeNumStr = document.getElementById('sqTagGradeNum').value;
@@ -6419,8 +6548,10 @@ async function sqSaveTag(mode) {
         card_number: cardNumber,
         set_name: setName,
         serial_edition: edition,
-        parallel_name: null,
+        parallel_name: parallelName,
+        parallel_color: parallelColor,
         auto_type: autoType,
+        auto_ink_color: autoInkColor,
         is_inscribed: isInscribed,
         inscription_text: inscrText,
         currently_graded: graded,
@@ -6455,6 +6586,7 @@ async function sqSaveTag(mode) {
         currently_graded: graded,
         current_grading_company: gradeCo,
         current_grade: gradeNum,
+        auto_ink_color: autoInkColor || current.auto_ink_color,  // preserve existing if no new value
         ownership_chain: newChain,
         price_history: newHistory,
         last_seen_at: q.crawled_at,

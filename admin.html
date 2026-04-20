@@ -2267,6 +2267,23 @@ tr:hover td { background: var(--bg); }
         <div class="panel-sub">eBay keyword arbitrage — find mispriced cards via misspellings. Seed money engine.</div>
       </div>
 
+      <!-- ───── AI LEARN PANEL (top of ISOsnipe) ───── -->
+      <div id="snAiSection" style="background:var(--surface);border:1px solid var(--purple);border-radius:var(--radius);margin-bottom:16px;overflow:hidden">
+        <div style="background:linear-gradient(135deg,var(--purple-light),#fff);padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+          <div>
+            <div style="font-size:14px;font-weight:800;color:var(--purple)">🤖 AI Learn · Pattern Analysis</div>
+            <div id="snAiMeta" style="font-size:11px;color:var(--text3);margin-top:2px">Click "↻ Reload analysis" to load the latest (refreshes every scan cycle, 5am/5pm CDT)</div>
+          </div>
+          <button onclick="snAnalyzeAi()" id="snAiRunBtn" style="background:var(--purple);color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:700;font-size:12px;cursor:pointer">↻ Reload analysis</button>
+        </div>
+        <div id="snAiBody" style="padding:16px 18px;display:none">
+          <div id="snAiBlock" style="margin-bottom:16px"></div>
+          <div id="snAiQueries" style="margin-bottom:16px"></div>
+          <div id="snAiInsights" style="margin-bottom:8px"></div>
+          <div id="snAiBreakdown" style="border-top:1px solid var(--border);padding-top:12px;margin-top:4px"></div>
+        </div>
+      </div>
+
       <!-- Controls -->
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px;padding:16px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border)">
         <div>
@@ -2369,22 +2386,6 @@ tr:hover td { background: var(--bg); }
         </table>
       </div>
 
-      <!-- ───── AI LEARN PANEL ───── -->
-      <div id="snAiSection" style="background:var(--surface);border:1px solid var(--purple);border-radius:var(--radius);margin-top:16px;overflow:hidden">
-        <div style="background:linear-gradient(135deg,var(--purple-light),#fff);padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-          <div>
-            <div style="font-size:14px;font-weight:800;color:var(--purple)">🤖 AI Learn · Pattern Analysis</div>
-            <div id="snAiMeta" style="font-size:11px;color:var(--text3);margin-top:2px">No analysis yet — click "Analyze rejections" to feed Claude Haiku 4.5</div>
-          </div>
-          <button onclick="snAnalyzeAi()" id="snAiRunBtn" style="background:var(--purple);color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:700;font-size:12px;cursor:pointer">↻ Analyze rejections</button>
-        </div>
-        <div id="snAiBody" style="padding:16px 18px;display:none">
-          <div id="snAiBlock" style="margin-bottom:16px"></div>
-          <div id="snAiQueries" style="margin-bottom:16px"></div>
-          <div id="snAiInsights" style="margin-bottom:8px"></div>
-          <div id="snAiBreakdown" style="border-top:1px solid var(--border);padding-top:12px;margin-top:4px"></div>
-        </div>
-      </div>
     </div>
 
     <!-- ── ISOsnipe REJECT MODAL ─────────────────────────── -->

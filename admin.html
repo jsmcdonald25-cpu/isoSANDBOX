@@ -579,6 +579,11 @@ tr:hover td { background: var(--bg); }
       Reddit Patterns
       <span id="reddit-nav-badge" style="margin-left:auto;background:var(--orange);color:#000;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;display:none">0</span>
     </div>
+    <div class="nav-item" onclick="nav('scamintake',this);loadScamIntake()" style="color:var(--red)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="12" y1="7" x2="12" y2="13"/></svg>
+      Scam Intake
+      <span id="scamintake-nav-badge" style="margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;display:none">0</span>
+    </div>
     <div class="nav-item" onclick="nav('alpha',this);loadAlphaSignups()">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
       Alpha Testers
@@ -1357,6 +1362,103 @@ tr:hover td { background: var(--bg); }
         </div>
         <div id="rp-empty" style="display:none;padding:32px;text-align:center;color:var(--text3);font-size:13px">
           No patterns yet. Run the Reddit scraper (<code>research/reddit/scrape_reddit_patterns.py</code>) to populate.
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ── SCAM INTAKE (admin-only off-platform scam evidence) ── -->
+    <div class="panel" id="panel-scamintake">
+      <div class="panel-header">
+        <div class="panel-eyebrow" style="color:var(--red)">Research (private)</div>
+        <div class="panel-title">Scam Intake</div>
+        <div class="panel-sub">Admin-only upload for off-platform scam evidence — DMs, emails, texts, eBay messages. Usernames auto-stripped from pasted text. Screenshots live in a private Storage bucket (admin-only access).</div>
+      </div>
+
+      <div style="background:var(--surface2);border:1px solid rgba(255,59,92,0.25);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;font-size:12px;color:var(--text2);line-height:1.5">
+        <strong style="color:var(--red)">Before uploading:</strong>
+        Manually redact names, phone numbers, emails, and addresses in screenshots before upload.
+        Pasted text gets auto-stripped for u/foo, @foo, emails, and seller/buyer X patterns — but
+        review first. Private Storage bucket, admin-only RLS.
+      </div>
+
+      <div class="card" style="padding:20px;margin-bottom:16px">
+        <div style="font-size:14px;font-weight:700;margin-bottom:12px">Upload New Intake</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
+            <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Source</label>
+            <select class="input" id="si-source">
+              <option value="dm_messenger">Facebook Messenger</option>
+              <option value="dm_instagram">Instagram DM</option>
+              <option value="dm_discord">Discord DM</option>
+              <option value="ebay_msg">eBay Message</option>
+              <option value="email">Email</option>
+              <option value="text_message">Text / SMS</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Scam category</label>
+            <select class="input" id="si-category">
+              <option value="">— (optional) —</option>
+              <option value="fake_card">Fake / counterfeit card</option>
+              <option value="never_shipped">Never shipped / ghosted</option>
+              <option value="bait_switch">Bait &amp; switch</option>
+              <option value="chargeback_abuse">Chargeback abuse</option>
+              <option value="price_variance">Price variance / shill bidding</option>
+              <option value="provenance_mismatch">Provenance mismatch</option>
+              <option value="pattern_deviation">Pattern deviation</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Date occurred (optional)</label>
+            <input class="input" type="date" id="si-date">
+          </div>
+        </div>
+
+        <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Conversation / email body (usernames auto-stripped on save)</label>
+        <textarea class="input" id="si-content" rows="6" placeholder="Paste the conversation, email body, or transcript here..." style="width:100%;font-family:var(--font);font-size:12px;line-height:1.5"></textarea>
+
+        <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin:12px 0 4px">Screenshots (drag-drop or click to browse — redact PII first)</label>
+        <div id="si-drop" style="border:2px dashed var(--border);border-radius:var(--radius);padding:20px;text-align:center;color:var(--text3);font-size:12px;cursor:pointer;transition:all 0.15s">
+          Drop screenshots here or click to browse
+          <input type="file" id="si-files" multiple accept="image/*" style="display:none">
+        </div>
+        <div id="si-file-list" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px"></div>
+
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px">
+          <button class="btn btn-ghost" onclick="siClearForm()">Clear</button>
+          <button class="btn btn-primary" onclick="siSubmit()" id="si-submit-btn">Save Intake</button>
+        </div>
+      </div>
+
+      <div class="search-bar">
+        <input class="input" id="si-search" placeholder="Search content…" oninput="siFilter()">
+        <select class="input" id="si-source-filter" onchange="siFilter()" style="max-width:200px">
+          <option value="">All sources</option>
+          <option value="dm_messenger">Messenger</option>
+          <option value="dm_instagram">Instagram</option>
+          <option value="dm_discord">Discord</option>
+          <option value="ebay_msg">eBay</option>
+          <option value="email">Email</option>
+          <option value="text_message">Text</option>
+          <option value="other">Other</option>
+        </select>
+        <select class="input" id="si-state-filter" onchange="siFilter()" style="max-width:180px">
+          <option value="unreviewed">Unreviewed</option>
+          <option value="useful">Useful only</option>
+          <option value="dismissed">Dismissed</option>
+          <option value="all">All</option>
+        </select>
+        <button class="btn btn-ghost" onclick="loadScamIntake()">↻ Refresh</button>
+      </div>
+
+      <div class="card">
+        <div class="loading" id="si-loading">Loading intake…</div>
+        <div id="si-list" style="display:none;padding:8px"></div>
+        <div id="si-empty" style="display:none;padding:32px;text-align:center;color:var(--text3);font-size:13px">
+          No intake yet. Use the form above to add the first one.
         </div>
       </div>
     </div>
@@ -3884,6 +3986,281 @@ async function rpRestore(id) {
   } catch(e) { toast('Error: ' + e.message, 'error'); }
 }
 
+// ── SCAM INTAKE (admin-only off-platform evidence) ──
+const SI_SOURCE_LABEL = {
+  dm_messenger:   'Messenger',
+  dm_instagram:   'Instagram',
+  dm_discord:     'Discord',
+  ebay_msg:       'eBay',
+  email:          'Email',
+  text_message:   'Text',
+  other:          'Other'
+};
+
+let _allScamIntake = [];
+let _siPendingFiles = [];
+
+function siStripUsernames(text) {
+  if (!text) return '';
+  let out = text;
+  out = out.replace(/\b\/?u\/[A-Za-z0-9_\-]{3,}/gi, '[user]');
+  out = out.replace(/@[A-Za-z0-9_\-]{3,}/g, '[user]');
+  out = out.replace(/[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}/g, '[user]');
+  out = out.replace(/\b(seller|buyer|user|member|account|username|handle|ebay id|ebay user)\s+(?:is\s+|named\s+|called\s+)?([A-Za-z0-9_\-]{4,})/gi,
+                    (_, w) => `${w} [user]`);
+  // Strip phone-number patterns too (defense in depth)
+  out = out.replace(/\b\d{3}[\s.\-]?\d{3}[\s.\-]?\d{4}\b/g, '[phone]');
+  return out.trim();
+}
+
+async function siUploadFile(file) {
+  const path = `${Date.now()}-${Math.random().toString(36).slice(2,8)}-${file.name.replace(/[^\w.\-]/g,'_')}`;
+  const endpoint = `${REST.replace('/rest/v1','')}/storage/v1/object/scam-intake/${path}`;
+  const headers = {
+    'apikey': SB_ANON,
+    'Authorization': 'Bearer ' + (_token || SB_ANON),
+    'Content-Type': file.type || 'application/octet-stream',
+    'x-upsert': 'false'
+  };
+  const r = await fetch(endpoint, { method: 'POST', headers, body: file });
+  if (!r.ok) throw new Error(`Upload failed ${r.status}: ${(await r.text()).slice(0,160)}`);
+  return path;
+}
+
+async function siSignedUrl(path) {
+  const endpoint = `${REST.replace('/rest/v1','')}/storage/v1/object/sign/scam-intake/${path}`;
+  const headers = {
+    'apikey': SB_ANON,
+    'Authorization': 'Bearer ' + (_token || SB_ANON),
+    'Content-Type': 'application/json'
+  };
+  const r = await fetch(endpoint, { method: 'POST', headers, body: JSON.stringify({ expiresIn: 3600 }) });
+  if (!r.ok) return null;
+  const j = await r.json();
+  return `${REST.replace('/rest/v1','')}/storage/v1${j.signedURL || j.signedUrl || ''}`;
+}
+
+function siHandleFiles(fileList) {
+  for (const f of fileList) {
+    if (!f.type.startsWith('image/')) continue;
+    _siPendingFiles.push(f);
+  }
+  siRenderFileList();
+}
+
+function siRenderFileList() {
+  const wrap = document.getElementById('si-file-list');
+  wrap.innerHTML = _siPendingFiles.map((f, i) => `
+    <div style="display:flex;align-items:center;gap:6px;padding:4px 8px;background:var(--surface2);border-radius:6px;font-size:11px">
+      <span>${f.name.replace(/</g,'&lt;')} <span style="color:var(--text3)">(${(f.size/1024).toFixed(0)}kb)</span></span>
+      <button class="btn btn-sm btn-ghost" style="padding:0 6px;font-size:12px" onclick="siRemoveFile(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function siRemoveFile(i) {
+  _siPendingFiles.splice(i, 1);
+  siRenderFileList();
+}
+
+function siClearForm() {
+  document.getElementById('si-content').value = '';
+  document.getElementById('si-date').value = '';
+  document.getElementById('si-category').value = '';
+  document.getElementById('si-source').value = 'dm_messenger';
+  _siPendingFiles = [];
+  siRenderFileList();
+}
+
+async function siSubmit() {
+  const source  = document.getElementById('si-source').value;
+  const category = document.getElementById('si-category').value || null;
+  const dateStr = document.getElementById('si-date').value || null;
+  const rawContent = document.getElementById('si-content').value.trim();
+  if (!rawContent) { toast('Paste some content first.', 'error'); return; }
+  const content = siStripUsernames(rawContent);
+
+  const btn = document.getElementById('si-submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Uploading…';
+
+  try {
+    const paths = [];
+    for (const f of _siPendingFiles) {
+      const p = await siUploadFile(f);
+      paths.push(p);
+    }
+    await _post('scam_intake', {
+      source,
+      scam_category: category,
+      date_occurred: dateStr,
+      content,
+      screenshots: paths,
+      submitted_by: _adminUser?.id || null,
+      reviewed: false,
+      dismissed: false,
+      created_at: new Date().toISOString()
+    });
+    await logAdminAction('scam_intake_add', 'scam_intake', null, _adminUser?.username || null, null, { source, category, screenshot_count: paths.length }, null);
+    toast('✓ Intake saved', 'success');
+    siClearForm();
+    loadScamIntake();
+  } catch(e) {
+    toast('Error: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Save Intake';
+  }
+}
+
+async function loadScamIntake() {
+  const loading = document.getElementById('si-loading');
+  const list    = document.getElementById('si-list');
+  const empty   = document.getElementById('si-empty');
+  if (loading) loading.style.display = 'block';
+  if (list) list.style.display = 'none';
+  if (empty) empty.style.display = 'none';
+  try {
+    const rows = await _get('scam_intake', 'select=*&order=created_at.desc&limit=300');
+    _allScamIntake = rows || [];
+    const unreviewed = _allScamIntake.filter(r => !r.reviewed && !r.dismissed).length;
+    const badge = document.getElementById('scamintake-nav-badge');
+    if (badge) {
+      badge.textContent = unreviewed;
+      badge.style.display = unreviewed > 0 ? 'inline-block' : 'none';
+    }
+    siFilter();
+  } catch(e) {
+    if (loading) loading.style.display = 'none';
+    if (empty) {
+      empty.style.display = 'block';
+      empty.innerHTML = 'Table not found or empty. Run <code>Checklist/scam_intake_schema.sql</code> in Supabase.';
+    }
+  }
+}
+
+function siFilter() {
+  const q   = (document.getElementById('si-search').value || '').toLowerCase();
+  const src = document.getElementById('si-source-filter').value;
+  const st  = document.getElementById('si-state-filter').value;
+  let rows = _allScamIntake;
+  if (src) rows = rows.filter(r => r.source === src);
+  if (st === 'unreviewed') rows = rows.filter(r => !r.reviewed && !r.dismissed);
+  else if (st === 'useful') rows = rows.filter(r => r.useful === true);
+  else if (st === 'dismissed') rows = rows.filter(r => r.dismissed === true);
+  if (q) rows = rows.filter(r => (r.content||'').toLowerCase().includes(q));
+  siRenderList(rows);
+}
+
+function siRenderList(rows) {
+  const loading = document.getElementById('si-loading');
+  const list    = document.getElementById('si-list');
+  const empty   = document.getElementById('si-empty');
+  if (loading) loading.style.display = 'none';
+  if (!rows.length) {
+    list.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  list.style.display = 'block';
+  empty.style.display = 'none';
+  const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  list.innerHTML = rows.map(r => {
+    const srcLabel = SI_SOURCE_LABEL[r.source] || r.source;
+    const created = r.created_at ? new Date(r.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'}) : '—';
+    const occurred = r.date_occurred ? new Date(r.date_occurred).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'}) : null;
+    const cat = r.scam_category ? `<span class="badge" style="background:var(--surface2);color:var(--text2);font-size:10px">${esc(r.scam_category)}</span>` : '';
+    const stateBadge = r.dismissed ? '<span class="badge badge-gray">Dismissed</span>'
+                       : r.useful === true ? '<span class="badge badge-green">Useful</span>'
+                       : r.useful === false ? '<span class="badge badge-red">Not useful</span>'
+                       : '<span class="badge badge-yellow">New</span>';
+    const shots = (r.screenshots || []);
+    const shotHtml = shots.length
+      ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px" id="si-shots-${r.id}">
+           ${shots.map((p,i) => `<div data-path="${esc(p)}" style="width:80px;height:80px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text3);cursor:pointer" onclick="siOpenShot('${esc(r.id)}',${i})">📎 ${i+1}</div>`).join('')}
+         </div>`
+      : '';
+    return `<div style="padding:12px;border-bottom:1px solid var(--border);${r.dismissed?'opacity:0.5':''}">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">
+        <span class="badge" style="background:var(--red);color:#fff;font-size:10px">${esc(srcLabel)}</span>
+        ${cat}
+        ${stateBadge}
+        <span style="font-size:11px;color:var(--text3)">added ${created}${occurred?' · occurred '+occurred:''}</span>
+        <span style="font-size:11px;color:var(--text3)">· ${shots.length} screenshot${shots.length===1?'':'s'}</span>
+        <div style="margin-left:auto;display:flex;gap:4px">
+          ${!r.dismissed && r.useful !== true ? `<button class="btn btn-sm btn-success" onclick="siMarkUseful('${r.id}')" style="font-size:10px">✓ Useful</button>` : ''}
+          ${!r.dismissed ? `<button class="btn btn-sm btn-ghost" onclick="siDismiss('${r.id}')" style="font-size:10px">Dismiss</button>` : ''}
+          ${r.dismissed ? `<button class="btn btn-sm btn-ghost" onclick="siRestore('${r.id}')" style="font-size:10px">Restore</button>` : ''}
+          <button class="btn btn-sm btn-ghost" onclick="siDelete('${r.id}')" style="font-size:10px;color:var(--red)">Delete</button>
+        </div>
+      </div>
+      <div style="font-size:12px;line-height:1.55;white-space:pre-wrap;color:var(--text2);max-height:160px;overflow:auto;background:var(--bg);padding:8px 10px;border-radius:6px;border:1px solid var(--border)">${esc(r.content)}</div>
+      ${shotHtml}
+    </div>`;
+  }).join('');
+}
+
+async function siOpenShot(rowId, idx) {
+  const row = _allScamIntake.find(r => r.id === rowId);
+  if (!row) return;
+  const path = row.screenshots[idx];
+  try {
+    const url = await siSignedUrl(path);
+    if (url) window.open(url, '_blank', 'noopener');
+    else toast('Could not sign URL', 'error');
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+async function siMarkUseful(id) {
+  try {
+    await _patch('scam_intake', `id=eq.${id}`, { reviewed: true, useful: true, dismissed: false });
+    toast('✓ Marked useful', 'success');
+    loadScamIntake();
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+async function siDismiss(id) {
+  try {
+    await _patch('scam_intake', `id=eq.${id}`, { reviewed: true, dismissed: true });
+    toast('✓ Dismissed', 'success');
+    loadScamIntake();
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+async function siRestore(id) {
+  try {
+    await _patch('scam_intake', `id=eq.${id}`, { dismissed: false });
+    toast('✓ Restored', 'success');
+    loadScamIntake();
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+async function siDelete(id) {
+  if (!confirm('Delete this intake entry? Screenshots will be orphaned in storage until manual cleanup.')) return;
+  try {
+    await _delete('scam_intake', `id=eq.${id}`);
+    toast('✓ Deleted', 'success');
+    loadScamIntake();
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+// Wire up drag-drop once DOM is ready
+function siWireDrop() {
+  const drop  = document.getElementById('si-drop');
+  const input = document.getElementById('si-files');
+  if (!drop || !input || drop.dataset.wired) return;
+  drop.dataset.wired = '1';
+  drop.addEventListener('click', () => input.click());
+  input.addEventListener('change', e => siHandleFiles(e.target.files));
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.style.background = 'var(--surface2)'; });
+  drop.addEventListener('dragleave', () => { drop.style.background = ''; });
+  drop.addEventListener('drop', e => {
+    e.preventDefault();
+    drop.style.background = '';
+    siHandleFiles(e.dataTransfer.files);
+  });
+}
+
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', () => {
   // Wire up panel nav to also load data
@@ -3899,10 +4276,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (orig && orig.includes("'credits'"))  el.addEventListener('click', () => { loadCreditEvents(); });
     if (orig && orig.includes("'userwatch'")) el.addEventListener('click', () => { loadUserWatch(); });
     if (orig && orig.includes("'redditpatterns'")) el.addEventListener('click', () => { loadRedditPatterns(); });
+    if (orig && orig.includes("'scamintake'")) el.addEventListener('click', () => { loadScamIntake(); siWireDrop(); });
   });
   // Warm the admin badges on load
   try { loadUserWatch(); } catch(e) {}
   try { loadRedditPatterns(); } catch(e) {}
+  try { loadScamIntake(); siWireDrop(); } catch(e) {}
 });
 // ── MESSAGE CENTER ──
 let _allReports    = [];

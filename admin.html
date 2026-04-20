@@ -2025,19 +2025,18 @@ tr:hover td { background: var(--bg); }
         <table>
           <thead><tr>
             <th style="width:72px">Photo</th>
-            <th>Set</th>
-            <th>Title (crawler)</th>
-            <th>Price</th>
-            <th>Seller</th>
-            <th>Location</th>
-            <th>Feedback</th>
-            <th>Flags</th>
-            <th>Crawled</th>
-            <th>Status</th>
+            <th style="cursor:pointer;user-select:none" onclick="sqSort('set_name_guess')">Set <span class="sq-sort-arrow" data-col="set_name_guess"></span></th>
+            <th style="cursor:pointer;user-select:none" onclick="sqSort('title')">Title <span class="sq-sort-arrow" data-col="title"></span></th>
+            <th style="cursor:pointer;user-select:none" onclick="sqSort('price_usd')">Price <span class="sq-sort-arrow" data-col="price_usd"></span></th>
+            <th style="cursor:pointer;user-select:none" onclick="sqSort('seller_username')">Seller <span class="sq-sort-arrow" data-col="seller_username"></span></th>
+            <th style="cursor:pointer;user-select:none" onclick="sqSort('location')">Location <span class="sq-sort-arrow" data-col="location"></span></th>
+            <th style="cursor:pointer;user-select:none" onclick="sqSort('seller_feedback_score')">Feedback <span class="sq-sort-arrow" data-col="seller_feedback_score"></span></th>
+            <th style="cursor:pointer;user-select:none" onclick="sqSort('flags')">Flags <span class="sq-sort-arrow" data-col="flags"></span></th>
+            <th style="cursor:pointer;user-select:none" onclick="sqSort('crawled_at')">Crawled <span class="sq-sort-arrow" data-col="crawled_at"></span></th>
             <th style="width:80px"></th>
           </tr></thead>
           <tbody id="sqTbody">
-            <tr><td colspan="11" style="text-align:center;padding:40px;color:var(--text3)">Click "Serial Queue" to load data...</td></tr>
+            <tr><td colspan="10" style="text-align:center;padding:40px;color:var(--text3)">Click "Serial Queue" to load data...</td></tr>
           </tbody>
         </table>
       </div>
@@ -6069,6 +6068,8 @@ let _sqChecklists = {};      // { tableName: [{ id, player, card_number, set_nam
 let _sqLinkedRegistryId = null;   // set when admin picks an existing registry card
 let _sqCurrentImages = [];   // images for the lightbox to step through
 let _sqLightboxIndex = 0;
+let _sqSortField = 'crawled_at'; // default sort
+let _sqSortDir = -1;             // -1 desc, 1 asc
 
 async function loadSerialQueue() {
   try {
@@ -6127,9 +6128,12 @@ function sqRender() {
   else if (_sqFilter === 'skipped')    rows = rows.filter(q => q.status === 'skipped');
 
   if (rows.length === 0) {
-    tb.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:30px;color:var(--text3)">No rows for this filter.</td></tr>';
+    tb.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:30px;color:var(--text3)">No rows for this filter.</td></tr>';
     return;
   }
+
+  // Apply current sort
+  rows = sqApplySort(rows);
 
   tb.innerHTML = rows.slice(0, 200).map(q => {
     const img = (q.image_urls && q.image_urls[0]) || '';
@@ -6142,15 +6146,16 @@ function sqRender() {
       q.fraud_flag ? '<span style="background:var(--red-light);color:var(--red);padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700">FRAUD</span>' : '',
       q.auto_type_guess ? `<span style="background:var(--blue-light);color:var(--blue);padding:2px 6px;border-radius:4px;font-size:10px">${q.auto_type_guess}</span>` : '',
       q.grade_guess ? `<span style="background:var(--purple-light);color:var(--purple);padding:2px 6px;border-radius:4px;font-size:10px">${q.grade_guess}</span>` : '',
+      q.ai_classification ? '<span style="background:var(--purple-light);color:var(--purple);padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700">🤖</span>' : '',
     ].filter(Boolean).join(' ');
-    const statusBadge = q.status === 'pending' ? '<span style="color:var(--purple);font-weight:700">PENDING</span>'
-      : q.status === 'tagged_new' ? '<span style="color:var(--green);font-weight:700">TAGGED·NEW</span>'
-      : q.status === 'tagged_existing' ? '<span style="color:var(--blue);font-weight:700">TAGGED·LINK</span>'
-      : q.status === 'skipped' ? `<span style="color:var(--text3)">SKIPPED</span>${q.skip_reason ? `<div style="font-size:9px;color:var(--text3);font-weight:400;margin-top:2px">${SKIP_REASON_LABELS[q.skip_reason] || q.skip_reason}</div>` : ''}`
-      : q.status;
     const ebayHref = q.ebay_url ? `href="${q.ebay_url}" target="_blank" rel="noopener" onclick="event.stopPropagation()"` : '';
     const titleSafe = (q.title || '—').replace(/"/g, '&quot;');
-    return `<tr style="cursor:pointer" onclick="sqOpenReview(${q.id})">
+    // Subtle row tinting for non-pending statuses (only matters when filter = all)
+    const rowBg = q.status === 'tagged_new'      ? 'background:rgba(5,150,105,0.05);'
+                : q.status === 'tagged_existing' ? 'background:rgba(0,102,204,0.05);'
+                : q.status === 'skipped'         ? 'background:rgba(148,163,184,0.08);opacity:0.7;'
+                : '';
+    return `<tr style="cursor:pointer;${rowBg}" onclick="sqOpenReview(${q.id})">
       <td>${img && q.ebay_url ? `<a ${ebayHref} title="Open eBay listing in new tab"><img src="${img}" style="width:56px;height:56px;object-fit:cover;border-radius:4px;display:block" loading="lazy"></a>` : (img ? `<img src="${img}" style="width:56px;height:56px;object-fit:cover;border-radius:4px" loading="lazy">` : '<div style="width:56px;height:56px;background:var(--surface2);border-radius:4px"></div>')}</td>
       <td style="font-size:11px;font-weight:600;color:var(--purple)">${q.set_name_guess || '—'}</td>
       <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px">${q.ebay_url ? `<a ${ebayHref} style="color:var(--text);text-decoration:none" title="${titleSafe}">${q.title || '—'} <span style="color:var(--blue);font-size:10px">↗</span></a>` : (q.title || '—')}</td>
@@ -6160,10 +6165,57 @@ function sqRender() {
       <td style="font-size:11px;color:var(--text2)">${fb}</td>
       <td>${flags || '—'}</td>
       <td style="font-size:10px;color:var(--text3)">${_sqRelTime(new Date(q.crawled_at))}</td>
-      <td style="font-size:10px">${statusBadge}</td>
       <td><button onclick="event.stopPropagation();sqOpenReview(${q.id})" style="padding:4px 10px;background:var(--purple);color:#fff;border:none;border-radius:4px;font-size:11px;cursor:pointer;font-weight:600">Review</button></td>
     </tr>`;
   }).join('');
+
+  sqUpdateSortArrows();
+}
+
+function sqSort(field) {
+  if (_sqSortField === field) {
+    _sqSortDir *= -1;
+  } else {
+    _sqSortField = field;
+    _sqSortDir = (field === 'crawled_at' || field === 'price_usd' || field === 'seller_feedback_score') ? -1 : 1;
+  }
+  sqRender();
+}
+
+function sqApplySort(rows) {
+  const f = _sqSortField;
+  const d = _sqSortDir;
+  // Computed accessors for fields that aren't direct properties
+  const getter = (q) => {
+    if (f === 'location') return [q.ship_from_city || q.item_location_city, q.ship_from_state || q.item_location_state].filter(Boolean).join(', ').toLowerCase();
+    if (f === 'flags') {
+      // sort by combined flag weight (FRAUD highest, then auto, then grade, then AI)
+      let w = 0;
+      if (q.fraud_flag) w += 1000;
+      if (q.auto_type_guess) w += 100;
+      if (q.grade_guess) w += 10;
+      if (q.ai_classification) w += 1;
+      return w;
+    }
+    if (f === 'crawled_at') return new Date(q.crawled_at || 0).getTime();
+    if (f === 'price_usd') return q.price_usd || 0;
+    if (f === 'seller_feedback_score') return q.seller_feedback_score || -1;
+    if (typeof q[f] === 'string') return q[f].toLowerCase();
+    return q[f] || '';
+  };
+  return [...rows].sort((a, b) => {
+    const va = getter(a), vb = getter(b);
+    if (va < vb) return -1 * d;
+    if (va > vb) return 1 * d;
+    return 0;
+  });
+}
+
+function sqUpdateSortArrows() {
+  document.querySelectorAll('.sq-sort-arrow').forEach(span => {
+    const col = span.getAttribute('data-col');
+    span.textContent = col === _sqSortField ? (_sqSortDir === 1 ? ' ▲' : ' ▼') : '';
+  });
 }
 
 function _sqRelTime(d) {

@@ -6662,9 +6662,11 @@ async function sqSaveTag(mode) {
     }
   }
 
+  // Zero-pad the numerator to match the denominator's digit width
+  // (e.g. /5 → 1/5, /10 → 01/10, /99 → 01/99, /150 → 001/150)
   const edition = isFlipStock
     ? `N/A/${printRun}`              // Flip Stock — copy unknown until fingerprint match
-    : `${editionNum}/${printRun}`;
+    : `${String(editionNum).padStart(String(printRun).length, '0')}/${printRun}`;
 
   const autoType = document.getElementById('sqTagAuto').value || null;
   const autoInkColor = autoType ? (document.getElementById('sqTagAutoInk').value || null) : null;

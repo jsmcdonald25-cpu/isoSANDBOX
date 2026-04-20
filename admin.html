@@ -2297,7 +2297,7 @@ tr:hover td { background: var(--bg); }
         </div>
         <div style="padding:16px 20px">
           <div id="snRejItemLine" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px;margin-bottom:14px;display:flex;gap:10px;align-items:center"></div>
-          <div style="font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.5px;margin-bottom:8px;text-transform:uppercase">Reason (pick one)</div>
+          <div style="font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.5px;margin-bottom:8px;text-transform:uppercase">Reason (tap one or more)</div>
           <div id="snReasonGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px"></div>
           <div style="font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.5px;margin-bottom:6px;text-transform:uppercase">Notes (optional)</div>
           <textarea id="snRejNotes" placeholder="e.g. Title says 'FACSIMILE' — printed signature, not actual auto." style="width:100%;border:1px solid var(--border2);border-radius:6px;padding:8px 10px;font-family:inherit;font-size:12px;min-height:60px;resize:vertical"></textarea>
@@ -6922,14 +6922,19 @@ const SN_REASONS = [
   ['other',               'Other',               'Use notes below'],
 ];
 
+// Selected reason codes for current reject — order = click order. First is primary.
+let _snRejReasonCodes = [];
+
 function snOpenReject(idx){
   const h = _snFiltered[idx];
   const id = h ? snItemId(h) : null;
   if (!h || !id) { toast('No item# captured for this row', 'error'); return; }
   _snRejTarget = h;
-  _snRejReasonCode = null;
+  _snRejReasonCodes = [];
+  _snRejReasonCode = null;   // back-compat with any legacy refs
   document.getElementById('snRejNotes').value = '';
   document.getElementById('snRejConfirmBtn').disabled = true;
+  document.getElementById('snRejConfirmBtn').textContent = '✗ Reject + Block item#';
   document.getElementById('snRejItemIdLine').textContent = id;
   document.getElementById('snRejItemLine').innerHTML = `
     ${h.image ? `<img src="${h.image}" style="width:40px;height:40px;object-fit:cover;border-radius:4px">` : '<div style="width:40px;height:40px;background:var(--bg);border-radius:4px"></div>'}
@@ -6937,28 +6942,47 @@ function snOpenReject(idx){
       <div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${(h.title||'—').replace(/</g,'&lt;')}</div>
       <div style="color:var(--text3);font-size:10px;font-family:'SF Mono',monospace;margin-top:2px">Item# ${id} · $${h.price.toFixed(2)} · ${h.player} · ${h.parallel}</div>
     </div>`;
-  // Build reason buttons
+  // Build reason buttons (multi-select — click any number, click again to deselect)
   const grid = document.getElementById('snReasonGrid');
   grid.innerHTML = SN_REASONS.map(([code,label,sub])=>`
-    <button data-code="${code}" onclick="snPickReason(this)" style="background:var(--bg);border:1px solid var(--border2);color:var(--text);font-size:12px;font-weight:600;padding:10px 12px;border-radius:6px;cursor:pointer;text-align:left;transition:all .1s">
+    <button type="button" data-code="${code}" onclick="snPickReason(this)" style="background:var(--bg);border:1px solid var(--border2);color:var(--text);font-size:12px;font-weight:600;padding:10px 12px;border-radius:6px;cursor:pointer;text-align:left;transition:all .1s;position:relative">
       ${label}<span style="display:block;font-size:10px;font-weight:400;color:var(--text3);margin-top:2px">${sub}</span>
     </button>`).join('');
   document.getElementById('snRejectModal').style.display = 'flex';
 }
 
+function snStyleReasonBtn(btn, selected){
+  if (selected) {
+    btn.style.background = 'var(--red)';
+    btn.style.borderColor = 'var(--red)';
+    btn.style.color = '#fff';
+    btn.querySelectorAll('span').forEach(s => s.style.color = 'rgba(255,255,255,0.8)');
+  } else {
+    btn.style.background = 'var(--bg)';
+    btn.style.borderColor = 'var(--border2)';
+    btn.style.color = 'var(--text)';
+    btn.querySelectorAll('span').forEach(s => s.style.color = 'var(--text3)');
+  }
+}
+
 function snPickReason(btn){
-  _snRejReasonCode = btn.getAttribute('data-code');
-  document.querySelectorAll('#snReasonGrid button').forEach(b => {
-    b.style.background = 'var(--bg)';
-    b.style.borderColor = 'var(--border2)';
-    b.style.color = 'var(--text)';
-    b.querySelectorAll('span').forEach(s => s.style.color = 'var(--text3)');
-  });
-  btn.style.background = 'var(--red)';
-  btn.style.borderColor = 'var(--red)';
-  btn.style.color = '#fff';
-  btn.querySelectorAll('span').forEach(s => s.style.color = 'rgba(255,255,255,0.8)');
-  document.getElementById('snRejConfirmBtn').disabled = false;
+  const code = btn.getAttribute('data-code');
+  const i = _snRejReasonCodes.indexOf(code);
+  if (i >= 0) {
+    _snRejReasonCodes.splice(i, 1);
+    snStyleReasonBtn(btn, false);
+  } else {
+    _snRejReasonCodes.push(code);
+    snStyleReasonBtn(btn, true);
+  }
+  // Primary = first one clicked (kept stable across toggles)
+  _snRejReasonCode = _snRejReasonCodes[0] || null;
+  const n = _snRejReasonCodes.length;
+  const btnEl = document.getElementById('snRejConfirmBtn');
+  btnEl.disabled = n === 0;
+  btnEl.textContent = n > 1
+    ? `✗ Reject + Block item# (${n} reasons)`
+    : '✗ Reject + Block item#';
 }
 
 function snCloseReject(){
@@ -6968,7 +6992,7 @@ function snCloseReject(){
 }
 
 async function snConfirmReject(){
-  if (!_snRejTarget || !_snRejReasonCode) return;
+  if (!_snRejTarget || _snRejReasonCodes.length === 0) return;
   const h = _snRejTarget;
   const id = snItemId(h);
   if (!id) { toast('Lost item# — try again', 'error'); return; }
@@ -6983,7 +7007,8 @@ async function snConfirmReject(){
       title:           h.title || null,
       description:     h.description || h.shortDescription || null,
       item_specifics:  h.itemSpecifics || null,
-      reason_code:     _snRejReasonCode,
+      reason_code:     _snRejReasonCodes[0],   // primary (first picked) for breakdown stats
+      reason_codes:    _snRejReasonCodes,      // full array — multi-tag
       reason_notes:    notes || null,
       rejected_by:     _adminUser?.id || null,
       rejected_by_name:_adminUser?.username || _adminUser?.email?.split('@')[0] || 'admin',

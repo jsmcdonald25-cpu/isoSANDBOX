@@ -3,7 +3,15 @@
 <head>
     <meta name="robots" content="noindex, nofollow">
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#7c3aed">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ISO Admin">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="/admin-manifest.json">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
 <title>GrailISO · Admin</title>
 <!-- admin_03_20_25_1649 -->
 <script src="/js/supabase.js"></script>
@@ -289,10 +297,10 @@ tr:hover td { background: var(--bg); }
   .grid-3 { grid-template-columns: 1fr 1fr; }
   .pbi-grid { grid-template-columns: repeat(3, 1fr) !important; }
 }
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .sidebar { position: fixed; left: -260px; width: 240px; transition: left .2s; z-index: 1000; }
   .sidebar.open { left: 0; }
-  .main { margin-left: 0 !important; padding: 12px !important; }
+  .main { margin-left: 0 !important; padding: 56px 12px 12px !important; }
   .panel-header { padding: 0; }
   .grid-2 { grid-template-columns: 1fr !important; }
   .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -302,9 +310,86 @@ tr:hover td { background: var(--bg); }
   .mob-ham { display: flex !important; }
   .mob-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; }
   .mob-overlay.open { display: block; }
+
+  /* ── SERIAL QUEUE: table → cards on mobile ── */
+  #panel-serialqueue table, #panel-serialqueue thead, #panel-serialqueue tbody,
+  #panel-serialqueue tr, #panel-serialqueue td { display: block; }
+  #panel-serialqueue thead { display: none; }
+  #panel-serialqueue tbody tr {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 10px; margin-bottom: 10px;
+    display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: flex-start;
+  }
+  #panel-serialqueue tbody tr:hover td { background: transparent; }
+  #panel-serialqueue tbody td { padding: 0; border: none; font-size: 12px; }
+  /* Photo */
+  #panel-serialqueue tbody td:nth-child(1) { flex: 0 0 64px; }
+  #panel-serialqueue tbody td:nth-child(1) img,
+  #panel-serialqueue tbody td:nth-child(1) > div {
+    width: 64px !important; height: 64px !important;
+  }
+  /* Right-side info column (set / title / price+time) wraps next to photo */
+  #panel-serialqueue tbody td:nth-child(2) { flex: 1 1 calc(100% - 80px); font-weight: 600; }
+  #panel-serialqueue tbody td:nth-child(3) {
+    flex: 1 1 calc(100% - 80px);
+    max-width: none !important; white-space: normal !important;
+    overflow: visible !important; text-overflow: clip !important;
+    line-height: 1.35;
+  }
+  #panel-serialqueue tbody td:nth-child(4) { flex: 0 0 auto; font-weight: 800; }
+  #panel-serialqueue tbody td:nth-child(9) { flex: 1 1 auto; text-align: right; }
+  /* Meta row — seller/loc/feedback/flags/status wrap full-width below */
+  #panel-serialqueue tbody td:nth-child(5),
+  #panel-serialqueue tbody td:nth-child(6),
+  #panel-serialqueue tbody td:nth-child(7),
+  #panel-serialqueue tbody td:nth-child(8),
+  #panel-serialqueue tbody td:nth-child(10) {
+    flex: 1 1 100%; font-size: 11px;
+  }
+  /* Review button — full width, prominent */
+  #panel-serialqueue tbody td:nth-child(11) { flex: 1 1 100%; margin-top: 6px; }
+  #panel-serialqueue tbody td:nth-child(11) button {
+    width: 100%; padding: 10px !important; font-size: 13px !important;
+  }
+
+  /* ── SERIAL REVIEW MODAL: 1-col stack on mobile ── */
+  #sqReviewModal { padding: 0 !important; }
+  #sqReviewModal > div {
+    max-width: 100% !important; min-height: 100vh; border-radius: 0 !important;
+  }
+  #sqReviewModal > div > div:nth-child(2) {
+    grid-template-columns: 1fr !important;
+  }
+  #sqReviewModal > div > div:nth-child(2) > div:first-child {
+    border-right: none !important; border-bottom: 1px solid var(--border);
+    padding: 14px !important;
+  }
+  #sqReviewModal > div > div:nth-child(2) > div:last-child {
+    padding: 14px !important;
+  }
+  /* Tagging form grids collapse to 1-2 cols */
+  #sqReviewModal [style*="grid-template-columns:1fr 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+  #sqReviewModal [style*="grid-template-columns:1fr 1fr"] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  /* Save/Link/Skip buttons stack full width */
+  #sqReviewModal [style*="flex-wrap:wrap"] > button,
+  #sqReviewModal [style*="flex-wrap:wrap"] > select {
+    flex: 1 1 100% !important; min-width: 0;
+  }
+  /* Stats row wraps */
+  #panel-serialqueue [style*="display:flex;gap:10px"] > div { flex: 1 1 45%; min-width: 0; }
 }
 @media (max-width: 600px) {
   .pbi-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  /* Z Fold 7 cover display (~374px) */
+  .mob-ham { top: 8px; left: 8px; }
+  .main { padding: 50px 8px 8px !important; }
+  .panel-title { font-size: 17px !important; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  #panel-serialqueue [style*="display:flex;gap:10px"] > div { flex: 1 1 100%; }
 }
 
 /* ──────── PBI ANALYTICS DASHBOARD ──────── */
@@ -6842,6 +6927,13 @@ async function sqSaveTag(mode) {
   } catch (e) {
     toast('Save failed: ' + e.message, 'err');
   }
+}
+
+// ── PWA: register service worker (installable admin app) ──
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(e => console.warn('SW register failed', e));
+  });
 }
 
 </script>

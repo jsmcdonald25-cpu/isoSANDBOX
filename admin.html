@@ -2108,19 +2108,10 @@ tr:hover td { background: var(--bg); }
             <input id="sqTagPlayerSearch" placeholder="Type to filter players…" oninput="sqFilterPlayers()" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:var(--radius);margin-bottom:6px">
             <select id="sqTagPlayer" onchange="sqLoadCardsForPlayer()" size="6" style="width:100%;padding:4px;border:1px solid var(--border2);border-radius:var(--radius);margin-bottom:12px;font-family:var(--font);font-size:12px"></select>
 
-            <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Card Number</label>
-            <select id="sqTagCard" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:var(--radius);margin-bottom:12px"></select>
-
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
               <div>
-                <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Edition (of /5)</label>
-                <select id="sqTagEdition" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:var(--radius)">
-                  <option value="1/5">1/5</option>
-                  <option value="2/5">2/5</option>
-                  <option value="3/5">3/5</option>
-                  <option value="4/5">4/5</option>
-                  <option value="5/5">5/5</option>
-                </select>
+                <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Card Number</label>
+                <select id="sqTagCard" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:var(--radius)"></select>
               </div>
               <div>
                 <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Auto Type</label>
@@ -2129,6 +2120,22 @@ tr:hover td { background: var(--bg); }
                   <option value="on-card">On-card</option>
                   <option value="sticker-auto">Sticker auto</option>
                 </select>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+              <div>
+                <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Print Run (denominator)</label>
+                <input list="sqPrintRunOptions" id="sqTagPrintRun" type="number" min="1" value="5" placeholder="e.g. 5" oninput="sqUpdateEditionMax()" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:var(--radius)">
+                <datalist id="sqPrintRunOptions">
+                  <option value="1"><option value="5"><option value="10"><option value="20">
+                  <option value="25"><option value="50"><option value="75"><option value="99">
+                  <option value="100"><option value="150"><option value="200"><option value="250">
+                </datalist>
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Edition # (which copy)</label>
+                <input id="sqTagEdition" type="number" min="1" max="5" placeholder="1-5" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:var(--radius)">
               </div>
             </div>
 
@@ -6148,10 +6155,17 @@ async function sqOpenReview(queueId) {
     : '2026_topps_series1_baseball';
   document.getElementById('sqTagSet').value = setKey;
 
-  // Edition guess
+  // Print run + edition guess — parse "/5" or "3/5" or "/99" etc.
   const edGuess = q.serial_edition_guess || '/5';
-  const edSel = document.getElementById('sqTagEdition');
-  if (['1/5','2/5','3/5','4/5','5/5'].includes(edGuess)) edSel.value = edGuess;
+  const edParts = edGuess.split('/');
+  const printRunGuess = parseInt(edParts[1], 10) || 5;
+  const editionGuess = (edParts[0] && /^\d+$/.test(edParts[0])) ? parseInt(edParts[0], 10) : '';
+  const printRunInput = document.getElementById('sqTagPrintRun');
+  const editionInput  = document.getElementById('sqTagEdition');
+  printRunInput.value = printRunGuess;
+  editionInput.max    = printRunGuess;
+  editionInput.placeholder = `1-${printRunGuess}`;
+  editionInput.value  = editionGuess;
 
   // Auto type guess
   if (q.auto_type_guess) document.getElementById('sqTagAuto').value = q.auto_type_guess;
@@ -6269,6 +6283,16 @@ function sqPickExisting(id, player, cardNumber, edition) {
   ind.innerHTML = `Linked to registry #${id}: <strong>${player}</strong> · #${cardNumber || '?'} · ${edition}. <a href="#" onclick="event.preventDefault();_sqLinkedRegistryId=null;document.getElementById('sqLinkedIndicator').style.display='none'" style="color:var(--red);font-size:11px">Clear</a>`;
 }
 
+function sqUpdateEditionMax() {
+  const pr = parseInt(document.getElementById('sqTagPrintRun').value, 10);
+  const ed = document.getElementById('sqTagEdition');
+  if (pr && pr > 0) {
+    ed.max = pr;
+    ed.placeholder = `1-${pr}`;
+    if (parseInt(ed.value, 10) > pr) ed.value = '';
+  }
+}
+
 async function sqSaveSkip(reason) {
   if (!_sqCurrent) return;
   try {
@@ -6312,7 +6336,11 @@ async function sqSaveTag(mode) {
 
   const checklistCardId = parseInt(cardOpt.value, 10);
   const cardNumber = cardOpt.getAttribute('data-card') || null;
-  const edition = document.getElementById('sqTagEdition').value;
+  const printRun = parseInt(document.getElementById('sqTagPrintRun').value, 10);
+  const editionNum = parseInt(document.getElementById('sqTagEdition').value, 10);
+  if (!printRun || printRun < 1) { toast('Enter a print run', 'err'); return; }
+  if (!editionNum || editionNum < 1 || editionNum > printRun) { toast(`Edition # must be 1–${printRun}`, 'err'); return; }
+  const edition = `${editionNum}/${printRun}`;
   const autoType = document.getElementById('sqTagAuto').value || null;
   const graded = document.getElementById('sqTagGraded').value === 'true';
   const gradeCo = document.getElementById('sqTagGradeCo').value || null;

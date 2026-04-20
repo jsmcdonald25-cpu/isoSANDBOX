@@ -7712,6 +7712,46 @@ function sqLoadCardsForPlayer() {
   sel.innerHTML = list.length
     ? list.map(r => `<option value="${r.id}" data-card="${r.card_number}">#${r.card_number} · ${r.set_name}</option>`).join('')
     : '<option value="">No cards — check set / player</option>';
+  sel.onchange = sqAutoCheckRegistry;
+  // Auto-check registry for existing entries matching this player in this set
+  sqAutoCheckRegistry();
+}
+
+// When admin picks a player/card, query registry for existing entries matching
+// this exact card so they show up in Link-to-Existing without manual search.
+async function sqAutoCheckRegistry() {
+  const setTable = document.getElementById('sqTagSet').value;
+  const player = document.getElementById('sqTagPlayer').value;
+  if (!player) {
+    document.getElementById('sqExistingResults').innerHTML = '';
+    return;
+  }
+  try {
+    const cardOpt = document.getElementById('sqTagCard').selectedOptions[0];
+    const cardNumber = cardOpt?.getAttribute('data-card');
+    let q = `select=id,player,card_number,set_name,serial_edition,parallel_name,parallel_color,current_price,current_owner_seller,current_owner_location_city&checklist_set_table=eq.${encodeURIComponent(setTable)}&player=eq.${encodeURIComponent(player)}&order=serial_edition.asc`;
+    if (cardNumber) q += `&card_number=eq.${encodeURIComponent(cardNumber)}`;
+    const rows = await _get('iso_serial_registry', q);
+    const results = document.getElementById('sqExistingResults');
+    const searchBox = document.getElementById('sqExistingSearch');
+    if (!rows.length) {
+      results.innerHTML = '';
+      return;
+    }
+    if (!searchBox.value) searchBox.value = player;
+    results.innerHTML = `<div style="font-size:11px;color:var(--purple);font-weight:700;letter-spacing:.5px;margin-bottom:6px">⚠ ${rows.length} existing registry ${rows.length === 1 ? 'entry' : 'entries'} for this ${cardNumber ? 'card' : 'player'}:</div>` +
+      rows.map(r => {
+        const parallel = [r.parallel_color, r.parallel_name].filter(Boolean).join(' ') || '—';
+        const escPlayer = (r.player||'').replace(/'/g,"\\'");
+        const escCard = r.card_number ? `'${String(r.card_number).replace(/'/g,"\\'")}'` : 'null';
+        return `<div onclick="sqPickExisting(${r.id},'${escPlayer}',${escCard},'${r.serial_edition}')" style="padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:4px;cursor:pointer;font-size:12px">
+        <div style="font-weight:700">${r.player} · #${r.card_number || '?'} · ${r.serial_edition} · ${parallel}</div>
+        <div style="font-size:10px;color:var(--text2)">${r.set_name || ''} · current: ${r.current_owner_seller || '—'}${r.current_owner_location_city ? ' · ' + r.current_owner_location_city : ''} · $${(r.current_price||0).toFixed(2)}</div>
+      </div>`;
+      }).join('');
+  } catch (e) {
+    console.warn('Auto-check registry failed:', e.message);
+  }
 }
 
 async function sqSearchExisting() {

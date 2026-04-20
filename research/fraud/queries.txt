@@ -1,0 +1,77 @@
+# Fraud research queries — defensive threat-intel for GrailISO v2
+# One per line, # for comments. Queries run against DuckDuckGo HTML search.
+#
+# Framing notes:
+#   - "how to spot X"      → detection articles (useful but you've seen these)
+#   - "how X is done"      → investigative / method-descriptive pieces
+#   - "busted / arrested"  → news coverage that details the operation
+#   - "I got scammed"      → first-person forum/reddit accounts with mechanics
+#   - site:reddit.com      → community threads, often very detailed
+
+# ---------- METHOD / PROCESS (third-person offensive angle) ----------
+how counterfeiters make fake sports cards
+how fake pokemon cards are made
+how counterfeit trading cards are produced
+card trimming process step by step
+how to trim a sports card without detection
+how card doctoring is done
+card pressing technique collectors
+card whitening process bleach
+recoloring faded sports cards method
+how booster packs are resealed
+pokemon booster pack reseal method
+weighed pokemon packs how it works
+how fake PSA slabs are made
+how counterfeit graded slabs are produced
+reholdering graded cards method
+crack and resubmit grading process
+how shill bidding works ebay cards
+
+# ---------- FIRST-PERSON / FORUM ACCOUNTS ----------
+site:reddit.com sports card scam story
+site:reddit.com pokemon card fake story
+site:reddit.com got scammed ebay cards
+site:reddit.com empty box return scam cards
+site:reddit.com trimmed card sold as real
+site:reddit.com resealed booster box scammed
+site:blowoutforums.com counterfeit
+site:blowoutforums.com scam
+site:net54baseball.com altered cards
+
+# ---------- INVESTIGATIVE / NEWS (operations detailed) ----------
+counterfeit sports card ring arrested
+fake pokemon card bust
+counterfeit trading card operation charged
+card grading fraud indictment
+shill bidding sports cards lawsuit
+ebay card scam arrested
+mail fraud trading cards case
+
+# ---------- SPECIFIC TECHNIQUES ----------
+reprint card passed as original
+inkjet counterfeit cards detection
+photolithography fake cards
+edge re-coloring sports card
+razor blade card trimming
+guillotine card trimming
+card soaking technique
+card recoloring sharpie
+heat gun card flattening
+acetone card cleaning fraud
+magic eraser card surface
+resealed wax pack technique
+
+# ---------- BUYER-SIDE SCAMS AGAINST SELLERS ----------
+how empty box return scam works ebay
+how card swap return scam works
+how fake tracking number scam works
+chargeback fraud trading cards how
+how buyers scam card sellers
+ebay card return swap method
+
+# ---------- PLATFORM-SPECIFIC ----------
+whatnot live card scam methods
+facebook marketplace card scam techniques
+tiktok live card scam method
+mercari card scam process
+ebay authenticity guarantee loopholes

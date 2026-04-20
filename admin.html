@@ -8642,13 +8642,17 @@ async function sqSaveTag(mode) {
   try {
     let registryId;
     if (mode === 'new') {
-      // Dedupe guard: (set_table, player, card_number, serial_edition) uniquely
-      // identifies a physical card. If a registry row already exists for the
-      // same physical card, auto-merge instead of creating a duplicate.
+      // Dedupe guard matches the DB unique index (iso_serial_registry_unique_physical):
+      //   (checklist_set_table, checklist_card_id, serial_edition, COALESCE(parallel_name,''))
+      // Different parallels of the same card are distinct rows; NULL parallel is treated
+      // as empty string so two NULL-parallel rows still collide.
+      const parallelFilter = parallelName
+        ? `&parallel_name=eq.${encodeURIComponent(parallelName)}`
+        : `&parallel_name=is.null`;
       const existingQuery = `checklist_set_table=eq.${encodeURIComponent(setTable)}`
-        + `&player=eq.${encodeURIComponent(player)}`
-        + `&card_number=eq.${encodeURIComponent(cardNumber)}`
+        + `&checklist_card_id=eq.${checklistCardId}`
         + `&serial_edition=eq.${encodeURIComponent(edition)}`
+        + parallelFilter
         + `&select=id&limit=1`;
       const existingMatch = await _get('iso_serial_registry', existingQuery);
       if (existingMatch && existingMatch.length > 0) {

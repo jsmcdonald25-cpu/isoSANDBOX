@@ -7248,9 +7248,9 @@ function snApply(){
     if(_snTypeF==='market'&&h.isMisspelling)return false;
     if(_snTypeF==='bin'&&h.type!=='BIN')return false;
     if(_snTypeF==='auction'&&h.type!=='AUCTION')return false;
-    // Layer 1: exact item# block (permanent reject list) — use URL fallback too
+    // Layer 1: remove rows already actioned (reject OR confirm) — URL fallback included
     const _id = snItemId(h);
-    if(_id && _snRejectedIds.has(_id)) return false;
+    if(_id && (_snRejectedIds.has(_id) || _snConfirmedIds.has(_id))) return false;
     // Layer 2: keyword blocklist filters titles AND descriptions
     if(blockTerms.length){
       const t = (h.title||'').toLowerCase();

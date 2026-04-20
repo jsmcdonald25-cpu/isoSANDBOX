@@ -17,10 +17,13 @@
 
 require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') });
 
+const { classifyListing } = require('./ai-classify');
+
 const EBAY_CLIENT_ID        = process.env.EBAY_CLIENT_ID;
 const EBAY_CLIENT_SECRET    = process.env.EBAY_CLIENT_SECRET;
 const SUPABASE_URL          = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const AI_ENABLED            = !!process.env.ANTHROPIC_API_KEY;
 
 if (!EBAY_CLIENT_ID || !EBAY_CLIENT_SECRET) {
   throw new Error('Missing EBAY_CLIENT_ID / EBAY_CLIENT_SECRET in .env');
@@ -261,6 +264,28 @@ function parseListingToQueueRecord(searchItem, itemDetail, setLabel) {
   };
 }
 
+// ─── AI classify pass — fills ai_classification on records ────
+async function aiClassifyRecords(records, setLabel) {
+  if (!AI_ENABLED || records.length === 0) return 0;
+  let classifyCount = 0;
+  for (const rec of records) {
+    try {
+      const ai = await classifyListing({
+        title: rec.title,
+        description: rec.description,
+        setHint: setLabel,
+      });
+      if (ai) {
+        rec.ai_classification = ai;
+        classifyCount++;
+      }
+    } catch (_) {
+      // Already logged inside classifyListing — skip silently
+    }
+  }
+  return classifyCount;
+}
+
 // ─── Supabase REST helpers ──────────────────────────────────
 const sbHeaders = {
   'apikey': SUPABASE_SERVICE_ROLE,
@@ -436,7 +461,14 @@ async function crawlSet({ token, set, runEnvironment }) {
     await sleep(SLEEP_MS);
   }
 
-  // 4. Bulk insert to Supabase
+  // 4. AI pre-classify each new record (Haiku 4.5)
+  if (AI_ENABLED && queueRecords.length > 0) {
+    console.log(`  AI classifying ${queueRecords.length} new records…`);
+    const classified = await aiClassifyRecords(queueRecords, set.label);
+    console.log(`    ${classified} classified, ${queueRecords.length - classified} skipped`);
+  }
+
+  // 5. Bulk insert to Supabase
   const { inserted, errors } = await insertQueueRecords(queueRecords);
   perSetStats.newListings = inserted;
   console.log(`  Inserted ${inserted} new queue records (${errors} errors)`);

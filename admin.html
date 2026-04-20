@@ -2099,6 +2099,15 @@ tr:hover td { background: var(--bg); }
               <button onclick="sqUndoSkip()" style="padding:6px 12px;background:var(--blue);color:#fff;border:none;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer">↩ Undo Skip → Pending</button>
             </div>
 
+            <div id="sqModalAiBanner" style="display:none;background:var(--purple-light);border:1px solid var(--purple);border-radius:var(--radius);padding:12px;margin-bottom:12px">
+              <div style="font-size:11px;font-weight:700;color:var(--purple);letter-spacing:1px;margin-bottom:6px">🤖 AI SUGGESTED CLASSIFICATION</div>
+              <div style="font-size:12px;color:var(--text);line-height:1.5" id="sqModalAiSummary"></div>
+              <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+                <button onclick="sqApplyAi()" style="padding:6px 12px;background:var(--purple);color:#fff;border:none;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer">Apply to form</button>
+                <span id="sqModalAiConfidence" style="font-size:10px;color:var(--text3)"></span>
+              </div>
+            </div>
+
             <details style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px">
               <summary style="font-size:11px;color:var(--text2);cursor:pointer;font-weight:600">Raw listing description</summary>
               <div id="sqModalDescription" style="font-size:11px;color:var(--text2);margin-top:8px;white-space:pre-wrap;max-height:200px;overflow-y:auto"></div>
@@ -6208,6 +6217,31 @@ async function sqOpenReview(queueId) {
     document.getElementById('sqModalSkippedBanner').style.display = 'none';
   }
 
+  // AI classification banner — shown if Claude pre-classified this listing
+  const ai = q.ai_classification;
+  if (ai && typeof ai === 'object') {
+    document.getElementById('sqModalAiBanner').style.display = 'block';
+    const parts = [];
+    if (ai.set_name)         parts.push(`<strong>Set:</strong> ${ai.set_name}`);
+    if (ai.player_name)      parts.push(`<strong>Player:</strong> ${ai.player_name}`);
+    if (ai.card_number)      parts.push(`<strong>Card #:</strong> ${ai.card_number}`);
+    if (ai.parallel_name)    parts.push(`<strong>Parallel:</strong> ${ai.parallel_name}`);
+    const colorPart = ai.parallel_color || (ai.parallel_name && /\b(red|orange|gold|black|green|blue|pink|silver)\b/i.exec(ai.parallel_name)?.[1]);
+    if (colorPart)           parts.push(`<strong>Color:</strong> ${colorPart}`);
+    if (ai.print_run)        parts.push(`<strong>Print run:</strong> /${ai.print_run}`);
+    if (ai.edition_num)      parts.push(`<strong>Copy:</strong> ${ai.edition_num}`);
+    if (ai.auto_type && ai.auto_type !== 'none') parts.push(`<strong>Auto:</strong> ${ai.auto_type}`);
+    if (ai.is_inscribed)     parts.push(`<strong>Inscribed:</strong> ${ai.inscription_text || 'yes'}`);
+    if (ai.is_multi_card_lot) parts.push(`<span style="color:var(--red)">⚠ multi-card lot</span>`);
+    if (ai.is_insert_subset) parts.push(`<span style="color:var(--yellow)">insert: ${ai.insert_subset_name || '?'}</span>`);
+    if (ai.reject_reason && ai.reject_reason !== 'none') parts.push(`<span style="color:var(--red)">reject: ${ai.reject_reason}</span>`);
+    if (ai.notes)            parts.push(`<em>note: ${ai.notes}</em>`);
+    document.getElementById('sqModalAiSummary').innerHTML = parts.join(' · ');
+    document.getElementById('sqModalAiConfidence').textContent = `confidence: ${ai.confidence || '?'}`;
+  } else {
+    document.getElementById('sqModalAiBanner').style.display = 'none';
+  }
+
   document.getElementById('sqModalDescription').textContent = q.description || '(no description captured)';
 
   // Seed tag form from crawler guesses
@@ -6347,6 +6381,73 @@ function sqPickExisting(id, player, cardNumber, edition) {
   const ind = document.getElementById('sqLinkedIndicator');
   ind.style.display = 'block';
   ind.innerHTML = `Linked to registry #${id}: <strong>${player}</strong> · #${cardNumber || '?'} · ${edition}. <a href="#" onclick="event.preventDefault();_sqLinkedRegistryId=null;document.getElementById('sqLinkedIndicator').style.display='none'" style="color:var(--red);font-size:11px">Clear</a>`;
+}
+
+function sqApplyAi() {
+  if (!_sqCurrent || !_sqCurrent.ai_classification) return;
+  const ai = _sqCurrent.ai_classification;
+
+  // Set the set dropdown
+  if (ai.set_name === 'Heritage')   document.getElementById('sqTagSet').value = '2026_topps_heritage_baseball';
+  else if (ai.set_name === 'Series 1') document.getElementById('sqTagSet').value = '2026_topps_series1_baseball';
+
+  // Trigger checklist load + filter to the AI's player
+  sqLoadPlayersForSet().then(() => {
+    if (ai.player_name) {
+      document.getElementById('sqTagPlayerSearch').value = ai.player_name;
+      sqFilterPlayers();
+      // Try to select the matching player exactly
+      const sel = document.getElementById('sqTagPlayer');
+      for (const opt of sel.options) {
+        if (opt.value === ai.player_name) { sel.value = ai.player_name; break; }
+      }
+      sqLoadCardsForPlayer();
+      // Try to select the matching card #
+      if (ai.card_number) {
+        const cardSel = document.getElementById('sqTagCard');
+        for (const opt of cardSel.options) {
+          if (opt.getAttribute('data-card') === String(ai.card_number)) { cardSel.value = opt.value; break; }
+        }
+      }
+    }
+  }).catch(() => {});
+
+  // Auto type + ink
+  document.getElementById('sqTagAuto').value = (ai.auto_type && ai.auto_type !== 'none') ? ai.auto_type : '';
+  sqAutoInkVisibility();
+  // Ink color isn't extracted by the model yet — leave default Black for autos
+
+  // Parallel + color
+  if (ai.parallel_name) {
+    document.getElementById('sqTagParallel').value = ai.parallel_name;
+    sqOnParallelChange();
+  }
+  if (ai.parallel_color) {
+    document.getElementById('sqTagColor').value = ai.parallel_color;
+  } else if (ai.parallel_name) {
+    // Try to extract color from parallel name
+    const colorMatch = /\b(Red|Orange|Gold|Black|Green|Blue|Pink|Silver|Heritage Orange|Light Blue|Dark Gray|Dark Green)\b/i.exec(ai.parallel_name);
+    if (colorMatch) document.getElementById('sqTagColor').value = colorMatch[1];
+  }
+  sqInferPrintRunFromParallel();
+
+  // Print run + edition (overrides inferred values if AI extracted explicit ones)
+  if (ai.print_run && ai.print_run >= 1 && ai.print_run < 300) {
+    document.getElementById('sqTagPrintRun').value = ai.print_run;
+    sqUpdateEditionMax();
+  }
+  if (ai.edition_num) {
+    document.getElementById('sqTagEdition').value = ai.edition_num;
+  }
+
+  // Inscription
+  if (ai.is_inscribed) {
+    document.getElementById('sqTagInscribed').checked = true;
+    document.getElementById('sqTagInscription').disabled = false;
+    document.getElementById('sqTagInscription').value = ai.inscription_text || '';
+  }
+
+  toast('AI suggestions applied', 'ok');
 }
 
 function sqLightbox(index) {

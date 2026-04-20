@@ -2454,7 +2454,10 @@ tr:hover td { background: var(--bg); }
         </div>
       </div>
 
-      <div id="sqLastRun" style="font-size:11px;color:var(--text3);margin-bottom:8px"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap">
+        <div id="sqLastRun" style="font-size:11px;color:var(--text3)"></div>
+        <button id="sqRunCrawlBtn" onclick="sqRunCrawl()" style="background:var(--purple);color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap">▶ Run crawl now</button>
+      </div>
 
       <!-- Queue table -->
       <div class="table-wrap">
@@ -7854,6 +7857,32 @@ let _sqCurrentImages = [];   // images for the lightbox to step through
 let _sqLightboxIndex = 0;
 let _sqSortField = 'crawled_at'; // default sort
 let _sqSortDir = -1;             // -1 desc, 1 asc
+
+// Manually trigger the iso-serial crawler via GitHub workflow_dispatch.
+async function sqRunCrawl() {
+  const btn = document.getElementById('sqRunCrawlBtn');
+  if (!btn) return;
+  const orig = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Dispatching…';
+  try {
+    const res = await fetch('/.netlify/functions/iso-serial-dispatch', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + (_token || '') },
+    });
+    const d = await res.json().catch(() => ({}));
+    if (!res.ok || d.ok === false) {
+      throw new Error(d.error || d.gh_response || `HTTP ${res.status}`);
+    }
+    toast('Crawl queued — GitHub will pick it up in ~30s. Re-check Serial Queue in ~2 min for fresh rows.', 'success');
+    btn.textContent = '✓ Queued';
+    setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 4000);
+  } catch (e) {
+    toast('Crawl dispatch failed: ' + (e.message || 'unknown'), 'error');
+    btn.textContent = orig;
+    btn.disabled = false;
+  }
+}
 
 async function loadSerialQueue() {
   try {

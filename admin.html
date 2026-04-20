@@ -2247,6 +2247,7 @@ tr:hover td { background: var(--bg); }
               </div>
               <div id="sqExistingResults" style="max-height:140px;overflow-y:auto;margin-bottom:12px"></div>
               <div id="sqLinkedIndicator" style="display:none;background:var(--blue-light);border:1px solid var(--blue);border-radius:var(--radius);padding:8px 12px;margin-bottom:12px;font-size:12px;color:var(--blue)"></div>
+              <div id="sqChainHistory" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px;margin-bottom:12px;max-height:240px;overflow-y:auto"></div>
             </div>
 
             <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
@@ -6052,6 +6053,39 @@ const SQ_SETS = {
   '2026_topps_series1_baseball': { label: 'Series 1', guess: 'Series 1' },
   '2026_topps_heritage_baseball': { label: 'Heritage', guess: 'Heritage' },
 };
+// Defect keywords — detects mentions of condition issues in listing text.
+// Used for provenance cross-referencing: if a prior chain entry mentioned
+// a crease and a later seller doesn't, that's a fraud signal (defect hidden).
+const DEFECT_KEYWORDS = [
+  'crease', 'creased',
+  'bent', 'bend',
+  'ding', 'dinged', 'dent', 'dented',
+  'soft corner', 'soft corners', 'rounded corner', 'corner wear', 'worn corner',
+  'surface scratch', 'scratch', 'scuff', 'scuffed',
+  'print line', 'print defect', 'print spot',
+  'stain', 'stained', 'discolor', 'discolored',
+  'warp', 'warped',
+  'fade', 'faded',
+  'hairline', 'hair line', 'micro scratch',
+  'off-center', 'poor centering',
+  'played condition', 'rough shape', 'damaged',
+  'as-is', 'as is', 'no returns', 'sold as is',
+  'chip', 'chipped',
+  'whitening', 'edge wear',
+];
+
+function sqExtractDefects(text) {
+  if (!text) return [];
+  const lower = text.toLowerCase();
+  const found = new Set();
+  for (const kw of DEFECT_KEYWORDS) {
+    // Word boundary match for single-word keywords, substring for multi-word
+    const re = new RegExp(kw.includes(' ') ? kw.replace(/\s+/g, '\\s+') : `\\b${kw}\\b`, 'i');
+    if (re.test(lower)) found.add(kw);
+  }
+  return Array.from(found);
+}
+
 const SKIP_REASON_LABELS = {
   not_a_5: 'Not a /5 card (search noise)',
   cant_id_copy: "Is /5, can't ID copy",
@@ -6353,6 +6387,8 @@ async function sqOpenReview(queueId) {
   document.getElementById('sqExistingSearch').value = '';
   document.getElementById('sqExistingResults').innerHTML = '';
   document.getElementById('sqLinkedIndicator').style.display = 'none';
+  document.getElementById('sqChainHistory').style.display = 'none';
+  document.getElementById('sqChainHistory').innerHTML = '';
 
   await sqLoadPlayersForSet();
 
@@ -6430,11 +6466,47 @@ async function sqSearchExisting() {
   }
 }
 
-function sqPickExisting(id, player, cardNumber, edition) {
+async function sqPickExisting(id, player, cardNumber, edition) {
   _sqLinkedRegistryId = id;
   const ind = document.getElementById('sqLinkedIndicator');
   ind.style.display = 'block';
-  ind.innerHTML = `Linked to registry #${id}: <strong>${player}</strong> · #${cardNumber || '?'} · ${edition}. <a href="#" onclick="event.preventDefault();_sqLinkedRegistryId=null;document.getElementById('sqLinkedIndicator').style.display='none'" style="color:var(--red);font-size:11px">Clear</a>`;
+  ind.innerHTML = `Linked to registry #${id}: <strong>${player}</strong> · #${cardNumber || '?'} · ${edition}. <a href="#" onclick="event.preventDefault();_sqLinkedRegistryId=null;document.getElementById('sqLinkedIndicator').style.display='none';document.getElementById('sqChainHistory').style.display='none'" style="color:var(--red);font-size:11px">Clear</a>`;
+
+  // Fetch the existing card's ownership chain and surface description history
+  // for fraud cross-referencing (did prior listings mention defects that this one is hiding?)
+  try {
+    const [existing] = await _get('iso_serial_registry', `id=eq.${id}&select=ownership_chain`);
+    const prior = Array.isArray(existing?.ownership_chain) ? existing.ownership_chain : [];
+    const cur = _sqCurrent || {};
+    const currentDefects = sqExtractDefects(`${cur.title || ''}\n${cur.description || ''}`);
+    const priorDefects = new Set();
+    prior.forEach(p => (p.defects_mentioned || []).forEach(d => priorDefects.add(d)));
+    const hiddenDefects = Array.from(priorDefects).filter(d => !currentDefects.includes(d));
+
+    const h = document.getElementById('sqChainHistory');
+    h.style.display = 'block';
+    let html = `<div style="font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.5px;margin-bottom:6px">PRIOR LISTINGS (${prior.length})</div>`;
+    if (hiddenDefects.length > 0) {
+      html += `<div style="background:var(--red-light);border:1px solid var(--red);border-radius:4px;padding:8px;margin-bottom:8px;font-size:11px;color:var(--red)">⚠ <strong>Defect mismatch:</strong> prior listings mentioned <em>${hiddenDefects.join(', ')}</em> — this listing does not. Possible fraud (defect hidden).</div>`;
+    }
+    if (prior.length === 0) {
+      html += `<div style="font-size:11px;color:var(--text3)">No prior listings on this registry card.</div>`;
+    } else {
+      html += prior.slice(-4).reverse().map(p => {
+        const defects = (p.defects_mentioned || []).length
+          ? `<span style="color:var(--red);font-weight:600"> · ⚠ ${p.defects_mentioned.join(', ')}</span>`
+          : '';
+        const dateStr = p.date_observed ? new Date(p.date_observed).toLocaleDateString() : '';
+        return `<div style="font-size:11px;color:var(--text2);padding:4px 0;border-bottom:1px solid var(--border)">
+          <div><strong>${p.seller_username || '—'}</strong> · ${p.location_city || '—'}, ${p.location_state || ''} · $${(p.price || 0).toFixed(2)} · ${dateStr}${defects}</div>
+          ${p.title ? `<div style="color:var(--text3);font-size:10px;margin-top:2px">${p.title.slice(0, 140)}</div>` : ''}
+        </div>`;
+      }).join('');
+    }
+    h.innerHTML = html;
+  } catch (e) {
+    console.warn('Chain history load failed:', e.message);
+  }
 }
 
 function sqApplyAi() {
@@ -6679,6 +6751,9 @@ async function sqSaveTag(mode) {
   const notes = document.getElementById('sqTagNotes').value || null;
   const setLabel = SQ_SETS[setTable]?.label || null;
 
+  // Capture listing content + defect signals for fraud cross-referencing
+  const descSource = `${q.title || ''}\n${q.description || ''}`;
+  const detectedDefects = sqExtractDefects(descSource);
   const chainEntry = {
     seller_username: q.seller_username,
     location_city: q.ship_from_city || q.item_location_city,
@@ -6689,6 +6764,9 @@ async function sqSaveTag(mode) {
     ebay_item_id: q.ebay_item_id,
     ebay_url: q.ebay_url,
     queue_id: q.id,
+    title: q.title || null,
+    description_excerpt: (q.description || '').slice(0, 1000) || null,
+    defects_mentioned: detectedDefects,
   };
 
   try {

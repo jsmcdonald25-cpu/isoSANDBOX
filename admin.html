@@ -574,6 +574,11 @@ tr:hover td { background: var(--bg); }
       User Watch
       <span id="userwatch-nav-badge" style="margin-left:auto;background:var(--yellow);color:#000;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;display:none">0</span>
     </div>
+    <div class="nav-item" onclick="nav('redditpatterns',this);loadRedditPatterns()" style="color:var(--orange)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 15s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+      Reddit Patterns
+      <span id="reddit-nav-badge" style="margin-left:auto;background:var(--orange);color:#000;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;display:none">0</span>
+    </div>
     <div class="nav-item" onclick="nav('alpha',this);loadAlphaSignups()">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
       Alpha Testers
@@ -1293,6 +1298,65 @@ tr:hover td { background: var(--bg); }
             <button class="btn btn-ghost" onclick="uwfCloseModal()">Cancel</button>
             <button class="btn btn-primary" onclick="uwfSubmitFlag()">Save Flag</button>
           </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ── REDDIT PATTERNS (admin-only pattern library) ── -->
+    <div class="panel" id="panel-redditpatterns">
+      <div class="panel-header">
+        <div class="panel-eyebrow" style="color:var(--orange)">Research (private)</div>
+        <div class="panel-title">Reddit Patterns</div>
+        <div class="panel-sub">Scam/fraud pattern library scraped from card subreddits. Usernames stripped before storage — techniques and mechanics only. Click any row to open the source Reddit thread.</div>
+      </div>
+
+      <div style="background:var(--surface2);border:1px solid rgba(255,122,0,0.25);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;font-size:12px;color:var(--text2);line-height:1.5">
+        <strong style="color:var(--orange)">What this is:</strong>
+        A pattern library — text + Reddit permalink — matching scam/fraud keywords across
+        r/baseballcards, r/tradingcards, r/baseballcardsbst, r/sportcardsforsale, r/sportscards, r/sportscardtracker.
+        Reddit usernames (u/foo, @foo, seller X) are regex-stripped before disk.
+        Use <em>Mark Useful</em> to build a training corpus of real scam mechanics.
+      </div>
+
+      <div class="search-bar">
+        <input class="input" id="rp-search" placeholder="Search content, keywords…" oninput="rpFilter()">
+        <select class="input" id="rp-sub-filter" onchange="rpFilter()" style="max-width:220px">
+          <option value="">All subs</option>
+          <option value="baseballcards">r/baseballcards</option>
+          <option value="tradingcards">r/tradingcards</option>
+          <option value="baseballcardsbst">r/baseballcardsbst</option>
+          <option value="sportcardsforsale">r/sportcardsforsale</option>
+          <option value="sportscards">r/sportscards</option>
+          <option value="sportscardtracker">r/sportscardtracker</option>
+        </select>
+        <select class="input" id="rp-state-filter" onchange="rpFilter()" style="max-width:180px">
+          <option value="unreviewed">Unreviewed</option>
+          <option value="useful">Useful only</option>
+          <option value="dismissed">Dismissed</option>
+          <option value="all">All</option>
+        </select>
+        <button class="btn btn-ghost" onclick="loadRedditPatterns()">↻ Refresh</button>
+      </div>
+
+      <div class="card">
+        <div class="loading" id="rp-loading">Loading patterns…</div>
+        <div class="table-wrap" id="rp-table-wrap" style="display:none">
+          <table>
+            <thead><tr>
+              <th style="width:110px">Sub</th>
+              <th style="width:80px">Type</th>
+              <th>Content</th>
+              <th style="width:180px">Keywords</th>
+              <th style="width:90px">Score</th>
+              <th style="width:110px">Posted</th>
+              <th style="width:240px">Actions</th>
+            </tr></thead>
+            <tbody id="rp-tbody"></tbody>
+          </table>
+        </div>
+        <div id="rp-empty" style="display:none;padding:32px;text-align:center;color:var(--text3);font-size:13px">
+          No patterns yet. Run the Reddit scraper (<code>research/reddit/scrape_reddit_patterns.py</code>) to populate.
         </div>
       </div>
     </div>
@@ -3698,6 +3762,125 @@ async function uwfResolve(flagId) {
   } catch(e) { toast('Error: ' + e.message, 'error'); }
 }
 
+// ── REDDIT PATTERNS (admin-only research corpus) ──
+let _allRedditPatterns = [];
+
+async function loadRedditPatterns() {
+  const loading = document.getElementById('rp-loading');
+  const wrap    = document.getElementById('rp-table-wrap');
+  const empty   = document.getElementById('rp-empty');
+  if (loading) loading.style.display = 'block';
+  if (wrap) wrap.style.display = 'none';
+  if (empty) empty.style.display = 'none';
+  try {
+    const rows = await _get('reddit_patterns', 'select=*&order=created_utc.desc&limit=500');
+    _allRedditPatterns = rows || [];
+    const unreviewed = _allRedditPatterns.filter(p => !p.reviewed && !p.dismissed).length;
+    const badge = document.getElementById('reddit-nav-badge');
+    if (badge) {
+      badge.textContent = unreviewed;
+      badge.style.display = unreviewed > 0 ? 'inline-block' : 'none';
+    }
+    rpFilter();
+  } catch(e) {
+    if (loading) loading.style.display = 'none';
+    // Table may not exist yet — show friendly empty state
+    if (empty) {
+      empty.style.display = 'block';
+      empty.innerHTML = 'Table not found or empty. Run <code>Checklist/reddit_patterns_schema.sql</code> in Supabase, then run the scraper.';
+    }
+  }
+}
+
+function rpFilter() {
+  const q   = (document.getElementById('rp-search').value || '').toLowerCase();
+  const sub = document.getElementById('rp-sub-filter').value;
+  const st  = document.getElementById('rp-state-filter').value;
+  let rows = _allRedditPatterns;
+  if (sub) rows = rows.filter(p => p.subreddit === sub);
+  if (st === 'unreviewed') rows = rows.filter(p => !p.reviewed && !p.dismissed);
+  else if (st === 'useful') rows = rows.filter(p => p.useful === true);
+  else if (st === 'dismissed') rows = rows.filter(p => p.dismissed === true);
+  if (q) rows = rows.filter(p =>
+    (p.content||'').toLowerCase().includes(q) ||
+    (p.title||'').toLowerCase().includes(q) ||
+    (p.matched_keywords||[]).some(k => k.toLowerCase().includes(q))
+  );
+  rpRender(rows);
+}
+
+function rpRender(rows) {
+  const loading = document.getElementById('rp-loading');
+  const wrap    = document.getElementById('rp-table-wrap');
+  const empty   = document.getElementById('rp-empty');
+  const tbody   = document.getElementById('rp-tbody');
+  if (loading) loading.style.display = 'none';
+  if (!rows.length) {
+    wrap.style.display  = 'none';
+    empty.style.display = 'block';
+    tbody.innerHTML = '';
+    return;
+  }
+  wrap.style.display  = 'block';
+  empty.style.display = 'none';
+  const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  tbody.innerHTML = rows.map(p => {
+    const posted = p.created_utc ? new Date(p.created_utc).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'}) : '—';
+    const preview = p.title ? `<strong>${esc(p.title).slice(0,140)}</strong><br>${esc(p.content).slice(0,200)}${p.content.length>200?'…':''}`
+                            : esc(p.content).slice(0,280) + (p.content.length>280?'…':'');
+    const kws = (p.matched_keywords||[]).slice(0,4).map(k =>
+      `<span class="badge" style="background:var(--surface2);color:var(--text2);font-size:10px">${esc(k)}</span>`
+    ).join(' ');
+    const stateBadge = p.dismissed ? '<span class="badge badge-gray">Dismissed</span>'
+                       : p.useful === true ? '<span class="badge badge-green">Useful</span>'
+                       : p.useful === false ? '<span class="badge badge-red">Not useful</span>'
+                       : '<span class="badge badge-yellow">New</span>';
+    return `<tr style="${p.dismissed?'opacity:0.5':''}">
+      <td style="font-size:11px;font-family:var(--font)">r/${esc(p.subreddit)}</td>
+      <td><span class="badge" style="background:var(--surface2);color:var(--text2);font-size:10px">${p.post_type}</span></td>
+      <td style="font-size:12px;line-height:1.5;max-width:520px">
+        <div style="margin-bottom:4px">${stateBadge}</div>
+        ${preview}
+      </td>
+      <td>${kws}</td>
+      <td style="font-size:11px;color:var(--text2)">▲ ${p.score||0}</td>
+      <td style="font-size:11px;color:var(--text2)">${posted}</td>
+      <td>
+        <div style="display:flex;gap:4px;flex-wrap:wrap">
+          <a class="btn btn-sm btn-ghost" href="${esc(p.permalink)}" target="_blank" rel="noopener" style="font-size:10px">Open ↗</a>
+          ${!p.dismissed && p.useful !== true ? `<button class="btn btn-sm btn-success" onclick="rpMarkUseful('${p.id}')" style="font-size:10px">✓ Useful</button>` : ''}
+          ${!p.dismissed ? `<button class="btn btn-sm btn-ghost" onclick="rpDismiss('${p.id}')" style="font-size:10px">Dismiss</button>` : ''}
+          ${p.dismissed ? `<button class="btn btn-sm btn-ghost" onclick="rpRestore('${p.id}')" style="font-size:10px">Restore</button>` : ''}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function rpMarkUseful(id) {
+  try {
+    await _patch('reddit_patterns', `id=eq.${id}`, { reviewed: true, useful: true, dismissed: false });
+    toast('✓ Marked useful', 'success');
+    loadRedditPatterns();
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+async function rpDismiss(id) {
+  try {
+    await _patch('reddit_patterns', `id=eq.${id}`, { reviewed: true, dismissed: true });
+    toast('✓ Dismissed', 'success');
+    loadRedditPatterns();
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+async function rpRestore(id) {
+  try {
+    await _patch('reddit_patterns', `id=eq.${id}`, { dismissed: false });
+    toast('✓ Restored', 'success');
+    loadRedditPatterns();
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', () => {
   // Wire up panel nav to also load data
@@ -3712,9 +3895,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (orig && orig.includes("'isos'"))     el.addEventListener('click', () => { loadIsos(); });
     if (orig && orig.includes("'credits'"))  el.addEventListener('click', () => { loadCreditEvents(); });
     if (orig && orig.includes("'userwatch'")) el.addEventListener('click', () => { loadUserWatch(); });
+    if (orig && orig.includes("'redditpatterns'")) el.addEventListener('click', () => { loadRedditPatterns(); });
   });
-  // Warm the userwatch badge on load
+  // Warm the admin badges on load
   try { loadUserWatch(); } catch(e) {}
+  try { loadRedditPatterns(); } catch(e) {}
 });
 // ── MESSAGE CENTER ──
 let _allReports    = [];

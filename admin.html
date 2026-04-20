@@ -2340,8 +2340,8 @@ tr:hover td { background: var(--bg); }
               <button onclick="sqSaveTag('existing')" style="flex:1;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius);font-weight:700;cursor:pointer;font-size:13px">Link to existing</button>
               <select id="sqSkipReason" onchange="if(this.value){sqSaveSkip(this.value);this.value='';}" style="padding:12px;background:var(--bg);color:var(--text2);border:1px solid var(--border2);border-radius:var(--radius);font-weight:600;cursor:pointer;font-size:13px">
                 <option value="">Skip with reason…</option>
-                <option value="not_a_5">Not a /5 card (search noise)</option>
-                <option value="cant_id_copy">Is /5, can't ID copy</option>
+                <option value="not_a_5">No /# (not a numbered card)</option>
+                <option value="cant_id_copy">Is /#, can't ID copy</option>
                 <option value="insert_not_in_checklist">Insert not in checklist</option>
                 <option value="multi_card_lot">Multi-card lot</option>
                 <option value="suspected_fraud">Suspected fraud</option>
@@ -6172,8 +6172,8 @@ function sqExtractDefects(text) {
 }
 
 const SKIP_REASON_LABELS = {
-  not_a_5: 'Not a /5 card (search noise)',
-  cant_id_copy: "Is /5, can't ID copy",
+  not_a_5: 'No /# (not a numbered card)',
+  cant_id_copy: "Is /#, can't ID copy",
   insert_not_in_checklist: 'Insert not in checklist',
   multi_card_lot: 'Multi-card lot',
   suspected_fraud: 'Suspected fraud',

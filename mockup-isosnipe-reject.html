@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ISOsnipe · Reject + AI learn — MOCKUP</title>
+<style>
+:root {
+  --bg: #f4f6f9; --surface: #fff; --surface2: #f0f4f8;
+  --border: #e2e8f0; --border2: #cbd5e1;
+  --blue: #0066cc; --blue-light: #e8f0ff;
+  --green: #059669; --green-light: #ecfdf5;
+  --red: #dc2626; --red-light: #fef2f2;
+  --yellow: #d97706; --yellow-light: #fffbeb;
+  --purple: #7c3aed; --purple-light: #f5f3ff;
+  --text: #0f172a; --text2: #475569; --text3: #94a3b8;
+  --radius: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size: 14px; padding: 24px; }
+.container { max-width: 1400px; margin: 0 auto; }
+.panel-header { margin-bottom: 12px; }
+.eyebrow { font-size: 10px; font-weight: 700; color: var(--green); letter-spacing: 2px; text-transform: uppercase; }
+.title { font-size: 22px; font-weight: 800; margin-top: 2px; }
+.sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+/* stats */
+.stats { display: flex; gap: 10px; margin: 16px 0; flex-wrap: wrap; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 16px; min-width: 90px; text-align: center; }
+.stat-val { font-size: 20px; font-weight: 800; }
+.stat-lab { font-size: 10px; color: var(--text2); }
+.stat.green  { background: var(--green-light);  border-color: var(--green); }
+.stat.red    { background: var(--red-light);    border-color: var(--red); }
+.stat.yellow { background: var(--yellow-light); border-color: var(--yellow); }
+.stat.purple { background: var(--purple-light); border-color: var(--purple); }
+.stat.blue   { background: var(--blue-light);   border-color: var(--blue); }
+
+/* table */
+.table-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+thead { background: var(--bg); }
+th { padding: 8px 10px; text-align: left; font-size: 10px; font-weight: 700; color: var(--text2); letter-spacing: .5px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+.thumb { width: 48px; height: 48px; object-fit: cover; border-radius: 4px; background: #e5e7eb; }
+.pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; }
+.pill-snipe { background: var(--green); color: #fff; }
+.pill-market { background: var(--purple); color: #fff; }
+.pill-bin { background: var(--blue); color: #fff; }
+.pill-par { background: var(--purple-light); color: var(--purple); }
+.price { font-weight: 700; color: var(--green); }
+.delta-pos { color: var(--green); font-weight: 600; }
+.delta-neg { color: var(--red); font-weight: 600; }
+.item-id { font-family: 'SF Mono','Fira Code',monospace; font-size: 10px; color: var(--text3); }
+.btn-reject { background: var(--red-light); border: 1px solid var(--red); color: var(--red); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+.btn-reject:hover { background: var(--red); color: #fff; }
+.btn-rejected { background: #f3f4f6; border: 1px solid var(--border2); color: var(--text3); font-size: 10px; padding: 3px 8px; border-radius: 6px; cursor: default; }
+tr.rejected-row td { background: #f9fafb; opacity: 0.55; }
+tr.rejected-row .btn-reject { display: none; }
+
+/* REJECT REASON MODAL */
+.reject-modal-bg { position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.reject-modal { background: var(--surface); border-radius: 12px; max-width: 560px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
+.reject-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.reject-header-title { font-size: 10px; font-weight: 700; color: var(--red); letter-spacing: 2px; text-transform: uppercase; }
+.reject-header-sub { font-size: 15px; font-weight: 800; margin-top: 2px; }
+.reject-close { background: var(--bg); border: 1px solid var(--border2); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; }
+.reject-body { padding: 16px 20px; }
+.reject-itemline { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 10px; margin-bottom: 14px; display: flex; gap: 10px; align-items: center; }
+.reject-itemline img { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; }
+.reject-itemline-text { font-size: 12px; line-height: 1.3; flex: 1; min-width: 0; }
+.reject-itemline .reject-title { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.reject-itemline .reject-meta { color: var(--text3); font-size: 10px; font-family: 'SF Mono',monospace; margin-top: 2px; }
+.reject-label { font-size: 11px; font-weight: 700; color: var(--text2); letter-spacing: .5px; margin-bottom: 8px; text-transform: uppercase; }
+.reason-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 12px; }
+.reason-btn { background: var(--bg); border: 1px solid var(--border2); color: var(--text); font-size: 12px; font-weight: 600; padding: 10px 12px; border-radius: 6px; cursor: pointer; text-align: left; transition: all .1s; }
+.reason-btn:hover { border-color: var(--red); background: var(--red-light); color: var(--red); }
+.reason-btn.selected { background: var(--red); color: #fff; border-color: var(--red); }
+.reason-btn .rb-sub { display: block; font-size: 10px; font-weight: 400; color: var(--text3); margin-top: 2px; }
+.reason-btn.selected .rb-sub { color: rgba(255,255,255,0.75); }
+.reason-note { width: 100%; border: 1px solid var(--border2); border-radius: 6px; padding: 8px 10px; font-family: inherit; font-size: 12px; min-height: 60px; resize: vertical; }
+.reject-actions { display: flex; gap: 8px; justify-content: flex-end; padding: 14px 20px; border-top: 1px solid var(--border); background: var(--bg); }
+.btn-cancel { background: var(--surface); border: 1px solid var(--border2); color: var(--text2); padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; }
+.btn-confirm { background: var(--red); color: #fff; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 13px; }
+.reject-permanent-note { font-size: 11px; color: var(--text3); font-style: italic; padding: 0 20px 8px; }
+
+/* AI panel */
+.ai-section { background: var(--surface); border: 1px solid var(--purple); border-radius: var(--radius); margin-top: 16px; overflow: hidden; }
+.ai-header { background: linear-gradient(135deg, var(--purple-light), #fff); padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.ai-title { font-size: 14px; font-weight: 800; color: var(--purple); display: flex; align-items: center; gap: 8px; }
+.ai-title .ai-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--purple); animation: pulse 1.6s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
+.ai-btn { background: var(--purple); color: #fff; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 12px; }
+.ai-meta { font-size: 11px; color: var(--text3); }
+.ai-body { padding: 16px 18px; }
+.ai-col { margin-bottom: 16px; }
+.ai-col-label { font-size: 10px; font-weight: 700; color: var(--text2); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+.ai-chip { display: inline-block; background: var(--red-light); color: var(--red); font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 12px; margin: 2px 4px 2px 0; cursor: pointer; border: 1px solid var(--red); }
+.ai-chip.query { background: var(--blue-light); color: var(--blue); border-color: var(--blue); }
+.ai-chip:hover { background: var(--red); color: #fff; }
+.ai-chip.query:hover { background: var(--blue); color: #fff; }
+.ai-insight { background: var(--purple-light); border-left: 3px solid var(--purple); padding: 10px 14px; border-radius: 4px; font-size: 12px; line-height: 1.5; margin-bottom: 8px; }
+.ai-insight b { color: var(--purple); }
+.ai-accept { background: var(--green); color: #fff; border: none; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; cursor: pointer; margin-left: 6px; }
+
+/* note banner */
+.note-banner { background: var(--yellow-light); border: 1px solid var(--yellow); border-radius: var(--radius); padding: 10px 14px; font-size: 12px; color: #7c2d12; margin-bottom: 16px; display: flex; gap: 10px; align-items: center; }
+.note-banner b { color: var(--yellow); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="panel-header">
+    <div class="eyebrow">Mockup — Revenue Tool</div>
+    <div class="title">ISOsnipe · Reject + AI learn</div>
+    <div class="sub">Click ✗ on any row to mark as "not a real snipe". Rejected eBay item#s are permanently blocked from future scans. AI learns from patterns.</div>
+  </div>
+
+  <div class="note-banner">
+    <b>⚠</b> This is a mockup. Two rows are highlighted to show before/after states. Modal is shown below table.
+  </div>
+
+  <!-- STATS ROW with new Rejected tile -->
+  <div class="stats">
+    <div class="stat green"><div class="stat-val" style="color:var(--green)">47</div><div class="stat-lab">Snipes</div></div>
+    <div class="stat purple"><div class="stat-val" style="color:var(--purple)">312</div><div class="stat-lab">Market</div></div>
+    <div class="stat red"><div class="stat-val" style="color:var(--red)">-42%</div><div class="stat-lab">Avg Delta</div></div>
+    <div class="stat yellow"><div class="stat-val" style="color:var(--yellow)">$9,842</div><div class="stat-lab">Total Cost</div></div>
+    <div class="stat blue"><div class="stat-val" style="color:var(--blue)">359</div><div class="stat-lab">Shown</div></div>
+    <div class="stat" style="background:#f9fafb;border-color:var(--border2)"><div class="stat-val" style="color:var(--text2)">128</div><div class="stat-lab">Rejected (all time)</div></div>
+  </div>
+
+  <!-- TABLE with new Action column -->
+  <div class="table-card">
+    <table>
+      <thead><tr>
+        <th>Img</th>
+        <th>Type</th>
+        <th>Buy</th>
+        <th>Player</th>
+        <th>Parallel</th>
+        <th>Title</th>
+        <th>eBay Item#</th>
+        <th>Price</th>
+        <th>Mkt</th>
+        <th>Δ</th>
+        <th style="width:90px">Action</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><div class="thumb" style="background:#cfe3ff"></div></td>
+          <td><span class="pill pill-snipe">SNIPE</span></td>
+          <td><span class="pill pill-bin">BIN</span></td>
+          <td><b>Ohtani</b></td>
+          <td><span class="pill pill-par">Refractor</span></td>
+          <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Shohie Ohtami 2023 Topps Chrome Refractor #100 PSA 9</td>
+          <td class="item-id">364982157491</td>
+          <td class="price">$42.00</td>
+          <td style="color:var(--text3)">$120</td>
+          <td class="delta-pos">+65%</td>
+          <td><button class="btn-reject">✗ Reject</button></td>
+        </tr>
+        <tr>
+          <td><div class="thumb" style="background:#d4f4dd"></div></td>
+          <td><span class="pill pill-market">MARKET</span></td>
+          <td><span class="pill pill-bin">BIN</span></td>
+          <td><b>Griffey Jr</b></td>
+          <td><span class="pill pill-par">Base RC</span></td>
+          <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Ken Griffey Jr 1989 Upper Deck #1 Rookie FACSIMILE Auto</td>
+          <td class="item-id">285139872034</td>
+          <td class="price">$18.00</td>
+          <td style="color:var(--text3)">$85</td>
+          <td class="delta-pos">+78%</td>
+          <td><button class="btn-reject">✗ Reject</button></td>
+        </tr>
+        <tr class="rejected-row">
+          <td><div class="thumb" style="background:#fcd5d5"></div></td>
+          <td><span class="pill pill-snipe">SNIPE</span></td>
+          <td><span class="pill pill-bin">BIN</span></td>
+          <td><b>Griffey Jr</b></td>
+          <td><span class="pill pill-par">Refractor</span></td>
+          <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">REPRINT Griffey 1990 Topps Chrome Refractor Custom</td>
+          <td class="item-id">194875902341</td>
+          <td class="price">$8.50</td>
+          <td style="color:var(--text3)">$65</td>
+          <td class="delta-pos">+87%</td>
+          <td><button class="btn-rejected" title="Rejected: Reprint / custom (you · 2m ago)">✓ Blocked</button></td>
+        </tr>
+        <tr>
+          <td><div class="thumb" style="background:#ffe8b5"></div></td>
+          <td><span class="pill pill-market">MARKET</span></td>
+          <td><span class="pill pill-bin">BIN</span></td>
+          <td><b>Ichiro</b></td>
+          <td><span class="pill pill-par">Auto</span></td>
+          <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">2001 Topps Chrome Ichiro Suzuki #T247 Rookie Refractor</td>
+          <td class="item-id">126594872019</td>
+          <td class="price">$89.00</td>
+          <td style="color:var(--text3)">$220</td>
+          <td class="delta-pos">+60%</td>
+          <td><button class="btn-reject">✗ Reject</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- REJECT MODAL (shown inline in mockup) -->
+  <div class="reject-modal-bg">
+    <div class="reject-modal">
+      <div class="reject-header">
+        <div>
+          <div class="reject-header-title">Reject eBay Listing</div>
+          <div class="reject-header-sub">Why is this not a real snipe?</div>
+        </div>
+        <button class="reject-close">Close</button>
+      </div>
+
+      <div class="reject-body">
+        <div class="reject-itemline">
+          <div class="thumb" style="background:#d4f4dd"></div>
+          <div class="reject-itemline-text">
+            <div class="reject-title">Ken Griffey Jr 1989 Upper Deck #1 Rookie FACSIMILE Auto</div>
+            <div class="reject-meta">Item# 285139872034 · $18.00 · Griffey Jr · Base RC</div>
+          </div>
+        </div>
+
+        <div class="reject-label">Reason (pick one)</div>
+        <div class="reason-grid">
+          <button class="reason-btn">Wrong player<span class="rb-sub">Not the target player</span></button>
+          <button class="reason-btn">Wrong year<span class="rb-sub">Different print year</span></button>
+          <button class="reason-btn">Wrong set<span class="rb-sub">Flagship vs Chrome etc</span></button>
+          <button class="reason-btn">Wrong parallel<span class="rb-sub">Different color / tier</span></button>
+          <button class="reason-btn">Wrong card #<span class="rb-sub">Different card in set</span></button>
+          <button class="reason-btn">Reprint / custom<span class="rb-sub">Fan-made, unofficial</span></button>
+          <button class="reason-btn selected">Facsimile signature<span class="rb-sub">Printed auto, not real signed</span></button>
+          <button class="reason-btn">Graded mismatch<span class="rb-sub">Listed wrong grade / condition</span></button>
+          <button class="reason-btn">Bad photos<span class="rb-sub">Can't verify — revisit later</span></button>
+          <button class="reason-btn">Other<span class="rb-sub">Use notes below</span></button>
+        </div>
+
+        <div class="reject-label" style="margin-top:4px">Notes (optional)</div>
+        <textarea class="reason-note" placeholder="e.g. Title says 'FACSIMILE' — printed signature, not actual autograph. Common Griffey RC scam.">Title says "FACSIMILE" — printed signature, not actual autograph. Common Griffey RC scam.</textarea>
+      </div>
+
+      <div class="reject-permanent-note">This eBay item# (<b>285139872034</b>) will be permanently excluded from future scans.</div>
+      <div class="reject-actions">
+        <button class="btn-cancel">Cancel</button>
+        <button class="btn-confirm">✗ Reject + Block item#</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI ANALYSIS PANEL -->
+  <div class="ai-section">
+    <div class="ai-header">
+      <div>
+        <div class="ai-title"><span class="ai-dot"></span>AI Learn · Pattern Analysis</div>
+        <div class="ai-meta">128 rejections analyzed · Last run 4m ago · Claude Haiku 4.5 · cost $0.003</div>
+      </div>
+      <button class="ai-btn">↻ Re-analyze</button>
+    </div>
+    <div class="ai-body">
+
+      <div class="ai-col">
+        <div class="ai-col-label">🚫 Blocklist terms AI suggests (click chip to add)</div>
+        <span class="ai-chip">facsimile</span>
+        <span class="ai-chip">printed auto</span>
+        <span class="ai-chip">stamped sig</span>
+        <span class="ai-chip">stamped auto</span>
+        <span class="ai-chip">custom cut</span>
+        <span class="ai-chip">1990 chrome</span>
+        <span class="ai-chip">tc card</span>
+        <span class="ai-chip">fan art</span>
+      </div>
+
+      <div class="ai-col">
+        <div class="ai-col-label">🔎 Query refinements per target</div>
+        <div style="font-size:12px;margin-bottom:6px"><b>Griffey Jr · Refractor</b> — add <span class="ai-chip query">-reprint</span> <span class="ai-chip query">-1990</span> <span class="ai-chip query">-custom</span></div>
+        <div style="font-size:12px;margin-bottom:6px"><b>Ohtani · Auto</b> — add <span class="ai-chip query">-facsimile</span> <span class="ai-chip query">-sticker</span></div>
+        <div style="font-size:12px;margin-bottom:6px"><b>Ichiro · Refractor</b> — add <span class="ai-chip query">-jersey</span> <span class="ai-chip query">-relic</span></div>
+      </div>
+
+      <div class="ai-col">
+        <div class="ai-col-label">💡 Pattern insights</div>
+        <div class="ai-insight"><b>67%</b> of Griffey Jr Refractor rejections mention "1990" — your target is <b>1989 Upper Deck</b>, not 1990 Topps Chrome. Consider making year explicit in query.<button class="ai-accept">Accept</button></div>
+        <div class="ai-insight"><b>23 rejections</b> for <i>Facsimile signature</i> across 4 players. Strongest signal word: <b>"facsimile"</b>. Already suggested for blocklist above.<button class="ai-accept">Accept</button></div>
+        <div class="ai-insight"><b>Seller "card_reprint_king"</b> accounts for 18 rejected Griffey listings. All reprints. Suggest seller-level block.<button class="ai-accept">Accept</button></div>
+      </div>
+
+      <div class="ai-col" style="border-top:1px solid var(--border);padding-top:12px;margin-top:4px">
+        <div class="ai-col-label">📊 Rejection breakdown (last 30d)</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--text2)">
+          <span>Reprint/custom <b style="color:var(--text)">42</b></span>
+          <span>Facsimile sig <b style="color:var(--text)">23</b></span>
+          <span>Wrong parallel <b style="color:var(--text)">19</b></span>
+          <span>Wrong year <b style="color:var(--text)">17</b></span>
+          <span>Wrong player <b style="color:var(--text)">12</b></span>
+          <span>Wrong set <b style="color:var(--text)">8</b></span>
+          <span>Bad photos <b style="color:var(--text)">5</b></span>
+          <span>Other <b style="color:var(--text)">2</b></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

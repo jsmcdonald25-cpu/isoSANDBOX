@@ -2533,9 +2533,10 @@ tr:hover td { background: var(--bg); }
             <th style="cursor:pointer;user-select:none" onclick="prSort('location')">Current Location <span class="pr-sort-arrow" data-col="location"></span></th>
             <th style="cursor:pointer;user-select:none" onclick="prSort('last_seen_at')">Last Seen <span class="pr-sort-arrow" data-col="last_seen_at"></span></th>
             <th>Status</th>
+            <th style="width:130px">Actions</th>
           </tr></thead>
           <tbody id="prTbody">
-            <tr><td colspan="10" style="text-align:center;padding:40px;color:var(--text3)">Click "Provenance Registry" to load data...</td></tr>
+            <tr><td colspan="11" style="text-align:center;padding:40px;color:var(--text3)">Click "Provenance Registry" to load data...</td></tr>
           </tbody>
         </table>
       </div>
@@ -2562,6 +2563,41 @@ tr:hover td { background: var(--bg); }
           <!-- Ownership chain timeline -->
           <div style="font-size:11px;font-weight:700;color:var(--text2);letter-spacing:1px;margin-bottom:10px">OWNERSHIP CHAIN</div>
           <div id="prDetailChain"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Registry Edit Modal (quick fix for parallel/serial/price on a tracked card) ── -->
+    <div id="prEditModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.75);z-index:2100;overflow-y:auto;padding:40px 20px">
+      <div style="max-width:480px;margin:0 auto;background:var(--surface);border-radius:12px;overflow:hidden">
+        <div style="padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--purple);letter-spacing:2px">REGISTRY EDIT</div>
+            <div style="font-size:16px;font-weight:700" id="prEditTitle">Card</div>
+          </div>
+          <button onclick="prCloseEdit()" class="btn btn-ghost btn-sm">✕</button>
+        </div>
+        <div style="padding:20px;display:flex;flex-direction:column;gap:14px">
+          <div>
+            <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Parallel color</label>
+            <input class="input" id="prEditParallelColor" placeholder="e.g. Red, Blue, Gold, Green">
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Parallel name</label>
+            <input class="input" id="prEditParallelName" placeholder="e.g. Chrome Refractor, Chrome Bordered, Flip Stock">
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Serial / edition</label>
+            <input class="input" id="prEditSerialEdition" placeholder="e.g. 4/5">
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Current price</label>
+            <input class="input" id="prEditPrice" type="number" step="0.01" placeholder="55.00">
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:8px">
+            <button class="btn btn-ghost" onclick="prCloseEdit()">Cancel</button>
+            <button class="btn btn-primary" onclick="prSaveEdit()" id="prEditSaveBtn">Save</button>
+          </div>
         </div>
       </div>
     </div>
@@ -2775,8 +2811,8 @@ tr:hover td { background: var(--bg); }
             </div>
 
             <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-              <button onclick="sqSaveTag('new')" style="flex:1;padding:12px;background:var(--green);color:#fff;border:none;border-radius:var(--radius);font-weight:700;cursor:pointer;font-size:13px">Save as NEW registry</button>
-              <button onclick="sqSaveTag('existing')" style="flex:1;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius);font-weight:700;cursor:pointer;font-size:13px">Link to existing</button>
+              <button id="sqSaveNewBtn" onclick="sqSaveTag('new')" style="flex:1;padding:12px;background:var(--green);color:#fff;border:none;border-radius:var(--radius);font-weight:700;cursor:pointer;font-size:13px">Save as NEW registry</button>
+              <button id="sqSaveExistingBtn" onclick="sqSaveTag('existing')" style="flex:1;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius);font-weight:700;cursor:pointer;font-size:13px">Link to existing</button>
               <select id="sqSkipReason" onchange="if(this.value){sqSaveSkip(this.value);this.value='';}" style="padding:12px;background:var(--bg);color:var(--text2);border:1px solid var(--border2);border-radius:var(--radius);font-weight:600;cursor:pointer;font-size:13px">
                 <option value="">Skip with reason…</option>
                 <option value="not_a_5">No /# (not a numbered card)</option>
@@ -7492,7 +7528,7 @@ async function loadProvenance() {
     _prRegistry = await _get('iso_serial_registry', 'select=*&order=last_seen_at.desc&limit=2000');
   } catch (e) {
     const tb = document.getElementById('prTbody');
-    tb.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:30px;color:var(--red)">
+    tb.innerHTML = `<tr><td colspan="11" style="text-align:center;padding:30px;color:var(--red)">
       Failed to load registry. ${e.message}
     </td></tr>`;
     return;
@@ -7545,7 +7581,7 @@ function prRender() {
   else if (_prFilter === 'tracking') rows = rows.filter(r => r.status === 'tracking');
 
   if (rows.length === 0) {
-    tb.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:30px;color:var(--text3)">No rows for this filter.</td></tr>';
+    tb.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:30px;color:var(--text3)">No rows for this filter.</td></tr>';
     return;
   }
 
@@ -7578,17 +7614,24 @@ function prRender() {
                       : r.status === 'delisted'     ? '<span style="color:var(--text3);font-size:11px">DELISTED</span>'
                       : r.status === 'on_grailiso'  ? '<span style="color:var(--blue);font-weight:700;font-size:11px">ON GRAILISO</span>'
                       : `<span style="color:var(--text3);font-size:11px">${r.status||'?'}</span>`;
-    return `<tr style="cursor:pointer${hasDefects ? ';background:rgba(220,38,38,0.04)' : ''}" onclick="prOpenDetail(${r.id})">
+    const missingParallel = !r.parallel_color && !r.parallel_name;
+    return `<tr style="cursor:pointer${hasDefects ? ';background:rgba(220,38,38,0.04)' : missingParallel ? ';background:rgba(255,193,7,0.05)' : ''}" onclick="prOpenDetail(${r.id})">
       <td style="font-weight:700;font-size:13px">${r.player || '—'}${hasDefects ? ' <span title="Defect flag in chain" style="color:var(--red)">⚠</span>' : ''}</td>
       <td style="font-size:11px;color:var(--text2)">${r.set_name || '—'}</td>
       <td style="font-size:12px">${r.card_number || '—'}</td>
-      <td style="font-size:11px;color:var(--text2)">${parallel}</td>
+      <td style="font-size:11px;color:var(--text2)${missingParallel ? ';color:var(--yellow);font-style:italic' : ''}">${parallel}${missingParallel ? ' <span title="Parallel not set — click Edit to fix" style="color:var(--yellow)">⚑</span>' : ''}</td>
       <td style="font-size:12px;font-family:var(--font)">${r.serial_edition || '—'}</td>
       <td style="font-weight:700;color:var(--green)">$${(r.current_price || 0).toFixed(2)}</td>
       <td style="text-align:center;font-weight:700;${owners >= 2 ? 'color:var(--green)' : 'color:var(--text2)'}">${owners}</td>
       <td style="font-size:11px;color:var(--text2)">${loc}</td>
       <td style="font-size:10px;color:var(--text3)">${r.last_seen_at ? _sqRelTime(new Date(r.last_seen_at)) : '—'}</td>
       <td>${statusBadge}</td>
+      <td onclick="event.stopPropagation()">
+        <div style="display:flex;gap:4px">
+          <button class="btn btn-sm" onclick="prOpenEdit(${r.id})" style="font-size:10px;padding:4px 8px">Edit</button>
+          <button class="btn btn-sm" onclick="prDeleteRow(${r.id})" style="font-size:10px;padding:4px 8px;background:rgba(220,38,38,0.12);color:var(--red);border:1px solid rgba(220,38,38,0.3)">Del</button>
+        </div>
+      </td>
     </tr>`;
   }).join('');
 
@@ -7691,6 +7734,66 @@ function prOpenDetail(registryId) {
 
 function prCloseDetail() {
   document.getElementById('prDetailModal').style.display = 'none';
+}
+
+// ── Registry row edit (backfill missing parallel, fix serial/price) ──
+let _prEditingId = null;
+
+function prOpenEdit(registryId) {
+  const r = _prRegistry.find(x => x.id === registryId);
+  if (!r) return;
+  _prEditingId = registryId;
+  document.getElementById('prEditTitle').textContent =
+    `${r.player || '?'} · #${r.card_number || '?'} · ${r.serial_edition || '?'}`;
+  document.getElementById('prEditParallelColor').value = r.parallel_color || '';
+  document.getElementById('prEditParallelName').value  = r.parallel_name  || '';
+  document.getElementById('prEditSerialEdition').value = r.serial_edition || '';
+  document.getElementById('prEditPrice').value         = r.current_price || '';
+  document.getElementById('prEditModal').style.display = 'block';
+}
+
+function prCloseEdit() {
+  document.getElementById('prEditModal').style.display = 'none';
+  _prEditingId = null;
+}
+
+async function prSaveEdit() {
+  if (!_prEditingId) return;
+  const btn = document.getElementById('prEditSaveBtn');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+  const payload = {
+    parallel_color:  document.getElementById('prEditParallelColor').value.trim() || null,
+    parallel_name:   document.getElementById('prEditParallelName').value.trim()  || null,
+    serial_edition:  document.getElementById('prEditSerialEdition').value.trim() || null,
+    current_price:   parseFloat(document.getElementById('prEditPrice').value) || null,
+  };
+  try {
+    const before = _prRegistry.find(x => x.id === _prEditingId);
+    await _patch('iso_serial_registry', `id=eq.${_prEditingId}`, payload);
+    await logAdminAction('provenance_edit', 'iso_serial_registry', before?.card_number || null, before?.player || null, before, payload, null);
+    toast('✓ Registry row updated', 'success');
+    prCloseEdit();
+    loadProvenance();
+  } catch (e) {
+    toast('Save failed: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Save';
+  }
+}
+
+async function prDeleteRow(registryId) {
+  const r = _prRegistry.find(x => x.id === registryId);
+  if (!r) return;
+  const label = `${r.player || '?'} · #${r.card_number || '?'} · ${r.serial_edition || '?'} · ${[r.parallel_color,r.parallel_name].filter(Boolean).join(' ') || '(no parallel)'}`;
+  if (!confirm(`Delete this registry row?\n\n${label}\n\nOwnership chain and price history will be lost. If this is a duplicate of another row, consider using the SQL migration_004 dedup script instead (it merges chains).`)) return;
+  try {
+    await _delete('iso_serial_registry', `id=eq.${registryId}`);
+    await logAdminAction('provenance_delete', 'iso_serial_registry', r.card_number || null, r.player || null, r, null, null);
+    toast('✓ Row deleted', 'success');
+    loadProvenance();
+  } catch (e) { toast('Delete failed: ' + e.message, 'error'); }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -8394,6 +8497,16 @@ async function sqUndoSkip() {
 
 async function sqSaveTag(mode) {
   if (!_sqCurrent) return;
+  // Disable both buttons during save to prevent double-click duplicates
+  const btnNew = document.getElementById('sqSaveNewBtn');
+  const btnExist = document.getElementById('sqSaveExistingBtn');
+  if (btnNew?.disabled || btnExist?.disabled) return; // already in-flight
+  if (btnNew)   { btnNew.disabled = true;   btnNew.dataset.orig = btnNew.textContent;   btnNew.textContent = 'Saving…'; }
+  if (btnExist) { btnExist.disabled = true; btnExist.dataset.orig = btnExist.textContent; btnExist.textContent = 'Saving…'; }
+  const _sqRestoreBtns = () => {
+    if (btnNew)   { btnNew.disabled = false;   if (btnNew.dataset.orig)   btnNew.textContent   = btnNew.dataset.orig; }
+    if (btnExist) { btnExist.disabled = false; if (btnExist.dataset.orig) btnExist.textContent = btnExist.dataset.orig; }
+  };
   const q = _sqCurrent;
 
   const setTable = document.getElementById('sqTagSet').value;
@@ -8528,6 +8641,8 @@ async function sqSaveTag(mode) {
     loadSerialQueue();
   } catch (e) {
     toast('Save failed: ' + e.message, 'err');
+  } finally {
+    _sqRestoreBtns();
   }
 }
 

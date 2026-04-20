@@ -243,13 +243,9 @@ Return ONLY the JSON object.`;
       messages: [
         { role: 'user', content: userText },
       ],
-      output_config: {
-        format: {
-          type: 'json_schema',
-          name: 'card_listing_classification',
-          schema: OUTPUT_SCHEMA,
-        },
-      },
+      // Relying on system-prompt instructions to produce strict JSON.
+      // output_config.format with json_schema rejects in the current API;
+      // Haiku 4.5 is reliable at "return ONLY JSON" when instructed.
     });
 
     // Parse the JSON output

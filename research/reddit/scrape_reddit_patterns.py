@@ -180,8 +180,8 @@ def iter_comments(sub: str, limit: int) -> Iterable[Pattern]:
 def supabase_upsert(rows: list[Pattern], dry_run: bool = False) -> None:
     if dry_run or not rows:
         return
-    url = os.environ["SUPABASE_URL"].rstrip("/")
-    key = os.environ["SUPABASE_SERVICE_ROLE_KEY"]
+    url = os.environ["SUPABASE_URL"].strip().rstrip("/")
+    key = os.environ["SUPABASE_SERVICE_ROLE_KEY"].strip()
     endpoint = f"{url}/rest/v1/reddit_patterns"
     headers = {
         "apikey": key,

@@ -2225,6 +2225,9 @@ tr:hover td { background: var(--bg); }
         <div style="background:#f9fafb;border:1px solid var(--border2);border-radius:var(--radius);padding:10px 16px;text-align:center;min-width:90px">
           <div style="font-size:20px;font-weight:800;color:var(--text2)" id="snStatRejected">-</div><div style="font-size:10px;color:var(--text2)">Rejected (item#)</div>
         </div>
+        <div style="background:var(--green-light);border:1px solid var(--green);border-radius:var(--radius);padding:10px 16px;text-align:center;min-width:90px">
+          <div style="font-size:20px;font-weight:800;color:var(--green)" id="snStatConfirmed">-</div><div style="font-size:10px;color:var(--text2)">Confirmed Good</div>
+        </div>
       </div>
 
       <!-- Blocklist panel (toggled) -->
@@ -6710,9 +6713,18 @@ async function snRemoveBlockTerm(id){
 }
 
 // In-memory rejected item# set (loaded from Supabase on panel open)
-let _snRejectedIds = new Set();
+let _snRejectedIds  = new Set();
+let _snConfirmedIds = new Set();
 let _snRejTarget = null;          // hit being rejected
 let _snRejReasonCode = null;      // selected reason
+
+// Pull bare numeric eBay item# either from snipe.js capture OR from the listing URL.
+// Old scan data has no itemId field — without this fallback, action buttons hide.
+function snItemId(h){
+  if (h.itemId) return String(h.itemId);
+  const m = (h.url || '').match(/\/itm\/(?:[^\/?#]+\/)?(\d{9,})/);
+  return m ? m[1] : null;
+}
 
 async function snLoadRejections(){
   try {
@@ -6726,11 +6738,23 @@ async function snLoadRejections(){
   }
 }
 
+async function snLoadConfirmations(){
+  try {
+    const rows = await _get('isosnipe_confirmations', 'select=ebay_item_id&limit=10000');
+    _snConfirmedIds = new Set((rows||[]).map(r => String(r.ebay_item_id)));
+    document.getElementById('snStatConfirmed').textContent = _snConfirmedIds.size;
+  } catch(e) {
+    console.warn('Confirmation list fetch failed:', e);
+    _snConfirmedIds = new Set();
+    document.getElementById('snStatConfirmed').textContent = '—';
+  }
+}
+
 async function loadIsoSnipe(){
   const tb=document.getElementById('snTbody');
   tb.innerHTML='<tr><td colspan="13" style="text-align:center;padding:40px;color:var(--text3)">Loading snipe data...</td></tr>';
-  // Load blocklist + rejection list so filters apply immediately
-  await Promise.all([snLoadBlocklist(), snLoadRejections()]);
+  // Load blocklist + rejection list + confirmation list so filters apply immediately
+  await Promise.all([snLoadBlocklist(), snLoadRejections(), snLoadConfirmations()]);
   try{
     const res=await fetch('/isosnipe/results/snipe-latest.json');
     if(!res.ok) throw new Error('No data file');
@@ -6793,8 +6817,9 @@ function snApply(){
     if(_snTypeF==='market'&&h.isMisspelling)return false;
     if(_snTypeF==='bin'&&h.type!=='BIN')return false;
     if(_snTypeF==='auction'&&h.type!=='AUCTION')return false;
-    // Layer 1: exact item# block (permanent reject list)
-    if(h.itemId && _snRejectedIds.has(String(h.itemId))) return false;
+    // Layer 1: exact item# block (permanent reject list) — use URL fallback too
+    const _id = snItemId(h);
+    if(_id && _snRejectedIds.has(_id)) return false;
     // Layer 2: keyword blocklist filters titles AND descriptions
     if(blockTerms.length){
       const t = (h.title||'').toLowerCase();
@@ -6821,12 +6846,19 @@ function snRender(){
   if(!_snFiltered.length){tb.innerHTML='<tr><td colspan="13" style="text-align:center;padding:30px;color:var(--text3)">No results match filters. Adjust sliders.</td></tr>';return}
   tb.innerHTML=_snFiltered.slice(0,100).map((h,i)=>{
     const safeT=(h.title||'').replace(/"/g,'&quot;');
-    const itemCell = h.itemId
-      ? `<a href="${h.url}" target="_blank" rel="noopener" title="Open eBay listing" style="font-family:'SF Mono','Fira Code',monospace;font-size:10px;color:var(--text3);text-decoration:none">${h.itemId}</a>`
+    const id = snItemId(h);
+    const itemCell = id
+      ? `<a href="${h.url}" target="_blank" rel="noopener" title="Open eBay listing" style="font-family:'SF Mono','Fira Code',monospace;font-size:10px;color:var(--text3);text-decoration:none">${id}</a>`
       : '<span style="color:var(--text3);font-size:10px">—</span>';
-    const actionCell = h.itemId
-      ? `<button onclick='snOpenReject(${i})' style="background:var(--red-light);border:1px solid var(--red);color:var(--red);font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;white-space:nowrap">✗ Reject</button>`
-      : '';
+    let actionCell = '';
+    if (id) {
+      const isConfirmed = _snConfirmedIds.has(id);
+      const goodBtn = isConfirmed
+        ? `<span title="Already confirmed good" style="display:inline-block;background:var(--green);color:#fff;font-size:11px;font-weight:700;padding:4px 8px;border-radius:6px">✓</span>`
+        : `<button onclick='snConfirmGood(${i})' title="Mark as a real snipe (good)" style="background:var(--green-light);border:1px solid var(--green);color:var(--green);font-size:11px;font-weight:700;padding:4px 8px;border-radius:6px;cursor:pointer">✓</button>`;
+      const rejBtn = `<button onclick='snOpenReject(${i})' title="Reject (not a real snipe)" style="background:var(--red-light);border:1px solid var(--red);color:var(--red);font-size:11px;font-weight:700;padding:4px 8px;border-radius:6px;cursor:pointer">✗</button>`;
+      actionCell = `<div style="display:flex;gap:4px;justify-content:flex-end">${goodBtn}${rejBtn}</div>`;
+    }
     return `<tr class="${h.isMisspelling?'sn-row-snipe':''}">
       <td>${h.image?`<img src="${h.image}" class="sn-thumb" loading="lazy">`:''}</td>
       <td><span class="${h.isMisspelling?'sn-snipe':'sn-market'}">${h.searchType}</span></td>
@@ -6845,6 +6877,37 @@ function snRender(){
   }).join('');
 }
 
+// Mark a hit as a confirmed good snipe (positive AI training example).
+async function snConfirmGood(idx){
+  const h = _snFiltered[idx];
+  if (!h) return;
+  const id = snItemId(h);
+  if (!id) { toast('No item# captured for this row', 'error'); return; }
+  if (_snConfirmedIds.has(id)) { toast('Already confirmed', 'success'); return; }
+  try {
+    await _post('isosnipe_confirmations', {
+      ebay_item_id:    id,
+      player:          h.player || null,
+      parallel:        h.parallel || null,
+      card:            h.card || null,
+      title:           h.title || null,
+      description:     h.description || h.shortDescription || null,
+      item_specifics:  h.itemSpecifics || null,
+      price:           h.price || null,
+      market_avg:      h.marketAvg || null,
+      delta:           h.delta || null,
+      confirmed_by:    _adminUser?.id || null,
+      confirmed_by_name:_adminUser?.username || _adminUser?.email?.split('@')[0] || 'admin',
+    });
+    _snConfirmedIds.add(id);
+    document.getElementById('snStatConfirmed').textContent = _snConfirmedIds.size;
+    toast('Confirmed as good snipe — feeds AI positive examples.', 'success');
+    snApply();
+  } catch(e) {
+    toast('Confirm failed: ' + e.message, 'error');
+  }
+}
+
 // ─── REJECT MODAL ─────────────────────────────────────────
 const SN_REASONS = [
   ['wrong_player',        'Wrong player',        'Not the target player'],
@@ -6861,17 +6924,18 @@ const SN_REASONS = [
 
 function snOpenReject(idx){
   const h = _snFiltered[idx];
-  if (!h || !h.itemId) { toast('No item# captured for this row', 'error'); return; }
+  const id = h ? snItemId(h) : null;
+  if (!h || !id) { toast('No item# captured for this row', 'error'); return; }
   _snRejTarget = h;
   _snRejReasonCode = null;
   document.getElementById('snRejNotes').value = '';
   document.getElementById('snRejConfirmBtn').disabled = true;
-  document.getElementById('snRejItemIdLine').textContent = h.itemId;
+  document.getElementById('snRejItemIdLine').textContent = id;
   document.getElementById('snRejItemLine').innerHTML = `
     ${h.image ? `<img src="${h.image}" style="width:40px;height:40px;object-fit:cover;border-radius:4px">` : '<div style="width:40px;height:40px;background:var(--bg);border-radius:4px"></div>'}
     <div style="flex:1;min-width:0;font-size:12px;line-height:1.3">
       <div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${(h.title||'—').replace(/</g,'&lt;')}</div>
-      <div style="color:var(--text3);font-size:10px;font-family:'SF Mono',monospace;margin-top:2px">Item# ${h.itemId} · $${h.price.toFixed(2)} · ${h.player} · ${h.parallel}</div>
+      <div style="color:var(--text3);font-size:10px;font-family:'SF Mono',monospace;margin-top:2px">Item# ${id} · $${h.price.toFixed(2)} · ${h.player} · ${h.parallel}</div>
     </div>`;
   // Build reason buttons
   const grid = document.getElementById('snReasonGrid');
@@ -6906,11 +6970,13 @@ function snCloseReject(){
 async function snConfirmReject(){
   if (!_snRejTarget || !_snRejReasonCode) return;
   const h = _snRejTarget;
+  const id = snItemId(h);
+  if (!id) { toast('Lost item# — try again', 'error'); return; }
   const notes = document.getElementById('snRejNotes').value.trim();
   document.getElementById('snRejConfirmBtn').disabled = true;
   try {
     await _post('isosnipe_rejections', {
-      ebay_item_id:    String(h.itemId),
+      ebay_item_id:    id,
       player:          h.player || null,
       parallel:        h.parallel || null,
       card:            h.card || null,
@@ -6922,7 +6988,7 @@ async function snConfirmReject(){
       rejected_by:     _adminUser?.id || null,
       rejected_by_name:_adminUser?.username || _adminUser?.email?.split('@')[0] || 'admin',
     });
-    _snRejectedIds.add(String(h.itemId));
+    _snRejectedIds.add(id);
     document.getElementById('snStatRejected').textContent = _snRejectedIds.size;
     toast('Rejected. Item# blocked from future scans.', 'success');
     snCloseReject();
@@ -6959,7 +7025,7 @@ async function snAnalyzeAi(){
 function snRenderAi(d){
   const m = d._meta || {};
   document.getElementById('snAiMeta').textContent =
-    `${m.rejections_analyzed||0} rejections analyzed · ${m.model||''} · ${m.analyzed_at ? new Date(m.analyzed_at).toLocaleString() : ''}`;
+    `${m.rejections_analyzed||0} rejections + ${m.confirmations_analyzed||0} confirmations analyzed · ${m.model||''} · ${m.analyzed_at ? new Date(m.analyzed_at).toLocaleString() : ''}`;
   document.getElementById('snAiBody').style.display = 'block';
 
   // Blocklist suggestions

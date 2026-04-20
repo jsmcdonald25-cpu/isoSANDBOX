@@ -67,10 +67,18 @@ async function verifyAdmin(authHeader) {
   return me.json;
 }
 
-// ─── Fetch rejections (cap 200 most recent for token budget) ──
+// ─── Fetch rejections + confirmations (cap each for token budget) ──
 async function fetchRejections() {
   const r = await httpJson(
     `${SB_URL}/rest/v1/isosnipe_rejections?select=ebay_item_id,player,parallel,card,title,description,item_specifics,reason_code,reason_notes&order=rejected_at.desc&limit=200`,
+    { headers: { 'apikey': SB_SERVICE, 'Authorization': `Bearer ${SB_SERVICE}` } }
+  );
+  return Array.isArray(r.json) ? r.json : [];
+}
+
+async function fetchConfirmations() {
+  const r = await httpJson(
+    `${SB_URL}/rest/v1/isosnipe_confirmations?select=ebay_item_id,player,parallel,card,title,description,item_specifics,price,market_avg,delta&order=confirmed_at.desc&limit=100`,
     { headers: { 'apikey': SB_SERVICE, 'Authorization': `Bearer ${SB_SERVICE}` } }
   );
   return Array.isArray(r.json) ? r.json : [];
@@ -118,9 +126,14 @@ const OUTPUT_SCHEMA = {
 };
 
 // ─── System prompt (padded for caching) ──────────────────
-const SYSTEM_PROMPT = `You are an expert sports trading card listing analyst. You receive a batch of eBay listings that an admin has REJECTED as "not a real snipe" (i.e., not the card the snipe engine was looking for) along with a reason code and free-form notes.
+const SYSTEM_PROMPT = `You are an expert sports trading card listing analyst. You receive TWO batches of eBay listings the admin has labeled:
 
-Your job is to find PATTERNS across the rejections and return four things in strict JSON:
+1. REJECTIONS — listings the admin marked "not a real snipe" (negative examples) with a reason code + notes
+2. CONFIRMATIONS — listings the admin marked "yes, this IS the card I want" (positive examples)
+
+Your edge is COMPARING the two: words/phrases that show up in REJECTIONS but NOT in CONFIRMATIONS are the strongest blocklist signals. Words/phrases consistent across CONFIRMATIONS describe what a real snipe looks like.
+
+Return four things in strict JSON:
 
 1. **blocklist_terms** — short keywords/phrases (1-4 words) that consistently appear in rejected titles or descriptions and would help filter out similar fakes/scams in future scans. Examples: "facsimile", "stamped auto", "1990 chrome reprint", "card image only", "tc card". Be specific enough to catch the bad pattern but generic enough to apply broadly. Don't include obvious junk already in the snipe filter (lot, mystery, repack, etc).
 
@@ -181,25 +194,34 @@ exports.handler = async (event) => {
   const admin = await verifyAdmin(event.headers.authorization || event.headers.Authorization);
   if (!admin) return { statusCode: 403, headers: cors, body: JSON.stringify({ error: 'Admin auth required' }) };
 
-  // Pull rejections
-  const rejections = await fetchRejections();
-  if (rejections.length === 0) {
+  // Pull both feedback streams in parallel
+  const [rejections, confirmations] = await Promise.all([fetchRejections(), fetchConfirmations()]);
+
+  if (rejections.length === 0 && confirmations.length === 0) {
     return { statusCode: 200, headers: { ...cors, 'Content-Type': 'application/json' }, body: JSON.stringify({
-      blocklist_terms: [], query_refinements: [], insights: ['No rejections yet — start clicking ✗ on bad listings to feed the engine.'], rejection_breakdown: {},
+      blocklist_terms: [], query_refinements: [],
+      insights: ['No feedback yet — click ✓ on real snipes and ✗ on bad listings to feed the engine.'],
+      rejection_breakdown: {},
     })};
   }
 
-  // Build user message — compact each rejection to keep token usage low
-  const compact = rejections.map(r => ({
+  // Compact representations to keep tokens low
+  const compactRej = rejections.map(r => ({
     item_id: r.ebay_item_id,
-    player: r.player,
-    parallel: r.parallel,
-    card: r.card,
+    player: r.player, parallel: r.parallel, card: r.card,
     title: r.title,
     desc: (r.description || '').slice(0, 600),
     specifics: r.item_specifics || {},
     reason: r.reason_code,
     notes: r.reason_notes || '',
+  }));
+  const compactConf = confirmations.map(c => ({
+    item_id: c.ebay_item_id,
+    player: c.player, parallel: c.parallel, card: c.card,
+    title: c.title,
+    desc: (c.description || '').slice(0, 600),
+    specifics: c.item_specifics || {},
+    price: c.price, market_avg: c.market_avg, delta: c.delta,
   }));
 
   const client = new Anthropic({ apiKey: ANTHROPIC_KEY });
@@ -211,7 +233,7 @@ exports.handler = async (event) => {
       system: [{ type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }],
       messages: [{
         role: 'user',
-        content: `Analyze these ${rejections.length} rejected ISOsnipe listings and return the structured JSON described in the system prompt.\n\nREJECTIONS:\n${JSON.stringify(compact, null, 1)}`,
+        content: `Analyze ${rejections.length} REJECTED listings (negative examples — admin said "not a real snipe") and ${confirmations.length} CONFIRMED GOOD listings (positive examples — admin said "yes this is the card"). Return the structured JSON described in the system prompt. Compare GOOD vs BAD descriptions to find the pattern words/phrases that distinguish them — those are your strongest blocklist signals and query refinements.\n\nREJECTIONS (bad):\n${JSON.stringify(compactRej, null, 1)}\n\nCONFIRMATIONS (good):\n${JSON.stringify(compactConf, null, 1)}`,
       }],
     });
     // Extract first text block
@@ -231,7 +253,8 @@ exports.handler = async (event) => {
     body: JSON.stringify({
       ...result,
       _meta: {
-        rejections_analyzed: rejections.length,
+        rejections_analyzed:    rejections.length,
+        confirmations_analyzed: confirmations.length,
         model: MODEL,
         analyzed_at: new Date().toISOString(),
       },

@@ -2420,6 +2420,22 @@ tr:hover td { background: var(--bg); }
         <div class="panel-sub">Crawler output → manual review → permanent provenance. Data is admin-only and not exposed to users.</div>
       </div>
 
+      <!-- ───── AI LEARN PANEL (Serial Queue) ───── -->
+      <div id="sqAiSection" style="background:var(--surface);border:1px solid var(--purple);border-radius:var(--radius);margin-bottom:16px;overflow:hidden">
+        <div style="background:linear-gradient(135deg,var(--purple-light),#fff);padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+          <div>
+            <div style="font-size:14px;font-weight:800;color:var(--purple)">🤖 AI Learn · Pattern Analysis</div>
+            <div id="sqAiMeta" style="font-size:11px;color:var(--text3);margin-top:2px">No analysis yet — click "↻ Reload analysis" to load the latest (runs every 30 min with the crawler)</div>
+          </div>
+          <button onclick="sqAnalyzeAi()" id="sqAiRunBtn" style="background:var(--purple);color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:700;font-size:12px;cursor:pointer">↻ Reload analysis</button>
+        </div>
+        <div id="sqAiBody" style="padding:16px 18px;display:none">
+          <div id="sqAiBlock" style="margin-bottom:16px"></div>
+          <div id="sqAiInsights" style="margin-bottom:8px"></div>
+          <div id="sqAiBreakdown" style="border-top:1px solid var(--border);padding-top:12px;margin-top:4px"></div>
+        </div>
+      </div>
+
       <!-- Filter pills -->
       <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
         <button class="sn-pill active" onclick="sqSetFilter('pending',this)">Pending</button>
@@ -2455,22 +2471,6 @@ tr:hover td { background: var(--bg); }
       </div>
 
       <div id="sqLastRun" style="font-size:11px;color:var(--text3);margin-bottom:8px"></div>
-
-      <!-- ───── AI LEARN PANEL (Serial Queue) ───── -->
-      <div id="sqAiSection" style="background:var(--surface);border:1px solid var(--purple);border-radius:var(--radius);margin-bottom:16px;overflow:hidden">
-        <div style="background:linear-gradient(135deg,var(--purple-light),#fff);padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-          <div>
-            <div style="font-size:14px;font-weight:800;color:var(--purple)">🤖 AI Learn · Pattern Analysis</div>
-            <div id="sqAiMeta" style="font-size:11px;color:var(--text3);margin-top:2px">No analysis yet — click "Analyze queue" to feed Claude Haiku 4.5</div>
-          </div>
-          <button onclick="sqAnalyzeAi()" id="sqAiRunBtn" style="background:var(--purple);color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:700;font-size:12px;cursor:pointer">▶ Run analysis</button>
-        </div>
-        <div id="sqAiBody" style="padding:16px 18px;display:none">
-          <div id="sqAiBlock" style="margin-bottom:16px"></div>
-          <div id="sqAiInsights" style="margin-bottom:8px"></div>
-          <div id="sqAiBreakdown" style="border-top:1px solid var(--border);padding-top:12px;margin-top:4px"></div>
-        </div>
-      </div>
 
       <!-- Queue table -->
       <div class="table-wrap">

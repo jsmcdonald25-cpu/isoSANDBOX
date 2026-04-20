@@ -1,0 +1,63 @@
+{
+  "blocklist_terms": [
+    "facsimile signature",
+    "gold edition signature",
+    "made in usa signature",
+    "group of noted",
+    "signature series",
+    "35th anniversary",
+    "refactor",
+    "card guard"
+  ],
+  "query_refinements": [
+    {
+      "player": "Ken Griffey Jr",
+      "parallel": "Autograph",
+      "negatives": [
+        "facsimile",
+        "gold edition",
+        "signature card guard",
+        "group of"
+      ]
+    },
+    {
+      "player": "Ichiro Suzuki",
+      "parallel": "Autograph",
+      "negatives": [
+        "facsimile signature",
+        "made in usa",
+        "exhibits 1947",
+        "panini donruss signature"
+      ]
+    },
+    {
+      "player": "Shohei Ohtani",
+      "parallel": "Refractor",
+      "negatives": [
+        "35th anniversary",
+        "refactor",
+        "2025 topps chrome"
+      ]
+    }
+  ],
+  "insights": [
+    "40% of rejections (2/5) flagged facsimile_signature; these use terms 'Gold Edition', 'Made in USA', 'Signature Card'.",
+    "40% of rejections (2/5) flagged wrong_card_num; vague/generic titles like 'Group of noted' lack specificity.",
+    "20% of rejections (1/5) flagged wrong_parallel with multiple secondary reasons (wrong_year, other); title-card mismatch.",
+    "No confirmed good listings provided; blocklist based purely on rejection signals.",
+    "Facsimile signatures cluster around vintage-style or special edition cards (Leaf Exhibits, Gold Edition).",
+    "Wrong card/parallel rejections involve 2024–2025 modern releases with title-description mismatches.",
+    "Vague or overly broad titles correlate with wrong_card_num rejections."
+  ],
+  "rejection_breakdown": {
+    "facsimile_signature": 2,
+    "wrong_card_num": 2,
+    "wrong_parallel": 1
+  },
+  "_meta": {
+    "rejections_analyzed": 5,
+    "confirmations_analyzed": 0,
+    "model": "claude-haiku-4-5",
+    "analyzed_at": "2026-04-20T23:55:00.593Z"
+  }
+}

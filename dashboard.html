@@ -372,6 +372,67 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .pr-footer .fv.iso{color:var(--green)}
 .pr-footer .fv.val{color:var(--blue-bright)}
 .pr-footer .fv .sub{font-size:12px;color:var(--muted-text);letter-spacing:2px}
+/* ─── Market Meter button + 2nd popup ─── */
+.mm-open-btn{display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(135deg,rgba(0,170,255,0.15),rgba(0,232,135,0.1));border:1px solid rgba(0,170,255,0.35);border-radius:10px;padding:10px 14px;cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:var(--blue-bright);transition:all .2s;text-transform:uppercase}
+.mm-open-btn:hover{background:linear-gradient(135deg,rgba(0,170,255,0.25),rgba(0,232,135,0.18));border-color:var(--blue);color:var(--white);box-shadow:0 0 16px rgba(0,170,255,0.25)}
+.mm-ob-lbl{display:flex;align-items:center;gap:8px}
+.mm-ob-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:mmPulse 1.8s ease-in-out infinite}
+.mm-ob-arrow{font-size:16px;color:var(--muted-text);transition:transform .2s}
+.mm-open-btn:hover .mm-ob-arrow{color:var(--blue-bright);transform:translateX(3px)}
+@keyframes mmPulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.mm-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:10001;display:flex;align-items:center;justify-content:center;padding:20px;animation:mmFade .2s}
+@keyframes mmFade{from{opacity:0}to{opacity:1}}
+.mm-modal{background:linear-gradient(145deg,#0D1F33,#112840);border:2px solid var(--blue);border-radius:14px;width:100%;max-width:560px;padding:18px 20px;box-shadow:0 20px 60px rgba(0,0,0,0.8),0 0 30px rgba(0,170,255,0.2);animation:mmSlide .25s ease-out}
+@keyframes mmSlide{from{opacity:0;transform:translateY(10px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.mm-mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--deep-border)}
+.mm-mt{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:2.5px;color:var(--blue);text-transform:uppercase;font-weight:700;display:flex;align-items:center;gap:8px}
+.mm-mt .mm-ob-dot{animation:mmPulse 1.8s ease-in-out infinite}
+.mm-mt .who{color:var(--white);font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1.5px;margin-left:4px}
+.mm-mx{background:none;border:none;color:var(--muted-text);font-size:24px;cursor:pointer;padding:0 4px;line-height:1}
+.mm-mx:hover{color:var(--red)}
+.mm-range-tabs{display:flex;gap:4px;background:rgba(0,0,0,0.25);border-radius:6px;padding:3px;margin-bottom:14px;justify-content:center}
+.mm-rt{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--muted-text);padding:6px 16px;border-radius:5px;cursor:pointer;border:none;background:none;text-transform:uppercase;font-weight:700;transition:.15s;flex:1}
+.mm-rt.active{background:var(--blue);color:#000}
+.mm-rt:hover:not(.active){color:var(--chrome-lt);background:rgba(0,170,255,0.08)}
+.mm-metrics2{display:flex;gap:10px;margin-bottom:14px}
+.mm-m{flex:1;background:rgba(0,0,0,0.25);border:1px solid var(--deep-border);border-radius:10px;padding:12px 14px}
+.mm-m .label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted-text);text-transform:uppercase;margin-bottom:2px}
+.mm-m .value{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;line-height:1}
+.mm-m .delta{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;font-weight:700;margin-top:4px}
+.mm-m.avg .value{color:var(--green)}
+.mm-m.floor .value{color:var(--blue-bright)}
+.mm-m .delta.up{color:var(--green)}
+.mm-m .delta.dn{color:var(--red)}
+.mm-m .delta.flat{color:var(--muted-text)}
+.mm-m .sub{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:1px;color:var(--muted-text);display:block;margin-top:4px;text-transform:uppercase}
+.mm-c{background:rgba(0,0,0,0.3);border:1px solid var(--deep-border);border-radius:10px;padding:12px;margin-bottom:12px}
+.mm-c svg{display:block;width:100%;height:90px}
+.mm-cf{display:flex;justify-content:space-between;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1px;color:var(--muted-text);text-transform:uppercase;margin-top:5px}
+.mm-note{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1.2px;color:var(--muted-text);text-align:center;text-transform:uppercase;padding-top:8px;border-top:1px dashed rgba(0,170,255,0.15)}
+.mm-empty{padding:30px 20px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted-text);letter-spacing:1px;text-transform:uppercase;line-height:1.6}
+/* Admin Market Meter browser */
+.mm-adm-preset{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;background:rgba(0,170,255,0.1);border:1px solid rgba(0,170,255,0.3);color:var(--blue-bright);padding:7px 12px;border-radius:6px;cursor:pointer;text-transform:uppercase;font-weight:700}
+.mm-adm-preset:hover{background:rgba(0,170,255,0.2)}
+.mm-adm-preset.active{background:var(--blue);color:#000;border-color:var(--blue)}
+.mm-adm-tbl{width:100%;border-collapse:collapse;min-width:840px}
+.mm-adm-tbl th{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1.5px;color:var(--muted-text);text-transform:uppercase;padding:10px;text-align:left;border-bottom:1px solid var(--deep-border);background:rgba(0,0,0,0.2);cursor:pointer;user-select:none;white-space:nowrap}
+.mm-adm-tbl th:hover{color:var(--blue-bright)}
+.mm-adm-tbl th .mm-sort{opacity:0.4;font-size:9px;margin-left:3px}
+.mm-adm-tbl th.mm-col-top10 .mm-sort,.mm-adm-tbl th.mm-col-active .mm-sort{opacity:1;color:var(--blue-bright)}
+.mm-adm-tbl td{padding:10px;border-bottom:1px solid rgba(0,170,255,0.05);font-family:Barlow,sans-serif;font-size:13px;color:var(--chrome-lt);vertical-align:middle}
+.mm-adm-tbl tr:hover td{background:rgba(0,170,255,0.04)}
+.mm-adm-tbl tbody tr{cursor:pointer}
+.mm-adm-name{display:flex;align-items:center;gap:8px}
+.mm-adm-name img{width:28px;height:28px;border-radius:50%;background:var(--deep3);object-fit:cover;border:1px solid var(--deep-border)}
+.mm-adm-name .nm{font-weight:600;color:var(--white)}
+.mm-adm-name .pos{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted-text);letter-spacing:1px}
+.mm-adm-cell-avg{font-family:'Bebas Neue',sans-serif;color:var(--green);font-size:16px;letter-spacing:1px}
+.mm-adm-cell-floor{font-family:'Bebas Neue',sans-serif;color:var(--blue-bright);font-size:16px;letter-spacing:1px}
+.mm-adm-trend{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;display:flex;align-items:center;gap:3px}
+.mm-adm-trend.up{color:var(--green)}
+.mm-adm-trend.dn{color:var(--red)}
+.mm-adm-trend.flat{color:var(--muted-text)}
+.mm-adm-mini{width:80px;height:26px;display:block}
 .pr-vs.u{background:linear-gradient(135deg,rgba(255,110,199,0.12),rgba(123,104,238,0.12));border:1px solid rgba(255,110,199,0.25);color:#FF6EC7;animation:prUg 2s ease infinite alternate}
 @keyframes prUg{0%{box-shadow:0 0 6px rgba(255,110,199,0.15)}100%{box-shadow:0 0 14px rgba(123,104,238,0.2)}}
 .pr-vs.h{background:rgba(0,232,135,0.08);border:1px solid rgba(0,232,135,0.2);color:var(--green)}
@@ -2173,6 +2234,10 @@ async function initUserProfile(user){
 
   // Admin mode — is_admin flag in profiles table OR owner role
   window._isAdmin = (profile?.is_admin === true || role === 'owner' || role === 'admin');
+  if (window._isAdmin) {
+    const mmNav = document.getElementById('nav-marketmeter');
+    if (mmNav) mmNav.style.display = 'flex';
+  }
 
   // Populate sidebar
   const avatarEl  = document.getElementById('user-avatar');
@@ -2325,6 +2390,12 @@ async function logOut(){
       <div class="nav-drag-handle">&#10303;</div>
       <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
       <span class="nav-label">Power Rankings</span>
+    </div>
+
+    <div class="nav-item" id="nav-marketmeter" onclick="N('marketmeter',this)" style="display:none">
+      <div class="nav-drag-handle">&#10303;</div>
+      <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h3l3-9 4 18 3-9h7"/></svg></div>
+      <span class="nav-label">Market Meter <span style="color:var(--muted-text);font-size:9px;letter-spacing:1px;margin-left:4px">ADMIN</span></span>
     </div>
 
     <div class="nav-item" id="nav-slablab" onclick="openSlabLab()" style="display:none">
@@ -3394,6 +3465,43 @@ async function logOut(){
     <div class="ticker-wrap"><div class="ticker-label">LIVE</div><div class="ticker-scroll"><div class="ticker-inner" id="ticker"></div></div></div>
     <div class="filter-row"><div class="chip active" onclick="C(this)">All</div><div class="chip" onclick="C(this)">Rookies</div><div class="chip" onclick="C(this)">Autos</div><div class="chip" onclick="C(this)">Numbered</div><div class="chip" onclick="C(this)">Vintage</div><div class="chip" onclick="C(this)">Top Movers</div></div>
     <div class="card-block"><div class="card-block-title"><div class="dot"></div> Baseball Market &#8212; Last Sale &#183; Bid &#183; Ask &#183; Active ISOs</div><table class="market-table" id="mktTable"></table></div>
+  </div>
+
+  <!-- ADMIN: Market Meter Browser -->
+  <div class="panel" id="panel-marketmeter">
+    <div style="padding:20px 24px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:12px">
+        <div style="font-family:Bebas Neue,sans-serif;font-size:24px;letter-spacing:3px;color:var(--blue);display:flex;align-items:center;gap:10px">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:mmPulse 1.8s ease-in-out infinite"></span>
+          MARKET METER &middot; ADMIN BROWSER
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <input id="mmSearch" placeholder="Search player..." oninput="_mmAdmFilter(this.value)"
+            style="background:rgba(0,0,0,0.3);border:1px solid var(--deep-border);border-radius:6px;padding:7px 12px;font-family:Barlow,sans-serif;font-size:13px;color:var(--white);width:220px">
+          <button class="mm-adm-preset active" onclick="_mmAdmPreset('hot',this)">&#128293; Hot</button>
+          <button class="mm-adm-preset" onclick="_mmAdmPreset('bargain',this)">&#128142; Bargains</button>
+          <button class="mm-adm-preset" onclick="_mmAdmPreset('cooling',this)">&#10052;&#65039; Cooling</button>
+          <button class="mm-adm-preset" onclick="_mmAdmPreset('all',this)">All</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="mm-adm-tbl" id="mmAdmTbl">
+          <thead>
+            <tr>
+              <th onclick="_mmAdmSort('name')">Player <span class="mm-sort">&#8597;</span></th>
+              <th onclick="_mmAdmSort('top10_avg')" class="mm-col-top10">Top 10 Avg <span class="mm-sort">&darr;</span></th>
+              <th onclick="_mmAdmSort('floor_50_index')">$50 Floor <span class="mm-sort">&#8597;</span></th>
+              <th onclick="_mmAdmSort('d7')">7d &Delta; <span class="mm-sort">&#8597;</span></th>
+              <th onclick="_mmAdmSort('d30')">30d &Delta; <span class="mm-sort">&#8597;</span></th>
+              <th>7d Trend</th>
+              <th onclick="_mmAdmSort('total_listings')">Listings <span class="mm-sort">&#8597;</span></th>
+            </tr>
+          </thead>
+          <tbody id="mmAdmBody"><tr><td colspan="7" style="padding:30px;text-align:center;color:var(--muted-text);font-family:Barlow Condensed,sans-serif;letter-spacing:1px">Loading...</td></tr></tbody>
+        </table>
+      </div>
+      <div id="mmAdmCount" style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);margin-top:10px;letter-spacing:1px;text-transform:uppercase"></div>
+    </div>
   </div>
 
   <!-- MY VAULT -->
@@ -5807,6 +5915,7 @@ const PM={
   shopprofile:{t:'SHOP PROFILE',s:'Card shop details'},
   cardshows:{t:'CARD SHOWS',s:'Upcoming card shows & events'},
   rankings:{t:'POWER RANKINGS',s:'Performance meets price'},
+  marketmeter:{t:'MARKET METER',s:'eBay listing pricing — daily snapshots'},
   guide:{t:'FEATURE GUIDE',s:'Learn what every feature does'},
 };
 function toggleTheme(isLight){
@@ -5862,6 +5971,7 @@ function N(id,el){
   if(id==='activelistings')loadActiveListings();
   if(id==='mycollection')initMyCollection();
   if(id==='rankings')_prInit();
+  if(id==='marketmeter')_mmAdmLoad();
   if(id==='cardshops')_loadLeaflet().then(()=>initCardShops());
   if(id==='shopprofile')_loadLeaflet().then(()=>renderShopProfile());
   if(id==='cardshows')_loadLeaflet().then(()=>initCardShows());
@@ -13162,6 +13272,322 @@ function _prScoreBreakdown(stats, price, iso, val, isPit){
   return { main, footer };
 }
 
+// ─── Market Meter popup ──────────────────────────────────────
+// Opens the 2nd popup on top of the player profile. Fetches last 30 days
+// of player_market_snapshots from Supabase and renders 3D/7D/30D tabs.
+let _mmSnapshots = [];  // filtered/sorted series for current player
+let _mmRange = 7;
+let _mmPlayerName = '';
+
+async function _prOpenMarketMeter(mlbId, playerName){
+  _mmPlayerName = playerName;
+  _mmRange = 7;
+
+  // Mount overlay
+  let ov = document.getElementById('mmOverlay');
+  if (ov) ov.remove();
+  ov = document.createElement('div');
+  ov.id = 'mmOverlay';
+  ov.className = 'mm-overlay';
+  ov.onclick = (e) => { if (e.target === ov) _prCloseMarketMeter(); };
+  ov.innerHTML = `
+    <div class="mm-modal" onclick="event.stopPropagation()">
+      <div class="mm-mh">
+        <div class="mm-mt">
+          <span class="mm-ob-dot"></span>
+          <span>MARKET METER</span>
+          <span class="who">${_h(playerName).toUpperCase()}</span>
+        </div>
+        <button class="mm-mx" onclick="_prCloseMarketMeter()">&times;</button>
+      </div>
+      <div class="mm-range-tabs">
+        <button class="mm-rt" onclick="_prMMSetRange(3,this)">3 DAYS</button>
+        <button class="mm-rt active" onclick="_prMMSetRange(7,this)">7 DAYS</button>
+        <button class="mm-rt" onclick="_prMMSetRange(30,this)">30 DAYS</button>
+      </div>
+      <div id="mmBody">
+        <div class="mm-empty">Loading...</div>
+      </div>
+      <div class="mm-note">Listing price indicator &middot; actual sold prices pending Marketplace Insights API</div>
+    </div>`;
+  document.body.appendChild(ov);
+
+  // Fetch last 30 days for this player
+  try {
+    const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+    const r = await fetch(`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/player_market_snapshots?player_id=eq.${mlbId}&order=snapshot_date.desc&limit=30`,
+      {headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}});
+    if (r.ok){
+      const data = await r.json();
+      // Reverse so oldest→newest for chart rendering
+      _mmSnapshots = (data || []).slice().reverse();
+    } else {
+      _mmSnapshots = [];
+    }
+  } catch(e){
+    console.warn('MM fetch failed:', e);
+    _mmSnapshots = [];
+  }
+
+  _prRenderMarketMeter();
+}
+
+function _prCloseMarketMeter(){
+  const ov = document.getElementById('mmOverlay');
+  if (ov) ov.remove();
+}
+
+function _prMMSetRange(days, btn){
+  _mmRange = days;
+  document.querySelectorAll('.mm-rt').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  _prRenderMarketMeter();
+}
+
+function _prRenderMarketMeter(){
+  const body = document.getElementById('mmBody');
+  if (!body) return;
+
+  if (!_mmSnapshots || _mmSnapshots.length === 0){
+    body.innerHTML = `<div class="mm-empty">No market data yet for this player.<br>First snapshot lands after the next daily collector run (06:00 UTC).</div>`;
+    return;
+  }
+
+  // Slice last N days
+  const series = _mmSnapshots.slice(-_mmRange);
+  if (series.length < 2){
+    body.innerHTML = `<div class="mm-empty">Only ${series.length} day(s) of data so far.<br>Trend metrics will populate after more daily snapshots accumulate.</div>`;
+    // Still show the single data point
+    if (series.length === 1){
+      const s = series[0];
+      body.innerHTML += `<div class="mm-metrics2" style="margin-top:14px">
+        <div class="mm-m avg"><div class="label">Top 10 Avg</div><div class="value">$${s.top10_avg >= 100 ? Math.round(s.top10_avg) : Number(s.top10_avg).toFixed(2)}</div><span class="sub">today</span></div>
+        <div class="mm-m floor"><div class="label">$50 Floor Idx</div><div class="value">${s.floor_50_index}</div><span class="sub">today</span></div>
+      </div>`;
+    }
+    return;
+  }
+
+  const latest = series[series.length - 1];
+  const first = series[0];
+  const avgDiff = ((Number(latest.top10_avg) - Number(first.top10_avg)) / Number(first.top10_avg)) * 100;
+  const floorDiff = latest.floor_50_index - first.floor_50_index;
+
+  const avgVal = Number(latest.top10_avg);
+  const avgDisplay = avgVal >= 100 ? '$' + Math.round(avgVal) : '$' + avgVal.toFixed(2);
+
+  const avgDeltaHtml = Math.abs(avgDiff) < 0.5
+    ? `<span>&#9644;</span> flat vs ${_mmRange}d ago`
+    : avgDiff > 0
+      ? `<span>&#9650;</span> +${avgDiff.toFixed(1)}% vs ${_mmRange}d ago`
+      : `<span>&#9660;</span> ${avgDiff.toFixed(1)}% vs ${_mmRange}d ago`;
+  const avgDeltaCls = Math.abs(avgDiff) < 0.5 ? 'flat' : avgDiff > 0 ? 'up' : 'dn';
+
+  const floorDeltaHtml = floorDiff === 0
+    ? `<span>&#9644;</span> flat vs ${_mmRange}d ago`
+    : floorDiff < 0
+      ? `<span>&#9650;</span> ${Math.abs(floorDiff)} fewer cards = hotter`
+      : `<span>&#9660;</span> +${floorDiff} more cards = cooling`;
+  const floorDeltaCls = floorDiff === 0 ? 'flat' : floorDiff < 0 ? 'up' : 'dn';
+
+  // Sparkline
+  const points = series.map(s => Number(s.top10_avg));
+  const W = 500, H = 90, pad = 5;
+  const min = Math.min(...points), max = Math.max(...points);
+  const span = (max - min) || 1;
+  const pts = points.map((v, i) => {
+    const x = pad + (i / (points.length - 1 || 1)) * (W - pad*2);
+    const y = H - pad - ((v - min) / span) * (H - pad*2);
+    return [x, y];
+  });
+  const path = 'M ' + pts.map(p => p.join(',')).join(' L ');
+  const area = path + ` L ${W-pad},${H-pad} L ${pad},${H-pad} Z`;
+  const col = avgDiff > 0.5 ? '#00E887' : avgDiff < -0.5 ? '#FF3B5C' : '#7A95AE';
+
+  const startDateStr = new Date(first.snapshot_date + 'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  const endDateStr = new Date(latest.snapshot_date + 'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+
+  body.innerHTML = `
+    <div class="mm-metrics2">
+      <div class="mm-m avg">
+        <div class="label">Top 10 Avg Listing</div>
+        <div class="value">${avgDisplay}</div>
+        <div class="delta ${avgDeltaCls}">${avgDeltaHtml}</div>
+        <span class="sub">mean of 10 priciest listings</span>
+      </div>
+      <div class="mm-m floor">
+        <div class="label">$50 Floor Index</div>
+        <div class="value">${latest.floor_50_index}</div>
+        <div class="delta ${floorDeltaCls}">${floorDeltaHtml}</div>
+        <span class="sub">cards to sum $50 &middot; lower = hotter</span>
+      </div>
+    </div>
+    <div class="mm-c">
+      <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+        <defs><linearGradient id="mmSpg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity="0.4"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+        <path d="${area}" fill="url(#mmSpg)"/>
+        <path d="${path}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="${pts[pts.length-1][0]}" cy="${pts[pts.length-1][1]}" r="4" fill="${col}" stroke="#0D1F33" stroke-width="2"/>
+      </svg>
+      <div class="mm-cf">
+        <span>${startDateStr}</span>
+        <span>${_mmRange}-DAY TOP10 AVG</span>
+        <span>${endDateStr}</span>
+      </div>
+    </div>`;
+}
+
+// ─── Admin Market Meter Browser ─────────────────────────────
+let _mmAdmData = null;  // [{player_id, name, pos, team, top10_avg, floor_50_index, d7, d30, tr7, total_listings}]
+let _mmAdmSort = 'top10_avg';
+let _mmAdmDir  = 'desc';
+let _mmAdmQuery = '';
+
+async function _mmAdmLoad(){
+  if (_mmAdmData) return;
+  const body = document.getElementById('mmAdmBody');
+  if (body) body.innerHTML = '<tr><td colspan="7" style="padding:30px;text-align:center;color:var(--muted-text);font-family:Barlow Condensed,sans-serif">Loading snapshots...</td></tr>';
+  try {
+    const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+    // Pull last 30 days across all players + players table for names
+    const [snapRes, playerRes] = await Promise.all([
+      fetch(`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/player_market_snapshots?select=player_id,snapshot_date,top10_avg,floor_50_index,total_listings&order=snapshot_date.desc&limit=10000`, {headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}}),
+      fetch(`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/players?select=mlb_id,full_name,position,team&limit=500`, {headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}}),
+    ]);
+    const snaps = snapRes.ok ? await snapRes.json() : [];
+    const players = playerRes.ok ? await playerRes.json() : [];
+
+    if (snaps.length === 0){
+      _mmAdmData = [];
+      if (body) body.innerHTML = '<tr><td colspan="7" style="padding:40px;text-align:center;color:var(--muted-text);font-family:Barlow Condensed,sans-serif;letter-spacing:1px">No snapshots yet. First data lands after the next collector run (06:00 UTC daily).</td></tr>';
+      return;
+    }
+
+    // Build player lookup
+    const playerMap = {};
+    players.forEach(p => { playerMap[p.mlb_id] = p; });
+
+    // Group snapshots by player_id, sort each player's series by date ASC
+    const byPlayer = {};
+    snaps.forEach(s => {
+      if (!byPlayer[s.player_id]) byPlayer[s.player_id] = [];
+      byPlayer[s.player_id].push(s);
+    });
+
+    _mmAdmData = Object.keys(byPlayer).map(pid => {
+      const series = byPlayer[pid].slice().sort((a,b) => a.snapshot_date.localeCompare(b.snapshot_date));
+      const latest = series[series.length - 1];
+      // 7d delta
+      const d7Ref = series.find(s => {
+        const days = (new Date(latest.snapshot_date) - new Date(s.snapshot_date)) / 86400000;
+        return days >= 6 && days <= 9;
+      }) || series[0];
+      const d30Ref = series[0]; // 30-day if present
+      const d7 = d7Ref && d7Ref !== latest ? ((Number(latest.top10_avg) - Number(d7Ref.top10_avg)) / Number(d7Ref.top10_avg)) * 100 : 0;
+      const d30 = d30Ref && d30Ref !== latest ? ((Number(latest.top10_avg) - Number(d30Ref.top10_avg)) / Number(d30Ref.top10_avg)) * 100 : 0;
+      // 7d trend sparkline points
+      const tr7 = series.slice(-7).map(s => Number(s.top10_avg));
+      const pinfo = playerMap[pid] || {};
+      return {
+        player_id: Number(pid),
+        name: pinfo.full_name || `#${pid}`,
+        pos: pinfo.position || '',
+        team: pinfo.team || '',
+        top10_avg: Number(latest.top10_avg),
+        floor_50_index: latest.floor_50_index,
+        total_listings: latest.total_listings,
+        d7, d30, tr7,
+      };
+    });
+    _mmAdmRender();
+  } catch(e){
+    console.warn('MM admin load failed:', e);
+    if (body) body.innerHTML = '<tr><td colspan="7" style="padding:30px;text-align:center;color:var(--red)">Load failed: '+e.message+'</td></tr>';
+  }
+}
+
+function _mmAdmFilter(q){ _mmAdmQuery = (q||'').toLowerCase(); _mmAdmRender(); }
+
+function _mmAdmPreset(preset, btn){
+  document.querySelectorAll('.mm-adm-preset').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  if (preset === 'hot')      { _mmAdmSort = 'd7';             _mmAdmDir = 'desc'; }
+  else if (preset === 'bargain') { _mmAdmSort = 'floor_50_index'; _mmAdmDir = 'asc'; }
+  else if (preset === 'cooling') { _mmAdmSort = 'd7';             _mmAdmDir = 'asc'; }
+  else                       { _mmAdmSort = 'top10_avg';      _mmAdmDir = 'desc'; }
+  _mmAdmRender();
+}
+
+function _mmAdmSort2(col){ /* renamed, see _mmAdmSort */ }
+window._mmAdmSort = function(col){
+  if (_mmAdmSort === col) _mmAdmDir = _mmAdmDir === 'desc' ? 'asc' : 'desc';
+  else { _mmAdmSort = col; _mmAdmDir = 'desc'; }
+  _mmAdmRender();
+};
+
+function _mmAdmRender(){
+  if (!_mmAdmData) return;
+  let rows = _mmAdmData.filter(r => !_mmAdmQuery
+    || r.name.toLowerCase().includes(_mmAdmQuery)
+    || (r.team||'').toLowerCase().includes(_mmAdmQuery)
+    || (r.pos||'').toLowerCase().includes(_mmAdmQuery));
+
+  const key = _mmAdmSort;
+  rows.sort((a,b) => {
+    const va = a[key], vb = b[key];
+    if (typeof va === 'string') return _mmAdmDir === 'desc' ? vb.localeCompare(va) : va.localeCompare(vb);
+    return _mmAdmDir === 'desc' ? vb - va : va - vb;
+  });
+
+  const body = document.getElementById('mmAdmBody');
+  if (!body) return;
+  if (rows.length === 0){
+    body.innerHTML = '<tr><td colspan="7" style="padding:30px;text-align:center;color:var(--muted-text);font-family:Barlow Condensed,sans-serif">No matches</td></tr>';
+  } else {
+    body.innerHTML = rows.map(p => {
+      const img = `https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_60,q_auto:best/v1/people/${p.player_id}/headshot/67/current`;
+      const trCls = p.d7 > 0.5 ? 'up' : p.d7 < -0.5 ? 'dn' : 'flat';
+      const trSym = p.d7 > 0.5 ? '&#9650;' : p.d7 < -0.5 ? '&#9660;' : '&#9644;';
+      const tr30Cls = p.d30 > 0.5 ? 'up' : p.d30 < -0.5 ? 'dn' : 'flat';
+      const tr30Sym = p.d30 > 0.5 ? '&#9650;' : p.d30 < -0.5 ? '&#9660;' : '&#9644;';
+      const avgStr = p.top10_avg >= 100 ? '$'+Math.round(p.top10_avg) : '$'+p.top10_avg.toFixed(2);
+      const mini = _mmAdmBuildMini(p.tr7, p.d7);
+      const safeName = (p.name||'').replace(/'/g,"\\'");
+      return `<tr onclick="_prOpenMarketMeter(${p.player_id},'${safeName}')">
+        <td><div class="mm-adm-name"><img src="${img}"><div><div class="nm">${_h(p.name)}</div><div class="pos">${_h(p.pos||'')} ${p.team?'&middot; '+_h(p.team):''}</div></div></div></td>
+        <td><span class="mm-adm-cell-avg">${avgStr}</span></td>
+        <td><span class="mm-adm-cell-floor">${p.floor_50_index}</span></td>
+        <td><span class="mm-adm-trend ${trCls}">${trSym} ${p.d7 > 0 ? '+' : ''}${p.d7.toFixed(1)}%</span></td>
+        <td><span class="mm-adm-trend ${tr30Cls}">${tr30Sym} ${p.d30 > 0 ? '+' : ''}${p.d30.toFixed(1)}%</span></td>
+        <td>${mini}</td>
+        <td style="font-family:Barlow Condensed,sans-serif;color:var(--muted-text)">${(p.total_listings||0).toLocaleString()}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Sort arrow indicators
+  const cols = ['name','top10_avg','floor_50_index','d7','d30',null,'total_listings'];
+  const ths = document.querySelectorAll('#mmAdmTbl thead th');
+  ths.forEach((th,i) => {
+    const s = th.querySelector('.mm-sort');
+    if (!s) return;
+    if (cols[i] === _mmAdmSort) { s.innerHTML = _mmAdmDir === 'desc' ? '&darr;' : '&uarr;'; s.style.opacity = 1; s.style.color = 'var(--blue-bright)'; }
+    else { s.innerHTML = '&#8597;'; s.style.opacity = 0.4; s.style.color = ''; }
+  });
+
+  document.getElementById('mmAdmCount').textContent = `${rows.length} of ${_mmAdmData.length} players · updated daily 06:00 UTC`;
+}
+
+function _mmAdmBuildMini(tr, d7){
+  if (!tr || tr.length < 2) return '<span style="color:var(--muted-text);font-size:10px">—</span>';
+  const W=80,H=26,pad=2;
+  const min=Math.min(...tr), max=Math.max(...tr), span=(max-min)||1;
+  const pts = tr.map((v,i)=>{const x=pad+(i/(tr.length-1))*(W-pad*2); const y=H-pad-((v-min)/span)*(H-pad*2); return [x,y];});
+  const path = 'M ' + pts.map(p=>p.join(',')).join(' L ');
+  const col = d7 > 0.5 ? '#00E887' : d7 < -0.5 ? '#FF3B5C' : '#7A95AE';
+  return `<svg class="mm-adm-mini" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><path d="${path}" fill="none" stroke="${col}" stroke-width="1.5"/></svg>`;
+}
+
 // Find in ISOVault from Power Rankings — closes profile modal, navigates to
 // ISOVault panel, sets sport context, then runs the player search.
 function _prGoFindInVault(playerName){
@@ -13381,6 +13807,10 @@ function _prOpenProfile(mlbId){
             <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);letter-spacing:1px;text-align:center;margin-top:8px">SOURCE: ${source}</div>
           </div>
           ${breakdown.footer}
+          <div class="mm-open-btn" onclick="_prOpenMarketMeter(${mlbId},'${_h(p.full_name).replace(/'/g,"\\'")}')">
+            <div class="mm-ob-lbl"><span class="mm-ob-dot"></span><span>Market Meter</span></div>
+            <span class="mm-ob-arrow">&#8250;</span>
+          </div>
         </div>
       </div>
       <div style="display:flex;gap:8px">

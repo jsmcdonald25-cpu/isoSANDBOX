@@ -5,62 +5,71 @@
     "made in usa signature",
     "msig",
     "gold edition signature",
-    "signature card guard",
     "group of noted",
-    "35th anniversary",
+    "signature series",
+    "print",
     "refactor"
   ],
   "query_refinements": [
     {
-      "player": "Shohei Ohtani",
+      "player": "Ichiro Suzuki",
       "parallel": "Autograph",
       "negatives": [
-        "novelty",
-        "print",
         "facsimile",
-        "refactor",
-        "35th anniversary"
+        "msig",
+        "made in usa",
+        "signature series",
+        "panini donruss"
       ]
     },
     {
       "player": "Ken Griffey Jr",
       "parallel": "Autograph",
       "negatives": [
-        "facsimile signature",
+        "facsimile",
         "gold edition",
-        "signature card guard",
-        "group of"
+        "1991"
       ]
     },
     {
-      "player": "Ichiro Suzuki",
+      "player": "Shohei Ohtani",
       "parallel": "Autograph",
       "negatives": [
-        "msig",
-        "made in usa signature",
-        "facsimile",
-        "panini donruss"
+        "novelty",
+        "print",
+        "rookie auto print"
+      ]
+    },
+    {
+      "player": "Shohei Ohtani",
+      "parallel": "Refractor",
+      "negatives": [
+        "refactor",
+        "35th anniversary",
+        "2025"
       ]
     }
   ],
   "insights": [
-    "Facsimile signatures appear in 33% of rejections (2/6); genuine autographed cards in confirmations feature real ink.",
-    "100% of confirmations (2/2) have specific set/year/card number match; rejections show 50% mismatch rate.",
-    "Novelty/print terminology and vague titles ('group of noted') are strong rejection signals; confirmed snipes use precise year + set + card # format.",
-    "Emoji spam and promotional language ('🔥🚀⭐️') correlate with rejections; confirmations use clean, descriptive titles.",
-    "Confirmed snipes show 81-82% price delta vs. market avg; rejections lack pricing context but feature condition/authenticity red flags.",
-    "Wrong set/year/parallel codes account for 50% of rejections (3/6); title-card mismatch in rejections but never in confirmations."
+    "Facsimile signatures are the primary rejection driver (2/6 = 33% of rejections); confirmed listings avoid printed/mass-produced signature markers.",
+    "Title-card mismatches and wrong parallel/year combinations rejected 2/6 listings; confirmations have matching titles and accurate set years.",
+    "Confirmed snipes feature genuine autographs from established sets (Topps Tribute, Authentic Images) with >80% price delta vs. market; rejections mixed novelty/facsimile products.",
+    "Emojis and hype language (🔥🚀⭐️) correlate with rejections; confirmed listings use neutral, descriptive titles with card numbers and parallels.",
+    "Low-quality/vague titles ('Group of noted Baseball Collecting Cards') indicate wrong_card_num rejections; real snipes specify exact card numbers and years.",
+    "2024+ Panini Donruss entries rejected (wrong_set + wrong_card_num); market favors vintage/modern Topps autographs with clear authentication.",
+    "Rejection reason_code distribution: facsimile_signature=2, wrong_card_num=2, other=1, wrong_parallel=1; no single dominant error suggests need for multi-layered blocklist.",
+    "Confirmed listings leverage underpriced vintage/modern reprints with clear pedigree; rejections attempt to pass facsimiles or misrepresented parallels as real pulls."
   ],
   "rejection_breakdown": {
     "facsimile_signature": 2,
     "wrong_card_num": 2,
-    "wrong_parallel": 1,
-    "other": 1
+    "other": 1,
+    "wrong_parallel": 1
   },
   "_meta": {
     "rejections_analyzed": 6,
     "confirmations_analyzed": 2,
     "model": "claude-haiku-4-5",
-    "analyzed_at": "2026-04-21T11:04:48.380Z"
+    "analyzed_at": "2026-04-21T22:37:29.002Z"
   }
 }

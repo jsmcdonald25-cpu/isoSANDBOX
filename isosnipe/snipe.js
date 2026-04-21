@@ -166,7 +166,10 @@ async function searchEbay(token, query, buyingFormat) {
 }
 
 // ─── PROCESS RESULTS ────────────────────────────────────
-function processResults(items, target, isMisspelling) {
+// rejectedIds: Set<string> of bare numeric eBay item#s to skip at candidate build.
+// Rejected items never enter the candidate pool, so they never hit _snData,
+// never get sent to getItem, and never land in the output JSON.
+function processResults(items, target, isMisspelling, rejectedIds) {
   const hits = [];
   for (const item of items) {
     const price = parseFloat(item.price?.value || 0);
@@ -186,6 +189,12 @@ function processResults(items, target, isMisspelling) {
       'skybox autographics','skybox autographic','leaf exhibits','gold edition signature','signature card guard',
       'donruss signature','1994 signature rookies','authentic image'];
     if (JUNK.some(j => tLow.includes(j))) continue;
+
+    // Early rejection block — check item# before building the hit object.
+    // Any card you rejected never enters the candidate pool, never hits the
+    // output JSON, never gets sent to getItem. Saves API quota + AI tokens.
+    const _earlyId = item.legacyItemId || (item.itemId && String(item.itemId).split('|')[1]) || null;
+    if (_earlyId && rejectedIds && rejectedIds.has(String(_earlyId))) continue;
 
     const isBIN = item.buyingOptions?.includes('FIXED_PRICE');
     const delta = ((target.marketAvg - price) / target.marketAvg) * 100;
@@ -332,13 +341,20 @@ async function run() {
       [...bin, ...auc].forEach(item => {
         const p = parseFloat(item.price?.value || 0);
         const title = (item.title || '').toLowerCase();
+        // Also skip rejected item#s from market avg calc — they'd skew the comp.
+        const _mid = item.legacyItemId || (item.itemId && String(item.itemId).split('|')[1]) || null;
+        if (_mid && rejectedIds.has(String(_mid))) return;
         const JUNK = ['custom','reprint','facsimile','novelty','fantasy card','art card','aceo','tc card',
           'unofficial','not real','fan made','fanmade','homemade','gag gift','limited edit','replica',
           'counterfeit','bootleg','custom blast','art print','fan art','proxy','karat','gold plated',
-          'gold foil signature','sketch card','keychain','mix n match','novelty card'];
+          'gold foil signature','gold signature series','sketch card','keychain','mix n match','novelty card',
+          'authentic images','merrick mint','calbee','jimmy dean','sunflower seeds','jumbo gold',
+          'sportflics','sport flick','24k gold','23kt gold','22k gold','24kt','23k gold','25kt',
+          'skybox autographics','leaf exhibits','gold edition signature','signature card guard',
+          'donruss signature','1994 signature rookies'];
         if (p > 0 && !JUNK.some(j => title.includes(j))) marketPrices.push(p);
       });
-      const h = processResults([...bin, ...auc], target, false);
+      const h = processResults([...bin, ...auc], target, false, rejectedIds);
       correctHits.push(...h);
       searchCount += 2;
       console.log(`(${h.length} hits)`);
@@ -376,7 +392,7 @@ async function run() {
       process.stdout.write(`  [SNIPE] "${q.substring(0,50)}..." `);
       const bin = await searchEbay(token, q, 'BIN');
       const auc = await searchEbay(token, q, 'AUCTION');
-      const h = processResults([...bin, ...auc], liveTarget, true);
+      const h = processResults([...bin, ...auc], liveTarget, true, rejectedIds);
       allHits.push(...h);
       searchCount += 2;
       console.log(`(${h.length} hits)`);
@@ -394,11 +410,7 @@ async function run() {
     return true;
   });
 
-  // Drop permanently-rejected item#s (Layer 1 block — exact match)
-  const beforeBlock = unique.length;
-  unique = unique.filter(h => !(h.itemId && rejectedIds.has(String(h.itemId))));
-  const blockedCount = beforeBlock - unique.length;
-  if (blockedCount > 0) console.log(`  [block] dropped ${blockedCount} rejected item#s`);
+  // (rejected item#s are already dropped at processResults — no need to re-filter)
 
   // Fetch full description + item specifics for survivors (cap to MAX_DETAIL_FETCHES)
   const detailTargets = unique.slice(0, CONFIG.MAX_DETAIL_FETCHES).filter(h => h.itemIdRaw);

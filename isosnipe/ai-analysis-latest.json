@@ -2,14 +2,13 @@
   "blocklist_terms": [
     "facsimile signature",
     "novelty card",
-    "gold edition",
+    "signature card",
     "made in usa signature",
-    "msig",
-    "signature series",
-    "panini donruss",
+    "gold edition signature",
+    "group of noted",
     "35th anniversary",
     "refactor",
-    "group of noted"
+    "emoji heavy titles"
   ],
   "query_refinements": [
     {
@@ -18,9 +17,9 @@
       "negatives": [
         "novelty",
         "print",
-        "rookie auto print",
         "refactor",
-        "anniversary"
+        "anniversary",
+        "emoji"
       ]
     },
     {
@@ -28,8 +27,9 @@
       "parallel": "Autograph",
       "negatives": [
         "facsimile",
+        "signature card",
         "gold edition",
-        "signature card guard",
+        "guard",
         "group of"
       ]
     },
@@ -40,25 +40,25 @@
         "facsimile",
         "msig",
         "made in usa",
-        "signature series",
-        "panini"
+        "exhibits",
+        "panini donruss 2024"
       ]
     }
   ],
   "insights": [
-    "Facsimile signatures account for 33% (2/6) of rejections; confirmed good uses authentic Topps Tribute.",
-    "Title-card mismatch present in 17% (1/6) of rejections; confirmed listing has matching set/card info.",
-    "Modern unlicensed sets (Panini Donruss 2024) rejected; confirmed uses established 2023 Topps product.",
-    "Novelty/print designations and gold edition parallels are red flags absent from confirmed listing.",
-    "Wrong card number and wrong set issues appear in 33% (2/6) of rejections.",
-    "Confirmed snipe has 82% delta (market $90, listed $16); all rejections lack valid pricing context.",
-    "High emoji density in rejected titles (fire, rocket, star emojis) vs. clean formatting in confirmed.",
-    "Confirmed listing uses standard set notation (2023 Topps Tribute, /99, Card 77) with clear player-year-set alignment."
+    "Facsimile signatures account for 33% (2/6) of rejections; strong blocklist signal across Griffey and Ichiro lots.",
+    "Wrong card number/set issues represent 33% (2/6) of rejections; indicates seller title-desc mismatch problems.",
+    "Confirmed real snipe features clean title format (year, set, player, card#, parallel, condition) matching card specifics.",
+    "Emoji-heavy and sensational language (fire, rocket, novelty) appears only in rejections; not in confirmed listing.",
+    "Price delta of 82.2% ($16 market avg $90) in confirmed snipe suggests legitimacy correlates with authentic card metadata.",
+    "Panini Donruss 2024 Ichiro auto flagged for wrong_card_num + wrong_set; likely counterfeit or misattributed.",
+    "Title-desc mismatch (Refractor titled as '90 Refactor') signals intentional obfuscation or listing errors in 1/6 rejections.",
+    "All rejections are Autograph/Refractor parallels; suggests admin focus on authentication for high-value parallel variants."
   ],
   "rejection_breakdown": {
     "facsimile_signature": 2,
     "wrong_card_num": 2,
-    "other": 1,
+    "other": 2,
     "wrong_parallel": 1,
     "wrong_year": 1,
     "wrong_set": 1
@@ -67,6 +67,6 @@
     "rejections_analyzed": 6,
     "confirmations_analyzed": 1,
     "model": "claude-haiku-4-5",
-    "analyzed_at": "2026-04-21T00:10:51.795Z"
+    "analyzed_at": "2026-04-21T00:46:54.096Z"
   }
 }

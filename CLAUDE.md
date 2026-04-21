@@ -88,6 +88,13 @@
 - Always `String()` coerce card_number before `.replace()` — some sets store it as a number
 - Code like `cardNum.replace(...)` will throw if cardNum is a number
 
+### 16. REDUCE SCROLLING — NO MODAL SHOULD NEED IT
+- When building or touching a modal/popup, the default goal is: fit the content on screen without scrolling
+- If content overflows: widen the modal first (up to ~95vw on desktop, ~720px typical), then tighten paddings/margins/avatar sizes/font sizes
+- At ≥640px width, use 2-column layouts to put dense content side-by-side instead of stacked
+- Mobile breakpoint (<640px) can fall back to stacked single column
+- Vertical scroll in a modal is a defect to fix, not a feature to accept
+
 ## CSS / LAYOUT RULES
 
 ### Pixel Work

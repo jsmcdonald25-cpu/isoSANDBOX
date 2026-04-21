@@ -13281,7 +13281,7 @@ function _prOpenProfile(mlbId){
 
   const panel = document.createElement('div');
   panel.id = 'prProfilePanel';
-  panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:420px;max-width:92vw;max-height:90vh;background:#0D1F33;border:2px solid var(--blue);border-radius:16px;z-index:9999;overflow-y:auto;box-shadow:0 0 60px rgba(0,0,0,0.7),0 0 20px rgba(0,170,255,0.15);animation:prProfileIn .2s ease-out';
+  panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:720px;max-width:95vw;max-height:92vh;background:#0D1F33;border:2px solid var(--blue);border-radius:16px;z-index:9999;overflow-y:auto;box-shadow:0 0 60px rgba(0,0,0,0.7),0 0 20px rgba(0,170,255,0.15);animation:prProfileIn .2s ease-out';
   // Add backdrop
   const backdrop = document.createElement('div');
   backdrop.id = 'prProfileBackdrop';
@@ -13292,45 +13292,52 @@ function _prOpenProfile(mlbId){
   document.body.appendChild(backdrop);
 
   panel.innerHTML = `
-    <style>@keyframes prProfileIn{from{opacity:0;transform:translate(-50%,-50%) scale(0.95)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}</style>
-    <div style="padding:24px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-        <div style="font-family:Bebas Neue,sans-serif;font-size:14px;letter-spacing:2px;color:var(--blue)">PLAYER PROFILE</div>
+    <style>@keyframes prProfileIn{from{opacity:0;transform:translate(-50%,-50%) scale(0.95)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+    @media(max-width:640px){#prProfilePanel .pr-prof-main{flex-direction:column !important}#prProfilePanel .pr-prof-head{flex-wrap:wrap}#prProfilePanel .pr-prof-pills{width:100%;justify-content:center !important;margin-top:6px}}</style>
+    <div style="padding:14px 18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-family:Bebas Neue,sans-serif;font-size:13px;letter-spacing:2px;color:var(--blue)">PLAYER PROFILE</div>
         <button onclick="document.getElementById('prProfilePanel')?.remove();document.getElementById('prProfileBackdrop')?.remove()" style="background:none;border:none;color:var(--muted-text);font-size:22px;cursor:pointer;padding:0 4px">&times;</button>
       </div>
-      <div style="text-align:center;margin-bottom:20px">
-        <img src="${headshot}" style="width:120px;height:120px;border-radius:50%;border:3px solid var(--blue);object-fit:cover;background:var(--deep2)">
-        <div style="font-family:Bebas Neue,sans-serif;font-size:28px;color:var(--white);margin-top:10px">${name}</div>
-        <div style="font-family:Barlow Condensed,sans-serif;font-size:14px;color:var(--muted-text)">${pos} · ${team}${isRookie ? ' · <span style="color:var(--green);font-weight:700">ROOKIE</span>' : ''}</div>
+      <div class="pr-prof-head" style="display:flex;gap:14px;align-items:center;margin-bottom:10px">
+        <img src="${headshot}" style="width:72px;height:72px;border-radius:50%;border:2px solid var(--blue);object-fit:cover;background:var(--deep2);flex-shrink:0">
+        <div style="flex:1;min-width:0">
+          <div style="font-family:Bebas Neue,sans-serif;font-size:24px;color:var(--white);line-height:1;letter-spacing:1px">${name}</div>
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-top:3px">${pos} · ${team}${isRookie ? ' · <span style="color:var(--green);font-weight:700">ROOKIE</span>' : ''}</div>
+        </div>
+        <div class="pr-prof-pills" style="display:flex;gap:6px">
+          <div style="text-align:center;padding:6px 10px;background:var(--deep2);border-radius:7px;border:1px solid var(--deep-border)">
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;color:var(--muted-text)">SIGNAL</div>
+            <div style="margin-top:2px"><span class="pr-sig ${cls}" style="font-size:12px">${sig} ${delta>0?'&#9650;':delta<0?'&#9660;':''}</span></div>
+          </div>
+          <div style="text-align:center;padding:6px 10px;background:var(--deep2);border-radius:7px;border:1px solid var(--deep-border)">
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;color:var(--muted-text)">SCORE</div>
+            <div style="font-family:Bebas Neue,sans-serif;font-size:18px;color:${delta>=0?'var(--green)':'var(--red)'};margin-top:1px;line-height:1">${delta>0?'+':''}${delta}</div>
+          </div>
+          <div style="text-align:center;padding:6px 10px;background:var(--deep2);border-radius:7px;border:1px solid var(--deep-border)">
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:9px;letter-spacing:1.5px;color:var(--muted-text)">CARD $</div>
+            <div style="font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--blue);margin-top:1px;line-height:1">${priceStr}</div>
+          </div>
+        </div>
       </div>
-      <div style="display:flex;justify-content:center;gap:12px;margin-bottom:20px">
-        <div style="text-align:center;padding:10px 16px;background:var(--deep2);border-radius:8px;border:1px solid var(--deep-border)">
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;color:var(--muted-text)">SIGNAL</div>
-          <div style="margin-top:4px"><span class="pr-sig ${cls}" style="font-size:14px">${sig} ${delta>0?'&#9650;':delta<0?'&#9660;':''}</span></div>
+      <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);text-align:center;margin-bottom:10px;letter-spacing:.5px">${reason}</div>
+      <div class="pr-prof-main" style="display:flex;gap:14px;margin-bottom:12px;align-items:flex-start">
+        <div style="flex:1.5;min-width:0">
+          ${scoreBreakdownHtml}
         </div>
-        <div style="text-align:center;padding:10px 16px;background:var(--deep2);border-radius:8px;border:1px solid var(--deep-border)">
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;color:var(--muted-text)">SCORE</div>
-          <div style="font-family:Bebas Neue,sans-serif;font-size:22px;color:${delta>=0?'var(--green)':'var(--red)'};margin-top:2px">${delta>0?'+':''}${delta}</div>
-        </div>
-        <div style="text-align:center;padding:10px 16px;background:var(--deep2);border-radius:8px;border:1px solid var(--deep-border)">
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;letter-spacing:1.5px;color:var(--muted-text)">AVG CARD $</div>
-          <div style="font-family:Bebas Neue,sans-serif;font-size:22px;color:var(--blue);margin-top:2px">${priceStr}</div>
+        <div style="flex:1;min-width:200px">
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:2px solid var(--blue);margin-bottom:2px">
+            <span style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--blue);min-width:40px">STAT</span>
+            <span style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--chrome);flex:1;text-align:center">2025</span>
+            <span style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--white);flex:1;text-align:center">2026</span>
+          </div>
+          ${compRows}
+          <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);letter-spacing:1px;text-align:center;margin-top:10px">SOURCE: ${source}</div>
         </div>
       </div>
-      <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);text-align:center;margin-bottom:16px;letter-spacing:.5px">${reason}</div>
-      ${scoreBreakdownHtml}
-      <div style="margin-bottom:20px">
-        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:2px solid var(--blue);margin-bottom:4px">
-          <span style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--blue);min-width:50px">STAT</span>
-          <span style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--chrome);min-width:60px;text-align:center">2025</span>
-          <span style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--white);min-width:60px;text-align:center">2026</span>
-        </div>
-        ${compRows}
-      </div>
-      <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);letter-spacing:1px;text-align:center;margin-bottom:16px">SOURCE: ${source}</div>
       <div style="display:flex;gap:8px">
-        <a href="https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent('2026 Topps '+p.full_name)}&_sacat=212" target="_blank" rel="noopener" class="btn btn-primary" style="flex:1;text-align:center;font-size:12px;padding:10px">Shop on eBay</a>
-        <button onclick="ivPlayerSearchGo('${_h(p.full_name).replace(/'/g,"\\'")}')" class="btn btn-ghost" style="flex:1;font-size:12px;padding:10px">Find in ISOVault</button>
+        <a href="https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent('2026 Topps '+p.full_name)}&_sacat=212" target="_blank" rel="noopener" class="btn btn-primary" style="flex:1;text-align:center;font-size:12px;padding:9px">Shop on eBay</a>
+        <button onclick="ivPlayerSearchGo('${_h(p.full_name).replace(/'/g,"\\'")}')" class="btn btn-ghost" style="flex:1;font-size:12px;padding:9px">Find in ISOVault</button>
       </div>
     </div>`;
   document.body.appendChild(panel);

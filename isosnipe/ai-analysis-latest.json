@@ -2,13 +2,13 @@
   "blocklist_terms": [
     "facsimile signature",
     "novelty card",
-    "signature card",
     "made in usa signature",
+    "msig",
     "gold edition signature",
+    "signature card guard",
     "group of noted",
     "35th anniversary",
-    "refactor",
-    "emoji heavy titles"
+    "refactor"
   ],
   "query_refinements": [
     {
@@ -17,19 +17,18 @@
       "negatives": [
         "novelty",
         "print",
+        "facsimile",
         "refactor",
-        "anniversary",
-        "emoji"
+        "35th anniversary"
       ]
     },
     {
       "player": "Ken Griffey Jr",
       "parallel": "Autograph",
       "negatives": [
-        "facsimile",
-        "signature card",
+        "facsimile signature",
         "gold edition",
-        "guard",
+        "signature card guard",
         "group of"
       ]
     },
@@ -37,36 +36,31 @@
       "player": "Ichiro Suzuki",
       "parallel": "Autograph",
       "negatives": [
-        "facsimile",
         "msig",
-        "made in usa",
-        "exhibits",
-        "panini donruss 2024"
+        "made in usa signature",
+        "facsimile",
+        "panini donruss"
       ]
     }
   ],
   "insights": [
-    "Facsimile signatures account for 33% (2/6) of rejections; strong blocklist signal across Griffey and Ichiro lots.",
-    "Wrong card number/set issues represent 33% (2/6) of rejections; indicates seller title-desc mismatch problems.",
-    "Confirmed real snipe features clean title format (year, set, player, card#, parallel, condition) matching card specifics.",
-    "Emoji-heavy and sensational language (fire, rocket, novelty) appears only in rejections; not in confirmed listing.",
-    "Price delta of 82.2% ($16 market avg $90) in confirmed snipe suggests legitimacy correlates with authentic card metadata.",
-    "Panini Donruss 2024 Ichiro auto flagged for wrong_card_num + wrong_set; likely counterfeit or misattributed.",
-    "Title-desc mismatch (Refractor titled as '90 Refactor') signals intentional obfuscation or listing errors in 1/6 rejections.",
-    "All rejections are Autograph/Refractor parallels; suggests admin focus on authentication for high-value parallel variants."
+    "Facsimile signatures appear in 33% of rejections (2/6); genuine autographed cards in confirmations feature real ink.",
+    "100% of confirmations (2/2) have specific set/year/card number match; rejections show 50% mismatch rate.",
+    "Novelty/print terminology and vague titles ('group of noted') are strong rejection signals; confirmed snipes use precise year + set + card # format.",
+    "Emoji spam and promotional language ('🔥🚀⭐️') correlate with rejections; confirmations use clean, descriptive titles.",
+    "Confirmed snipes show 81-82% price delta vs. market avg; rejections lack pricing context but feature condition/authenticity red flags.",
+    "Wrong set/year/parallel codes account for 50% of rejections (3/6); title-card mismatch in rejections but never in confirmations."
   ],
   "rejection_breakdown": {
     "facsimile_signature": 2,
     "wrong_card_num": 2,
-    "other": 2,
     "wrong_parallel": 1,
-    "wrong_year": 1,
-    "wrong_set": 1
+    "other": 1
   },
   "_meta": {
     "rejections_analyzed": 6,
-    "confirmations_analyzed": 1,
+    "confirmations_analyzed": 2,
     "model": "claude-haiku-4-5",
-    "analyzed_at": "2026-04-21T00:46:54.096Z"
+    "analyzed_at": "2026-04-21T11:04:48.380Z"
   }
 }

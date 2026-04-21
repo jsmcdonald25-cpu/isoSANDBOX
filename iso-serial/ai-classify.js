@@ -20,6 +20,9 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const MODEL = 'claude-haiku-4-5';
 
+const SB_URL     = process.env.SUPABASE_URL;
+const SB_SERVICE = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
+
 // ─── JSON schema (structured output enforcement) ─────────────────
 const OUTPUT_SCHEMA = {
   type: 'object',
@@ -51,7 +54,7 @@ const OUTPUT_SCHEMA = {
 };
 
 // ─── System prompt — padded above 4096 tokens for Haiku 4.5 caching ─────
-const SYSTEM_PROMPT = `You are a sports trading card listing classifier with deep expertise in 2026 Topps baseball card products. Your job is to extract structured metadata from eBay listings of cards potentially numbered to /5 (or other small print runs).
+const BASE_SYSTEM_PROMPT = `You are a sports trading card listing classifier with deep expertise in 2026 Topps baseball card products. Your job is to extract structured metadata from eBay listings of cards potentially numbered to /5 (or other small print runs).
 
 You receive: a listing title, optional description, and a set hint from the search query (e.g. "Series 1" or "Heritage"). You return a strict JSON object describing the card.
 
@@ -219,11 +222,98 @@ OUTPUT: {"is_serialized":true,"print_run":5,"edition_num":null,"set_name":"Serie
 
 Now classify the listing provided in the user message. Return ONLY the JSON object.`;
 
+// ─── Dynamic example injection — learn from admin skip history ───
+//
+// The crawler runs every 30 min. At the start of each run we pull the most
+// recent admin-rejected listings from Supabase and fold them into the system
+// prompt as real-world examples. Cache key = full prompt, so within a single
+// run every call after the first hits cache. Between runs the prompt changes
+// as new skips land — that's a fresh cache write, paid once per run.
+//
+// We use TTL rather than per-run re-fetch so the Netlify on-demand classifier
+// (and backfill script) also benefit without an explicit init call.
+const EXAMPLES_TTL_MS      = 5 * 60 * 1000; // 5 min — matches Haiku ephemeral cache
+const SKIPPED_EXAMPLE_LIMIT = 15;
+
+let _cachedPrompt   = null;
+let _examplesLoaded = 0;
+
+// Map admin skip_reason → classifier reject_reason. Keep this in sync with
+// the enum in OUTPUT_SCHEMA above. Not every skip maps to a reject — some
+// are "valid listing, admin just couldn't confirm".
+const SKIP_TO_REJECT_MAP = `
+- skip_reason "not_a_5"                 → reject_reason "not_serialized"
+- skip_reason "multi_card_lot"          → reject_reason "multi_card_lot"
+- skip_reason "insert_not_in_checklist" → reject_reason "insert_subset_no_checklist"
+- skip_reason "cant_id_copy"            → reject_reason "none" (valid /5, admin couldn't ID copy — still extract everything)
+- skip_reason "suspected_fraud"         → reject_reason "none" + note fraud signals (admin reviews manually)
+- skip_reason "poor_photos"             → reject_reason "none" (valid, admin needs better pics)
+- skip_reason "other"                   → judgment call based on admin_note
+`.trim();
+
+async function fetchSkippedExamples() {
+  if (!SB_URL || !SB_SERVICE) return [];
+  const url = `${SB_URL}/rest/v1/iso_serial_queue` +
+    `?status=eq.skipped` +
+    `&skip_reason=not.is.null` +
+    `&title=not.is.null` +
+    `&select=title,skip_reason,admin_notes,set_name_guess` +
+    `&order=tagged_at.desc.nullslast` +
+    `&limit=${SKIPPED_EXAMPLE_LIMIT}`;
+  try {
+    const res = await fetch(url, {
+      headers: { apikey: SB_SERVICE, Authorization: `Bearer ${SB_SERVICE}` },
+    });
+    if (!res.ok) return [];
+    const rows = await res.json();
+    return Array.isArray(rows) ? rows : [];
+  } catch (_) {
+    return [];
+  }
+}
+
+function formatExamplesBlock(rows) {
+  if (!rows || rows.length === 0) return '';
+  const lines = rows.map((r, i) => {
+    const title = (r.title || '').replace(/\s+/g, ' ').trim().slice(0, 200);
+    const setHint = r.set_name_guess || 'unknown';
+    const note = (r.admin_notes || '').replace(/\s+/g, ' ').trim().slice(0, 200);
+    return `${i + 1}. TITLE: "${title}"\n   SET HINT: ${setHint}\n   SKIP REASON: ${r.skip_reason}${note ? `\n   ADMIN NOTE: "${note}"` : ''}`;
+  }).join('\n\n');
+
+  return `\n\n# LEARN FROM RECENT ADMIN REJECTIONS
+
+Below are ${rows.length} real listings that the admin personally rejected from the review queue in the last crawler runs. Study them. When a new listing resembles these patterns, apply the matching reject_reason. Mapping:
+
+${SKIP_TO_REJECT_MAP}
+
+ADMIN-REJECTED LISTINGS:
+
+${lines}
+
+End of admin-rejected examples. Apply these patterns to the listing you classify next.`;
+}
+
+async function getSystemPrompt() {
+  const fresh = _cachedPrompt && (Date.now() - _examplesLoaded) < EXAMPLES_TTL_MS;
+  if (fresh) return _cachedPrompt;
+
+  const rows = await fetchSkippedExamples();
+  _cachedPrompt = BASE_SYSTEM_PROMPT + formatExamplesBlock(rows);
+  _examplesLoaded = Date.now();
+  if (rows.length > 0) {
+    console.log(`  AI classifier: loaded ${rows.length} admin-rejected examples into prompt`);
+  }
+  return _cachedPrompt;
+}
+
 // ─── Main classify function ──────────────────────────────────────
 async function classifyListing({ title, description, setHint }) {
   if (!process.env.ANTHROPIC_API_KEY) {
     return null;
   }
+
+  const systemPrompt = await getSystemPrompt();
 
   const userText = `Set hint from eBay search: ${setHint || 'unknown'}
 
@@ -238,7 +328,7 @@ Return ONLY the JSON object.`;
       model: MODEL,
       max_tokens: 1000,
       system: [
-        { type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } },
+        { type: 'text', text: systemPrompt, cache_control: { type: 'ephemeral' } },
       ],
       messages: [
         { role: 'user', content: userText },

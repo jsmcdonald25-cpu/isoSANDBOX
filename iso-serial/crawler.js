@@ -74,6 +74,116 @@ const FRAUD_VERY_HIGH_PRICE_USD      = 5000;  // always flag above this if any r
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// ─── Blocklist terms (derived from admin skip history) ───────
+//
+// Phase 3: before querying eBay we pull recent skipped titles, extract terms that
+// signal bad listings (not_a_5, multi_card_lot, search_noise), cross-check against
+// TAGGED titles so we don't filter legit listings, and append the survivors as
+// `-word` negatives on the eBay search query. Applied once per crawler run.
+//
+// Conservative by design: tight per-reason allowlist, min-length 4, frequency
+// threshold 2, max 8 terms per run. We'd rather let the AI classify it than
+// accidentally hide a real /5 listing upstream.
+
+const BLOCKLIST_FETCH_LIMIT   = 200;   // rows pulled per side (SKIPPED / TAGGED)
+const BLOCKLIST_MAX_TERMS     = 8;     // cap applied to each query
+const BLOCKLIST_MIN_FREQ      = 3;     // term must appear in ≥N skipped titles
+const BLOCKLIST_MIN_REASONS   = 2;     // term must span ≥N distinct skip_reasons (kills player/team clusters)
+const BLOCKLIST_MIN_LEN       = 4;     // skip short tokens (5, of, in, etc.)
+
+// Domain + structural tokens we must NEVER blocklist, even if they cluster in skips
+const BLOCKLIST_PROTECTED = new Set([
+  // Product/brand
+  'topps','series','heritage','bowman','chrome','panini','donruss','prizm','stadium','club',
+  'baseball','basketball','football','card','cards','pack','hobby','mega','value','retail',
+  // Card attributes
+  'auto','autograph','rookie','rc','base','parallel','refractor','insert','relic','patch',
+  'red','blue','green','gold','black','orange','pink','silver','purple','rainbow','white',
+  'flip','stock','border','sparkle','numbered','print','run','foil','bordered',
+  'nmmt','mint','signed','graded','psa','bgs','sgc',
+  // Years
+  '2026','2025','2024','2023','2022','1991','1977',
+  // MLB teams (tokenized city/name words)
+  'yankees','redsox','bluejays','rays','orioles','whitesox','tigers','royals','twins',
+  'guardians','astros','angels','mariners','rangers','athletics','braves','marlins','mets',
+  'phillies','nationals','cubs','reds','brewers','pirates','cardinals','diamondbacks',
+  'rockies','dodgers','padres','giants',
+  // Cities + split-word team names
+  'york','boston','toronto','tampa','baltimore','chicago','detroit','kansas','minnesota',
+  'cleveland','houston','seattle','texas','oakland','atlanta','miami','philadelphia',
+  'washington','cincinnati','milwaukee','pittsburgh','louis','arizona','colorado',
+  'diego','francisco','angeles',
+]);
+// Only skip reasons that indicate "AI/eBay shouldn't have surfaced this at all"
+const BLOCKLIST_SOURCE_REASONS = new Set(['not_a_5','multi_card_lot','search_noise']);
+
+function _tokenize(title){
+  return (title || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+async function _fetchQueueTitles(statusFilter, limit){
+  const url = `${SUPABASE_URL}/rest/v1/iso_serial_queue`
+    + `?status=${statusFilter}`
+    + `&title=not.is.null`
+    + `&select=title,skip_reason`
+    + `&order=tagged_at.desc.nullslast`
+    + `&limit=${limit}`;
+  try {
+    const res = await fetch(url, { headers: sbHeaders });
+    if (!res.ok) return [];
+    const rows = await res.json();
+    return Array.isArray(rows) ? rows : [];
+  } catch (_) {
+    return [];
+  }
+}
+
+async function buildBlocklist(){
+  const [skipped, tagged] = await Promise.all([
+    _fetchQueueTitles('eq.skipped', BLOCKLIST_FETCH_LIMIT),
+    _fetchQueueTitles('in.(tagged_new,tagged_existing)', BLOCKLIST_FETCH_LIMIT),
+  ]);
+
+  // Token frequency in legit-tagged listings — used as a whitelist guard
+  const taggedFreq = new Map();
+  for (const r of tagged) {
+    for (const tok of new Set(_tokenize(r.title))) {
+      taggedFreq.set(tok, (taggedFreq.get(tok) || 0) + 1);
+    }
+  }
+
+  // Per-token: count of matching skipped titles + set of distinct skip_reasons
+  const tokStats = new Map(); // tok → { count, reasons: Set }
+  for (const r of skipped) {
+    if (!BLOCKLIST_SOURCE_REASONS.has(r.skip_reason)) continue;
+    for (const tok of new Set(_tokenize(r.title))) {
+      if (tok.length < BLOCKLIST_MIN_LEN) continue;
+      if (BLOCKLIST_PROTECTED.has(tok)) continue;
+      if (/^\d+$/.test(tok)) continue;          // pure numbers
+      if (taggedFreq.get(tok)) continue;         // seen in legit listings — hands off
+      const s = tokStats.get(tok) || { count: 0, reasons: new Set() };
+      s.count++;
+      s.reasons.add(r.skip_reason);
+      tokStats.set(tok, s);
+    }
+  }
+
+  // Term qualifies if: frequency ≥ MIN_FREQ AND spans ≥ MIN_REASONS distinct skip reasons.
+  // The reason-spread rule kills player/team name clusters (which tend to bunch under
+  // one reason like "multi_card_lot") while keeping true noise like "reprint" or "listia".
+  const ranked = Array.from(tokStats.entries())
+    .filter(([, s]) => s.count >= BLOCKLIST_MIN_FREQ && s.reasons.size >= BLOCKLIST_MIN_REASONS)
+    .sort((a, b) => b[1].count - a[1].count)
+    .slice(0, BLOCKLIST_MAX_TERMS)
+    .map(([tok]) => tok);
+
+  return ranked;
+}
+
 // ─── eBay auth ───────────────────────────────────────────────
 async function getEbayToken() {
   const credentials = Buffer.from(`${EBAY_CLIENT_ID}:${EBAY_CLIENT_SECRET}`).toString('base64');
@@ -93,15 +203,17 @@ async function getEbayToken() {
 }
 
 // ─── eBay Browse: search ────────────────────────────────────
-async function searchEbay(token, query) {
+async function searchEbay(token, query, blocklist = []) {
   const filter = [
     `price:[${PRICE_FLOOR_USD}..]`,
     'priceCurrency:USD',
     'deliveryCountry:US',
   ].join(',');
 
+  // eBay Browse supports `-word` negative keywords in the q string.
+  const negatives = blocklist.length ? ' ' + blocklist.map(t => `-${t}`).join(' ') : '';
   const params = new URLSearchParams({
-    q: query,
+    q: query + negatives,
     category_ids: EBAY_CATEGORY_ID,
     filter,
     limit: String(LISTINGS_PER_QUERY),
@@ -377,7 +489,7 @@ async function logPull({
 }
 
 // ─── Crawl one set (all query variants) ─────────────────────
-async function crawlSet({ token, set, runEnvironment }) {
+async function crawlSet({ token, set, runEnvironment, blocklist }) {
   const startTs = Date.now();
   const perSetStats = {
     setLabel: set.label,
@@ -391,8 +503,8 @@ async function crawlSet({ token, set, runEnvironment }) {
   // 1. Search across all query variants, collect unique items
   const seenItemIds = new Map(); // itemId -> searchItem (keep first occurrence)
   for (const query of set.queries) {
-    console.log(`  Search: "${query}"`);
-    const { items, apiCalls } = await searchEbay(token, query);
+    console.log(`  Search: "${query}"${blocklist.length ? ` (−${blocklist.length} neg)` : ''}`);
+    const { items, apiCalls } = await searchEbay(token, query, blocklist);
     perSetStats.apiCallsBrowse += apiCalls;
     perSetStats.totalResults += items.length;
     for (const it of items) {
@@ -501,12 +613,20 @@ async function crawl({ runEnvironment }) {
   const token = await getEbayToken();
   console.log('✔ eBay authenticated\n');
 
+  // Derive per-run blocklist from admin skip history (Phase 3)
+  const blocklist = await buildBlocklist();
+  if (blocklist.length) {
+    console.log(`Blocklist (${blocklist.length} terms from skip history): ${blocklist.join(', ')}\n`);
+  } else {
+    console.log('Blocklist: empty (insufficient skip signal)\n');
+  }
+
   const totals = { totalResults: 0, newListings: 0, duplicateListings: 0, apiCallsBrowse: 0, apiCallsGetItem: 0 };
 
   for (const set of SETS) {
     console.log(`── ${set.label} ──`);
     try {
-      const s = await crawlSet({ token, set, runEnvironment });
+      const s = await crawlSet({ token, set, runEnvironment, blocklist });
       totals.totalResults      += s.totalResults;
       totals.newListings       += s.newListings;
       totals.duplicateListings += s.duplicateListings;

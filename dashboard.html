@@ -13139,7 +13139,7 @@ function _prScoreBreakdown(stats, price, iso, val, isPit){
     ].join('');
   }
   const priceStr = price && price > 0 ? '$'+Number(price).toFixed(2) : 'no data';
-  return `
+  const main = `
     <div class="pr-score-row">
       <div class="pr-score-pill iso"><div class="label">ISO Score</div><div class="big">${(iso/10).toFixed(1)}<span class="out">/ 100</span></div></div>
       <div class="pr-score-pill val"><div class="label">Value Score</div><div class="big">${(val/10).toFixed(1)}<span class="out">/ 100</span></div></div>
@@ -13153,11 +13153,29 @@ function _prScoreBreakdown(stats, price, iso, val, isPit){
         <div class="pb-top"><span class="pb-key">Price Factor &middot; card ${priceStr}</span><span class="pb-val">×${priceFactor.toFixed(2)}</span></div>
         <div class="pb-desc">Cheap cards get up to <b style="color:var(--green)">+30%</b>; floor at $0.50. Formula favors affordable high-performers.</div>
       </div>
-    </div>
+    </div>`;
+  const footer = `
     <div class="pr-footer">
       <div class="fblock"><div class="fk">Final ISO</div><div class="fv iso">${iso}<span class="sub"> /1000</span></div></div>
       <div class="fblock v"><div class="fk">Final Value</div><div class="fv val">${val}<span class="sub"> /1000</span></div></div>
     </div>`;
+  return { main, footer };
+}
+
+// Find in ISOVault from Power Rankings — closes profile modal, navigates to
+// ISOVault panel, sets sport context, then runs the player search.
+function _prGoFindInVault(playerName){
+  document.getElementById('prProfilePanel')?.remove();
+  document.getElementById('prProfileBackdrop')?.remove();
+  const navEl = document.getElementById('nav-library');
+  if (navEl && typeof N === 'function') N('library', navEl);
+  // Defer sport + search to next tick so the panel mount completes
+  setTimeout(() => {
+    if (typeof ivSelectSport === 'function') ivSelectSport('baseball');
+    setTimeout(() => {
+      if (typeof ivPlayerSearchGo === 'function') ivPlayerSearchGo(playerName);
+    }, 60);
+  }, 60);
 }
 function _prPriceFmt(p,pct){
   const pr = p!=null ? '$'+Number(p).toFixed(2) : '—';
@@ -13273,7 +13291,7 @@ function _prOpenProfile(mlbId){
   const isPitcherType = type === 'pitcher' || (curr && curr.era != null && curr.avg == null);
   const profIso = curr ? (isPitcherType ? _prISOPit(curr, priceNum||5) : _prISOHit(curr, priceNum||5)) : 0;
   const profVal = _prValScore(profIso, priceNum);
-  const scoreBreakdownHtml = curr ? _prScoreBreakdown(curr, priceNum, profIso, profVal, isPitcherType) : '';
+  const breakdown = curr ? _prScoreBreakdown(curr, priceNum, profIso, profVal, isPitcherType) : { main: '', footer: '' };
 
   // Remove existing
   const old = document.getElementById('prProfilePanel');
@@ -13323,21 +13341,24 @@ function _prOpenProfile(mlbId){
       <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);text-align:center;margin-bottom:10px;letter-spacing:.5px">${reason}</div>
       <div class="pr-prof-main" style="display:flex;gap:14px;margin-bottom:12px;align-items:flex-start">
         <div style="flex:1.5;min-width:0">
-          ${scoreBreakdownHtml}
+          ${breakdown.main}
         </div>
-        <div style="flex:1;min-width:200px">
-          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:2px solid var(--blue);margin-bottom:2px">
-            <span style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--blue);min-width:40px">STAT</span>
-            <span style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--chrome);flex:1;text-align:center">2025</span>
-            <span style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--white);flex:1;text-align:center">2026</span>
+        <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:10px">
+          <div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:2px solid var(--blue);margin-bottom:2px">
+              <span style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--blue);min-width:40px">STAT</span>
+              <span style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--chrome);flex:1;text-align:center">2025</span>
+              <span style="font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:1.5px;color:var(--white);flex:1;text-align:center">2026</span>
+            </div>
+            ${compRows}
+            <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);letter-spacing:1px;text-align:center;margin-top:8px">SOURCE: ${source}</div>
           </div>
-          ${compRows}
-          <div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--muted-text);letter-spacing:1px;text-align:center;margin-top:10px">SOURCE: ${source}</div>
+          ${breakdown.footer}
         </div>
       </div>
       <div style="display:flex;gap:8px">
         <a href="https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent('2026 Topps '+p.full_name)}&_sacat=212" target="_blank" rel="noopener" class="btn btn-primary" style="flex:1;text-align:center;font-size:12px;padding:9px">Shop on eBay</a>
-        <button onclick="ivPlayerSearchGo('${_h(p.full_name).replace(/'/g,"\\'")}')" class="btn btn-ghost" style="flex:1;font-size:12px;padding:9px">Find in ISOVault</button>
+        <button onclick="_prGoFindInVault('${_h(p.full_name).replace(/'/g,"\\'")}')" class="btn btn-ghost" style="flex:1;font-size:12px;padding:9px">Find in ISOVault</button>
       </div>
     </div>`;
   document.body.appendChild(panel);

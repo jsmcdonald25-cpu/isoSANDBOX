@@ -13546,9 +13546,13 @@ function prOpen(k){
   if(hasPair){
     const hKey = base+'-h', pKey = base+'-p';
     const isH = k.endsWith('-h');
-    subEl.innerHTML = `<span class="pr-hp-tab${isH?' pr-hp-a':''}" onclick="prOpen('${hKey}')" style="cursor:pointer;padding:3px 10px;border-radius:4px;font-size:12px;letter-spacing:1px;margin-right:6px;${isH?'background:var(--blue);color:#fff':'color:var(--muted-text)'}">HITTERS</span>`
-      + `<span class="pr-hp-tab${!isH?' pr-hp-a':''}" onclick="prOpen('${pKey}')" style="cursor:pointer;padding:3px 10px;border-radius:4px;font-size:12px;letter-spacing:1px;${!isH?'background:var(--blue);color:#fff':'color:var(--muted-text)'}">PITCHERS</span>`;
+    subEl.style.marginLeft = '14px';
+    subEl.style.marginRight = 'auto';
+    subEl.innerHTML = `<span class="pr-hp-tab${isH?' pr-hp-a':''}" onclick="prOpen('${hKey}')" style="cursor:pointer;padding:7px 16px;border-radius:6px;font-family:'Bebas Neue',sans-serif;font-size:16px;font-weight:700;letter-spacing:2px;margin-right:8px;${isH?'background:var(--blue);color:#fff':'color:var(--muted-text);background:rgba(255,255,255,0.04)'}">HITTERS</span>`
+      + `<span class="pr-hp-tab${!isH?' pr-hp-a':''}" onclick="prOpen('${pKey}')" style="cursor:pointer;padding:7px 16px;border-radius:6px;font-family:'Bebas Neue',sans-serif;font-size:16px;font-weight:700;letter-spacing:2px;${!isH?'background:var(--blue);color:#fff':'color:var(--muted-text);background:rgba(255,255,255,0.04)'}">PITCHERS</span>`;
   } else {
+    subEl.style.marginLeft = 'auto';
+    subEl.style.marginRight = '12px';
     subEl.textContent = d.s;
   }
   d.h.forEach((v,i)=>{const e=document.getElementById('prH'+(i+1));if(e)e.textContent=v});

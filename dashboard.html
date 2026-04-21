@@ -13035,20 +13035,87 @@ let _prMode = 'last5'; // 'season' | 'last5'
 // ── Render helpers ──────────────────────────────────────────────────
 function _prIM(id){return`https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_213,q_auto:best/v1/people/${id}/headshot/67/current`}
 function _prShopLink(name){return`<a class="pr-eb" href="https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent('2026 Topps '+name)}&_sacat=212" target="_blank" rel="noopener">Shop <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>`}
-function _prVB(s){
+function _prVB(s, tip){
   const d=(s/10).toFixed(1);
-  if(s>=920)return`<div class="pr-vs u"><span style="font-size:14px">&#129412;</span><span class="pr-vn">${d}</span></div>`;
-  if(s>=800)return`<div class="pr-vs h"><span class="pr-vn">${d}</span></div>`;
-  if(s>=650)return`<div class="pr-vs w"><span class="pr-vn">${d}</span></div>`;
-  if(s>=500)return`<div class="pr-vs n"><span class="pr-vn">${d}</span></div>`;
-  return`<div class="pr-vs ov"><span class="pr-vn">${d}</span></div>`;
+  const t = tip ? ` title="${tip.replace(/"/g,'&quot;')}"` : '';
+  if(s>=920)return`<div class="pr-vs u"${t}><span style="font-size:14px">&#129412;</span><span class="pr-vn">${d}</span></div>`;
+  if(s>=800)return`<div class="pr-vs h"${t}><span class="pr-vn">${d}</span></div>`;
+  if(s>=650)return`<div class="pr-vs w"${t}><span class="pr-vn">${d}</span></div>`;
+  if(s>=500)return`<div class="pr-vs n"${t}><span class="pr-vn">${d}</span></div>`;
+  return`<div class="pr-vs ov"${t}><span class="pr-vn">${d}</span></div>`;
 }
-function _prIB(s){
+function _prIB(s, tip){
   const d=(s/10).toFixed(1);
-  if(s>=930)return`<div class="pr-vs u"><span class="pr-vn">${d}</span></div>`;
-  if(s>=800)return`<div class="pr-vs h"><span class="pr-vn">${d}</span></div>`;
-  if(s>=700)return`<div class="pr-vs w"><span class="pr-vn">${d}</span></div>`;
-  return`<div class="pr-vs n"><span class="pr-vn">${d}</span></div>`;
+  const t = tip ? ` title="${tip.replace(/"/g,'&quot;')}"` : '';
+  if(s>=930)return`<div class="pr-vs u"${t}><span class="pr-vn">${d}</span></div>`;
+  if(s>=800)return`<div class="pr-vs h"${t}><span class="pr-vn">${d}</span></div>`;
+  if(s>=700)return`<div class="pr-vs w"${t}><span class="pr-vn">${d}</span></div>`;
+  return`<div class="pr-vs n"${t}><span class="pr-vn">${d}</span></div>`;
+}
+
+// Hover tooltips — show user exactly how the ISO / Value scores were built
+function _prIsoTipHit(s, price, final){
+  const avg = parseFloat(s.avg)||0, hr = s.homeRuns||0, rbi = s.rbi||0,
+        ops = parseFloat(s.ops)||0, sb = s.stolenBases||0, gp = s.gamesPlayed||1;
+  const hrPG = hr/gp, rbiPG = rbi/gp, sbPG = sb/gp;
+  const comp = {
+    avg: avg*400, ops: ops*120, hr: hrPG*200, rbi: rbiPG*100, sb: sbPG*80,
+  };
+  const statScore = comp.avg + comp.ops + comp.hr + comp.rbi + comp.sb;
+  const p = Math.max(price||1, 0.5);
+  const priceFactor = Math.min(1.3, 1 + (1/Math.log2(p+2))*0.5);
+  return `ISO SCORE = ${(final/10).toFixed(1)} / 100
+───────────────────────
+How we got here (hitter):
+  AVG  ${avg.toFixed(3)}  × 400 = ${comp.avg.toFixed(0)}
+  OPS  ${ops.toFixed(3)}  × 120 = ${comp.ops.toFixed(0)}
+  HR/G ${hrPG.toFixed(2)} × 200 = ${comp.hr.toFixed(0)}
+  RBI/G ${rbiPG.toFixed(2)} × 100 = ${comp.rbi.toFixed(0)}
+  SB/G ${sbPG.toFixed(2)} × 80  = ${comp.sb.toFixed(0)}
+  ───────────────────
+  Stat total: ${statScore.toFixed(0)}
+  Price factor: ×${priceFactor.toFixed(2)}  (card $${p.toFixed(2)} — cheaper boosts score)
+  Final: ${statScore.toFixed(0)} × ${priceFactor.toFixed(2)} = ${Math.min(1000, Math.round(statScore*priceFactor))}/1000`;
+}
+function _prIsoTipPit(s, price, final){
+  const era = parseFloat(s.era)||9, whip = parseFloat(s.whip)||2,
+        k = s.strikeOuts||0, ip = parseFloat(s.inningsPitched)||1, w = s.wins||0;
+  const kPer9 = (k/ip)*9;
+  const eraScore  = Math.max(0, 500 - (era*60));
+  const whipScore = Math.max(0, 400 - (whip*150)) * 0.6;
+  const kScore    = Math.min(200, kPer9*18);
+  const wScore    = Math.min(80, w*15);
+  const statScore = eraScore + whipScore + kScore + wScore;
+  const p = Math.max(price||1, 0.5);
+  const priceFactor = Math.min(1.3, 1 + (1/Math.log2(p+2))*0.5);
+  return `ISO SCORE = ${(final/10).toFixed(1)} / 100
+───────────────────────
+How we got here (pitcher):
+  ERA  ${era.toFixed(2)}  → max(0, 500 − ERA×60) = ${eraScore.toFixed(0)}
+  WHIP ${whip.toFixed(2)} → max(0, 400 − WHIP×150) × 0.6 = ${whipScore.toFixed(0)}
+  K/9  ${kPer9.toFixed(1)}  → min(200, K/9×18) = ${kScore.toFixed(0)}
+  Wins ${w}     → min(80, W×15) = ${wScore.toFixed(0)}
+  ───────────────────
+  Stat total: ${statScore.toFixed(0)}
+  Price factor: ×${priceFactor.toFixed(2)}  (card $${p.toFixed(2)} — cheaper boosts score)
+  Final: ${statScore.toFixed(0)} × ${priceFactor.toFixed(2)} = ${Math.min(1000, Math.round(statScore*priceFactor))}/1000`;
+}
+function _prValTip(iso, price, final){
+  if(!price || price <= 0){
+    return `VALUE SCORE = ${(final/10).toFixed(1)} / 100
+───────────────────────
+No live card price — score mirrors ISO Score.`;
+  }
+  const priceMod = 1 + Math.max(-0.3, Math.min(0.2, (10 - price) / 50));
+  return `VALUE SCORE = ${(final/10).toFixed(1)} / 100
+───────────────────────
+How we got here:
+  ISO Score: ${(iso/10).toFixed(1)}/100  (raw: ${iso})
+  Card price: $${Number(price).toFixed(2)}
+  Price multiplier: ×${priceMod.toFixed(3)}
+    Cheap cards get up to +20%, expensive cards get up to −30%
+  ───────────────────
+  Final: ${iso} × ${priceMod.toFixed(3)} = ${final}/1000`;
 }
 function _prPriceFmt(p,pct){
   const pr = p!=null ? '$'+Number(p).toFixed(2) : '—';
@@ -13293,6 +13360,8 @@ function _prBuildHitterRow(rk, sp, isRookie){
   const pct = price?price.pct:null;
   const iso = _prISOHit(s, cardPrice||5);
   const val = _prValScore(iso, cardPrice);
+  const isoTip = _prIsoTipHit(s, cardPrice||5, iso);
+  const valTip = _prValTip(iso, cardPrice, val);
   const rc = rk<=3?` r${rk}`:'';
   const cr = rk===1?'<span class="pr-crown">&#128081;</span>':'';
   const extra = isRookie?'<span class="pr-rt">ROOKIE</span>':'';
@@ -13302,7 +13371,7 @@ function _prBuildHitterRow(rk, sp, isRookie){
   <td class="s">${s.avg}</td><td class="s">${s.homeRuns}</td>
   <td class="s">${s.rbi}</td><td class="s">${s.ops}</td>
   <td class="s">${s.stolenBases}</td>
-  <td class="s">${_prIB(iso)}</td><td class="v">${_prPriceFmt(cardPrice,pct)}</td><td class="v">${_prVB(val)}</td><td>${_prSignalBadge(pid)}</td><td>${_prShopLink(p.fullName)}</td></tr>`;
+  <td class="s">${_prIB(iso, isoTip)}</td><td class="v">${_prPriceFmt(cardPrice,pct)}</td><td class="v">${_prVB(val, valTip)}</td><td>${_prSignalBadge(pid)}</td><td>${_prShopLink(p.fullName)}</td></tr>`;
 }
 function _prBuildPitcherRow(rk, sp, isRookie){
   const p = sp.player, s = sp.stat, tm = _prTm(sp.team), pos = sp.position?sp.position.abbreviation:'P';
@@ -13312,6 +13381,8 @@ function _prBuildPitcherRow(rk, sp, isRookie){
   const pct = price?price.pct:null;
   const iso = _prISOPit(s, cardPrice||5);
   const val = _prValScore(iso, cardPrice);
+  const isoTip = _prIsoTipPit(s, cardPrice||5, iso);
+  const valTip = _prValTip(iso, cardPrice, val);
   const rc = rk<=3?` r${rk}`:'';
   const cr = rk===1?'<span class="pr-crown">&#128081;</span>':'';
   const wl = (s.wins||0)+'-'+(s.losses||0);
@@ -13323,7 +13394,7 @@ function _prBuildPitcherRow(rk, sp, isRookie){
   <td class="s">${s.era}</td><td class="s">${wl}</td>
   <td class="s">${s.strikeOuts}</td><td class="s">${s.whip}</td>
   <td class="s">${s.inningsPitched}</td>
-  <td class="s">${_prIB(iso)}</td><td class="v">${_prPriceFmt(cardPrice,pct)}</td><td class="v">${_prVB(val)}</td><td>${_prSignalBadge(pid)}</td><td>${_prShopLink(p.fullName)}</td></tr>`;
+  <td class="s">${_prIB(iso, isoTip)}</td><td class="v">${_prPriceFmt(cardPrice,pct)}</td><td class="v">${_prVB(val, valTip)}</td><td>${_prSignalBadge(pid)}</td><td>${_prShopLink(p.fullName)}</td></tr>`;
 }
 
 // ── Fetch eBay prices for top players (background) ──────────────────
@@ -13576,11 +13647,17 @@ function _prBuildFromCache(rows, dataDate){
         statCells = '<td class="s">—</td>'.repeat(5);
       }
 
+      const isPitcher = meta.type === 'p' || (stats && stats.era != null && stats.avg == null);
+      const isoTip = stats
+        ? (isPitcher ? _prIsoTipPit(stats, price||5, iso||0) : _prIsoTipHit(stats, price||5, iso||0))
+        : `ISO SCORE = ${((iso||0)/10).toFixed(1)} / 100\n(no stat breakdown available)`;
+      const valTip = _prValTip(iso||0, price, val||0);
+
       return`<tr class="${rk===1?'pr-sr':''}"><td><div class="pr-rb${rc}">${rk}${moveHtml}</div></td>
       <td><div class="pr-pc" style="cursor:pointer" onclick="_prOpenProfile(${r.player_id})"><div class="pr-pa${rc}"><img src="${_prIM(r.player_id)}">${cr}</div>
       <div><span class="pr-pn">${r.player_name}</span><div class="pr-pm2"><span class="pr-pp">${r.position||''}</span><span>${r.team||''}</span>${extra}</div></div></div></td>
       ${statCells}
-      <td class="s">${_prIB(iso||0)}</td><td class="v">${_prPriceFmt(price,pct)}</td><td class="v">${_prVB(val||0)}</td><td>${_prSignalBadge(r.player_id)}</td><td>${_prShopLink(r.player_name)}</td></tr>`;
+      <td class="s">${_prIB(iso||0, isoTip)}</td><td class="v">${_prPriceFmt(price,pct)}</td><td class="v">${_prVB(val||0, valTip)}</td><td>${_prSignalBadge(r.player_id)}</td><td>${_prShopLink(r.player_name)}</td></tr>`;
     });
 
     _prLiveData[cat] = {i:meta.i, t:meta.t, s:meta.s, h:meta.h, r:htmlRows};

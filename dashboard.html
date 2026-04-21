@@ -13439,7 +13439,7 @@ function _prRenderMarketMeter(){
 
 // ─── Admin Market Meter Browser ─────────────────────────────
 let _mmAdmData = null;  // [{player_id, name, pos, team, top10_avg, floor_100_index, d7, d30, tr7, total_listings}]
-let _mmAdmSort = 'top10_avg';
+let _mmAdmSortKey = 'top10_avg';
 let _mmAdmDir  = 'desc';
 let _mmAdmQuery = '';
 
@@ -13511,19 +13511,18 @@ function _mmAdmFilter(q){ _mmAdmQuery = (q||'').toLowerCase(); _mmAdmRender(); }
 function _mmAdmPreset(preset, btn){
   document.querySelectorAll('.mm-adm-preset').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
-  if (preset === 'hot')      { _mmAdmSort = 'd7';             _mmAdmDir = 'desc'; }
-  else if (preset === 'bargain') { _mmAdmSort = 'floor_100_index'; _mmAdmDir = 'asc'; }
-  else if (preset === 'cooling') { _mmAdmSort = 'd7';             _mmAdmDir = 'asc'; }
-  else                       { _mmAdmSort = 'top10_avg';      _mmAdmDir = 'desc'; }
+  if (preset === 'hot')          { _mmAdmSortKey = 'd7';              _mmAdmDir = 'desc'; }
+  else if (preset === 'bargain') { _mmAdmSortKey = 'floor_100_index'; _mmAdmDir = 'asc'; }
+  else if (preset === 'cooling') { _mmAdmSortKey = 'd7';              _mmAdmDir = 'asc'; }
+  else                           { _mmAdmSortKey = 'top10_avg';       _mmAdmDir = 'desc'; }
   _mmAdmRender();
 }
 
-function _mmAdmSort2(col){ /* renamed, see _mmAdmSort */ }
-window._mmAdmSort = function(col){
-  if (_mmAdmSort === col) _mmAdmDir = _mmAdmDir === 'desc' ? 'asc' : 'desc';
-  else { _mmAdmSort = col; _mmAdmDir = 'desc'; }
+function _mmAdmSort(col){
+  if (_mmAdmSortKey === col) _mmAdmDir = _mmAdmDir === 'desc' ? 'asc' : 'desc';
+  else { _mmAdmSortKey = col; _mmAdmDir = 'desc'; }
   _mmAdmRender();
-};
+}
 
 function _mmAdmRender(){
   if (!_mmAdmData) return;
@@ -13532,7 +13531,7 @@ function _mmAdmRender(){
     || (r.team||'').toLowerCase().includes(_mmAdmQuery)
     || (r.pos||'').toLowerCase().includes(_mmAdmQuery));
 
-  const key = _mmAdmSort;
+  const key = _mmAdmSortKey;
   rows.sort((a,b) => {
     const va = a[key], vb = b[key];
     if (typeof va === 'string') return _mmAdmDir === 'desc' ? vb.localeCompare(va) : va.localeCompare(vb);
@@ -13571,7 +13570,7 @@ function _mmAdmRender(){
   ths.forEach((th,i) => {
     const s = th.querySelector('.mm-sort');
     if (!s) return;
-    if (cols[i] === _mmAdmSort) { s.innerHTML = _mmAdmDir === 'desc' ? '&darr;' : '&uarr;'; s.style.opacity = 1; s.style.color = 'var(--blue-bright)'; }
+    if (cols[i] === _mmAdmSortKey) { s.innerHTML = _mmAdmDir === 'desc' ? '&darr;' : '&uarr;'; s.style.opacity = 1; s.style.color = 'var(--blue-bright)'; }
     else { s.innerHTML = '&#8597;'; s.style.opacity = 0.4; s.style.color = ''; }
   });
 

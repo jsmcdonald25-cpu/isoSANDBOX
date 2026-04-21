@@ -25,6 +25,9 @@ const CONFIG = {
 
 // ─── TARGET CARDS BY SPECIFIC CARD + PARALLEL ───────────
 // marketAvg = rough comp for that specific card version
+// NOTE: all "(any)" catch-alls were removed 2026-04-20 — they polluted market avg
+// by mixing $5 facsimile promos with $500 graded patch autos, producing fake snipes.
+// Specific cards with real comps only from here on.
 const TARGETS = [
   // ── KEN GRIFFEY JR ──
   { player:'Ken Griffey Jr', card:'1989 Upper Deck #1 Rookie', parallel:'Base', marketAvg:45,
@@ -33,15 +36,6 @@ const TARGETS = [
   { player:'Ken Griffey Jr', card:'1989 Topps Traded #41T', parallel:'Base', marketAvg:20,
     correct:['1989 Topps Traded Griffey Jr 41T','Griffey Jr Topps Traded rookie'],
     misspellings:['1989 topps traded griffy jr','Griffey topps tradded 41T','Ken Griffy topps traded','Griffey 1989 tops traded'] },
-  { player:'Ken Griffey Jr', card:'Refractor (any year)', parallel:'Refractor', marketAvg:65,
-    correct:['Ken Griffey Jr refractor','Griffey Jr Chrome refractor'],
-    misspellings:['Ken Griffey Jr refactor','Griffey refacter','Griffey chrome refactor','Griffey refracter','Ken Griffy refractor','Griffey Jr crome refractor'] },
-  { player:'Ken Griffey Jr', card:'Auto (any)', parallel:'Autograph', marketAvg:85,
-    correct:['Ken Griffey Jr auto','Ken Griffey Jr autograph card'],
-    misspellings:['Ken Griffey Jr autogragh','Griffey autogaph','Griffey Jr auot card','Ken Griffy auto','Griffey autographed baseball card','Griffey signatured card'] },
-  { player:'Ken Griffey Jr', card:'Numbered Parallel (any)', parallel:'Numbered', marketAvg:55,
-    correct:['Ken Griffey Jr numbered','Griffey Jr /99','Griffey Jr serial numbered'],
-    misspellings:['Ken Griffey Jr numberd','Griffey paralel numbered','Griffey Jr /99 paralell','Griffey numbred card','Griffy Jr numbered'] },
 
   // ── ICHIRO SUZUKI ──
   { player:'Ichiro Suzuki', card:'2001 Topps #726 RC', parallel:'Base', marketAvg:25,
@@ -53,12 +47,6 @@ const TARGETS = [
   { player:'Ichiro Suzuki', card:'2001 Bowman Chrome', parallel:'Base', marketAvg:70,
     correct:['2001 Bowman Chrome Ichiro rookie','Ichiro Bowman Chrome RC'],
     misspellings:['2001 bowmen chrome ichiro','Ichiro bowman crome rookie','Ichero bowman chrome','2001 bowmen crome ichiro','Ichiro Suzki bowman chrome'] },
-  { player:'Ichiro Suzuki', card:'Refractor (any)', parallel:'Refractor', marketAvg:80,
-    correct:['Ichiro refractor','Ichiro Suzuki Chrome refractor'],
-    misspellings:['Ichiro refactor','Ichiro refracter','Ichiro crome refractor','Ichero refractor','Ichiro Suzki refractor'] },
-  { player:'Ichiro Suzuki', card:'Auto (any)', parallel:'Autograph', marketAvg:90,
-    correct:['Ichiro Suzuki auto','Ichiro autograph card'],
-    misspellings:['Ichiro autogragh','Ichiro Suzuki auot','Ichero auto card','Ichiro signatured','Ichiro Suzki autograph'] },
 
   // ── SHOHEI OHTANI ──
   { player:'Shohei Ohtani', card:'2018 Topps Update RC', parallel:'Base', marketAvg:30,
@@ -67,18 +55,6 @@ const TARGETS = [
   { player:'Shohei Ohtani', card:'2018 Topps Chrome RC', parallel:'Base', marketAvg:45,
     correct:['2018 Topps Chrome Ohtani rookie','Ohtani Chrome RC 2018'],
     misspellings:['2018 topps crome ohtani','Otani 2018 chrome rookie','Ohtani 2018 tops crome','Shoehei Ohtani chrome 2018','2018 topps crome otahni'] },
-  { player:'Shohei Ohtani', card:'Refractor (any)', parallel:'Refractor', marketAvg:75,
-    correct:['Ohtani refractor','Shohei Ohtani Chrome refractor'],
-    misspellings:['Ohtani refactor','Ohtani refracter','Otani refractor','Ohtani crome refractor','Shoehei Ohtani refractor','Ohtani refactor chrome'] },
-  { player:'Shohei Ohtani', card:'Auto (any)', parallel:'Autograph', marketAvg:95,
-    correct:['Shohei Ohtani auto','Ohtani autograph card'],
-    misspellings:['Ohtani autogragh','Shohei Otani auto','Ohtani auot card','Ohtani signatured','Shoehei Ohtani autograph','Otahni auto card'] },
-  { player:'Shohei Ohtani', card:'Numbered Parallel (any)', parallel:'Numbered', marketAvg:60,
-    correct:['Ohtani numbered','Shohei Ohtani /99','Ohtani serial numbered'],
-    misspellings:['Ohtani numberd','Ohtani paralel numbered','Otani numbered card','Ohtani numbred','Shoehei Ohtani numbered'] },
-  { player:'Shohei Ohtani', card:'Insert (any)', parallel:'Insert', marketAvg:25,
-    correct:['Ohtani insert card','Shohei Ohtani Topps insert'],
-    misspellings:['Ohtani insurt card','Otani insert','Ohtani topps insrt','Ohtani speical insert'] },
 
   // ── SAL STEWART ──
   { player:'Sal Stewart', card:'1st Bowman', parallel:'Base', marketAvg:18,
@@ -90,9 +66,6 @@ const TARGETS = [
   { player:'Sal Stewart', card:'Bowman Refractor', parallel:'Refractor', marketAvg:50,
     correct:['Sal Stewart Bowman refractor','Sal Stewart 1st Bowman refractor'],
     misspellings:['Sal Stewart refactor','Sal Stuart refractor','Sal Steward refractor','Sal Stewart bowmen refactor','Sal Stewart refracter'] },
-  { player:'Sal Stewart', card:'Auto (any)', parallel:'Autograph', marketAvg:65,
-    correct:['Sal Stewart auto','Sal Stewart autograph'],
-    misspellings:['Sal Stewart autogragh','Sal Stuart auto','Sal Steward autograph','Sal Stewart auot','Sal Stewert auto card'] },
 
   // ── DANIEL SUSAC ──
   { player:'Daniel Susac', card:'1st Bowman', parallel:'Base', marketAvg:15,
@@ -104,9 +77,6 @@ const TARGETS = [
   { player:'Daniel Susac', card:'Bowman Refractor', parallel:'Refractor', marketAvg:45,
     correct:['Daniel Susac refractor','Susac Bowman refractor'],
     misspellings:['Daniel Susac refactor','Susac refracter','Daniel Susak refractor','Danial Susac refractor','Sussac refactor'] },
-  { player:'Daniel Susac', card:'Auto (any)', parallel:'Autograph', marketAvg:55,
-    correct:['Daniel Susac auto','Daniel Susac autograph'],
-    misspellings:['Daniel Susac autogragh','Susac auot card','Danial Susac auto','Daniel Susak autograph','Sussac auto card'] },
 
   // ── MOISÉS BALLESTEROS ──
   { player:'Moises Ballesteros', card:'1st Bowman', parallel:'Base', marketAvg:12,
@@ -115,9 +85,6 @@ const TARGETS = [
   { player:'Moises Ballesteros', card:'1st Bowman Chrome', parallel:'Chrome', marketAvg:22,
     correct:['Moises Ballesteros Bowman Chrome','Ballesteros 1st Chrome'],
     misspellings:['Ballesteros bowman crome','Moises Balesteros chrome','Moses Ballesteros crome','Ballesteros bowmen chrome'] },
-  { player:'Moises Ballesteros', card:'Auto (any)', parallel:'Autograph', marketAvg:45,
-    correct:['Moises Ballesteros auto','Ballesteros autograph'],
-    misspellings:['Ballesteros autogragh','Moises Balesteros auto','Moses Ballesteros autograph','Ballesteros auot card'] },
 
   // ── GEORGE VALERA ──
   { player:'George Valera', card:'1st Bowman', parallel:'Base', marketAvg:10,
@@ -126,9 +93,6 @@ const TARGETS = [
   { player:'George Valera', card:'1st Bowman Chrome', parallel:'Chrome', marketAvg:18,
     correct:['George Valera Bowman Chrome','Valera 1st Chrome'],
     misspellings:['Valera bowman crome','George Valerra chrome','Georg Valera crome','Valera bowmen chrome'] },
-  { player:'George Valera', card:'Auto (any)', parallel:'Autograph', marketAvg:35,
-    correct:['George Valera auto','Valera autograph card'],
-    misspellings:['Valera autogragh','George Valerra auto','Georg Valera autograph','Valera auot'] },
 
   // ── KEVIN MCGONIGLE ──
   { player:'Kevin McGonigle', card:'1st Bowman', parallel:'Base', marketAvg:8,
@@ -137,9 +101,6 @@ const TARGETS = [
   { player:'Kevin McGonigle', card:'1st Bowman Chrome', parallel:'Chrome', marketAvg:15,
     correct:['Kevin McGonigle Bowman Chrome','McGonigle Chrome 1st'],
     misspellings:['McGonigle bowman crome','Kevin McGonigal chrome','McGoniggal bowman crome','McGongle chrome'] },
-  { player:'Kevin McGonigle', card:'Auto (any)', parallel:'Autograph', marketAvg:30,
-    correct:['Kevin McGonigle auto','McGonigle autograph'],
-    misspellings:['McGonigle autogragh','Kevin McGonigal auto','McGoniggal autograph','McGongle auot'] },
 
   // ── CHASE DELAUTER ──
   { player:'Chase DeLauter', card:'1st Bowman', parallel:'Base', marketAvg:15,
@@ -148,20 +109,6 @@ const TARGETS = [
   { player:'Chase DeLauter', card:'1st Bowman Chrome', parallel:'Chrome', marketAvg:28,
     correct:['Chase DeLauter Bowman Chrome','DeLauter Chrome 1st'],
     misspellings:['DeLauter bowman crome','Chase Delauter crome','De Lauter bowman chrome','DeLaughter crome'] },
-  { player:'Chase DeLauter', card:'Auto (any)', parallel:'Autograph', marketAvg:50,
-    correct:['Chase DeLauter auto','DeLauter autograph'],
-    misspellings:['DeLauter autogragh','Chase Delauter auto','DeLaughter autograph','De Lauter auot','Chase Delaughter auto'] },
-
-  // ── MUNETAKA MURAKAMI ──
-  { player:'Munetaka Murakami', card:'Rookie Card (any)', parallel:'Base', marketAvg:20,
-    correct:['Munetaka Murakami rookie card','Murakami RC 2026'],
-    misspellings:['Munetaka Murkami rookie','Munekata Murakami RC','Murakami rooky card','Munetaka Murikami rookie'] },
-  { player:'Munetaka Murakami', card:'Auto (any)', parallel:'Autograph', marketAvg:60,
-    correct:['Munetaka Murakami auto','Murakami autograph'],
-    misspellings:['Murakami autogragh','Munetaka Murkami auto','Munekata Murakami autograph','Murikami auot','Murakami signatured'] },
-  { player:'Munetaka Murakami', card:'Chrome/Refractor', parallel:'Refractor', marketAvg:40,
-    correct:['Murakami refractor','Munetaka Murakami chrome refractor'],
-    misspellings:['Murakami refactor','Murkami refracter','Murakami crome refractor','Munekata Murakami refractor'] },
 
   // ── JJ WETHERHOLT ──
   { player:'JJ Wetherholt', card:'1st Bowman', parallel:'Base', marketAvg:25,
@@ -170,9 +117,6 @@ const TARGETS = [
   { player:'JJ Wetherholt', card:'1st Bowman Chrome', parallel:'Chrome', marketAvg:45,
     correct:['JJ Wetherholt Bowman Chrome','Wetherholt Chrome 1st'],
     misspellings:['Wetherholt bowman crome','JJ Weatherholt chrome','Wetherhold crome','JJ Wetherhalt bowman chrome'] },
-  { player:'JJ Wetherholt', card:'Auto (any)', parallel:'Autograph', marketAvg:75,
-    correct:['JJ Wetherholt auto','Wetherholt autograph'],
-    misspellings:['Wetherholt autogragh','JJ Weatherholt auto','Wetherhold autograph','JJ Wetherhalt auot','Wetherholt signatured'] },
 
   // ── JUSTIN CRAWFORD ──
   { player:'Justin Crawford', card:'1st Bowman', parallel:'Base', marketAvg:12,
@@ -181,17 +125,11 @@ const TARGETS = [
   { player:'Justin Crawford', card:'1st Bowman Chrome', parallel:'Chrome', marketAvg:22,
     correct:['Justin Crawford Bowman Chrome','Crawford Chrome 1st'],
     misspellings:['Crawford bowman crome','Justin Crawfrod chrome','Crowford crome','Justin Craford chrome'] },
-  { player:'Justin Crawford', card:'Auto (any)', parallel:'Autograph', marketAvg:40,
-    correct:['Justin Crawford auto','Crawford autograph'],
-    misspellings:['Crawford autogragh','Justin Crawfrod auto','Crowford autograph','Justin Craford auot'] },
 
   // ── TANNER MURRAY ──
   { player:'Tanner Murray', card:'1st Bowman', parallel:'Base', marketAvg:8,
     correct:['Tanner Murray 1st Bowman','Murray Bowman 1st'],
     misspellings:['Tanner Murry bowman','Tanner Murray bowmen','Taner Murray bowman','Murray 1st bowmen'] },
-  { player:'Tanner Murray', card:'Auto (any)', parallel:'Autograph', marketAvg:25,
-    correct:['Tanner Murray auto','Murray autograph card'],
-    misspellings:['Murray autogragh','Tanner Murry auto','Taner Murray autograph','Murray auot card'] },
 ];
 
 // ─── EBAY AUTH ──────────────────────────────────────────
@@ -241,7 +179,12 @@ function processResults(items, target, isMisspelling) {
     const JUNK = ['custom','reprint','facsimile','novelty','fantasy card','art card','aceo','tc card',
       'unofficial','not real','fan made','fanmade','homemade','gag gift','limited edit','replica',
       'counterfeit','bootleg','custom blast','art print','fan art','proxy','karat','gold plated',
-      'gold foil signature','sketch card','keychain','mix n match','novelty card'];
+      'gold foil signature','gold signature series','sketch card','keychain','mix n match','novelty card',
+      // Known facsimile/promo producers — always printed signatures, never real autos
+      'authentic images','merrick mint','calbee','jimmy dean','sunflower seeds','jumbo gold',
+      'sportflics','sport flick','24k gold','23kt gold','22k gold','24kt','23k gold','25kt',
+      'skybox autographics','skybox autographic','leaf exhibits','gold edition signature','signature card guard',
+      'donruss signature','1994 signature rookies','authentic image'];
     if (JUNK.some(j => tLow.includes(j))) continue;
 
     const isBIN = item.buyingOptions?.includes('FIXED_PRICE');

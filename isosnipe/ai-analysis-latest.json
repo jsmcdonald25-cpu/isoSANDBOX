@@ -1,15 +1,28 @@
 {
   "blocklist_terms": [
     "facsimile signature",
-    "gold edition signature",
+    "novelty card",
+    "gold edition",
     "made in usa signature",
-    "group of noted",
+    "msig",
     "signature series",
+    "panini donruss",
     "35th anniversary",
     "refactor",
-    "card guard"
+    "group of noted"
   ],
   "query_refinements": [
+    {
+      "player": "Shohei Ohtani",
+      "parallel": "Autograph",
+      "negatives": [
+        "novelty",
+        "print",
+        "rookie auto print",
+        "refactor",
+        "anniversary"
+      ]
+    },
     {
       "player": "Ken Griffey Jr",
       "parallel": "Autograph",
@@ -24,40 +37,36 @@
       "player": "Ichiro Suzuki",
       "parallel": "Autograph",
       "negatives": [
-        "facsimile signature",
+        "facsimile",
+        "msig",
         "made in usa",
-        "exhibits 1947",
-        "panini donruss signature"
-      ]
-    },
-    {
-      "player": "Shohei Ohtani",
-      "parallel": "Refractor",
-      "negatives": [
-        "35th anniversary",
-        "refactor",
-        "2025 topps chrome"
+        "signature series",
+        "panini"
       ]
     }
   ],
   "insights": [
-    "40% of rejections (2/5) flagged facsimile_signature; these use terms 'Gold Edition', 'Made in USA', 'Signature Card'.",
-    "40% of rejections (2/5) flagged wrong_card_num; vague/generic titles like 'Group of noted' lack specificity.",
-    "20% of rejections (1/5) flagged wrong_parallel with multiple secondary reasons (wrong_year, other); title-card mismatch.",
-    "No confirmed good listings provided; blocklist based purely on rejection signals.",
-    "Facsimile signatures cluster around vintage-style or special edition cards (Leaf Exhibits, Gold Edition).",
-    "Wrong card/parallel rejections involve 2024–2025 modern releases with title-description mismatches.",
-    "Vague or overly broad titles correlate with wrong_card_num rejections."
+    "Facsimile signatures account for 33% (2/6) of rejections; confirmed good uses authentic Topps Tribute.",
+    "Title-card mismatch present in 17% (1/6) of rejections; confirmed listing has matching set/card info.",
+    "Modern unlicensed sets (Panini Donruss 2024) rejected; confirmed uses established 2023 Topps product.",
+    "Novelty/print designations and gold edition parallels are red flags absent from confirmed listing.",
+    "Wrong card number and wrong set issues appear in 33% (2/6) of rejections.",
+    "Confirmed snipe has 82% delta (market $90, listed $16); all rejections lack valid pricing context.",
+    "High emoji density in rejected titles (fire, rocket, star emojis) vs. clean formatting in confirmed.",
+    "Confirmed listing uses standard set notation (2023 Topps Tribute, /99, Card 77) with clear player-year-set alignment."
   ],
   "rejection_breakdown": {
     "facsimile_signature": 2,
     "wrong_card_num": 2,
-    "wrong_parallel": 1
+    "other": 1,
+    "wrong_parallel": 1,
+    "wrong_year": 1,
+    "wrong_set": 1
   },
   "_meta": {
-    "rejections_analyzed": 5,
-    "confirmations_analyzed": 0,
+    "rejections_analyzed": 6,
+    "confirmations_analyzed": 1,
     "model": "claude-haiku-4-5",
-    "analyzed_at": "2026-04-20T23:55:00.593Z"
+    "analyzed_at": "2026-04-21T00:10:51.795Z"
   }
 }

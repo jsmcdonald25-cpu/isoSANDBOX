@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS public.player_market_snapshots (
   player_id        integer     NOT NULL,      -- matches players.mlb_id
   snapshot_date    date        NOT NULL,
   top10_avg        numeric(10,2) NOT NULL,    -- avg of 10 priciest listings
-  floor_50_index   integer     NOT NULL,      -- # of cheapest listings needed to sum $50 (lower = hotter)
+  floor_100_index   integer     NOT NULL,      -- # of cheapest listings needed to sum $100 (lower = hotter)
   total_listings   integer     NOT NULL,      -- raw count of qualifying listings before filtering
   filtered_out     integer     NOT NULL DEFAULT 0, -- # of multi-player/dropdown listings rejected
   created_at       timestamptz NOT NULL DEFAULT now(),
@@ -47,7 +47,7 @@ SELECT DISTINCT ON (player_id)
   player_id,
   snapshot_date,
   top10_avg,
-  floor_50_index,
+  floor_100_index,
   total_listings,
   filtered_out,
   created_at

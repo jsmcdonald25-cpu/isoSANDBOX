@@ -3490,7 +3490,7 @@ async function logOut(){
             <tr>
               <th onclick="_mmAdmSort('name')">Player <span class="mm-sort">&#8597;</span></th>
               <th onclick="_mmAdmSort('top10_avg')" class="mm-col-top10">Top 10 Avg <span class="mm-sort">&darr;</span></th>
-              <th onclick="_mmAdmSort('floor_50_index')">$50 Floor <span class="mm-sort">&#8597;</span></th>
+              <th onclick="_mmAdmSort('floor_100_index')">$100 Floor <span class="mm-sort">&#8597;</span></th>
               <th onclick="_mmAdmSort('d7')">7d &Delta; <span class="mm-sort">&#8597;</span></th>
               <th onclick="_mmAdmSort('d30')">30d &Delta; <span class="mm-sort">&#8597;</span></th>
               <th>7d Trend</th>
@@ -13362,7 +13362,7 @@ function _prRenderMarketMeter(){
       const s = series[0];
       body.innerHTML += `<div class="mm-metrics2" style="margin-top:14px">
         <div class="mm-m avg"><div class="label">Top 10 Avg</div><div class="value">$${s.top10_avg >= 100 ? Math.round(s.top10_avg) : Number(s.top10_avg).toFixed(2)}</div><span class="sub">today</span></div>
-        <div class="mm-m floor"><div class="label">$50 Floor Idx</div><div class="value">${s.floor_50_index}</div><span class="sub">today</span></div>
+        <div class="mm-m floor"><div class="label">$100 Floor Idx</div><div class="value">${s.floor_100_index}</div><span class="sub">today</span></div>
       </div>`;
     }
     return;
@@ -13371,7 +13371,7 @@ function _prRenderMarketMeter(){
   const latest = series[series.length - 1];
   const first = series[0];
   const avgDiff = ((Number(latest.top10_avg) - Number(first.top10_avg)) / Number(first.top10_avg)) * 100;
-  const floorDiff = latest.floor_50_index - first.floor_50_index;
+  const floorDiff = latest.floor_100_index - first.floor_100_index;
 
   const avgVal = Number(latest.top10_avg);
   const avgDisplay = avgVal >= 100 ? '$' + Math.round(avgVal) : '$' + avgVal.toFixed(2);
@@ -13416,10 +13416,10 @@ function _prRenderMarketMeter(){
         <span class="sub">mean of 10 priciest listings</span>
       </div>
       <div class="mm-m floor">
-        <div class="label">$50 Floor Index</div>
-        <div class="value">${latest.floor_50_index}</div>
+        <div class="label">$100 Floor Index</div>
+        <div class="value">${latest.floor_100_index}</div>
         <div class="delta ${floorDeltaCls}">${floorDeltaHtml}</div>
-        <span class="sub">cards to sum $50 &middot; lower = hotter</span>
+        <span class="sub">cards to sum $100 &middot; lower = hotter</span>
       </div>
     </div>
     <div class="mm-c">
@@ -13438,7 +13438,7 @@ function _prRenderMarketMeter(){
 }
 
 // ─── Admin Market Meter Browser ─────────────────────────────
-let _mmAdmData = null;  // [{player_id, name, pos, team, top10_avg, floor_50_index, d7, d30, tr7, total_listings}]
+let _mmAdmData = null;  // [{player_id, name, pos, team, top10_avg, floor_100_index, d7, d30, tr7, total_listings}]
 let _mmAdmSort = 'top10_avg';
 let _mmAdmDir  = 'desc';
 let _mmAdmQuery = '';
@@ -13451,7 +13451,7 @@ async function _mmAdmLoad(){
     const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
     // Pull last 30 days across all players + players table for names
     const [snapRes, playerRes] = await Promise.all([
-      fetch(`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/player_market_snapshots?select=player_id,snapshot_date,top10_avg,floor_50_index,total_listings&order=snapshot_date.desc&limit=10000`, {headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}}),
+      fetch(`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/player_market_snapshots?select=player_id,snapshot_date,top10_avg,floor_100_index,total_listings&order=snapshot_date.desc&limit=10000`, {headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}}),
       fetch(`https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/players?select=mlb_id,full_name,position,team&limit=500`, {headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}}),
     ]);
     const snaps = snapRes.ok ? await snapRes.json() : [];
@@ -13494,7 +13494,7 @@ async function _mmAdmLoad(){
         pos: pinfo.position || '',
         team: pinfo.team || '',
         top10_avg: Number(latest.top10_avg),
-        floor_50_index: latest.floor_50_index,
+        floor_100_index: latest.floor_100_index,
         total_listings: latest.total_listings,
         d7, d30, tr7,
       };
@@ -13512,7 +13512,7 @@ function _mmAdmPreset(preset, btn){
   document.querySelectorAll('.mm-adm-preset').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
   if (preset === 'hot')      { _mmAdmSort = 'd7';             _mmAdmDir = 'desc'; }
-  else if (preset === 'bargain') { _mmAdmSort = 'floor_50_index'; _mmAdmDir = 'asc'; }
+  else if (preset === 'bargain') { _mmAdmSort = 'floor_100_index'; _mmAdmDir = 'asc'; }
   else if (preset === 'cooling') { _mmAdmSort = 'd7';             _mmAdmDir = 'asc'; }
   else                       { _mmAdmSort = 'top10_avg';      _mmAdmDir = 'desc'; }
   _mmAdmRender();
@@ -13556,7 +13556,7 @@ function _mmAdmRender(){
       return `<tr onclick="_prOpenMarketMeter(${p.player_id},'${safeName}')">
         <td><div class="mm-adm-name"><img src="${img}"><div><div class="nm">${_h(p.name)}</div><div class="pos">${_h(p.pos||'')} ${p.team?'&middot; '+_h(p.team):''}</div></div></div></td>
         <td><span class="mm-adm-cell-avg">${avgStr}</span></td>
-        <td><span class="mm-adm-cell-floor">${p.floor_50_index}</span></td>
+        <td><span class="mm-adm-cell-floor">${p.floor_100_index}</span></td>
         <td><span class="mm-adm-trend ${trCls}">${trSym} ${p.d7 > 0 ? '+' : ''}${p.d7.toFixed(1)}%</span></td>
         <td><span class="mm-adm-trend ${tr30Cls}">${tr30Sym} ${p.d30 > 0 ? '+' : ''}${p.d30.toFixed(1)}%</span></td>
         <td>${mini}</td>
@@ -13566,7 +13566,7 @@ function _mmAdmRender(){
   }
 
   // Sort arrow indicators
-  const cols = ['name','top10_avg','floor_50_index','d7','d30',null,'total_listings'];
+  const cols = ['name','top10_avg','floor_100_index','d7','d30',null,'total_listings'];
   const ths = document.querySelectorAll('#mmAdmTbl thead th');
   ths.forEach((th,i) => {
     const s = th.querySelector('.mm-sort');

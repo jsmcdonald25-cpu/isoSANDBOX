@@ -5,7 +5,7 @@
  * For every player in the `players` table, hits the eBay Browse API,
  * filters out multi-player "pick your card" listings, and computes:
  *   - top10_avg:       mean of the 10 priciest qualifying listings
- *   - floor_50_index:  # of cheapest listings needed to sum ≥ $50
+ *   - floor_100_index: # of cheapest listings needed to sum ≥ $100
  *                      (lower = hotter player, higher price floor)
  *
  * Upserts one row per (player_id, snapshot_date) to player_market_snapshots.
@@ -30,7 +30,7 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE) throw new Error('Missing SUPABASE_U
 const EBAY_CATEGORY_ID = '261328';   // Sports Trading Cards
 const LISTINGS_LIMIT   = 200;        // eBay Browse max per query
 const PRICE_FLOOR_USD  = 0.50;       // skip sub-fifty-cent junk
-const FLOOR_TARGET_USD = 50;         // $50 Floor Index target
+const FLOOR_TARGET_USD = 100;        // $100 Floor Index target
 const TOP_N_FOR_AVG    = 10;
 const SLEEP_MS         = 250;
 
@@ -134,7 +134,7 @@ function computeMetrics(items){
   const topSlice = clean.slice(0, TOP_N_FOR_AVG);
   const top10_avg = topSlice.reduce((s,r) => s + r.price, 0) / topSlice.length;
 
-  // floor_50_index — sort asc, accumulate until sum ≥ $50
+  // floor_100_index — sort asc, accumulate until sum ≥ $50
   const asc = [...clean].sort((a,b) => a.price - b.price);
   let running = 0, idx = 0;
   for (const r of asc){
@@ -143,11 +143,11 @@ function computeMetrics(items){
     if (running >= FLOOR_TARGET_USD) break;
   }
   // If we ran out before hitting $50, idx = total clean listings (conservative)
-  const floor_50_index = running >= FLOOR_TARGET_USD ? idx : clean.length;
+  const floor_100_index = running >= FLOOR_TARGET_USD ? idx : clean.length;
 
   return {
     top10_avg: Number(top10_avg.toFixed(2)),
-    floor_50_index,
+    floor_100_index,
     total_listings: clean.length,
     filtered_out,
     total_raw,
@@ -215,11 +215,11 @@ async function main(){
         player_id:      p.mlb_id,
         snapshot_date:  today,
         top10_avg:      m.top10_avg,
-        floor_50_index: m.floor_50_index,
+        floor_100_index: m.floor_100_index,
         total_listings: m.total_listings,
         filtered_out:   m.filtered_out,
       });
-      console.log(`  [${processed}/${players.length}] ${p.full_name} — $${m.top10_avg} · floor ${m.floor_50_index} · ${m.total_listings} listings (${m.filtered_out} filtered)`);
+      console.log(`  [${processed}/${players.length}] ${p.full_name} — $${m.top10_avg} · floor ${m.floor_100_index} · ${m.total_listings} listings (${m.filtered_out} filtered)`);
     }
     await sleep(SLEEP_MS);
   }

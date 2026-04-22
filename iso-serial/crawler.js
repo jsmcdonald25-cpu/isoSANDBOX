@@ -41,6 +41,8 @@ const SETS = [
   {
     label: 'Heritage',
     queries: [
+      '2026 Topps Heritage Superfractor',
+      '2026 Topps Heritage 1/1',
       '2026 Topps Heritage /5',
       '2026 Topps Heritage #/5',
       '2026 Topps Heritage /10',

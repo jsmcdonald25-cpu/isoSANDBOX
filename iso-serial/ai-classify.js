@@ -71,13 +71,26 @@ You receive: a listing title, optional description, and a set hint from the sear
 - Base set: cards #1–400, retro 1977 Topps design (NOT 1989 — 2026 Heritage uses 1977 template)
 - Includes Short Prints (SP) and Super Short Prints (SSP) at higher numbers
 
-### ★ HERITAGE /5 — ONLY ONE PARALLEL EXISTS ★
-The only Heritage /5 parallel we track is **Chrome Red Border** (print run /5).
-Sellers write this parallel under many different strings — they are ALL wrong except
-the exact phrase "Chrome Red Border". Always normalize to parallel_name =
-"Chrome Red Border" whenever a Heritage /5 listing mentions red in any form.
+### ★ HERITAGE 1/1, /5, AND /25 — ONE PARALLEL EACH ★
+Heritage Chrome Bordered color ladder has exactly one parallel per color / print-run
+pair. For the three print runs we currently track:
 
-Seller writes                               →  correct parallel_name
+- Every 1/1 Heritage listing (Superfractor) → parallel_name = "Superfractor"
+- Every /5 Heritage listing → parallel_name = "Chrome Red Border"
+- Every /25 Heritage listing → parallel_name = "Orange Border Chrome"
+
+Sellers write these parallels under many different strings — they are ALL wrong
+except the canonical phrases above. Always normalize.
+
+Heritage 1/1 seller writes                  →  correct parallel_name
+"Superfractor 1/1"                          →  "Superfractor"
+"Chrome Superfractor 1/1"                   →  "Superfractor"
+"Gold Superfractor 1/1"                     →  "Superfractor"
+"Super Refractor 1/1"                       →  "Superfractor"
+"1/1 Superfractor"                          →  "Superfractor"
+"1/1" (Heritage, no other parallel cue)     →  "Superfractor"
+
+Heritage /5 seller writes                   →  correct parallel_name
 "Red Refractor /5"                          →  "Chrome Red Border"
 "Chrome Red Refractor /5"                   →  "Chrome Red Border"
 "Red Chrome Refractor 4/5"                  →  "Chrome Red Border"
@@ -87,8 +100,16 @@ Seller writes                               →  correct parallel_name
 "Chrome Red Border /5"                      →  "Chrome Red Border"  (correctly labeled)
 "Red /5" (no other cue)                     →  "Chrome Red Border"
 
-There is NO "Chrome Red Refractor /5", NO "Red Refractor /5", NO "Red Border Chrome /5"
-as a distinct parallel — they all collapse to Chrome Red Border.
+Heritage /25 seller writes                  →  correct parallel_name
+"Orange Refractor /25"                      →  "Orange Border Chrome"
+"Orange Chrome /25"                         →  "Orange Border Chrome"
+"Orange Chrome Refractor 3/25"              →  "Orange Border Chrome"
+"Orange Border Chrome /25"                  →  "Orange Border Chrome"  (correctly labeled)
+"Chrome Orange Border /25"                  →  "Orange Border Chrome"
+"Orange /25" (no other cue)                 →  "Orange Border Chrome"
+
+There is NO "Chrome Red Refractor /5", NO "Red Refractor /5", NO "Orange Chrome
+Refractor /25" as distinct parallels — they all collapse to the canonical names.
 
 ### Other /5 Heritage variant (base stock, NOT Chrome)
 - Flip Stock /5 — Heritage SSP printed on flipped cardstock, unstamped (edition_num = null).

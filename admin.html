@@ -8240,10 +8240,16 @@ async function sqLoadPlayersForSet() {
   sqFilterPlayers();
 }
 
+// Strip diacritics + lowercase for accent-insensitive compares
+// ("Luis García Jr." <=> "Luis Garcia Jr." still match).
+function _sqNormPlayer(s) {
+  return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+}
+
 function sqFilterPlayers() {
   const setTable = document.getElementById('sqTagSet').value;
-  const q = (document.getElementById('sqTagPlayerSearch').value || '').toLowerCase();
-  const list = (_sqChecklists[setTable] || []).filter(r => !q || (r.player || '').toLowerCase().includes(q));
+  const q = _sqNormPlayer(document.getElementById('sqTagPlayerSearch').value);
+  const list = (_sqChecklists[setTable] || []).filter(r => !q || _sqNormPlayer(r.player).includes(q));
   // Dedupe by player name for the player dropdown
   const seen = new Set();
   const unique = [];
@@ -8259,7 +8265,8 @@ function sqFilterPlayers() {
 function sqLoadCardsForPlayer() {
   const setTable = document.getElementById('sqTagSet').value;
   const player = document.getElementById('sqTagPlayer').value;
-  const list = (_sqChecklists[setTable] || []).filter(r => r.player === player);
+  const targetNorm = _sqNormPlayer(player);
+  const list = (_sqChecklists[setTable] || []).filter(r => _sqNormPlayer(r.player) === targetNorm);
   list.sort((a,b) => {
     const an = parseInt(a.card_number, 10), bn = parseInt(b.card_number, 10);
     if (!isNaN(an) && !isNaN(bn) && an !== bn) return an - bn;
@@ -8587,7 +8594,7 @@ async function sqSaveTag(mode) {
   const setTable = document.getElementById('sqTagSet').value;
   const player = document.getElementById('sqTagPlayer').value;
   const cardOpt = document.getElementById('sqTagCard').selectedOptions[0];
-  if (!player || !cardOpt || !cardOpt.value) { toast('Pick player + card', 'err'); return; }
+  if (!player || !cardOpt || !cardOpt.value) { toast('Pick player + card', 'err'); _sqRestoreBtns(); return; }
 
   const checklistCardId = parseInt(cardOpt.value, 10);
   const cardNumber = cardOpt.getAttribute('data-card') || null;
@@ -8598,13 +8605,14 @@ async function sqSaveTag(mode) {
   const editionRaw = document.getElementById('sqTagEdition').value;
   const editionNum = editionRaw ? parseInt(editionRaw, 10) : null;
 
-  if (!printRun || printRun < 1) { toast('Enter a print run', 'err'); return; }
-  if (printRun >= 300) { toast('Print runs ≥300 are not tracked. Skip with reason instead.', 'err'); return; }
+  if (!printRun || printRun < 1) { toast('Enter a print run', 'err'); _sqRestoreBtns(); return; }
+  if (printRun >= 300) { toast('Print runs ≥300 are not tracked. Skip with reason instead.', 'err'); _sqRestoreBtns(); return; }
 
   // Edition validation: required UNLESS Flip Stock (unstamped)
   if (!isFlipStock) {
     if (!editionNum || editionNum < 1 || editionNum > printRun) {
       toast(`Edition # must be 1–${printRun}`, 'err');
+      _sqRestoreBtns();
       return;
     }
   }
@@ -8702,11 +8710,11 @@ async function sqSaveTag(mode) {
       const ins = await _post('iso_serial_registry', payload);
       registryId = ins[0]?.id;
     } else if (mode === 'existing') {
-      if (!_sqLinkedRegistryId) { toast('Pick an existing registry card first', 'err'); return; }
+      if (!_sqLinkedRegistryId) { toast('Pick an existing registry card first', 'err'); _sqRestoreBtns(); return; }
       registryId = _sqLinkedRegistryId;
       // Fetch current, append to chain + history
       const [current] = await _get('iso_serial_registry', `id=eq.${registryId}&select=*`);
-      if (!current) { toast('Existing registry row not found', 'err'); return; }
+      if (!current) { toast('Existing registry row not found', 'err'); _sqRestoreBtns(); return; }
       const newChain = Array.isArray(current.ownership_chain) ? [...current.ownership_chain, chainEntry] : [chainEntry];
       const newHistory = Array.isArray(current.price_history) ? [...current.price_history, { price: q.price_usd, date: q.crawled_at, grade: graded ? `${gradeCo} ${gradeNum}` : null, ebay_item_id: q.ebay_item_id }] : [{ price: q.price_usd, date: q.crawled_at, ebay_item_id: q.ebay_item_id }];
       await _patch('iso_serial_registry', `id=eq.${registryId}`, {

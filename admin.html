@@ -2849,8 +2849,14 @@ tr:hover td { background: var(--bg); }
             </div>
 
             <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-              <button id="sqSaveNewBtn" onclick="sqSaveTag('new')" style="flex:1;padding:12px;background:var(--green);color:#fff;border:none;border-radius:var(--radius);font-weight:700;cursor:pointer;font-size:13px">Save as NEW registry</button>
-              <button id="sqSaveExistingBtn" onclick="sqSaveTag('existing')" style="flex:1;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius);font-weight:700;cursor:pointer;font-size:13px">Link to existing</button>
+              <button id="sqSaveNewBtn" onclick="sqSaveTag('new')" title="Create a brand new registry row for this specific physical card (never seen before, different edition number, or different parallel)" style="flex:1;padding:12px;background:var(--green);color:#fff;border:none;border-radius:var(--radius);font-weight:700;cursor:pointer;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:2px">
+                <span>✚ NEW physical card</span>
+                <span style="font-size:10px;font-weight:500;opacity:0.9">never seen · different edition · different parallel</span>
+              </button>
+              <button id="sqSaveExistingBtn" onclick="sqSaveTag('existing')" title="Link this listing to an already-tracked card (same edition # resurfaced — append to its ownership chain)" style="flex:1;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius);font-weight:700;cursor:pointer;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:2px">
+                <span>🔗 SAME card resurfaced</span>
+                <span style="font-size:10px;font-weight:500;opacity:0.9">same edition # re-listed · append to chain</span>
+              </button>
               <select id="sqSkipReason" onchange="if(this.value){sqSaveSkip(this.value);this.value='';}" style="padding:12px;background:var(--bg);color:var(--text2);border:1px solid var(--border2);border-radius:var(--radius);font-weight:600;cursor:pointer;font-size:13px">
                 <option value="">Skip with reason…</option>
                 <option value="not_a_5">No /# (not a numbered card)</option>
@@ -8142,7 +8148,10 @@ function sqRender() {
       <td style="font-size:11px;color:var(--text2)">${fb}</td>
       <td>${flags || '—'}</td>
       <td style="font-size:10px;color:var(--text3)">${_sqRelTime(new Date(q.crawled_at))}</td>
-      <td><button onclick="event.stopPropagation();sqOpenReview(${q.id})" style="padding:4px 10px;background:var(--purple);color:#fff;border:none;border-radius:4px;font-size:11px;cursor:pointer;font-weight:600">Review</button></td>
+      <td style="white-space:nowrap">
+        <button onclick="event.stopPropagation();sqOpenReview(${q.id})" style="padding:4px 10px;background:var(--purple);color:#fff;border:none;border-radius:4px;font-size:11px;cursor:pointer;font-weight:600">Review</button>
+        ${(q.status === 'tagged_new' || q.status === 'tagged_existing') ? `<button onclick="event.stopPropagation();sqReleaseTag(${q.id})" title="Release back to Pending — undoes the tagging and removes this sighting from the linked registry card" style="margin-left:4px;padding:4px 8px;background:var(--bg);color:var(--red);border:1px solid var(--red);border-radius:4px;font-size:11px;cursor:pointer;font-weight:600">↺ Release</button>` : ''}
+      </td>
     </tr>`;
   }).join('');
 
@@ -8201,6 +8210,56 @@ function _sqRelTime(d) {
   if (diffSec < 3600) return Math.floor(diffSec / 60) + 'm ago';
   if (diffSec < 86400) return Math.floor(diffSec / 3600) + 'h ago';
   return Math.floor(diffSec / 86400) + 'd ago';
+}
+
+// ── Release a tagged queue row back to Pending ──
+// Reverses Save New / Link Existing: resets queue row, strips this sighting
+// from the linked registry row's ownership_chain + price_history. If this
+// was the only chain entry AND the save was 'new', deletes the registry row.
+async function sqReleaseTag(queueId) {
+  if (!confirm(`Release queue #${queueId} back to Pending?\n\nThis removes its sighting from the linked registry card. If it was the only sighting and you created the registry row (NEW save), the registry row is deleted too.`)) return;
+  try {
+    const rows = await _get('iso_serial_queue', `id=eq.${queueId}&select=id,ebay_item_id,seller_username,linked_registry_id,status,title`);
+    const q = rows && rows[0];
+    if (!q) { toast('Queue row not found', 'err'); return; }
+
+    if (q.linked_registry_id) {
+      const regRows = await _get('iso_serial_registry', `id=eq.${q.linked_registry_id}&select=id,ownership_chain,price_history`);
+      const reg = regRows && regRows[0];
+      if (reg) {
+        const oldChain = reg.ownership_chain || [];
+        const oldPrice = reg.price_history || [];
+        const newChain = oldChain.filter(e =>
+          e.queue_id !== queueId &&
+          !(e.ebay_item_id === q.ebay_item_id && e.seller_username === q.seller_username)
+        );
+        const newPrice = oldPrice.filter(e => e.ebay_item_id !== q.ebay_item_id);
+
+        if (newChain.length === 0 && q.status === 'tagged_new') {
+          await _delete('iso_serial_registry', `id=eq.${reg.id}`);
+        } else {
+          await _patch('iso_serial_registry', `id=eq.${reg.id}`, {
+            ownership_chain: newChain,
+            price_history: newPrice,
+          });
+        }
+      }
+    }
+
+    await _patch('iso_serial_queue', `id=eq.${queueId}`, {
+      status: 'pending',
+      linked_registry_id: null,
+      tagged_at: null,
+      tagged_by: null,
+      admin_notes: null,
+    });
+
+    toast(`Released #${queueId} back to Pending`, 'ok');
+    loadSerialQueue();
+  } catch (e) {
+    toast('Release failed: ' + (e?.message || e), 'err');
+    console.warn('Release failed', e);
+  }
 }
 
 async function sqOpenReview(queueId) {

@@ -37,19 +37,32 @@ function httpJson(url, opts = {}) {
 }
 
 async function verifyAdmin(authHeader) {
-  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return { user: null, reason: 'no-bearer-header' };
+  }
   const token = authHeader.slice(7);
+  if (!token) return { user: null, reason: 'empty-token' };
+
   const me = await httpJson(`${SB_URL}/auth/v1/user`, {
     headers: { 'apikey': SB_SERVICE, 'Authorization': `Bearer ${token}` },
   });
-  if (me.status !== 200 || !me.json?.id) return null;
+  if (me.status !== 200 || !me.json?.id) {
+    return { user: null, reason: `auth-user-${me.status}`, detail: me.json?.msg || me.json?.error_description || me.raw?.slice(0,120) };
+  }
+
   const prof = await httpJson(
     `${SB_URL}/rest/v1/profiles?id=eq.${me.json.id}&select=role,is_admin&limit=1`,
     { headers: { 'apikey': SB_SERVICE, 'Authorization': `Bearer ${SB_SERVICE}` } }
   );
+  if (prof.status !== 200) {
+    return { user: null, reason: `profile-query-${prof.status}`, detail: prof.raw?.slice(0,120) };
+  }
   const p = prof.json?.[0];
-  if (!p || (p.role !== 'owner' && p.is_admin !== true)) return null;
-  return me.json;
+  if (!p) return { user: null, reason: 'no-profile-row', detail: `uid=${me.json.id}` };
+  if (p.role !== 'owner' && p.is_admin !== true) {
+    return { user: null, reason: 'not-admin', detail: `role=${p.role} is_admin=${p.is_admin}` };
+  }
+  return { user: me.json, reason: 'ok' };
 }
 
 async function fetchSkipped() {
@@ -106,8 +119,8 @@ exports.handler = async (event) => {
   if (!ANTHROPIC_KEY) return { statusCode: 500, headers: cors, body: JSON.stringify({ error: 'ANTHROPIC_API_KEY not set' }) };
   if (!SB_SERVICE)    return { statusCode: 500, headers: cors, body: JSON.stringify({ error: 'SUPABASE_SERVICE_KEY not set' }) };
 
-  const admin = await verifyAdmin(event.headers.authorization || event.headers.Authorization);
-  if (!admin) return { statusCode: 403, headers: cors, body: JSON.stringify({ error: 'Admin auth required' }) };
+  const adminCheck = await verifyAdmin(event.headers.authorization || event.headers.Authorization);
+  if (!adminCheck.user) return { statusCode: 403, headers: { ...cors, 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'Admin auth required', reason: adminCheck.reason, detail: adminCheck.detail }) };
 
   const [skipped, tagged] = await Promise.all([fetchSkipped(), fetchTagged()]);
 

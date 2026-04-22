@@ -7904,9 +7904,20 @@ async function sqAnalyzeAi() {
   btn.disabled = true; btn.textContent = 'Running…';
   meta.textContent = 'Running live AI analysis…';
   try {
+    // Refresh session — _token was captured at login and may have expired by now.
+    // Supabase auto-refreshes via getSession() when close to expiry.
+    let bearer = _token;
+    try {
+      const { data: { session } } = await _sb.auth.getSession();
+      if (session?.access_token) {
+        bearer = session.access_token;
+        _token = session.access_token;   // keep in sync
+      }
+    } catch (_) { /* fall back to stale _token */ }
+
     const res = await fetch('/.netlify/functions/iso-serial-analyze', {
       method: 'POST',
-      headers: { 'Authorization': `Bearer ${_token}`, 'Content-Type': 'application/json' },
+      headers: { 'Authorization': `Bearer ${bearer}`, 'Content-Type': 'application/json' },
       body: '{}',
     });
     const d = await res.json();

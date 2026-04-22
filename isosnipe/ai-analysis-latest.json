@@ -1,73 +1,77 @@
 {
   "blocklist_terms": [
+    "novelty card",
     "facsimile signature",
-    "NOVELTY CARD",
-    "MSIG Made in USA",
-    "Group of noted",
-    "Panini Donruss",
-    "wrong card number",
-    "wrong parallel",
-    "title and card do not match"
+    "gold edition signature",
+    "made in usa signature",
+    "signature series",
+    "almost complete set",
+    "missing card",
+    "group of noted",
+    "35th anniversary",
+    "refactor",
+    "low series set"
   ],
   "query_refinements": [
-    {
-      "player": "Ichiro Suzuki",
-      "parallel": "Autograph",
-      "negatives": [
-        "MSIG",
-        "Leaf Exhibits",
-        "facsimile",
-        "Panini Donruss"
-      ]
-    },
     {
       "player": "Ken Griffey Jr",
       "parallel": "Autograph",
       "negatives": [
-        "facsimile signature",
-        "1991 Gold Edition",
-        "group lot"
+        "facsimile",
+        "gold edition",
+        "signature card guard"
+      ]
+    },
+    {
+      "player": "Ichiro Suzuki",
+      "parallel": "Autograph",
+      "negatives": [
+        "made in usa signature",
+        "exhibits",
+        "signature series",
+        "donruss"
       ]
     },
     {
       "player": "Shohei Ohtani",
       "parallel": "Autograph",
       "negatives": [
-        "NOVELTY CARD",
-        "Print",
-        "rookie"
+        "novelty card",
+        "rookie auto print"
       ]
     },
     {
       "player": "Shohei Ohtani",
       "parallel": "Refractor",
       "negatives": [
-        "Chrome",
-        "2025",
-        "35th Anniversary"
+        "35th anniversary",
+        "2025 topps chrome",
+        "title mismatch"
       ]
     }
   ],
   "insights": [
-    "100% of rejections (6/6) had structural mismatches: facsimile signatures, wrong card numbers, wrong parallels, or misleading titles vs. card specs.",
-    "Confirmations feature legitimate vintage/modern branded cards (Topps, Authentic Images) with significant underpricing (81–82% delta vs. market).",
-    "Facsimile signature cards appear in 2/6 rejections; zero confirmations mention facsimile or printed signatures.",
-    "Rejected titles often contain excessive emojis, all-caps marketing, or generic grouping language ('Group of noted'); confirmed titles use standard set/year/card# format.",
-    "Card number/set mismatches account for 3/6 rejections; confirmed listings have accurate spec alignment.",
-    "Both confirmations are Ichiro Suzuki autographs priced under $17 vs. market ~$90; rejected Ichiro cards include false sets (Panini 2024, Leaf 2004 MSIG)."
+    "Facsimile signatures are automatic rejects (2/8 rejections, 25%)—avoid printed/reproduced autographs.",
+    "Confirmed snipes feature authentic autographs from established products (Topps Tribute, Authentic Images).",
+    "Set sales and incomplete lots are not snipes (1/8 rejections explicitly noted missing cards).",
+    "Wrong card number, wrong set, and wrong parallel parallel account for 37.5% of rejections (3/8).",
+    "Novelty, memorial, or modern reprints flagged as rejects; vintage authentic autos confirmed as snipeable.",
+    "Confirmed snipes show >81% delta (real underpricing); rejections lack pricing context or indicate overpriced lots.",
+    "Emoji-heavy titles and vague descriptors ('group of noted') correlate with rejections.",
+    "Title-to-card mismatch (wrong parallel, wrong year) is a critical rejection signal across 2/8 listings."
   ],
   "rejection_breakdown": {
+    "other": 3,
     "facsimile_signature": 2,
     "wrong_card_num": 2,
     "wrong_parallel": 1,
-    "other": 2,
-    "wrong_set": 1,
-    "wrong_year": 1
+    "wrong_year": 1,
+    "wrong_set": 1
   },
   "_meta": {
-    "rejections_analyzed": 6,
+    "rejections_analyzed": 8,
     "confirmations_analyzed": 2,
     "model": "claude-haiku-4-5",
-    "analyzed_at": "2026-04-22T11:03:09.753Z"
+    "analyzed_at": "2026-04-22T22:45:42.775Z"
   }
 }

@@ -2425,6 +2425,22 @@ tr:hover td { background: var(--bg); }
         <div class="panel-sub">Crawler output → manual review → permanent provenance. Data is admin-only and not exposed to users.</div>
       </div>
 
+      <!-- ───── AI LEARNING STATS (is it actually learning?) ───── -->
+      <div id="sqStatsSection" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;padding:14px 18px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+          <div>
+            <div style="font-size:13px;font-weight:800;color:var(--text2);letter-spacing:1px;text-transform:uppercase">📊 AI Learning Stats</div>
+            <div id="sqStatsMeta" style="font-size:11px;color:var(--text3);margin-top:2px">Loading…</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center">
+            <div style="text-align:right"><div style="font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase">AGREEMENT</div><div id="sqStatsAgreement" style="font-size:24px;font-weight:800;color:var(--green);line-height:1">—</div></div>
+            <div id="sqStatsDelta" style="font-size:11px;color:var(--text3);font-weight:700;letter-spacing:0.5px;min-width:80px"></div>
+          </div>
+        </div>
+        <div id="sqStatsRow" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:10px"></div>
+        <div id="sqStatsChart" style="margin-top:4px"></div>
+      </div>
+
       <!-- ───── AI LEARN PANEL (Serial Queue) ───── -->
       <div id="sqAiSection" style="background:var(--surface);border:1px solid var(--purple);border-radius:var(--radius);margin-bottom:16px;overflow:hidden">
         <div style="background:linear-gradient(135deg,var(--purple-light),#fff);padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
@@ -7930,7 +7946,90 @@ function sqRenderAi(d) {
   `;
 }
 
+// ── AI Learning Stats — "is the AI getting smarter?" ──
+async function sqLoadLearningStats() {
+  const metaEl = document.getElementById('sqStatsMeta');
+  const agEl   = document.getElementById('sqStatsAgreement');
+  const delEl  = document.getElementById('sqStatsDelta');
+  const rowEl  = document.getElementById('sqStatsRow');
+  const chEl   = document.getElementById('sqStatsChart');
+  if (!agEl) return;
+  try {
+    const rows = await _get('iso_serial_ai_stats', 'select=*&order=snapshot_date.desc&limit=30');
+    if (!rows || rows.length === 0){
+      if (metaEl) metaEl.textContent = 'No snapshots yet — stats write after the next crawler run (or run iso-serial/compute-stats.js locally).';
+      if (agEl)   agEl.textContent = '—';
+      if (rowEl)  rowEl.innerHTML = '';
+      if (chEl)   chEl.innerHTML = '';
+      return;
+    }
+    const series = rows.slice().reverse(); // oldest → newest
+    const latest = series[series.length - 1];
+    const weekAgo = series.find(r => {
+      const d = (new Date(latest.snapshot_date) - new Date(r.snapshot_date)) / 86400000;
+      return d >= 6 && d <= 9;
+    }) || series[0];
+    const deltaPct = latest.agreement_pct - (weekAgo?.agreement_pct || 0);
+
+    agEl.textContent = latest.agreement_pct + '%';
+    agEl.style.color = latest.agreement_pct >= 70 ? 'var(--green)' : latest.agreement_pct >= 50 ? 'var(--yellow)' : 'var(--red)';
+    if (delEl) {
+      if (Math.abs(deltaPct) < 0.5)      delEl.innerHTML = `<span style="color:var(--text3)">▬ flat vs 7d</span>`;
+      else if (deltaPct > 0)             delEl.innerHTML = `<span style="color:var(--green)">▲ +${deltaPct.toFixed(1)}% vs 7d</span>`;
+      else                               delEl.innerHTML = `<span style="color:var(--red)">▼ ${deltaPct.toFixed(1)}% vs 7d</span>`;
+    }
+    if (metaEl) metaEl.textContent = `${rows.length} days of data · latest ${latest.snapshot_date} · ${latest.agreement_count + latest.disagreement_count} decisions scored`;
+
+    // Breakdown tiles
+    if (rowEl) {
+      const tile = (k,v,color) => `<div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 10px"><div style="font-size:9.5px;color:var(--text3);letter-spacing:1px;text-transform:uppercase">${k}</div><div style="font-size:18px;font-weight:800;color:${color||'var(--text1)'};margin-top:2px">${v}</div></div>`;
+      rowEl.innerHTML = [
+        tile('Classifier calls', latest.classifier_calls),
+        tile('Agreements',       latest.agreement_count, 'var(--green)'),
+        tile('Disagreements',    latest.disagreement_count, 'var(--red)'),
+        tile('Tagged today',     latest.tagged_count),
+        tile('Skipped today',    latest.skipped_count),
+        tile('Pending',          latest.pending_count, 'var(--yellow)'),
+        tile('AI conf H/M/L',    `${latest.confidence_high}/${latest.confidence_medium}/${latest.confidence_low}`),
+      ].join('');
+    }
+
+    // Sparkline of agreement_pct over time
+    if (chEl && series.length >= 2) {
+      const W = 800, H = 50, pad = 4;
+      const points = series.map(s => Number(s.agreement_pct));
+      const min = 0, max = 100;          // agreement pct bounded
+      const pts = points.map((v,i) => {
+        const x = pad + (i / (points.length - 1)) * (W - pad*2);
+        const y = H - pad - ((v - min) / (max - min)) * (H - pad*2);
+        return [x, y];
+      });
+      const path = 'M ' + pts.map(p=>p.join(',')).join(' L ');
+      const area = path + ` L ${W-pad},${H-pad} L ${pad},${H-pad} Z`;
+      const col  = deltaPct > 0 ? '#00A86B' : deltaPct < 0 ? '#C23B22' : '#888';
+      chEl.innerHTML = `
+        <div style="font-size:10px;letter-spacing:1px;color:var(--text3);text-transform:uppercase;margin-bottom:2px">AGREEMENT % — ${series.length}-DAY TREND</div>
+        <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:50px;display:block">
+          <defs><linearGradient id="sqStatsSpg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity="0.3"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+          <line x1="${pad}" y1="${H-pad-((70/100)*(H-pad*2))}" x2="${W-pad}" y2="${H-pad-((70/100)*(H-pad*2))}" stroke="#ccc" stroke-dasharray="3 3" stroke-width="0.5"/>
+          <path d="${area}" fill="url(#sqStatsSpg)"/>
+          <path d="${path}" fill="none" stroke="${col}" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);margin-top:2px;letter-spacing:1px">
+          <span>${series[0].snapshot_date}</span>
+          <span style="color:#ccc">--- 70% target ---</span>
+          <span>${latest.snapshot_date}</span>
+        </div>`;
+    }
+  } catch (e) {
+    if (metaEl) metaEl.textContent = 'Stats table missing — run iso-serial/stats-schema.sql in Supabase first.';
+    if (agEl)   agEl.textContent = '—';
+    console.warn('AI stats load failed:', e);
+  }
+}
+
 async function loadSerialQueue() {
+  sqLoadLearningStats();   // fire async, don't block queue render
   try {
     // Pull queue (all rows; admin can filter in UI)
     _sqQueue = await _get('iso_serial_queue', 'select=*&order=crawled_at.desc&limit=500');

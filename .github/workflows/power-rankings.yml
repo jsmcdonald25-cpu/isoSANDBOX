@@ -1,0 +1,35 @@
+name: Power Rankings Refresh
+
+# Daily at 10:00 UTC (~5am CDT during DST) — replaces the Netlify Scheduled
+# Function that stopped firing reliably on 2026-04-19. This is a thin
+# HTTP trigger: GH Actions runs, POSTs to the Netlify function, function
+# does the heavy lifting (MLB API, ISO scoring, Supabase writes).
+
+on:
+  schedule:
+    - cron: '0 10 * * *'
+  workflow_dispatch: {}
+
+concurrency:
+  group: power-rankings-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Trigger power-rankings-refresh
+        run: |
+          echo "Hitting https://isosandbox.com/.netlify/functions/power-rankings-refresh"
+          HTTP_CODE=$(curl -s -o /tmp/response.json -w "%{http_code}" -X POST \
+            "https://isosandbox.com/.netlify/functions/power-rankings-refresh" \
+            --max-time 120)
+          echo "HTTP status: $HTTP_CODE"
+          echo "Response:"
+          cat /tmp/response.json || true
+          echo ""
+          if [ "$HTTP_CODE" -ne 200 ]; then
+            exit 1
+          fi

@@ -595,6 +595,10 @@ tr:hover td { background: var(--bg); }
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
       Market Pricing
     </div>
+    <div class="nav-item" onclick="nav('prefresh',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Power Rankings
+    </div>
     <div class="nav-item" onclick="nav('isosnipe',this);loadIsoSnipe()" style="color:var(--green)">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
       ISOsnipe
@@ -2048,6 +2052,24 @@ tr:hover td { background: var(--bg); }
       </div>
     </div>
 
+    <!-- ── POWER RANKINGS (manual refresh) ── -->
+    <div class="panel" id="panel-prefresh">
+      <div class="panel-header">
+        <div class="panel-eyebrow">Platform</div>
+        <div class="panel-title">Power Rankings</div>
+        <div class="panel-sub">Daily refresh pulls MLB stats + eBay pricing, writes to power_rankings_cache. Auto-runs at 10:00 UTC via GH Actions. Use this button to force a refresh now.</div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-title">Latest Snapshot</div>
+        <div id="prefresh-status" style="font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--text2);margin-bottom:14px">Loading…</div>
+        <button id="prefreshBtn" onclick="prefreshRun()" style="padding:12px 20px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius);font-weight:700;font-size:13px;cursor:pointer;letter-spacing:0.5px">
+          ↻ Refresh Power Rankings Now
+        </button>
+        <div id="prefresh-log" style="margin-top:14px;font-family:ui-monospace,SFMono-Regular,monospace;font-size:11px;color:var(--text3);white-space:pre-wrap;max-height:200px;overflow-y:auto"></div>
+      </div>
+    </div>
+
     <!-- ── MARKET PRICING ── -->
     <div class="panel" id="panel-market">
       <div class="panel-header">
@@ -3094,6 +3116,8 @@ function nav(id, el) {
   // Close mobile sidebar
   document.querySelector('.sidebar')?.classList.remove('open');
   document.querySelector('.mob-overlay')?.classList.remove('open');
+  // Per-panel load hooks
+  if (id === 'prefresh') prefreshLoadStatus();
 }
 
 // ── OVERVIEW ──
@@ -5273,6 +5297,52 @@ function dedupCancel() {
   document.getElementById('dedup-status').style.display = 'none';
   document.getElementById('dedup-log').style.display = 'none';
   document.getElementById('dedup-progress').style.display = 'none';
+}
+
+// ── POWER RANKINGS MANUAL REFRESH ────────────────────────────
+async function prefreshLoadStatus() {
+  const el = document.getElementById('prefresh-status');
+  if (!el) return;
+  try {
+    const rows = await _get('power_rankings_cache', 'select=data_date&order=data_date.desc&limit=1');
+    if (rows && rows[0]) {
+      const d = new Date(rows[0].data_date + 'T12:00:00');
+      const today = new Date().toISOString().slice(0,10);
+      const isToday = rows[0].data_date === today;
+      el.innerHTML = `Latest: <b>${rows[0].data_date}</b> ${isToday ? '<span style="color:var(--green);font-weight:700">· current</span>' : '<span style="color:var(--red);font-weight:700">· STALE — refresh needed</span>'}`;
+    } else {
+      el.innerHTML = '<span style="color:var(--red)">No data yet — click refresh to populate.</span>';
+    }
+  } catch (e) {
+    el.textContent = 'Status load failed: ' + e.message;
+  }
+}
+
+async function prefreshRun() {
+  const btn = document.getElementById('prefreshBtn');
+  const log = document.getElementById('prefresh-log');
+  btn.disabled = true;
+  btn.textContent = '⏳ Running…';
+  log.textContent = 'POST /.netlify/functions/power-rankings-refresh\n';
+  const started = Date.now();
+  try {
+    const res = await fetch('/.netlify/functions/power-rankings-refresh', { method: 'POST' });
+    const d = await res.json();
+    const secs = ((Date.now() - started)/1000).toFixed(1);
+    if (!res.ok) throw new Error(d.error || `HTTP ${res.status}`);
+    log.textContent += `\n✔ DONE in ${secs}s\nDate:     ${d.date}\nRows:     ${d.total}\nHitters:  ${d.hitters}\nPitchers: ${d.pitchers}`;
+    if (d.profiles) {
+      log.textContent += `\n\nPlayer profiles: ${d.profiles.total||0} total · BUY ${d.profiles.buy||0} · SELL ${d.profiles.sell||0}`;
+    }
+    toast(`Power Rankings refreshed · ${d.total} rows`, 'ok');
+    prefreshLoadStatus();
+  } catch (e) {
+    log.textContent += `\n✘ FAILED: ${e.message}`;
+    toast('Refresh failed: ' + e.message, 'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '↻ Refresh Power Rankings Now';
+  }
 }
 
 // ── ADMIN ACTION LOG ──────────────────────────────────────────

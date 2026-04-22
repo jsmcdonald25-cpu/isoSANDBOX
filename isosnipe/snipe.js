@@ -24,11 +24,12 @@ const CONFIG = {
 };
 
 // ─── TARGET CARDS BY SPECIFIC CARD + PARALLEL ───────────
+// TARGETS are loaded from Supabase table `isosnipe_targets` at scan time
+// (migrated from the hardcoded list 2026-04-22). Admin manages via the
+// "🎯 Targets" panel in admin.html. The const below is kept as a local
+// fallback ONLY if Supabase is unreachable at scan start.
 // marketAvg = rough comp for that specific card version
-// NOTE: all "(any)" catch-alls were removed 2026-04-20 — they polluted market avg
-// by mixing $5 facsimile promos with $500 graded patch autos, producing fake snipes.
-// Specific cards with real comps only from here on.
-const TARGETS = [
+const TARGETS_FALLBACK = [
   // ── KEN GRIFFEY JR ──
   { player:'Ken Griffey Jr', card:'1989 Upper Deck #1 Rookie', parallel:'Base', marketAvg:45,
     correct:['1989 Upper Deck Ken Griffey Jr rookie #1','Griffey Jr 1989 UD rookie'],
@@ -131,6 +132,59 @@ const TARGETS = [
     correct:['Tanner Murray 1st Bowman','Murray Bowman 1st'],
     misspellings:['Tanner Murry bowman','Tanner Murray bowmen','Taner Murray bowman','Murray 1st bowmen'] },
 ];
+
+// ─── LOAD TARGETS FROM SUPABASE ─────────────────────────
+// Pulled at scan start from isosnipe_targets (is_active=true). Falls back to
+// the hardcoded TARGETS_FALLBACK only if the DB call fails or returns zero rows,
+// so we never run a scan with no targets.
+async function loadTargets() {
+  if (!CONFIG.SUPABASE_KEY) {
+    console.log('  [warn] No SUPABASE_KEY — using hardcoded fallback targets');
+    return TARGETS_FALLBACK;
+  }
+  try {
+    const url = `${CONFIG.SUPABASE_URL}/rest/v1/isosnipe_targets?is_active=eq.true&select=id,player,card,parallel,market_avg,correct_searches,misspellings`;
+    const res = await fetch(url, {
+      headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}` },
+    });
+    if (!res.ok) {
+      console.log(`  [warn] Targets fetch ${res.status} — using hardcoded fallback`);
+      return TARGETS_FALLBACK;
+    }
+    const rows = await res.json();
+    if (!rows || rows.length === 0) {
+      console.log('  [warn] Targets table empty — using hardcoded fallback');
+      return TARGETS_FALLBACK;
+    }
+    return rows.map(r => ({
+      _id: r.id,
+      player: r.player,
+      card: r.card,
+      parallel: r.parallel || 'Base',
+      marketAvg: parseFloat(r.market_avg),
+      correct: Array.isArray(r.correct_searches) ? r.correct_searches : [],
+      misspellings: Array.isArray(r.misspellings) ? r.misspellings : [],
+    }));
+  } catch (e) {
+    console.log(`  [warn] Targets fetch failed: ${e.message} — using hardcoded fallback`);
+    return TARGETS_FALLBACK;
+  }
+}
+
+async function stampLastScanned(targetIds) {
+  if (!CONFIG.SUPABASE_KEY || !targetIds.length) return;
+  try {
+    await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/isosnipe_targets?id=in.(${targetIds.join(',')})`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': CONFIG.SUPABASE_KEY,
+        'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ last_scanned_at: new Date().toISOString() }),
+    });
+  } catch (_) { /* non-fatal */ }
+}
 
 // ─── EBAY AUTH ──────────────────────────────────────────
 async function getEbayToken() {
@@ -314,6 +368,9 @@ async function fetchAllDetails(token, hits, concurrency) {
 async function run() {
   console.log('\n=== ISOsnipe v2.0 ===');
   console.log(`Pulling ALL results $${CONFIG.MIN_BUY}-$${CONFIG.MAX_BUY} — dashboard filters live`);
+
+  console.log('Loading targets from Supabase…');
+  const TARGETS = await loadTargets();
   console.log(`Targets: ${TARGETS.length} card/parallel combos across ${[...new Set(TARGETS.map(t=>t.player))].length} players\n`);
 
   let token;
@@ -446,6 +503,10 @@ async function run() {
 
   console.log(`\nData saved: ${resultsFile}`);
   console.log(`Open isosnipe/dashboard.html in Chrome`);
+
+  // Stamp last_scanned_at on the Supabase target rows we actually processed.
+  const scannedIds = TARGETS.map(t => t._id).filter(Boolean);
+  if (scannedIds.length) await stampLastScanned(scannedIds);
 }
 
 run().catch(e => { console.error('Fatal:', e); process.exit(1); });

@@ -1,75 +1,73 @@
 {
   "blocklist_terms": [
     "facsimile signature",
-    "novelty card",
-    "made in usa signature",
-    "msig",
-    "gold edition signature",
-    "group of noted",
-    "signature series",
-    "print",
-    "refactor"
+    "NOVELTY CARD",
+    "MSIG Made in USA",
+    "Group of noted",
+    "Panini Donruss",
+    "wrong card number",
+    "wrong parallel",
+    "title and card do not match"
   ],
   "query_refinements": [
     {
       "player": "Ichiro Suzuki",
       "parallel": "Autograph",
       "negatives": [
+        "MSIG",
+        "Leaf Exhibits",
         "facsimile",
-        "msig",
-        "made in usa",
-        "signature series",
-        "panini donruss"
+        "Panini Donruss"
       ]
     },
     {
       "player": "Ken Griffey Jr",
       "parallel": "Autograph",
       "negatives": [
-        "facsimile",
-        "gold edition",
-        "1991"
+        "facsimile signature",
+        "1991 Gold Edition",
+        "group lot"
       ]
     },
     {
       "player": "Shohei Ohtani",
       "parallel": "Autograph",
       "negatives": [
-        "novelty",
-        "print",
-        "rookie auto print"
+        "NOVELTY CARD",
+        "Print",
+        "rookie"
       ]
     },
     {
       "player": "Shohei Ohtani",
       "parallel": "Refractor",
       "negatives": [
-        "refactor",
-        "35th anniversary",
-        "2025"
+        "Chrome",
+        "2025",
+        "35th Anniversary"
       ]
     }
   ],
   "insights": [
-    "Facsimile signatures are the primary rejection driver (2/6 = 33% of rejections); confirmed listings avoid printed/mass-produced signature markers.",
-    "Title-card mismatches and wrong parallel/year combinations rejected 2/6 listings; confirmations have matching titles and accurate set years.",
-    "Confirmed snipes feature genuine autographs from established sets (Topps Tribute, Authentic Images) with >80% price delta vs. market; rejections mixed novelty/facsimile products.",
-    "Emojis and hype language (🔥🚀⭐️) correlate with rejections; confirmed listings use neutral, descriptive titles with card numbers and parallels.",
-    "Low-quality/vague titles ('Group of noted Baseball Collecting Cards') indicate wrong_card_num rejections; real snipes specify exact card numbers and years.",
-    "2024+ Panini Donruss entries rejected (wrong_set + wrong_card_num); market favors vintage/modern Topps autographs with clear authentication.",
-    "Rejection reason_code distribution: facsimile_signature=2, wrong_card_num=2, other=1, wrong_parallel=1; no single dominant error suggests need for multi-layered blocklist.",
-    "Confirmed listings leverage underpriced vintage/modern reprints with clear pedigree; rejections attempt to pass facsimiles or misrepresented parallels as real pulls."
+    "100% of rejections (6/6) had structural mismatches: facsimile signatures, wrong card numbers, wrong parallels, or misleading titles vs. card specs.",
+    "Confirmations feature legitimate vintage/modern branded cards (Topps, Authentic Images) with significant underpricing (81–82% delta vs. market).",
+    "Facsimile signature cards appear in 2/6 rejections; zero confirmations mention facsimile or printed signatures.",
+    "Rejected titles often contain excessive emojis, all-caps marketing, or generic grouping language ('Group of noted'); confirmed titles use standard set/year/card# format.",
+    "Card number/set mismatches account for 3/6 rejections; confirmed listings have accurate spec alignment.",
+    "Both confirmations are Ichiro Suzuki autographs priced under $17 vs. market ~$90; rejected Ichiro cards include false sets (Panini 2024, Leaf 2004 MSIG)."
   ],
   "rejection_breakdown": {
     "facsimile_signature": 2,
     "wrong_card_num": 2,
-    "other": 1,
-    "wrong_parallel": 1
+    "wrong_parallel": 1,
+    "other": 2,
+    "wrong_set": 1,
+    "wrong_year": 1
   },
   "_meta": {
     "rejections_analyzed": 6,
     "confirmations_analyzed": 2,
     "model": "claude-haiku-4-5",
-    "analyzed_at": "2026-04-21T22:37:29.002Z"
+    "analyzed_at": "2026-04-22T11:03:09.753Z"
   }
 }

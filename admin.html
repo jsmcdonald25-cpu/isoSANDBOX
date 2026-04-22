@@ -7910,12 +7910,19 @@ async function sqAnalyzeAi() {
       body: '{}',
     });
     const d = await res.json();
-    if (!res.ok) throw new Error(d.error || d.detail || `HTTP ${res.status}`);
+    if (!res.ok) {
+      // Surface verbose diagnostics the function returns (reason, detail) so we
+      // can tell WHICH of the 4 auth gates actually tripped.
+      const parts = [d.error || `HTTP ${res.status}`];
+      if (d.reason) parts.push(`reason=${d.reason}`);
+      if (d.detail) parts.push(`detail=${d.detail}`);
+      throw new Error(parts.join(' · '));
+    }
     sqRenderAi(d);
     toast('AI analysis complete', 'success');
   } catch (e) {
     toast('AI run failed: ' + e.message, 'error');
-    meta.textContent = 'Last attempt failed: ' + (e.message || '').slice(0, 160);
+    meta.textContent = 'Last attempt failed: ' + (e.message || '').slice(0, 240);
   } finally {
     btn.disabled = false; btn.textContent = '▶ Run analysis';
   }

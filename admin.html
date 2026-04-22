@@ -7736,12 +7736,10 @@ async function sntLookup(){
   if (!input) { errEl.textContent = 'Paste an eBay URL or item number first.'; errEl.style.display = 'block'; return; }
   btn.disabled = true; btn.textContent = 'Looking up…';
   try {
-    const sess = await sb.auth.getSession();
-    const tok = sess?.data?.session?.access_token;
-    if (!tok) throw new Error('Not signed in');
+    if (!_token) throw new Error('Not signed in');
     const res = await fetch('/.netlify/functions/isosnipe-parse-target', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + _token },
       body: JSON.stringify({ itemInput: input }),
     });
     const data = await res.json();

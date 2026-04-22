@@ -1,4 +1,4 @@
-const CACHE_NAME = 'grailiso-shell-v19';
+const CACHE_NAME = 'grailiso-shell-v20';
 const SHELL_ASSETS = ['/dashboard.html', '/manifest.json', '/icons/icon-192.png', '/icons/icon-512.png',
   '/isograding-scan.html', '/js/isograding-engine.js', '/js/jsqr.min.js', '/js/qrcode-generator.min.js'];
 

@@ -70,10 +70,35 @@ You receive: a listing title, optional description, and a set hint from the sear
 ## 2026 Topps Heritage Baseball
 - Base set: cards #1–400, retro 1977 Topps design (NOT 1989 — 2026 Heritage uses 1977 template)
 - Includes Short Prints (SP) and Super Short Prints (SSP) at higher numbers
-- Common parallels: Chrome Red Refractor /5 (color-matched borders), Red Border Chrome /5, Red Foil /5, Black Border /77, Color of the Year /77, Orange Chrome /25, Gold Refractor /50, Blue Chrome /150
-- "Flip Stock" — Heritage SSP variant printed on flipped cardstock, almost always /5
-- Insert subsets: Real One Autographs (ROA-XX), Real One Auto Chrome (ROAC-XX), Real One Auto Red Refractor (ROAC-XX /5), Real One Relic (ROR-XX), Ready And Action (RA-XX), Victory Leaders (#1–10 dual-player cards), Stolen Base Leaders, Color of the Year Variations, World Series subsets, 1977 Buybacks
-- Common color-match parallels: Orange Chrome /25, Red Chrome /5, Black /77
+
+### ★ HERITAGE /5 — ONLY ONE PARALLEL EXISTS ★
+The only Heritage /5 parallel we track is **Chrome Red Border** (print run /5).
+Sellers write this parallel under many different strings — they are ALL wrong except
+the exact phrase "Chrome Red Border". Always normalize to parallel_name =
+"Chrome Red Border" whenever a Heritage /5 listing mentions red in any form.
+
+Seller writes                               →  correct parallel_name
+"Red Refractor /5"                          →  "Chrome Red Border"
+"Chrome Red Refractor /5"                   →  "Chrome Red Border"
+"Red Chrome Refractor 4/5"                  →  "Chrome Red Border"
+"Red Chrome /5"                             →  "Chrome Red Border"
+"Red Border Chrome /5"                      →  "Chrome Red Border"
+"Red Bordered Chrome /5"                    →  "Chrome Red Border"
+"Chrome Red Border /5"                      →  "Chrome Red Border"  (correctly labeled)
+"Red /5" (no other cue)                     →  "Chrome Red Border"
+
+There is NO "Chrome Red Refractor /5", NO "Red Refractor /5", NO "Red Border Chrome /5"
+as a distinct parallel — they all collapse to Chrome Red Border.
+
+### Other /5 Heritage variant (base stock, NOT Chrome)
+- Flip Stock /5 — Heritage SSP printed on flipped cardstock, unstamped (edition_num = null).
+  Recognizable by "Flip Stock" or "SSP" language paired with /5. Distinct from Chrome Red Border.
+
+### Heritage insert subsets (not base parallels)
+- Real One Autographs (ROA-XX), Real One Auto Chrome (ROAC-XX), Real One Auto Red Refractor (ROAC-XX /5)
+- Real One Relic (ROR-XX), Ready And Action (RA-XX)
+- Victory Leaders (#1–10 dual-player cards), Stolen Base Leaders
+- Color of the Year /77 variations, World Series subsets, 1977 Buybacks
 
 # WHAT COUNTS AS "SERIALIZED"
 
@@ -180,9 +205,9 @@ Return ONLY a JSON object matching the schema. No markdown fences, no preamble, 
 
 # WORKED EXAMPLES
 
-Example 1 — Heritage Red Chrome /5, copy unknown:
+Example 1 — Heritage /5 (seller mislabeled as "Chrome Red Refractor" — normalize to Chrome Red Border):
 INPUT: "2026 Topps Heritage Justin Martinez Chrome Red Refractor 4/5 #263"
-OUTPUT: {"is_serialized":true,"print_run":5,"edition_num":4,"set_name":"Heritage","player_name":"Justin Martinez","card_number":"263","parallel_name":"Chrome Red Refractor","auto_type":"none","is_inscribed":false,"inscription_text":null,"is_multi_card_lot":false,"is_insert_subset":false,"insert_subset_name":null,"reject_reason":"none","confidence":"high","notes":null}
+OUTPUT: {"is_serialized":true,"print_run":5,"edition_num":4,"set_name":"Heritage","player_name":"Justin Martinez","card_number":"263","parallel_name":"Chrome Red Border","auto_type":"none","is_inscribed":false,"inscription_text":null,"is_multi_card_lot":false,"is_insert_subset":false,"insert_subset_name":null,"reject_reason":"none","confidence":"high","notes":"seller wrote 'Chrome Red Refractor' but the only Heritage /5 parallel is Chrome Red Border — normalized"}
 
 Example 2 — Heritage Flip Stock SSP, copy not stated:
 INPUT: "2026 Topps Heritage Bryan Reynolds FLIP STOCK /5 RARE SSP Pirates"

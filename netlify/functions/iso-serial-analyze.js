@@ -36,6 +36,15 @@ function httpJson(url, opts = {}) {
   });
 }
 
+// Decode the project ref from a JWT without verifying signature.
+// Used to detect env-var mismatch (service key from wrong project).
+function _jwtRef(tok) {
+  try {
+    const payload = JSON.parse(Buffer.from((tok || '').split('.')[1] || '', 'base64').toString());
+    return payload.ref || null;
+  } catch (_) { return null; }
+}
+
 async function verifyAdmin(authHeader) {
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return { user: null, reason: 'no-bearer-header' };
@@ -47,7 +56,17 @@ async function verifyAdmin(authHeader) {
     headers: { 'apikey': SB_SERVICE, 'Authorization': `Bearer ${token}` },
   });
   if (me.status !== 200 || !me.json?.id) {
-    return { user: null, reason: `auth-user-${me.status}`, detail: me.json?.msg || me.json?.error_description || me.raw?.slice(0,120) };
+    const urlRef = (SB_URL || '').match(/https?:\/\/([^.]+)/)?.[1];
+    return {
+      user: null,
+      reason: `auth-user-${me.status}`,
+      detail: me.json?.msg || me.json?.error_description || me.raw?.slice(0,120),
+      diag: {
+        url_ref:        urlRef,
+        service_ref:    _jwtRef(SB_SERVICE),
+        user_token_ref: _jwtRef(token),
+      },
+    };
   }
 
   const prof = await httpJson(
@@ -120,7 +139,12 @@ exports.handler = async (event) => {
   if (!SB_SERVICE)    return { statusCode: 500, headers: cors, body: JSON.stringify({ error: 'SUPABASE_SERVICE_KEY not set' }) };
 
   const adminCheck = await verifyAdmin(event.headers.authorization || event.headers.Authorization);
-  if (!adminCheck.user) return { statusCode: 403, headers: { ...cors, 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'Admin auth required', reason: adminCheck.reason, detail: adminCheck.detail }) };
+  if (!adminCheck.user) return { statusCode: 403, headers: { ...cors, 'Content-Type': 'application/json' }, body: JSON.stringify({
+    error: 'Admin auth required',
+    reason: adminCheck.reason,
+    detail: adminCheck.detail,
+    diag:   adminCheck.diag,
+  }) };
 
   const [skipped, tagged] = await Promise.all([fetchSkipped(), fetchTagged()]);
 

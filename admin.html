@@ -8003,6 +8003,7 @@ async function sqAnalyzeAi() {
       const parts = [d.error || `HTTP ${res.status}`];
       if (d.reason) parts.push(`reason=${d.reason}`);
       if (d.detail) parts.push(`detail=${d.detail}`);
+      if (d.diag)   parts.push(`diag=${JSON.stringify(d.diag)}`);
       throw new Error(parts.join(' · '));
     }
     sqRenderAi(d);

@@ -39,17 +39,14 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE) {
 // rather than autos.
 const SETS = [
   {
-    label: 'Series 1',
-    queries: [
-      '2026 Topps Series 1 /5',
-      '2026 Topps Series 1 #/5',
-    ],
-  },
-  {
     label: 'Heritage',
     queries: [
       '2026 Topps Heritage /5',
       '2026 Topps Heritage #/5',
+      '2026 Topps Heritage /10',
+      '2026 Topps Heritage #/10',
+      '2026 Topps Heritage /25',
+      '2026 Topps Heritage #/25',
     ],
   },
 ];

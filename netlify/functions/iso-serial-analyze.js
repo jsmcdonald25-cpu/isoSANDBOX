@@ -180,7 +180,15 @@ exports.handler = async (event) => {
       }],
     });
     const txt = (resp.content || []).find(c => c.type === 'text')?.text || '';
-    const cleaned = txt.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+    // Claude sometimes wraps the JSON in ``` fences or appends extra commentary
+    // after the closing brace. Extract just the outermost {...} block by finding
+    // the first '{' and the LAST '}' in the response.
+    let cleaned = txt.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+    const first = cleaned.indexOf('{');
+    const last  = cleaned.lastIndexOf('}');
+    if (first !== -1 && last !== -1 && last > first) {
+      cleaned = cleaned.slice(first, last + 1);
+    }
     result = JSON.parse(cleaned);
   } catch (e) {
     return { statusCode: 502, headers: { ...cors, 'Content-Type': 'application/json' },

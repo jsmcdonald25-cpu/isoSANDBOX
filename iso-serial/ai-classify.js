@@ -297,6 +297,29 @@ async function fetchSkippedExamples() {
   }
 }
 
+// Phase 2: recent admin corrections → injected as "ADMIN CORRECTION" examples
+// so the classifier learns what admin actually picks for each kind of listing.
+const CORRECTIONS_LIMIT = 15;
+async function fetchCorrectionExamples() {
+  if (!SB_URL || !SB_SERVICE) return [];
+  const url = `${SB_URL}/rest/v1/iso_serial_ai_corrections`
+    + `?fields_changed=gt.0`              // only rows where admin actually fixed something
+    + `&listing_title=not.is.null`
+    + `&select=listing_title,set_name_guess,ai_snapshot,admin_snapshot,diff`
+    + `&order=created_at.desc`
+    + `&limit=${CORRECTIONS_LIMIT}`;
+  try {
+    const res = await fetch(url, {
+      headers: { apikey: SB_SERVICE, Authorization: `Bearer ${SB_SERVICE}` },
+    });
+    if (!res.ok) return [];
+    const rows = await res.json();
+    return Array.isArray(rows) ? rows : [];
+  } catch (_) {
+    return [];
+  }
+}
+
 function formatExamplesBlock(rows) {
   if (!rows || rows.length === 0) return '';
   const lines = rows.map((r, i) => {
@@ -319,15 +342,47 @@ ${lines}
 End of admin-rejected examples. Apply these patterns to the listing you classify next.`;
 }
 
+// Format admin corrections as "the model said X, admin changed it to Y" examples.
+// Strongest teaching signal — shows exact admin preference for real seller wording.
+function formatCorrectionsBlock(rows){
+  if (!rows || rows.length === 0) return '';
+  const entries = rows.map((r, i) => {
+    const title = (r.listing_title || '').replace(/\s+/g,' ').trim().slice(0,200);
+    const diff = r.diff || {};
+    const fixes = Object.entries(diff)
+      .filter(([k]) => !k.startsWith('_') && k !== 'edition_num') // skip internal + admin-fill-ins
+      .slice(0, 6)  // keep compact
+      .map(([k, v]) => `       ${k}: "${v.before || '(empty)'}" → "${v.after || '(empty)'}"`)
+      .join('\n');
+    if (!fixes) return null;
+    return `${i + 1}. TITLE: "${title}"\n   SET: ${r.set_name_guess || 'unknown'}\n   ADMIN CORRECTED:\n${fixes}`;
+  }).filter(Boolean);
+  if (entries.length === 0) return '';
+  return `\n\n# LEARN FROM ADMIN CORRECTIONS
+
+Below are ${entries.length} recent cases where YOUR earlier classification was wrong and the
+admin fixed specific fields. Study the before/after — the "after" column is the correct answer
+for that kind of listing. Apply the same correction rule when you see similar titles again.
+
+${entries.join('\n\n')}
+
+End of admin corrections.`;
+}
+
 async function getSystemPrompt() {
   const fresh = _cachedPrompt && (Date.now() - _examplesLoaded) < EXAMPLES_TTL_MS;
   if (fresh) return _cachedPrompt;
 
-  const rows = await fetchSkippedExamples();
-  _cachedPrompt = BASE_SYSTEM_PROMPT + formatExamplesBlock(rows);
+  const [skippedRows, correctionRows] = await Promise.all([
+    fetchSkippedExamples(),
+    fetchCorrectionExamples(),
+  ]);
+  _cachedPrompt = BASE_SYSTEM_PROMPT
+    + formatExamplesBlock(skippedRows)
+    + formatCorrectionsBlock(correctionRows);
   _examplesLoaded = Date.now();
-  if (rows.length > 0) {
-    console.log(`  AI classifier: loaded ${rows.length} admin-rejected examples into prompt`);
+  if (skippedRows.length > 0 || correctionRows.length > 0) {
+    console.log(`  AI classifier: loaded ${skippedRows.length} skipped + ${correctionRows.length} correction examples into prompt`);
   }
   return _cachedPrompt;
 }

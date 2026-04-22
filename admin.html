@@ -2698,8 +2698,9 @@ tr:hover td { background: var(--bg); }
             <div id="sqModalAiBanner" style="display:none;background:var(--purple-light);border:1px solid var(--purple);border-radius:var(--radius);padding:12px;margin-bottom:12px">
               <div style="font-size:11px;font-weight:700;color:var(--purple);letter-spacing:1px;margin-bottom:6px">🤖 AI SUGGESTED CLASSIFICATION</div>
               <div style="font-size:12px;color:var(--text);line-height:1.5" id="sqModalAiSummary"></div>
-              <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+              <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
                 <button onclick="sqApplyAi()" style="padding:6px 12px;background:var(--purple);color:#fff;border:none;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer">Apply to form</button>
+                <button id="sqApplyAutoSaveBtn" onclick="sqApplyAndAutoSave()" style="display:none;padding:6px 12px;background:linear-gradient(135deg,#00A86B,#008F5A);color:#fff;border:none;border-radius:4px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:0.5px">⚡ Apply + Auto-Save</button>
                 <span id="sqModalAiConfidence" style="font-size:10px;color:var(--text3)"></span>
               </div>
             </div>
@@ -8250,8 +8251,17 @@ async function sqOpenReview(queueId) {
     if (ai.notes)            parts.push(`<em>note: ${ai.notes}</em>`);
     document.getElementById('sqModalAiSummary').innerHTML = parts.join(' · ');
     document.getElementById('sqModalAiConfidence').textContent = `confidence: ${ai.confidence || '?'}`;
+    // Show ⚡ Apply + Auto-Save only when AI says high confidence AND the reject_reason is "none"
+    // (don't auto-save a listing the AI wants to reject).
+    const autoBtn = document.getElementById('sqApplyAutoSaveBtn');
+    if (autoBtn) {
+      const eligible = ai.confidence === 'high' && (!ai.reject_reason || ai.reject_reason === 'none');
+      autoBtn.style.display = eligible ? 'inline-block' : 'none';
+    }
   } else {
     document.getElementById('sqModalAiBanner').style.display = 'none';
+    const autoBtn = document.getElementById('sqApplyAutoSaveBtn');
+    if (autoBtn) autoBtn.style.display = 'none';
   }
 
   document.getElementById('sqModalDescription').textContent = q.description || '(no description captured)';
@@ -8544,7 +8554,97 @@ function sqApplyAi() {
     document.getElementById('sqTagInscription').value = ai.inscription_text || '';
   }
 
+  // Wait for async player-dropdown + card-dropdown to settle, then snapshot
+  // the form state so we can diff it against what admin actually saves.
+  setTimeout(() => {
+    window._sqPreSnapshot = sqReadFormSnapshot();
+    window._sqPreSnapshot._ai_confidence = ai.confidence || null;
+  }, 200);
+
   toast('AI suggestions applied', 'ok');
+}
+
+// ⚡ Apply + Auto-Save: when AI confidence is high, click once to fill + save.
+// If validation fails (missing card_id, edition, etc), falls back to manual —
+// admin sees toast and can fix + click Save manually.
+async function sqApplyAndAutoSave() {
+  if (!_sqCurrent || !_sqCurrent.ai_classification) return;
+  sqApplyAi();
+  // Wait for async dropdowns (player → card) to settle
+  await new Promise(r => setTimeout(r, 350));
+
+  // Validate we have enough to save — same checks sqSaveTag does up front
+  const player = document.getElementById('sqTagPlayer').value;
+  const cardOpt = document.getElementById('sqTagCard').selectedOptions[0];
+  const printRun = parseInt(document.getElementById('sqTagPrintRun').value, 10);
+  const edition = document.getElementById('sqTagEdition').value;
+  const parallelLower = (document.getElementById('sqTagParallel').value || '').toLowerCase();
+  const isFlipStock = parallelLower === 'flip stock';
+
+  if (!player || !cardOpt || !cardOpt.value) {
+    toast('Auto-save blocked: no player/card match — finish manually', 'err');
+    return;
+  }
+  if (!printRun || printRun < 1 || printRun >= 300) {
+    toast('Auto-save blocked: bad print run — finish manually', 'err');
+    return;
+  }
+  if (!isFlipStock && (!edition || parseInt(edition,10) < 1 || parseInt(edition,10) > printRun)) {
+    toast('Auto-save blocked: edition missing/out of range — finish manually', 'err');
+    return;
+  }
+
+  // Mark this snapshot as auto-save-intended so the correction row reflects it
+  if (window._sqPreSnapshot) window._sqPreSnapshot._auto_save_triggered = true;
+  toast('⚡ Auto-saving as new registry…', 'ok');
+  sqSaveTag('new');
+}
+
+// Read the tagging form into a snapshot object for diffing. Keys must match
+// on both sides (apply + save) so fields_changed is meaningful.
+function sqReadFormSnapshot() {
+  const v = (id) => (document.getElementById(id)?.value || '').trim();
+  const cardOpt = document.getElementById('sqTagCard')?.selectedOptions?.[0];
+  return {
+    set_table:      v('sqTagSet'),
+    player:         v('sqTagPlayer'),
+    card_id:        cardOpt?.value || '',
+    card_number:    cardOpt?.getAttribute('data-card') || '',
+    parallel_name:  v('sqTagParallel'),
+    parallel_color: v('sqTagColor'),
+    print_run:      v('sqTagPrintRun'),
+    edition_num:    v('sqTagEdition'),
+    auto_type:      v('sqTagAuto'),
+    auto_ink_color: v('sqTagAutoInk'),
+    graded:         v('sqTagGraded'),
+    grade_company:  v('sqTagGradeCo'),
+    grade_num:      v('sqTagGradeNum'),
+    is_inscribed:   document.getElementById('sqTagInscribed')?.checked ? 'true' : 'false',
+    inscription:    v('sqTagInscription'),
+    notes:          v('sqTagNotes'),
+  };
+}
+
+// Compute which fields changed from ai snapshot → admin final snapshot.
+// "edition_num" is treated specially: AI often leaves it blank when the title
+// doesn't show the numerator, so admin filling it in from the photo is NOT a
+// correction — it's expected admin work. We still record it in the diff but
+// exclude it from the "fields_changed" total so perfect_match stays honest.
+function sqDiffSnapshots(pre, post) {
+  const diff = {};
+  let changed = 0;
+  const all = new Set([...Object.keys(pre || {}), ...Object.keys(post || {})]);
+  for (const k of all) {
+    if (k.startsWith('_')) continue;        // internal meta (_ai_confidence, etc.)
+    const a = (pre?.[k] ?? '').toString();
+    const b = (post?.[k] ?? '').toString();
+    if (a !== b) {
+      diff[k] = { before: a, after: b };
+      // Edition # is expected admin fill-in when title doesn't have it
+      if (k !== 'edition_num' || (a && b)) changed++;
+    }
+  }
+  return { diff, fields_changed: changed, perfect_match: changed === 0 };
 }
 
 function sqLightbox(index) {
@@ -8839,7 +8939,45 @@ async function sqSaveTag(mode) {
       linked_registry_id: registryId,
       admin_notes: notes,
     });
-    toast(mode === 'new' ? 'Saved as new registry card' : 'Linked to existing card', 'ok');
+
+    // ── AI correction capture — what did the admin change vs AI's apply-to-form? ──
+    try {
+      if (window._sqPreSnapshot) {
+        const finalSnap = sqReadFormSnapshot();
+        const { diff, fields_changed, perfect_match } = sqDiffSnapshots(window._sqPreSnapshot, finalSnap);
+        const totalFields = Object.keys(finalSnap).length;
+        const accuracyPct = totalFields > 0
+          ? Math.round(((totalFields - fields_changed) / totalFields) * 100)
+          : 0;
+        // Fire and forget — don't block the save flow on logging
+        _post('iso_serial_ai_corrections', {
+          queue_id: q.id,
+          ebay_item_id: q.ebay_item_id,
+          listing_title: q.title || null,
+          set_name_guess: q.set_name_guess || null,
+          ai_snapshot: window._sqPreSnapshot,
+          admin_snapshot: finalSnap,
+          diff,
+          fields_changed,
+          perfect_match,
+          admin_id: _adminUser?.id || null,
+          confidence: window._sqPreSnapshot._ai_confidence || null,
+          auto_saved: !!window._sqPreSnapshot._auto_save_triggered,
+        }).catch(e => console.warn('AI correction log failed:', e?.message));
+        // Banner for admin
+        if (perfect_match) {
+          toast(`AI was 100% correct — saved. 🎯`, 'ok');
+        } else {
+          toast(`Saved · AI was ${accuracyPct}% correct (${fields_changed} field${fields_changed===1?'':'s'} changed)`, 'ok');
+        }
+      } else {
+        toast(mode === 'new' ? 'Saved as new registry card' : 'Linked to existing card', 'ok');
+      }
+    } catch (e) {
+      console.warn('AI correction capture error:', e);
+      toast(mode === 'new' ? 'Saved as new registry card' : 'Linked to existing card', 'ok');
+    }
+    window._sqPreSnapshot = null;   // clear for next review
     sqCloseReview();
     loadSerialQueue();
   } catch (e) {

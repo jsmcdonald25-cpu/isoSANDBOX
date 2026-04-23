@@ -390,6 +390,16 @@ async function aiClassifyRecords(records, setLabel) {
       if (ai) {
         rec.ai_classification = ai;
         classifyCount++;
+        // AI auto-skip: if the classifier is confident the listing is NOT a
+        // serialized card, soft-skip it at insert time so it never clutters the
+        // admin pending queue. Row still lands in DB with status='skipped' for
+        // audit; admin can find it via the "skipped" filter.
+        if (ai.is_serialized === false) {
+          rec.status = 'skipped';
+          rec.skip_reason = 'not_a_5';
+          rec.admin_notes = `AI auto-skipped: not serialized (confidence=${ai.confidence || 'unknown'})`;
+          rec.tagged_at = new Date().toISOString();
+        }
       }
     } catch (_) {
       // Already logged inside classifyListing — skip silently

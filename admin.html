@@ -8060,6 +8060,20 @@ let _prFilter = 'all';
 let _prSortField = 'last_seen_at';
 let _prSortDir = -1;
 
+// Counts distinct seller_usernames in a registry row's ownership_chain.
+// Same seller relisting = chain entry preserved (price history), but the
+// "owner" count only increments when a NEW username appears.
+// case-insensitive, whitespace-trimmed; falsy usernames (null/blank) ignored.
+function _prDistinctOwners(r) {
+  if (!Array.isArray(r?.ownership_chain)) return 0;
+  const set = new Set();
+  for (const c of r.ownership_chain) {
+    const u = (c?.seller_username || '').trim().toLowerCase();
+    if (u) set.add(u);
+  }
+  return set.size;
+}
+
 async function loadProvenance() {
   try {
     _prRegistry = await _get('iso_serial_registry', 'select=*&order=last_seen_at.desc&limit=2000');
@@ -8073,7 +8087,9 @@ async function loadProvenance() {
 
   // Compute stats
   const total = _prRegistry.length;
-  const multi = _prRegistry.filter(r => Array.isArray(r.ownership_chain) && r.ownership_chain.length >= 2).length;
+  // Distinct-owner count: collapses same-seller relistings so relisting ≠ ownership change.
+  // Chain stays intact (price/time history is useful); only the label gets smarter.
+  const multi = _prRegistry.filter(r => _prDistinctOwners(r) >= 2).length;
   const sellers = new Set();
   let totalValue = 0;
   let defects = 0;
@@ -8112,7 +8128,7 @@ function prSort(field) {
 function prRender() {
   const tb = document.getElementById('prTbody');
   let rows = _prRegistry;
-  if (_prFilter === 'multi')    rows = rows.filter(r => Array.isArray(r.ownership_chain) && r.ownership_chain.length >= 2);
+  if (_prFilter === 'multi')    rows = rows.filter(r => _prDistinctOwners(r) >= 2);
   else if (_prFilter === 'defect')   rows = rows.filter(r => Array.isArray(r.ownership_chain) && r.ownership_chain.some(c => Array.isArray(c.defects_mentioned) && c.defects_mentioned.length > 0));
   else if (_prFilter === 'sold')     rows = rows.filter(r => r.status === 'sold' || r.status === 'delisted');
   else if (_prFilter === 'tracking') rows = rows.filter(r => r.status === 'tracking');
@@ -8127,7 +8143,7 @@ function prRender() {
   const getter = (r) => {
     if (f === 'parallel') return ((r.parallel_name || '') + ' ' + (r.parallel_color || '')).toLowerCase();
     if (f === 'location') return `${r.current_owner_location_city || ''} ${r.current_owner_location_state || ''}`.toLowerCase();
-    if (f === 'owners')   return Array.isArray(r.ownership_chain) ? r.ownership_chain.length : 0;
+    if (f === 'owners')   return _prDistinctOwners(r);
     if (f === 'last_seen_at') return new Date(r.last_seen_at || 0).getTime();
     if (f === 'current_price') return r.current_price || 0;
     if (f === 'card_number') return String(r.card_number || '').toLowerCase();
@@ -8142,7 +8158,7 @@ function prRender() {
   });
 
   tb.innerHTML = rows.slice(0, 500).map(r => {
-    const owners = Array.isArray(r.ownership_chain) ? r.ownership_chain.length : 0;
+    const owners = _prDistinctOwners(r);
     const parallel = [r.parallel_color, r.parallel_name].filter(Boolean).join(' ') || '—';
     const loc = [r.current_owner_location_city, r.current_owner_location_state].filter(Boolean).join(', ') || '—';
     const hasDefects = Array.isArray(r.ownership_chain) && r.ownership_chain.some(c => Array.isArray(c.defects_mentioned) && c.defects_mentioned.length > 0);

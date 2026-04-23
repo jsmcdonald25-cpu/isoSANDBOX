@@ -448,6 +448,18 @@ async function fetchExistingQueueItemIds(itemIds) {
 async function insertQueueRecords(records) {
   if (records.length === 0) return { inserted: 0, errors: 0 };
 
+  // PostgREST bulk insert (PGRST102) requires every row to have the same
+  // keys. Our records vary: ai_classification only set when AI succeeds,
+  // skip_reason/admin_notes/tagged_at only set on auto-skip rows, etc.
+  // Normalize to a union keyset before sending so every row has every key.
+  const OPTIONAL_KEYS = [
+    'ai_classification', 'listing_end_at',
+    'skip_reason', 'admin_notes', 'tagged_at',
+  ];
+  for (const r of records) {
+    for (const k of OPTIONAL_KEYS) if (!(k in r)) r[k] = null;
+  }
+
   // Insert in chunks; Prefer return=minimal keeps the response small
   const CHUNK = 50;
   let inserted = 0;

@@ -2603,6 +2603,14 @@ tr:hover td { background: var(--bg); }
         </div>
       </div>
 
+      <!-- Manual queue add -->
+      <div style="display:flex;gap:8px;margin-bottom:12px;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);align-items:center;flex-wrap:wrap">
+        <div style="font-size:11px;font-weight:700;color:var(--purple);letter-spacing:.5px;text-transform:uppercase">+ Manual Add</div>
+        <input id="sqManualInput" type="text" placeholder="Paste eBay URL or item #..." style="flex:1;min-width:240px;padding:8px 12px;border:1px solid var(--border2);border-radius:6px;font-size:13px;box-sizing:border-box" onkeydown="if(event.key==='Enter')sqManualAdd()">
+        <button id="sqManualBtn" onclick="sqManualAdd()" style="background:var(--purple);color:#fff;border:none;padding:8px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">+ Add to Pending</button>
+        <span id="sqManualMsg" style="font-size:11px;color:var(--text3);margin-left:4px"></span>
+      </div>
+
       <!-- Filter pills -->
       <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
         <button class="sn-pill active" onclick="sqSetFilter('pending',this)">Pending</button>
@@ -8559,6 +8567,47 @@ async function sqLoadLearningStats() {
     if (metaEl) metaEl.textContent = 'Stats table missing — run iso-serial/stats-schema.sql in Supabase first.';
     if (agEl)   agEl.textContent = '—';
     console.warn('AI stats load failed:', e);
+  }
+}
+
+async function sqManualAdd() {
+  const input = document.getElementById('sqManualInput');
+  const btn   = document.getElementById('sqManualBtn');
+  const msg   = document.getElementById('sqManualMsg');
+  const v = input.value.trim();
+  msg.textContent = '';
+  msg.style.color = 'var(--text3)';
+  if (!v) { msg.textContent = 'Paste a URL or item# first'; msg.style.color = 'var(--red)'; return; }
+  if (!_token) { msg.textContent = 'Not signed in'; msg.style.color = 'var(--red)'; return; }
+  btn.disabled = true;
+  const oldLabel = btn.textContent;
+  btn.textContent = 'Adding…';
+  msg.textContent = 'Pulling eBay + AI classify…';
+  try {
+    const res = await fetch('/.netlify/functions/iso-serial-add-manual', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + _token },
+      body: JSON.stringify({ itemInput: v }),
+    });
+    const data = await res.json();
+    if (res.status === 409) {
+      msg.textContent = `Already in queue (status=${data.status})`;
+      msg.style.color = 'var(--yellow)';
+    } else if (!res.ok) {
+      throw new Error(data.error || `HTTP ${res.status}`);
+    } else {
+      msg.textContent = `✓ Added · AI: ${data.ai_serialized ? 'serialized' : 'not serialized'} (${data.ai_confidence || '—'})`;
+      msg.style.color = 'var(--green)';
+      input.value = '';
+      loadSerialQueue();   // reload so the new row appears
+    }
+  } catch (e) {
+    msg.textContent = 'Failed: ' + e.message;
+    msg.style.color = 'var(--red)';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = oldLabel;
+    setTimeout(() => { msg.textContent = ''; }, 8000);
   }
 }
 

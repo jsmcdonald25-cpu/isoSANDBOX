@@ -41,6 +41,7 @@ const SETS = [
   {
     label: 'Heritage',
     queries: [
+      // Print-run searches — catch listings with /N in title
       '2026 Topps Heritage Superfractor',
       '2026 Topps Heritage 1/1',
       '2026 Topps Heritage /5',
@@ -57,6 +58,20 @@ const SETS = [
       '2026 Topps Heritage #/77',
       '2026 Topps Heritage /99',
       '2026 Topps Heritage #/99',
+      // Parallel-name searches — catch listings where seller titled the color
+      // not the print run. Sellers often write "Red Bordered Refractor" without
+      // "/5" in the title. Scott-authoritative canonical names 2026-04-23.
+      '2026 Topps Heritage Red Bordered Refractor',
+      '2026 Topps Heritage Orange Bordered Refractor',
+      '2026 Topps Heritage Gold Bordered Refractor',
+      '2026 Topps Heritage Black Bordered Refractor',
+      '2026 Topps Heritage Green Bordered Refractor',
+      '2026 Topps Heritage Color of the Year',
+      '2026 Topps Heritage Flip Stock',
+      '2026 Topps Heritage Real One Auto',
+      '2026 Topps Heritage Clubhouse Collection',
+      '2026 Topps Heritage Turn Back the Clock',
+      '2026 Topps Heritage Flashbacks',
     ],
   },
 ];
@@ -210,7 +225,10 @@ async function getEbayToken() {
 }
 
 // ─── eBay Browse: search ────────────────────────────────────
-async function searchEbay(token, query, blocklist = []) {
+// sort: null = Best Match (eBay default), '-price' = highest first, 'newlyListed' = newest first.
+// Stacking multiple sort passes per query surfaces listings buried under Best
+// Match's promoted/top-rated-seller bias. Dedup by ebay_item_id handles overlap.
+async function searchEbay(token, query, blocklist = [], sort = null) {
   const filter = [
     `price:[${PRICE_FLOOR_USD}..]`,
     'priceCurrency:USD',
@@ -219,12 +237,14 @@ async function searchEbay(token, query, blocklist = []) {
 
   // eBay Browse supports `-word` negative keywords in the q string.
   const negatives = blocklist.length ? ' ' + blocklist.map(t => `-${t}`).join(' ') : '';
-  const params = new URLSearchParams({
+  const paramsObj = {
     q: query + negatives,
     category_ids: EBAY_CATEGORY_ID,
     filter,
     limit: String(LISTINGS_PER_QUERY),
-  });
+  };
+  if (sort) paramsObj.sort = sort;
+  const params = new URLSearchParams(paramsObj);
 
   const res = await fetch(
     `https://api.ebay.com/buy/browse/v1/item_summary/search?${params}`,
@@ -530,20 +550,30 @@ async function crawlSet({ token, set, runEnvironment, blocklist }) {
     apiCallsGetItem: 0,
   };
 
-  // 1. Search across all query variants, collect unique items
+  // 1. Search across all query variants × sort passes, collect unique items.
+  // Three sort passes per query surfaces listings Best Match buries (small
+  // sellers, new listings, high-priced outliers). Dedup by itemId in the Map
+  // means overlap across sorts costs us nothing on the Get Item side.
+  const SORT_PASSES = [
+    { key: null,          label: 'best'   },
+    { key: '-price',      label: 'priceDesc' },
+    { key: 'newlyListed', label: 'newest' },
+  ];
   const seenItemIds = new Map(); // itemId -> searchItem (keep first occurrence)
   for (const query of set.queries) {
-    console.log(`  Search: "${query}"${blocklist.length ? ` (−${blocklist.length} neg)` : ''}`);
-    const { items, apiCalls } = await searchEbay(token, query, blocklist);
-    perSetStats.apiCallsBrowse += apiCalls;
-    perSetStats.totalResults += items.length;
-    for (const it of items) {
-      if (it.itemId && !seenItemIds.has(it.itemId)) {
-        seenItemIds.set(it.itemId, it);
+    for (const pass of SORT_PASSES) {
+      console.log(`  Search: "${query}" [${pass.label}]${blocklist.length ? ` (−${blocklist.length} neg)` : ''}`);
+      const { items, apiCalls } = await searchEbay(token, query, blocklist, pass.key);
+      perSetStats.apiCallsBrowse += apiCalls;
+      perSetStats.totalResults += items.length;
+      for (const it of items) {
+        if (it.itemId && !seenItemIds.has(it.itemId)) {
+          seenItemIds.set(it.itemId, it);
+        }
       }
+      console.log(`    ${items.length} results (${seenItemIds.size} unique so far)`);
+      await sleep(SLEEP_MS);
     }
-    console.log(`    ${items.length} results (${seenItemIds.size} unique so far)`);
-    await sleep(SLEEP_MS);
   }
 
   const uniqueItemIds = Array.from(seenItemIds.keys());

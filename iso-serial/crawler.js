@@ -37,11 +37,14 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE) {
 // listings — "/5" and "#/5". We do NOT bias toward autographs, since many /5
 // numbered cards are parallels (Flip Stock, Red Chrome Refractor, Red Border)
 // rather than autos.
+// Scope rule (Scott, 2026-04-23): /25 or less ONLY. Drop /50/75/77/99 queries.
+// Named variations (Flip Stock, 1952 Rookie Variation, Golden Mirror Image) are
+// effectively /5-/25 equivalent — no serial # but tracked via parallel_name.
 const SETS = [
   {
     label: 'Heritage',
     queries: [
-      // Print-run searches — catch listings with /N in title
+      // Print-run searches — 1/1 + /5 + /10 + /25 only
       '2026 Topps Heritage Superfractor',
       '2026 Topps Heritage 1/1',
       '2026 Topps Heritage /5',
@@ -50,28 +53,47 @@ const SETS = [
       '2026 Topps Heritage #/10',
       '2026 Topps Heritage /25',
       '2026 Topps Heritage #/25',
-      '2026 Topps Heritage /50',
-      '2026 Topps Heritage #/50',
-      '2026 Topps Heritage /75',
-      '2026 Topps Heritage #/75',
-      '2026 Topps Heritage /77',
-      '2026 Topps Heritage #/77',
-      '2026 Topps Heritage /99',
-      '2026 Topps Heritage #/99',
-      // Parallel-name searches — catch listings where seller titled the color
-      // not the print run. Sellers often write "Red Bordered Refractor" without
-      // "/5" in the title. Scott-authoritative canonical names 2026-04-23.
+      // Parallel-name searches for /25-or-less tiers
       '2026 Topps Heritage Red Bordered Refractor',
       '2026 Topps Heritage Orange Bordered Refractor',
-      '2026 Topps Heritage Gold Bordered Refractor',
-      '2026 Topps Heritage Black Bordered Refractor',
-      '2026 Topps Heritage Green Bordered Refractor',
-      '2026 Topps Heritage Color of the Year',
       '2026 Topps Heritage Flip Stock',
+      // Inserts with /25-or-less variants (classifier filters out >25)
       '2026 Topps Heritage Real One Auto',
       '2026 Topps Heritage Clubhouse Collection',
       '2026 Topps Heritage Turn Back the Clock',
       '2026 Topps Heritage Flashbacks',
+    ],
+  },
+  {
+    label: 'Series 1',
+    queries: [
+      // 1/1 tier
+      '2026 Topps Series 1 Superfractor',
+      '2026 Topps Series 1 Foilfractor',
+      '2026 Topps Series 1 First Card',
+      '2026 Topps Series 1 Printing Plate',
+      '2026 Topps Series 1 Rose Gold',
+      // Print-run searches — 1/1 + /5 + /10 + /25 only
+      '2026 Topps Series 1 1/1',
+      '2026 Topps Series 1 /5',
+      '2026 Topps Series 1 #/5',
+      '2026 Topps Series 1 /10',
+      '2026 Topps Series 1 #/10',
+      '2026 Topps Series 1 /25',
+      '2026 Topps Series 1 #/25',
+      // Parallel-family searches for /25-or-less tiers (classifier filters out >25)
+      '2026 Topps Series 1 Sandglitter',
+      '2026 Topps Series 1 Diamante',
+      '2026 Topps Series 1 Holo Foil',
+      '2026 Topps Series 1 Rainbow Foil',
+      '2026 Topps Series 1 Spring Training',
+      '2026 Topps Series 1 Koi Fish',
+      '2026 Topps Series 1 Crackle',
+      '2026 Topps Series 1 Wood',
+      '2026 Topps Series 1 Memorial Day Camo',
+      // Unnumbered variations — tracked despite no serial# (rare enough to matter)
+      '2026 Topps Series 1 1952 Variation',
+      '2026 Topps Series 1 Golden Mirror',
     ],
   },
 ];
@@ -398,6 +420,19 @@ function parseListingToQueueRecord(searchItem, itemDetail, setLabel) {
     fraud_flag: fraudFlag,
     fraud_reasons: fraudReasons,
     listing_end_at: itemDetail?.itemEndDate || searchItem?.itemEndDate || null,
+    // Preserve the seller's exact parallel wording for admin review. Pull from
+    // eBay's item specifics (Parallel/Variety or Features or Insert Set). This
+    // keeps ISOsnipe's fat-finger arbitrage opportunity intact at the source
+    // level while the classifier can still normalize to canonical names.
+    raw_parallel_as_listed: (() => {
+      const specs = Array.isArray(itemDetail?.localizedAspects) ? itemDetail.localizedAspects : [];
+      const names = ['Parallel/Variety', 'Parallel', 'Card Attributes', 'Features', 'Insert Set'];
+      for (const n of names) {
+        const found = specs.find(a => (a.name || '').toLowerCase() === n.toLowerCase());
+        if (found?.value) return String(found.value).slice(0, 200);
+      }
+      return null;
+    })(),
     raw_browse_response: searchItem || null,
     raw_get_item_response: itemDetail || null,
     status: 'pending',
@@ -405,6 +440,30 @@ function parseListingToQueueRecord(searchItem, itemDetail, setLabel) {
 }
 
 // ─── AI classify pass — fills ai_classification on records ────
+//
+// Auto-skip rules (in order):
+// 1. Named-variation exception — Flip Stock + 1952 Rookie Variation + Golden
+//    Mirror Image are tracked despite is_serialized=false because they're
+//    rare enough to matter (effective print run /5-/25).
+// 2. Not serialized + not a tracked variation → skip.
+// 3. Serialized but print_run > 25 → skip (Scott's /25-or-less scope, 4/23).
+// 4. Otherwise → pending for admin review.
+const TRACKED_VARIATIONS = [
+  'flip stock',
+  '1952 variation',
+  '1952 rookie variation',
+  'golden mirror',
+  'golden mirror image',
+];
+function _isTrackedVariation(ai) {
+  const hay = [
+    (ai?.parallel_name || '').toLowerCase(),
+    (ai?.insert_subset_name || '').toLowerCase(),
+    (ai?.notes || '').toLowerCase(),
+  ].join(' | ');
+  return TRACKED_VARIATIONS.some(v => hay.includes(v));
+}
+
 async function aiClassifyRecords(records, setLabel) {
   if (!AI_ENABLED || records.length === 0) return 0;
   let classifyCount = 0;
@@ -418,14 +477,19 @@ async function aiClassifyRecords(records, setLabel) {
       if (ai) {
         rec.ai_classification = ai;
         classifyCount++;
-        // AI auto-skip: if the classifier is confident the listing is NOT a
-        // serialized card, soft-skip it at insert time so it never clutters the
-        // admin pending queue. Row still lands in DB with status='skipped' for
-        // audit; admin can find it via the "skipped" filter.
-        if (ai.is_serialized === false) {
+        const tracked = _isTrackedVariation(ai);
+        const pr = ai.print_run;
+        if (!ai.is_serialized && !tracked) {
+          // Not a real serialized card AND not a tracked variation → skip
           rec.status = 'skipped';
           rec.skip_reason = 'not_a_5';
           rec.admin_notes = `AI auto-skipped: not serialized (confidence=${ai.confidence || 'unknown'})`;
+          rec.tagged_at = new Date().toISOString();
+        } else if (ai.is_serialized && typeof pr === 'number' && pr > 25) {
+          // Serialized but out of /25-or-less scope
+          rec.status = 'skipped';
+          rec.skip_reason = 'not_a_5';
+          rec.admin_notes = `AI auto-skipped: print_run=${pr} exceeds /25 scope`;
           rec.tagged_at = new Date().toISOString();
         }
       }
@@ -473,7 +537,7 @@ async function insertQueueRecords(records) {
   // skip_reason/admin_notes/tagged_at only set on auto-skip rows, etc.
   // Normalize to a union keyset before sending so every row has every key.
   const OPTIONAL_KEYS = [
-    'ai_classification', 'listing_end_at',
+    'ai_classification', 'listing_end_at', 'raw_parallel_as_listed',
     'skip_reason', 'admin_notes', 'tagged_at',
   ];
   for (const r of records) {

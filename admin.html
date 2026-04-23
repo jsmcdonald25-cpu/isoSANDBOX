@@ -2859,6 +2859,11 @@ tr:hover td { background: var(--bg); }
               </div>
             </div>
 
+            <div id="sqModalRawParallelBox" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px;margin-bottom:10px">
+              <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1px;margin-bottom:4px">SELLER'S PARALLEL WORDING (raw from eBay item specifics)</div>
+              <div id="sqModalRawParallel" style="font-size:12px;color:var(--text);font-weight:600"></div>
+            </div>
+
             <details style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px">
               <summary style="font-size:11px;color:var(--text2);cursor:pointer;font-weight:600">Raw listing description</summary>
               <div id="sqModalDescription" style="font-size:11px;color:var(--text2);margin-top:8px;white-space:pre-wrap;max-height:200px;overflow-y:auto"></div>
@@ -8968,6 +8973,16 @@ async function sqOpenReview(queueId) {
   }
 
   document.getElementById('sqModalDescription').textContent = q.description || '(no description captured)';
+
+  // Raw parallel wording from seller (separate from AI canonical)
+  const rawPar = q.raw_parallel_as_listed;
+  const rawBox = document.getElementById('sqModalRawParallelBox');
+  if (rawPar && rawBox) {
+    rawBox.style.display = 'block';
+    document.getElementById('sqModalRawParallel').textContent = rawPar;
+  } else if (rawBox) {
+    rawBox.style.display = 'none';
+  }
 
   // Seed tag form from crawler guesses
   const setKey = q.set_name_guess === 'Heritage'

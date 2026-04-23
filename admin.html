@@ -8648,17 +8648,26 @@ async function sqManualAdd() {
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + _token },
       body: JSON.stringify({ itemInput: v }),
     });
-    const data = await res.json();
-    if (res.status === 409) {
+    // Read body as text first so we can surface the ACTUAL server response
+    // when it isn't JSON (e.g. Netlify HTML error page).
+    const rawBody = await res.text();
+    let data = null;
+    try { data = JSON.parse(rawBody); } catch (_) { /* not JSON */ }
+    if (res.status === 409 && data) {
       msg.textContent = `Already in queue (status=${data.status})`;
       msg.style.color = 'var(--yellow)';
     } else if (!res.ok) {
-      throw new Error(data.error || `HTTP ${res.status}`);
-    } else {
+      // Show HTTP status + first 140 chars of whatever came back so we can
+      // diagnose Netlify-layer failures (function crash, 502, etc.)
+      const detail = (data && (data.error || data.detail)) || rawBody.slice(0, 140);
+      throw new Error(`HTTP ${res.status}: ${detail}`);
+    } else if (data) {
       msg.textContent = `✓ Added · AI: ${data.ai_serialized ? 'serialized' : 'not serialized'} (${data.ai_confidence || '—'})`;
       msg.style.color = 'var(--green)';
       input.value = '';
       loadSerialQueue();   // reload so the new row appears
+    } else {
+      throw new Error('Non-JSON response: ' + rawBody.slice(0, 140));
     }
   } catch (e) {
     msg.textContent = 'Failed: ' + e.message;

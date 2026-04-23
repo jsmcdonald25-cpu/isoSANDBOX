@@ -8,7 +8,10 @@
 //
 // Auth: admin-only (is_provenance_admin or owner/is_admin).
 
-const Anthropic = require('@anthropic-ai/sdk');
+// Anthropic SDK loaded lazily inside the handler so any bundle-load failure
+// gets caught by the try/catch instead of crashing the whole function
+// (which would return an HTML 500 page Netlify serves from outside user code).
+let Anthropic = null;
 const https = require('https');
 
 const SB_URL     = process.env.SUPABASE_URL || 'https://jyfaegmnzkarlcximxjo.supabase.co';
@@ -126,6 +129,7 @@ Heritage canonical parallel ladder (collapse seller mislabels to these):
 Return ONLY the JSON.`;
 
 async function classifyWithClaude(title, description, specifics) {
+  if (!Anthropic) Anthropic = require('@anthropic-ai/sdk');
   const client = new Anthropic({ apiKey: ANTHROPIC_KEY });
   const userMsg = `TITLE: ${title}\n\nDESCRIPTION: ${(description || '').slice(0, 1500)}\n\nITEM SPECIFICS:\n${specifics}`;
   const resp = await client.messages.create({

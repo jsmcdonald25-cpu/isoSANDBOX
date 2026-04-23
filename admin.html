@@ -8566,7 +8566,7 @@ async function loadSerialQueue() {
   sqLoadLearningStats();   // fire async, don't block queue render
   try {
     // Pull queue (all rows; admin can filter in UI)
-    _sqQueue = await _get('iso_serial_queue', 'select=*&order=crawled_at.desc&limit=500');
+    _sqQueue = await _get('iso_serial_queue', 'select=*&order=crawled_at.desc&limit=5000');
   } catch (e) {
     const tb = document.getElementById('sqTbody');
     tb.innerHTML = `<tr><td colspan="11" style="text-align:center;padding:30px;color:var(--red)">
@@ -8627,14 +8627,14 @@ function sqRender() {
   // Apply current sort
   rows = sqApplySort(rows);
 
-  tb.innerHTML = rows.slice(0, 200).map(q => {
+  tb.innerHTML = rows.map(q => {
     const img = (q.image_urls && q.image_urls[0]) || '';
     const loc = [q.ship_from_city || q.item_location_city, q.ship_from_state || q.item_location_state]
       .filter(Boolean).join(', ') || '—';
     const fb = q.seller_feedback_score !== null
       ? `${q.seller_feedback_score} (${q.seller_feedback_percent || 0}%)`
       : '—';
-    const endsCell = _sqEndsCell(q.listing_end_at);
+    const endsCell = _sqEndsCell(q);
     const titleSafe = (q.title || '—').replace(/"/g, '&quot;');
     // Subtle row tinting for non-pending statuses (only matters when filter = all)
     const rowBg = q.status === 'tagged_new'      ? 'background:rgba(5,150,105,0.05);'
@@ -8720,11 +8720,26 @@ function sqUpdateSortArrows() {
   });
 }
 
-// Format a listing_end_at timestamp for the Ends column.
-// Future = green countdown ("ends in 2h 34m"), past = gray ("ended 3h ago"),
-// null = em-dash. Short enough to fit in a column cell.
-function _sqEndsCell(ts) {
-  if (!ts) return '<span style="color:var(--text3)">—</span>';
+// Detects BIN from buyingOptions in either raw response; falls back to false.
+function _sqIsBIN(q) {
+  const opts = q?.raw_get_item_response?.buyingOptions
+            || q?.raw_browse_response?.buyingOptions
+            || [];
+  return Array.isArray(opts) && opts.includes('FIXED_PRICE');
+}
+
+// Format the Ends column for a queue row.
+// - future end time → green/yellow/red countdown
+// - past end time → gray "ended Xh ago"
+// - no end time + BIN → blue "BIN" badge (Buy It Now has no meaningful end)
+// - no end time + auction → em-dash
+function _sqEndsCell(q) {
+  const ts = q?.listing_end_at;
+  if (!ts) {
+    return _sqIsBIN(q)
+      ? '<span style="background:var(--blue-light);color:var(--blue);padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;letter-spacing:.5px">BIN</span>'
+      : '<span style="color:var(--text3)">—</span>';
+  }
   const t = new Date(ts).getTime();
   if (!isFinite(t)) return '<span style="color:var(--text3)">—</span>';
   const diff = t - Date.now();

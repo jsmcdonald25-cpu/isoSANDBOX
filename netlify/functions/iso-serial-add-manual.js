@@ -151,36 +151,47 @@ exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: cors, body: '' };
   if (event.httpMethod !== 'POST') return { statusCode: 405, headers: cors, body: 'Method not allowed' };
 
-  if (!SB_SERVICE)       return { statusCode: 500, headers: cors, body: JSON.stringify({ error: 'SUPABASE_SERVICE_KEY not set' }) };
-  if (!EBAY_CLIENT_ID)   return { statusCode: 500, headers: cors, body: JSON.stringify({ error: 'eBay credentials not set' }) };
+  // Top-level try/catch so any unexpected error returns JSON, not an HTML 500
+  // page from Netlify (which breaks the client's res.json() parse).
+  try {
+    if (!SB_SERVICE)       return { statusCode: 500, headers: cors, body: JSON.stringify({ error: 'SUPABASE_SERVICE_KEY not set' }) };
+    if (!EBAY_CLIENT_ID)   return { statusCode: 500, headers: cors, body: JSON.stringify({ error: 'eBay credentials not set' }) };
 
-  const adminCheck = await verifyAdmin(event.headers.authorization || event.headers.Authorization);
-  if (!adminCheck.user) return { statusCode: 403, headers: cors, body: JSON.stringify({ error: 'Admin auth required', reason: adminCheck.reason }) };
+    const adminCheck = await verifyAdmin(event.headers.authorization || event.headers.Authorization);
+    if (!adminCheck.user) return { statusCode: 403, headers: cors, body: JSON.stringify({ error: 'Admin auth required', reason: adminCheck.reason }) };
 
-  let body;
-  try { body = JSON.parse(event.body || '{}'); }
-  catch (_) { return { statusCode: 400, headers: cors, body: JSON.stringify({ error: 'Invalid JSON body' }) }; }
+    let body;
+    try { body = JSON.parse(event.body || '{}'); }
+    catch (_) { return { statusCode: 400, headers: cors, body: JSON.stringify({ error: 'Invalid JSON body' }) }; }
 
-  const itemInput = body.itemInput;
-  if (!itemInput) return { statusCode: 400, headers: cors, body: JSON.stringify({ error: 'itemInput (URL or item#) required' }) };
-  const itemId = cleanItemId(itemInput);
-  if (!itemId || itemId.length < 8) {
-    return { statusCode: 400, headers: cors, body: JSON.stringify({ error: 'Invalid eBay URL or item number' }) };
-  }
+    const itemInput = body.itemInput;
+    if (!itemInput) return { statusCode: 400, headers: cors, body: JSON.stringify({ error: 'itemInput (URL or item#) required' }) };
+    const itemId = cleanItemId(itemInput);
+    if (!itemId || itemId.length < 8) {
+      return { statusCode: 400, headers: cors, body: JSON.stringify({ error: 'Invalid eBay URL or item number' }) };
+    }
 
-  // Dedup — don't double-insert an item that's already in the queue
-  const existing = await httpJson(
-    `${SB_URL}/rest/v1/iso_serial_queue?ebay_item_id=eq.v1|${itemId}|0&select=id,status&limit=1`,
-    { headers: { 'apikey': SB_SERVICE, 'Authorization': `Bearer ${SB_SERVICE}` } }
-  );
-  if (existing.status === 200 && Array.isArray(existing.json) && existing.json.length > 0) {
-    const row = existing.json[0];
-    return { statusCode: 409, headers: cors, body: JSON.stringify({
-      error: 'Already in queue',
-      queue_id: row.id,
-      status: row.status,
-    }) };
-  }
+    // Dedup — don't double-insert an item that's already in the queue.
+    // URL-encode the pipe characters in the stored ebay_item_id format "v1|id|0"
+    // because Supabase PostgREST is strict about reserved chars in query params.
+    const ebayIdValue = encodeURIComponent(`v1|${itemId}|0`);
+    let existing;
+    try {
+      existing = await httpJson(
+        `${SB_URL}/rest/v1/iso_serial_queue?ebay_item_id=eq.${ebayIdValue}&select=id,status&limit=1`,
+        { headers: { 'apikey': SB_SERVICE, 'Authorization': `Bearer ${SB_SERVICE}` } }
+      );
+    } catch (e) {
+      return { statusCode: 502, headers: cors, body: JSON.stringify({ error: 'Supabase dedup check failed', detail: e.message }) };
+    }
+    if (existing.status === 200 && Array.isArray(existing.json) && existing.json.length > 0) {
+      const row = existing.json[0];
+      return { statusCode: 409, headers: cors, body: JSON.stringify({
+        error: 'Already in queue',
+        queue_id: row.id,
+        status: row.status,
+      }) };
+    }
 
   // Pull from eBay
   let item;
@@ -257,15 +268,27 @@ exports.handler = async (event) => {
   }
   const inserted = Array.isArray(ins.json) ? ins.json[0] : ins.json;
 
-  return {
-    statusCode: 200,
-    headers: cors,
-    body: JSON.stringify({
-      ok: true,
-      queue_id: inserted?.id,
-      title,
-      ai_serialized: ai?.is_serialized ?? null,
-      ai_confidence: ai?.confidence ?? null,
-    }),
-  };
+    return {
+      statusCode: 200,
+      headers: cors,
+      body: JSON.stringify({
+        ok: true,
+        queue_id: inserted?.id,
+        title,
+        ai_serialized: ai?.is_serialized ?? null,
+        ai_confidence: ai?.confidence ?? null,
+      }),
+    };
+  } catch (e) {
+    // Last-resort catch so unexpected throws don't cause Netlify to serve an
+    // HTML error page (breaks client res.json()). Always return JSON.
+    return {
+      statusCode: 500,
+      headers: cors,
+      body: JSON.stringify({
+        error: 'Unhandled server error',
+        detail: (e && e.message) ? e.message.slice(0, 300) : String(e).slice(0, 300),
+      }),
+    };
+  }
 };

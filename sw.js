@@ -1,4 +1,4 @@
-const CACHE_NAME = 'grailiso-shell-v32';
+const CACHE_NAME = 'grailiso-shell-v33';
 const SHELL_ASSETS = ['/dashboard.html', '/manifest.json', '/icons/icon-192.png', '/icons/icon-512.png',
   '/isograding-scan.html', '/js/isograding-engine.js', '/js/jsqr.min.js', '/js/qrcode-generator.min.js'];
 
@@ -19,23 +19,13 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const u = new URL(e.request.url);
 
-  // Supabase storage uploads (POST/PUT with binary body) — let the browser handle
-  // directly so the SW doesn't break large-body requests (causes false "offline" errors)
-  if (u.hostname.endsWith('.supabase.co') && (e.request.method === 'POST' || e.request.method === 'PUT') && u.pathname.includes('/storage/')) {
-    return; // don't call e.respondWith — browser handles natively
-  }
-
-  // Supabase API calls — always network, offline fallback
+  // Supabase — let the browser handle natively. Previously we re-fetched via
+  // fetch(e.request) with an offline fallback, but that path was stripping the
+  // SDK's apikey header on some browsers, causing "No API key found" errors
+  // on auth + REST calls. Native passthrough works and the SDK has its own
+  // retry logic for flaky networks.
   if (u.hostname.endsWith('.supabase.co')) {
-    e.respondWith(
-      fetch(e.request).catch(() =>
-        new Response(JSON.stringify({ error: 'offline' }), {
-          status: 503,
-          headers: { 'Content-Type': 'application/json' }
-        })
-      )
-    );
-    return;
+    return; // don't call e.respondWith — browser handles natively
   }
 
   // HTML pages — network-first so deploys are always picked up immediately

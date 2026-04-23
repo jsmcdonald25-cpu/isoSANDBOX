@@ -1,15 +1,13 @@
 name: ISOSerial Crawler
 
-# Every 30 minutes on a private repo — stays comfortably under the 2,000
-# free Actions minutes/month cap (≈1,488 billable min/month at 1 min per run).
-#
-# GitHub's cron honors UTC and has no minimum granularity enforcement beyond 5 min.
-# The scheduler also drifts under load, so actual run-to-run gap can be 30–45 min.
-# That's fine — /5 cards don't flip every 10 minutes.
+# Hourly (was every 30 min) — slowed 2026-04-23 because 3-sort-pass + expanded
+# query set + manual runs were stacking and triggering eBay 429 rate limits.
+# 24 runs/day × ~114 search calls = ~2,700 search calls/day. Under the 5000/day
+# eBay budget with headroom for ISOsnipe + manual adds.
 
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '0 * * * *'
   workflow_dispatch: {}      # allow manual trigger from the Actions tab
 
 concurrency:

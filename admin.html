@@ -7616,8 +7616,35 @@ function sntToggle(){
 
 async function sntLoadTargets(){
   try {
-    const rows = await _get('isosnipe_targets', 'select=*&order=player.asc,card.asc');
+    const [rows, rejRows] = await Promise.all([
+      _get('isosnipe_targets', 'select=*&order=player.asc,card.asc'),
+      // Pull wrong_market_price rejections from last 30 days to attribute per target
+      _get('isosnipe_rejections', "select=player,card,parallel,rejected_at,reason_code,reason_codes&or=(reason_code.eq.wrong_market_price,reason_codes.cs.{wrong_market_price})&rejected_at=gte." + encodeURIComponent(new Date(Date.now() - 30*24*3600*1000).toISOString())).catch(() => []),
+    ]);
     _sntRows = Array.isArray(rows) ? rows : [];
+    const rejs  = Array.isArray(rejRows) ? rejRows : [];
+    // Attribute each rejection to a target by case-insensitive (player,card,parallel) match,
+    // but only count rejections AFTER the target's market_avg was last updated.
+    const key = (p, c, par) => `${(p||'').toLowerCase().trim()}|${(c||'').toLowerCase().trim()}|${(par||'base').toLowerCase().trim()}`;
+    const rejByKey = new Map();
+    for (const r of rejs) {
+      const k = key(r.player, r.card, r.parallel);
+      if (!rejByKey.has(k)) rejByKey.set(k, []);
+      rejByKey.get(k).push(r);
+    }
+    for (const t of _sntRows) {
+      const k = key(t.player, t.card, t.parallel);
+      const bucket = rejByKey.get(k) || [];
+      const since = t.market_avg_updated_at ? new Date(t.market_avg_updated_at).getTime() : 0;
+      t._mispriceRejects = bucket.filter(r => new Date(r.rejected_at).getTime() > since).length;
+    }
+    // Sort flagged (3+ rejects) to top
+    _sntRows.sort((a, b) => {
+      const af = (a._mispriceRejects || 0) >= 3 ? 1 : 0;
+      const bf = (b._mispriceRejects || 0) >= 3 ? 1 : 0;
+      if (af !== bf) return bf - af;
+      return (a.player || '').localeCompare(b.player || '');
+    });
     sntRenderMeta();
     sntRenderTable();
   } catch (e) {
@@ -7629,8 +7656,10 @@ async function sntLoadTargets(){
 function sntRenderMeta(){
   const active = _sntRows.filter(r => r.is_active).length;
   const paused = _sntRows.length - active;
+  const flagged = _sntRows.filter(r => (r._mispriceRejects || 0) >= 3).length;
+  const flagTxt = flagged > 0 ? ` · ⚠ ${flagged} need market_avg review` : '';
   document.getElementById('sntMeta').textContent =
-    `${active} active · ${paused} paused · scanned every cycle (5am / 5pm CDT)`;
+    `${active} active · ${paused} paused · scanned every cycle${flagTxt}`;
 }
 
 function _sntTimeAgo(ts){
@@ -7652,7 +7681,16 @@ function sntRenderTable(){
     const dim = r.is_active ? '' : 'color:var(--text3)';
     const mis = Array.isArray(r.misspellings) ? r.misspellings.length : 0;
     const scan = r.is_active ? _sntTimeAgo(r.last_scanned_at) : 'paused';
-    return `<tr>
+    const mispRej = r._mispriceRejects || 0;
+    const flagged = mispRej >= 3;
+    const rowBg = flagged ? 'background:rgba(255,59,92,0.06);' : '';
+    const flagBadge = flagged
+      ? `<span title="${mispRej} Wrong-Market-Avg rejects since last market_avg update — review the price" style="display:inline-block;background:var(--red);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:10px;margin-left:6px;letter-spacing:.5px">⚠ ${mispRej}</span>`
+      : '';
+    const marketCell = flagged
+      ? `<td style="text-align:right;font-weight:700;color:var(--red)">$${Number(r.market_avg).toFixed(2)}${flagBadge}</td>`
+      : `<td style="text-align:right;font-weight:700;${dim}">$${Number(r.market_avg).toFixed(2)}</td>`;
+    return `<tr style="${rowBg}">
       <td><label style="position:relative;display:inline-block;width:36px;height:20px">
         <input type="checkbox" ${r.is_active?'checked':''} onchange="sntToggleActive('${r.id}', this.checked)" style="opacity:0;width:0;height:0">
         <span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:${r.is_active?'var(--green)':'#cbd5e1'};transition:.2s;border-radius:20px">
@@ -7662,7 +7700,7 @@ function sntRenderTable(){
       <td style="font-weight:600;${dim}">${_esc(r.player)}</td>
       <td style="${dim}">${_esc(r.card)}</td>
       <td><span style="display:inline-block;background:var(--blue-light);color:var(--blue);font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;${r.is_active?'':'opacity:0.5'}">${_esc(r.parallel || 'Base')}</span></td>
-      <td style="text-align:right;font-weight:700;${dim}">$${Number(r.market_avg).toFixed(2)}</td>
+      ${marketCell}
       <td style="text-align:center;${dim}">${mis}</td>
       <td style="text-align:center;font-size:11px;color:var(--text3)">${scan}</td>
       <td style="text-align:right">

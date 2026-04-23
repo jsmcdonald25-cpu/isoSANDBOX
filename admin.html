@@ -2587,6 +2587,21 @@ tr:hover td { background: var(--bg); }
         <div id="sqStatsChart" style="margin-top:4px"></div>
       </div>
 
+      <!-- ───── eBay API USAGE (7-day trend) — feeds Marketplace Insights app ───── -->
+      <div id="sqApiUsage" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;padding:14px 18px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+          <div>
+            <div style="font-size:13px;font-weight:800;color:var(--text2);letter-spacing:1px;text-transform:uppercase">📡 eBay API Usage — ISOserial only</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">Daily totals from iso_serial_pulls. ISOsnipe + Vault live pricing are separate.</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase">7-Day Total</div>
+            <div id="sqApiTotal7d" style="font-size:24px;font-weight:800;color:var(--blue);line-height:1">—</div>
+          </div>
+        </div>
+        <div id="sqApiDays" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px"></div>
+      </div>
+
       <!-- ───── AI LEARN PANEL (Serial Queue) ───── -->
       <div id="sqAiSection" style="background:var(--surface);border:1px solid var(--purple);border-radius:var(--radius);margin-bottom:16px;overflow:hidden">
         <div style="background:linear-gradient(135deg,var(--purple-light),#fff);padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
@@ -8655,8 +8670,56 @@ async function sqManualAdd() {
   }
 }
 
+async function sqLoadApiUsage() {
+  try {
+    const since = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString();
+    const rows = await _get('iso_serial_pulls',
+      `select=pull_timestamp,api_calls_browse,api_calls_get_item&pull_timestamp=gte.${encodeURIComponent(since)}&limit=5000`);
+    if (!Array.isArray(rows)) return;
+    // Bucket by YYYY-MM-DD (local)
+    const buckets = new Map();
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(Date.now() - i * 24 * 3600 * 1000);
+      const key = d.toLocaleDateString('en-CA'); // YYYY-MM-DD
+      buckets.set(key, { browse: 0, get_item: 0 });
+    }
+    for (const r of rows) {
+      const key = new Date(r.pull_timestamp).toLocaleDateString('en-CA');
+      if (!buckets.has(key)) continue;
+      const b = buckets.get(key);
+      b.browse   += (r.api_calls_browse   || 0);
+      b.get_item += (r.api_calls_get_item || 0);
+    }
+    let total = 0;
+    let maxDay = 0;
+    for (const [, b] of buckets) {
+      const t = b.browse + b.get_item;
+      total += t;
+      if (t > maxDay) maxDay = t;
+    }
+    document.getElementById('sqApiTotal7d').textContent = total.toLocaleString();
+    const box = document.getElementById('sqApiDays');
+    const labels = [...buckets.keys()];
+    box.innerHTML = labels.map(d => {
+      const b = buckets.get(d);
+      const t = b.browse + b.get_item;
+      const pct = maxDay > 0 ? (t / maxDay) * 100 : 0;
+      const dayLabel = new Date(d + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short' });
+      const color = t >= 4500 ? 'var(--green)' : t >= 2000 ? 'var(--blue)' : t > 0 ? 'var(--text3)' : 'var(--border)';
+      return `<div style="text-align:center">
+        <div style="font-size:10px;color:var(--text3);margin-bottom:4px">${dayLabel}</div>
+        <div style="height:56px;display:flex;align-items:flex-end;justify-content:center">
+          <div style="width:28px;height:${Math.max(pct, 2)}%;background:${color};border-radius:3px" title="${t.toLocaleString()} calls"></div>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:4px">${t >= 1000 ? (t/1000).toFixed(1)+'k' : t}</div>
+      </div>`;
+    }).join('');
+  } catch (_) { /* non-fatal */ }
+}
+
 async function loadSerialQueue() {
   sqLoadLearningStats();   // fire async, don't block queue render
+  sqLoadApiUsage();        // fire async, don't block queue render
   try {
     // Pull queue (all rows; admin can filter in UI)
     _sqQueue = await _get('iso_serial_queue', 'select=*&order=crawled_at.desc&limit=5000');

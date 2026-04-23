@@ -8684,8 +8684,10 @@ function sqApplySort(rows) {
   if (f === 'listing_end_at') {
     const now = Date.now();
     const bucket = (q) => {
-      const t = q.listing_end_at ? new Date(q.listing_end_at).getTime() : null;
-      if (t === null || !isFinite(t)) return [2, 0];
+      const eff = _sqEffectiveEnd(q);
+      if (!eff) return [2, 0];
+      const t = eff.t;
+      if (!isFinite(t)) return [2, 0];
       if (t >= now) return [0, t - now];       // future: bucket 0, ascending by time-to-end
       return [1, now - t];                      // past: bucket 1, ascending by time-since-end
     };
@@ -8728,19 +8730,34 @@ function _sqIsBIN(q) {
   return Array.isArray(opts) && opts.includes('FIXED_PRICE');
 }
 
+// Returns the listing's effective end timestamp (ms), or null.
+// - Auction/dual-format listings: use listing_end_at (real eBay value)
+// - Pure BIN: eBay omits itemEndDate, so estimate creation + 30 days
+//   (default BIN duration / GTC auto-renewal cycle)
+function _sqEffectiveEnd(q) {
+  if (q?.listing_end_at) {
+    const t = new Date(q.listing_end_at).getTime();
+    if (isFinite(t)) return { t, estimated: false };
+  }
+  const creation = q?.raw_get_item_response?.itemCreationDate
+                || q?.raw_browse_response?.itemCreationDate;
+  if (creation) {
+    const c = new Date(creation).getTime();
+    if (isFinite(c)) return { t: c + 30 * 24 * 60 * 60 * 1000, estimated: true };
+  }
+  return null;
+}
+
 // Format the Ends column for a queue row.
-// - future end time → green/yellow/red countdown
-// - past end time → gray "ended Xh ago"
-// - no end time + BIN → blue "BIN" badge (Buy It Now has no meaningful end)
-// - no end time + auction → em-dash
+// Real end = exact countdown. Estimated (BIN creation+30d) = ~prefixed.
 function _sqEndsCell(q) {
-  const ts = q?.listing_end_at;
-  if (!ts) {
+  const eff = _sqEffectiveEnd(q);
+  if (!eff) {
     return _sqIsBIN(q)
       ? '<span style="background:var(--blue-light);color:var(--blue);padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;letter-spacing:.5px">BIN</span>'
       : '<span style="color:var(--text3)">—</span>';
   }
-  const t = new Date(ts).getTime();
+  const t = eff.t;
   if (!isFinite(t)) return '<span style="color:var(--text3)">—</span>';
   const diff = t - Date.now();
   const abs = Math.abs(diff);
@@ -8752,14 +8769,16 @@ function _sqEndsCell(q) {
   else if (m < 60)        rel = `${m}m`;
   else if (h < 24)        rel = `${h}h ${m % 60}m`;
   else                    rel = `${d}d ${h % 24}h`;
+  const prefix = eff.estimated ? '~' : '';
+  const tip    = new Date(t).toLocaleString() + (eff.estimated ? ' (estimated: listing date + 30d)' : '');
   if (diff > 0) {
     const urgent = diff < 3600000; // <1h = red
     const soon   = diff < 21600000; // <6h = orange
     const color = urgent ? 'var(--red)' : soon ? 'var(--yellow)' : 'var(--green)';
     const weight = urgent ? 700 : 600;
-    return `<span style="color:${color};font-weight:${weight}" title="${new Date(ts).toLocaleString()}">ends in ${rel}</span>`;
+    return `<span style="color:${color};font-weight:${weight}" title="${tip}">${prefix}ends in ${rel}</span>`;
   }
-  return `<span style="color:var(--text3)" title="${new Date(ts).toLocaleString()}">ended ${rel} ago</span>`;
+  return `<span style="color:var(--text3)" title="${tip}">${prefix}ended ${rel} ago</span>`;
 }
 
 function _sqRelTime(d) {

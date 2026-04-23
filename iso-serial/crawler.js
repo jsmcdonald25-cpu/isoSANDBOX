@@ -369,6 +369,7 @@ function parseListingToQueueRecord(searchItem, itemDetail, setLabel) {
     grade_guess: gradeGuess,
     fraud_flag: fraudFlag,
     fraud_reasons: fraudReasons,
+    listing_end_at: itemDetail?.itemEndDate || searchItem?.itemEndDate || null,
     raw_browse_response: searchItem || null,
     raw_get_item_response: itemDetail || null,
     status: 'pending',

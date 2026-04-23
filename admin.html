@@ -2650,7 +2650,7 @@ tr:hover td { background: var(--bg); }
             <th style="cursor:pointer;user-select:none" onclick="sqSort('seller_username')">Seller <span class="sq-sort-arrow" data-col="seller_username"></span></th>
             <th style="cursor:pointer;user-select:none" onclick="sqSort('location')">Location <span class="sq-sort-arrow" data-col="location"></span></th>
             <th style="cursor:pointer;user-select:none" onclick="sqSort('seller_feedback_score')">Feedback <span class="sq-sort-arrow" data-col="seller_feedback_score"></span></th>
-            <th style="cursor:pointer;user-select:none" onclick="sqSort('flags')">Flags <span class="sq-sort-arrow" data-col="flags"></span></th>
+            <th style="cursor:pointer;user-select:none" onclick="sqSort('listing_end_at')">Ends <span class="sq-sort-arrow" data-col="listing_end_at"></span></th>
             <th style="cursor:pointer;user-select:none" onclick="sqSort('crawled_at')">Crawled <span class="sq-sort-arrow" data-col="crawled_at"></span></th>
             <th style="width:80px"></th>
           </tr></thead>
@@ -8405,8 +8405,8 @@ let _sqChecklists = {};      // { tableName: [{ id, player, card_number, set_nam
 let _sqLinkedRegistryId = null;   // set when admin picks an existing registry card
 let _sqCurrentImages = [];   // images for the lightbox to step through
 let _sqLightboxIndex = 0;
-let _sqSortField = 'crawled_at'; // default sort
-let _sqSortDir = -1;             // -1 desc, 1 asc
+let _sqSortField = 'listing_end_at'; // default = ending soonest
+let _sqSortDir = 1;                   // 1 asc (soonest first), -1 desc
 
 // ── Serial Queue AI Learn ─────────────────────────────────
 // Calls /.netlify/functions/iso-serial-analyze live — pulls skipped + tagged
@@ -8634,12 +8634,7 @@ function sqRender() {
     const fb = q.seller_feedback_score !== null
       ? `${q.seller_feedback_score} (${q.seller_feedback_percent || 0}%)`
       : '—';
-    const flags = [
-      q.fraud_flag ? '<span style="background:var(--red-light);color:var(--red);padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700">FRAUD</span>' : '',
-      q.auto_type_guess ? `<span style="background:var(--blue-light);color:var(--blue);padding:2px 6px;border-radius:4px;font-size:10px">${q.auto_type_guess}</span>` : '',
-      q.grade_guess ? `<span style="background:var(--purple-light);color:var(--purple);padding:2px 6px;border-radius:4px;font-size:10px">${q.grade_guess}</span>` : '',
-      q.ai_classification ? '<span style="background:var(--purple-light);color:var(--purple);padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700">🤖</span>' : '',
-    ].filter(Boolean).join(' ');
+    const endsCell = _sqEndsCell(q.listing_end_at);
     const titleSafe = (q.title || '—').replace(/"/g, '&quot;');
     // Subtle row tinting for non-pending statuses (only matters when filter = all)
     const rowBg = q.status === 'tagged_new'      ? 'background:rgba(5,150,105,0.05);'
@@ -8657,7 +8652,7 @@ function sqRender() {
       <td style="font-size:11px">${q.seller_username || '—'}</td>
       <td style="font-size:11px;color:var(--text2)">${loc}</td>
       <td style="font-size:11px;color:var(--text2)">${fb}</td>
-      <td>${flags || '—'}</td>
+      <td style="font-size:11px;white-space:nowrap">${endsCell}</td>
       <td style="font-size:10px;color:var(--text3)">${_sqRelTime(new Date(q.crawled_at))}</td>
       <td style="white-space:nowrap">
         ${ebayBtn}
@@ -8675,6 +8670,7 @@ function sqSort(field) {
   } else {
     _sqSortField = field;
     _sqSortDir = (field === 'crawled_at' || field === 'price_usd' || field === 'seller_feedback_score') ? -1 : 1;
+    if (field === 'listing_end_at') _sqSortDir = 1; // default = ending soonest
   }
   sqRender();
 }
@@ -8682,18 +8678,27 @@ function sqSort(field) {
 function sqApplySort(rows) {
   const f = _sqSortField;
   const d = _sqSortDir;
+  // listing_end_at uses bucket-based sorting: future rows first (ending soonest
+  // on top), then past rows (most recently ended first), then nulls. This way
+  // "ending soonest" puts actionable listings at the top regardless of sort dir.
+  if (f === 'listing_end_at') {
+    const now = Date.now();
+    const bucket = (q) => {
+      const t = q.listing_end_at ? new Date(q.listing_end_at).getTime() : null;
+      if (t === null || !isFinite(t)) return [2, 0];
+      if (t >= now) return [0, t - now];       // future: bucket 0, ascending by time-to-end
+      return [1, now - t];                      // past: bucket 1, ascending by time-since-end
+    };
+    return [...rows].sort((a, b) => {
+      const [ba, sa] = bucket(a);
+      const [bb, sb] = bucket(b);
+      if (ba !== bb) return (ba - bb) * d;
+      return (sa - sb) * d;
+    });
+  }
   // Computed accessors for fields that aren't direct properties
   const getter = (q) => {
     if (f === 'location') return [q.ship_from_city || q.item_location_city, q.ship_from_state || q.item_location_state].filter(Boolean).join(', ').toLowerCase();
-    if (f === 'flags') {
-      // sort by combined flag weight (FRAUD highest, then auto, then grade, then AI)
-      let w = 0;
-      if (q.fraud_flag) w += 1000;
-      if (q.auto_type_guess) w += 100;
-      if (q.grade_guess) w += 10;
-      if (q.ai_classification) w += 1;
-      return w;
-    }
     if (f === 'crawled_at') return new Date(q.crawled_at || 0).getTime();
     if (f === 'price_usd') return q.price_usd || 0;
     if (f === 'seller_feedback_score') return q.seller_feedback_score || -1;
@@ -8713,6 +8718,33 @@ function sqUpdateSortArrows() {
     const col = span.getAttribute('data-col');
     span.textContent = col === _sqSortField ? (_sqSortDir === 1 ? ' ▲' : ' ▼') : '';
   });
+}
+
+// Format a listing_end_at timestamp for the Ends column.
+// Future = green countdown ("ends in 2h 34m"), past = gray ("ended 3h ago"),
+// null = em-dash. Short enough to fit in a column cell.
+function _sqEndsCell(ts) {
+  if (!ts) return '<span style="color:var(--text3)">—</span>';
+  const t = new Date(ts).getTime();
+  if (!isFinite(t)) return '<span style="color:var(--text3)">—</span>';
+  const diff = t - Date.now();
+  const abs = Math.abs(diff);
+  const m = Math.floor(abs / 60000);
+  const h = Math.floor(m / 60);
+  const d = Math.floor(h / 24);
+  let rel;
+  if (abs < 60000)        rel = diff > 0 ? 'any sec' : 'just ended';
+  else if (m < 60)        rel = `${m}m`;
+  else if (h < 24)        rel = `${h}h ${m % 60}m`;
+  else                    rel = `${d}d ${h % 24}h`;
+  if (diff > 0) {
+    const urgent = diff < 3600000; // <1h = red
+    const soon   = diff < 21600000; // <6h = orange
+    const color = urgent ? 'var(--red)' : soon ? 'var(--yellow)' : 'var(--green)';
+    const weight = urgent ? 700 : 600;
+    return `<span style="color:${color};font-weight:${weight}" title="${new Date(ts).toLocaleString()}">ends in ${rel}</span>`;
+  }
+  return `<span style="color:var(--text3)" title="${new Date(ts).toLocaleString()}">ended ${rel} ago</span>`;
 }
 
 function _sqRelTime(d) {

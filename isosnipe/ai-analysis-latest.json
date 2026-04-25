@@ -1,15 +1,15 @@
 {
   "blocklist_terms": [
     "facsimile signature",
-    "novelty card",
     "gold edition signature",
-    "made in usa signature",
-    "23kt gold",
-    "rainbow foil",
-    "incomplete set",
-    "missing card",
-    "set needs",
-    "low series set"
+    "gold foil signature card",
+    "novelty card",
+    "merrick mint 23kt gold",
+    "rainbow foil refractor",
+    "signature series",
+    "print",
+    "almost complete set",
+    "made in usa signature"
   ],
   "query_refinements": [
     {
@@ -18,47 +18,45 @@
       "negatives": [
         "novelty",
         "print",
-        "rainbow foil",
-        "prospect",
-        "rookie rc"
+        "fake",
+        "facsimile"
       ]
     },
     {
       "player": "Ken Griffey Jr",
       "parallel": "Autograph",
       "negatives": [
-        "facsimile",
-        "signature card",
         "gold edition",
-        "msig"
+        "signature card",
+        "facsimile",
+        "merrick mint"
       ]
     },
     {
       "player": "Ichiro Suzuki",
       "parallel": "Autograph",
       "negatives": [
-        "23kt gold",
         "merrick mint",
-        "facsimile",
-        "msig",
-        "made in usa"
+        "23kt gold",
+        "made in usa signature",
+        "signature series"
       ]
     }
   ],
   "insights": [
-    "Facsimile/printed signatures rejected 28.6% (4/14); authentic on-card autos in confirmations command 80%+ discount spreads.",
-    "Multi-player or incomplete set listings rejected 21.4% (3/14); single-player authentic cards confirmed.",
-    "Novelty/reprint/custom flags reject 21.4% (3/14); vintage/licensed products in confirmations.",
-    "Wrong player/card/parallel mismatches rejected 28.6% (4/14); title-to-card alignment critical for snipes.",
-    "Confirmed snipes feature authentic signature products (Topps Tribute, Authentic Images Gold Foil) vs rejected facsimile/gold-plated variants.",
-    "Price anomalies ('other' reason) tagged 28.6% (4/14); confirmations show legitimately underpriced authentic autos.",
-    "Emojis/hype language ('🔥🚀⭐️') correlates with rejection; confirmed titles use clean, card-accurate descriptions.",
-    "Set products and bulk listings universally rejected; snipes target individual authentic autograph cards."
+    "Facsimile signatures (2 rejections) are strongest blocklist signal; zero confirmed good listings contain this term.",
+    "Gold/metallic printing variants rejected 3× (23kt gold, gold edition, gold foil signature card); authentic confirmed autos avoid these descriptors.",
+    "Price mismatches and market discrepancies account for 4/14 rejections (28%); confirmed snipes show steep discounts (81–82% below market).",
+    "Title/card mismatch flagged 2/14 rejections; confirmed listings have exact card number/set match to title.",
+    "Wrong player/card number errors comprise 4/14 rejections (28%); both confirmed snipes target correct player and valid card.",
+    "Novelty/custom/reprint/partial-set language appears in 5 rejections; no confirmed snipes use these terms.",
+    "Autograph cards dominate both cohorts (11/14 rejections, 2/2 confirmations); authenticity verification critical.",
+    "Confirmed snipes are graded/attributed Ichiro Suzuki autos from 2001–2023 reputable products; rejected autos lack provenance or use suspect language."
   ],
   "rejection_breakdown": {
     "other": 5,
-    "wrong_player": 2,
     "facsimile_signature": 2,
+    "wrong_player": 2,
     "wrong_card_num": 2,
     "reprint_or_custom": 1,
     "wrong_market_price": 1,
@@ -68,6 +66,6 @@
     "rejections_analyzed": 14,
     "confirmations_analyzed": 2,
     "model": "claude-haiku-4-5",
-    "analyzed_at": "2026-04-24T22:36:14.719Z"
+    "analyzed_at": "2026-04-25T10:42:03.026Z"
   }
 }

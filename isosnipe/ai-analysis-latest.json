@@ -2,81 +2,57 @@
   "blocklist_terms": [
     "facsimile signature",
     "gold signature series",
-    "gold edition signature",
     "novelty card",
+    "signature card guard",
     "made in usa signature",
-    "msig",
-    "incomplete set",
-    "merrick mint",
-    "rainbow foil",
-    "set missing",
-    "reprint",
-    "wrong market price",
-    "very good condition"
+    "rainbow foil refractor",
+    "gold edition signature",
+    "23kt gold",
+    "rookie auto print",
+    "msig made in usa"
   ],
   "query_refinements": [
     {
       "player": "Shohei Ohtani",
       "parallel": "Autograph",
       "negatives": [
+        "facsimile",
         "novelty",
-        "print",
-        "roki sasaki",
-        "topps investment",
-        "rainbow foil"
+        "rainbow foil",
+        "rookie auto print",
+        "roki sasaki"
+      ]
+    },
+    {
+      "player": "Ken Griffey Jr",
+      "parallel": "Autograph",
+      "negatives": [
+        "gold signature",
+        "facsimile signature",
+        "signature card guard",
+        "gold edition"
       ]
     },
     {
       "player": "Ichiro Suzuki",
       "parallel": "Autograph",
       "negatives": [
-        "facsimile",
-        "gold signature",
-        "made in usa",
-        "merrick mint",
-        "exhibits"
-      ]
-    },
-    {
-      "player": "Ken Griffey Jr",
-      "parallel": "Autograph",
-      "negatives": [
-        "facsimile",
-        "gold edition",
-        "signature card",
-        "group lot"
-      ]
-    },
-    {
-      "player": "Ken Griffey Jr",
-      "parallel": "Base",
-      "negatives": [
-        "incomplete set",
-        "missing",
-        "donruss",
-        "very good condition"
-      ]
-    },
-    {
-      "player": "Shohei Ohtani",
-      "parallel": "Refractor",
-      "negatives": [
-        "rainbow foil",
-        "35th anniversary",
-        "reprint",
-        "shoehei misspell"
+        "facsimile signature",
+        "23kt gold",
+        "made in usa signature",
+        "merrick mint"
       ]
     }
   ],
   "insights": [
-    "Facsimile signatures account for 14% of rejections (2/14); consistent blocklist signal across multiple players.",
-    "14% rejected for wrong_player/wrong_card_num (2/14); title-card mismatches indicate poor listing quality.",
-    "Confirmed snipes feature exact-match on-card signatures (Authentic Images, Topps Tribute) with 81–82% delta vs market.",
-    "Spelling errors ('Shoehei', 'Griffy') and novelty/print claims appear in 21% of rejections.",
-    "Set/incomplete-card listings rejected 14% (2/14); snipes target single cards, not broken lots.",
-    "Gold/special edition variants (23kt gold, gold signature) rejected in 21% (3/14) despite 'auto' label.",
-    "Confirmed snipes avoid condition qualifiers and vague descriptions; titles precise (year, set, card #, parallel).",
-    "Price-anchored rejections (wrong_market_price, other-price notes) suggest admin filtering by cost-to-market ratio; snipes show 80%+ delta."
+    "Facsimile/printed signatures account for 28.6% (4/14) of rejections—strongest blocklist signal.",
+    "Specialty/novelty cards (gold foil, premium materials, non-standard products) represent 35.7% (5/14) of rejections.",
+    "Confirmed snipes feature genuine on-card autos from modern products (Topps Tribute 2023, Authentic Images 2001) with 80%+ market discounts.",
+    "Reprint/custom, wrong_player, and wrong_parallel collectively explain 42.9% (6/14) of rejections.",
+    "Rejected listings frequently contain promotional language (RARE, INVESTMENT, MVP, SSP) absent from confirmations.",
+    "All confirmations are authentic autographs from established manufacturers; no gold editions, reprints, or novelty parallels present.",
+    "Wrong card number/set mismatches in title vs. specifics appear in 14.3% (2/14) rejections.",
+    "Market price misalignment accounts for 7.1% (1/14) rejections; confirmed snipes show 80%+ delta below market avg."
   ],
   "rejection_breakdown": {
     "other": 5,
@@ -85,12 +61,13 @@
     "wrong_card_num": 2,
     "wrong_market_price": 1,
     "reprint_or_custom": 1,
-    "wrong_parallel": 1
+    "wrong_parallel": 1,
+    "wrong_set": 1
   },
   "_meta": {
     "rejections_analyzed": 14,
     "confirmations_analyzed": 2,
     "model": "claude-haiku-4-5",
-    "analyzed_at": "2026-04-25T22:31:23.330Z"
+    "analyzed_at": "2026-04-26T10:43:31.859Z"
   }
 }

@@ -14999,6 +14999,100 @@ function _renderISOList(){
     </div>
     <div class="iso-detail-panel" id="iso-dp-${idx}"></div>`;
   }).join('');
+  // Hydrate real card images into the .iso-img tiles (replaces sport emoji)
+  _oiHydrateImages(rows);
+}
+
+// Background-fetch the actual card front image for each rendered ISO tile and
+// swap the sport-emoji placeholder for an <img>. Caches per-row on iso._cardImg
+// so filter/sort re-renders don't re-fetch. On any miss, the emoji stays.
+async function _oiHydrateImages(rows){
+  if(!rows || !rows.length) return;
+  if(!IV_SETS || !IV_SETS.length){
+    try { await _ivSetsReady; } catch(e){}
+  }
+  if(!IV_SETS || !IV_SETS.length) return;
+  const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+  const sbH = { 'apikey': SKEY, 'Authorization': 'Bearer ' + SKEY };
+  const byTable = {};
+  rows.forEach(iso => {
+    if(Object.prototype.hasOwnProperty.call(iso, '_cardImg')) return;
+    const m = String(iso.notes||'').match(/Card #([^·]+?)(?:\s*·|$)/);
+    const cardNum = m ? m[1].trim() : null;
+    if(!cardNum){ iso._cardImg = null; return; }
+    const cn = String(iso.card_name || '');
+    const yearMatch = cn.match(/(19|20)\d{2}/);
+    const year = yearMatch ? parseInt(yearMatch[0]) : null;
+    const brandMatch = cn.match(/\b(Topps|Bowman|Panini|Leaf|Upper Deck|Donruss|Fleer)\b/i);
+    const brand = brandMatch ? brandMatch[0] : '';
+    const setStr = cn
+      .replace(/(19|20)\d{2}/g,'')
+      .replace(/\b(Topps|Bowman|Panini|Leaf|Upper Deck|Donruss|Fleer)\b/ig,'')
+      .replace(/\s+/g,' ').trim();
+    const table = _cdGuessTable({ year, brand, set: setStr, set_name: setStr });
+    if(!table){ iso._cardImg = null; return; }
+    iso._lookupTable = table;
+    iso._lookupCardNum = cardNum;
+    if(!byTable[table]) byTable[table] = new Set();
+    byTable[table].add(cardNum);
+  });
+  const tableData = {};
+  await Promise.all(Object.entries(byTable).map(async ([table, cardNumSet]) => {
+    const list = [...cardNumSet].map(c => '"' + String(c).replace(/"/g,'') + '"').join(',');
+    try {
+      const url = 'https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/' + table + '?select=*&card_number=in.(' + list + ')';
+      const r = await fetch(url, { headers: sbH });
+      if(!r.ok) return;
+      const data = await r.json();
+      tableData[table] = {};
+      data.forEach(row => { tableData[table][String(row.card_number)] = row; });
+    } catch(e) {}
+  }));
+  const norm = (s) => String(s||'').replace(/\s+/g,' ').replace(/\s*\/\s*\d+\s*$/,'').trim().toLowerCase();
+  rows.forEach((iso, idx) => {
+    if(!Object.prototype.hasOwnProperty.call(iso, '_cardImg')){
+      const t = iso._lookupTable;
+      const c = iso._lookupCardNum;
+      const cardRow = (t && c && tableData[t]) ? tableData[t][c] : null;
+      let url = null;
+      if(cardRow){
+        let vimg = cardRow.var_images || {};
+        if(typeof vimg === 'string'){ try { vimg = JSON.parse(vimg); } catch(e){ vimg = {}; } }
+        const parallel = String(iso.parallel||'').trim();
+        if(vimg[parallel] && vimg[parallel].front) url = vimg[parallel].front;
+        if(!url){
+          const np = norm(parallel);
+          for(const k of Object.keys(vimg)){
+            if(norm(k) === np && vimg[k] && vimg[k].front){ url = vimg[k].front; break; }
+          }
+        }
+        if(!url){
+          for(const k of ['Base','base','BASE']){
+            if(vimg[k] && vimg[k].front){ url = vimg[k].front; break; }
+          }
+        }
+        if(!url){
+          for(const k of Object.keys(vimg)){
+            if(vimg[k] && vimg[k].front){ url = vimg[k].front; break; }
+          }
+        }
+        if(!url && cardRow.front_img) url = cardRow.front_img;
+      }
+      iso._cardImg = url || null;
+    }
+    if(iso._cardImg){
+      const tile = document.querySelector('#iso-row-' + idx + ' .iso-img');
+      if(tile && !tile.querySelector('img')){
+        const img = document.createElement('img');
+        img.src = iso._cardImg;
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block';
+        img.loading = 'lazy';
+        img.onerror = function(){ this.remove(); };
+        tile.innerHTML = '';
+        tile.appendChild(img);
+      }
+    }
+  });
 }
 
 // ── ISO DETAIL VIEW ─────────────────────────────────────────

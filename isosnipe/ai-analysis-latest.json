@@ -1,25 +1,28 @@
 {
   "blocklist_terms": [
     "facsimile signature",
-    "gold signature series",
-    "novelty card",
-    "signature card guard",
-    "made in usa signature",
-    "rainbow foil refractor",
     "gold edition signature",
+    "gold foil signature card",
+    "novelty card",
+    "reprint or custom",
     "23kt gold",
-    "rookie auto print",
-    "msig made in usa"
+    "rainbow foil",
+    "set missing",
+    "incomplete set",
+    "signature series",
+    "made in usa signature",
+    "group of noted"
   ],
   "query_refinements": [
     {
       "player": "Shohei Ohtani",
       "parallel": "Autograph",
       "negatives": [
-        "facsimile",
         "novelty",
+        "facsimile",
         "rainbow foil",
-        "rookie auto print",
+        "reprint",
+        "wrong player",
         "roki sasaki"
       ]
     },
@@ -27,47 +30,49 @@
       "player": "Ken Griffey Jr",
       "parallel": "Autograph",
       "negatives": [
-        "gold signature",
         "facsimile signature",
-        "signature card guard",
-        "gold edition"
+        "gold edition",
+        "signature card",
+        "group of",
+        "incomplete set"
       ]
     },
     {
       "player": "Ichiro Suzuki",
       "parallel": "Autograph",
       "negatives": [
-        "facsimile signature",
+        "facsimile",
+        "gold foil signature",
         "23kt gold",
-        "made in usa signature",
-        "merrick mint"
+        "merrick mint",
+        "made in usa",
+        "cano hernandez"
       ]
     }
   ],
   "insights": [
-    "Facsimile/printed signatures account for 28.6% (4/14) of rejections—strongest blocklist signal.",
-    "Specialty/novelty cards (gold foil, premium materials, non-standard products) represent 35.7% (5/14) of rejections.",
-    "Confirmed snipes feature genuine on-card autos from modern products (Topps Tribute 2023, Authentic Images 2001) with 80%+ market discounts.",
-    "Reprint/custom, wrong_player, and wrong_parallel collectively explain 42.9% (6/14) of rejections.",
-    "Rejected listings frequently contain promotional language (RARE, INVESTMENT, MVP, SSP) absent from confirmations.",
-    "All confirmations are authentic autographs from established manufacturers; no gold editions, reprints, or novelty parallels present.",
-    "Wrong card number/set mismatches in title vs. specifics appear in 14.3% (2/14) rejections.",
-    "Market price misalignment accounts for 7.1% (1/14) rejections; confirmed snipes show 80%+ delta below market avg."
+    "Facsimile/printed signatures rejected 14% (2/14); confirmed listings feature authentic on-card autos with 80%+ delta.",
+    "Novelty cards and reprint flags appear exclusively in rejections; zero overlap with confirmed genuine vintage.",
+    "Gold-leafed/special edition signature products (Merrick Mint, Gold Edition) rejected; confirms real snipes are standard retail releases.",
+    "Wrong player/set/number issues account for 21% of rejections (3/14); confirmed listings have exact title-to-card match.",
+    "Multi-player or incomplete set listings rejected 100%; confirmed snipes are single-card, complete items.",
+    "Emoji-heavy titles with ALL CAPS modifiers (INVESTMENT, RARE, MINT) correlate with rejection; confirmed use neutral formal language.",
+    "Market price mismatches and 'other' category represent 36% of rejections; confirmed items show 80%+ underpricing vs. market average.",
+    "Confirmed snipes: authenticated vintage autos in standard product (2001 Authentic Images, 2023 Topps Tribute) priced 81–82% below market."
   ],
   "rejection_breakdown": {
-    "other": 5,
-    "facsimile_signature": 2,
-    "wrong_player": 2,
-    "wrong_card_num": 2,
     "wrong_market_price": 1,
+    "wrong_player": 2,
+    "other": 6,
     "reprint_or_custom": 1,
-    "wrong_parallel": 1,
-    "wrong_set": 1
+    "facsimile_signature": 2,
+    "wrong_card_num": 2,
+    "wrong_parallel": 1
   },
   "_meta": {
     "rejections_analyzed": 14,
     "confirmations_analyzed": 2,
     "model": "claude-haiku-4-5",
-    "analyzed_at": "2026-04-26T10:43:31.859Z"
+    "analyzed_at": "2026-04-27T11:44:21.293Z"
   }
 }

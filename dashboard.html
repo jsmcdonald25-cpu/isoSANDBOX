@@ -14975,11 +14975,14 @@ function _renderISOList(){
     const sportIcon = _oiSportIcon(sport);
     const watchers = _oiWatcherCount(iso);
     const urgentClass = hasOffers ? ' oi-urgent' : '';
-    // Actions: own ISOs get review/cancel, other people's ISOs get Make Offer
+    // Actions: own ISOs get review/cancel, other people's ISOs get one-click Accept at buyer's locked price
+    const _acceptPrice = iso.max_price ? '$'+parseFloat(iso.max_price).toLocaleString() : null;
     const offerAction = hasOffers && isMine
       ? `<span class="ni-action" onclick="event.stopPropagation();openOfferReview(${idx})">Review Offers &#8594;</span>`
       : (!isMine && iso.status==='active'
-        ? `<span class="ni-action" style="color:var(--green)" onclick="event.stopPropagation();openMakeOffer(${idx})">Make Offer &#8594;</span>`
+        ? (_acceptPrice
+          ? `<span class="ni-action" style="color:var(--green)" onclick="event.stopPropagation();acceptIsoAtBuyerPrice(${idx})">Accept ${_acceptPrice} &#8594;</span>`
+          : `<span class="ni-action" style="color:var(--muted-text)">No price set</span>`)
         : '');
     const mineTag = isMine ? '<span style="font-size:10px;color:var(--muted-text);letter-spacing:1px;font-family:Barlow Condensed,sans-serif">YOUR ISO</span>' : '';
     return `
@@ -15135,12 +15138,15 @@ async function openISODetail(idx){
   const posted = iso.created_at ? new Date(iso.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
   const notes = _h(iso.notes || '');
 
-  // Actions: owner gets cancel/refresh, other users get Make Offer
+  // Actions: owner gets cancel/refresh, other users get one-click Accept at buyer's locked price
+  const _acceptPriceDp = iso.max_price ? '$'+parseFloat(iso.max_price).toLocaleString() : null;
   const actions = isMine
     ? `${iso.status==='active'?'<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();cancelISO('+idx+')">Cancel ISO</button>':''}
        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();refreshISO('+idx+')">Refresh as New</button>`
     : (iso.status==='active'
-      ? `<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openMakeOffer(${idx})" style="background:var(--green);color:#000">Make Offer</button>`
+      ? (_acceptPriceDp
+        ? `<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();acceptIsoAtBuyerPrice(${idx})" style="background:var(--green);color:#000">&#10003; Accept at ${_acceptPriceDp}</button>`
+        : `<button class="btn btn-ghost btn-sm" disabled style="opacity:.5;cursor:not-allowed">No price set by buyer</button>`)
       : '');
 
   panel.innerHTML = `
@@ -15334,6 +15340,50 @@ async function refreshISO(idx){
   } catch(e){ T('Failed to refresh: '+e.message); }
 }
 
+// One-click seller accept at buyer's locked price.
+// Buyer-advantage flow: seller does NOT make an offer. They accept the ISO
+// directly at the buyer's locked price. No row written to the offers table —
+// the ISO itself is the source of truth, the seller just claims it.
+// See feedback_iso_buyer_advantage_flow.md for the locked product rule.
+async function acceptIsoAtBuyerPrice(idx){
+  const rows = _getIsoRows();
+  const iso = rows[idx];
+  if(!iso) return;
+  const user = window._authUser;
+  if(!user){ T('You must be signed in to accept.'); return; }
+  const price = parseFloat(iso.max_price);
+  if(!price || price < 1){ T('Buyer has not set a price on this ISO yet.'); return; }
+  const player = iso.player || iso.card_name || 'Unknown';
+  if(!confirm('Accept this ISO at $'+price.toLocaleString()+'?\n\n'+player+' — '+(iso.parallel||'Base')+'\n\nDeal locks at the buyer\'s price.')) return;
+  try {
+    // Mark the ISO as matched. Seller is identified by who clicked accept.
+    // Schema-safe: only touching status column on isos (known to exist).
+    await _rPatch('isos','id=eq.'+iso.id, { status:'matched' });
+    // Best-effort buyer notification — non-fatal if notifications table differs.
+    if(iso.user_id){
+      try {
+        await _rPost('notifications', {
+          user_id:    iso.user_id,
+          type:       'iso_accepted',
+          title:      'Seller accepted your ISO',
+          body:       'A seller accepted your ISO for '+player+' — '+(iso.parallel||'Base')+' at $'+price.toFixed(2)+'.',
+          link:       '/dashboard.html#myisos',
+          read:       false,
+          created_at: new Date().toISOString()
+        }, 'return=minimal');
+      } catch(_){ /* notifications optional */ }
+    }
+    T('Accepted at $'+price.toLocaleString()+' — buyer notified.');
+    if(typeof renderMyISOs==='function') renderMyISOs();
+    else _renderISOList && _renderISOList();
+  } catch(e){
+    T('Failed to accept: '+(e.message||'unknown error'));
+  }
+}
+
+// DEPRECATED — seller "Make Offer" modal flow. Replaced by acceptIsoAtBuyerPrice
+// per buyer-advantage product rule (no negotiation). Kept for backward compat
+// with any cached references; no UI calls this anymore.
 function openMakeOffer(idx){
   const rows = _getIsoRows();
   const iso = rows[idx];

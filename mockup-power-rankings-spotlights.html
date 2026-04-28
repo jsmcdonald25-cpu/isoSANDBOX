@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Power Rankings — Spotlights Mockup v1</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#00AAFF;--blue-bright:#33CCFF;--blue-glow:rgba(0,170,255,0.35);
+  --white:#FFFFFF;--chrome:#B0BEC5;--muted-text:#7A95AE;
+  --deep1:#0D1F33;--deep2:#112840;--deep3:#143050;
+  --deep-border:rgba(0,170,255,0.15);
+  --green:#00E887;--red:#FF3B5C;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--deep1);color:var(--white);font-family:Inter,sans-serif;min-height:100vh}
+.content{padding:24px;max-width:1400px;margin:0 auto}
+
+/* === EXACT replica of existing Power Rankings styles === */
+.pr-hero{position:relative;height:280px;overflow:hidden;background:#030a14;margin:-24px -24px 0;border-radius:14px 14px 0 0}
+.pr-beam{position:absolute;top:-50%;height:200%;width:200px;opacity:.25;filter:blur(20px);transform:rotate(15deg)}
+.pr-beam.l{background:linear-gradient(transparent,#00AAFF,transparent);left:10%}
+.pr-beam.c{background:linear-gradient(transparent,#FFFFFF,transparent);left:45%}
+.pr-beam.r{background:linear-gradient(transparent,#00E887,transparent);right:15%}
+.pr-flare{position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(0,170,255,0.15),transparent 60%);border-radius:50%;top:-200px;left:-100px}
+.pr-flare2{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(0,232,135,0.08),transparent 60%);border-radius:50%;bottom:-200px;right:-100px}
+.pr-haze{position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(13,31,51,0.95) 100%)}
+.pr-hero-content{position:relative;z-index:10;padding:50px 44px 0;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.pr-hero h1{font-family:'Bebas Neue',sans-serif;font-size:72px;letter-spacing:8px;line-height:.9;background:linear-gradient(180deg,#fff 0%,var(--chrome) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 4px 20px rgba(0,0,0,0.5))}
+.pr-hero h1 .pr-accent{background:linear-gradient(90deg,#CC0000,#CC0000,#FFFFFF,#FFFFFF,#003DA5,#003DA5,#CC0000,#CC0000);background-size:400%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:inline-block}
+.pr-hero-sub{color:var(--chrome);font-family:Barlow Condensed,sans-serif;font-size:18px;margin-top:8px}
+.pr-hero-tags{display:flex;gap:10px;margin-top:14px;justify-content:center}
+.pr-tag{padding:5px 14px;border-radius:20px;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:600;background:rgba(0,232,135,0.15);border:1px solid rgba(0,232,135,0.4);color:var(--green)}
+
+.pr-tbar{display:flex;align-items:center;gap:8px;padding:14px 20px;background:rgba(17,40,64,0.7);backdrop-filter:blur(12px);border-bottom:1px solid var(--deep-border);margin:0 -24px}
+.pr-tg{display:flex;background:var(--deep1);border-radius:8px;overflow:hidden;border:1px solid var(--deep-border)}
+.pr-tb{padding:8px 24px;font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:600;letter-spacing:.5px;color:var(--muted-text);cursor:pointer;border:none;background:none;text-transform:uppercase}
+.pr-tb.a{background:var(--blue);color:#fff;box-shadow:0 0 12px var(--blue-glow)}
+
+.pr-spots{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:28px 20px 16px}
+.pr-spot{position:relative;border-radius:16px;overflow:hidden;cursor:pointer;height:220px;transition:transform .4s cubic-bezier(.2,.8,.3,1),box-shadow .4s;background:var(--deep2);border:1px solid var(--deep-border)}
+.pr-spot:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 16px 48px rgba(0,0,0,0.6)}
+.pr-spot .pr-glow{position:absolute;bottom:0;left:0;right:0;height:60px;opacity:.5;z-index:1}
+.pr-spot.gold-c .pr-glow{background:linear-gradient(to top,rgba(255,215,0,0.2),transparent)}
+.pr-spot.green-c .pr-glow{background:linear-gradient(to top,rgba(0,232,135,0.2),transparent)}
+.pr-spot.pink-c .pr-glow{background:linear-gradient(to top,rgba(255,110,199,0.2),transparent)}
+.pr-spot.red-c .pr-glow{background:linear-gradient(to top,rgba(255,59,92,0.22),transparent)}
+.pr-spot.orange-c .pr-glow{background:linear-gradient(to top,rgba(255,165,0,0.2),transparent)}
+.pr-spot.purple-c .pr-glow{background:linear-gradient(to top,rgba(176,105,255,0.22),transparent)}
+
+.pr-spot-line{position:absolute;top:0;left:0;right:0;height:3px;z-index:3}
+.pr-spot.gold-c .pr-spot-line{background:linear-gradient(90deg,#FFD700,rgba(255,215,0,0.1))}
+.pr-spot.green-c .pr-spot-line{background:linear-gradient(90deg,var(--green),rgba(0,232,135,0.1))}
+.pr-spot.pink-c .pr-spot-line{background:linear-gradient(90deg,#FF6EC7,rgba(255,110,199,0.1))}
+.pr-spot.red-c .pr-spot-line{background:linear-gradient(90deg,#FF3B5C,rgba(255,59,92,0.1))}
+.pr-spot.orange-c .pr-spot-line{background:linear-gradient(90deg,#FFA500,rgba(255,165,0,0.1))}
+.pr-spot.purple-c .pr-spot-line{background:linear-gradient(90deg,#B069FF,rgba(176,105,255,0.1))}
+
+.pr-spot-inner{position:relative;z-index:2;padding:16px 20px;height:100%;display:flex;flex-direction:column;justify-content:center}
+.pr-spot-big{font-family:Barlow Condensed,sans-serif;font-size:13px;letter-spacing:2px;font-weight:700;text-transform:uppercase}
+.pr-spot-title{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:3px;line-height:1;margin-top:2px}
+.pr-spot-desc{font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--chrome);margin-top:4px;font-weight:500}
+.pr-spot-leader{font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text);margin-top:10px}
+.pr-spot-leader b{color:var(--chrome);font-weight:600}
+.pr-spot-cta{display:flex;align-items:center;gap:4px;margin-top:10px;font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.pr-spot.gold-c .pr-spot-big,.pr-spot.gold-c .pr-spot-title,.pr-spot.gold-c .pr-spot-cta{color:#FFD700}
+.pr-spot.green-c .pr-spot-big,.pr-spot.green-c .pr-spot-title,.pr-spot.green-c .pr-spot-cta{color:var(--green)}
+.pr-spot.pink-c .pr-spot-big,.pr-spot.pink-c .pr-spot-title,.pr-spot.pink-c .pr-spot-cta{color:#FF6EC7}
+.pr-spot.red-c .pr-spot-big,.pr-spot.red-c .pr-spot-title,.pr-spot.red-c .pr-spot-cta{color:#FF3B5C}
+.pr-spot.orange-c .pr-spot-big,.pr-spot.orange-c .pr-spot-title,.pr-spot.orange-c .pr-spot-cta{color:#FFA500}
+.pr-spot.purple-c .pr-spot-big,.pr-spot.purple-c .pr-spot-title,.pr-spot.purple-c .pr-spot-cta{color:#B069FF}
+
+.pr-spot-cta svg{width:16px;height:16px}
+.pr-spot-tip{position:absolute;top:14px;right:14px;z-index:4;padding:5px 12px;border-radius:8px;background:rgba(0,0,0,0.8);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.08);font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--chrome);letter-spacing:.3px;opacity:0;transform:translateY(-4px);transition:.25s;pointer-events:none}
+.pr-spot:hover .pr-spot-tip{opacity:1;transform:translateY(0)}
+
+.section-divider{margin:28px 20px 0;padding-top:20px;border-top:1px dashed var(--deep-border);font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:3px;color:var(--blue);text-transform:uppercase}
+.section-divider .new{background:rgba(0,232,135,0.15);border:1px solid rgba(0,232,135,0.4);color:var(--green);padding:2px 8px;border-radius:4px;margin-left:10px;font-size:10px;font-weight:700}
+
+.legal-note{margin:24px 20px;padding:14px 18px;background:var(--deep2);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--chrome);line-height:1.6}
+.legal-note b{color:var(--white)}
+
+@media(max-width:1200px){.pr-spots{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){.pr-hero{height:220px}.pr-hero h1{font-size:44px}.pr-hero-content{padding:30px 20px 0}.pr-spots{grid-template-columns:1fr;padding:16px}.pr-spot{height:180px}.pr-tbar{padding:10px 16px;flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<div class="content">
+
+  <!-- HERO (live replica) -->
+  <div class="pr-hero">
+    <div class="pr-beam l"></div><div class="pr-beam c"></div><div class="pr-beam r"></div>
+    <div class="pr-flare"></div><div class="pr-flare2"></div>
+    <div class="pr-haze"></div>
+    <div class="pr-hero-content">
+      <h1>MLB <span class="pr-accent">POWER</span> RANKINGS</h1>
+      <p class="pr-hero-sub">Performance meets price &mdash; find the next unicorn before anyone else</p>
+      <div class="pr-hero-tags">
+        <div class="pr-tag">Live Data</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOGGLE BAR (live replica) -->
+  <div class="pr-tbar">
+    <div class="pr-tg">
+      <button class="pr-tb">Season</button>
+      <button class="pr-tb a">Last 5 Games</button>
+    </div>
+    <div style="margin-left:auto;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--muted-text)">Updated daily 5am EST</div>
+  </div>
+
+  <!-- ROW 1 — EXISTING SPOTLIGHTS -->
+  <div class="pr-spots">
+    <div class="pr-spot gold-c">
+      <div class="pr-spot-line"></div><div class="pr-glow"></div>
+      <div class="pr-spot-inner">
+        <div class="pr-spot-tip">Updates daily based on all-player performance</div>
+        <div class="pr-spot-big">&#11088; Top 15</div>
+        <div class="pr-spot-title">Superstars</div>
+        <div class="pr-spot-desc">Position Players &amp; DH</div>
+        <div class="pr-spot-leader">Currently #1: <b>Aaron Judge</b></div>
+        <div class="pr-spot-cta">View Rankings <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+    </div>
+    <div class="pr-spot green-c">
+      <div class="pr-spot-line"></div><div class="pr-glow"></div>
+      <div class="pr-spot-inner">
+        <div class="pr-spot-tip">Updates daily based on rookie performance</div>
+        <div class="pr-spot-big">&#127775; Top 10</div>
+        <div class="pr-spot-title">Rookies</div>
+        <div class="pr-spot-desc">The Next Generation</div>
+        <div class="pr-spot-leader">Currently #1: <b>Paul Skenes</b></div>
+        <div class="pr-spot-cta">View Rankings <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+    </div>
+    <div class="pr-spot pink-c">
+      <div class="pr-spot-line"></div><div class="pr-glow"></div>
+      <div class="pr-spot-inner">
+        <div class="pr-spot-tip">Stats rising + card price still low = BUY signal</div>
+        <div class="pr-spot-big">&#129412; Top 10</div>
+        <div class="pr-spot-title">Unicorn Alert</div>
+        <div class="pr-spot-desc">Best Value Picks</div>
+        <div class="pr-spot-leader">Currently #1: <b>Jackson Merrill</b></div>
+        <div class="pr-spot-cta">View Rankings <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIVIDER -->
+  <div class="section-divider">Award Watch <span class="new">NEW</span></div>
+
+  <!-- ROW 2 — NEW AWARD-WATCH SPOTLIGHTS -->
+  <div class="pr-spots">
+
+    <!-- MVP WATCH -->
+    <div class="pr-spot red-c">
+      <div class="pr-spot-line"></div><div class="pr-glow"></div>
+      <div class="pr-spot-inner">
+        <div class="pr-spot-tip">Top wRC+ leaders — the season MVP race</div>
+        <div class="pr-spot-big">&#127942; Top 10</div>
+        <div class="pr-spot-title">MVP Watch</div>
+        <div class="pr-spot-desc">Best of the Best</div>
+        <div class="pr-spot-leader">Currently #1: <b>Aaron Judge</b> &middot; 198 wRC+</div>
+        <div class="pr-spot-cta">View Race <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+    </div>
+
+    <!-- TOP ROOKIE -->
+    <div class="pr-spot orange-c">
+      <div class="pr-spot-line"></div><div class="pr-glow"></div>
+      <div class="pr-spot-inner">
+        <div class="pr-spot-tip">Top rookie performance — front-runners for the freshman crown</div>
+        <div class="pr-spot-big">&#127807; Top 10</div>
+        <div class="pr-spot-title">Top Rookie</div>
+        <div class="pr-spot-desc">First-Year Front-Runners</div>
+        <div class="pr-spot-leader">Currently #1: <b>Paul Skenes</b> &middot; 168 ERA+</div>
+        <div class="pr-spot-cta">View Race <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+    </div>
+
+    <!-- ACE WATCH -->
+    <div class="pr-spot purple-c">
+      <div class="pr-spot-line"></div><div class="pr-glow"></div>
+      <div class="pr-spot-inner">
+        <div class="pr-spot-tip">Top ERA+/FIP+ pitchers dominating the mound</div>
+        <div class="pr-spot-big">&#9883; Top 10</div>
+        <div class="pr-spot-title">Ace Watch</div>
+        <div class="pr-spot-desc">Mound Dominators</div>
+        <div class="pr-spot-leader">Currently #1: <b>Tarik Skubal</b> &middot; 184 ERA+</div>
+        <div class="pr-spot-cta">View Race <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- LEGAL NOTE -->
+  <div class="legal-note">
+    <b>On naming:</b> &ldquo;MVP Award,&rdquo; &ldquo;Rookie of the Year Award,&rdquo; and &ldquo;Cy Young Award&rdquo; are administered by the BBWAA and the Cy Young name is a registered service mark. Using &ldquo;MVP Watch,&rdquo; &ldquo;Top Rookie,&rdquo; and &ldquo;Ace Watch&rdquo; matches what every major sports outlet does &mdash; describes a race in progress without claiming to issue an award. Numbers shown (wRC+, ERA+) are public sabermetric stats verifiable on FanGraphs and Baseball Reference.
+  </div>
+
+</div>
+</body>
+</html>

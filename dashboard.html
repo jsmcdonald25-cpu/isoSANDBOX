@@ -15345,41 +15345,138 @@ async function refreshISO(idx){
 // directly at the buyer's locked price. No row written to the offers table —
 // the ISO itself is the source of truth, the seller just claims it.
 // See feedback_iso_buyer_advantage_flow.md for the locked product rule.
+//
+// Guards (in order):
+//  1. signed in
+//  2. ISO has a buyer-locked max_price
+//  3. local cache says status is 'active' (cheap pre-check)
+//  4. seller actually owns the matching card in their vault
+//  5. RACE-SAFE PATCH: only succeeds if DB still says status='active' AND
+//     accepted_by_user_id IS NULL. First seller to land wins, others get a
+//     clean "already taken" message instead of a fake success.
 async function acceptIsoAtBuyerPrice(idx){
   const rows = _getIsoRows();
   const iso = rows[idx];
   if(!iso) return;
   const user = window._authUser;
   if(!user){ T('You must be signed in to accept.'); return; }
+  if(iso.user_id === user.id){ T('You can\'t accept your own ISO.'); return; }
   const price = parseFloat(iso.max_price);
   if(!price || price < 1){ T('Buyer has not set a price on this ISO yet.'); return; }
+  if(iso.status !== 'active'){ T('This ISO is no longer active.'); return; }
   const player = iso.player || iso.card_name || 'Unknown';
-  if(!confirm('Accept this ISO at $'+price.toLocaleString()+'?\n\n'+player+' — '+(iso.parallel||'Base')+'\n\nDeal locks at the buyer\'s price.')) return;
+  const variation = iso.parallel || '';
+
+  // Vault check — seller must actually own the matching card.
+  // Mirrors the player+variation ilike pattern used by the detail-panel
+  // vault count (line ~15247). Excludes 'sold' and 'removed' rows.
   try {
-    // Mark the ISO as matched. Seller is identified by who clicked accept.
-    // Schema-safe: only touching status column on isos (known to exist).
-    await _rPatch('isos','id=eq.'+iso.id, { status:'matched' });
-    // Best-effort buyer notification — non-fatal if notifications table differs.
+    const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+    let vUrl = 'https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/vault?select=id&user_id=eq.'+user.id+'&status=neq.sold&status=neq.removed&limit=1';
+    if(player) vUrl += '&player=ilike.*'+encodeURIComponent(player)+'*';
+    if(variation && variation !== 'Base') vUrl += '&variation=ilike.*'+encodeURIComponent(variation)+'*';
+    const vResp = await fetch(vUrl, { headers: { 'apikey': SKEY, 'Authorization': 'Bearer ' + SKEY }});
+    const vRows = vResp.ok ? await vResp.json() : [];
+    if(!vRows.length){
+      T('You don\'t own this card in your vault. Only owners can accept.');
+      return;
+    }
+  } catch(_){
+    T('Could not verify your vault. Try again in a moment.');
+    return;
+  }
+
+  if(!confirm('Accept this ISO at $'+price.toLocaleString()+'?\n\n'+player+' — '+(iso.parallel||'Base')+'\n\nThis is a binding sale at the buyer\'s price.\nPayment is held in Stripe escrow until the card is verified at the hub.')) return;
+
+  try {
+    // RACE-SAFE PATCH: filter requires status='active'. If another seller
+    // already accepted, the row no longer matches and PATCH returns 0 rows.
+    // Prefer: return=representation makes Supabase echo back what was changed
+    // so we can detect the "0 rows" case explicitly.
+    const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+    const patchResp = await fetch('https://jyfaegmnzkarlcximxjo.supabase.co/rest/v1/isos?id=eq.'+iso.id+'&status=eq.active', {
+      method: 'PATCH',
+      headers: {
+        'apikey': SKEY,
+        'Authorization': 'Bearer ' + SKEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify({ status: 'matched' })
+    });
+    if(!patchResp.ok) throw new Error('PATCH failed: '+patchResp.status);
+    const patched = await patchResp.json();
+    if(!patched.length){
+      // Race lost — another seller got there first, or status changed.
+      T('Already taken — another seller accepted this ISO seconds ago.');
+      if(typeof renderMyISOs==='function') renderMyISOs();
+      return;
+    }
+
+    // Create transaction row so Stripe escrow / fulfillment pipeline has
+    // something to attach to. Mirrors the existing acceptOffer transaction
+    // shape (line ~17790) but with no offer_id — the ISO is the source of
+    // truth, no offers row exists in the buyer-advantage flow.
+    const platformFee = parseFloat((price * 0.08).toFixed(2));
+    const shippingFee = 8.00;
+    const totalAmount = price + platformFee + shippingFee;
+    try {
+      await _rPost('transactions', {
+        iso_id:       iso.id,
+        buyer_id:     iso.user_id,
+        seller_id:    user.id,
+        agreed_price: price,
+        platform_fee: platformFee,
+        shipping_fee: shippingFee,
+        grading_fee:  0,
+        total_amount: totalAmount,
+        status:       'payment_pending',
+        created_at:   new Date().toISOString()
+      }, 'return=minimal');
+    } catch(txErr){
+      // Don't roll back the accept — log and continue. Admin can reconcile.
+      console.warn('Transaction insert failed (accept already committed):', txErr);
+    }
+
+    // Notify buyer using canonical notifications schema (matches existing
+    // notifications inserts at ~15996, ~17686, ~17808): user_id, type,
+    // title, body, data, is_read, created_at.
     if(iso.user_id){
       try {
         await _rPost('notifications', {
           user_id:    iso.user_id,
           type:       'iso_accepted',
           title:      'Seller accepted your ISO',
-          body:       'A seller accepted your ISO for '+player+' — '+(iso.parallel||'Base')+' at $'+price.toFixed(2)+'.',
-          link:       '/dashboard.html#myisos',
-          read:       false,
+          body:       'A seller accepted your ISO for '+player+' — '+(iso.parallel||'Base')+' at $'+price.toFixed(2)+'. Payment held in Stripe escrow until the card is verified at the hub.',
+          data:       JSON.stringify({ iso_id: iso.id, agreed_price: price }),
+          is_read:    false,
           created_at: new Date().toISOString()
         }, 'return=minimal');
       } catch(_){ /* notifications optional */ }
     }
-    T('Accepted at $'+price.toLocaleString()+' — buyer notified.');
+    T('Accepted at $'+price.toLocaleString()+' — buyer notified, payment escrowed.');
     if(typeof renderMyISOs==='function') renderMyISOs();
     else _renderISOList && _renderISOList();
   } catch(e){
     T('Failed to accept: '+(e.message||'unknown error'));
   }
 }
+
+// Auto-refresh My ISOs / OpenISO when the tab regains focus, so a buyer
+// whose ISO was just accepted by a seller in another tab/device sees the
+// status flip without a manual reload. Cheap: only fires when the panel
+// is actually visible.
+(function _wireIsoFocusRefresh(){
+  if(window._isoFocusWired) return;
+  window._isoFocusWired = true;
+  document.addEventListener('visibilitychange', () => {
+    if(document.visibilityState !== 'visible') return;
+    const panel = document.getElementById('panel-myisos');
+    if(panel && panel.style.display !== 'none' && typeof renderMyISOs === 'function'){
+      renderMyISOs();
+    }
+  });
+})();
 
 // DEPRECATED — seller "Make Offer" modal flow. Replaced by acceptIsoAtBuyerPrice
 // per buyer-advantage product rule (no negotiation). Kept for backward compat

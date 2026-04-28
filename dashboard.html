@@ -6474,9 +6474,65 @@ async function p2SubmitISO(){
     }
     return;
   }
+  // ── HARD RULE: ISO must originate from a real ISOVault catalog card ──
+  // _dbRow is the row pulled from the per-set catalog table when the user
+  // selected the card via the picker. Without it we have no way to anchor
+  // market data, identity, or seller matching. Buyer-advantage flow requires
+  // a real card, not a free-form entry.
+  if(!_dbR || !S._setTable){
+    if(errEl){
+      errEl.innerHTML = '&#128683; You must select a card from the ISOVault catalog. Free-form posts are not allowed.';
+      errEl.style.display='block';
+    }
+    return;
+  }
   const user = window._authUser;
   if(!user){
     if(errEl){ errEl.textContent = 'You must be signed in to post an ISO.'; errEl.style.display='block'; }
+    return;
+  }
+  // ── HARD RULE: buyer's locked price must be within ±10% of the live
+  // market price for this card+parallel. Per buyer-advantage product rule,
+  // the buyer can't lowball the seller and can't overpay above market. The
+  // market_price comes from card_market_prices (admin-seeded or sale-derived).
+  // See feedback_iso_buyer_advantage_flow.md and feedback_no_auto_market_avg.md.
+  const _lockedRaw = document.getElementById('p2MaxP')?.value || '';
+  const _lockedPrice = parseFloat(_lockedRaw);
+  if(!_lockedPrice || _lockedPrice < 1){
+    if(errEl){ errEl.innerHTML = '&#128683; Enter your locked price.'; errEl.style.display='block'; }
+    return;
+  }
+  try {
+    const _cardNum = String(S.cardNum||'').replace(/^#/,'');
+    const _varLabel = (S.variant||'Base').replace(/\s*\/\d+$/,'').replace(/\s*\(admin to build\)/i,'').trim() || 'Base';
+    const _mpRows = await _rGet('card_market_prices',
+      'select=market_price,admin_override_price&card_number=eq.'+encodeURIComponent(_cardNum)+
+      '&variation=eq.'+encodeURIComponent(_varLabel)+
+      '&set_table=eq.'+encodeURIComponent(S._setTable)+
+      '&limit=1');
+    const _mpRow = _mpRows && _mpRows[0];
+    const _market = _mpRow ? parseFloat(_mpRow.admin_override_price || _mpRow.market_price || 0) : 0;
+    if(!_market || _market < 1){
+      if(errEl){
+        errEl.innerHTML = '&#128683; No market price exists for this card+parallel yet. An admin must seed it before ISOs can post. (Per buyer-advantage rule, prices must be market-anchored.)';
+        errEl.style.display='block';
+      }
+      return;
+    }
+    const _lo = +(_market * 0.9).toFixed(2);
+    const _hi = +(_market * 1.1).toFixed(2);
+    if(_lockedPrice < _lo || _lockedPrice > _hi){
+      if(errEl){
+        errEl.innerHTML = '&#128683; $'+_lockedPrice.toLocaleString()+' is outside the allowed range. Market price is $'+_market.toLocaleString()+', so your locked price must fall between $'+_lo.toLocaleString()+' and $'+_hi.toLocaleString()+' (\xb110%).';
+        errEl.style.display='block';
+      }
+      return;
+    }
+  } catch(_marketErr){
+    if(errEl){
+      errEl.innerHTML = '&#128683; Could not verify market price. Try again in a moment.';
+      errEl.style.display='block';
+    }
     return;
   }
   const btn = document.getElementById('p2SubmitBtn');

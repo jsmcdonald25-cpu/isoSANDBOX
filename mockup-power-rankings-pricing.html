@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Power Rankings — Hybrid Pricing Mockup v1</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#00AAFF;--blue-bright:#33CCFF;--blue-glow:rgba(0,170,255,0.35);
+  --white:#FFFFFF;--chrome:#B0BEC5;--muted-text:#7A95AE;
+  --deep1:#0D1F33;--deep2:#112840;--deep3:#143050;
+  --deep-border:rgba(0,170,255,0.15);
+  --green:#00E887;--red:#FF3B5C;--gold:#FFB400;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--deep1);color:var(--white);font-family:Inter,sans-serif;min-height:100vh}
+.content{padding:24px;max-width:1400px;margin:0 auto}
+
+/* HERO + TBAR replicas (trimmed for mockup focus) */
+.pr-hero{position:relative;height:180px;overflow:hidden;background:#030a14;margin:-24px -24px 0;border-radius:14px 14px 0 0;display:flex;align-items:center;justify-content:center}
+.pr-hero h1{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:6px;background:linear-gradient(180deg,#fff,var(--chrome));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.pr-hero h1 .pr-accent{background:linear-gradient(90deg,#CC0000,#FFFFFF,#003DA5);background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+.section-label{margin:24px 0 12px;font-family:Barlow Condensed,sans-serif;font-size:13px;letter-spacing:3px;color:var(--blue);text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.section-label .new{background:rgba(0,232,135,0.15);border:1px solid rgba(0,232,135,0.4);color:var(--green);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
+
+/* TABLE — extends existing pr-tbl style */
+.pr-rp{background:var(--deep2);border:1px solid var(--deep-border);border-radius:14px;overflow:hidden;margin-top:8px}
+.pr-rp-head{padding:18px 22px;background:linear-gradient(180deg,rgba(255,215,0,0.08),transparent);border-bottom:1px solid var(--deep-border);display:flex;align-items:center;gap:14px}
+.pr-rp-icon{font-size:24px}
+.pr-rp-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px}
+.pr-rp-sub{font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--muted-text);margin-left:4px}
+
+.pr-tbl{width:100%;border-collapse:separate;border-spacing:0}
+.pr-tbl thead th{padding:12px 14px;font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted-text);text-align:left;border-bottom:1px solid var(--deep-border);background:rgba(0,0,0,0.15);white-space:nowrap}
+.pr-tbl thead th.s{text-align:center}
+.pr-tbl thead th.v{text-align:right}
+.pr-tbl tbody tr{transition:.15s;cursor:pointer}
+.pr-tbl tbody tr:hover{background:rgba(0,170,255,0.05)}
+.pr-tbl tbody td{padding:12px 14px;border-bottom:1px solid rgba(0,170,255,0.04);vertical-align:middle;font-family:Barlow Condensed,sans-serif;font-size:14px}
+.pr-tbl tbody td.s{text-align:center;font-weight:500}
+.pr-tbl tbody td.v{text-align:right}
+
+.rank-cell{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);width:42px;text-align:center}
+.player-cell{display:flex;flex-direction:column;gap:2px}
+.player-cell .pn{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:.5px;color:var(--white)}
+.player-cell .pt{font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--muted-text);letter-spacing:.5px}
+
+.wrcplus{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--blue-bright);text-align:center}
+.wrcplus.elite{color:var(--gold)}
+.wrcplus.avg{color:var(--chrome)}
+
+/* Hybrid pricing cells */
+.cat-price{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--chrome);text-align:right}
+.cat-price-sub{font-family:Barlow Condensed,sans-serif;font-size:9px;color:var(--muted-text);letter-spacing:1px;text-transform:uppercase;text-align:right;margin-top:1px}
+
+.live-price{display:inline-flex;align-items:center;gap:4px;font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--white);background:rgba(0,170,255,0.08);border:1px solid rgba(0,170,255,0.25);padding:4px 10px;border-radius:6px;text-decoration:none;transition:.2s;cursor:pointer}
+.live-price:hover{background:rgba(0,170,255,0.18);border-color:var(--blue);transform:translateY(-1px)}
+.live-price .arrow{font-size:11px;opacity:.7}
+.live-price.no-data{color:var(--muted-text);background:transparent;border-color:transparent;cursor:default}
+.live-price.no-data:hover{transform:none;background:transparent}
+
+.delta{display:inline-block;padding:4px 10px;border-radius:6px;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:.5px;min-width:72px;text-align:center}
+.delta.deal{background:rgba(0,232,135,0.15);color:var(--green);border:1px solid rgba(0,232,135,0.35)}
+.delta.fair{background:rgba(176,190,197,0.1);color:var(--chrome);border:1px solid rgba(176,190,197,0.25)}
+.delta.high{background:rgba(255,180,0,0.1);color:var(--gold);border:1px solid rgba(255,180,0,0.3)}
+.delta.over{background:rgba(255,59,92,0.1);color:var(--red);border:1px solid rgba(255,59,92,0.3)}
+.delta.none{color:var(--muted-text);font-size:14px;background:transparent;border:none}
+
+/* Header help icons */
+th .help{display:inline-block;width:14px;height:14px;border-radius:50%;background:rgba(0,170,255,0.15);color:var(--blue);text-align:center;line-height:14px;font-size:9px;font-weight:700;margin-left:4px;cursor:help}
+
+/* LEGEND */
+.legend-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:18px;padding:14px 18px;background:var(--deep2);border:1px solid var(--deep-border);border-radius:10px;font-family:Barlow Condensed,sans-serif;font-size:12px;color:var(--chrome)}
+.legend-row .item{display:flex;align-items:center;gap:6px}
+.legend-row .item b{color:var(--white);font-weight:600}
+.legend-row .swatch{width:14px;height:14px;border-radius:3px}
+
+/* QUICK GLANCE PANEL — explains the table at the top */
+.glance{margin-top:14px;padding:16px 20px;background:linear-gradient(135deg,rgba(0,170,255,0.06),rgba(0,232,135,0.04));border:1px solid var(--deep-border);border-radius:12px}
+.glance h3{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--blue);margin-bottom:8px}
+.glance p{font-family:Barlow Condensed,sans-serif;font-size:13px;color:var(--chrome);line-height:1.7}
+.glance b{color:var(--white)}
+.glance .green{color:var(--green);font-weight:700}
+.glance .red{color:var(--red);font-weight:700}
+
+@media(max-width:768px){
+  .pr-tbl thead th, .pr-tbl tbody td{padding:8px 6px;font-size:12px}
+  .live-price{padding:3px 6px;font-size:13px}
+  .delta{padding:3px 6px;font-size:12px;min-width:54px}
+}
+</style>
+</head>
+<body>
+<div class="content">
+
+  <!-- HERO -->
+  <div class="pr-hero">
+    <h1>MLB <span class="pr-accent">POWER</span> RANKINGS</h1>
+  </div>
+
+  <div class="section-label">MVP Watch <span class="new">HYBRID PRICING</span></div>
+
+  <!-- QUICK-GLANCE EXPLAINER (above table) -->
+  <div class="glance">
+    <h3>How to read this table in 5 seconds</h3>
+    <p>
+      <b>wRC+</b> = how good they're hitting (100 = average, 150+ = elite). &nbsp;&middot;&nbsp;
+      <b>Catalog $</b> = our admin-set baseline price for their flagship card. &nbsp;&middot;&nbsp;
+      <b>Live $</b> = cheapest active eBay listing right now (click to buy). &nbsp;&middot;&nbsp;
+      <b>Δ</b> = live vs catalog. <span class="green">Green = below catalog, potential deal.</span> <span class="red">Red = above catalog, you'd be overpaying.</span>
+    </p>
+  </div>
+
+  <!-- RANKINGS TABLE -->
+  <div class="pr-rp">
+    <div class="pr-rp-head">
+      <div class="pr-rp-icon">&#127942;</div>
+      <div>
+        <div class="pr-rp-title">MVP Watch</div>
+        <div class="pr-rp-sub">Top 10 by wRC+ &middot; Last 5 Games</div>
+      </div>
+    </div>
+    <table class="pr-tbl">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Player</th>
+          <th class="s">wRC+ <span class="help">?</span></th>
+          <th class="v">Catalog $ <span class="help">?</span></th>
+          <th class="v">Live $ <span class="help">?</span></th>
+          <th class="s">Δ <span class="help">?</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Row 1: huge deal -->
+        <tr>
+          <td class="rank-cell">1</td>
+          <td>
+            <div class="player-cell">
+              <span class="pn">Aaron Judge</span>
+              <span class="pt">NYY &middot; OF</span>
+            </div>
+          </td>
+          <td class="s"><span class="wrcplus elite">198</span></td>
+          <td class="v"><div class="cat-price">$8</div><div class="cat-price-sub">2026 Topps Base</div></td>
+          <td class="v"><a href="#" class="live-price">$5.99 <span class="arrow">&#8599;</span></a></td>
+          <td class="s"><span class="delta deal">&#9660; 25%</span></td>
+        </tr>
+
+        <!-- Row 2: fair price -->
+        <tr>
+          <td class="rank-cell">2</td>
+          <td>
+            <div class="player-cell">
+              <span class="pn">Juan Soto</span>
+              <span class="pt">NYM &middot; OF</span>
+            </div>
+          </td>
+          <td class="s"><span class="wrcplus elite">181</span></td>
+          <td class="v"><div class="cat-price">$12</div><div class="cat-price-sub">2026 Topps Base</div></td>
+          <td class="v"><a href="#" class="live-price">$11.50 <span class="arrow">&#8599;</span></a></td>
+          <td class="s"><span class="delta fair">&minus; 4%</span></td>
+        </tr>
+
+        <!-- Row 3: slightly overpriced -->
+        <tr>
+          <td class="rank-cell">3</td>
+          <td>
+            <div class="player-cell">
+              <span class="pn">Bobby Witt Jr.</span>
+              <span class="pt">KC &middot; SS</span>
+            </div>
+          </td>
+          <td class="s"><span class="wrcplus elite">165</span></td>
+          <td class="v"><div class="cat-price">$10</div><div class="cat-price-sub">2026 Topps Base</div></td>
+          <td class="v"><a href="#" class="live-price">$11.99 <span class="arrow">&#8599;</span></a></td>
+          <td class="s"><span class="delta high">&#9650; 20%</span></td>
+        </tr>
+
+        <!-- Row 4: way overpriced (avoid) -->
+        <tr>
+          <td class="rank-cell">4</td>
+          <td>
+            <div class="player-cell">
+              <span class="pn">Shohei Ohtani</span>
+              <span class="pt">LAD &middot; DH</span>
+            </div>
+          </td>
+          <td class="s"><span class="wrcplus elite">172</span></td>
+          <td class="v"><div class="cat-price">$25</div><div class="cat-price-sub">2026 Topps Base</div></td>
+          <td class="v"><a href="#" class="live-price">$45.00 <span class="arrow">&#8599;</span></a></td>
+          <td class="s"><span class="delta over">&#9650; 80%</span></td>
+        </tr>
+
+        <!-- Row 5: cheap but average player (low wRC+) -->
+        <tr>
+          <td class="rank-cell">5</td>
+          <td>
+            <div class="player-cell">
+              <span class="pn">Jackson Merrill</span>
+              <span class="pt">SD &middot; OF</span>
+            </div>
+          </td>
+          <td class="s"><span class="wrcplus">148</span></td>
+          <td class="v"><div class="cat-price">$4</div><div class="cat-price-sub">2026 Topps Base RC</div></td>
+          <td class="v"><a href="#" class="live-price">$2.50 <span class="arrow">&#8599;</span></a></td>
+          <td class="s"><span class="delta deal">&#9660; 38%</span></td>
+        </tr>
+
+        <!-- Row 6: no live data (eBay miss) -->
+        <tr>
+          <td class="rank-cell">6</td>
+          <td>
+            <div class="player-cell">
+              <span class="pn">Vladimir Guerrero Jr.</span>
+              <span class="pt">TOR &middot; 1B</span>
+            </div>
+          </td>
+          <td class="s"><span class="wrcplus elite">154</span></td>
+          <td class="v"><div class="cat-price">$15</div><div class="cat-price-sub">2026 Topps Base</div></td>
+          <td class="v"><span class="live-price no-data">&mdash;</span></td>
+          <td class="s"><span class="delta none">&mdash;</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- LEGEND BAR -->
+  <div class="legend-row">
+    <div class="item"><span class="swatch" style="background:rgba(0,232,135,0.5)"></span><b>Green</b> &mdash; live below catalog (potential buy)</div>
+    <div class="item"><span class="swatch" style="background:rgba(176,190,197,0.4)"></span><b>Gray</b> &mdash; within 5% of catalog (fair price)</div>
+    <div class="item"><span class="swatch" style="background:rgba(255,180,0,0.5)"></span><b>Yellow</b> &mdash; 5&ndash;30% above catalog</div>
+    <div class="item"><span class="swatch" style="background:rgba(255,59,92,0.5)"></span><b>Red</b> &mdash; more than 30% above catalog (overpaying)</div>
+  </div>
+
+</div>
+</body>
+</html>

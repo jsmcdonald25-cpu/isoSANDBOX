@@ -1,78 +1,88 @@
 {
   "blocklist_terms": [
+    "multiple cards",
+    "pick complete your set",
+    "stock photos",
     "facsimile signature",
     "gold edition signature",
-    "gold foil signature card",
     "novelty card",
-    "reprint or custom",
+    "made in USA signature",
     "23kt gold",
     "rainbow foil",
-    "set missing",
-    "incomplete set",
-    "signature series",
-    "made in usa signature",
+    "investment card",
+    "rare refractor SSP",
+    "incomplete set missing",
     "group of noted"
   ],
   "query_refinements": [
+    {
+      "player": "Ken Griffey Jr",
+      "parallel": "Base",
+      "negatives": [
+        "multiple",
+        "pick complete",
+        "set",
+        "incomplete",
+        "facsimile",
+        "gold edition"
+      ]
+    },
     {
       "player": "Shohei Ohtani",
       "parallel": "Autograph",
       "negatives": [
         "novelty",
-        "facsimile",
-        "rainbow foil",
-        "reprint",
-        "wrong player",
-        "roki sasaki"
-      ]
-    },
-    {
-      "player": "Ken Griffey Jr",
-      "parallel": "Autograph",
-      "negatives": [
-        "facsimile signature",
-        "gold edition",
-        "signature card",
-        "group of",
-        "incomplete set"
+        "print",
+        "SSP",
+        "investment",
+        "rookie auto print"
       ]
     },
     {
       "player": "Ichiro Suzuki",
       "parallel": "Autograph",
       "negatives": [
-        "facsimile",
-        "gold foil signature",
         "23kt gold",
-        "merrick mint",
-        "made in usa",
-        "cano hernandez"
+        "made in USA signature",
+        "facsimile",
+        "merrick mint"
+      ]
+    },
+    {
+      "player": "Ken Griffey Jr",
+      "parallel": "Autograph",
+      "negatives": [
+        "gold edition",
+        "signature card",
+        "facsimile signature"
       ]
     }
   ],
   "insights": [
-    "Facsimile/printed signatures rejected 14% (2/14); confirmed listings feature authentic on-card autos with 80%+ delta.",
-    "Novelty cards and reprint flags appear exclusively in rejections; zero overlap with confirmed genuine vintage.",
-    "Gold-leafed/special edition signature products (Merrick Mint, Gold Edition) rejected; confirms real snipes are standard retail releases.",
-    "Wrong player/set/number issues account for 21% of rejections (3/14); confirmed listings have exact title-to-card match.",
-    "Multi-player or incomplete set listings rejected 100%; confirmed snipes are single-card, complete items.",
-    "Emoji-heavy titles with ALL CAPS modifiers (INVESTMENT, RARE, MINT) correlate with rejection; confirmed use neutral formal language.",
-    "Market price mismatches and 'other' category represent 36% of rejections; confirmed items show 80%+ underpricing vs. market average.",
-    "Confirmed snipes: authenticated vintage autos in standard product (2001 Authentic Images, 2023 Topps Tribute) priced 81–82% below market."
+    "Confirmed snipes are clean authentic autos (Topps Tribute, Authentic Images) with 80%+ price deltas; rejections frequently show facsimile/printed signatures.",
+    "16 of 20 rejections (80%) marked wrong_market_price, indicating overpriced bulk/incomplete listings vs. underpriced singles in confirmations.",
+    "Blocklist phrases like 'multiple cards', 'pick complete set', 'stock photos' appear only in rejections—clear signals of non-snipe bundle listings.",
+    "Both confirmations are graded/certified autos; rejections include ungraded, cut autos, and mixed-player lots (wrong_player: 2 cases).",
+    "Rejection reason breakdown: wrong_market_price dominates (13/20, 65%); other low-signal reasons (facsimile, reprint, wrong_player) at 7/20 (35%).",
+    "Confirmed snipes feature specific card #/set (2023 Topps Tribute #77, 2001 Authentic Images) vs. rejected vague titles ('group of noted', 'RARE REFRACTOR SSP').",
+    "All rejections tagged 'Autograph' with facsimile_signature show Merrick Mint, Gold Edition, Leaf Exhibits MSIG—consistent fake-auto blocklist.",
+    "Zero overlap between confirmation titles and rejection titles; confirmations avoid 'investment', 'SSP', 'rare', 'novelty', 'rainbow foil' keywords."
   ],
   "rejection_breakdown": {
-    "wrong_market_price": 1,
-    "wrong_player": 2,
-    "other": 6,
-    "reprint_or_custom": 1,
+    "wrong_market_price": 13,
+    "other": 5,
     "facsimile_signature": 2,
+    "wrong_player": 2,
     "wrong_card_num": 2,
-    "wrong_parallel": 1
+    "wrong_parallel": 1,
+    "reprint_or_custom": 1,
+    "wrong_set": 1,
+    "wrong_year": 1
   },
   "_meta": {
-    "rejections_analyzed": 14,
+    "rejections_analyzed": 20,
     "confirmations_analyzed": 2,
     "model": "claude-haiku-4-5",
-    "analyzed_at": "2026-04-27T11:44:21.293Z"
+    "analyzed_at": "2026-04-30T22:47:31.696Z"
   }
 }

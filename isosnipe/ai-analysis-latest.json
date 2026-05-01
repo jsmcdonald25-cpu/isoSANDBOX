@@ -1,76 +1,106 @@
 {
   "blocklist_terms": [
     "multiple cards",
+    "pick complete your set",
     "facsimile signature",
     "gold edition signature",
-    "novelty card",
     "23kt gold",
-    "pick complete your set",
-    "stock photos",
+    "novelty card",
+    "almost complete set",
+    "missing card",
+    "set needs",
+    "reprint",
+    "gold foil signature",
+    "merrick mint",
+    "rare investment",
+    "ssp",
     "rainbow foil",
-    "made in usa signature",
-    "group of noted",
-    "merrick mint"
+    "stock photos"
   ],
   "query_refinements": [
     {
       "player": "Ken Griffey Jr",
       "parallel": "Base",
       "negatives": [
-        "multiple cards",
-        "pick complete",
-        "stock photos",
-        "set missing",
-        "bowman",
-        "fleer",
-        "donruss"
+        "multiple",
+        "set",
+        "pick",
+        "blowout",
+        "incomplete",
+        "missing",
+        "stock photos"
+      ]
+    },
+    {
+      "player": "Ken Griffey Jr",
+      "parallel": "Autograph",
+      "negatives": [
+        "facsimile",
+        "signature card",
+        "gold edition",
+        "printed",
+        "noted"
+      ]
+    },
+    {
+      "player": "Shohei Ohtani",
+      "parallel": "Refractor",
+      "negatives": [
+        "rainbow foil",
+        "35th anniversary",
+        "rare",
+        "investment",
+        "ssp"
       ]
     },
     {
       "player": "Shohei Ohtani",
       "parallel": "Autograph",
       "negatives": [
-        "novelty card",
-        "roki sasaki",
+        "novelty",
+        "print",
         "prospect",
-        "print"
+        "rare",
+        "investment"
       ]
     },
     {
       "player": "Ichiro Suzuki",
       "parallel": "Autograph",
       "negatives": [
-        "facsimile signature",
-        "23kt gold",
+        "facsimile",
+        "made in usa",
+        "exhibits",
         "merrick mint",
-        "made in usa signature",
-        "cano hernandez"
+        "23kt gold",
+        "signature series"
       ]
     }
   ],
   "insights": [
-    "Facsimile/printed signatures (60% of auto rejections) are distinct blocklist signal; only genuine on-card autos confirm as snipes.",
-    "Multi-card lots, incomplete sets, and stock photo listings (25% of rejections) fail despite matching player/card specs.",
-    "Wrong_market_price dominates rejections (40%); confirmed snipes show 80%+ delta vs. market avg, suggesting floor threshold ~$15+.",
-    "Parallel mismatches (Refractor listed as Base, wrong year variants) and wrong_player listings (15% of rejections) are caught by title/spec conflicts.",
-    "Reprint/custom (Rainbow Foil, Gold editions) and specialty parallels (Leaf Exhibits MSIG, Merrick Mint) systematically rejected.",
-    "Confirmed snipes are clean single-card, on-card signature autos (Authentic Images, Topps Tribute) with high delta and no title red flags.",
-    "Novelty card emoji titles and vague 'group of noted' listings indicate spam; clean, specific titles correlate with confirmation.",
-    "Ken Griffey Jr rookie parallels (1989 UD Base) rejected heavily due to market saturation; Ichiro/Ohtani autos more snipeable if genuine and priced <$20."
+    "Rejections dominated by wrong_market_price (9/20, 45%) — overpriced listings are primary blocker across all players.",
+    "Facsimile/printed signatures appear in 2 rejections (10%); genuine autos in confirmations show distinct product lines (Topps Tribute, Authentic Images).",
+    "Multi-card lots, incomplete sets, and 'pick your own' formats rejected 4 times (20%) — single authentic cards only.",
+    "Investment-grade language ('RARE', 'SSP', 'INVESTMENT CARD') appears 5 times in rejections; confirmations use neutral product/year descriptors.",
+    "Confirmation cards delta >81% below market (Ichiro autos priced $16–17 vs $90 avg) — real snipes show dramatic underpricing, rejections show inflated pricing.",
+    "Non-sports gold editions (Merrick Mint, 23kt gold) flagged as 'other' — specialty/novelty variants rejected regardless of authenticity.",
+    "Title/card mismatch (wrong_parallel, wrong_player) in 3 rejections (15%) — data integrity failures indicate low-effort relists.",
+    "Confirmed snipes feature vintage/recent mainstream releases (2001 Authentic Images, 2023 Topps Tribute); rejections skew toward low-volume parallels and reprints."
   ],
   "rejection_breakdown": {
-    "wrong_market_price": 7,
-    "other": 7,
+    "wrong_market_price": 9,
+    "other": 6,
     "facsimile_signature": 2,
     "wrong_player": 2,
     "wrong_card_num": 2,
     "reprint_or_custom": 1,
-    "wrong_parallel": 1
+    "wrong_parallel": 1,
+    "wrong_set": 1
   },
   "_meta": {
     "rejections_analyzed": 20,
     "confirmations_analyzed": 2,
     "model": "claude-haiku-4-5",
-    "analyzed_at": "2026-05-01T11:07:18.947Z"
+    "analyzed_at": "2026-05-01T22:44:52.463Z"
   }
 }

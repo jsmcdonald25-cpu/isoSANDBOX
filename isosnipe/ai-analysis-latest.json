@@ -1,88 +1,76 @@
 {
   "blocklist_terms": [
     "multiple cards",
-    "pick complete your set",
-    "stock photos",
     "facsimile signature",
     "gold edition signature",
     "novelty card",
-    "made in USA signature",
     "23kt gold",
+    "pick complete your set",
+    "stock photos",
     "rainbow foil",
-    "investment card",
-    "rare refractor SSP",
-    "incomplete set missing",
-    "group of noted"
+    "made in usa signature",
+    "group of noted",
+    "merrick mint"
   ],
   "query_refinements": [
     {
       "player": "Ken Griffey Jr",
       "parallel": "Base",
       "negatives": [
-        "multiple",
+        "multiple cards",
         "pick complete",
-        "set",
-        "incomplete",
-        "facsimile",
-        "gold edition"
+        "stock photos",
+        "set missing",
+        "bowman",
+        "fleer",
+        "donruss"
       ]
     },
     {
       "player": "Shohei Ohtani",
       "parallel": "Autograph",
       "negatives": [
-        "novelty",
-        "print",
-        "SSP",
-        "investment",
-        "rookie auto print"
+        "novelty card",
+        "roki sasaki",
+        "prospect",
+        "print"
       ]
     },
     {
       "player": "Ichiro Suzuki",
       "parallel": "Autograph",
       "negatives": [
+        "facsimile signature",
         "23kt gold",
-        "made in USA signature",
-        "facsimile",
-        "merrick mint"
-      ]
-    },
-    {
-      "player": "Ken Griffey Jr",
-      "parallel": "Autograph",
-      "negatives": [
-        "gold edition",
-        "signature card",
-        "facsimile signature"
+        "merrick mint",
+        "made in usa signature",
+        "cano hernandez"
       ]
     }
   ],
   "insights": [
-    "Confirmed snipes are clean authentic autos (Topps Tribute, Authentic Images) with 80%+ price deltas; rejections frequently show facsimile/printed signatures.",
-    "16 of 20 rejections (80%) marked wrong_market_price, indicating overpriced bulk/incomplete listings vs. underpriced singles in confirmations.",
-    "Blocklist phrases like 'multiple cards', 'pick complete set', 'stock photos' appear only in rejections—clear signals of non-snipe bundle listings.",
-    "Both confirmations are graded/certified autos; rejections include ungraded, cut autos, and mixed-player lots (wrong_player: 2 cases).",
-    "Rejection reason breakdown: wrong_market_price dominates (13/20, 65%); other low-signal reasons (facsimile, reprint, wrong_player) at 7/20 (35%).",
-    "Confirmed snipes feature specific card #/set (2023 Topps Tribute #77, 2001 Authentic Images) vs. rejected vague titles ('group of noted', 'RARE REFRACTOR SSP').",
-    "All rejections tagged 'Autograph' with facsimile_signature show Merrick Mint, Gold Edition, Leaf Exhibits MSIG—consistent fake-auto blocklist.",
-    "Zero overlap between confirmation titles and rejection titles; confirmations avoid 'investment', 'SSP', 'rare', 'novelty', 'rainbow foil' keywords."
+    "Facsimile/printed signatures (60% of auto rejections) are distinct blocklist signal; only genuine on-card autos confirm as snipes.",
+    "Multi-card lots, incomplete sets, and stock photo listings (25% of rejections) fail despite matching player/card specs.",
+    "Wrong_market_price dominates rejections (40%); confirmed snipes show 80%+ delta vs. market avg, suggesting floor threshold ~$15+.",
+    "Parallel mismatches (Refractor listed as Base, wrong year variants) and wrong_player listings (15% of rejections) are caught by title/spec conflicts.",
+    "Reprint/custom (Rainbow Foil, Gold editions) and specialty parallels (Leaf Exhibits MSIG, Merrick Mint) systematically rejected.",
+    "Confirmed snipes are clean single-card, on-card signature autos (Authentic Images, Topps Tribute) with high delta and no title red flags.",
+    "Novelty card emoji titles and vague 'group of noted' listings indicate spam; clean, specific titles correlate with confirmation.",
+    "Ken Griffey Jr rookie parallels (1989 UD Base) rejected heavily due to market saturation; Ichiro/Ohtani autos more snipeable if genuine and priced <$20."
   ],
   "rejection_breakdown": {
-    "wrong_market_price": 13,
-    "other": 5,
+    "wrong_market_price": 7,
+    "other": 7,
     "facsimile_signature": 2,
     "wrong_player": 2,
     "wrong_card_num": 2,
-    "wrong_parallel": 1,
     "reprint_or_custom": 1,
-    "wrong_set": 1,
-    "wrong_year": 1
+    "wrong_parallel": 1
   },
   "_meta": {
     "rejections_analyzed": 20,
     "confirmations_analyzed": 2,
     "model": "claude-haiku-4-5",
-    "analyzed_at": "2026-04-30T22:47:31.696Z"
+    "analyzed_at": "2026-05-01T11:07:18.947Z"
   }
 }

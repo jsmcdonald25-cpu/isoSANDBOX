@@ -145,6 +145,13 @@ async function searchSoldListings(token, query, env) {
     },
   });
 
+  if (res.statusCode === 429) {
+    // eBay daily call cap — return marker instead of throwing so caller can
+    // skip cache poisoning. Dashboard treats rate_limited as "retry next load".
+    const err = new Error('rate_limited');
+    err.rateLimited = true;
+    throw err;
+  }
   if (res.statusCode !== 200) {
     throw new Error(`eBay search failed (${res.statusCode}): ${res.body}`);
   }
@@ -296,6 +303,14 @@ exports.handler = async (event) => {
     };
   } catch (err) {
     console.error('ebay-recent-sales error:', err);
+    if (err && err.rateLimited) {
+      // Return 200 with rate_limited flag so dashboard skips cache poisoning.
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ rate_limited: true, count: 0, average: 0, lastSold: 0, low: 0, high: 0, results: [] }),
+      };
+    }
     return {
       statusCode: 500,
       headers,

@@ -9432,6 +9432,12 @@ async function _mvFetchEbayAvg(row){
       console.log('[mvEbay] first request', {status:r.status, payload, response:data||txt});
     }
     if(!r.ok) throw new Error('http '+r.status+' '+txt.slice(0,120));
+    // Skip cache poisoning when eBay daily cap is hit — pricing recovers
+    // automatically on the next page load after eBay's quota resets.
+    if(data && data.rate_limited){
+      if(!window._mvRateLimitedLogged){ window._mvRateLimitedLogged = true; console.warn('[mvEbay] eBay rate limited — skipping cache write'); }
+      return 0;
+    }
     const avg = (data && data.count && data.average) ? Number(data.average) : 0;
     _mvCacheSet(key, avg);
     return avg;
@@ -14003,7 +14009,10 @@ async function _prFetchPrices(players){
         });
         if(resp.ok){
           const d = await resp.json();
-          _prPriceCache[p.id] = {avg:d.average||null, pct:null};
+          // Skip cache write when eBay rate-limited so Power Rankings retries on next load
+          if(!d.rate_limited){
+            _prPriceCache[p.id] = {avg:d.average||null, pct:null};
+          }
         }
       } catch(e){/* non-fatal */}
     }

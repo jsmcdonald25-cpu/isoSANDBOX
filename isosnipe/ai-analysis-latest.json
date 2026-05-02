@@ -2,17 +2,16 @@
   "blocklist_terms": [
     "multiple cards",
     "facsimile signature",
-    "gold edition signature",
     "23kt gold",
     "novelty card",
-    "rainbow foil",
     "pick complete your set",
     "stock photos",
-    "made in usa signature",
-    "cut signature",
-    "merrick mint",
-    "refactor",
-    "almost complete set"
+    "gold edition signature",
+    "rainbow foil",
+    "investment card",
+    "rare refractor ssp",
+    "almost complete set",
+    "missing card"
   ],
   "query_refinements": [
     {
@@ -20,11 +19,10 @@
       "parallel": "Base",
       "negatives": [
         "multiple cards",
-        "pick complete your set",
-        "almost complete set",
-        "missing",
-        "set -250",
-        "stock photos"
+        "pick complete set",
+        "stock photos",
+        "incomplete set",
+        "missing"
       ]
     },
     {
@@ -32,48 +30,46 @@
       "parallel": "Autograph",
       "negatives": [
         "novelty card",
+        "investment card",
         "print",
-        "rainbow foil",
-        "refactor",
-        "prospect"
+        "rainbow foil"
       ]
     },
     {
       "player": "Ichiro Suzuki",
       "parallel": "Autograph",
       "negatives": [
+        "facsimile signature",
         "23kt gold",
         "merrick mint",
-        "made in usa signature",
-        "exhibits 1947-66"
+        "gold foil jumbo"
       ]
     }
   ],
   "insights": [
-    "14 of 20 rejections (70%) flagged as wrong_market_price; premium pricing on commons is primary rejection driver.",
-    "Facsimile signatures account for 2 rejections; legitimate autos in confirmations have proper authentication (Topps Tribute, Authentic Images).",
-    "Lot/multi-card listings rejected 3 times; confirmations are always single, specific cards.",
-    "Confirmation delta average: 81.65% (real snipes deeply underpriced vs. market); rejections lack pricing data suggesting overpriced positioning.",
-    "5 rejections (25%) contain mismatched title/card specs (wrong player, wrong set, wrong parallel); confirmations have exact title-card alignment.",
-    "Novelty, reprint, and custom parallel language appears only in rejections (0 in confirmations).",
-    "Griffey Base parallel dominates rejection pool (7 of 20), all overpriced; suggests 1989 UD #1 is high-vigilance target.",
-    "Confirmation titles use minimal marketing language; rejection titles use caps, emojis, 'RARE', 'INVESTMENT', 'MVP'—red flags for inflated pricing."
+    "15 of 20 rejections (75%) due to wrong_market_price—listings vastly overpriced vs. market",
+    "facsimile_signature and wrong_player account for 4 rejections (20%)—strict authenticity checks",
+    "Confirmed snipes are autograph cards with 82%+ delta (price $16–17 vs. market $90); rejections lack this spread",
+    "Multi-card lots, incomplete sets, and 'pick-from-list' mechanics trigger 'other' rejection 5 times",
+    "Novelty/print/custom descriptors ('INVESTMENT CARD', 'PRINT', 'NOVELTY') rejected in 3 Ohtani autos",
+    "Both confirmations are real autographs with ultra-low ask prices; rejections mix reprints, facsimiles, and inflated vintage",
+    "Griffey Jr base rejections dominated by wrong_market_price (5/8), Ohtani by pricing + parallel mismatches (4/7)",
+    "Confirmation titles are clean ('2023 Topps Tribute', 'Authentic Images'); rejections heavy on caps, emojis, hype language"
   ],
   "rejection_breakdown": {
-    "wrong_market_price": 9,
+    "wrong_market_price": 8,
     "other": 7,
     "facsimile_signature": 2,
     "wrong_player": 2,
     "wrong_card_num": 2,
-    "wrong_parallel": 2,
     "reprint_or_custom": 1,
-    "wrong_year": 1,
+    "wrong_parallel": 1,
     "wrong_set": 1
   },
   "_meta": {
     "rejections_analyzed": 20,
     "confirmations_analyzed": 2,
     "model": "claude-haiku-4-5",
-    "analyzed_at": "2026-05-02T10:47:54.740Z"
+    "analyzed_at": "2026-05-02T22:36:07.653Z"
   }
 }

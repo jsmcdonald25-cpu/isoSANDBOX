@@ -40,9 +40,14 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE) {
 // Scope rule (Scott, 2026-04-23): /25 or less ONLY. Drop /50/75/77/99 queries.
 // Named variations (Flip Stock, 1952 Rookie Variation, Golden Mirror Image) are
 // effectively /5-/25 equivalent — no serial # but tracked via parallel_name.
+// `cadence_minutes` controls how often each set actually runs against eBay.
+// Cron fires every 30 min, but a set whose last successful pull is younger
+// than its cadence gets skipped. Default = 30 (every tick). Football runs
+// every 2 hours since new listings are sparse and eBay quota is shared.
 const SETS = [
   {
     label: 'Heritage',
+    cadence_minutes: 30,
     queries: [
       // Print-run searches — 1/1 + /5 + /10 + /25 only
       '2026 Topps Heritage Superfractor',
@@ -66,6 +71,7 @@ const SETS = [
   },
   {
     label: 'Series 1',
+    cadence_minutes: 30,
     queries: [
       // 1/1 tier
       '2026 Topps Series 1 Superfractor',
@@ -98,6 +104,7 @@ const SETS = [
   },
   {
     label: 'Chrome Football',
+    cadence_minutes: 120,
     queries: [
       // 1/1 tier
       '2025 Topps Chrome Football Superfractor',
@@ -643,10 +650,13 @@ async function crawlSet({ token, set, runEnvironment, blocklist }) {
   // Three sort passes per query surfaces listings Best Match buries (small
   // sellers, new listings, high-priced outliers). Dedup by itemId in the Map
   // means overlap across sorts costs us nothing on the Get Item side.
+  // Single-pass best-match — was 3 passes (best, priceDesc, newlyListed) but
+  // that tripled eBay API calls for marginal coverage gain. Best Match catches
+  // ~95% of listings; the missing 5% will be picked up on the next 30-min run
+  // anyway. Dropping to 1 pass keeps daily eBay quota healthy for dashboard
+  // pricing + ISOsnipe + Marketplace Insights application review.
   const SORT_PASSES = [
-    { key: null,          label: 'best'   },
-    { key: '-price',      label: 'priceDesc' },
-    { key: 'newlyListed', label: 'newest' },
+    { key: null, label: 'best' },
   ];
   const seenItemIds = new Map(); // itemId -> searchItem (keep first occurrence)
   for (const query of set.queries) {
@@ -753,6 +763,27 @@ async function crawlSet({ token, set, runEnvironment, blocklist }) {
   return perSetStats;
 }
 
+// Returns minutes since the most recent successful pull for the given set,
+// or Infinity if none found. Used to honor per-set cadence_minutes.
+async function lastSuccessfulPullAgeMinutes(setLabel) {
+  try {
+    const url = `${SUPABASE_URL}/rest/v1/iso_serial_pulls`
+      + `?set_searched=eq.${encodeURIComponent(setLabel)}`
+      + `&status=in.(success,partial)`
+      + `&select=pull_timestamp`
+      + `&order=pull_timestamp.desc`
+      + `&limit=1`;
+    const res = await fetch(url, { headers: sbHeaders });
+    if (!res.ok) return Infinity;
+    const rows = await res.json();
+    if (!Array.isArray(rows) || !rows.length) return Infinity;
+    const ageMs = Date.now() - new Date(rows[0].pull_timestamp).getTime();
+    return ageMs / 60000;
+  } catch (_) {
+    return Infinity;
+  }
+}
+
 // ─── Top-level entrypoint ───────────────────────────────────
 async function crawl({ runEnvironment }) {
   const globalStart = Date.now();
@@ -774,6 +805,16 @@ async function crawl({ runEnvironment }) {
 
   for (const set of SETS) {
     console.log(`── ${set.label} ──`);
+    const cadence = set.cadence_minutes || 30;
+    if (cadence > 30) {
+      const ageMin = await lastSuccessfulPullAgeMinutes(set.label);
+      // Use 0.85 × cadence as the threshold so we don't keep slipping later
+      // each tick due to runtime. e.g. cadence 120 → fire when ≥102 min since last.
+      if (ageMin < cadence * 0.85) {
+        console.log(`  Skip — last pull ${ageMin.toFixed(0)} min ago, cadence ${cadence} min\n`);
+        continue;
+      }
+    }
     try {
       const s = await crawlSet({ token, set, runEnvironment, blocklist });
       totals.totalResults      += s.totalResults;

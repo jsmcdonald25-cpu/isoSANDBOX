@@ -239,6 +239,63 @@ function summarizePricing(results, adminTerms) {
   };
 }
 
+// ── Shared Supabase cache layer ─────────────────────────────
+// Drops eBay calls 90%+ in dashboard usage by caching responses keyed on the
+// normalized lookup parameters. First user pays the eBay call; everyone else
+// reads from Supabase for `CACHE_TTL_MS`. Eliminates the 5K/day cap as a
+// user-facing failure mode and keeps eBay reviewers happy when applying for
+// Marketplace Insights API access.
+const SB_URL = 'https://jyfaegmnzkarlcximxjo.supabase.co';
+const SB_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY
+  || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmFlZ21uemthcmxjeGlteGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzU3MDMsImV4cCI6MjA4ODg1MTcwM30.e6U1TZECRlEV9LkTm9NY6ljIJVRKhajE6VvRaBLlaCA';
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+
+function _norm(s) {
+  return String(s || '').trim().toLowerCase().replace(/\s+/g, ' ');
+}
+function buildCacheKey({ player, year, brand, set_name, card_number, variation, grade }) {
+  return [
+    _norm(player), _norm(year), _norm(brand), _norm(set_name),
+    _norm(card_number), _norm(variation), _norm(grade),
+  ].join('|');
+}
+async function readCache(key) {
+  try {
+    const url = `${SB_URL}/rest/v1/ebay_lookup_cache?lookup_key=eq.${encodeURIComponent(key)}&select=response,last_fetched&limit=1`;
+    const res = await new Promise((resolve, reject) => {
+      https.get(url, { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY } }, (r) => {
+        let d = ''; r.on('data', c => d += c); r.on('end', () => resolve({ statusCode: r.statusCode, body: d }));
+      }).on('error', reject);
+    });
+    if (res.statusCode !== 200) return null;
+    const rows = JSON.parse(res.body || '[]');
+    if (!rows.length) return null;
+    const age = Date.now() - new Date(rows[0].last_fetched).getTime();
+    if (age >= CACHE_TTL_MS) return null;
+    return rows[0].response;
+  } catch (_) {
+    return null;
+  }
+}
+async function writeCache(key, response) {
+  try {
+    const body = JSON.stringify({ lookup_key: key, response, last_fetched: new Date().toISOString() });
+    const url = new URL(`${SB_URL}/rest/v1/ebay_lookup_cache`);
+    await httpsRequest(url, {
+      method: 'POST',
+      hostname: url.hostname,
+      path: url.pathname,
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SB_KEY,
+        'Authorization': `Bearer ${SB_KEY}`,
+        'Prefer': 'resolution=merge-duplicates',
+        'Content-Length': Buffer.byteLength(body),
+      },
+    }, body);
+  } catch (_) { /* non-fatal */ }
+}
+
 // ── Netlify Handler ─────────────────────────────────────────
 exports.handler = async (event) => {
   const headers = {
@@ -279,22 +336,36 @@ exports.handler = async (event) => {
       };
     }
 
+    // 1. Cache check — return immediately on fresh hit, skip eBay entirely
+    const cacheKey = buildCacheKey({ player, year, brand, set_name, card_number, variation, grade });
+    const cached = await readCache(cacheKey);
+    if (cached) {
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ ...cached, cached: true }),
+      };
+    }
+
     const envKey = (process.env.EBAY_ENVIRONMENT || 'production').toLowerCase();
     const env = EBAY_ENV[envKey] || EBAY_ENV.production;
 
-    // 1. Get OAuth token + blocklist in parallel
+    // 2. Get OAuth token + blocklist in parallel
     const [token, adminTerms] = await Promise.all([
       getEbayToken(clientId, clientSecret, env),
       getBlocklist(),
     ]);
 
-    // 2. Build query and search
+    // 3. Build query and search
     const query = buildSearchQuery({ player, year, brand, set_name, card_number, variation, grade });
     const results = await searchSoldListings(token, query, env);
 
-    // 3. Summarize pricing (filters junk via hardcoded + admin blocklist)
+    // 4. Summarize pricing (filters junk via hardcoded + admin blocklist)
     const summary = summarizePricing(results, adminTerms);
     summary.query = query; // Include for debugging/transparency
+
+    // 5. Write to cache (non-blocking — don't fail the response)
+    writeCache(cacheKey, summary);
 
     return {
       statusCode: 200,

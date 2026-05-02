@@ -10865,8 +10865,9 @@ function _mclFilter(){
   if(cmp[sort]) filtered.sort(cmp[sort]);
   _mclFiltered = filtered;
 
-  // Stats
-  const totalVal = filtered.reduce((s,c)=>s+num(c.estimated_value),0);
+  // Stats — match My Vault tile fallback chain (live eBay → est value → cost basis)
+  const _mclVal = c => num(c._currentValue) || num(c.estimated_value) || num(c.price_paid);
+  const totalVal = filtered.reduce((s,c)=>s+_mclVal(c),0);
   const totalPaid = filtered.reduce((s,c)=>s+num(c.price_paid),0);
   const gl = totalVal - totalPaid;
   const setsCount = new Set(filtered.map(c=>c.set_name).filter(Boolean)).size;
@@ -10886,7 +10887,7 @@ function _mclRender(){
     const header = `<div class="mcl-list-header"><div>#</div><div>Player</div><div>Team</div><div>Set</div><div style="text-align:right">Paid</div><div style="text-align:right">Value</div><div style="text-align:right">Gain/Loss</div></div>`;
     const rows = data.map((c,i)=>{
       const paid = parseFloat(c.price_paid)||0;
-      const val = parseFloat(c.estimated_value)||0;
+      const val = parseFloat(c._currentValue)||parseFloat(c.estimated_value)||paid;
       const gl = val - paid;
       const badges = [];
       if(c.is_rookie) badges.push('<span style="background:rgba(0,170,255,0.12);color:var(--blue);font-size:9px;padding:2px 6px;border-radius:3px;font-weight:700;margin-left:4px">RC</span>');
@@ -10899,8 +10900,8 @@ function _mclRender(){
   } else {
     const densityCls = _mclDensity===6 ? 'mcl-grid cols-6' : 'mcl-grid';
     const cards = data.map((c,i)=>{
-      const val = parseFloat(c.estimated_value)||0;
       const paid = parseFloat(c.price_paid)||0;
+      const val = parseFloat(c._currentValue)||parseFloat(c.estimated_value)||paid;
       const gl = val - paid;
       const img = c.front_image_url;
       const ph = window._GRAIL_PH||'';

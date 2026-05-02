@@ -96,6 +96,31 @@ const SETS = [
       '2026 Topps Series 1 Golden Mirror',
     ],
   },
+  {
+    label: 'Chrome Football',
+    queries: [
+      // 1/1 tier
+      '2025 Topps Chrome Football Superfractor',
+      '2025 Topps Chrome Football 1/1',
+      '2025 Topps Chrome Football Printing Plate',
+      // Print-run searches — /5 + /10 + /25 only (per /25-or-less scope)
+      '2025 Topps Chrome Football /5',
+      '2025 Topps Chrome Football #/5',
+      '2025 Topps Chrome Football /10',
+      '2025 Topps Chrome Football #/10',
+      '2025 Topps Chrome Football /25',
+      '2025 Topps Chrome Football #/25',
+      // Color refractor parallels for /25-or-less tiers (classifier filters out >25)
+      '2025 Topps Chrome Football Red Refractor',
+      '2025 Topps Chrome Football Black Refractor',
+      '2025 Topps Chrome Football Orange Refractor',
+      // Auto / patch insert searches for /25-or-less tiers
+      '2025 Topps Chrome Football Rookie Patch Auto',
+      '2025 Topps Chrome Football Rookie Premiere Patch Auto',
+      '2025 Topps Chrome Football Chromographs',
+      '2025 Topps Chrome Football Hall of Chrome Auto',
+    ],
+  },
 ];
 
 // eBay Sports Trading Cards category (same one ISOsnipe uses)

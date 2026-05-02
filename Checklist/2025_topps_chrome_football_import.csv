@@ -1,0 +1,2421 @@
+card_number,player,team,category,insert_name,is_rookie
+1,Marvin Harrison Jr.,Arizona Cardinals,Base,,false
+2,Michael Wilson,Arizona Cardinals,Base,,false
+3,Paris Johnson Jr.,Arizona Cardinals,Base,,false
+4,Trey McBride,Arizona Cardinals,Base,,false
+5,Kyler Murray,Arizona Cardinals,Base,,false
+6,Garrett Williams,Arizona Cardinals,Base,,false
+7,Trey Benson,Arizona Cardinals,Base,,false
+8,Budda Baker,Arizona Cardinals,Base,,false
+9,Darius Robinson,Arizona Cardinals,Base,,false
+10,Josh Sweat,Arizona Cardinals,Base,,false
+11,Darnell Mooney,Atlanta Falcons,Base,,false
+12,Drake London,Atlanta Falcons,Base,,false
+13,Kirk Cousins,Atlanta Falcons,Base,,false
+14,Kyle Pitts,Atlanta Falcons,Base,,false
+15,Michael Penix Jr.,Atlanta Falcons,Base,,false
+16,Bijan Robinson,Atlanta Falcons,Base,,false
+17,Tyler Allgeier,Atlanta Falcons,Base,,false
+18,Leonard Floyd,Atlanta Falcons,Base,,false
+19,A.J. Terrell,Atlanta Falcons,Base,,false
+20,DeAndre Hopkins,Baltimore Ravens,Base,,false
+21,Rashod Bateman,Baltimore Ravens,Base,,false
+22,Zay Flowers,Baltimore Ravens,Base,,false
+23,Mark Andrews,Baltimore Ravens,Base,,false
+24,Lamar Jackson,Baltimore Ravens,Base,,false
+25,Derrick Henry,Baltimore Ravens,Base,,false
+26,Devontez Walker,Baltimore Ravens,Base,,false
+27,Roquan Smith,Baltimore Ravens,Base,,false
+28,Nate Wiggins,Baltimore Ravens,Base,,false
+29,Kyle Hamilton,Baltimore Ravens,Base,,false
+30,Keon Coleman,Buffalo Bills,Base,,false
+31,Joshua Palmer,Buffalo Bills,Base,,false
+32,Khalil Shakir,Buffalo Bills,Base,,false
+33,Dawson Knox,Buffalo Bills,Base,,false
+34,Josh Allen,Buffalo Bills,Base,,false
+35,James Cook,Buffalo Bills,Base,,false
+36,Joey Bosa,Buffalo Bills,Base,,false
+37,Dalton Kincaid,Buffalo Bills,Base,,false
+38,Xavier Legette,Carolina Panthers,Base,,false
+39,Jalen Coker,Carolina Panthers,Base,,false
+40,Bryce Young,Carolina Panthers,Base,,false
+41,Jaycee Horn,Carolina Panthers,Base,,false
+42,Chuba Hubbard,Carolina Panthers,Base,,false
+43,Rico Dowdle,Carolina Panthers,Base,,false
+44,Tommy Tremble,Carolina Panthers,Base,,false
+45,Ja'Tavion Sanders,Carolina Panthers,Base,,false
+46,Bobby Brown III,Carolina Panthers,Base,,false
+47,Derrick Brown,Carolina Panthers,Base,,false
+48,DJ Moore,Chicago Bears,Base,,false
+49,Rome Odunze,Chicago Bears,Base,,false
+50,Joe Thuney,Chicago Bears,Base,,false
+51,Cole Kmet,Chicago Bears,Base,,false
+52,Caleb Williams,Chicago Bears,Base,,false
+53,D'Andre Swift,Chicago Bears,Base,,false
+54,Tyson Bagent,Chicago Bears,Base,,false
+55,Roschon Johnson,Chicago Bears,Base,,false
+56,Montez Sweat,Chicago Bears,Base,,false
+57,Jaylon Johnson,Chicago Bears,Base,,false
+58,Ja'Marr Chase,Cincinnati Bengals,Base,,false
+59,Tee Higgins,Cincinnati Bengals,Base,,false
+60,Andrei Iosivas,Cincinnati Bengals,Base,,false
+61,Joe Burrow,Cincinnati Bengals,Base,,false
+62,Chase Brown,Cincinnati Bengals,Base,,false
+63,Jake Browning,Cincinnati Bengals,Base,,false
+64,Evan McPherson,Cincinnati Bengals,Base,,false
+65,Trey Hendrickson,Cincinnati Bengals,Base,,false
+66,Grant Delpit,Cleveland Browns,Base,,false
+67,Cedric Tillman,Cleveland Browns,Base,,false
+68,Jerry Jeudy,Cleveland Browns,Base,,false
+69,David Njoku,Cleveland Browns,Base,,false
+70,Myles Garrett,Cleveland Browns,Base,,false
+71,Jerome Ford,Cleveland Browns,Base,,false
+72,Quinnen Williams,Dallas Cowboys,Base,,false
+73,Kenny Clark,Dallas Cowboys,Base,,false
+74,Denzel Ward,Cleveland Browns,Base,,false
+75,Jake Ferguson,Dallas Cowboys,Base,,false
+76,CeeDee Lamb,Dallas Cowboys,Base,,false
+77,Micah Parsons,Green Bay Packers,Base,,false
+78,DeMarvion Overshown,Dallas Cowboys,Base,,false
+79,Dak Prescott,Dallas Cowboys,Base,,false
+80,George Pickens,Dallas Cowboys,Base,,false
+81,Brandon Aubrey,Dallas Cowboys,Base,,false
+82,DaRon Bland,Dallas Cowboys,Base,,false
+83,Trevon Diggs,Dallas Cowboys,Base,,false
+84,KaVontae Turpin,Dallas Cowboys,Base,,false
+85,Joe Milton III,Dallas Cowboys,Base,,false
+86,Courtland Sutton,Denver Broncos,Base,,false
+87,Marvin Mims Jr.,Denver Broncos,Base,,false
+88,Bo Nix,Denver Broncos,Base,,false
+89,Jarrett Stidham,Denver Broncos,Base,,false
+90,Jaleel McLaughlin,Denver Broncos,Base,,false
+91,Troy Franklin,Denver Broncos,Base,,false
+92,Evan Engram,Denver Broncos,Base,,false
+93,Pat Surtain II,Denver Broncos,Base,,false
+94,Talanoa Hufanga,Denver Broncos,Base,,false
+95,Zach Allen,Denver Broncos,Base,,false
+96,Tim Patrick,Jacksonville Jaguars,Base,,false
+97,Jameson Williams,Detroit Lions,Base,,false
+98,Amon-Ra St. Brown,Detroit Lions,Base,,false
+99,Penei Sewell,Detroit Lions,Base,,false
+100,Sam LaPorta,Detroit Lions,Base,,false
+101,Jahmyr Gibbs,Detroit Lions,Base,,false
+102,Jared Goff,Detroit Lions,Base,,false
+103,David Montgomery,Detroit Lions,Base,,false
+104,Aidan Hutchinson,Detroit Lions,Base,,false
+105,Jake Bates,Detroit Lions,Base,,false
+106,Romeo Doubs,Green Bay Packers,Base,,false
+107,Jayden Reed,Green Bay Packers,Base,,false
+108,Tucker Kraft,Green Bay Packers,Base,,false
+109,Jordan Love,Green Bay Packers,Base,,false
+110,Josh Jacobs,Green Bay Packers,Base,,false
+111,Rashan Gary,Green Bay Packers,Base,,false
+112,Christian Watson,Green Bay Packers,Base,,false
+113,Xavier McKinney,Green Bay Packers,Base,,false
+114,MarShawn Lloyd,Green Bay Packers,Base,,false
+115,Nico Collins,Houston Texans,Base,,false
+116,Derek Stingley Jr.,Houston Texans,Base,,false
+117,Christian Kirk,Houston Texans,Base,,false
+118,Dalton Schultz,Houston Texans,Base,,false
+119,CJ Stroud,Houston Texans,Base,,false
+120,Joe Mixon,Houston Texans,Base,,false
+121,Will Anderson Jr.,Houston Texans,Base,,false
+122,Henry To'oTo'o,Houston Texans,Base,,false
+123,Tank Dell,Houston Texans,Base,,false
+124,Cam Robinson,Cleveland Browns,Base,,false
+125,Alec Pierce,Indianapolis Colts,Base,,false
+126,Michael Pittman Jr.,Indianapolis Colts,Base,,false
+127,Josh Downs,Indianapolis Colts,Base,,false
+128,Laiatu Latu,Indianapolis Colts,Base,,false
+129,Charvarius Ward,Indianapolis Colts,Base,,false
+130,Jonathan Taylor,Indianapolis Colts,Base,,false
+131,Khalil Herbert,New York Jets,Base,,false
+132,Daniel Jones,Indianapolis Colts,Base,,false
+133,DeForest Buckner,Indianapolis Colts,Base,,false
+134,Braden Smith,Indianapolis Colts,Base,,false
+135,Brian Thomas Jr.,Jacksonville Jaguars,Base,,false
+136,Dyami Brown,Jacksonville Jaguars,Base,,false
+137,Brenton Strange,Jacksonville Jaguars,Base,,false
+138,Trevor Lawrence,Jacksonville Jaguars,Base,,false
+139,Travis Etienne Jr.,Jacksonville Jaguars,Base,,false
+140,Maason Smith,Jacksonville Jaguars,Base,,false
+141,Travon Walker,Jacksonville Jaguars,Base,,false
+142,Gabe Davis,Buffalo Bills,Base,,false
+143,Tank Bigsby,Philadelphia Eagles,Base,,false
+144,Quenton Nelson,Indianapolis Colts,Base,,false
+145,Xavier Worthy,Kansas City Chiefs,Base,,false
+146,Hollywood Brown,Kansas City Chiefs,Base,,false
+147,Rashee Rice,Kansas City Chiefs,Base,,false
+148,Patrick Mahomes II,Kansas City Chiefs,Base,,false
+149,Isiah Pacheco,Kansas City Chiefs,Base,,false
+150,Travis Kelce,Kansas City Chiefs,Base,,false
+151,Harrison Butker,Kansas City Chiefs,Base,,false
+152,George Karlaftis,Kansas City Chiefs,Base,,false
+153,Chris Jones,Kansas City Chiefs,Base,,false
+154,Trent McDuffie,Kansas City Chiefs,Base,,false
+155,Keenan Allen,Los Angeles Chargers,Base,,false
+156,Ladd McConkey,Los Angeles Chargers,Base,,false
+157,Joe Alt,Los Angeles Chargers,Base,,false
+158,Justin Herbert,Los Angeles Chargers,Base,,false
+159,Quentin Johnston,Los Angeles Chargers,Base,,false
+160,Khalil Mack,Los Angeles Chargers,Base,,false
+161,Najee Harris,Los Angeles Chargers,Base,,false
+162,Cameron Dicker,Los Angeles Chargers,Base,,false
+163,Tuli Tuipulotu,Los Angeles Chargers,Base,,false
+164,Da'Shawn Hand,Los Angeles Chargers,Base,,false
+165,Davante Adams,Los Angeles Rams,Base,,false
+166,Puka Nacua,Los Angeles Rams,Base,,false
+167,Tutu Atwell,Los Angeles Rams,Base,,false
+168,Kyren Williams,Los Angeles Rams,Base,,false
+169,Matthew Stafford,Los Angeles Rams,Base,,false
+170,Steve Avila,Los Angeles Rams,Base,,false
+171,Blake Corum,Los Angeles Rams,Base,,false
+172,Tyler Higbee,Los Angeles Rams,Base,,false
+173,Jared Verse,Los Angeles Rams,Base,,false
+174,Kamren Kinchens,Los Angeles Rams,Base,,false
+175,Tre Tucker,Las Vegas Raiders,Base,,false
+176,Jakobi Meyers,Jacksonville Jaguars,Base,,false
+177,Jackson Powers-Johnson,Las Vegas Raiders,Base,,false
+178,Brock Bowers,Las Vegas Raiders,Base,,false
+179,Geno Smith,Las Vegas Raiders,Base,,false
+180,Maxx Crosby,Las Vegas Raiders,Base,,false
+181,Robert Spillane,New England Patriots,Base,,false
+182,Raheem Mostert,Las Vegas Raiders,Base,,false
+183,Kolton Miller,Las Vegas Raiders,Base,,false
+184,Jeremy Chinn,Las Vegas Raiders,Base,,false
+185,Tyreek Hill,Miami Dolphins,Base,,false
+186,Jaylen Waddle,Miami Dolphins,Base,,false
+187,Tua Tagovailoa,Miami Dolphins,Base,,false
+188,De'Von Achane,Miami Dolphins,Base,,false
+189,Zach Wilson,Miami Dolphins,Base,,false
+190,Jaylen Wright,Miami Dolphins,Base,,false
+191,Jalen Ramsey,Pittsburgh Steelers,Base,,false
+192,Jaelan Phillips,Philadelphia Eagles,Base,,false
+193,Darren Waller,Miami Dolphins,Base,,false
+194,Ashtyn Davis,Miami Dolphins,Base,,false
+195,Justin Jefferson,Minnesota Vikings,Base,,false
+196,Brian O'Neill,Minnesota Vikings,Base,,false
+197,Jonathan Greenard,Minnesota Vikings,Base,,false
+198,Andrew Van Ginkel,Minnesota Vikings,Base,,false
+199,J.J. McCarthy,Minnesota Vikings,Base,,false
+200,T.J. Hockenson,Minnesota Vikings,Base,,false
+201,Aaron Jones Sr.,Minnesota Vikings,Base,,false
+202,Jordan Addison,Minnesota Vikings,Base,,false
+203,Will Reichard,Minnesota Vikings,Base,,false
+204,Harrison Smith,Minnesota Vikings,Base,,false
+205,Stefon Diggs,New England Patriots,Base,,false
+206,Mack Hollins,New England Patriots,Base,,false
+207,Drake Maye,New England Patriots,Base,,false
+208,Terry McLaurin,Washington Commanders,Base,,false
+209,Hunter Henry,New England Patriots,Base,,false
+210,Rhamondre Stevenson,New England Patriots,Base,,false
+211,Kyle Dugger,Pittsburgh Steelers,Base,,false
+212,Garrett Bradbury,New England Patriots,Base,,false
+213,Jahlani Tavai,New England Patriots,Base,,false
+214,Khyiris Tonga,New England Patriots,Base,,false
+215,Alvin Kamara,New Orleans Saints,Base,,false
+216,Chris Olave,New Orleans Saints,Base,,false
+217,Brandin Cooks,Buffalo Bills,Base,,false
+218,Rashid Shaheed,Seattle Seahawks,Base,,false
+219,Taliese Fuaga,New Orleans Saints,Base,,false
+220,Chase Young,New Orleans Saints,Base,,false
+221,Cameron Jordan,New Orleans Saints,Base,,false
+222,Taysom Hill,New Orleans Saints,Base,,false
+223,Erik McCoy,New Orleans Saints,Base,,false
+224,Kool-Aid McKinstry,New Orleans Saints,Base,,false
+225,Malik Nabers,New York Giants,Base,,false
+226,Darius Slayton,New York Giants,Base,,false
+227,Wan'Dale Robinson,New York Giants,Base,,false
+228,Tyrone Tracy Jr.,New York Giants,Base,,false
+229,Russell Wilson,New York Giants,Base,,false
+230,Dexter Lawrence II,New York Giants,Base,,false
+231,Tyler Nubin,New York Giants,Base,,false
+232,Micah McFadden,New York Giants,Base,,false
+233,Theo Johnson,New York Giants,Base,,false
+234,Brian Burns,New York Giants,Base,,false
+235,Garrett Wilson,New York Jets,Base,,false
+236,Allen Lazard,New York Jets,Base,,false
+237,Justin Fields,New York Jets,Base,,false
+238,Breece Hall,New York Jets,Base,,false
+239,Jeremy Ruckert,New York Jets,Base,,false
+240,Braelon Allen,New York Jets,Base,,false
+241,Will McDonald IV,New York Jets,Base,,false
+242,Sauce Gardner,Indianapolis Colts,Base,,false
+243,A.J. Brown,Philadelphia Eagles,Base,,false
+244,DeVonta Smith,Philadelphia Eagles,Base,,false
+245,Jordan Mailata,Philadelphia Eagles,Base,,false
+246,Lane Johnson,Philadelphia Eagles,Base,,false
+247,Jalen Hurts,Philadelphia Eagles,Base,,false
+248,Saquon Barkley,Philadelphia Eagles,Base,,false
+249,Jordan Davis,Philadelphia Eagles,Base,,false
+250,Jalen Carter,Philadelphia Eagles,Base,,false
+251,Reed Blankenship,Philadelphia Eagles,Base,,false
+252,Cooper DeJean,Philadelphia Eagles,Base,,false
+253,Jaylen Warren,Pittsburgh Steelers,Base,,false
+254,DK Metcalf,Pittsburgh Steelers,Base,,false
+255,Aaron Rodgers,Pittsburgh Steelers,Base,,false
+256,Troy Fautanu,Pittsburgh Steelers,Base,,false
+257,Jonnu Smith,Pittsburgh Steelers,Base,,false
+258,T.J. Watt,Pittsburgh Steelers,Base,,false
+259,Darius Slay,Pittsburgh Steelers,Base,,false
+260,Patrick Queen,Pittsburgh Steelers,Base,,false
+261,Ricky Pearsall,San Francisco 49ers,Base,,false
+262,Brock Purdy,San Francisco 49ers,Base,,false
+263,Christian McCaffrey,San Francisco 49ers,Base,,false
+264,Nick Bosa,San Francisco 49ers,Base,,false
+265,Trent Williams,San Francisco 49ers,Base,,false
+266,Brandon Aiyuk,San Francisco 49ers,Base,,false
+267,George Kittle,San Francisco 49ers,Base,,false
+268,Fred Warner,San Francisco 49ers,Base,,false
+269,Deommodore Lenoir,San Francisco 49ers,Base,,false
+270,Kyle Juszczyk,San Francisco 49ers,Base,,false
+271,Cooper Kupp,Seattle Seahawks,Base,,false
+272,Marquez Valdes-Scantling,Seattle Seahawks,Base,,false
+273,Olu Oluwatimi,Seattle Seahawks,Base,,false
+274,Noah Fant,Cincinnati Bengals,Base,,false
+275,Sam Darnold,Seattle Seahawks,Base,,false
+276,Kenneth Walker III,Seattle Seahawks,Base,,false
+277,Devon Witherspoon,Seattle Seahawks,Base,,false
+278,Riq Woolen,Seattle Seahawks,Base,,false
+279,Zach Charbonnet,Seattle Seahawks,Base,,false
+280,Jason Myers,Seattle Seahawks,Base,,false
+281,Baker Mayfield,Tampa Bay Buccaneers,Base,,false
+282,Mike Evans,Tampa Bay Buccaneers,Base,,false
+283,Chris Godwin,Tampa Bay Buccaneers,Base,,false
+284,Cade Otton,Tampa Bay Buccaneers,Base,,false
+285,Bucky Irving,Tampa Bay Buccaneers,Base,,false
+286,Vita Vea,Tampa Bay Buccaneers,Base,,false
+287,Tristan Wirfs,Tampa Bay Buccaneers,Base,,false
+288,Chase McLaughlin,Tampa Bay Buccaneers,Base,,false
+289,Jeffery Simmons,Tennessee Titans,Base,,false
+290,Tony Pollard,Tennessee Titans,Base,,false
+291,Calvin Ridley,Tennessee Titans,Base,,false
+292,T'Vondre Sweat,Tennessee Titans,Base,,false
+293,Noah Brown,Washington Commanders,Base,,false
+294,Deebo Samuel,Washington Commanders,Base,,false
+295,Jayden Daniels,Washington Commanders,Base,,false
+296,Brian Robinson Jr.,San Francisco 49ers,Base,,false
+297,Zach Ertz,Washington Commanders,Base,,false
+298,Luke McCaffrey,Washington Commanders,Base,,false
+299,Bobby Wagner,Washington Commanders,Base,,false
+300,Matt Gay,Washington Commanders,Base,,false
+301,Shavon Revel Jr.,Dallas Cowboys,Base,,true
+302,Mason Graham,Cleveland Browns,Base,,true
+303,Shemar Turner,Chicago Bears,Base,,true
+304,Josh Simmons,Kansas City Chiefs,Base,,true
+305,Gunnar Helm,Tennessee Titans,Base,,true
+306,Jaxson Dart,New York Giants,Base,,true
+307,Kurtis Rourke,San Francisco 49ers,Base,,true
+308,Dylan Sampson,Cleveland Browns,Base,,true
+309,Kalel Mullings,Tennessee Titans,Base,,true
+310,Phil Mafah,Dallas Cowboys,Base,,true
+311,Brashard Smith,Kansas City Chiefs,Base,,true
+312,Emeka Egbuka,Tampa Bay Buccaneers,Base,,true
+313,Pat Bryant,Denver Broncos,Base,,true
+314,Cam Ward,Tennessee Titans,Base,,true
+315,Shedeur Sanders,Cleveland Browns,Base,,true
+316,Quinn Ewers,Miami Dolphins,Base,,true
+317,Dillon Gabriel,Cleveland Browns,Base,,true
+318,Riley Leonard,Indianapolis Colts,Base,,true
+319,Brady Cook,New York Jets,Base,,true
+320,Isaac TeSlaa,Detroit Lions,Base,,true
+321,Will Howard,Pittsburgh Steelers,Base,,true
+322,Ashton Jeanty,Las Vegas Raiders,Base,,true
+323,Kaleb Johnson,Pittsburgh Steelers,Base,,true
+324,Omarion Hampton,Los Angeles Chargers,Base,,true
+325,Quinshon Judkins,Cleveland Browns,Base,,true
+326,Tetairoa McMillan,Carolina Panthers,Base,,true
+327,Ollie Gordon II,Miami Dolphins,Base,,true
+328,TreVeyon Henderson,New England Patriots,Base,,true
+329,Jordan James,San Francisco 49ers,Base,,true
+330,RJ Harvey,Denver Broncos,Base,,true
+331,Cam Skattebo,New York Giants,Base,,true
+332,Travis Hunter,Jacksonville Jaguars,Base,,true
+333,Matthew Golden,Green Bay Packers,Base,,true
+334,Luther Burden III,Chicago Bears,Base,,true
+335,Terrance Ferguson,Los Angeles Rams,Base,,true
+336,Elic Ayomanor,Tennessee Titans,Base,,true
+337,Jalen Royals,Kansas City Chiefs,Base,,true
+338,Tre Harris III,Los Angeles Chargers,Base,,true
+339,Harold Fannin Jr.,Cleveland Browns,Base,,true
+340,Savion Williams,Green Bay Packers,Base,,true
+341,Isaiah Bond,Cleveland Browns,Base,,true
+342,Tez Johnson,Tampa Bay Buccaneers,Base,,true
+343,Jayden Higgins,Houston Texans,Base,,true
+344,Billy Bowman Jr.,Atlanta Falcons,Base,,true
+345,Colston Loveland,Chicago Bears,Base,,true
+346,Tyler Warren,Indianapolis Colts,Base,,true
+347,Malaki Starks,Baltimore Ravens,Base,,true
+348,Nick Emmanwori,Seattle Seahawks,Base,,true
+349,Will Johnson,Arizona Cardinals,Base,,true
+350,Abdul Carter,New York Giants,Base,,true
+351,James Pearce Jr.,Atlanta Falcons,Base,,true
+352,Mykel Williams,San Francisco 49ers,Base,,true
+353,Nic Scourton,Carolina Panthers,Base,,true
+354,Jalon Walker,Atlanta Falcons,Base,,true
+355,Benjamin Morrison,Tampa Bay Buccaneers,Base,,true
+356,JT Tuimoloau,Indianapolis Colts,Base,,true
+357,Jack Sawyer,Pittsburgh Steelers,Base,,true
+358,Landon Jackson,Buffalo Bills,Base,,true
+359,Jahdae Barron,Denver Broncos,Base,,true
+360,Deone Walker,Buffalo Bills,Base,,true
+361,Derrick Harmon,Pittsburgh Steelers,Base,,true
+362,Kenneth Grant,Miami Dolphins,Base,,true
+363,Shemar Stewart,Cincinnati Bengals,Base,,true
+364,Tyleik Williams,Detroit Lions,Base,,true
+365,Walter Nolen,Arizona Cardinals,Base,,true
+366,Jihaad Campbell,Philadelphia Eagles,Base,,true
+367,Darien Porter,Las Vegas Raiders,Base,,true
+368,Denzel Burke,Arizona Cardinals,Base,,true
+369,Quincy Riley,New Orleans Saints,Base,,true
+370,Sebastian Castro,Pittsburgh Steelers,Base,,true
+371,Trey Amos,Washington Commanders,Base,,true
+372,Woody Marks,Houston Texans,Base,,true
+373,Danny Stutsman,New Orleans Saints,Base,,true
+374,Jaylen Reed,Houston Texans,Base,,true
+375,Kevin Winston Jr.,Tennessee Titans,Base,,true
+376,Mike Green,Baltimore Ravens,Base,,true
+377,Princely Umanmielen,Carolina Panthers,Base,,true
+378,Kelvin Banks Jr.,New Orleans Saints,Base,,true
+379,Will Campbell,New England Patriots,Base,,true
+380,Jonah Savaiinaea,Miami Dolphins,Base,,true
+381,Tyler Booker,Dallas Cowboys,Base,,true
+382,Kyle Monangai,Chicago Bears,Base,,true
+383,Tate Ratledge,Detroit Lions,Base,,true
+384,LeQuint Allen Jr.,Jacksonville Jaguars,Base,,true
+385,Dont'e Thornton Jr.,Las Vegas Raiders,Base,,true
+386,Emery Jones Jr.,Baltimore Ravens,Base,,true
+387,Jacory Croskey-Merritt,Washington Commanders,Base,,true
+388,Jack Bech,Las Vegas Raiders,Base,,true
+389,Bhayshul Tuten,Jacksonville Jaguars,Base,,true
+390,DJ Giddens,Indianapolis Colts,Base,,true
+391,Devin Neal,New Orleans Saints,Base,,true
+392,Donovan Edwards,New York Jets,Base,,true
+393,Xavier Watts,Atlanta Falcons,Base,,true
+394,Kaden Prather,Buffalo Bills,Base,,true
+395,Tai Felton,Minnesota Vikings,Base,,true
+396,Elijah Arroyo,Seattle Seahawks,Base,,true
+397,Jackson Hawes,Buffalo Bills,Base,,true
+398,Tyler Shough,New Orleans Saints,Base,,true
+399,Seth Henigan,Jacksonville Jaguars,Base,,true
+400,Mason Taylor,New York Jets,Base,,true
+1,Marvin Harrison Jr.,Arizona Cardinals,Base,Team Camo Variation,false
+2,Michael Wilson,Arizona Cardinals,Base,Team Camo Variation,false
+3,Paris Johnson Jr.,Arizona Cardinals,Base,Team Camo Variation,false
+4,Trey McBride,Arizona Cardinals,Base,Team Camo Variation,false
+5,Kyler Murray,Arizona Cardinals,Base,Team Camo Variation,false
+6,Garrett Williams,Arizona Cardinals,Base,Team Camo Variation,false
+7,Trey Benson,Arizona Cardinals,Base,Team Camo Variation,false
+8,Budda Baker,Arizona Cardinals,Base,Team Camo Variation,false
+9,Darius Robinson,Arizona Cardinals,Base,Team Camo Variation,false
+10,Josh Sweat,Arizona Cardinals,Base,Team Camo Variation,false
+11,Darnell Mooney,Atlanta Falcons,Base,Team Camo Variation,false
+12,Drake London,Atlanta Falcons,Base,Team Camo Variation,false
+13,Kirk Cousins,Atlanta Falcons,Base,Team Camo Variation,false
+14,Kyle Pitts,Atlanta Falcons,Base,Team Camo Variation,false
+15,Michael Penix Jr.,Atlanta Falcons,Base,Team Camo Variation,false
+16,Bijan Robinson,Atlanta Falcons,Base,Team Camo Variation,false
+17,Tyler Allgeier,Atlanta Falcons,Base,Team Camo Variation,false
+18,Leonard Floyd,Atlanta Falcons,Base,Team Camo Variation,false
+19,A.J. Terrell,Atlanta Falcons,Base,Team Camo Variation,false
+20,Deandre Hopkins,Baltimore Ravens,Base,Team Camo Variation,false
+21,Rashod Bateman,Baltimore Ravens,Base,Team Camo Variation,false
+22,Zay Flowers,Baltimore Ravens,Base,Team Camo Variation,false
+23,Mark Andrews,Baltimore Ravens,Base,Team Camo Variation,false
+24,Lamar Jackson,Baltimore Ravens,Base,Team Camo Variation,false
+25,Derrick Henry,Baltimore Ravens,Base,Team Camo Variation,false
+26,Devontez Walker,Baltimore Ravens,Base,Team Camo Variation,false
+27,Roquan Smith,Baltimore Ravens,Base,Team Camo Variation,false
+28,Nate Wiggins,Baltimore Ravens,Base,Team Camo Variation,false
+29,Kyle Hamilton,Baltimore Ravens,Base,Team Camo Variation,false
+30,Keon Coleman,Buffalo Bills,Base,Team Camo Variation,false
+31,Joshua Palmer,Buffalo Bills,Base,Team Camo Variation,false
+32,Khalil Shakir,Buffalo Bills,Base,Team Camo Variation,false
+33,Dawson Knox,Buffalo Bills,Base,Team Camo Variation,false
+34,Josh Allen,Buffalo Bills,Base,Team Camo Variation,false
+35,James Cook,Buffalo Bills,Base,Team Camo Variation,false
+36,Joey Bosa,Buffalo Bills,Base,Team Camo Variation,false
+37,Dalton Kincaid,Buffalo Bills,Base,Team Camo Variation,false
+38,Xavier Legette,Carolina Panthers,Base,Team Camo Variation,false
+39,Jalen Coker,Carolina Panthers,Base,Team Camo Variation,false
+40,Bryce Young,Carolina Panthers,Base,Team Camo Variation,false
+41,Jaycee Horn,Carolina Panthers,Base,Team Camo Variation,false
+42,Chuba Hubbard,Carolina Panthers,Base,Team Camo Variation,false
+43,Rico Dowdle,Carolina Panthers,Base,Team Camo Variation,false
+44,Tommy Tremble,Carolina Panthers,Base,Team Camo Variation,false
+45,Ja'Tavion Sanders,Carolina Panthers,Base,Team Camo Variation,false
+46,Bobby Brown III,Carolina Panthers,Base,Team Camo Variation,false
+47,Derrick Brown,Carolina Panthers,Base,Team Camo Variation,false
+48,DJ Moore,Chicago Bears,Base,Team Camo Variation,false
+49,Rome Odunze,Chicago Bears,Base,Team Camo Variation,false
+50,Joe Thuney,Chicago Bears,Base,Team Camo Variation,false
+51,Cole Kmet,Chicago Bears,Base,Team Camo Variation,false
+52,Caleb Williams,Chicago Bears,Base,Team Camo Variation,false
+53,D'Andre Swift,Chicago Bears,Base,Team Camo Variation,false
+54,Tyson Bagent,Chicago Bears,Base,Team Camo Variation,false
+55,Roschon Johnson,Chicago Bears,Base,Team Camo Variation,false
+56,Montez Sweat,Chicago Bears,Base,Team Camo Variation,false
+57,Jaylon Johnson,Chicago Bears,Base,Team Camo Variation,false
+58,Ja'Marr Chase,Cincinnati Bengals,Base,Team Camo Variation,false
+59,Tee Higgins,Cincinnati Bengals,Base,Team Camo Variation,false
+60,Andrei Iosivas,Cincinnati Bengals,Base,Team Camo Variation,false
+61,Joe Burrow,Cincinnati Bengals,Base,Team Camo Variation,false
+62,Chase Brown,Cincinnati Bengals,Base,Team Camo Variation,false
+63,Jake Browning,Cincinnati Bengals,Base,Team Camo Variation,false
+64,Evan McPherson,Cincinnati Bengals,Base,Team Camo Variation,false
+65,Trey Hendrickson,Cincinnati Bengals,Base,Team Camo Variation,false
+66,Grant Delpit,Cleveland Browns,Base,Team Camo Variation,false
+67,Cedric Tillman,Cleveland Browns,Base,Team Camo Variation,false
+68,Jerry Jeudy,Cleveland Browns,Base,Team Camo Variation,false
+69,David Njoku,Cleveland Browns,Base,Team Camo Variation,false
+70,Myles Garrett,Cleveland Browns,Base,Team Camo Variation,false
+71,Jerome Ford,Cleveland Browns,Base,Team Camo Variation,false
+72,Quinnen Williams,Dallas Cowboys,Base,Team Camo Variation,false
+73,Kenny Clark,Dallas Cowboys,Base,Team Camo Variation,false
+74,Denzel Ward,Cleveland Browns,Base,Team Camo Variation,false
+75,Jake Ferguson,Dallas Cowboys,Base,Team Camo Variation,false
+76,CeeDee Lamb,Dallas Cowboys,Base,Team Camo Variation,false
+77,Micah Parsons,Green Bay Packers,Base,Team Camo Variation,false
+78,DeMarvion Overshown,Dallas Cowboys,Base,Team Camo Variation,false
+79,Dak Prescott,Dallas Cowboys,Base,Team Camo Variation,false
+80,George Pickens,Dallas Cowboys,Base,Team Camo Variation,false
+81,Brandon Aubrey,Dallas Cowboys,Base,Team Camo Variation,false
+82,DaRon Bland,Dallas Cowboys,Base,Team Camo Variation,false
+83,Trevon Diggs,Dallas Cowboys,Base,Team Camo Variation,false
+84,KaVontae Turpin,Dallas Cowboys,Base,Team Camo Variation,false
+85,Joe Milton III,Dallas Cowboys,Base,Team Camo Variation,false
+86,Courtland Sutton,Denver Broncos,Base,Team Camo Variation,false
+87,Marvin Mims Jr.,Denver Broncos,Base,Team Camo Variation,false
+88,Bo Nix,Denver Broncos,Base,Team Camo Variation,false
+89,Jarrett Stidham,Denver Broncos,Base,Team Camo Variation,false
+90,Jaleel McLaughlin,Denver Broncos,Base,Team Camo Variation,false
+91,Troy Franklin,Denver Broncos,Base,Team Camo Variation,false
+92,Evan Engram,Denver Broncos,Base,Team Camo Variation,false
+93,Pat Surtain II,Denver Broncos,Base,Team Camo Variation,false
+94,Talanoa Hufanga,Denver Broncos,Base,Team Camo Variation,false
+95,Zach Allen,Denver Broncos,Base,Team Camo Variation,false
+96,Tim Patrick,Jacksonville Jaguars,Base,Team Camo Variation,false
+97,Jameson Williams,Detroit Lions,Base,Team Camo Variation,false
+98,Amon-Ra St. Brown,Detroit Lions,Base,Team Camo Variation,false
+99,Penei Sewell,Detroit Lions,Base,Team Camo Variation,false
+100,Sam LaPorta,Detroit Lions,Base,Team Camo Variation,false
+101,Jahmyr Gibbs,Detroit Lions,Base,Team Camo Variation,false
+102,Jared Goff,Detroit Lions,Base,Team Camo Variation,false
+103,David Montgomery,Detroit Lions,Base,Team Camo Variation,false
+104,Aidan Hutchinson,Detroit Lions,Base,Team Camo Variation,false
+105,Jake Bates,Detroit Lions,Base,Team Camo Variation,false
+106,Romeo Doubs,Green Bay Packers,Base,Team Camo Variation,false
+107,Jayden Reed,Green Bay Packers,Base,Team Camo Variation,false
+108,Tucker Kraft,Green Bay Packers,Base,Team Camo Variation,false
+109,Jordan Love,Green Bay Packers,Base,Team Camo Variation,false
+110,Josh Jacobs,Green Bay Packers,Base,Team Camo Variation,false
+111,Rashan Gary,Green Bay Packers,Base,Team Camo Variation,false
+112,Christian Watson,Green Bay Packers,Base,Team Camo Variation,false
+113,Xavier McKinney,Green Bay Packers,Base,Team Camo Variation,false
+114,MarShawn Lloyd,Green Bay Packers,Base,Team Camo Variation,false
+115,Nico Collins,Houston Texans,Base,Team Camo Variation,false
+116,Derek Stingley Jr.,Houston Texans,Base,Team Camo Variation,false
+117,Christian Kirk,Houston Texans,Base,Team Camo Variation,false
+118,Dalton Schultz,Houston Texans,Base,Team Camo Variation,false
+119,CJ Stroud,Houston Texans,Base,Team Camo Variation,false
+120,Joe Mixon,Houston Texans,Base,Team Camo Variation,false
+121,Will Anderson Jr.,Houston Texans,Base,Team Camo Variation,false
+122,Henry To'oTo'o,Houston Texans,Base,Team Camo Variation,false
+123,Tank Dell,Houston Texans,Base,Team Camo Variation,false
+124,Cam Robinson,Cleveland Browns,Base,Team Camo Variation,false
+125,Alec Pierce,Indianapolis Colts,Base,Team Camo Variation,false
+126,Michael Pittman Jr.,Indianapolis Colts,Base,Team Camo Variation,false
+127,Josh Downs,Indianapolis Colts,Base,Team Camo Variation,false
+128,Laiatu Latu,Indianapolis Colts,Base,Team Camo Variation,false
+129,Charvarius Ward,Indianapolis Colts,Base,Team Camo Variation,false
+130,Jonathan Taylor,Indianapolis Colts,Base,Team Camo Variation,false
+131,Khalil Herbert,New York Jets,Base,Team Camo Variation,false
+132,Daniel Jones,Indianapolis Colts,Base,Team Camo Variation,false
+133,DeForest Buckner,Indianapolis Colts,Base,Team Camo Variation,false
+134,Braden Smith,Indianapolis Colts,Base,Team Camo Variation,false
+135,Brian Thomas Jr.,Jacksonville Jaguars,Base,Team Camo Variation,false
+136,Dyami Brown,Jacksonville Jaguars,Base,Team Camo Variation,false
+137,Brenton Strange,Jacksonville Jaguars,Base,Team Camo Variation,false
+138,Trevor Lawrence,Jacksonville Jaguars,Base,Team Camo Variation,false
+139,Travis Etienne Jr.,Jacksonville Jaguars,Base,Team Camo Variation,false
+140,Maason Smith,Jacksonville Jaguars,Base,Team Camo Variation,false
+141,Travon Walker,Jacksonville Jaguars,Base,Team Camo Variation,false
+142,Gabe Davis,Buffalo Bills,Base,Team Camo Variation,false
+143,Tank Bigsby,Philadelphia Eagles,Base,Team Camo Variation,false
+144,Quenton Nelson,Indianapolis Colts,Base,Team Camo Variation,false
+145,Xavier Worthy,Kansas City Chiefs,Base,Team Camo Variation,false
+146,Hollywood Brown,Kansas City Chiefs,Base,Team Camo Variation,false
+147,Rashee Rice,Kansas City Chiefs,Base,Team Camo Variation,false
+148,Patrick Mahomes II,Kansas City Chiefs,Base,Team Camo Variation,false
+149,Isiah Pacheco,Kansas City Chiefs,Base,Team Camo Variation,false
+150,Travis Kelce,Kansas City Chiefs,Base,Team Camo Variation,false
+151,Harrison Butker,Kansas City Chiefs,Base,Team Camo Variation,false
+152,George Karlaftis,Kansas City Chiefs,Base,Team Camo Variation,false
+153,Chris Jones,Kansas City Chiefs,Base,Team Camo Variation,false
+154,Trent McDuffie,Kansas City Chiefs,Base,Team Camo Variation,false
+155,Keenan Allen,Los Angeles Chargers,Base,Team Camo Variation,false
+156,Ladd McConkey,Los Angeles Chargers,Base,Team Camo Variation,false
+157,Joe Alt,Los Angeles Chargers,Base,Team Camo Variation,false
+158,Justin Herbert,Los Angeles Chargers,Base,Team Camo Variation,false
+159,Quentin Johnston,Los Angeles Chargers,Base,Team Camo Variation,false
+160,Khalil Mack,Los Angeles Chargers,Base,Team Camo Variation,false
+161,Najee Harris,Los Angeles Chargers,Base,Team Camo Variation,false
+162,Cameron Dicker,Los Angeles Chargers,Base,Team Camo Variation,false
+163,Tuli Tuipulotu,Los Angeles Chargers,Base,Team Camo Variation,false
+164,Da'Shawn Hand,Los Angeles Chargers,Base,Team Camo Variation,false
+165,Davante Adams,Los Angeles Rams,Base,Team Camo Variation,false
+166,Puka Nacua,Los Angeles Rams,Base,Team Camo Variation,false
+167,Tutu Atwell,Los Angeles Rams,Base,Team Camo Variation,false
+168,Kyren Williams,Los Angeles Rams,Base,Team Camo Variation,false
+169,Matthew Stafford,Los Angeles Rams,Base,Team Camo Variation,false
+170,Steve Avila,Los Angeles Rams,Base,Team Camo Variation,false
+171,Blake Corum,Los Angeles Rams,Base,Team Camo Variation,false
+172,Tyler Higbee,Los Angeles Rams,Base,Team Camo Variation,false
+173,Jared Verse,Los Angeles Rams,Base,Team Camo Variation,false
+174,Kamren Kinchens,Los Angeles Rams,Base,Team Camo Variation,false
+175,Tre Tucker,Las Vegas Raiders,Base,Team Camo Variation,false
+176,Jakobi Meyers,Jacksonville Jaguars,Base,Team Camo Variation,false
+177,Jackson Powers-Johnson,Las Vegas Raiders,Base,Team Camo Variation,false
+178,Brock Bowers,Las Vegas Raiders,Base,Team Camo Variation,false
+179,Geno Smith,Las Vegas Raiders,Base,Team Camo Variation,false
+180,Maxx Crosby,Las Vegas Raiders,Base,Team Camo Variation,false
+181,Robert Spillane,New England Patriots,Base,Team Camo Variation,false
+182,Raheem Mostert,Las Vegas Raiders,Base,Team Camo Variation,false
+183,Kolton Miller,Las Vegas Raiders,Base,Team Camo Variation,false
+184,Jeremy Chinn,Las Vegas Raiders,Base,Team Camo Variation,false
+185,Tyreek Hill,Miami Dolphins,Base,Team Camo Variation,false
+186,Jaylen Waddle,Miami Dolphins,Base,Team Camo Variation,false
+187,Tua Tagovailoa,Miami Dolphins,Base,Team Camo Variation,false
+188,De'Von Achane,Miami Dolphins,Base,Team Camo Variation,false
+189,Zach Wilson,Miami Dolphins,Base,Team Camo Variation,false
+190,Jaylen Wright,Miami Dolphins,Base,Team Camo Variation,false
+191,Jalen Ramsey,Pittsburgh Steelers,Base,Team Camo Variation,false
+192,Jaelan Phillips,Philadelphia Eagles,Base,Team Camo Variation,false
+193,Darren Waller,Miami Dolphins,Base,Team Camo Variation,false
+194,Ashtyn Davis,Miami Dolphins,Base,Team Camo Variation,false
+195,Justin Jefferson,Minnesota Vikings,Base,Team Camo Variation,false
+196,Brian O'Neill,Minnesota Vikings,Base,Team Camo Variation,false
+197,Jonathan Greenard,Minnesota Vikings,Base,Team Camo Variation,false
+198,Andrew Van Ginkel,Minnesota Vikings,Base,Team Camo Variation,false
+199,J.J. McCarthy,Minnesota Vikings,Base,Team Camo Variation,false
+200,T.J. Hockenson,Minnesota Vikings,Base,Team Camo Variation,false
+201,Aaron Jones Sr.,Minnesota Vikings,Base,Team Camo Variation,false
+202,Jordan Addison,Minnesota Vikings,Base,Team Camo Variation,false
+203,Will Reichard,Minnesota Vikings,Base,Team Camo Variation,false
+204,Harrison Smith,Minnesota Vikings,Base,Team Camo Variation,false
+205,Stefon Diggs,New England Patriots,Base,Team Camo Variation,false
+206,Mack Hollins,New England Patriots,Base,Team Camo Variation,false
+207,Drake Maye,New England Patriots,Base,Team Camo Variation,false
+208,Terry McLaurin,Washington Commanders,Base,Team Camo Variation,false
+209,Hunter Henry,New England Patriots,Base,Team Camo Variation,false
+210,Rhamondre Stevenson,New England Patriots,Base,Team Camo Variation,false
+211,Kyle Dugger,Pittsburgh Steelers,Base,Team Camo Variation,false
+212,Garrett Bradbury,New England Patriots,Base,Team Camo Variation,false
+213,Jahlani Tavai,New England Patriots,Base,Team Camo Variation,false
+214,Khyiris Tonga,New England Patriots,Base,Team Camo Variation,false
+215,Alvin Kamara,New Orleans Saints,Base,Team Camo Variation,false
+216,Chris Olave,New Orleans Saints,Base,Team Camo Variation,false
+217,Brandin Cooks,Buffalo Bills,Base,Team Camo Variation,false
+218,Rashid Shaheed,Seattle Seahawks,Base,Team Camo Variation,false
+219,Taliese Fuaga,New Orleans Saints,Base,Team Camo Variation,false
+220,Chase Young,New Orleans Saints,Base,Team Camo Variation,false
+221,Cameron Jordan,New Orleans Saints,Base,Team Camo Variation,false
+222,Taysom Hill,New Orleans Saints,Base,Team Camo Variation,false
+223,Erik McCoy,New Orleans Saints,Base,Team Camo Variation,false
+224,Kool-Aid McKinstry,New Orleans Saints,Base,Team Camo Variation,false
+225,Malik Nabers,New York Giants,Base,Team Camo Variation,false
+226,Darius Slayton,New York Giants,Base,Team Camo Variation,false
+227,Wan'Dale Robinson,New York Giants,Base,Team Camo Variation,false
+228,Tyrone Tracy Jr.,New York Giants,Base,Team Camo Variation,false
+229,Russell Wilson,New York Giants,Base,Team Camo Variation,false
+230,Dexter Lawrence II,New York Giants,Base,Team Camo Variation,false
+231,Tyler Nubin,New York Giants,Base,Team Camo Variation,false
+232,Micah McFadden,New York Giants,Base,Team Camo Variation,false
+233,Theo Johnson,New York Giants,Base,Team Camo Variation,false
+234,Brian Burns,New York Giants,Base,Team Camo Variation,false
+235,Garrett Wilson,New York Jets,Base,Team Camo Variation,false
+236,Allen Lazard,New York Jets,Base,Team Camo Variation,false
+237,Justin Fields,New York Jets,Base,Team Camo Variation,false
+238,Breece Hall,New York Jets,Base,Team Camo Variation,false
+239,Jeremy Ruckert,New York Jets,Base,Team Camo Variation,false
+240,Braelon Allen,New York Jets,Base,Team Camo Variation,false
+241,Will McDonald IV,New York Jets,Base,Team Camo Variation,false
+242,Sauce Gardner,Indianapolis Colts,Base,Team Camo Variation,false
+243,A.J. Brown,Philadelphia Eagles,Base,Team Camo Variation,false
+244,DeVonta Smith,Philadelphia Eagles,Base,Team Camo Variation,false
+245,Jordan Mailata,Philadelphia Eagles,Base,Team Camo Variation,false
+246,Lane Johnson,Philadelphia Eagles,Base,Team Camo Variation,false
+247,Jalen Hurts,Philadelphia Eagles,Base,Team Camo Variation,false
+248,Saquon Barkley,Philadelphia Eagles,Base,Team Camo Variation,false
+249,Jordan Davis,Philadelphia Eagles,Base,Team Camo Variation,false
+250,Jalen Carter,Philadelphia Eagles,Base,Team Camo Variation,false
+251,Reed Blankenship,Philadelphia Eagles,Base,Team Camo Variation,false
+252,Cooper DeJean,Philadelphia Eagles,Base,Team Camo Variation,false
+253,Jaylen Warren,Pittsburgh Steelers,Base,Team Camo Variation,false
+254,DK Metcalf,Pittsburgh Steelers,Base,Team Camo Variation,false
+255,Aaron Rodgers,Pittsburgh Steelers,Base,Team Camo Variation,false
+256,Troy Fautanu,Pittsburgh Steelers,Base,Team Camo Variation,false
+257,Jonnu Smith,Pittsburgh Steelers,Base,Team Camo Variation,false
+258,T.J. Watt,Pittsburgh Steelers,Base,Team Camo Variation,false
+259,Darius Slay,Pittsburgh Steelers,Base,Team Camo Variation,false
+260,Patrick Queen,Pittsburgh Steelers,Base,Team Camo Variation,false
+261,Ricky Pearsall,San Francisco 49ers,Base,Team Camo Variation,false
+262,Brock Purdy,San Francisco 49ers,Base,Team Camo Variation,false
+263,Christian McCaffrey,San Francisco 49ers,Base,Team Camo Variation,false
+264,Nick Bosa,San Francisco 49ers,Base,Team Camo Variation,false
+265,Trent Williams,San Francisco 49ers,Base,Team Camo Variation,false
+266,Brandon Aiyuk,San Francisco 49ers,Base,Team Camo Variation,false
+267,George Kittle,San Francisco 49ers,Base,Team Camo Variation,false
+268,Fred Warner,San Francisco 49ers,Base,Team Camo Variation,false
+269,Deommodore Lenoir,San Francisco 49ers,Base,Team Camo Variation,false
+270,Kyle Juszczyk,San Francisco 49ers,Base,Team Camo Variation,false
+271,Cooper Kupp,Seattle Seahawks,Base,Team Camo Variation,false
+272,Marquez Valdes-Scantling,Seattle Seahawks,Base,Team Camo Variation,false
+273,Olu Oluwatimi,Seattle Seahawks,Base,Team Camo Variation,false
+274,Noah Fant,Cincinnati Bengals,Base,Team Camo Variation,false
+275,Sam Darnold,Seattle Seahawks,Base,Team Camo Variation,false
+276,Kenneth Walker III,Seattle Seahawks,Base,Team Camo Variation,false
+277,Devon Witherspoon,Seattle Seahawks,Base,Team Camo Variation,false
+278,Riq Woolen,Seattle Seahawks,Base,Team Camo Variation,false
+279,Zach Charbonnet,Seattle Seahawks,Base,Team Camo Variation,false
+280,Jason Myers,Seattle Seahawks,Base,Team Camo Variation,false
+281,Baker Mayfield,Tampa Bay Buccaneers,Base,Team Camo Variation,false
+282,Mike Evans,Tampa Bay Buccaneers,Base,Team Camo Variation,false
+283,Chris Godwin,Tampa Bay Buccaneers,Base,Team Camo Variation,false
+284,Cade Otton,Tampa Bay Buccaneers,Base,Team Camo Variation,false
+285,Bucky Irving,Tampa Bay Buccaneers,Base,Team Camo Variation,false
+286,Vita Vea,Tampa Bay Buccaneers,Base,Team Camo Variation,false
+287,Tristan Wirfs,Tampa Bay Buccaneers,Base,Team Camo Variation,false
+288,Chase McLaughlin,Tampa Bay Buccaneers,Base,Team Camo Variation,false
+289,Jeffery Simmons,Tennessee Titans,Base,Team Camo Variation,false
+290,Tony Pollard,Tennessee Titans,Base,Team Camo Variation,false
+291,Calvin Ridley,Tennessee Titans,Base,Team Camo Variation,false
+292,T'Vondre Sweat,Tennessee Titans,Base,Team Camo Variation,false
+293,Noah Brown,Washington Commanders,Base,Team Camo Variation,false
+294,Deebo Samuel,Washington Commanders,Base,Team Camo Variation,false
+295,Jayden Daniels,Washington Commanders,Base,Team Camo Variation,false
+296,Brian Robinson Jr.,San Francisco 49ers,Base,Team Camo Variation,false
+297,Zach Ertz,Washington Commanders,Base,Team Camo Variation,false
+298,Luke McCaffrey,Washington Commanders,Base,Team Camo Variation,false
+299,Bobby Wagner,Washington Commanders,Base,Team Camo Variation,false
+300,Matt Gay,Washington Commanders,Base,Team Camo Variation,false
+301,Shavon Revel Jr.,Dallas Cowboys,Base,Team Camo Variation,true
+302,Mason Graham,Cleveland Browns,Base,Team Camo Variation,true
+303,Shemar Turner,Chicago Bears,Base,Team Camo Variation,true
+304,Josh Simmons,Kansas City Chiefs,Base,Team Camo Variation,true
+305,Gunnar Helm,Tennessee Titans,Base,Team Camo Variation,true
+306,Jaxson Dart,New York Giants,Base,Team Camo Variation,true
+307,Kurtis Rourke,San Francisco 49ers,Base,Team Camo Variation,true
+308,Dylan Sampson,Cleveland Browns,Base,Team Camo Variation,true
+309,Kalel Mullings,Tennessee Titans,Base,Team Camo Variation,true
+310,Phil Mafah,Dallas Cowboys,Base,Team Camo Variation,true
+311,Brashard Smith,Kansas City Chiefs,Base,Team Camo Variation,true
+312,Emeka Egbuka,Tampa Bay Buccaneers,Base,Team Camo Variation,true
+313,Pat Bryant,Denver Broncos,Base,Team Camo Variation,true
+314,Cam Ward,Tennessee Titans,Base,Team Camo Variation,true
+315,Shedeur Sanders,Cleveland Browns,Base,Team Camo Variation,true
+316,Quinn Ewers,Miami Dolphins,Base,Team Camo Variation,true
+317,Dillon Gabriel,Cleveland Browns,Base,Team Camo Variation,true
+318,Riley Leonard,Indianapolis Colts,Base,Team Camo Variation,true
+319,Brady Cook,New York Jets,Base,Team Camo Variation,true
+320,Isaac TeSlaa,Detroit Lions,Base,Team Camo Variation,true
+321,Will Howard,Pittsburgh Steelers,Base,Team Camo Variation,true
+322,Ashton Jeanty,Las Vegas Raiders,Base,Team Camo Variation,true
+323,Kaleb Johnson,Pittsburgh Steelers,Base,Team Camo Variation,true
+324,Omarion Hampton,Los Angeles Chargers,Base,Team Camo Variation,true
+325,Quinshon Judkins,Cleveland Browns,Base,Team Camo Variation,true
+326,Tetairoa McMillan,Carolina Panthers,Base,Team Camo Variation,true
+327,Ollie Gordon II,Miami Dolphins,Base,Team Camo Variation,true
+328,TreVeyon Henderson,New England Patriots,Base,Team Camo Variation,true
+329,Jordan James,San Francisco 49ers,Base,Team Camo Variation,true
+330,RJ Harvey,Denver Broncos,Base,Team Camo Variation,true
+331,Cam Skattebo,New York Giants,Base,Team Camo Variation,true
+332,Travis Hunter,Jacksonville Jaguars,Base,Team Camo Variation,true
+333,Matthew Golden,Green Bay Packers,Base,Team Camo Variation,true
+334,Luther Burden III,Chicago Bears,Base,Team Camo Variation,true
+335,Terrance Ferguson,Los Angeles Rams,Base,Team Camo Variation,true
+336,Elic Ayomanor,Tennessee Titans,Base,Team Camo Variation,true
+337,Jalen Royals,Kansas City Chiefs,Base,Team Camo Variation,true
+338,Tre Harris III,Los Angeles Chargers,Base,Team Camo Variation,true
+339,Harold Fannin Jr.,Cleveland Browns,Base,Team Camo Variation,true
+340,Savion Williams,Green Bay Packers,Base,Team Camo Variation,true
+341,Isaiah Bond,Cleveland Browns,Base,Team Camo Variation,true
+342,Tez Johnson,Tampa Bay Buccaneers,Base,Team Camo Variation,true
+343,Jayden Higgins,Houston Texans,Base,Team Camo Variation,true
+344,Billy Bowman Jr.,Atlanta Falcons,Base,Team Camo Variation,true
+345,Colston Loveland,Chicago Bears,Base,Team Camo Variation,true
+346,Tyler Warren,Indianapolis Colts,Base,Team Camo Variation,true
+347,Malaki Starks,Baltimore Ravens,Base,Team Camo Variation,true
+348,Nick Emmanwori,Seattle Seahawks,Base,Team Camo Variation,true
+349,Will Johnson,Arizona Cardinals,Base,Team Camo Variation,true
+350,Abdul Carter,New York Giants,Base,Team Camo Variation,true
+351,James Pearce Jr.,Atlanta Falcons,Base,Team Camo Variation,true
+352,Mykel Williams,San Francisco 49ers,Base,Team Camo Variation,true
+353,Nic Scourton,Carolina Panthers,Base,Team Camo Variation,true
+354,Jalon Walker,Atlanta Falcons,Base,Team Camo Variation,true
+355,Benjamin Morrison,Tampa Bay Buccaneers,Base,Team Camo Variation,true
+356,JT Tuimoloau,Indianapolis Colts,Base,Team Camo Variation,true
+357,Jack Sawyer,Pittsburgh Steelers,Base,Team Camo Variation,true
+358,Landon Jackson,Buffalo Bills,Base,Team Camo Variation,true
+359,Jahdae Barron,Denver Broncos,Base,Team Camo Variation,true
+360,Deone Walker,Buffalo Bills,Base,Team Camo Variation,true
+361,Derrick Harmon,Pittsburgh Steelers,Base,Team Camo Variation,true
+362,Kenneth Grant,Miami Dolphins,Base,Team Camo Variation,true
+363,Shemar Stewart,Cincinnati Bengals,Base,Team Camo Variation,true
+364,Tyleik Williams,Detroit Lions,Base,Team Camo Variation,true
+365,Walter Nolen,Arizona Cardinals,Base,Team Camo Variation,true
+366,Jihaad Campbell,Philadelphia Eagles,Base,Team Camo Variation,true
+367,Darien Porter,Las Vegas Raiders,Base,Team Camo Variation,true
+368,Denzel Burke,Arizona Cardinals,Base,Team Camo Variation,true
+369,Quincy Riley,New Orleans Saints,Base,Team Camo Variation,true
+370,Sebastian Castro,Pittsburgh Steelers,Base,Team Camo Variation,true
+371,Trey Amos,Washington Commanders,Base,Team Camo Variation,true
+372,Woody Marks,Houston Texans,Base,Team Camo Variation,true
+373,Danny Stutsman,New Orleans Saints,Base,Team Camo Variation,true
+374,Jaylen Reed,Houston Texans,Base,Team Camo Variation,true
+375,Kevin Winston Jr.,Tennessee Titans,Base,Team Camo Variation,true
+376,Mike Green,Baltimore Ravens,Base,Team Camo Variation,true
+377,Princely Umanmielen,Carolina Panthers,Base,Team Camo Variation,true
+378,Kelvin Banks Jr.,New Orleans Saints,Base,Team Camo Variation,true
+379,Will Campbell,New England Patriots,Base,Team Camo Variation,true
+380,Jonah Savaiinaea,Miami Dolphins,Base,Team Camo Variation,true
+381,Tyler Booker,Dallas Cowboys,Base,Team Camo Variation,true
+383,Tate Ratledge,Detroit Lions,Base,Team Camo Variation,true
+386,Emery Jones Jr.,Baltimore Ravens,Base,Team Camo Variation,true
+388,Jack Bech,Las Vegas Raiders,Base,Team Camo Variation,true
+389,Bhayshul Tuten,Jacksonville Jaguars,Base,Team Camo Variation,true
+390,DJ Giddens,Indianapolis Colts,Base,Team Camo Variation,true
+391,Devin Neal,New Orleans Saints,Base,Team Camo Variation,true
+392,Donovan Edwards,New York Jets,Base,Team Camo Variation,true
+393,Xavier Watts,Atlanta Falcons,Base,Team Camo Variation,true
+394,Kaden Prather,Buffalo Bills,Base,Team Camo Variation,true
+395,Tai Felton,Minnesota Vikings,Base,Team Camo Variation,true
+396,Elijah Arroyo,Seattle Seahawks,Base,Team Camo Variation,true
+397,Jackson Hawes,Buffalo Bills,Base,Team Camo Variation,true
+398,Tyler Shough,New Orleans Saints,Base,Team Camo Variation,true
+399,Seth Henigan,Jacksonville Jaguars,Base,Team Camo Variation,true
+400,Mason Taylor,New York Jets,Base,Team Camo Variation,true
+1,Marvin Harrison Jr.,Arizona Cardinals,Base,Lightboard Logo Variation,false
+2,Michael Wilson,Arizona Cardinals,Base,Lightboard Logo Variation,false
+3,Paris Johnson Jr.,Arizona Cardinals,Base,Lightboard Logo Variation,false
+4,Trey McBride,Arizona Cardinals,Base,Lightboard Logo Variation,false
+5,Kyler Murray,Arizona Cardinals,Base,Lightboard Logo Variation,false
+6,Garrett Williams,Arizona Cardinals,Base,Lightboard Logo Variation,false
+7,Trey Benson,Arizona Cardinals,Base,Lightboard Logo Variation,false
+8,Budda Baker,Arizona Cardinals,Base,Lightboard Logo Variation,false
+9,Darius Robinson,Arizona Cardinals,Base,Lightboard Logo Variation,false
+10,Josh Sweat,Arizona Cardinals,Base,Lightboard Logo Variation,false
+11,Darnell Mooney,Atlanta Falcons,Base,Lightboard Logo Variation,false
+12,Drake London,Atlanta Falcons,Base,Lightboard Logo Variation,false
+13,Kirk Cousins,Atlanta Falcons,Base,Lightboard Logo Variation,false
+14,Kyle Pitts,Atlanta Falcons,Base,Lightboard Logo Variation,false
+15,Michael Penix Jr.,Atlanta Falcons,Base,Lightboard Logo Variation,false
+16,Bijan Robinson,Atlanta Falcons,Base,Lightboard Logo Variation,false
+17,Tyler Allgeier,Atlanta Falcons,Base,Lightboard Logo Variation,false
+18,Leonard Floyd,Atlanta Falcons,Base,Lightboard Logo Variation,false
+19,A.J. Terrell,Atlanta Falcons,Base,Lightboard Logo Variation,false
+20,Deandre Hopkins,Baltimore Ravens,Base,Lightboard Logo Variation,false
+21,Rashod Bateman,Baltimore Ravens,Base,Lightboard Logo Variation,false
+22,Zay Flowers,Baltimore Ravens,Base,Lightboard Logo Variation,false
+23,Mark Andrews,Baltimore Ravens,Base,Lightboard Logo Variation,false
+24,Lamar Jackson,Baltimore Ravens,Base,Lightboard Logo Variation,false
+25,Derrick Henry,Baltimore Ravens,Base,Lightboard Logo Variation,false
+26,Devontez Walker,Baltimore Ravens,Base,Lightboard Logo Variation,false
+27,Roquan Smith,Baltimore Ravens,Base,Lightboard Logo Variation,false
+28,Nate Wiggins,Baltimore Ravens,Base,Lightboard Logo Variation,false
+29,Kyle Hamilton,Baltimore Ravens,Base,Lightboard Logo Variation,false
+30,Keon Coleman,Buffalo Bills,Base,Lightboard Logo Variation,false
+31,Joshua Palmer,Buffalo Bills,Base,Lightboard Logo Variation,false
+32,Khalil Shakir,Buffalo Bills,Base,Lightboard Logo Variation,false
+33,Dawson Knox,Buffalo Bills,Base,Lightboard Logo Variation,false
+34,Josh Allen,Buffalo Bills,Base,Lightboard Logo Variation,false
+35,James Cook,Buffalo Bills,Base,Lightboard Logo Variation,false
+36,Joey Bosa,Buffalo Bills,Base,Lightboard Logo Variation,false
+37,Dalton Kincaid,Buffalo Bills,Base,Lightboard Logo Variation,false
+38,Xavier Legette,Carolina Panthers,Base,Lightboard Logo Variation,false
+39,Jalen Coker,Carolina Panthers,Base,Lightboard Logo Variation,false
+40,Bryce Young,Carolina Panthers,Base,Lightboard Logo Variation,false
+41,Jaycee Horn,Carolina Panthers,Base,Lightboard Logo Variation,false
+42,Chuba Hubbard,Carolina Panthers,Base,Lightboard Logo Variation,false
+43,Rico Dowdle,Carolina Panthers,Base,Lightboard Logo Variation,false
+44,Tommy Tremble,Carolina Panthers,Base,Lightboard Logo Variation,false
+45,Ja'Tavion Sanders,Carolina Panthers,Base,Lightboard Logo Variation,false
+46,Bobby Brown III,Carolina Panthers,Base,Lightboard Logo Variation,false
+47,Derrick Brown,Carolina Panthers,Base,Lightboard Logo Variation,false
+48,DJ Moore,Chicago Bears,Base,Lightboard Logo Variation,false
+49,Rome Odunze,Chicago Bears,Base,Lightboard Logo Variation,false
+50,Joe Thuney,Chicago Bears,Base,Lightboard Logo Variation,false
+51,Cole Kmet,Chicago Bears,Base,Lightboard Logo Variation,false
+52,Caleb Williams,Chicago Bears,Base,Lightboard Logo Variation,false
+53,D'Andre Swift,Chicago Bears,Base,Lightboard Logo Variation,false
+54,Tyson Bagent,Chicago Bears,Base,Lightboard Logo Variation,false
+55,Roschon Johnson,Chicago Bears,Base,Lightboard Logo Variation,false
+56,Montez Sweat,Chicago Bears,Base,Lightboard Logo Variation,false
+57,Jaylon Johnson,Chicago Bears,Base,Lightboard Logo Variation,false
+58,Ja'Marr Chase,Cincinnati Bengals,Base,Lightboard Logo Variation,false
+59,Tee Higgins,Cincinnati Bengals,Base,Lightboard Logo Variation,false
+60,Andrei Iosivas,Cincinnati Bengals,Base,Lightboard Logo Variation,false
+61,Joe Burrow,Cincinnati Bengals,Base,Lightboard Logo Variation,false
+62,Chase Brown,Cincinnati Bengals,Base,Lightboard Logo Variation,false
+63,Jake Browning,Cincinnati Bengals,Base,Lightboard Logo Variation,false
+64,Evan McPherson,Cincinnati Bengals,Base,Lightboard Logo Variation,false
+65,Trey Hendrickson,Cincinnati Bengals,Base,Lightboard Logo Variation,false
+66,Grant Delpit,Cleveland Browns,Base,Lightboard Logo Variation,false
+67,Cedric Tillman,Cleveland Browns,Base,Lightboard Logo Variation,false
+68,Jerry Jeudy,Cleveland Browns,Base,Lightboard Logo Variation,false
+69,David Njoku,Cleveland Browns,Base,Lightboard Logo Variation,false
+70,Myles Garrett,Cleveland Browns,Base,Lightboard Logo Variation,false
+71,Jerome Ford,Cleveland Browns,Base,Lightboard Logo Variation,false
+72,Quinnen Williams,Dallas Cowboys,Base,Lightboard Logo Variation,false
+73,Kenny Clark,Dallas Cowboys,Base,Lightboard Logo Variation,false
+74,Denzel Ward,Cleveland Browns,Base,Lightboard Logo Variation,false
+75,Jake Ferguson,Dallas Cowboys,Base,Lightboard Logo Variation,false
+76,CeeDee Lamb,Dallas Cowboys,Base,Lightboard Logo Variation,false
+77,Micah Parsons,Green Bay Packers,Base,Lightboard Logo Variation,false
+78,DeMarvion Overshown,Dallas Cowboys,Base,Lightboard Logo Variation,false
+79,Dak Prescott,Dallas Cowboys,Base,Lightboard Logo Variation,false
+80,George Pickens,Dallas Cowboys,Base,Lightboard Logo Variation,false
+81,Brandon Aubrey,Dallas Cowboys,Base,Lightboard Logo Variation,false
+82,DaRon Bland,Dallas Cowboys,Base,Lightboard Logo Variation,false
+83,Trevon Diggs,Dallas Cowboys,Base,Lightboard Logo Variation,false
+84,KaVontae Turpin,Dallas Cowboys,Base,Lightboard Logo Variation,false
+85,Joe Milton III,Dallas Cowboys,Base,Lightboard Logo Variation,false
+86,Courtland Sutton,Denver Broncos,Base,Lightboard Logo Variation,false
+87,Marvin Mims Jr.,Denver Broncos,Base,Lightboard Logo Variation,false
+88,Bo Nix,Denver Broncos,Base,Lightboard Logo Variation,false
+89,Jarrett Stidham,Denver Broncos,Base,Lightboard Logo Variation,false
+90,Jaleel McLaughlin,Denver Broncos,Base,Lightboard Logo Variation,false
+91,Troy Franklin,Denver Broncos,Base,Lightboard Logo Variation,false
+92,Evan Engram,Denver Broncos,Base,Lightboard Logo Variation,false
+93,Pat Surtain II,Denver Broncos,Base,Lightboard Logo Variation,false
+94,Talanoa Hufanga,Denver Broncos,Base,Lightboard Logo Variation,false
+95,Zach Allen,Denver Broncos,Base,Lightboard Logo Variation,false
+96,Tim Patrick,Jacksonville Jaguars,Base,Lightboard Logo Variation,false
+97,Jameson Williams,Detroit Lions,Base,Lightboard Logo Variation,false
+98,Amon-Ra St. Brown,Detroit Lions,Base,Lightboard Logo Variation,false
+99,Penei Sewell,Detroit Lions,Base,Lightboard Logo Variation,false
+100,Sam LaPorta,Detroit Lions,Base,Lightboard Logo Variation,false
+101,Jahmyr Gibbs,Detroit Lions,Base,Lightboard Logo Variation,false
+102,Jared Goff,Detroit Lions,Base,Lightboard Logo Variation,false
+103,David Montgomery,Detroit Lions,Base,Lightboard Logo Variation,false
+104,Aidan Hutchinson,Detroit Lions,Base,Lightboard Logo Variation,false
+105,Jake Bates,Detroit Lions,Base,Lightboard Logo Variation,false
+106,Romeo Doubs,Green Bay Packers,Base,Lightboard Logo Variation,false
+107,Jayden Reed,Green Bay Packers,Base,Lightboard Logo Variation,false
+108,Tucker Kraft,Green Bay Packers,Base,Lightboard Logo Variation,false
+109,Jordan Love,Green Bay Packers,Base,Lightboard Logo Variation,false
+110,Josh Jacobs,Green Bay Packers,Base,Lightboard Logo Variation,false
+111,Rashan Gary,Green Bay Packers,Base,Lightboard Logo Variation,false
+112,Christian Watson,Green Bay Packers,Base,Lightboard Logo Variation,false
+113,Xavier McKinney,Green Bay Packers,Base,Lightboard Logo Variation,false
+114,MarShawn Lloyd,Green Bay Packers,Base,Lightboard Logo Variation,false
+115,Nico Collins,Houston Texans,Base,Lightboard Logo Variation,false
+116,Derek Stingley Jr.,Houston Texans,Base,Lightboard Logo Variation,false
+117,Christian Kirk,Houston Texans,Base,Lightboard Logo Variation,false
+118,Dalton Schultz,Houston Texans,Base,Lightboard Logo Variation,false
+119,CJ Stroud,Houston Texans,Base,Lightboard Logo Variation,false
+120,Joe Mixon,Houston Texans,Base,Lightboard Logo Variation,false
+121,Will Anderson Jr.,Houston Texans,Base,Lightboard Logo Variation,false
+122,Henry To'oTo'o,Houston Texans,Base,Lightboard Logo Variation,false
+123,Tank Dell,Houston Texans,Base,Lightboard Logo Variation,false
+124,Cam Robinson,Cleveland Browns,Base,Lightboard Logo Variation,false
+125,Alec Pierce,Indianapolis Colts,Base,Lightboard Logo Variation,false
+126,Michael Pittman Jr.,Indianapolis Colts,Base,Lightboard Logo Variation,false
+127,Josh Downs,Indianapolis Colts,Base,Lightboard Logo Variation,false
+128,Laiatu Latu,Indianapolis Colts,Base,Lightboard Logo Variation,false
+129,Charvarius Ward,Indianapolis Colts,Base,Lightboard Logo Variation,false
+130,Jonathan Taylor,Indianapolis Colts,Base,Lightboard Logo Variation,false
+131,Khalil Herbert,New York Jets,Base,Lightboard Logo Variation,false
+132,Daniel Jones,Indianapolis Colts,Base,Lightboard Logo Variation,false
+133,DeForest Buckner,Indianapolis Colts,Base,Lightboard Logo Variation,false
+134,Braden Smith,Indianapolis Colts,Base,Lightboard Logo Variation,false
+135,Brian Thomas Jr.,Jacksonville Jaguars,Base,Lightboard Logo Variation,false
+136,Dyami Brown,Jacksonville Jaguars,Base,Lightboard Logo Variation,false
+137,Brenton Strange,Jacksonville Jaguars,Base,Lightboard Logo Variation,false
+138,Trevor Lawrence,Jacksonville Jaguars,Base,Lightboard Logo Variation,false
+139,Travis Etienne Jr.,Jacksonville Jaguars,Base,Lightboard Logo Variation,false
+140,Maason Smith,Jacksonville Jaguars,Base,Lightboard Logo Variation,false
+141,Travon Walker,Jacksonville Jaguars,Base,Lightboard Logo Variation,false
+142,Gabe Davis,Buffalo Bills,Base,Lightboard Logo Variation,false
+143,Tank Bigsby,Philadelphia Eagles,Base,Lightboard Logo Variation,false
+144,Quenton Nelson,Indianapolis Colts,Base,Lightboard Logo Variation,false
+145,Xavier Worthy,Kansas City Chiefs,Base,Lightboard Logo Variation,false
+146,Hollywood Brown,Kansas City Chiefs,Base,Lightboard Logo Variation,false
+147,Rashee Rice,Kansas City Chiefs,Base,Lightboard Logo Variation,false
+148,Patrick Mahomes II,Kansas City Chiefs,Base,Lightboard Logo Variation,false
+149,Isiah Pacheco,Kansas City Chiefs,Base,Lightboard Logo Variation,false
+150,Travis Kelce,Kansas City Chiefs,Base,Lightboard Logo Variation,false
+151,Harrison Butker,Kansas City Chiefs,Base,Lightboard Logo Variation,false
+152,George Karlaftis,Kansas City Chiefs,Base,Lightboard Logo Variation,false
+153,Chris Jones,Kansas City Chiefs,Base,Lightboard Logo Variation,false
+154,Trent McDuffie,Kansas City Chiefs,Base,Lightboard Logo Variation,false
+155,Keenan Allen,Los Angeles Chargers,Base,Lightboard Logo Variation,false
+156,Ladd McConkey,Los Angeles Chargers,Base,Lightboard Logo Variation,false
+157,Joe Alt,Los Angeles Chargers,Base,Lightboard Logo Variation,false
+158,Justin Herbert,Los Angeles Chargers,Base,Lightboard Logo Variation,false
+159,Quentin Johnston,Los Angeles Chargers,Base,Lightboard Logo Variation,false
+160,Khalil Mack,Los Angeles Chargers,Base,Lightboard Logo Variation,false
+161,Najee Harris,Los Angeles Chargers,Base,Lightboard Logo Variation,false
+162,Cameron Dicker,Los Angeles Chargers,Base,Lightboard Logo Variation,false
+163,Tuli Tuipulotu,Los Angeles Chargers,Base,Lightboard Logo Variation,false
+164,Da'Shawn Hand,Los Angeles Chargers,Base,Lightboard Logo Variation,false
+165,Davante Adams,Los Angeles Rams,Base,Lightboard Logo Variation,false
+166,Puka Nacua,Los Angeles Rams,Base,Lightboard Logo Variation,false
+167,Tutu Atwell,Los Angeles Rams,Base,Lightboard Logo Variation,false
+168,Kyren Williams,Los Angeles Rams,Base,Lightboard Logo Variation,false
+169,Matthew Stafford,Los Angeles Rams,Base,Lightboard Logo Variation,false
+170,Steve Avila,Los Angeles Rams,Base,Lightboard Logo Variation,false
+171,Blake Corum,Los Angeles Rams,Base,Lightboard Logo Variation,false
+172,Tyler Higbee,Los Angeles Rams,Base,Lightboard Logo Variation,false
+173,Jared Verse,Los Angeles Rams,Base,Lightboard Logo Variation,false
+174,Kamren Kinchens,Los Angeles Rams,Base,Lightboard Logo Variation,false
+175,Tre Tucker,Las Vegas Raiders,Base,Lightboard Logo Variation,false
+176,Jakobi Meyers,Jacksonville Jaguars,Base,Lightboard Logo Variation,false
+177,Jackson Powers-Johnson,Las Vegas Raiders,Base,Lightboard Logo Variation,false
+178,Brock Bowers,Las Vegas Raiders,Base,Lightboard Logo Variation,false
+179,Geno Smith,Las Vegas Raiders,Base,Lightboard Logo Variation,false
+180,Maxx Crosby,Las Vegas Raiders,Base,Lightboard Logo Variation,false
+181,Robert Spillane,New England Patriots,Base,Lightboard Logo Variation,false
+182,Raheem Mostert,Las Vegas Raiders,Base,Lightboard Logo Variation,false
+183,Kolton Miller,Las Vegas Raiders,Base,Lightboard Logo Variation,false
+184,Jeremy Chinn,Las Vegas Raiders,Base,Lightboard Logo Variation,false
+185,Tyreek Hill,Miami Dolphins,Base,Lightboard Logo Variation,false
+186,Jaylen Waddle,Miami Dolphins,Base,Lightboard Logo Variation,false
+187,Tua Tagovailoa,Miami Dolphins,Base,Lightboard Logo Variation,false
+188,De'Von Achane,Miami Dolphins,Base,Lightboard Logo Variation,false
+189,Zach Wilson,Miami Dolphins,Base,Lightboard Logo Variation,false
+190,Jaylen Wright,Miami Dolphins,Base,Lightboard Logo Variation,false
+191,Jalen Ramsey,Pittsburgh Steelers,Base,Lightboard Logo Variation,false
+192,Jaelan Phillips,Philadelphia Eagles,Base,Lightboard Logo Variation,false
+193,Darren Waller,Miami Dolphins,Base,Lightboard Logo Variation,false
+194,Ashtyn Davis,Miami Dolphins,Base,Lightboard Logo Variation,false
+195,Justin Jefferson,Minnesota Vikings,Base,Lightboard Logo Variation,false
+196,Brian O'Neill,Minnesota Vikings,Base,Lightboard Logo Variation,false
+197,Jonathan Greenard,Minnesota Vikings,Base,Lightboard Logo Variation,false
+198,Andrew Van Ginkel,Minnesota Vikings,Base,Lightboard Logo Variation,false
+199,J.J. McCarthy,Minnesota Vikings,Base,Lightboard Logo Variation,false
+200,T.J. Hockenson,Minnesota Vikings,Base,Lightboard Logo Variation,false
+201,Aaron Jones Sr.,Minnesota Vikings,Base,Lightboard Logo Variation,false
+202,Jordan Addison,Minnesota Vikings,Base,Lightboard Logo Variation,false
+203,Will Reichard,Minnesota Vikings,Base,Lightboard Logo Variation,false
+204,Harrison Smith,Minnesota Vikings,Base,Lightboard Logo Variation,false
+205,Stefon Diggs,New England Patriots,Base,Lightboard Logo Variation,false
+206,Mack Hollins,New England Patriots,Base,Lightboard Logo Variation,false
+207,Drake Maye,New England Patriots,Base,Lightboard Logo Variation,false
+208,Terry McLaurin,Washington Commanders,Base,Lightboard Logo Variation,false
+209,Hunter Henry,New England Patriots,Base,Lightboard Logo Variation,false
+210,Rhamondre Stevenson,New England Patriots,Base,Lightboard Logo Variation,false
+211,Kyle Dugger,Pittsburgh Steelers,Base,Lightboard Logo Variation,false
+212,Garrett Bradbury,New England Patriots,Base,Lightboard Logo Variation,false
+213,Jahlani Tavai,New England Patriots,Base,Lightboard Logo Variation,false
+214,Khyiris Tonga,New England Patriots,Base,Lightboard Logo Variation,false
+215,Alvin Kamara,New Orleans Saints,Base,Lightboard Logo Variation,false
+216,Chris Olave,New Orleans Saints,Base,Lightboard Logo Variation,false
+217,Brandin Cooks,Buffalo Bills,Base,Lightboard Logo Variation,false
+218,Rashid Shaheed,Seattle Seahawks,Base,Lightboard Logo Variation,false
+219,Taliese Fuaga,New Orleans Saints,Base,Lightboard Logo Variation,false
+220,Chase Young,New Orleans Saints,Base,Lightboard Logo Variation,false
+221,Cameron Jordan,New Orleans Saints,Base,Lightboard Logo Variation,false
+222,Taysom Hill,New Orleans Saints,Base,Lightboard Logo Variation,false
+223,Erik McCoy,New Orleans Saints,Base,Lightboard Logo Variation,false
+224,Kool-Aid McKinstry,New Orleans Saints,Base,Lightboard Logo Variation,false
+225,Malik Nabers,New York Giants,Base,Lightboard Logo Variation,false
+226,Darius Slayton,New York Giants,Base,Lightboard Logo Variation,false
+227,Wan'Dale Robinson,New York Giants,Base,Lightboard Logo Variation,false
+228,Tyrone Tracy Jr.,New York Giants,Base,Lightboard Logo Variation,false
+229,Russell Wilson,New York Giants,Base,Lightboard Logo Variation,false
+230,Dexter Lawrence II,New York Giants,Base,Lightboard Logo Variation,false
+231,Tyler Nubin,New York Giants,Base,Lightboard Logo Variation,false
+232,Micah McFadden,New York Giants,Base,Lightboard Logo Variation,false
+233,Theo Johnson,New York Giants,Base,Lightboard Logo Variation,false
+234,Brian Burns,New York Giants,Base,Lightboard Logo Variation,false
+235,Garrett Wilson,New York Jets,Base,Lightboard Logo Variation,false
+236,Allen Lazard,New York Jets,Base,Lightboard Logo Variation,false
+237,Justin Fields,New York Jets,Base,Lightboard Logo Variation,false
+238,Breece Hall,New York Jets,Base,Lightboard Logo Variation,false
+239,Jeremy Ruckert,New York Jets,Base,Lightboard Logo Variation,false
+240,Braelon Allen,New York Jets,Base,Lightboard Logo Variation,false
+241,Will McDonald IV,New York Jets,Base,Lightboard Logo Variation,false
+242,Sauce Gardner,Indianapolis Colts,Base,Lightboard Logo Variation,false
+243,A.J. Brown,Philadelphia Eagles,Base,Lightboard Logo Variation,false
+244,DeVonta Smith,Philadelphia Eagles,Base,Lightboard Logo Variation,false
+245,Jordan Mailata,Philadelphia Eagles,Base,Lightboard Logo Variation,false
+246,Lane Johnson,Philadelphia Eagles,Base,Lightboard Logo Variation,false
+247,Jalen Hurts,Philadelphia Eagles,Base,Lightboard Logo Variation,false
+248,Saquon Barkley,Philadelphia Eagles,Base,Lightboard Logo Variation,false
+249,Jordan Davis,Philadelphia Eagles,Base,Lightboard Logo Variation,false
+250,Jalen Carter,Philadelphia Eagles,Base,Lightboard Logo Variation,false
+251,Reed Blankenship,Philadelphia Eagles,Base,Lightboard Logo Variation,false
+252,Cooper DeJean,Philadelphia Eagles,Base,Lightboard Logo Variation,false
+253,Jaylen Warren,Pittsburgh Steelers,Base,Lightboard Logo Variation,false
+254,DK Metcalf,Pittsburgh Steelers,Base,Lightboard Logo Variation,false
+255,Aaron Rodgers,Pittsburgh Steelers,Base,Lightboard Logo Variation,false
+256,Troy Fautanu,Pittsburgh Steelers,Base,Lightboard Logo Variation,false
+257,Jonnu Smith,Pittsburgh Steelers,Base,Lightboard Logo Variation,false
+258,T.J. Watt,Pittsburgh Steelers,Base,Lightboard Logo Variation,false
+259,Darius Slay,Pittsburgh Steelers,Base,Lightboard Logo Variation,false
+260,Patrick Queen,Pittsburgh Steelers,Base,Lightboard Logo Variation,false
+261,Ricky Pearsall,San Francisco 49ers,Base,Lightboard Logo Variation,false
+262,Brock Purdy,San Francisco 49ers,Base,Lightboard Logo Variation,false
+263,Christian McCaffrey,San Francisco 49ers,Base,Lightboard Logo Variation,false
+264,Nick Bosa,San Francisco 49ers,Base,Lightboard Logo Variation,false
+265,Trent Williams,San Francisco 49ers,Base,Lightboard Logo Variation,false
+266,Brandon Aiyuk,San Francisco 49ers,Base,Lightboard Logo Variation,false
+267,George Kittle,San Francisco 49ers,Base,Lightboard Logo Variation,false
+268,Fred Warner,San Francisco 49ers,Base,Lightboard Logo Variation,false
+269,Deommodore Lenoir,San Francisco 49ers,Base,Lightboard Logo Variation,false
+270,Kyle Juszczyk,San Francisco 49ers,Base,Lightboard Logo Variation,false
+271,Cooper Kupp,Seattle Seahawks,Base,Lightboard Logo Variation,false
+272,Marquez Valdes-Scantling,Seattle Seahawks,Base,Lightboard Logo Variation,false
+273,Olu Oluwatimi,Seattle Seahawks,Base,Lightboard Logo Variation,false
+274,Noah Fant,Cincinnati Bengals,Base,Lightboard Logo Variation,false
+275,Sam Darnold,Seattle Seahawks,Base,Lightboard Logo Variation,false
+276,Kenneth Walker III,Seattle Seahawks,Base,Lightboard Logo Variation,false
+277,Devon Witherspoon,Seattle Seahawks,Base,Lightboard Logo Variation,false
+278,Riq Woolen,Seattle Seahawks,Base,Lightboard Logo Variation,false
+279,Zach Charbonnet,Seattle Seahawks,Base,Lightboard Logo Variation,false
+280,Jason Myers,Seattle Seahawks,Base,Lightboard Logo Variation,false
+281,Baker Mayfield,Tampa Bay Buccaneers,Base,Lightboard Logo Variation,false
+282,Mike Evans,Tampa Bay Buccaneers,Base,Lightboard Logo Variation,false
+283,Chris Godwin,Tampa Bay Buccaneers,Base,Lightboard Logo Variation,false
+284,Cade Otton,Tampa Bay Buccaneers,Base,Lightboard Logo Variation,false
+285,Bucky Irving,Tampa Bay Buccaneers,Base,Lightboard Logo Variation,false
+286,Vita Vea,Tampa Bay Buccaneers,Base,Lightboard Logo Variation,false
+287,Tristan Wirfs,Tampa Bay Buccaneers,Base,Lightboard Logo Variation,false
+288,Chase McLaughlin,Tampa Bay Buccaneers,Base,Lightboard Logo Variation,false
+289,Jeffery Simmons,Tennessee Titans,Base,Lightboard Logo Variation,false
+290,Tony Pollard,Tennessee Titans,Base,Lightboard Logo Variation,false
+291,Calvin Ridley,Tennessee Titans,Base,Lightboard Logo Variation,false
+292,T'Vondre Sweat,Tennessee Titans,Base,Lightboard Logo Variation,false
+293,Noah Brown,Washington Commanders,Base,Lightboard Logo Variation,false
+294,Deebo Samuel,Washington Commanders,Base,Lightboard Logo Variation,false
+295,Jayden Daniels,Washington Commanders,Base,Lightboard Logo Variation,false
+296,Brian Robinson Jr.,San Francisco 49ers,Base,Lightboard Logo Variation,false
+297,Zach Ertz,Washington Commanders,Base,Lightboard Logo Variation,false
+298,Luke McCaffrey,Washington Commanders,Base,Lightboard Logo Variation,false
+299,Bobby Wagner,Washington Commanders,Base,Lightboard Logo Variation,false
+300,Matt Gay,Washington Commanders,Base,Lightboard Logo Variation,false
+301,Shavon Revel Jr.,Dallas Cowboys,Base,Lightboard Logo Variation,true
+302,Mason Graham,Cleveland Browns,Base,Lightboard Logo Variation,true
+303,Shemar Turner,Chicago Bears,Base,Lightboard Logo Variation,true
+304,Josh Simmons,Kansas City Chiefs,Base,Lightboard Logo Variation,true
+305,Gunnar Helm,Tennessee Titans,Base,Lightboard Logo Variation,true
+306,Jaxson Dart,New York Giants,Base,Lightboard Logo Variation,true
+307,Kurtis Rourke,San Francisco 49ers,Base,Lightboard Logo Variation,true
+308,Dylan Sampson,Cleveland Browns,Base,Lightboard Logo Variation,true
+309,Kalel Mullings,Tennessee Titans,Base,Lightboard Logo Variation,true
+310,Phil Mafah,Dallas Cowboys,Base,Lightboard Logo Variation,true
+311,Brashard Smith,Kansas City Chiefs,Base,Lightboard Logo Variation,true
+312,Emeka Egbuka,Tampa Bay Buccaneers,Base,Lightboard Logo Variation,true
+313,Pat Bryant,Denver Broncos,Base,Lightboard Logo Variation,true
+314,Cam Ward,Tennessee Titans,Base,Lightboard Logo Variation,true
+315,Shedeur Sanders,Cleveland Browns,Base,Lightboard Logo Variation,true
+316,Quinn Ewers,Miami Dolphins,Base,Lightboard Logo Variation,true
+317,Dillon Gabriel,Cleveland Browns,Base,Lightboard Logo Variation,true
+318,Riley Leonard,Indianapolis Colts,Base,Lightboard Logo Variation,true
+319,Brady Cook,New York Jets,Base,Lightboard Logo Variation,true
+320,Isaac TeSlaa,Detroit Lions,Base,Lightboard Logo Variation,true
+321,Will Howard,Pittsburgh Steelers,Base,Lightboard Logo Variation,true
+322,Ashton Jeanty,Las Vegas Raiders,Base,Lightboard Logo Variation,true
+323,Kaleb Johnson,Pittsburgh Steelers,Base,Lightboard Logo Variation,true
+324,Omarion Hampton,Los Angeles Chargers,Base,Lightboard Logo Variation,true
+325,Quinshon Judkins,Cleveland Browns,Base,Lightboard Logo Variation,true
+326,Tetairoa McMillan,Carolina Panthers,Base,Lightboard Logo Variation,true
+327,Ollie Gordon II,Miami Dolphins,Base,Lightboard Logo Variation,true
+328,TreVeyon Henderson,New England Patriots,Base,Lightboard Logo Variation,true
+329,Jordan James,San Francisco 49ers,Base,Lightboard Logo Variation,true
+330,RJ Harvey,Denver Broncos,Base,Lightboard Logo Variation,true
+331,Cam Skattebo,New York Giants,Base,Lightboard Logo Variation,true
+332,Travis Hunter,Jacksonville Jaguars,Base,Lightboard Logo Variation,true
+333,Matthew Golden,Green Bay Packers,Base,Lightboard Logo Variation,true
+334,Luther Burden III,Chicago Bears,Base,Lightboard Logo Variation,true
+335,Terrance Ferguson,Los Angeles Rams,Base,Lightboard Logo Variation,true
+336,Elic Ayomanor,Tennessee Titans,Base,Lightboard Logo Variation,true
+337,Jalen Royals,Kansas City Chiefs,Base,Lightboard Logo Variation,true
+338,Tre Harris III,Los Angeles Chargers,Base,Lightboard Logo Variation,true
+339,Harold Fannin Jr.,Cleveland Browns,Base,Lightboard Logo Variation,true
+340,Savion Williams,Green Bay Packers,Base,Lightboard Logo Variation,true
+341,Isaiah Bond,Cleveland Browns,Base,Lightboard Logo Variation,true
+342,Tez Johnson,Tampa Bay Buccaneers,Base,Lightboard Logo Variation,true
+343,Jayden Higgins,Houston Texans,Base,Lightboard Logo Variation,true
+344,Billy Bowman Jr.,Atlanta Falcons,Base,Lightboard Logo Variation,true
+345,Colston Loveland,Chicago Bears,Base,Lightboard Logo Variation,true
+346,Tyler Warren,Indianapolis Colts,Base,Lightboard Logo Variation,true
+347,Malaki Starks,Baltimore Ravens,Base,Lightboard Logo Variation,true
+348,Nick Emmanwori,Seattle Seahawks,Base,Lightboard Logo Variation,true
+349,Will Johnson,Arizona Cardinals,Base,Lightboard Logo Variation,true
+350,Abdul Carter,New York Giants,Base,Lightboard Logo Variation,true
+351,James Pearce Jr.,Atlanta Falcons,Base,Lightboard Logo Variation,true
+352,Mykel Williams,San Francisco 49ers,Base,Lightboard Logo Variation,true
+353,Nic Scourton,Carolina Panthers,Base,Lightboard Logo Variation,true
+354,Jalon Walker,Atlanta Falcons,Base,Lightboard Logo Variation,true
+355,Benjamin Morrison,Tampa Bay Buccaneers,Base,Lightboard Logo Variation,true
+356,JT Tuimoloau,Indianapolis Colts,Base,Lightboard Logo Variation,true
+357,Jack Sawyer,Pittsburgh Steelers,Base,Lightboard Logo Variation,true
+358,Landon Jackson,Buffalo Bills,Base,Lightboard Logo Variation,true
+359,Jahdae Barron,Denver Broncos,Base,Lightboard Logo Variation,true
+360,Deone Walker,Buffalo Bills,Base,Lightboard Logo Variation,true
+361,Derrick Harmon,Pittsburgh Steelers,Base,Lightboard Logo Variation,true
+362,Kenneth Grant,Miami Dolphins,Base,Lightboard Logo Variation,true
+363,Shemar Stewart,Cincinnati Bengals,Base,Lightboard Logo Variation,true
+364,Tyleik Williams,Detroit Lions,Base,Lightboard Logo Variation,true
+365,Walter Nolen,Arizona Cardinals,Base,Lightboard Logo Variation,true
+366,Jihaad Campbell,Philadelphia Eagles,Base,Lightboard Logo Variation,true
+367,Darien Porter,Las Vegas Raiders,Base,Lightboard Logo Variation,true
+368,Denzel Burke,Arizona Cardinals,Base,Lightboard Logo Variation,true
+369,Quincy Riley,New Orleans Saints,Base,Lightboard Logo Variation,true
+370,Sebastian Castro,Pittsburgh Steelers,Base,Lightboard Logo Variation,true
+371,Trey Amos,Washington Commanders,Base,Lightboard Logo Variation,true
+372,Woody Marks,Houston Texans,Base,Lightboard Logo Variation,true
+373,Danny Stutsman,New Orleans Saints,Base,Lightboard Logo Variation,true
+374,Jaylen Reed,Houston Texans,Base,Lightboard Logo Variation,true
+375,Kevin Winston Jr.,Tennessee Titans,Base,Lightboard Logo Variation,true
+376,Mike Green,Baltimore Ravens,Base,Lightboard Logo Variation,true
+377,Princely Umanmielen,Carolina Panthers,Base,Lightboard Logo Variation,true
+378,Kelvin Banks Jr.,New Orleans Saints,Base,Lightboard Logo Variation,true
+379,Will Campbell,New England Patriots,Base,Lightboard Logo Variation,true
+380,Jonah Savaiinaea,Miami Dolphins,Base,Lightboard Logo Variation,true
+381,Tyler Booker,Dallas Cowboys,Base,Lightboard Logo Variation,true
+382,Kyle Monangai,Chicago Bears,Base,Lightboard Logo Variation,true
+383,Tate Ratledge,Detroit Lions,Base,Lightboard Logo Variation,true
+384,LeQuint Allen Jr.,Jacksonville Jaguars,Base,Lightboard Logo Variation,true
+385,Dont'e Thornton Jr.,Las Vegas Raiders,Base,Lightboard Logo Variation,true
+386,Emery Jones Jr.,Baltimore Ravens,Base,Lightboard Logo Variation,true
+387,Jacory Croskey-Merritt,Washington Commanders,Base,Lightboard Logo Variation,true
+388,Jack Bech,Las Vegas Raiders,Base,Lightboard Logo Variation,true
+389,Bhayshul Tuten,Jacksonville Jaguars,Base,Lightboard Logo Variation,true
+390,DJ Giddens,Indianapolis Colts,Base,Lightboard Logo Variation,true
+391,Devin Neal,New Orleans Saints,Base,Lightboard Logo Variation,true
+392,Donovan Edwards,New York Jets,Base,Lightboard Logo Variation,true
+393,Xavier Watts,Atlanta Falcons,Base,Lightboard Logo Variation,true
+394,Kaden Prather,Buffalo Bills,Base,Lightboard Logo Variation,true
+395,Tai Felton,Minnesota Vikings,Base,Lightboard Logo Variation,true
+396,Elijah Arroyo,Seattle Seahawks,Base,Lightboard Logo Variation,true
+397,Jackson Hawes,Buffalo Bills,Base,Lightboard Logo Variation,true
+398,Tyler Shough,New Orleans Saints,Base,Lightboard Logo Variation,true
+399,Seth Henigan,Jacksonville Jaguars,Base,Lightboard Logo Variation,true
+400,Mason Taylor,New York Jets,Base,Lightboard Logo Variation,true
+FS-1,Caleb Williams,Chicago Bears,Insert,Future Stars,false
+FS-2,Rome Odunze,Chicago Bears,Insert,Future Stars,false
+FS-3,Ladd McConkey,Los Angeles Chargers,Insert,Future Stars,false
+FS-4,Brian Thomas Jr.,Jacksonville Jaguars,Insert,Future Stars,false
+FS-5,Xavier Worthy,Kansas City Chiefs,Insert,Future Stars,false
+FS-6,Marvin Harrison Jr.,Arizona Cardinals,Insert,Future Stars,false
+FS-7,Drake Maye,New England Patriots,Insert,Future Stars,false
+FS-8,Malik Nabers,New York Giants,Insert,Future Stars,false
+FS-9,Bijan Robinson,Atlanta Falcons,Insert,Future Stars,false
+FS-10,Jahmyr Gibbs,Detroit Lions,Insert,Future Stars,false
+FS-11,Bucky Irving,Tampa Bay Buccaneers,Insert,Future Stars,false
+FS-12,De'Von Achane,Miami Dolphins,Insert,Future Stars,false
+FS-13,Chase Brown,Cincinnati Bengals,Insert,Future Stars,false
+FS-14,Jayden Daniels,Washington Commanders,Insert,Future Stars,false
+FS-15,Bo Nix,Denver Broncos,Insert,Future Stars,false
+FS-16,CJ Stroud,Houston Texans,Insert,Future Stars,false
+FS-17,Bryce Young,Carolina Panthers,Insert,Future Stars,false
+FS-18,J.J. McCarthy,Minnesota Vikings,Insert,Future Stars,false
+FS-19,Michael Penix Jr.,Atlanta Falcons,Insert,Future Stars,false
+FS-20,Cooper Dejean,Philadelphia Eagles,Insert,Future Stars,false
+FS-21,Brock Bowers,Las Vegas Raiders,Insert,Future Stars,false
+FS-22,Pat Surtain II,Denver Broncos,Insert,Future Stars,false
+FS-23,Puka Nacua,Los Angeles Rams,Insert,Future Stars,false
+FS-24,Jared Verse,Los Angeles Rams,Insert,Future Stars,false
+FS-25,Jalen Carter,Philadelphia Eagles,Insert,Future Stars,false
+1975-1,Marvin Harrison Jr.,Arizona Cardinals,Insert,1975 Topps,false
+1975-2,Michael Penix Jr.,Atlanta Falcons,Insert,1975 Topps,false
+1975-3,Lamar Jackson,Baltimore Ravens,Insert,1975 Topps,false
+1975-4,Josh Allen,Buffalo Bills,Insert,1975 Topps,false
+1975-5,Chuba Hubbard,Carolina Panthers,Insert,1975 Topps,false
+1975-6,Rome Odunze,Chicago Bears,Insert,1975 Topps,false
+1975-7,Joe Burrow,Cincinnati Bengals,Insert,1975 Topps,false
+1975-8,Myles Garrett,Cleveland Browns,Insert,1975 Topps,false
+1975-9,CeeDee Lamb,Dallas Cowboys,Insert,1975 Topps,false
+1975-10,Dak Prescott,Dallas Cowboys,Insert,1975 Topps,false
+1975-11,Bo Nix,Denver Broncos,Insert,1975 Topps,false
+1975-12,Jahmyr Gibbs,Detroit Lions,Insert,1975 Topps,false
+1975-13,Matthew Golden,Green Bay Packers,Insert,1975 Topps,true
+1975-14,Joe Mixon,Houston Texans,Insert,1975 Topps,false
+1975-15,Tyler Warren,Indianapolis Colts,Insert,1975 Topps,true
+1975-16,Brian Thomas Jr.,Jacksonville Jaguars,Insert,1975 Topps,false
+1975-17,Travis Kelce,Kansas City Chiefs,Insert,1975 Topps,false
+1975-18,Justin Herbert,Los Angeles Chargers,Insert,1975 Topps,false
+1975-19,Puka Nacua,Los Angeles Rams,Insert,1975 Topps,false
+1975-20,Ashton Jeanty,Las Vegas Raiders,Insert,1975 Topps,true
+1975-21,Tua Tagovailoa,Miami Dolphins,Insert,1975 Topps,false
+1975-22,J.J. McCarthy,Minnesota Vikings,Insert,1975 Topps,false
+1975-23,Drake Maye,New England Patriots,Insert,1975 Topps,false
+1975-24,Alvin Kamara,New Orleans Saints,Insert,1975 Topps,false
+1975-25,Jaxson Dart,New York Giants,Insert,1975 Topps,true
+1975-26,Justin Fields,New York Jets,Insert,1975 Topps,false
+1975-27,Cooper DeJean,Philadelphia Eagles,Insert,1975 Topps,false
+1975-28,Aaron Rodgers,Pittsburgh Steelers,Insert,1975 Topps,false
+1975-29,Christian McCaffrey,San Francisco 49ers,Insert,1975 Topps,false
+1975-30,Kenneth Walker III,Seattle Seahawks,Insert,1975 Topps,false
+1975-31,Baker Mayfield,Tampa Bay Buccaneers,Insert,1975 Topps,false
+1975-32,Bucky Irving,Tampa Bay Buccaneers,Insert,1975 Topps,false
+1975-33,Cam Ward,Tennessee Titans,Insert,1975 Topps,true
+1975-34,Jayden Daniels,Washington Commanders,Insert,1975 Topps,false
+1975-35,Terry McLaurin,Washington Commanders,Insert,1975 Topps,false
+PP-1,Lamar Jackson,Baltimore Ravens,Insert,Power Players,false
+PP-2,Josh Allen,Buffalo Bills,Insert,Power Players,false
+PP-3,Jayden Daniels,Washington Commanders,Insert,Power Players,false
+PP-4,Jalen Hurts,Philadelphia Eagles,Insert,Power Players,false
+PP-5,Joe Burrow,Cincinnati Bengals,Insert,Power Players,false
+PP-6,Patrick Mahomes II,Kansas City Chiefs,Insert,Power Players,false
+PP-7,Caleb Williams,Chicago Bears,Insert,Power Players,false
+PP-8,Cam Ward,Tennessee Titans,Insert,Power Players,true
+PP-9,Bo Nix,Denver Broncos,Insert,Power Players,false
+PP-10,Drake Maye,New England Patriots,Insert,Power Players,false
+PP-11,Bijan Robinson,Atlanta Falcons,Insert,Power Players,false
+PP-12,Jahmyr Gibbs,Detroit Lions,Insert,Power Players,false
+PP-13,Saquon Barkley,Philadelphia Eagles,Insert,Power Players,false
+PP-14,Ashton Jeanty,Las Vegas Raiders,Insert,Power Players,true
+PP-15,Christian McCaffrey,San Francisco 49ers,Insert,Power Players,false
+PP-16,Derrick Henry,Baltimore Ravens,Insert,Power Players,false
+PP-17,Omarion Hampton,Los Angeles Chargers,Insert,Power Players,true
+PP-18,Bucky Irving,Tampa Bay Buccaneers,Insert,Power Players,false
+PP-19,Chase Brown,Cincinnati Bengals,Insert,Power Players,false
+PP-20,Josh Jacobs,Green Bay Packers,Insert,Power Players,false
+PP-21,Ja'Marr Chase,Cincinnati Bengals,Insert,Power Players,false
+PP-22,Justin Jefferson,Minnesota Vikings,Insert,Power Players,false
+PP-23,CeeDee Lamb,Dallas Cowboys,Insert,Power Players,false
+PP-24,Puka Nacua,Los Angeles Rams,Insert,Power Players,false
+PP-25,Malik Nabers,New York Giants,Insert,Power Players,false
+PP-26,Amon-Ra St. Brown,Detroit Lions,Insert,Power Players,false
+PP-27,Ladd McConkey,Los Angeles Chargers,Insert,Power Players,false
+PP-28,Tetairoa McMillan,Carolina Panthers,Insert,Power Players,true
+PP-29,Travis Hunter,Jacksonville Jaguars,Insert,Power Players,true
+PP-30,Nico Collins,Houston Texans,Insert,Power Players,false
+PP-31,Brock Bowers,Las Vegas Raiders,Insert,Power Players,false
+PP-32,Trey McBride,Arizona Cardinals,Insert,Power Players,false
+PP-33,George Kittle,San Francisco 49ers,Insert,Power Players,false
+PP-34,Travis Kelce,Kansas City Chiefs,Insert,Power Players,false
+PP-35,Tyler Warren,Indianapolis Colts,Insert,Power Players,true
+PP-36,T.J. Hockenson,Minnesota Vikings,Insert,Power Players,false
+PP-37,Maxx Crosby,Las Vegas Raiders,Insert,Power Players,false
+PP-38,Aidan Hutchinson,Detroit Lions,Insert,Power Players,false
+PP-39,T.J. Watt,Pittsburgh Steelers,Insert,Power Players,false
+PP-40,Abdul Carter,New York Giants,Insert,Power Players,true
+LOG-1,Kurt Warner,St. Louis Rams,Insert,Legends of the Gridiron,false
+LOG-2,Michael Vick,Atlanta Falcons,Insert,Legends of the Gridiron,false
+LOG-3,Doug Flutie,Buffalo Bills,Insert,Legends of the Gridiron,false
+LOG-4,Jim Kelly,Buffalo Bills,Insert,Legends of the Gridiron,false
+LOG-5,Jim McMahon,Chicago Bears,Insert,Legends of the Gridiron,false
+LOG-6,Boomer Esiason,Cincinnati Bengals,Insert,Legends of the Gridiron,false
+LOG-7,Troy Aikman,Dallas Cowboys,Insert,Legends of the Gridiron,false
+LOG-8,Joe Montana,San Francisco 49ers,Insert,Legends of the Gridiron,false
+LOG-9,Tom Brady,New England Patriots,Insert,Legends of the Gridiron,false
+LOG-10,Peyton Manning,Indianapolis Colts,Insert,Legends of the Gridiron,false
+LOG-11,Barry Sanders,Detroit Lions,Insert,Legends of the Gridiron,false
+LOG-12,Earl Campbell,Houston Oilers,Insert,Legends of the Gridiron,false
+LOG-13,Eric Dickerson,Los Angeles Rams,Insert,Legends of the Gridiron,false
+LOG-14,Ricky Williams,Miami Dolphins,Insert,Legends of the Gridiron,false
+LOG-15,Adrian Peterson,Minnesota Vikings,Insert,Legends of the Gridiron,false
+LOG-16,Emmitt Smith,Dallas Cowboys,Insert,Legends of the Gridiron,false
+LOG-17,Bo Jackson,Los Angeles Raiders,Insert,Legends of the Gridiron,false
+LOG-18,Frank Gore,San Francisco 49ers,Insert,Legends of the Gridiron,false
+LOG-19,Art Monk,Washington Redskins,Insert,Legends of the Gridiron,false
+LOG-20,Terrell Owens,Philadelphia Eagles,Insert,Legends of the Gridiron,false
+LOG-21,Jerry Rice,San Francisco 49ers,Insert,Legends of the Gridiron,false
+LOG-22,Tim Brown,Oakland Raiders,Insert,Legends of the Gridiron,false
+LOG-23,Keyshawn Johnson,New York Jets,Insert,Legends of the Gridiron,false
+LOG-24,Julian Edelman,New England Patriots,Insert,Legends of the Gridiron,false
+LOG-25,Randy Moss,Minnesota Vikings,Insert,Legends of the Gridiron,false
+LOG-26,Isaac Bruce,St. Louis Rams,Insert,Legends of the Gridiron,false
+LOG-27,Sterling Sharpe,Green Bay Packers,Insert,Legends of the Gridiron,false
+LOG-28,Chad Johnson,Cincinnati Bengals,Insert,Legends of the Gridiron,false
+LOG-29,Rob Gronkowski,New England Patriots,Insert,Legends of the Gridiron,false
+LOG-30,Delanie Walker,Tennessee Titans,Insert,Legends of the Gridiron,false
+LOG-31,Jason Witten,Dallas Cowboys,Insert,Legends of the Gridiron,false
+LOG-32,Antonio Gates,San Diego Chargers,Insert,Legends of the Gridiron,false
+LOG-33,Troy Polamalu,Pittsburgh Steelers,Insert,Legends of the Gridiron,false
+LOG-34,Kam Chancellor,Seattle Seahawks,Insert,Legends of the Gridiron,false
+LOG-35,DeAngelo Hall,Washington Redskins,Insert,Legends of the Gridiron,false
+LOG-36,Richard Sherman,Seattle Seahawks,Insert,Legends of the Gridiron,false
+LOG-37,Devin Hester,Chicago Bears,Insert,Legends of the Gridiron,false
+LOG-38,Brian Dawkins,Philadelphia Eagles,Insert,Legends of the Gridiron,false
+LOG-39,Ray Lewis,Baltimore Ravens,Insert,Legends of the Gridiron,false
+LOG-40,Aaron Donald,Los Angeles Rams,Insert,Legends of the Gridiron,false
+F15-1,Lamar Jackson,Baltimore Ravens,Insert,Fortune 15,false
+F15-2,Ja'Marr Chase,Cincinnati Bengals,Insert,Fortune 15,false
+F15-3,Saquon Barkley,Philadelphia Eagles,Insert,Fortune 15,false
+F15-4,Justin Jefferson,Minnesota Vikings,Insert,Fortune 15,false
+F15-5,Joe Burrow,Cincinnati Bengals,Insert,Fortune 15,false
+F15-6,Patrick Mahomes II,Kansas City Chiefs,Insert,Fortune 15,false
+F15-7,Josh Allen,Buffalo Bills,Insert,Fortune 15,false
+F15-8,Brock Bowers,Las Vegas Raiders,Insert,Fortune 15,false
+F15-9,CeeDee Lamb,Dallas Cowboys,Insert,Fortune 15,false
+F15-10,Derrick Henry,Baltimore Ravens,Insert,Fortune 15,false
+F15-11,Micah Parsons,Green Bay Packers,Insert,Fortune 15,false
+F15-12,Jahmyr Gibbs,Detroit Lions,Insert,Fortune 15,false
+F15-13,Amon-Ra St. Brown,Detroit Lions,Insert,Fortune 15,false
+F15-14,Bijan Robinson,Atlanta Falcons,Insert,Fortune 15,false
+F15-15,Malik Nabers,New York Giants,Insert,Fortune 15,false
+F15-16,Caleb Williams,Chicago Bears,Insert,Fortune 15,false
+F15-17,Jordan Love,Green Bay Packers,Insert,Fortune 15,false
+F15-18,J.J. McCarthy,Minnesota Vikings,Insert,Fortune 15,false
+F15-19,Tetairoa McMillan,Carolina Panthers,Insert,Fortune 15,true
+F15-20,Travis Hunter,Jacksonville Jaguars,Insert,Fortune 15,true
+F15-21,Emeka Egbuka,Tampa Bay Buccaneers,Insert,Fortune 15,true
+F15-22,Cam Ward,Tennessee Titans,Insert,Fortune 15,true
+F15-23,Jaxson Dart,New York Giants,Insert,Fortune 15,true
+F15-24,Ashton Jeanty,Las Vegas Raiders,Insert,Fortune 15,true
+F15-25,Omarion Hampton,Los Angeles Chargers,Insert,Fortune 15,true
+F15-26,TreVeyon Henderson,New England Patriots,Insert,Fortune 15,true
+F15-27,Cam Skattebo,New York Giants,Insert,Fortune 15,true
+F15-28,Luther Burden III,Chicago Bears,Insert,Fortune 15,true
+F15-29,Jacory Croskey-Merritt,Washington Commanders,Insert,Fortune 15,true
+F15-30,Tyler Warren,Indianapolis Colts,Insert,Fortune 15,true
+F15-31,Ray Lewis,Baltimore Ravens,Insert,Fortune 15,false
+F15-32,Lawrence Taylor,New York Giants,Insert,Fortune 15,false
+F15-33,Peyton Manning,Denver Broncos,Insert,Fortune 15,false
+F15-34,Walter Payton,Chicago Bears,Insert,Fortune 15,false
+F15-35,Tom Brady,Tampa Bay Buccaneers,Insert,Fortune 15,false
+ACT-1,Lamar Jackson,Baltimore Ravens,Insert,All Chrome Team,false
+ACT-2,Josh Allen,Buffalo Bills,Insert,All Chrome Team,false
+ACT-3,Saquon Barkley,Philadelphia Eagles,Insert,All Chrome Team,false
+ACT-4,Derrick Henry,Baltimore Ravens,Insert,All Chrome Team,false
+ACT-5,Ja'Marr Chase,Cincinnati Bengals,Insert,All Chrome Team,false
+ACT-6,Justin Jefferson,Minnesota Vikings,Insert,All Chrome Team,false
+ACT-7,Amon-Ra St. Brown,Detroit Lions,Insert,All Chrome Team,false
+ACT-8,CeeDee Lamb,Dallas Cowboys,Insert,All Chrome Team,false
+ACT-9,Terry McLaurin,Washington Commanders,Insert,All Chrome Team,false
+ACT-10,Brock Bowers,Las Vegas Raiders,Insert,All Chrome Team,false
+ACT-11,George Kittle,San Francisco 49ers,Insert,All Chrome Team,false
+ACT-12,Jordan Mailata,Philadelphia Eagles,Insert,All Chrome Team,false
+ACT-13,Penei Sewell,Detroit Lions,Insert,All Chrome Team,false
+ACT-14,Joe Thuney,Chicago Bears,Insert,All Chrome Team,false
+ACT-15,Myles Garrett,Cleveland Browns,Insert,All Chrome Team,false
+ACT-16,Trey Hendrickson,Cincinnati Bengals,Insert,All Chrome Team,false
+ACT-17,Chris Jones,Kansas City Chiefs,Insert,All Chrome Team,false
+ACT-18,Pat Surtain II,Denver Broncos,Insert,All Chrome Team,false
+ACT-19,Derek Stingley Jr.,Houston Texans,Insert,All Chrome Team,false
+ACT-20,Fred Warner,San Francisco 49ers,Insert,All Chrome Team,false
+ACT-21,Roquan Smith,Baltimore Ravens,Insert,All Chrome Team,false
+ACT-22,Zack Baun,Philadelphia Eagles,Insert,All Chrome Team,false
+ACT-23,Kerby Joseph,Detroit Lions,Insert,All Chrome Team,false
+ACT-24,Xavier McKinney,Green Bay Packers,Insert,All Chrome Team,false
+ACT-25,Chris Boswell,Pittsburgh Steelers,Insert,All Chrome Team,false
+RR-1,Cam Ward,Tennessee Titans,Insert,Chrome Radiating Rookies,true
+RR-2,Tetairoa McMillan,Carolina Panthers,Insert,Chrome Radiating Rookies,true
+RR-3,Ashton Jeanty,Las Vegas Raiders,Insert,Chrome Radiating Rookies,true
+RR-4,Travis Hunter,Jacksonville Jaguars,Insert,Chrome Radiating Rookies,true
+RR-5,Jaxson Dart,New York Giants,Insert,Chrome Radiating Rookies,true
+RR-6,Colston Loveland,Chicago Bears,Insert,Chrome Radiating Rookies,true
+RR-7,Omarion Hampton,Los Angeles Chargers,Insert,Chrome Radiating Rookies,true
+RR-8,Tyler Warren,Indianapolis Colts,Insert,Chrome Radiating Rookies,true
+RR-9,TreVeyon Henderson,New England Patriots,Insert,Chrome Radiating Rookies,true
+RR-10,Matthew Golden,Green Bay Packers,Insert,Chrome Radiating Rookies,true
+RR-11,Abdul Carter,New York Giants,Insert,Chrome Radiating Rookies,true
+RR-12,Emeka Egbuka,Tampa Bay Buccaneers,Insert,Chrome Radiating Rookies,true
+RR-13,Shedeur Sanders,Cleveland Browns,Insert,Chrome Radiating Rookies,true
+RR-14,Kaleb Johnson,Pittsburgh Steelers,Insert,Chrome Radiating Rookies,true
+RR-15,RJ Harvey,Denver Broncos,Insert,Chrome Radiating Rookies,true
+RR-16,Luther Burden III,Chicago Bears,Insert,Chrome Radiating Rookies,true
+RR-17,Cam Skattebo,New York Giants,Insert,Chrome Radiating Rookies,true
+RR-18,Quinshon Judkins,Cleveland Browns,Insert,Chrome Radiating Rookies,true
+RR-19,Jayden Higgins,Houston Texans,Insert,Chrome Radiating Rookies,true
+RR-20,Jack Bech,Las Vegas Raiders,Insert,Chrome Radiating Rookies,true
+UL-1,Joe Burrow,Cincinnati Bengals,Insert,Urban Legends,false
+UL-2,Josh Allen,Buffalo Bills,Insert,Urban Legends,false
+UL-3,Lamar Jackson,Baltimore Ravens,Insert,Urban Legends,false
+UL-4,Caleb Williams,Chicago Bears,Insert,Urban Legends,false
+UL-5,Jordan Love,Green Bay Packers,Insert,Urban Legends,false
+UL-6,Drake London,Atlanta Falcons,Insert,Urban Legends,false
+UL-7,Ladd McConkey,Los Angeles Chargers,Insert,Urban Legends,false
+UL-8,Puka Nacua,Los Angeles Rams,Insert,Urban Legends,false
+UL-9,Nico Collins,Houston Texans,Insert,Urban Legends,false
+UL-10,Justin Herbert,Los Angeles Chargers,Insert,Urban Legends,false
+UL-11,Patrick Mahomes II,Kansas City Chiefs,Insert,Urban Legends,false
+UL-12,Jalen Hurts,Philadelphia Eagles,Insert,Urban Legends,false
+UL-13,Josh Jacobs,Green Bay Packers,Insert,Urban Legends,false
+UL-14,Bijan Robinson,Atlanta Falcons,Insert,Urban Legends,false
+UL-15,Christian McCaffrey,San Francisco 49ers,Insert,Urban Legends,false
+UL-16,Ja'Marr Chase,Cincinnati Bengals,Insert,Urban Legends,false
+UL-17,Emeka Egbuka,Tampa Bay Buccaneers,Insert,Urban Legends,true
+UL-18,Cam Ward,Tennessee Titans,Insert,Urban Legends,true
+UL-19,Jaxson Dart,New York Giants,Insert,Urban Legends,true
+UL-20,Ashton Jeanty,Las Vegas Raiders,Insert,Urban Legends,true
+UL-21,Bo Nix,Denver Broncos,Insert,Urban Legends,false
+UL-22,Rome Odunze,Chicago Bears,Insert,Urban Legends,false
+UL-23,Omarion Hampton,Los Angeles Chargers,Insert,Urban Legends,true
+UL-24,Travis Hunter,Jacksonville Jaguars,Insert,Urban Legends,true
+UL-25,Cam Skattebo,New York Giants,Insert,Urban Legends,true
+UL-26,Colston Loveland,Chicago Bears,Insert,Urban Legends,true
+UL-27,Tyler Warren,Indianapolis Colts,Insert,Urban Legends,true
+UL-28,Matthew Golden,Green Bay Packers,Insert,Urban Legends,true
+UL-29,Terrell Owens,Dallas Cowboys,Insert,Urban Legends,false
+UL-30,Walter Payton,Chicago Bears,Insert,Urban Legends,false
+HX-1,Tom Brady,Tampa Bay Buccaneers,Insert,Helix,false
+HX-2,Patrick Mahomes II,Kansas City Chiefs,Insert,Helix,false
+HX-3,Josh Allen,Buffalo Bills,Insert,Helix,false
+HX-4,Cam Ward,Tennessee Titans,Insert,Helix,true
+HX-5,Caleb Williams,Chicago Bears,Insert,Helix,false
+HX-6,Bo Nix,Denver Broncos,Insert,Helix,false
+HX-7,CeeDee Lamb,Dallas Cowboys,Insert,Helix,false
+HX-8,Ja'Marr Chase,Cincinnati Bengals,Insert,Helix,false
+HX-9,Justin Jefferson,Minnesota Vikings,Insert,Helix,false
+HX-10,Puka Nacua,Los Angeles Rams,Insert,Helix,false
+HX-11,Bijan Robinson,Atlanta Falcons,Insert,Helix,false
+HX-12,Brock Purdy,San Francisco 49ers,Insert,Helix,false
+HX-13,Saquon Barkley,Philadelphia Eagles,Insert,Helix,false
+HX-14,Omarion Hampton,Los Angeles Chargers,Insert,Helix,true
+HX-15,Luther Burden III,Chicago Bears,Insert,Helix,true
+HX-16,Justin Herbert,Los Angeles Chargers,Insert,Helix,false
+HX-17,Jayden Daniels,Washington Commanders,Insert,Helix,false
+HX-18,Joe Burrow,Cincinnati Bengals,Insert,Helix,false
+HX-19,Jalen Hurts,Philadelphia Eagles,Insert,Helix,false
+HX-20,Lamar Jackson,Baltimore Ravens,Insert,Helix,false
+HX-21,Aaron Rodgers,Pittsburgh Steelers,Insert,Helix,false
+HX-22,J.J. McCarthy,Minnesota Vikings,Insert,Helix,false
+HX-23,Matthew Golden,Green Bay Packers,Insert,Helix,true
+HX-24,Travis Hunter,Jacksonville Jaguars,Insert,Helix,true
+HX-25,Jaxson Dart,New York Giants,Insert,Helix,true
+HX-26,Ashton Jeanty,Las Vegas Raiders,Insert,Helix,true
+HX-27,Jayden Higgins,Houston Texans,Insert,Helix,true
+HX-28,Abdul Carter,New York Giants,Insert,Helix,true
+HX-29,Derrick Henry,Baltimore Ravens,Insert,Helix,false
+HX-30,Tetairoa McMillan,Carolina Panthers,Insert,Helix,true
+1,Marvin Harrison Jr.,Arizona Cardinals,Insert,Chrome Etch Variation,false
+5,Kyler Murray,Arizona Cardinals,Insert,Chrome Etch Variation,false
+15,Michael Penix Jr.,Atlanta Falcons,Insert,Chrome Etch Variation,false
+16,Bijan Robinson,Atlanta Falcons,Insert,Chrome Etch Variation,false
+24,Lamar Jackson,Baltimore Ravens,Insert,Chrome Etch Variation,false
+25,Derrick Henry,Baltimore Ravens,Insert,Chrome Etch Variation,false
+34,Josh Allen,Buffalo Bills,Insert,Chrome Etch Variation,false
+40,Bryce Young,Carolina Panthers,Insert,Chrome Etch Variation,false
+49,Rome Odunze,Chicago Bears,Insert,Chrome Etch Variation,false
+52,Caleb Williams,Chicago Bears,Insert,Chrome Etch Variation,false
+58,Ja'Marr Chase,Cincinnati Bengals,Insert,Chrome Etch Variation,false
+61,Joe Burrow,Cincinnati Bengals,Insert,Chrome Etch Variation,false
+69,David Njoku,Cleveland Browns,Insert,Chrome Etch Variation,false
+76,CeeDee Lamb,Dallas Cowboys,Insert,Chrome Etch Variation,false
+79,Dak Prescott,Dallas Cowboys,Insert,Chrome Etch Variation,false
+88,Bo Nix,Denver Broncos,Insert,Chrome Etch Variation,false
+98,Amon-Ra St. Brown,Detroit Lions,Insert,Chrome Etch Variation,false
+101,Jahmyr Gibbs,Detroit Lions,Insert,Chrome Etch Variation,false
+109,Jordan Love,Green Bay Packers,Insert,Chrome Etch Variation,false
+110,Josh Jacobs,Green Bay Packers,Insert,Chrome Etch Variation,false
+115,Nico Collins,Houston Texans,Insert,Chrome Etch Variation,false
+119,CJ Stroud,Houston Texans,Insert,Chrome Etch Variation,false
+130,Jonathan Taylor,Indianapolis Colts,Insert,Chrome Etch Variation,false
+138,Trevor Lawrence,Jacksonville Jaguars,Insert,Chrome Etch Variation,false
+148,Patrick Mahomes II,Kansas City Chiefs,Insert,Chrome Etch Variation,false
+150,Travis Kelce,Kansas City Chiefs,Insert,Chrome Etch Variation,false
+156,Ladd McConkey,Los Angeles Chargers,Insert,Chrome Etch Variation,false
+158,Justin Herbert,Los Angeles Chargers,Insert,Chrome Etch Variation,false
+166,Puka Nacua,Los Angeles Rams,Insert,Chrome Etch Variation,false
+169,Matthew Stafford,Los Angeles Rams,Insert,Chrome Etch Variation,false
+178,Brock Bowers,Las Vegas Raiders,Insert,Chrome Etch Variation,false
+185,Tyreek Hill,Miami Dolphins,Insert,Chrome Etch Variation,false
+187,Tua Tagovailoa,Miami Dolphins,Insert,Chrome Etch Variation,false
+195,Justin Jefferson,Minnesota Vikings,Insert,Chrome Etch Variation,false
+199,J.J. McCarthy,Minnesota Vikings,Insert,Chrome Etch Variation,false
+207,Drake Maye,New England Patriots,Insert,Chrome Etch Variation,false
+215,Alvin Kamara,New Orleans Saints,Insert,Chrome Etch Variation,false
+225,Malik Nabers,New York Giants,Insert,Chrome Etch Variation,false
+235,Garrett Wilson,New York Jets,Insert,Chrome Etch Variation,false
+237,Justin Fields,New York Jets,Insert,Chrome Etch Variation,false
+247,Jalen Hurts,Philadelphia Eagles,Insert,Chrome Etch Variation,false
+248,Saquon Barkley,Philadelphia Eagles,Insert,Chrome Etch Variation,false
+254,DK Metcalf,Pittsburgh Steelers,Insert,Chrome Etch Variation,false
+255,Aaron Rodgers,Pittsburgh Steelers,Insert,Chrome Etch Variation,false
+262,Brock Purdy,San Francisco 49ers,Insert,Chrome Etch Variation,false
+263,Christian McCaffrey,San Francisco 49ers,Insert,Chrome Etch Variation,false
+276,Kenneth Walker III,Seattle Seahawks,Insert,Chrome Etch Variation,false
+281,Baker Mayfield,Tampa Bay Buccaneers,Insert,Chrome Etch Variation,false
+291,Calvin Ridley,Tennessee Titans,Insert,Chrome Etch Variation,false
+295,Jayden Daniels,Washington Commanders,Insert,Chrome Etch Variation,false
+302,Mason Graham,Cleveland Browns,Insert,Chrome Etch Variation,true
+306,Jaxson Dart,New York Giants,Insert,Chrome Etch Variation,true
+308,Dylan Sampson,Cleveland Browns,Insert,Chrome Etch Variation,true
+312,Emeka Egbuka,Tampa Bay Buccaneers,Insert,Chrome Etch Variation,true
+313,Antwane Wells Jr.,New York Giants,Insert,Chrome Etch Variation,true
+314,Cam Ward,Tennessee Titans,Insert,Chrome Etch Variation,true
+315,Shedeur Sanders,Cleveland Browns,Insert,Chrome Etch Variation,true
+316,Quinn Ewers,Miami Dolphins,Insert,Chrome Etch Variation,true
+317,Dillon Gabriel,Cleveland Browns,Insert,Chrome Etch Variation,true
+318,Riley Leonard,Indianapolis Colts,Insert,Chrome Etch Variation,true
+319,Brady Cook,New York Jets,Insert,Chrome Etch Variation,true
+320,Isaac TeSlaa,Detroit Lions,Insert,Chrome Etch Variation,true
+321,Will Howard,Pittsburgh Steelers,Insert,Chrome Etch Variation,true
+322,Ashton Jeanty,Las Vegas Raiders,Insert,Chrome Etch Variation,true
+323,Kaleb Johnson,Pittsburgh Steelers,Insert,Chrome Etch Variation,true
+324,Omarion Hampton,Los Angeles Chargers,Insert,Chrome Etch Variation,true
+325,Quinshon Judkins,Cleveland Browns,Insert,Chrome Etch Variation,true
+326,Tetairoa McMillan,Carolina Panthers,Insert,Chrome Etch Variation,true
+327,Ollie Gordon II,Miami Dolphins,Insert,Chrome Etch Variation,true
+328,TreVeyon Henderson,New England Patriots,Insert,Chrome Etch Variation,true
+329,Jordan James,San Francisco 49ers,Insert,Chrome Etch Variation,true
+330,RJ Harvey,Denver Broncos,Insert,Chrome Etch Variation,true
+331,Cam Skattebo,New York Giants,Insert,Chrome Etch Variation,true
+332,Travis Hunter,Jacksonville Jaguars,Insert,Chrome Etch Variation,true
+333,Matthew Golden,Green Bay Packers,Insert,Chrome Etch Variation,true
+334,Luther Burden III,Chicago Bears,Insert,Chrome Etch Variation,true
+336,Elic Ayomanor,Tennessee Titans,Insert,Chrome Etch Variation,true
+337,Jalen Royals,Kansas City Chiefs,Insert,Chrome Etch Variation,true
+338,Tre Harris III,Los Angeles Chargers,Insert,Chrome Etch Variation,true
+340,Savion Williams,Green Bay Packers,Insert,Chrome Etch Variation,true
+341,Isaiah Bond,Cleveland Browns,Insert,Chrome Etch Variation,true
+342,Tez Johnson,Tampa Bay Buccaneers,Insert,Chrome Etch Variation,true
+343,Jayden Higgins,Houston Texans,Insert,Chrome Etch Variation,true
+345,Colston Loveland,Chicago Bears,Insert,Chrome Etch Variation,true
+346,Tyler Warren,Indianapolis Colts,Insert,Chrome Etch Variation,true
+347,Malaki Starks,Baltimore Ravens,Insert,Chrome Etch Variation,true
+349,Will Johnson,Arizona Cardinals,Insert,Chrome Etch Variation,true
+350,Abdul Carter,New York Giants,Insert,Chrome Etch Variation,true
+351,James Pearce Jr.,Atlanta Falcons,Insert,Chrome Etch Variation,true
+352,Mykel Williams,San Francisco 49ers,Insert,Chrome Etch Variation,true
+353,Nic Scourton,Carolina Panthers,Insert,Chrome Etch Variation,true
+355,Benjamin Morrison,Tampa Bay Buccaneers,Insert,Chrome Etch Variation,true
+356,JT Tuimoloau,Indianapolis Colts,Insert,Chrome Etch Variation,true
+357,Jack Sawyer,Pittsburgh Steelers,Insert,Chrome Etch Variation,true
+379,Will Campbell,New England Patriots,Insert,Chrome Etch Variation,true
+380,Jonah Savaiinaea,Miami Dolphins,Insert,Chrome Etch Variation,true
+389,Bhayshul Tuten,Jacksonville Jaguars,Insert,Chrome Etch Variation,true
+390,DJ Giddens,Indianapolis Colts,Insert,Chrome Etch Variation,true
+394,Kaden Prather,Buffalo Bills,Insert,Chrome Etch Variation,true
+395,Tai Felton,Minnesota Vikings,Insert,Chrome Etch Variation,true
+4,Trey McBride,Arizona Cardinals,Insert,Image Variation,false
+24,Lamar Jackson,Baltimore Ravens,Insert,Image Variation,false
+25,Derrick Henry,Baltimore Ravens,Insert,Image Variation,false
+34,Josh Allen,Buffalo Bills,Insert,Image Variation,false
+52,Caleb Williams,Chicago Bears,Insert,Image Variation,false
+58,Ja'Marr Chase,Cincinnati Bengals,Insert,Image Variation,false
+61,Joe Burrow,Cincinnati Bengals,Insert,Image Variation,false
+76,CeeDee Lamb,Dallas Cowboys,Insert,Image Variation,false
+79,Dak Prescott,Dallas Cowboys,Insert,Image Variation,false
+88,Bo Nix,Denver Broncos,Insert,Image Variation,false
+98,Amon-Ra St. Brown,Detroit Lions,Insert,Image Variation,false
+101,Jahmyr Gibbs,Detroit Lions,Insert,Image Variation,false
+109,Jordan Love,Green Bay Packers,Insert,Image Variation,false
+110,Josh Jacobs,Green Bay Packers,Insert,Image Variation,false
+148,Patrick Mahomes II,Kansas City Chiefs,Insert,Image Variation,false
+150,Travis Kelce,Kansas City Chiefs,Insert,Image Variation,false
+156,Ladd McConkey,Los Angeles Chargers,Insert,Image Variation,false
+158,Justin Herbert,Los Angeles Chargers,Insert,Image Variation,false
+166,Puka Nacua,Los Angeles Rams,Insert,Image Variation,false
+195,Justin Jefferson,Minnesota Vikings,Insert,Image Variation,false
+225,Malik Nabers,New York Giants,Insert,Image Variation,false
+247,Jalen Hurts,Philadelphia Eagles,Insert,Image Variation,false
+248,Saquon Barkley,Philadelphia Eagles,Insert,Image Variation,false
+263,Christian McCaffrey,San Francisco 49ers,Insert,Image Variation,false
+295,Jayden Daniels,Washington Commanders,Insert,Image Variation,false
+401,Tom Brady,New England Patriots,Insert,Image Variation,false
+402,Walter Payton,Chicago Bears,Insert,Image Variation,false
+403,Peyton Manning,Indianapolis Colts,Insert,Image Variation,false
+404,Barry Sanders,Detroit Lions,Insert,Image Variation,false
+405,Randy Moss,Minnesota Vikings,Insert,Image Variation,false
+306,Jaxson Dart,New York Giants,Insert,Image Variation,true
+312,Emeka Egbuka,Tampa Bay Buccaneers,Insert,Image Variation,true
+314,Cam Ward,Tennessee Titans,Insert,Image Variation,true
+315,Shedeur Sanders,Cleveland Browns,Insert,Image Variation,true
+322,Ashton Jeanty,Las Vegas Raiders,Insert,Image Variation,true
+323,Kaleb Johnson,Pittsburgh Steelers,Insert,Image Variation,true
+324,Omarion Hampton,Los Angeles Chargers,Insert,Image Variation,true
+326,Tetairoa McMillan,Carolina Panthers,Insert,Image Variation,true
+328,TreVeyon Henderson,New England Patriots,Insert,Image Variation,true
+330,RJ Harvey,Denver Broncos,Insert,Image Variation,true
+332,Travis Hunter,Jacksonville Jaguars,Insert,Image Variation,true
+333,Matthew Golden,Green Bay Packers,Insert,Image Variation,true
+334,Luther Burden III,Chicago Bears,Insert,Image Variation,true
+338,Tre Harris III,Los Angeles Chargers,Insert,Image Variation,true
+343,Jayden Higgins,Houston Texans,Insert,Image Variation,true
+345,Colston Loveland,Chicago Bears,Insert,Image Variation,true
+346,Tyler Warren,Indianapolis Colts,Insert,Image Variation,true
+350,Abdul Carter,New York Giants,Insert,Image Variation,true
+388,Jack Bech,Las Vegas Raiders,Insert,Image Variation,true
+398,Tyler Shough,New Orleans Saints,Insert,Image Variation,true
+SE-1,Patrick Mahomes II,Kansas City Chiefs,Insert,Shadow Etch,false
+SE-2,Josh Allen,Buffalo Bills,Insert,Shadow Etch,false
+SE-3,Lamar Jackson,Baltimore Ravens,Insert,Shadow Etch,false
+SE-4,Joe Burrow,Cincinnati Bengals,Insert,Shadow Etch,false
+SE-5,Jalen Hurts,Philadelphia Eagles,Insert,Shadow Etch,false
+SE-6,CJ Stroud,Houston Texans,Insert,Shadow Etch,false
+SE-7,Caleb Williams,Chicago Bears,Insert,Shadow Etch,false
+SE-8,Jayden Daniels,Washington Commanders,Insert,Shadow Etch,false
+SE-9,Cam Ward,Tennessee Titans,Insert,Shadow Etch,true
+SE-10,Jordan Love,Green Bay Packers,Insert,Shadow Etch,false
+SE-11,Christian McCaffrey,San Francisco 49ers,Insert,Shadow Etch,false
+SE-12,Bijan Robinson,Atlanta Falcons,Insert,Shadow Etch,false
+SE-13,Jahmyr Gibbs,Detroit Lions,Insert,Shadow Etch,false
+SE-14,Saquon Barkley,Philadelphia Eagles,Insert,Shadow Etch,false
+SE-15,Derrick Henry,Baltimore Ravens,Insert,Shadow Etch,false
+SE-16,Breece Hall,New York Jets,Insert,Shadow Etch,false
+SE-17,Jonathan Taylor,Indianapolis Colts,Insert,Shadow Etch,false
+SE-18,Ashton Jeanty,Las Vegas Raiders,Insert,Shadow Etch,true
+SE-19,TreVeyon Henderson,New England Patriots,Insert,Shadow Etch,true
+SE-20,Omarion Hampton,Los Angeles Chargers,Insert,Shadow Etch,true
+SE-21,Justin Jefferson,Minnesota Vikings,Insert,Shadow Etch,false
+SE-22,Ja'Marr Chase,Cincinnati Bengals,Insert,Shadow Etch,false
+SE-23,CeeDee Lamb,Dallas Cowboys,Insert,Shadow Etch,false
+SE-24,Amon-Ra St. Brown,Detroit Lions,Insert,Shadow Etch,false
+SE-25,Puka Nacua,Los Angeles Rams,Insert,Shadow Etch,false
+SE-26,Malik Nabers,New York Giants,Insert,Shadow Etch,false
+SE-27,Emeka Egbuka,Tampa Bay Buccaneers,Insert,Shadow Etch,true
+SE-28,Travis Kelce,Kansas City Chiefs,Insert,Shadow Etch,false
+SE-29,Trey McBride,Arizona Cardinals,Insert,Shadow Etch,false
+SE-30,George Kittle,San Francisco 49ers,Insert,Shadow Etch,false
+GG-1,Josh Allen,Buffalo Bills,Insert,Game Genies,false
+GG-2,Tom Brady,New England Patriots,Insert,Game Genies,false
+GG-3,Patrick Mahomes II,Kansas City Chiefs,Insert,Game Genies,false
+GG-4,Lamar Jackson,Baltimore Ravens,Insert,Game Genies,false
+GG-5,Joe Burrow,Cincinnati Bengals,Insert,Game Genies,false
+GG-6,Justin Jefferson,Minnesota Vikings,Insert,Game Genies,false
+GG-7,Ja'Marr Chase,Cincinnati Bengals,Insert,Game Genies,false
+GG-8,Saquon Barkley,Philadelphia Eagles,Insert,Game Genies,false
+GG-9,CeeDee Lamb,Dallas Cowboys,Insert,Game Genies,false
+GG-10,Jayden Daniels,Washington Commanders,Insert,Game Genies,false
+GG-11,Derrick Henry,Baltimore Ravens,Insert,Game Genies,false
+GG-12,Jahmyr Gibbs,Detroit Lions,Insert,Game Genies,false
+GG-13,Bo Nix,Denver Broncos,Insert,Game Genies,false
+GG-14,Cam Ward,Tennessee Titans,Insert,Game Genies,true
+GG-15,Ashton Jeanty,Las Vegas Raiders,Insert,Game Genies,true
+GG-16,Emeka Egbuka,Tampa Bay Buccaneers,Insert,Game Genies,true
+GG-17,Jaxson Dart,New York Giants,Insert,Game Genies,true
+GG-18,Bijan Robinson,Atlanta Falcons,Insert,Game Genies,false
+GG-19,Omarion Hampton,Los Angeles Chargers,Insert,Game Genies,true
+GG-20,Travis Hunter,Jacksonville Jaguars,Insert,Game Genies,true
+GG-21,Jalen Hurts,Philadelphia Eagles,Insert,Game Genies,false
+GG-22,Josh Jacobs,Green Bay Packers,Insert,Game Genies,false
+GG-23,Caleb Williams,Chicago Bears,Insert,Game Genies,false
+GG-24,Jonathan Taylor,Indianapolis Colts,Insert,Game Genies,false
+GG-25,Tetairoa McMillan,Carolina Panthers,Insert,Game Genies,true
+KAI-1,Tom Brady,New England Patriots,Insert,Kaiju,false
+KAI-2,Patrick Mahomes II,Kansas City Chiefs,Insert,Kaiju,false
+KAI-3,Jalen Hurts,Philadelphia Eagles,Insert,Kaiju,false
+KAI-4,Joe Burrow,Cincinnati Bengals,Insert,Kaiju,false
+KAI-5,Caleb Williams,Chicago Bears,Insert,Kaiju,false
+KAI-6,Jayden Daniels,Washington Commanders,Insert,Kaiju,false
+KAI-7,Josh Allen,Buffalo Bills,Insert,Kaiju,false
+KAI-8,Cam Ward,Tennessee Titans,Insert,Kaiju,true
+KAI-9,Travis Hunter,Jacksonville Jaguars,Insert,Kaiju,true
+KAI-10,Jaxson Dart,New York Giants,Insert,Kaiju,true
+LG-1,Cam Ward,Tennessee Titans,Insert,Let's Go,true
+LG-2,Lamar Jackson,Baltimore Ravens,Insert,Let's Go,false
+LG-3,Josh Allen,Buffalo Bills,Insert,Let's Go,false
+LG-4,Joe Burrow,Cincinnati Bengals,Insert,Let's Go,false
+LG-5,Patrick Mahomes II,Kansas City Chiefs,Insert,Let's Go,false
+UV-1,Jaxson Dart,New York Giants,Insert,Ultra Violet,true
+UV-2,Cam Ward,Tennessee Titans,Insert,Ultra Violet,true
+UV-3,Ashton Jeanty,Las Vegas Raiders,Insert,Ultra Violet,true
+UV-4,Abdul Carter,New York Giants,Insert,Ultra Violet,true
+UV-5,Tetairoa McMillan,Carolina Panthers,Insert,Ultra Violet,true
+UV-6,Tom Brady,New England Patriots,Insert,Ultra Violet,false
+UV-7,Omarion Hampton,Los Angeles Chargers,Insert,Ultra Violet,true
+UV-8,Peyton Manning,Indianapolis Colts,Insert,Ultra Violet,false
+UV-9,Bo Nix,Denver Broncos,Insert,Ultra Violet,false
+UV-10,Drake Maye,New England Patriots,Insert,Ultra Violet,false
+UV-11,Lamar Jackson,Baltimore Ravens,Insert,Ultra Violet,false
+UV-12,Brock Purdy,San Francisco 49ers,Insert,Ultra Violet,false
+UV-13,Justin Jefferson,Minnesota Vikings,Insert,Ultra Violet,false
+UV-14,J.J. McCarthy,Minnesota Vikings,Insert,Ultra Violet,false
+UV-15,Patrick Mahomes II,Kansas City Chiefs,Insert,Ultra Violet,false
+UV-16,Ja'Marr Chase,Cincinnati Bengals,Insert,Ultra Violet,false
+UV-17,Joe Burrow,Cincinnati Bengals,Insert,Ultra Violet,false
+UV-18,Bijan Robinson,Atlanta Falcons,Insert,Ultra Violet,false
+UV-19,Jayden Daniels,Washington Commanders,Insert,Ultra Violet,false
+UV-20,Saquon Barkley,Philadelphia Eagles,Insert,Ultra Violet,false
+LL-1,Joe Burrow,Cincinnati Bengals,Insert,Lightning Leaders,false
+LL-2,Jared Goff,Detroit Lions,Insert,Lightning Leaders,false
+LL-3,Baker Mayfield,Tampa Bay Buccaneers,Insert,Lightning Leaders,false
+LL-4,Geno Smith,Las Vegas Raiders,Insert,Lightning Leaders,false
+LL-5,Lamar Jackson,Baltimore Ravens,Insert,Lightning Leaders,false
+LL-6,Bijan Robinson,Atlanta Falcons,Insert,Lightning Leaders,false
+LL-7,Jonathan Taylor,Indianapolis Colts,Insert,Lightning Leaders,false
+LL-8,Jahmyr Gibbs,Detroit Lions,Insert,Lightning Leaders,false
+LL-9,Saquon Barkley,Philadelphia Eagles,Insert,Lightning Leaders,false
+LL-10,Derrick Henry,Baltimore Ravens,Insert,Lightning Leaders,false
+LL-11,Ja'Marr Chase,Cincinnati Bengals,Insert,Lightning Leaders,false
+LL-12,Justin Jefferson,Minnesota Vikings,Insert,Lightning Leaders,false
+LL-13,Brian Thomas Jr.,Jacksonville Jaguars,Insert,Lightning Leaders,false
+LL-14,Drake London,Atlanta Falcons,Insert,Lightning Leaders,false
+LL-15,Amon-Ra St. Brown,Detroit Lions,Insert,Lightning Leaders,false
+LL-16,Brock Bowers,Las Vegas Raiders,Insert,Lightning Leaders,false
+LL-17,Ladd McConkey,Los Angeles Chargers,Insert,Lightning Leaders,false
+LL-18,Myles Garrett,Cleveland Browns,Insert,Lightning Leaders,false
+LL-19,Trey Hendrickson,Cincinnati Bengals,Insert,Lightning Leaders,false
+LL-20,Josh Jacobs,Green Bay Packers,Insert,Lightning Leaders,false
+FF-1,Ashton Jeanty,Las Vegas Raiders,Insert,Fanatical,true
+FF-2,Omarion Hampton,Los Angeles Chargers,Insert,Fanatical,true
+FF-3,Tetairoa McMillan,Carolina Panthers,Insert,Fanatical,true
+FF-4,Cam Ward,Tennessee Titans,Insert,Fanatical,true
+FF-5,Jaxson Dart,New York Giants,Insert,Fanatical,true
+FF-6,Emeka Egbuka,Tampa Bay Buccaneers,Insert,Fanatical,true
+FF-7,Luther Burden III,Chicago Bears,Insert,Fanatical,true
+FF-8,Tyler Warren,Indianapolis Colts,Insert,Fanatical,true
+FF-9,Quinshon Judkins,Cleveland Browns,Insert,Fanatical,true
+FF-10,Travis Hunter,Jacksonville Jaguars,Insert,Fanatical,true
+FF-11,Bijan Robinson,Atlanta Falcons,Insert,Fanatical,false
+FF-12,Ja'Marr Chase,Cincinnati Bengals,Insert,Fanatical,false
+FF-13,Joe Burrow,Cincinnati Bengals,Insert,Fanatical,false
+FF-14,Patrick Mahomes II,Kansas City Chiefs,Insert,Fanatical,false
+FF-15,Puka Nacua,Los Angeles Rams,Insert,Fanatical,false
+FF-16,Justin Herbert,Los Angeles Chargers,Insert,Fanatical,false
+FF-17,Lamar Jackson,Baltimore Ravens,Insert,Fanatical,false
+FF-18,Bo Nix,Denver Broncos,Insert,Fanatical,false
+FF-19,Justin Jefferson,Minnesota Vikings,Insert,Fanatical,false
+FF-20,Tom Brady,Tampa Bay Buccaneers,Insert,Fanatical,false
+FF-21,Myles Garrett,Cleveland Browns,Insert,Fanatical,false
+FF-22,Maxx Crosby,Las Vegas Raiders,Insert,Fanatical,false
+FF-23,Micah Parsons,Green Bay Packers,Insert,Fanatical,false
+FF-24,Aidan Hutchinson,Detroit Lions,Insert,Fanatical,false
+FF-25,Malik Nabers,New York Giants,Insert,Fanatical,false
+FF-26,Aaron Rodgers,Pittsburgh Steelers,Insert,Fanatical,false
+FF-27,Baker Mayfield,Tampa Bay Buccaneers,Insert,Fanatical,false
+FF-28,CJ Stroud,Houston Texans,Insert,Fanatical,false
+FF-29,Travis Kelce,Kansas City Chiefs,Insert,Fanatical,false
+FF-30,Christian McCaffrey,San Francisco 49ers,Insert,Fanatical,false
+TECMO-1,Bo Jackson,Los Angeles Raiders,Insert,Tecmo,false
+TECMO-2,Marcus Allen,Los Angeles Raiders,Insert,Tecmo,false
+TECMO-3,Tim Brown,Los Angeles Raiders,Insert,Tecmo,false
+TECMO-4,Walter Payton,Chicago Bears,Insert,Tecmo,false
+TECMO-6,Phil Simms,New York Giants,Insert,Tecmo,false
+TECMO-7,Joe Montana,San Francisco 49ers,Insert,Tecmo,false
+TECMO-8,Roger Craig,San Francisco 49ers,Insert,Tecmo,false
+TECMO-10,Dan Marino,Miami Dolphins,Insert,Tecmo,false
+TECMO-11,John Elway,Denver Broncos,Insert,Tecmo,false
+TECMO-12,Tony Dorsett,Denver Broncos,Insert,Tecmo,false
+TECMO-13,Brian Bosworth,Seattle Seahawks,Insert,Tecmo,false
+TECMO-14,Lawrence Taylor,New York Giants,Insert,Tecmo,false
+TECMO-15,Randy White,Dallas Cowboys,Insert,Tecmo,false
+TECMO-16,Cam Ward,Tennessee Titans,Insert,Tecmo,true
+TECMO-17,Travis Hunter,Jacksonville Jaguars,Insert,Tecmo,true
+TECMO-18,Ashton Jeanty,Las Vegas Raiders,Insert,Tecmo,true
+TECMO-19,Jaxson Dart,New York Giants,Insert,Tecmo,true
+TECMO-20,Matthew Golden,Green Bay Packers,Insert,Tecmo,true
+TECMO-21,Patrick Mahomes II,Kansas City Chiefs,Insert,Tecmo,false
+TECMO-22,Saquon Barkley,Philadelphia Eagles,Insert,Tecmo,false
+TECMO-23,Jalen Hurts,Philadelphia Eagles,Insert,Tecmo,false
+TECMO-24,Jayden Daniels,Washington Commanders,Insert,Tecmo,false
+TECMO-25,Josh Allen,Buffalo Bills,Insert,Tecmo,false
+BA-AB,A.J. Brown,Philadelphia Eagles,Auto,Base Autograph,false
+BA-AK,Alvin Kamara,New Orleans Saints,Auto,Base Autograph,false
+BA-AR,Aaron Rodgers,Pittsburgh Steelers,Auto,Base Autograph,false
+BA-AS,Amon-Ra St. Brown,Detroit Lions,Auto,Base Autograph,false
+BA-BB,Brock Bowers,Las Vegas Raiders,Auto,Base Autograph,false
+BA-BH,Breece Hall,New York Jets,Auto,Base Autograph,false
+BA-BI,Bucky Irving,Tampa Bay Buccaneers,Auto,Base Autograph,false
+BA-BN,Bo Nix,Denver Broncos,Auto,Base Autograph,false
+BA-BP,Brock Purdy,San Francisco 49ers,Auto,Base Autograph,false
+BA-BT,Brian Thomas Jr.,Jacksonville Jaguars,Auto,Base Autograph,false
+BA-BY,Bryce Young,Carolina Panthers,Auto,Base Autograph,false
+BA-CB,Chase Brown,Cincinnati Bengals,Auto,Base Autograph,false
+BA-CH,Chuba Hubbard,Carolina Panthers,Auto,Base Autograph,false
+BA-CHE,Cameron Heyward,Pittsburgh Steelers,Auto,Base Autograph,false
+BA-CL,CeeDee Lamb,Dallas Cowboys,Auto,Base Autograph,false
+BA-CO,Chris Olave,New Orleans Saints,Auto,Base Autograph,false
+BA-CS,CJ Stroud,Houston Texans,Auto,Base Autograph,false
+BA-CSU,Courtland Sutton,Denver Broncos,Auto,Base Autograph,false
+BA-CT,Cedric Tillman,Cleveland Browns,Auto,Base Autograph,false
+BA-CW,Caleb Williams,Chicago Bears,Auto,Base Autograph,false
+BA-DA,De'Von Achane,Miami Dolphins,Auto,Base Autograph,false
+BA-DAA,Davante Adams,Los Angeles Rams,Auto,Base Autograph,false
+BA-DH,Derrick Henry,Baltimore Ravens,Auto,Base Autograph,false
+BA-DL,Drake London,Atlanta Falcons,Auto,Base Autograph,false
+BA-DMA,Drake Maye,New England Patriots,Auto,Base Autograph,false
+BA-DP,Dak Prescott,Dallas Cowboys,Auto,Base Autograph,false
+BA-DSJ,Derek Stingley Jr.,Houston Texans,Auto,Base Autograph,false
+BA-DSW,D'Andre Swift,Chicago Bears,Auto,Base Autograph,false
+BA-GK,George Kittle,San Francisco 49ers,Auto,Base Autograph,false
+BA-GP,George Pickens,Dallas Cowboys,Auto,Base Autograph,false
+BA-GS,Geno Smith,Las Vegas Raiders,Auto,Base Autograph,false
+BA-GW,Garrett Wilson,New York Jets,Auto,Base Autograph,false
+BA-JA,Jordan Addison,Minnesota Vikings,Auto,Base Autograph,false
+BA-JAC,James Cook,Buffalo Bills,Auto,Base Autograph,false
+BA-JAL,Josh Allen,Buffalo Bills,Auto,Base Autograph,false
+BA-JAWI,Javonte Williams,Dallas Cowboys,Auto,Base Autograph,false
+BA-JB,Joe Burrow,Cincinnati Bengals,Auto,Base Autograph,false
+BA-JD,Jayden Daniels,Washington Commanders,Auto,Base Autograph,false
+BA-JG,Jahmyr Gibbs,Detroit Lions,Auto,Base Autograph,false
+BA-JGO,Jared Goff,Detroit Lions,Auto,Base Autograph,false
+BA-JH,Jalen Hurts,Philadelphia Eagles,Auto,Base Autograph,false
+BA-JJ,Justin Jefferson,Minnesota Vikings,Auto,Base Autograph,false
+BA-JJA,Josh Jacobs,Green Bay Packers,Auto,Base Autograph,false
+BA-JJE,Jerry Jeudy,Cleveland Browns,Auto,Base Autograph,false
+BA-JKD,J.K. Dobbins,Denver Broncos,Auto,Base Autograph,false
+BA-JM,J.J. McCarthy,Minnesota Vikings,Auto,Base Autograph,false
+BA-JSN,Jaxon Smith-Njigba,Seattle Seahawks,Auto,Base Autograph,false
+BA-JT,Jonathan Taylor,Indianapolis Colts,Auto,Base Autograph,false
+BA-JW,Jaylen Waddle,Miami Dolphins,Auto,Base Autograph,false
+BA-KC,Keon Coleman,Buffalo Bills,Auto,Base Autograph,false
+BA-KW,Kenneth Walker III,Seattle Seahawks,Auto,Base Autograph,false
+BA-LM,Ladd McConkey,Los Angeles Chargers,Auto,Base Autograph,false
+BA-MC,Maxx Crosby,Las Vegas Raiders,Auto,Base Autograph,false
+BA-ME,Mike Evans,Tampa Bay Buccaneers,Auto,Base Autograph,false
+BA-MG,Myles Garrett,Cleveland Browns,Auto,Base Autograph,false
+BA-MH,Marvin Harrison Jr.,Arizona Cardinals,Auto,Base Autograph,false
+BA-MN,Malik Nabers,New York Giants,Auto,Base Autograph,false
+BA-MP,Michael Penix Jr.,Atlanta Falcons,Auto,Base Autograph,false
+BA-MS,Matthew Stafford,Los Angeles Rams,Auto,Base Autograph,false
+BA-MSW,Montez Sweat,Chicago Bears,Auto,Base Autograph,false
+BA-NC,Nico Collins,Houston Texans,Auto,Base Autograph,false
+BA-PN,Puka Nacua,Los Angeles Rams,Auto,Base Autograph,false
+BA-RO,Rome Odunze,Chicago Bears,Auto,Base Autograph,false
+BA-SB,Saquon Barkley,Philadelphia Eagles,Auto,Base Autograph,false
+BA-SD,Sam Darnold,Seattle Seahawks,Auto,Base Autograph,false
+BA-SG,Sauce Gardner,Indianapolis Colts,Auto,Base Autograph,false
+BA-TE,Travis Etienne Jr.,Jacksonville Jaguars,Auto,Base Autograph,false
+BA-TRB,Trey Benson,Arizona Cardinals,Auto,Base Autograph,false
+BA-TT,Tyrone Tracy Jr.,New York Giants,Auto,Base Autograph,false
+BA-TTA,Tua Tagovailoa,Miami Dolphins,Auto,Base Autograph,false
+BA-XW,Xavier Worthy,Kansas City Chiefs,Auto,Base Autograph,false
+RA-AC,Abdul Carter,New York Giants,Auto,Rookie Autograph,true
+RA-AJ,Ashton Jeanty,Las Vegas Raiders,Auto,Rookie Autograph,true
+RA-AW,Antwane Wells Jr.,New York Giants,Auto,Rookie Autograph,true
+RA-BCO,Brady Cook,New York Jets,Auto,Rookie Autograph,true
+RA-BM,Benjamin Morrison,Tampa Bay Buccaneers,Auto,Rookie Autograph,true
+RA-BS,Brashard Smith,Kansas City Chiefs,Auto,Rookie Autograph,true
+RA-BT,Bhayshul Tuten,Jacksonville Jaguars,Auto,Rookie Autograph,true
+RA-CL,Colston Loveland,Chicago Bears,Auto,Rookie Autograph,true
+RA-CS,Cam Skattebo,New York Giants,Auto,Rookie Autograph,true
+RA-CWA,Cam Ward,Tennessee Titans,Auto,Rookie Autograph,true
+RA-DB,Denzel Burke,Arizona Cardinals,Auto,Rookie Autograph,true
+RA-DE,Donovan Edwards,New York Jets,Auto,Rookie Autograph,true
+RA-DG,DJ Giddens,Indianapolis Colts,Auto,Rookie Autograph,true
+RA-DGA,Dillon Gabriel,Cleveland Browns,Auto,Rookie Autograph,true
+RA-DH,Derrick Harmon,Pittsburgh Steelers,Auto,Rookie Autograph,true
+RA-DN,Devin Neal,New Orleans Saints,Auto,Rookie Autograph,true
+RA-DP,Darien Porter,Las Vegas Raiders,Auto,Rookie Autograph,true
+RA-DS,Danny Stutsman,New Orleans Saints,Auto,Rookie Autograph,true
+RA-DSA,Dylan Sampson,Cleveland Browns,Auto,Rookie Autograph,true
+RA-DTH,Dont'e Thornton Jr.,Las Vegas Raiders,Auto,Rookie Autograph,true
+RA-DW,Deone Walker,Buffalo Bills,Auto,Rookie Autograph,true
+RA-EA,Elijah Arroyo,Seattle Seahawks,Auto,Rookie Autograph,true
+RA-EAY,Elic Ayomanor,Tennessee Titans,Auto,Rookie Autograph,true
+RA-EE,Emeka Egbuka,Tampa Bay Buccaneers,Auto,Rookie Autograph,true
+RA-EJ,Emery Jones Jr.,Baltimore Ravens,Auto,Rookie Autograph,true
+RA-GH,Gunnar Helm,Tennessee Titans,Auto,Rookie Autograph,true
+RA-HF,Harold Fannin Jr.,Cleveland Browns,Auto,Rookie Autograph,true
+RA-IBO,Isaiah Bond,Cleveland Browns,Auto,Rookie Autograph,true
+RA-ITS,Isaac TeSlaa,Detroit Lions,Auto,Rookie Autograph,true
+RA-JB,Jahdae Barron,Denver Broncos,Auto,Rookie Autograph,true
+RA-JBE,Jack Bech,Las Vegas Raiders,Auto,Rookie Autograph,true
+RA-JC,Jihaad Campbell,Philadelphia Eagles,Auto,Rookie Autograph,true
+RA-JCM,Jacory Croskey-Merritt,Washington Commanders,Auto,Rookie Autograph,true
+RA-JD,Jaxson Dart,New York Giants,Auto,Rookie Autograph,true
+RA-JH,Jackson Hawes,Buffalo Bills,Auto,Rookie Autograph,true
+RA-JHI,Jayden Higgins,Houston Texans,Auto,Rookie Autograph,true
+RA-JJ,Jordan James,San Francisco 49ers,Auto,Rookie Autograph,true
+RA-JR,Jaylen Reed,Houston Texans,Auto,Rookie Autograph,true
+RA-JRO,Jalen Royals,Kansas City Chiefs,Auto,Rookie Autograph,true
+RA-JS,Jonah Savaiinaea,Miami Dolphins,Auto,Rookie Autograph,true
+RA-JSA,Jack Sawyer,Pittsburgh Steelers,Auto,Rookie Autograph,true
+RA-JT,JT Tuimoloau,Indianapolis Colts,Auto,Rookie Autograph,true
+RA-JW,Jalon Walker,Atlanta Falcons,Auto,Rookie Autograph,true
+RA-KB,Kelvin Banks Jr.,New Orleans Saints,Auto,Rookie Autograph,true
+RA-KJ,Kaleb Johnson,Pittsburgh Steelers,Auto,Rookie Autograph,true
+RA-KMU,Kalel Mullings,Tennessee Titans,Auto,Rookie Autograph,true
+RA-KP,Kaden Prather,Buffalo Bills,Auto,Rookie Autograph,true
+RA-KW,Kevin Winston Jr.,Tennessee Titans,Auto,Rookie Autograph,true
+RA-KYM,Kyle Monangai,Chicago Bears,Auto,Rookie Autograph,true
+RA-LB,Luther Burden III,Chicago Bears,Auto,Rookie Autograph,true
+RA-LEA,LeQuint Allen,Jacksonville Jaguars,Auto,Rookie Autograph,true
+RA-LJ,Landon Jackson,Buffalo Bills,Auto,Rookie Autograph,true
+RA-MG,Mike Green,Baltimore Ravens,Auto,Rookie Autograph,true
+RA-MGO,Matthew Golden,Green Bay Packers,Auto,Rookie Autograph,true
+RA-MGR,Mason Graham,Cleveland Browns,Auto,Rookie Autograph,true
+RA-MS,Malaki Starks,Baltimore Ravens,Auto,Rookie Autograph,true
+RA-MT,Mason Taylor,New York Jets,Auto,Rookie Autograph,true
+RA-MW,Mykel Williams,San Francisco 49ers,Auto,Rookie Autograph,true
+RA-NE,Nick Emmanwori,Seattle Seahawks,Auto,Rookie Autograph,true
+RA-NS,Nic Scourton,Carolina Panthers,Auto,Rookie Autograph,true
+RA-OG,Ollie Gordon II,Miami Dolphins,Auto,Rookie Autograph,true
+RA-OH,Omarion Hampton,Los Angeles Chargers,Auto,Rookie Autograph,true
+RA-PM,Phil Mafah,Dallas Cowboys,Auto,Rookie Autograph,true
+RA-PU,Princely Umanmielen,Carolina Panthers,Auto,Rookie Autograph,true
+RA-QJ,Quinshon Judkins,Cleveland Browns,Auto,Rookie Autograph,true
+RA-QR,Quincy Riley,New Orleans Saints,Auto,Rookie Autograph,true
+RA-RH,RJ Harvey,Denver Broncos,Auto,Rookie Autograph,true
+RA-RL,Riley Leonard,Indianapolis Colts,Auto,Rookie Autograph,true
+RA-SC,Sebastian Castro,Pittsburgh Steelers,Auto,Rookie Autograph,true
+RA-SH,Seth Henigan,Jacksonville Jaguars,Auto,Rookie Autograph,true
+RA-SR,Shavon Revel Jr.,Dallas Cowboys,Auto,Rookie Autograph,true
+RA-SS,Shemar Stewart,Cincinnati Bengals,Auto,Rookie Autograph,true
+RA-SSA,Shedeur Sanders,Cleveland Browns,Auto,Rookie Autograph,true
+RA-SW,Savion Williams,Green Bay Packers,Auto,Rookie Autograph,true
+RA-TA,Trey Amos,Washington Commanders,Auto,Rookie Autograph,true
+RA-TB,Tyler Booker,Dallas Cowboys,Auto,Rookie Autograph,true
+RA-TF,Tai Felton,Minnesota Vikings,Auto,Rookie Autograph,true
+RA-TFE,Terrance Ferguson,Los Angeles Rams,Auto,Rookie Autograph,true
+RA-TH,Tre Harris III,Los Angeles Chargers,Auto,Rookie Autograph,true
+RA-THE,TreVeyon Henderson,New England Patriots,Auto,Rookie Autograph,true
+RA-THU,Travis Hunter,Jacksonville Jaguars,Auto,Rookie Autograph,true
+RA-TJ,Tez Johnson,Tampa Bay Buccaneers,Auto,Rookie Autograph,true
+RA-TM,Tetairoa McMillan,Carolina Panthers,Auto,Rookie Autograph,true
+RA-TR,Tate Ratledge,Detroit Lions,Auto,Rookie Autograph,true
+RA-TRHU,Travis Hunter,Jacksonville Jaguars,Auto,Rookie Autograph,true
+RA-TW,Tyleik Williams,Detroit Lions,Auto,Rookie Autograph,true
+RA-TWA,Tyler Warren,Indianapolis Colts,Auto,Rookie Autograph,true
+RA-TYS,Tyler Shough,New Orleans Saints,Auto,Rookie Autograph,true
+RA-WC,Will Campbell,New England Patriots,Auto,Rookie Autograph,true
+RA-WH,Will Howard,Pittsburgh Steelers,Auto,Rookie Autograph,true
+RA-WJ,Will Johnson,Arizona Cardinals,Auto,Rookie Autograph,true
+RA-WMA,Woody Marks,Houston Texans,Auto,Rookie Autograph,true
+RA-WN,Walter Nolen,Arizona Cardinals,Auto,Rookie Autograph,true
+RA-XW,Xavier Watts,Atlanta Falcons,Auto,Rookie Autograph,true
+1990-AK,Alvin Kamara,New Orleans Saints,Auto,1990 Topps Football Autographs,false
+1990-BN,Bo Nix,Denver Broncos,Auto,1990 Topps Football Autographs,false
+1990-CB,Chase Brown,Cincinnati Bengals,Auto,1990 Topps Football Autographs,false
+1990-CD,Cooper DeJean,Philadelphia Eagles,Auto,1990 Topps Football Autographs,false
+1990-CL,Colston Loveland,Chicago Bears,Auto,1990 Topps Football Autographs,true
+1990-CW,Cam Ward,Tennessee Titans,Auto,1990 Topps Football Autographs,true
+1990-DG,Dillon Gabriel,Cleveland Browns,Auto,1990 Topps Football Autographs,true
+1990-DMA,Drake Maye,New England Patriots,Auto,1990 Topps Football Autographs,false
+1990-DP,Dak Prescott,Dallas Cowboys,Auto,1990 Topps Football Autographs,false
+1990-EE,Emeka Egbuka,Tampa Bay Buccaneers,Auto,1990 Topps Football Autographs,true
+1990-GK,George Kittle,San Francisco 49ers,Auto,1990 Topps Football Autographs,false
+1990-JA,Jordan Addison,Minnesota Vikings,Auto,1990 Topps Football Autographs,false
+1990-JD,Jaxson Dart,New York Giants,Auto,1990 Topps Football Autographs,true
+1990-JDA,Jayden Daniels,Washington Commanders,Auto,1990 Topps Football Autographs,false
+1990-JH,Jayden Higgins,Houston Texans,Auto,1990 Topps Football Autographs,true
+1990-JJ,Josh Jacobs,Green Bay Packers,Auto,1990 Topps Football Autographs,false
+1990-JR,Jalen Royals,Kansas City Chiefs,Auto,1990 Topps Football Autographs,true
+1990-JW,Jaylen Waddle,Miami Dolphins,Auto,1990 Topps Football Autographs,false
+1990-KC,Keon Coleman,Buffalo Bills,Auto,1990 Topps Football Autographs,false
+1990-LB,Luther Burden III,Chicago Bears,Auto,1990 Topps Football Autographs,true
+1990-LM,Ladd McConkey,Los Angeles Chargers,Auto,1990 Topps Football Autographs,false
+1990-MG,Matthew Golden,Green Bay Packers,Auto,1990 Topps Football Autographs,true
+1990-MH,Marvin Harrison Jr.,Arizona Cardinals,Auto,1990 Topps Football Autographs,false
+1990-MN,Malik Nabers,New York Giants,Auto,1990 Topps Football Autographs,false
+1990-MT,Mason Taylor,New York Jets,Auto,1990 Topps Football Autographs,true
+1990-NC,Nico Collins,Houston Texans,Auto,1990 Topps Football Autographs,false
+1990-OH,Omarion Hampton,Los Angeles Chargers,Auto,1990 Topps Football Autographs,true
+1990-PN,Puka Nacua,Los Angeles Rams,Auto,1990 Topps Football Autographs,false
+1990-SW,Savion Williams,Green Bay Packers,Auto,1990 Topps Football Autographs,true
+1990-THE,TreVeyon Henderson,New England Patriots,Auto,1990 Topps Football Autographs,true
+1990-TMB,Trey McBride,Arizona Cardinals,Auto,1990 Topps Football Autographs,false
+1990-TS,Tyler Shough,New Orleans Saints,Auto,1990 Topps Football Autographs,true
+1990-TW,Tyler Warren,Indianapolis Colts,Auto,1990 Topps Football Autographs,true
+1990-WH,Will Howard,Pittsburgh Steelers,Auto,1990 Topps Football Autographs,true
+1990-XW,Xavier Worthy,Kansas City Chiefs,Auto,1990 Topps Football Autographs,false
+DA-AK,Josh Allen,Buffalo Bills,Auto,Dual Autographs,false
+DA-AK,Jim Kelly,Buffalo Bills,Auto,Dual Autographs,false
+DA-BJ,Quinshon Judkins,Cleveland Browns,Auto,Dual Autographs,true
+DA-BJ,Isaiah Bond,Cleveland Browns,Auto,Dual Autographs,true
+DA-BW,Brock Bowers,Las Vegas Raiders,Auto,Dual Autographs,false
+DA-BW,Tyler Warren,Indianapolis Colts,Auto,Dual Autographs,true
+DA-FB,Kaleb Johnson,Pittsburgh Steelers,Auto,Dual Autographs,false
+DA-FB,Jerome Bettis,Pittsburgh Steelers,Auto,Dual Autographs,false
+DA-GE,Emeka Egbuka,Tampa Bay Buccaneers,Auto,Dual Autographs,true
+DA-GE,Matthew Golden,Green Bay Packers,Auto,Dual Autographs,true
+DA-HB,Pat Bryant,Denver Broncos,Auto,Dual Autographs,true
+DA-HB,RJ Harvey,Denver Broncos,Auto,Dual Autographs,true
+DA-HH,Tre Harris III,Los Angeles Chargers,Auto,Dual Autographs,true
+DA-HH,Omarion Hampton,Los Angeles Chargers,Auto,Dual Autographs,true
+DA-HMA,Drake Maye,New England Patriots,Auto,Dual Autographs,false
+DA-HMA,Treveyon Henderson,New England Patriots,Auto,Dual Autographs,false
+DA-IE,Bucky Irving,Tampa Bay Buccaneers,Auto,Dual Autographs,false
+DA-IE,Emeka Egbuka,Tampa Bay Buccaneers,Auto,Dual Autographs,true
+DA-JS,Ashton Jeanty,Las Vegas Raiders,Auto,Dual Autographs,true
+DA-JS,Cam Skattebo,New York Giants,Auto,Dual Autographs,true
+DA-LP,CeeDee Lamb,Dallas Cowboys,Auto,Dual Autographs,false
+DA-LP,George Pickens,Dallas Cowboys,Auto,Dual Autographs,false
+DA-NA,Davante Adams,Los Angeles Rams,Auto,Dual Autographs,false
+DA-NA,Puka Nacua,Los Angeles Rams,Auto,Dual Autographs,false
+DA-SD,Cam Skattebo,New York Giants,Auto,Dual Autographs,true
+DA-SD,Jaxson Dart,New York Giants,Auto,Dual Autographs,true
+FSA-BB,Brock Bowers,Las Vegas Raiders,Auto,Future Stars Autographs,false
+FSA-BI,Bucky Irving,Tampa Bay Buccaneers,Auto,Future Stars Autographs,false
+FSA-BN,Bo Nix,Denver Broncos,Auto,Future Stars Autographs,false
+FSA-BY,Bryce Young,Carolina Panthers,Auto,Future Stars Autographs,false
+FSA-CB,Chase Brown,Cincinnati Bengals,Auto,Future Stars Autographs,false
+FSA-CD,Cooper Dejean,Philadelphia Eagles,Auto,Future Stars Autographs,false
+FSA-CS,CJ Stroud,Houston Texans,Auto,Future Stars Autographs,false
+FSA-CW,Caleb Williams,Chicago Bears,Auto,Future Stars Autographs,false
+FSA-DA,De'Von Achane,Miami Dolphins,Auto,Future Stars Autographs,false
+FSA-DM,Drake Maye,New England Patriots,Auto,Future Stars Autographs,false
+FSA-JD,Jayden Daniels,Washington Commanders,Auto,Future Stars Autographs,false
+FSA-JG,Jahmyr Gibbs,Detroit Lions,Auto,Future Stars Autographs,false
+FSA-JMC,Jalen McMillan,Tampa Bay Buccaneers,Auto,Future Stars Autographs,false
+FSA-JV,Jared Verse,Los Angeles Rams,Auto,Future Stars Autographs,false
+FSA-JW,Jaylen Wright,Miami Dolphins,Auto,Future Stars Autographs,false
+FSA-KC,Keon Coleman,Buffalo Bills,Auto,Future Stars Autographs,false
+FSA-KH,Kyle Hamilton,Baltimore Ravens,Auto,Future Stars Autographs,false
+FSA-LM,Ladd McConkey,Los Angeles Chargers,Auto,Future Stars Autographs,false
+FSA-MH,Marvin Harrison Jr.,Arizona Cardinals,Auto,Future Stars Autographs,false
+FSA-MN,Malik Nabers,New York Giants,Auto,Future Stars Autographs,false
+FSA-PN,Puka Nacua,Los Angeles Rams,Auto,Future Stars Autographs,false
+FSA-PS,Pat Surtain II,Denver Broncos,Auto,Future Stars Autographs,false
+FSA-RP,Ricky Pearsall,San Francisco 49ers,Auto,Future Stars Autographs,false
+FSA-TB,Trey Benson,Arizona Cardinals,Auto,Future Stars Autographs,false
+FSA-TJ,Theo Johnson,New York Giants,Auto,Future Stars Autographs,false
+FSA-XL,Xavier Legette,Carolina Panthers,Auto,Future Stars Autographs,false
+FSA-XW,Xavier Worthy,Kansas City Chiefs,Auto,Future Stars Autographs,false
+CG-AJ,Ashton Jeanty,Las Vegas Raiders,Auto,Chromographs,true
+CG-BB,Brock Bowers,Las Vegas Raiders,Auto,Chromographs,false
+CG-BN,Bo Nix,Denver Broncos,Auto,Chromographs,false
+CG-CL,Colston Loveland,Chicago Bears,Auto,Chromographs,true
+CG-CS,C.J. Stroud,Houston Texans,Auto,Chromographs,false
+CG-CW,Caleb Williams,Chicago Bears,Auto,Chromographs,false
+CG-CWA,Cam Ward,Tennessee Titans,Auto,Chromographs,true
+CG-DM,Drake Maye,New England Patriots,Auto,Chromographs,false
+CG-DP,Dak Prescott,Dallas Cowboys,Auto,Chromographs,false
+CG-JA,Josh Allen,Buffalo Bills,Auto,Chromographs,false
+CG-JCO,James Cook,Buffalo Bills,Auto,Chromographs,false
+CG-JD,Jayden Daniels,Washington Commanders,Auto,Chromographs,false
+CG-JDA,Jaxson Dart,New York Giants,Auto,Chromographs,true
+CG-JJ,Justin Jefferson,Minnesota Vikings,Auto,Chromographs,false
+CG-JSN,Jaxon Smith-Njigba,Seattle Seahawks,Auto,Chromographs,false
+CG-JWA,Jaylen Waddle,Miami Dolphins,Auto,Chromographs,false
+CG-KJ,Kaleb Johnson,Pittsburgh Steelers,Auto,Chromographs,true
+CG-MN,Malik Nabers,New York Giants,Auto,Chromographs,false
+CG-ME,Mike Evans,Tampa Bay Buccaneers,Auto,Chromographs,false
+CG-MGA,Myles Garrett,Cleveland Browns,Auto,Chromographs,false
+CG-MGO,Matthew Golden,Green Bay Packers,Auto,Chromographs,true
+CG-PN,Puka Nacua,Los Angeles Rams,Auto,Chromographs,false
+CG-RJH,RJ Harvey,Denver Broncos,Auto,Chromographs,true
+CG-TJW,T.J. Watt,Pittsburgh Steelers,Auto,Chromographs,false
+CG-TWA,Tyler Warren,Indianapolis Colts,Auto,Chromographs,true
+CLA-AG,A.J. Green,Cincinnati Bengals,Auto,Chrome Legends Autographs,false
+CLA-AP,Adrian Peterson,Minnesota Vikings,Auto,Chrome Legends Autographs,false
+CLA-BU,Brian Urlacher,Chicago Bears,Auto,Chrome Legends Autographs,false
+CLA-BM,Brandon Marshall,Chicago Bears,Auto,Chrome Legends Autographs,false
+CLA-CC,Cris Carter,Minnesota Vikings,Auto,Chrome Legends Autographs,false
+CLA-CJ,Chris Johnson,Tennessee Titans,Auto,Chrome Legends Autographs,false
+CLA-DB,Drew Brees,New Orleans Saints,Auto,Chrome Legends Autographs,false
+CLA-DF,Dan Fouts,San Diego Chargers,Auto,Chrome Legends Autographs,false
+CLA-DM,Dan Marino,Miami Dolphins,Auto,Chrome Legends Autographs,false
+CLA-ED,Eric Decker,New York Jets,Auto,Chrome Legends Autographs,false
+CLA-EJ,Edgerrin James,Indianapolis Colts,Auto,Chrome Legends Autographs,false
+CLA-ER,Ed Reed,Baltimore Ravens,Auto,Chrome Legends Autographs,false
+CLA-FT,Fred Taylor,Jacksonville Jaguars,Auto,Chrome Legends Autographs,false
+CLA-GB,Gilbert Brown,Green Bay Packers,Auto,Chrome Legends Autographs,false
+CLA-HD,Hugh Douglas,Philadelphia Eagles,Auto,Chrome Legends Autographs,false
+CLA-JC,Josh Cribbs,Cleveland Browns,Auto,Chrome Legends Autographs,false
+CLA-JK,Jim Kelly,Buffalo Bills,Auto,Chrome Legends Autographs,false
+CLA-JL,Jamal Lewis,Baltimore Ravens,Auto,Chrome Legends Autographs,false
+CLA-JN,Jordy Nelson,Green Bay Packers,Auto,Chrome Legends Autographs,false
+CLA-JP,Julius Peppers,Carolina Panthers,Auto,Chrome Legends Autographs,false
+CLA-JWI,Jason Witten,Dallas Cowboys,Auto,Chrome Legends Autographs,false
+CLA-MF,Marshall Faulk,St. Louis Rams,Auto,Chrome Legends Autographs,false
+CLA-MS,Marcus Stroud,Jacksonville Jaguars,Auto,Chrome Legends Autographs,false
+CLA-NS,Ndamukong Suh,Detroit Lions,Auto,Chrome Legends Autographs,false
+CLA-PP,Patrick Peterson,Arizona Cardinals,Auto,Chrome Legends Autographs,false
+CLA-PPR,Peerless Price,Buffalo Bills,Auto,Chrome Legends Autographs,false
+CLA-TB,Tom Brady,Tampa Bay Buccaneers,Auto,Chrome Legends Autographs,false
+CLA-TBR,Tim Brown,Oakland Raiders,Auto,Chrome Legends Autographs,false
+CLA-TD,Terrell Davis,Denver Broncos,Auto,Chrome Legends Autographs,false
+CLA-TR,Tony Romo,Dallas Cowboys,Auto,Chrome Legends Autographs,false
+CLA-VD,Vernon Davis,San Francisco 49ers,Auto,Chrome Legends Autographs,false
+CLA-VW,Vince Wilfork,New England Patriots,Auto,Chrome Legends Autographs,false
+HOCA-AG,Antonio Gates,San Diego Chargers,Auto,Hall of Chrome Autographs,false
+HOCA-AJ,Andre Johnson,Houston Texans,Auto,Hall of Chrome Autographs,false
+HOCA-BC,Bill Cowher,Pittsburgh Steelers,Auto,Hall of Chrome Autographs,false
+HOCA-BF,Brett Favre,Green Bay Packers,Auto,Hall of Chrome Autographs,false
+HOCA-BS,Barry Sanders,Detroit Lions,Auto,Hall of Chrome Autographs,false
+HOCA-BY,Bryant Young,San Francisco 49ers,Auto,Hall of Chrome Autographs,false
+HOCA-CW,Charles Woodson,Oakland Raiders,Auto,Hall of Chrome Autographs,false
+HOCA-DH,Devin Hester,Chicago Bears,Auto,Hall of Chrome Autographs,false
+HOCA-DP,Drew Pearson,Dallas Cowboys,Auto,Hall of Chrome Autographs,false
+HOCA-DR,Darrelle Revis,New York Jets,Auto,Hall of Chrome Autographs,false
+HOCA-DW,DeMarcus Ware,Dallas Cowboys,Auto,Hall of Chrome Autographs,false
+HOCA-EA,Eric Allen,Philadelphia Eagles,Auto,Hall of Chrome Autographs,false
+HOCA-IB,Isaac Bruce,St. Louis Rams,Auto,Hall of Chrome Autographs,false
+HOCA-JA,Jared Allen,Minnesota Vikings,Auto,Hall of Chrome Autographs,false
+HOCA-JE,John Elway,Denver Broncos,Auto,Hall of Chrome Autographs,false
+HOCA-JK,Joe Klecko,New York Jets,Auto,Hall of Chrome Autographs,false
+HOCA-JT,Joe Thomas,Cleveland Browns,Auto,Hall of Chrome Autographs,false
+HOCA-LB,LeRoy Butler,Green Bay Packers,Auto,Hall of Chrome Autographs,false
+HOCA-MS,Michael Strahan,New York Giants,Auto,Hall of Chrome Autographs,false
+HOCA-PM,Peyton Manning,Indianapolis Colts,Auto,Hall of Chrome Autographs,false
+HOCA-RB,Ronde Barber,Tampa Bay Buccaneers,Auto,Hall of Chrome Autographs,false
+HOCA-RL,Ray Lewis,Baltimore Ravens,Auto,Hall of Chrome Autographs,false
+HOCA-RM,Randy Moss,Minnesota Vikings,Auto,Hall of Chrome Autographs,false
+HOCA-RS,Richard Seymour,New England Patriots,Auto,Hall of Chrome Autographs,false
+HOCA-SS,Sterling Sharpe,Green Bay Packers,Auto,Hall of Chrome Autographs,false
+HOCA-TA,Troy Aikman,Dallas Cowboys,Auto,Hall of Chrome Autographs,false
+HOCA-TO,Terrell Owens,Philadelphia Eagles,Auto,Hall of Chrome Autographs,false
+HOCA-TP,Troy Polamalu,Pittsburgh Steelers,Auto,Hall of Chrome Autographs,false
+HOCA-ZT,Zach Thomas,Miami Dolphins,Auto,Hall of Chrome Autographs,false
+RRA-ABO,Andres Borregales,New England Patriots,Auto,Rookie Autograph Variation,true
+RRA-ACO,Alfred Collins,San Francisco 49ers,Auto,Rookie Autograph Variation,true
+RRA-AG,Ashton Gillotte,Kansas City Chiefs,Auto,Rookie Autograph Variation,true
+RRA-AM,Andrew Mukuba,Philadelphia Eagles,Auto,Rookie Autograph Variation,true
+RRA-APR,Antwaun Powell-Ryland,Philadelphia Eagles,Auto,Rookie Autograph Variation,true
+RRA-BS,Bradyn Swinson,New England Patriots,Auto,Rookie Autograph Variation,true
+RRA-CB,Cobee Bryant,Atlanta Falcons,Auto,Rookie Autograph Variation,true
+RRA-CDI,Chimere Dike,Tennessee Titans,Auto,Rookie Autograph Variation,true
+RRA-CPJ,Chris PAUL JR.,Los Angeles Rams,Auto,Rookie Autograph Variation,true
+RRA-CSC,Carson Schwesinger,Cleveland Browns,Auto,Rookie Autograph Variation,true
+RRA-DE,Donovan Ezeiruaku,Dallas Cowboys,Auto,Rookie Autograph Variation,true
+RRA-DTJ,Dont’e Thornton Jr.,Las Vegas Raiders,Auto,Rookie Autograph Variation,true
+RRA-GME,Graham Mertz,Houston Texans,Auto,Rookie Autograph Variation,true
+RRA-JBAS,Jeffrey Bassa,Kansas City Chiefs,Auto,Rookie Autograph Variation,true
+RRA-JBR,Jake Briningstool,Kansas City Chiefs,Auto,Rookie Autograph Variation,true
+RRA-JCA,Jamaree Caldwell,Los Angeles Chargers,Auto,Rookie Autograph Variation,true
+RRA-JCJ,Josh Conerly Jr.,Washington Commanders,Auto,Rookie Autograph Variation,true
+RRA-JL,Jaylin Lane,Washington Commanders,Auto,Rookie Autograph Variation,true
+RRA-JMJ,Jason Marshall Jr.,Miami Dolphins,Auto,Rookie Autograph Variation,true
+RRA-JST,Josaiah Stewart,Los Angeles Rams,Auto,Rookie Autograph Variation,true
+RRA-KK,Kyle Kennard,Los Angeles Chargers,Auto,Rookie Autograph Variation,true
+RRA-KMCC,Kyle McCord,Philadelphia Eagles,Auto,Rookie Autograph Variation,true
+RRA-LL,Luke Lachey,Houston Texans,Auto,Rookie Autograph Variation,true
+RRA-LRA,Lathan Ransom,Carolina Panthers,Auto,Rookie Autograph Variation,true
+RRA-MH,Maxwell Hairston,Buffalo Bills,Auto,Rookie Autograph Variation,true
+RRA-MM,Malachi Moore,New York Jets,Auto,Rookie Autograph Variation,true
+RRA-NMA,Nick Martin,San Francisco 49ers,Auto,Rookie Autograph Variation,true
+RRA-OGII,Oronde Gadsden,Los Angeles Chargers,Auto,Rookie Autograph Variation,true
+RRA-ONL,Omarr Norman-Lott,Kansas City Chiefs,Auto,Rookie Autograph Variation,true
+RRA-RRS,Raheim “Rocket” Sanders,Cleveland Browns,Auto,Rookie Autograph Variation,true
+RRA-TB,Tahj Brooks,Cincinnati Bengals,Auto,Rookie Autograph Variation,true
+RRA-TE,Trevor Etienne,Carolina Panthers,Auto,Rookie Autograph Variation,true
+RRA-TJS,T.J. Sanders,Buffalo Bills,Auto,Rookie Autograph Variation,true
+RRA-TOH,Tory Horton,Seattle Seahawks,Auto,Rookie Autograph Variation,true
+RRA-TYR,Ty Robinson,Philadelphia Eagles,Auto,Rookie Autograph Variation,true
+RRA-WJ,Will Johnson,Arizona Cardinals,Auto,Rookie Autograph Variation,true
+RRA-WN,Walter Nolen,Arizona Cardinals,Auto,Rookie Autograph Variation,true
+RRA-XRE,Xavier Restrepo,Tennessee Titans,Auto,Rookie Autograph Variation,true
+TA-AJ,Ashton Jeanty,Las Vegas Raiders,Auto,Tecmo Autographs,true
+TA-BB,Brian Bosworth,Seattle Seahawks,Auto,Tecmo Autographs,false
+TA-BJ,Bo Jackson,Los Angeles Raiders,Auto,Tecmo Autographs,false
+TA-CW,Cam Ward,Tennessee Titans,Auto,Tecmo Autographs,true
+TA-DM,Dan Marino,Miami Dolphins,Auto,Tecmo Autographs,false
+TA-JA,Josh Allen,Buffalo Bills,Auto,Tecmo Autographs,false
+TA-JD,Jayden Daniels,Washington Commanders,Auto,Tecmo Autographs,false
+TA-JDA,Jaxson Dart,New York Giants,Auto,Tecmo Autographs,true
+TA-JE,John Elway,Denver Broncos,Auto,Tecmo Autographs,false
+TA-JH,Jalen Hurts,Philadelphia Eagles,Auto,Tecmo Autographs,false
+TA-JM,Joe Montana,San Francisco 49ers,Auto,Tecmo Autographs,false
+TA-MA,Marcus Allen,Los Angeles Raiders,Auto,Tecmo Autographs,false
+TA-MG,Matthew Golden,Green Bay Packers,Auto,Tecmo Autographs,true
+TA-PS,Phil Simms,New York Giants,Auto,Tecmo Autographs,false
+TA-RW,Randy White,Dallas Cowboys,Auto,Tecmo Autographs,false
+TA-SB,Saquon Barkley,Philadelphia Eagles,Auto,Tecmo Autographs,false
+TA-TB,Tim Brown,Los Angeles Raiders,Auto,Tecmo Autographs,false
+TA-TD,Tony Dorsett,Denver Broncos,Auto,Tecmo Autographs,false
+TA-TH,Travis Hunter,Jacksonville Jaguars,Auto,Tecmo Autographs,true
+RR-AC,Abdul Carter,New York Giants,Relic,Topps Chrome Rookie Relics,true
+RR-AJ,Ashton Jeanty,Las Vegas Raiders,Relic,Topps Chrome Rookie Relics,true
+RR-CL,Colston Loveland,Chicago Bears,Relic,Topps Chrome Rookie Relics,true
+RR-CS,Cam Skattebo,New York Giants,Relic,Topps Chrome Rookie Relics,true
+RR-CW,Cam Ward,Tennessee Titans,Relic,Topps Chrome Rookie Relics,true
+RR-DG,Dillon Gabriel,Cleveland Browns,Relic,Topps Chrome Rookie Relics,true
+RR-EAY,Elic Ayomanor,Tennessee Titans,Relic,Topps Chrome Rookie Relics,true
+RR-EE,Emeka Egbuka,Tampa Bay Buccaneers,Relic,Topps Chrome Rookie Relics,true
+RR-ERR,Elijah Arroyo,Seattle Seahawks,Relic,Topps Chrome Rookie Relics,true
+RR-JB,Jack Bech,Las Vegas Raiders,Relic,Topps Chrome Rookie Relics,true
+RR-JBL,Jaydon Blue,Dallas Cowboys,Relic,Topps Chrome Rookie Relics,true
+RR-JD,Jaxson Dart,New York Giants,Relic,Topps Chrome Rookie Relics,true
+RR-JH,Jayden Higgins,Houston Texans,Relic,Topps Chrome Rookie Relics,true
+RR-JL,Jaylin Lane,Washington Commanders,Relic,Topps Chrome Rookie Relics,true
+RR-JN,Jaylin Noel,Houston Texans,Relic,Topps Chrome Rookie Relics,true
+RR-JR,Jalen Royals,Kansas City Chiefs,Relic,Topps Chrome Rookie Relics,true
+RR-KJ,Kaleb Johnson,Pittsburgh Steelers,Relic,Topps Chrome Rookie Relics,true
+RR-KM,Kyle McCord,Philadelphia Eagles,Relic,Topps Chrome Rookie Relics,true
+RR-KWI,Kyle Williams,New England Patriots,Relic,Topps Chrome Rookie Relics,true
+RR-LB,Luther Burden III,Chicago Bears,Relic,Topps Chrome Rookie Relics,true
+RR-MG,Matthew Golden,Green Bay Packers,Relic,Topps Chrome Rookie Relics,true
+RR-MT,Mason Taylor,New York Jets,Relic,Topps Chrome Rookie Relics,true
+RR-MW,Mykel Williams,San Francisco 49ers,Relic,Topps Chrome Rookie Relics,true
+RR-OH,Omarion Hampton,Los Angeles Chargers,Relic,Topps Chrome Rookie Relics,true
+RR-PB,Pat Bryant,Denver Broncos,Relic,Topps Chrome Rookie Relics,true
+RR-QJ,Quinshon Judkins,Cleveland Browns,Relic,Topps Chrome Rookie Relics,true
+RR-RH,RJ Harvey,Denver Broncos,Relic,Topps Chrome Rookie Relics,true
+RR-RL,Riley Leonard,Indianapolis Colts,Relic,Topps Chrome Rookie Relics,true
+RR-SW,Savion Williams,Green Bay Packers,Relic,Topps Chrome Rookie Relics,true
+RR-TET,Trevor Etienne,Carolina Panthers,Relic,Topps Chrome Rookie Relics,true
+RR-TF,Tai Felton,Minnesota Vikings,Relic,Topps Chrome Rookie Relics,true
+RR-TFE,Terrance Ferguson,Los Angeles Rams,Relic,Topps Chrome Rookie Relics,true
+RR-TH,TreVeyon Henderson,New England Patriots,Relic,Topps Chrome Rookie Relics,true
+RR-THA,Tre Harris III,Los Angeles Chargers,Relic,Topps Chrome Rookie Relics,true
+RR-TJ,Tez Johnson,Tampa Bay Buccaneers,Relic,Topps Chrome Rookie Relics,true
+RR-TS,Tyler Shough,New Orleans Saints,Relic,Topps Chrome Rookie Relics,true
+RR-TW,Tyler Warren,Indianapolis Colts,Relic,Topps Chrome Rookie Relics,true
+RR-WH,Will Howard,Pittsburgh Steelers,Relic,Topps Chrome Rookie Relics,true
+FYF-AC,Abdul Carter,New York Giants,Relic,First Year Fabric,true
+FYF-AJ,Ashton Jeanty,Las Vegas Raiders,Relic,First Year Fabric,true
+FYF-CL,Colston Loveland,Chicago Bears,Relic,First Year Fabric,true
+FYF-CS,Cam Skattebo,New York Giants,Relic,First Year Fabric,true
+FYF-CW,Cam Ward,Tennessee Titans,Relic,First Year Fabric,true
+FYF-DG,Dillon Gabriel,Cleveland Browns,Relic,First Year Fabric,true
+FYF-EE,Emeka Egbuka,Tampa Bay Buccaneers,Relic,First Year Fabric,true
+FYF-JD,Jaxson Dart,New York Giants,Relic,First Year Fabric,true
+FYF-JR,Jalen Royals,Kansas City Chiefs,Relic,First Year Fabric,true
+FYF-KJ,Kaleb Johnson,Pittsburgh Steelers,Relic,First Year Fabric,true
+FYF-LB,Luther Burden III,Chicago Bears,Relic,First Year Fabric,true
+FYF-MG,Matthew Golden,Green Bay Packers,Relic,First Year Fabric,true
+FYF-OH,Omarion Hampton,Los Angeles Chargers,Relic,First Year Fabric,true
+FYF-RH,RJ Harvey,Denver Broncos,Relic,First Year Fabric,true
+FYF-TH,Tre Harris III,Los Angeles Chargers,Relic,First Year Fabric,true
+FYF-THE,Treveyon Henderson,New England Patriots,Relic,First Year Fabric,true
+FYF-TS,Tyler Shough,New Orleans Saints,Relic,First Year Fabric,true
+FYF-TW,Tyler Warren,Indianapolis Colts,Relic,First Year Fabric,true
+FYF-WH,Will Howard,Pittsburgh Steelers,Relic,First Year Fabric,true
+HGS-JA,Josh Allen,Buffalo Bills,Relic,NFL Honors Gold Shield Relics,false
+HGS-JD,Jayden Daniels,Washington Commanders,Relic,NFL Honors Gold Shield Relics,false
+HGS-JV,Jared Verse,Los Angeles Rams,Relic,NFL Honors Gold Shield Relics,false
+HGS-PSII,Pat Surtain II,Denver Broncos,Relic,NFL Honors Gold Shield Relics,false
+HGS-SB,Saquon Barkley,Philadelphia Eagles,Relic,NFL Honors Gold Shield Relics,false
+FA-1,Drake Maye,New England Patriots,Relic,Fanatics Authentics Redemption,false
+FA-2,Ricky Williams,New Orleans Saints,Relic,Fanatics Authentics Redemption,false
+FA-3,Jaxson Dart,New York Giants,Relic,Fanatics Authentics Redemption,true
+FA-4,Justin Jefferson,Minnesota Vikings,Relic,Fanatics Authentics Redemption,false
+FA-5,Dan Marino,Miami Dolphins,Relic,Fanatics Authentics Redemption,false
+FA-6,Justin Herbert,Los Angeles Chargers,Relic,Fanatics Authentics Redemption,false
+FA-7,Davante Adams,Los Angeles Rams,Relic,Fanatics Authentics Redemption,false
+FA-8,Garrett Wilson,New York Jets,Relic,Fanatics Authentics Redemption,false
+FA-9,Jalen Hurts,Philadelphia Eagles,Relic,Fanatics Authentics Redemption,false
+FA-10,Calvin Ridley,Tennessee Titans,Relic,Fanatics Authentics Redemption,false
+FA-11,Jayden Daniels,Washington Commanders,Relic,Fanatics Authentics Redemption,false
+FA-12,Emeka Egbuka,Tampa Bay Buccaneers,Relic,Fanatics Authentics Redemption,true
+FA-13,Jaxon Smith-Njigba,Seattle Seahawks,Relic,Fanatics Authentics Redemption,false
+FA-14,Ben Roethlisberger,Pittsburgh Steelers,Relic,Fanatics Authentics Redemption,false
+FA-15,Brock Purdy,San Francisco 49ers,Relic,Fanatics Authentics Redemption,false
+FA-16,Ashton Jeanty,Las Vegas Raiders,Relic,Fanatics Authentics Redemption,true
+FA-17,Xavier Worthy,Kansas City Chiefs,Relic,Fanatics Authentics Redemption,false
+FA-18,Caleb Williams,Chicago Bears,Relic,Fanatics Authentics Redemption,false
+FA-19,Joe Burrow & Ja'Marr Chase,Cincinnati Bengals,Relic,Fanatics Authentics Redemption,false
+FA-20,Bryce Young,Carolina Panthers,Relic,Fanatics Authentics Redemption,false
+FA-21,Dalton Kincaid,Buffalo Bills,Relic,Fanatics Authentics Redemption,false
+FA-22,Michael Penix Jr.,Atlanta Falcons,Relic,Fanatics Authentics Redemption,false
+FA-23,Zay Flowers,Baltimore Ravens,Relic,Fanatics Authentics Redemption,false
+FA-24,Quinshon Judkins,Cleveland Browns,Relic,Fanatics Authentics Redemption,true
+FA-25,CeeDee Lamb,Dallas Cowboys,Relic,Fanatics Authentics Redemption,false
+FA-26,Jonathan Taylor,Indianapolis Colts,Relic,Fanatics Authentics Redemption,false
+FA-27,Trevor Lawrence,Jacksonville Jaguars,Relic,Fanatics Authentics Redemption,false
+FA-28,CJ Stroud,Houston Texans,Relic,Fanatics Authentics Redemption,false
+FA-29,Charles Woodson,Green Bay Packers,Relic,Fanatics Authentics Redemption,false
+FA-30,Bo Nix,Denver Broncos,Relic,Fanatics Authentics Redemption,false
+FA-31,Jahmyr Gibbs,Detroit Lions,Relic,Fanatics Authentics Redemption,false
+FA-32,Kyler Murray,Arizona Cardinals,Relic,Fanatics Authentics Redemption,false
+RPA-AC,Abdul Carter,New York Giants,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-AJ,Ashton Jeanty,Las Vegas Raiders,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-CL,Colston Loveland,Chicago Bears,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-CS,Cam Skattebo,New York Giants,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-CW,Cam Ward,Tennessee Titans,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-DG,Dillon Gabriel,Cleveland Browns,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-EA,Elic Ayomanor,Tennessee Titans,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-EAR,Elijah Arroyo,Seattle Seahawks,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-EE,Emeka Egbuka,Tampa Bay Buccaneers,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-JB,Jack Bech,Las Vegas Raiders,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-JBL,Jaydon Blue,Dallas Cowboys,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-JD,Jaxson Dart,New York Giants,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-JH,Jayden Higgins,Houston Texans,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-JL,Jaylin Lane,Washington Commanders,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-JN,Jaylin Noel,Houston Texans,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-JR,Jalen Royals,Kansas City Chiefs,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-KJ,Kaleb Johnson,Pittsburgh Steelers,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-KM,Kyle McCord,Philadelphia Eagles,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-KW,Kyle Williams,New England Patriots,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-LB,Luther Burden III,Chicago Bears,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-MG,Matthew Golden,Green Bay Packers,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-MT,Mason Taylor,New York Jets,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-MW,Mykel Williams,San Francisco 49ers,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-OH,Omarion Hampton,Los Angeles Chargers,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-PB,Pat Bryant,Denver Broncos,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-QJ,Quinshon Judkins,Cleveland Browns,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-RH,RJ Harvey,Denver Broncos,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-RL,Riley Leonard,Indianapolis Colts,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-SW,Savion Williams,Green Bay Packers,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-TE,Trevor Etienne,Carolina Panthers,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-TF,Tai Felton,Minnesota Vikings,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-TFE,Terrance Ferguson,Los Angeles Rams,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-TH,TreVeyon Henderson,New England Patriots,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-THIII,Tre Harris III,Los Angeles Chargers,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-TJ,Tez Johnson,Tampa Bay Buccaneers,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-TS,Tyler Shough,New Orleans Saints,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-TW,Tyler Warren,Indianapolis Colts,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPA-WH,Will Howard,Pittsburgh Steelers,Auto Relic,Topps Chrome Rookie Patch Autographs,true
+RPPA-AC,Alfred Collins,San Francisco 49ers,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-AE,Aireontae Ersery,Houston Texans,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-AG,Ashton Gillotte,Kansas City Chiefs,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-AME,Armand Membou,New York Jets,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-AT,Azareye'h Thomas,New York Jets,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-BB,Billy Bowman Jr.,Atlanta Falcons,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-BCA,Barrett Carter,Cincinnati Bengals,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-BM,Benjamin Morrison,Tampa Bay Buccaneers,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-BS,Brashard Smith,Kansas City Chiefs,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-BT,Bhayshul Tuten,Jacksonville Jaguars,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-CB,Cobee Bryant,Atlanta Falcons,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-CD,Chimere Dike,Tennessee Titans,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-CLO,Colston Loveland,Chicago Bears,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-CS,Cam Skattebo,New York Giants,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-CSC,Carson Schwesinger,Cleveland Browns,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-CW,Cam Ward,Tennessee Titans,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-DA,Darius Alexander,New York Giants,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-DB,Denzel Burke,Arizona Cardinals,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-DG,DJ Giddens,Indianapolis Colts,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-DGA,Dillon Gabriel,Cleveland Browns,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-DJ,Donovan Jackson,Minnesota Vikings,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-DP,Darien Porter,Las Vegas Raiders,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-DS,Danny Stutsman,New Orleans Saints,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-DSA,Dylan Sampson,Cleveland Browns,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-DTJ,Dont'e Thornton Jr.,Las Vegas Raiders,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-EA,Elic Ayomanor,Tennessee Titans,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-EAR,Elijah Arroyo,Seattle Seahawks,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-EE,Emeka Egbuka,Tampa Bay Buccaneers,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-GH,Gunnar Helm,Tennessee Titans,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-GZ,Grey Zabel,Seattle Seahawks,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-HF,Harold Fannin Jr.,Cleveland Browns,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-IB,Isaiah Bond,Cleveland Browns,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-IT,Isaac TeSlaa,Detroit Lions,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-JAH,Jayden Higgins,Houston Texans,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-JB,Jordan Burch,Arizona Cardinals,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-JBA,Jahdae Barron,Denver Broncos,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-JCA,Jamaree Caldwell,Los Angeles Chargers,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-JD,Jaxson Dart,New York Giants,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-JEB,Jeffrey Bassa,Kansas City Chiefs,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-JHI,Jay Higgins IV,Baltimore Ravens,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-JK,Jack Kiser,Jacksonville Jaguars,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-JN,Jaylin Noel,Houston Texans,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-JOS,Josaiah Stewart,Los Angeles Rams,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-JOSA,Jonas Sanker,New Orleans Saints,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-JR,Jalen Royals,Kansas City Chiefs,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-JSA,Jonah Savaiinaea,Miami Dolphins,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-JSAW,Jack Sawyer,Pittsburgh Steelers,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-JSI,Josh Simmons,Kansas City Chiefs,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-JTU,JT Tuimoloau,Indianapolis Colts,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-JWA,Jalon Walker,Atlanta Falcons,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-KB,Kelvin Banks Jr.,New Orleans Saints,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-KG,Kenneth Grant,Miami Dolphins,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-KJ,Kaleb Johnson,Pittsburgh Steelers,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-KKE,Kyle Kennard,Los Angeles Chargers,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-KM,Kalel Mullings,Tennessee Titans,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-KMO,Kyle Monangai,Chicago Bears,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-KW,Kyle Williams,New England Patriots,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-LA,LeQuint Allen Jr.,Jacksonville Jaguars,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-LB,Luther Burden III,Chicago Bears,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-LR,Lathan Ransom,Carolina Panthers,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-ME,Mitchell Evans,Carolina Panthers,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-MG,Matthew Golden,Green Bay Packers,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-MGR,Mason Graham,Cleveland Browns,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-MGRE,Mike Green,Baltimore Ravens,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-MMB,Marcus Mbow,New York Giants,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-MMO,Malachi Moore,New York Jets,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-MST,Malaki Starks,Baltimore Ravens,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-MT,Mason Taylor,New York Jets,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-MW,Mykel Williams,San Francisco 49ers,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-NM,Nick Martin,San Francisco 49ers,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-NS,Nic Scourton,Carolina Panthers,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-OG,Ollie Gordon II,Miami Dolphins,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-OH,Omarion Hampton,Los Angeles Chargers,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-ON,Omarr Norman-Lott,Kansas City Chiefs,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-PB,Pat Bryant,Denver Broncos,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-QJ,Quinshon Judkins,Cleveland Browns,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-QR,Quincy Riley,New Orleans Saints,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-SM,Smael Mondon Jr.,Philadelphia Eagles,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-SS,Shedeur Sanders,Cleveland Browns,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-SST,Shemar Stewart,Cincinnati Bengals,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-ST,Shemar Turner,Chicago Bears,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-SW,Savion Williams,Green Bay Packers,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-TBR,Tahj Brooks,Cincinnati Bengals,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-TF,Tai Felton,Minnesota Vikings,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-TFE,Terrance Ferguson,Los Angeles Rams,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-TH,Tory Horton,Seattle Seahawks,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-THA,Tre Harris III,Los Angeles Chargers,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-THE,TreVeyon Henderson,New England Patriots,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-THU,Travis Hunter,Jacksonville Jaguars,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-TM,Tetairoa McMillan,Carolina Panthers,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-TR,Ty Robinson,Philadelphia Eagles,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-TRA,Tate Ratledge,Detroit Lions,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-TS,Tyler Shough,New Orleans Saints,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-TW,Tyler Warren,Indianapolis Colts,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-TWI,Tyleik Williams,Detroit Lions,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-WC,Will Campbell,New England Patriots,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-WM,Woody Marks,Houston Texans,Auto Relic,Rookie Premiere Patch Autographs,true
+RPPA-XW,Xavier Watts,Atlanta Falcons,Auto Relic,Rookie Premiere Patch Autographs,true
+GSA-JA,Josh Allen,Buffalo Bills,Auto Relic,NFL Honors Gold Shield Autographs,false
+GSA-JD,Jayden Daniels,Washington Commanders,Auto Relic,NFL Honors Gold Shield Autographs,false
+GSA-JV,Jared Verse,Los Angeles Rams,Auto Relic,NFL Honors Gold Shield Autographs,false
+GSA-PSII,Pat Surtain II,Denver Broncos,Auto Relic,NFL Honors Gold Shield Autographs,false
+GSA-SB,Saquon Barkley,Philadelphia Eagles,Auto Relic,NFL Honors Gold Shield Autographs,false

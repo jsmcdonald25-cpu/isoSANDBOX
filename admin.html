@@ -2893,6 +2893,7 @@ tr:hover td { background: var(--bg); }
             <select id="sqTagSet" onchange="sqLoadPlayersForSet()" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:var(--radius);margin-bottom:12px">
               <option value="2026_topps_series1_baseball">2026 Topps Series 1</option>
               <option value="2026_topps_heritage_baseball">2026 Topps Heritage</option>
+              <option value="2025_topps_chrome_football">2025 Topps Chrome Football</option>
             </select>
 
             <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">Player</label>
@@ -8420,8 +8421,9 @@ async function prDeleteRow(registryId) {
 // ISOSerial Provenance Queue
 // ═══════════════════════════════════════════════════════════
 const SQ_SETS = {
-  '2026_topps_series1_baseball': { label: 'Series 1', guess: 'Series 1' },
+  '2026_topps_series1_baseball':  { label: 'Series 1', guess: 'Series 1' },
   '2026_topps_heritage_baseball': { label: 'Heritage', guess: 'Heritage' },
+  '2025_topps_chrome_football':   { label: 'Chrome Football', guess: 'Chrome Football' },
 };
 // Defect keywords — detects mentions of condition issues in listing text.
 // Used for provenance cross-referencing: if a prior chain entry mentioned
@@ -9096,9 +9098,9 @@ async function sqOpenReview(queueId) {
   }
 
   // Seed tag form from crawler guesses
-  const setKey = q.set_name_guess === 'Heritage'
-    ? '2026_topps_heritage_baseball'
-    : '2026_topps_series1_baseball';
+  const setKey = q.set_name_guess === 'Heritage'        ? '2026_topps_heritage_baseball'
+              : q.set_name_guess === 'Chrome Football'  ? '2025_topps_chrome_football'
+              :                                           '2026_topps_series1_baseball';
   document.getElementById('sqTagSet').value = setKey;
 
   // Print run + edition guess — parse "/5" or "3/5" or "/99" etc.
@@ -9324,8 +9326,9 @@ function sqApplyAi() {
   const ai = _sqCurrent.ai_classification;
 
   // Set the set dropdown
-  if (ai.set_name === 'Heritage')   document.getElementById('sqTagSet').value = '2026_topps_heritage_baseball';
-  else if (ai.set_name === 'Series 1') document.getElementById('sqTagSet').value = '2026_topps_series1_baseball';
+  if (ai.set_name === 'Heritage')             document.getElementById('sqTagSet').value = '2026_topps_heritage_baseball';
+  else if (ai.set_name === 'Series 1')        document.getElementById('sqTagSet').value = '2026_topps_series1_baseball';
+  else if (ai.set_name === 'Chrome Football') document.getElementById('sqTagSet').value = '2025_topps_chrome_football';
 
   // Trigger checklist load + filter to the AI's player
   sqLoadPlayersForSet().then(() => {

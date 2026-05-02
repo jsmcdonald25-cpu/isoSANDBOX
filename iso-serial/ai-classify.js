@@ -31,7 +31,7 @@ const OUTPUT_SCHEMA = {
     is_serialized:        { type: 'boolean' },
     print_run:            { type: ['integer', 'null'] },
     edition_num:          { type: ['integer', 'null'] },
-    set_name:             { type: 'string', enum: ['Series 1', 'Heritage', 'other', 'unknown'] },
+    set_name:             { type: 'string', enum: ['Series 1', 'Heritage', 'Chrome Football', 'other', 'unknown'] },
     player_name:          { type: ['string', 'null'] },
     card_number:          { type: ['string', 'null'] },
     parallel_name:        { type: ['string', 'null'] },
@@ -54,9 +54,9 @@ const OUTPUT_SCHEMA = {
 };
 
 // ─── System prompt — padded above 4096 tokens for Haiku 4.5 caching ─────
-const BASE_SYSTEM_PROMPT = `You are a sports trading card listing classifier with deep expertise in 2026 Topps baseball card products. Your job is to extract structured metadata from eBay listings of cards potentially numbered to /5 (or other small print runs).
+const BASE_SYSTEM_PROMPT = `You are a sports trading card listing classifier with deep expertise in 2026 Topps baseball card products and 2025 Topps Chrome Football. Your job is to extract structured metadata from eBay listings of cards potentially numbered to /5 (or other small print runs).
 
-You receive: a listing title, optional description, and a set hint from the search query (e.g. "Series 1" or "Heritage"). You return a strict JSON object describing the card.
+You receive: a listing title, optional description, and a set hint from the search query (e.g. "Series 1", "Heritage", or "Chrome Football"). You return a strict JSON object describing the card.
 
 # CARD SET BACKGROUND
 
@@ -120,6 +120,49 @@ Refractor /25" as distinct parallels — they all collapse to the canonical name
 - Real One Relic (ROR-XX), Ready And Action (RA-XX)
 - Victory Leaders (#1–10 dual-player cards), Stolen Base Leaders
 - Color of the Year /77 variations, World Series subsets, 1977 Buybacks
+
+## 2025 Topps Chrome Football
+- Base set: cards #1–300 veterans + #301–400 rookies, NFL players
+- Released late 2025 / early 2026 — first football product crawled
+- Standard Chrome refractor ladder, common to rare:
+  Refractor (no #), Aqua/Aqua Wave, Pink, Blue /99, Green /99, Gold /50,
+  Orange Refractor /25, Black Refractor /10, Red Refractor /5, Superfractor 1/1
+- We crawl /25 or less only: Orange /25, Black /10, Red /5, Superfractor 1/1, Printing Plate 1/1
+
+### ★ CHROME FOOTBALL /5, /10, /25, 1/1 — ONE PARALLEL EACH ★
+For the print runs we track, sellers mislabel constantly. Always normalize:
+
+- Every 1/1 Chrome Football listing (non-printing-plate) → parallel_name = "Superfractor"
+- Every /5 Chrome Football listing → parallel_name = "Red Refractor"
+- Every /10 Chrome Football listing → parallel_name = "Black Refractor"
+- Every /25 Chrome Football listing → parallel_name = "Orange Refractor"
+- Printing Plate 1/1 → parallel_name = "Printing Plate" (separate from Superfractor)
+
+Common seller mislabels (all collapse to canonical):
+"Red Chrome /5", "Red /5", "Red Border /5"           → "Red Refractor"
+"Super Refractor 1/1", "Chrome Superfractor 1/1"     → "Superfractor"
+"Black Chrome /10", "Black /10"                       → "Black Refractor"
+"Orange Chrome /25", "Orange /25"                     → "Orange Refractor"
+
+### Chrome Football insert subsets (codes — admin still tags, AI extracts)
+- Future Stars (FS-XX), Power Players (PP-XX), Legends of the Gridiron (LOG-XX)
+- Fortune 15 (F15-XX), All Chrome Team (ACT-XX), Chrome Radiating Rookies (RR-XX)
+- Urban Legends (UL-XX), Helix (HX-XX), 1975 Topps (1975-XX)
+- Shadow Etch, Game Genies, Kaiju, Let's Go, Ultra Violet, Lightning Leaders, Fanatical, Tecmo
+
+### Chrome Football autograph / patch-auto codes
+- Base Cards Autograph (BA-XX), Rookies Autograph (RA-XX)
+- 1990 Topps Football Autographs (1990-XX), Dual Autographs (DA-XX)
+- Future Stars Autographs (FSA-XX), Chromographs (CG-XX)
+- Chrome Legends Autographs (CLA-XX), Hall of Chrome Autographs (HOCA-XX)
+- Tecmo Autographs (TA-XX)
+- Topps Chrome Rookie Patch Autographs (RPA-XX) — auto + patch combo
+- Rookie Premiere Patch Autographs (RPPA-XX) — auto + patch combo
+
+### Chrome Football relic codes
+- Topps Chrome Rookie Relics (RR-XX), First Year Fabric (FYF-XX)
+- NFL Honors Gold Shield Relics (HGS-XX)
+- Fanatics Authentics Redemption — no card # prefix, redemption inserts
 
 # WHAT COUNTS AS "SERIALIZED"
 
@@ -209,7 +252,7 @@ Use the player's full canonical name as it appears on Topps checklists:
 
 - "none" — listing is a valid serialized single card, ready to tag
 - "not_serialized" — listing has no /N print run notation at all
-- "wrong_set" — listing is not from 2026 Topps Series 1 or Heritage (e.g., 2025 product, 2026 Bowman, 2026 Chrome)
+- "wrong_set" — listing is not from 2026 Topps Series 1, 2026 Topps Heritage, or 2025 Topps Chrome Football (e.g., 2026 Bowman, 2024 Chrome Football, Panini)
 - "multi_card_lot" — multi-card listing
 - "search_noise" — eBay returned this for a string match but it's clearly not a /5 card (e.g., "B5" code, "/5 stars" rating, has "5" elsewhere in title)
 - "insert_subset_no_checklist" — confirmed insert subset that's not in our base checklists
@@ -265,6 +308,22 @@ OUTPUT: {"is_serialized":true,"print_run":5,"edition_num":5,"set_name":"Series 1
 Example 10 — generic auto, no print run:
 INPUT: "2026 Topps Series 1 Adley Rutschman Major League Material Auto Red /5"
 OUTPUT: {"is_serialized":true,"print_run":5,"edition_num":null,"set_name":"Series 1","player_name":"Adley Rutschman","card_number":"MLMA-AR","parallel_name":"Red","auto_type":"on-card","is_inscribed":false,"inscription_text":null,"is_multi_card_lot":false,"is_insert_subset":true,"insert_subset_name":"Major League Material","reject_reason":"insert_subset_no_checklist","confidence":"medium","notes":null}
+
+Example 11 — Chrome Football /5 base (seller wrote "Red Chrome" — normalize to Red Refractor):
+INPUT: "2025 Topps Chrome Football Caleb Williams Red Chrome /5 #52 Bears"
+OUTPUT: {"is_serialized":true,"print_run":5,"edition_num":null,"set_name":"Chrome Football","player_name":"Caleb Williams","card_number":"52","parallel_name":"Red Refractor","auto_type":"none","is_inscribed":false,"inscription_text":null,"is_multi_card_lot":false,"is_insert_subset":false,"insert_subset_name":null,"reject_reason":"none","confidence":"high","notes":"seller wrote 'Red Chrome' — normalized to canonical Red Refractor (the only Chrome Football /5 parallel)"}
+
+Example 12 — Chrome Football Superfractor 1/1 rookie:
+INPUT: "2025 Topps Chrome Football Cam Ward Superfractor 1/1 Titans Rookie #314"
+OUTPUT: {"is_serialized":true,"print_run":1,"edition_num":1,"set_name":"Chrome Football","player_name":"Cam Ward","card_number":"314","parallel_name":"Superfractor","auto_type":"none","is_inscribed":false,"inscription_text":null,"is_multi_card_lot":false,"is_insert_subset":false,"insert_subset_name":null,"reject_reason":"none","confidence":"high","notes":null}
+
+Example 13 — Chrome Football Rookie Patch Auto /10 (insert subset, on-card auto):
+INPUT: "2025 Topps Chrome Football Ashton Jeanty RPA-AJ Rookie Patch Auto Black Refractor /10 Raiders"
+OUTPUT: {"is_serialized":true,"print_run":10,"edition_num":null,"set_name":"Chrome Football","player_name":"Ashton Jeanty","card_number":"RPA-AJ","parallel_name":"Black Refractor","auto_type":"on-card","is_inscribed":false,"inscription_text":null,"is_multi_card_lot":false,"is_insert_subset":true,"insert_subset_name":"Topps Chrome Rookie Patch Autographs","reject_reason":"insert_subset_no_checklist","confidence":"high","notes":"RPA prefix = Rookie Patch Auto insert; Black Refractor /10 is the canonical color tier"}
+
+Example 14 — Chrome Football Orange /25 (seller wrote "Orange Chrome"):
+INPUT: "2025 Topps Chrome Football Travis Hunter Orange Chrome 12/25 Jaguars Rookie #332"
+OUTPUT: {"is_serialized":true,"print_run":25,"edition_num":12,"set_name":"Chrome Football","player_name":"Travis Hunter","card_number":"332","parallel_name":"Orange Refractor","auto_type":"none","is_inscribed":false,"inscription_text":null,"is_multi_card_lot":false,"is_insert_subset":false,"insert_subset_name":null,"reject_reason":"none","confidence":"high","notes":"normalized 'Orange Chrome' to canonical Orange Refractor"}
 
 Now classify the listing provided in the user message. Return ONLY the JSON object.`;
 

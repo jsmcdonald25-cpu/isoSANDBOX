@@ -1,106 +1,79 @@
 {
   "blocklist_terms": [
     "multiple cards",
-    "pick complete your set",
     "facsimile signature",
     "gold edition signature",
     "23kt gold",
     "novelty card",
-    "almost complete set",
-    "missing card",
-    "set needs",
-    "reprint",
-    "gold foil signature",
-    "merrick mint",
-    "rare investment",
-    "ssp",
     "rainbow foil",
-    "stock photos"
+    "pick complete your set",
+    "stock photos",
+    "made in usa signature",
+    "cut signature",
+    "merrick mint",
+    "refactor",
+    "almost complete set"
   ],
   "query_refinements": [
     {
       "player": "Ken Griffey Jr",
       "parallel": "Base",
       "negatives": [
-        "multiple",
-        "set",
-        "pick",
-        "blowout",
-        "incomplete",
+        "multiple cards",
+        "pick complete your set",
+        "almost complete set",
         "missing",
+        "set -250",
         "stock photos"
       ]
     },
     {
-      "player": "Ken Griffey Jr",
-      "parallel": "Autograph",
-      "negatives": [
-        "facsimile",
-        "signature card",
-        "gold edition",
-        "printed",
-        "noted"
-      ]
-    },
-    {
-      "player": "Shohei Ohtani",
-      "parallel": "Refractor",
-      "negatives": [
-        "rainbow foil",
-        "35th anniversary",
-        "rare",
-        "investment",
-        "ssp"
-      ]
-    },
-    {
       "player": "Shohei Ohtani",
       "parallel": "Autograph",
       "negatives": [
-        "novelty",
+        "novelty card",
         "print",
-        "prospect",
-        "rare",
-        "investment"
+        "rainbow foil",
+        "refactor",
+        "prospect"
       ]
     },
     {
       "player": "Ichiro Suzuki",
       "parallel": "Autograph",
       "negatives": [
-        "facsimile",
-        "made in usa",
-        "exhibits",
-        "merrick mint",
         "23kt gold",
-        "signature series"
+        "merrick mint",
+        "made in usa signature",
+        "exhibits 1947-66"
       ]
     }
   ],
   "insights": [
-    "Rejections dominated by wrong_market_price (9/20, 45%) — overpriced listings are primary blocker across all players.",
-    "Facsimile/printed signatures appear in 2 rejections (10%); genuine autos in confirmations show distinct product lines (Topps Tribute, Authentic Images).",
-    "Multi-card lots, incomplete sets, and 'pick your own' formats rejected 4 times (20%) — single authentic cards only.",
-    "Investment-grade language ('RARE', 'SSP', 'INVESTMENT CARD') appears 5 times in rejections; confirmations use neutral product/year descriptors.",
-    "Confirmation cards delta >81% below market (Ichiro autos priced $16–17 vs $90 avg) — real snipes show dramatic underpricing, rejections show inflated pricing.",
-    "Non-sports gold editions (Merrick Mint, 23kt gold) flagged as 'other' — specialty/novelty variants rejected regardless of authenticity.",
-    "Title/card mismatch (wrong_parallel, wrong_player) in 3 rejections (15%) — data integrity failures indicate low-effort relists.",
-    "Confirmed snipes feature vintage/recent mainstream releases (2001 Authentic Images, 2023 Topps Tribute); rejections skew toward low-volume parallels and reprints."
+    "14 of 20 rejections (70%) flagged as wrong_market_price; premium pricing on commons is primary rejection driver.",
+    "Facsimile signatures account for 2 rejections; legitimate autos in confirmations have proper authentication (Topps Tribute, Authentic Images).",
+    "Lot/multi-card listings rejected 3 times; confirmations are always single, specific cards.",
+    "Confirmation delta average: 81.65% (real snipes deeply underpriced vs. market); rejections lack pricing data suggesting overpriced positioning.",
+    "5 rejections (25%) contain mismatched title/card specs (wrong player, wrong set, wrong parallel); confirmations have exact title-card alignment.",
+    "Novelty, reprint, and custom parallel language appears only in rejections (0 in confirmations).",
+    "Griffey Base parallel dominates rejection pool (7 of 20), all overpriced; suggests 1989 UD #1 is high-vigilance target.",
+    "Confirmation titles use minimal marketing language; rejection titles use caps, emojis, 'RARE', 'INVESTMENT', 'MVP'—red flags for inflated pricing."
   ],
   "rejection_breakdown": {
     "wrong_market_price": 9,
-    "other": 6,
+    "other": 7,
     "facsimile_signature": 2,
     "wrong_player": 2,
     "wrong_card_num": 2,
+    "wrong_parallel": 2,
     "reprint_or_custom": 1,
-    "wrong_parallel": 1,
+    "wrong_year": 1,
     "wrong_set": 1
   },
   "_meta": {
     "rejections_analyzed": 20,
     "confirmations_analyzed": 2,
     "model": "claude-haiku-4-5",
-    "analyzed_at": "2026-05-01T22:44:52.463Z"
+    "analyzed_at": "2026-05-02T10:47:54.740Z"
   }
 }

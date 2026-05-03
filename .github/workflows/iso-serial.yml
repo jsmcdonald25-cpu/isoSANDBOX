@@ -1,14 +1,15 @@
 name: ISOSerial Crawler
 
-# Hourly (was every 30 min) — slowed 2026-04-23 because 3-sort-pass + expanded
-# query set + manual runs were stacking and triggering eBay 429 rate limits.
-# 24 runs/day × ~114 search calls = ~2,700 search calls/day. Under the 5000/day
-# eBay budget with headroom for ISOsnipe + manual adds.
+# PAUSED 2026-05-02 — eBay daily quota exhausted; crawler hourly + ISOsnipe twice-daily
+# + dashboard live lookups were stacking past the 5K/day Browse API cap. While paused,
+# the dashboard cache layer (ebay_lookup_cache) fills up organically as users browse,
+# and ISOsnipe still runs (twice-daily, lower volume). Re-enable schedule once eBay
+# production-tier quota is approved (5M/day) or we add a quota-aware throttle.
+#
+# To re-enable: restore the `schedule` block below.
 
 on:
-  schedule:
-    - cron: '0 * * * *'
-  workflow_dispatch: {}      # allow manual trigger from the Actions tab
+  workflow_dispatch: {}      # manual trigger only while paused
 
 concurrency:
   # Skip a run if the previous run is still going. Prevents overlap if a bootstrap

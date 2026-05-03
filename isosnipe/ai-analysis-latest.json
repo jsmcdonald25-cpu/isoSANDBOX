@@ -1,17 +1,19 @@
 {
   "blocklist_terms": [
     "multiple cards",
-    "facsimile signature",
-    "23kt gold",
-    "novelty card",
     "pick complete your set",
-    "stock photos",
+    "facsimile signature",
     "gold edition signature",
-    "rainbow foil",
+    "merrick mint 23kt gold",
+    "novelty card",
+    "made in usa signature",
+    "group of noted",
+    "stock photos",
     "investment card",
-    "rare refractor ssp",
-    "almost complete set",
-    "missing card"
+    "ssr ssp",
+    "rainbow foil",
+    "rare refractor",
+    "cut autograph"
   ],
   "query_refinements": [
     {
@@ -19,10 +21,12 @@
       "parallel": "Base",
       "negatives": [
         "multiple cards",
-        "pick complete set",
-        "stock photos",
-        "incomplete set",
-        "missing"
+        "complete set",
+        "pick",
+        "bowman",
+        "fleer",
+        "donruss",
+        "gold edition"
       ]
     },
     {
@@ -32,44 +36,58 @@
         "novelty card",
         "investment card",
         "print",
-        "rainbow foil"
+        "rare rookie",
+        "ssp",
+        "roki sasaki"
       ]
     },
     {
       "player": "Ichiro Suzuki",
       "parallel": "Autograph",
       "negatives": [
-        "facsimile signature",
-        "23kt gold",
+        "made in usa signature",
         "merrick mint",
-        "gold foil jumbo"
+        "23kt gold",
+        "facsimile",
+        "leaf exhibits"
+      ]
+    },
+    {
+      "player": "Ken Griffey Jr",
+      "parallel": "Autograph",
+      "negatives": [
+        "facsimile signature",
+        "gold edition signature",
+        "1991 gold",
+        "group of"
       ]
     }
   ],
   "insights": [
-    "15 of 20 rejections (75%) due to wrong_market_price—listings vastly overpriced vs. market",
-    "facsimile_signature and wrong_player account for 4 rejections (20%)—strict authenticity checks",
-    "Confirmed snipes are autograph cards with 82%+ delta (price $16–17 vs. market $90); rejections lack this spread",
-    "Multi-card lots, incomplete sets, and 'pick-from-list' mechanics trigger 'other' rejection 5 times",
-    "Novelty/print/custom descriptors ('INVESTMENT CARD', 'PRINT', 'NOVELTY') rejected in 3 Ohtani autos",
-    "Both confirmations are real autographs with ultra-low ask prices; rejections mix reprints, facsimiles, and inflated vintage",
-    "Griffey Jr base rejections dominated by wrong_market_price (5/8), Ohtani by pricing + parallel mismatches (4/7)",
-    "Confirmation titles are clean ('2023 Topps Tribute', 'Authentic Images'); rejections heavy on caps, emojis, hype language"
+    "80% of rejections (16/20) were wrong_market_price, facsimile_signature, or other—indicating overpriced, fake-signed, or deceptive listings.",
+    "Confirmed snipes feature on-card autographs from authenticated modern sets (Topps Tribute, Authentic Images) at 82%+ discount vs. market.",
+    "Lot listings (multiple cards, incomplete sets, group lots) rejected 100% of the time—single, specific cards only.",
+    "Facsimile & printed signatures (gold editions, merrick mint, made in usa) flagged in 3 rejections; zero confirmed snipes used these terms.",
+    "Reprint/novelty language (rainbow foil, print, novelty card) appears only in rejections; confirms real snipes are original issue.",
+    "Vintage rookies (1989 Griffey) rejected across Bowman, Fleer, Donruss; market price mismatch suggests saturation.",
+    "Confirmed snipes leverage parallel rarity (Green /99, Gold Foil Jumbo) + authenticated brands (Topps Tribute, Authentic Images).",
+    "Title-to-specifics mismatch (wrong set, wrong card #, wrong parallel) rejected 100%—listing accuracy is critical signal."
   ],
   "rejection_breakdown": {
-    "wrong_market_price": 8,
-    "other": 7,
+    "wrong_market_price": 9,
     "facsimile_signature": 2,
+    "other": 6,
     "wrong_player": 2,
-    "wrong_card_num": 2,
     "reprint_or_custom": 1,
+    "wrong_card_num": 2,
     "wrong_parallel": 1,
-    "wrong_set": 1
+    "wrong_set": 1,
+    "wrong_year": 1
   },
   "_meta": {
     "rejections_analyzed": 20,
     "confirmations_analyzed": 2,
     "model": "claude-haiku-4-5",
-    "analyzed_at": "2026-05-02T22:36:07.653Z"
+    "analyzed_at": "2026-05-03T10:52:36.948Z"
   }
 }

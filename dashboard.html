@@ -577,8 +577,10 @@ body::after{content:'';position:fixed;top:-100vh;left:0;width:100%;height:1.5px;
 .t-item .tn{color:var(--white);font-weight:600}.t-item .tv{color:var(--blue);font-weight:600}
 /* ISO DETAIL PANEL */
 .iso-item.iso-expanded{background:rgba(0,170,255,.08);border-color:rgba(0,170,255,.3);border-radius:8px 8px 0 0;margin-bottom:0}
-.iso-detail-panel{display:none;background:var(--deep);border:1px solid rgba(0,170,255,.3);border-top:none;border-radius:0 0 10px 10px;padding:0;margin-bottom:8px;overflow:hidden;animation:isoDetailIn .2s ease}
-.iso-detail-panel.open{display:block}
+.iso-detail-panel{display:none}
+.iso-detail-panel.open{display:flex;position:fixed;inset:0;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,0.78);backdrop-filter:blur(4px);z-index:10000;overflow-y:auto;animation:isoDetailIn .2s ease}
+.iso-dp-modal-box{background:var(--deep);border:1px solid rgba(0,170,255,.3);border-radius:14px;width:100%;max-width:720px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.6),0 0 0 1px rgba(0,232,135,0.05)}
+@media(max-width:640px){.iso-detail-panel.open{padding:0}.iso-dp-modal-box{max-width:100%;min-height:100vh;border-radius:0;border-left:none;border-right:none}.iso-dp-body{grid-template-columns:1fr !important}}
 @keyframes isoDetailIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 .iso-dp-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--deep-border)}
 .iso-dp-title{font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:1px;color:var(--white)}
@@ -15216,6 +15218,7 @@ async function openISODetail(idx){
       : '');
 
   panel.innerHTML = `
+    <div class="iso-dp-modal-box" onclick="event.stopPropagation()">
     <div class="iso-dp-header">
       <div class="iso-dp-title">${player} — ${parallel}</div>
       <button class="iso-dp-close" onclick="event.stopPropagation();openISODetail(${idx})">&times;</button>
@@ -15246,7 +15249,9 @@ async function openISODetail(idx){
     <div class="iso-dp-actions">
       ${actions}
     </div>
+    </div>
   `;
+  panel.onclick = (e) => { if(e.target === panel) openISODetail(idx); };
   panel.classList.add('open');
 
   // ── Fetch eBay data ──

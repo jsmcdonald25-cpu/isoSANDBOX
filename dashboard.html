@@ -9440,6 +9440,16 @@ async function _mvFetchEbayAvg(row){
       if(!window._mvRateLimitedLogged){ window._mvRateLimitedLogged = true; console.warn('[mvEbay] eBay rate limited — skipping cache write'); }
       return 0;
     }
+    // Stale price path: eBay returned 0 listings but a prior cached price exists.
+    // Stash stale flag + last_fresh on the row so the tile renderer can grey it out + tooltip.
+    if(data && data.stale){
+      const staleAvg = (data && data.count && data.average) ? Number(data.average) : 0;
+      row._isStale = true;
+      row._staleLastFresh = data.last_fresh || null;
+      _mvCacheSet(key, staleAvg);
+      return staleAvg;
+    }
+    row._isStale = false;
     const avg = (data && data.count && data.average) ? Number(data.average) : 0;
     _mvCacheSet(key, avg);
     return avg;
@@ -9462,11 +9472,26 @@ function _mvUpdateTilePrice(idx){
   const cur = parseFloat(row._currentValue)||0;
   if(cur > 0){
     priceEl.textContent = _mvFmtPrice(cur);
-    const paid = parseFloat(row.price_paid)||0;
-    if(paid > 0){
-      priceEl.style.color = (cur >= paid) ? 'var(--green)' : 'var(--red)';
+    if(row._isStale){
+      // Stale: grey out, append "!" badge, tooltip on hover with last-fresh info.
+      priceEl.style.color = '#5a6e80';
+      priceEl.style.textDecoration = 'underline dotted rgba(122,149,174,0.4)';
+      priceEl.style.textUnderlineOffset = '4px';
+      priceEl.style.cursor = 'help';
+      const lastFreshTxt = row._staleLastFresh
+        ? new Date(row._staleLastFresh).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+        : 'unknown';
+      priceEl.title = `Stale price — no current eBay listings. Last fresh: ${lastFreshTxt}. Showing most recent confirmed market price until a listing reappears.`;
     } else {
-      priceEl.style.color = '';
+      priceEl.style.textDecoration = '';
+      priceEl.style.cursor = '';
+      priceEl.title = '';
+      const paid = parseFloat(row.price_paid)||0;
+      if(paid > 0){
+        priceEl.style.color = (cur >= paid) ? 'var(--green)' : 'var(--red)';
+      } else {
+        priceEl.style.color = '';
+      }
     }
   }
 }

@@ -277,6 +277,24 @@ async function readCache(key) {
     return null;
   }
 }
+// Returns the cache row regardless of TTL — used as a fallback when eBay
+// returns 0 listings, so we can preserve the most recent confirmed price.
+async function readCacheAnyAge(key) {
+  try {
+    const url = `${SB_URL}/rest/v1/ebay_lookup_cache?lookup_key=eq.${encodeURIComponent(key)}&select=response,last_fetched&limit=1`;
+    const res = await new Promise((resolve, reject) => {
+      https.get(url, { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY } }, (r) => {
+        let d = ''; r.on('data', c => d += c); r.on('end', () => resolve({ statusCode: r.statusCode, body: d }));
+      }).on('error', reject);
+    });
+    if (res.statusCode !== 200) return null;
+    const rows = JSON.parse(res.body || '[]');
+    if (!rows.length) return null;
+    return { response: rows[0].response, last_fetched: rows[0].last_fetched };
+  } catch (_) {
+    return null;
+  }
+}
 async function writeCache(key, response) {
   try {
     const body = JSON.stringify({ lookup_key: key, response, last_fetched: new Date().toISOString() });
@@ -364,7 +382,26 @@ exports.handler = async (event) => {
     const summary = summarizePricing(results, adminTerms);
     summary.query = query; // Include for debugging/transparency
 
-    // 5. Write to cache (non-blocking — don't fail the response)
+    // 5a. eBay returned 0 listings — preserve the most recent confirmed price.
+    //     Fall back to the cached row regardless of age. Skip the cache write so
+    //     the prior good entry survives. UI surfaces this via stale:true flag.
+    if (summary.count === 0) {
+      const prior = await readCacheAnyAge(cacheKey);
+      if (prior && prior.response && prior.response.count > 0) {
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({
+            ...prior.response,
+            stale: true,
+            last_fresh: prior.last_fetched,
+            cached: true,
+          }),
+        };
+      }
+    }
+
+    // 5b. Normal path: write fresh result to cache (non-blocking)
     writeCache(cacheKey, summary);
 
     return {

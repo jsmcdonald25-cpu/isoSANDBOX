@@ -575,24 +575,21 @@ async function refreshRankings() {
   const rookiePSorted = [...rookiePitchers].sort((a, b) => _comboP(b) - _comboP(a));
   rookiePSorted.slice(0, 10).forEach((s, i) => rows.push(buildRow(s, 'p', 'rookies-p', i + 1, i + 1, true)));
 
-  // Unicorn — Hitters: deeper value picks. Pool = combined-score top 50,
-  // EXCLUDE Superstars top 15, re-rank emphasizing cheap (extra valScore boost).
+  // Unicorn — Hitters: the next 10 Power Players after Superstars top 15.
+  // Same combinedScore sort, just slots 16-25. Keeps the whole page on
+  // one consistent ranking (no mystery secondary metric).
   const superHIds = new Set(supersSorted.slice(0, 15).map(s => s.player.id));
-  const comboTop50H = [...hitters].sort((a, b) => _comboH(b) - _comboH(a)).slice(0, 50);
-  const unicornH = comboTop50H
+  const unicornH = [...hitters]
     .filter(s => !superHIds.has(s.player.id))
-    .map(s => ({ sp: s, val: valScore(isoHit(s.stat, _pp(s)), _pp(s)) }))
-    .sort((a, b) => b.val - a.val);
-  unicornH.slice(0, 10).forEach((r, i) => rows.push(buildRow(r.sp, 'h', 'unicorn-h', i + 1, i + 1, false)));
+    .sort((a, b) => _comboH(b) - _comboH(a));
+  unicornH.slice(0, 10).forEach((s, i) => rows.push(buildRow(s, 'h', 'unicorn-h', i + 1, i + 1, false)));
 
-  // Unicorn — Pitchers: same dedup-from-superstars approach
+  // Unicorn — Pitchers: next 10 Power Players after Superstars top 10
   const superPIds = new Set(pitchersSorted.slice(0, 10).map(s => s.player.id));
-  const comboTop25P = [...pitchers].sort((a, b) => _comboP(b) - _comboP(a)).slice(0, 25);
-  const unicornP = comboTop25P
+  const unicornP = [...pitchers]
     .filter(s => !superPIds.has(s.player.id))
-    .map(s => ({ sp: s, val: valScore(isoPit(s.stat, _pp(s)), _pp(s)) }))
-    .sort((a, b) => b.val - a.val);
-  unicornP.slice(0, 10).forEach((r, i) => rows.push(buildRow(r.sp, 'p', 'unicorn-p', i + 1, i + 1, false)));
+    .sort((a, b) => _comboP(b) - _comboP(a));
+  unicornP.slice(0, 10).forEach((s, i) => rows.push(buildRow(s, 'p', 'unicorn-p', i + 1, i + 1, false)));
 
   // Position-specific (hitters by position, ranked by Power Players score)
   const positions = ['C', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'DH'];

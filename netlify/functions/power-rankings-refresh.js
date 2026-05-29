@@ -72,19 +72,15 @@ function httpPost(url, body, headers) {
 // ── Team abbreviations ──────────────────────────────────────
 const TEAMS = {108:'LAA',109:'AZ',110:'BAL',111:'BOS',112:'CHC',113:'CIN',114:'CLE',115:'COL',116:'DET',117:'HOU',118:'KC',119:'LAD',120:'WAS',121:'NYM',133:'ATH',134:'PIT',135:'SD',136:'SEA',137:'SF',138:'STL',139:'TB',140:'TEX',141:'TOR',142:'MIN',143:'PHI',144:'ATL',145:'CHW',146:'MIA',147:'NYY',158:'MIL'};
 
-// ── ISO Score: Hitters ──────────────────────────────────────
-function isoHit(s, price) {
+// ── Raw production score (pure talent — no price) ───────────
+// Superstars/positions rank by this so actual best players rise.
+function rawHit(s) {
   const avg = parseFloat(s.avg) || 0, hr = s.homeRuns || 0, rbi = s.rbi || 0;
   const ops = parseFloat(s.ops) || 0, sb = s.stolenBases || 0, gp = s.gamesPlayed || 1;
   const hrPG = hr / gp, rbiPG = rbi / gp, sbPG = sb / gp;
-  const statScore = (avg * 400) + (ops * 120) + (hrPG * 200) + (rbiPG * 100) + (sbPG * 80);
-  const p = Math.max(price || 1, 0.5);
-  const priceFactor = Math.min(1.3, 1 + (1 / Math.log2(p + 2)) * 0.5);
-  return Math.min(1000, Math.round(statScore * priceFactor));
+  return (avg * 400) + (ops * 120) + (hrPG * 200) + (rbiPG * 100) + (sbPG * 80);
 }
-
-// ── ISO Score: Pitchers ─────────────────────────────────────
-function isoPit(s, price) {
+function rawPit(s) {
   const era = parseFloat(s.era) || 9, whip = parseFloat(s.whip) || 2;
   const k = s.strikeOuts || 0, ip = parseFloat(s.inningsPitched) || 1, w = s.wins || 0;
   const kPer9 = (k / ip) * 9;
@@ -92,7 +88,18 @@ function isoPit(s, price) {
   const whipScore = Math.max(0, 400 - (whip * 150));
   const kScore = Math.min(200, kPer9 * 18);
   const wScore = Math.min(80, w * 15);
-  const statScore = eraScore + whipScore * 0.6 + kScore + wScore;
+  return eraScore + whipScore * 0.6 + kScore + wScore;
+}
+
+// ── ISO Score: price-boosted (DISPLAY column on rankings page) ─
+function isoHit(s, price) {
+  const statScore = rawHit(s);
+  const p = Math.max(price || 1, 0.5);
+  const priceFactor = Math.min(1.3, 1 + (1 / Math.log2(p + 2)) * 0.5);
+  return Math.min(1000, Math.round(statScore * priceFactor));
+}
+function isoPit(s, price) {
+  const statScore = rawPit(s);
   const p = Math.max(price || 1, 0.5);
   const priceFactor = Math.min(1.3, 1 + (1 / Math.log2(p + 2)) * 0.5);
   return Math.min(1000, Math.round(statScore * priceFactor));
@@ -406,41 +413,49 @@ async function refreshRankings() {
   // Helper: get price for a split's player
   const _pp = (s) => _priceMap[s.player.id] || 5;
 
-  // Superstars — Hitters (top 15)
-  const supersSorted = [...hitters].sort((a, b) => isoHit(b.stat, _pp(b)) - isoHit(a.stat, _pp(a)));
+  // Superstars — Hitters (top 15 by RAW production, not price-boosted ISO)
+  const supersSorted = [...hitters].sort((a, b) => rawHit(b.stat) - rawHit(a.stat));
   supersSorted.slice(0, 15).forEach((s, i) => rows.push(buildRow(s, 'h', 'superstars-h', i + 1, i + 1, false)));
 
-  // Superstars — Pitchers (top 10)
-  const pitchersSorted = [...pitchers].sort((a, b) => isoPit(b.stat, _pp(b)) - isoPit(a.stat, _pp(a)));
+  // Superstars — Pitchers (top 10 by RAW production)
+  const pitchersSorted = [...pitchers].sort((a, b) => rawPit(b.stat) - rawPit(a.stat));
   pitchersSorted.slice(0, 10).forEach((s, i) => rows.push(buildRow(s, 'p', 'superstars-p', i + 1, i + 1, false)));
 
-  // Rookies — Hitters (top 10)
-  const rookieHSorted = [...rookieHitters].sort((a, b) => isoHit(b.stat, _pp(b)) - isoHit(a.stat, _pp(a)));
+  // Rookies — Hitters (top 10 by RAW production)
+  const rookieHSorted = [...rookieHitters].sort((a, b) => rawHit(b.stat) - rawHit(a.stat));
   rookieHSorted.slice(0, 10).forEach((s, i) => rows.push(buildRow(s, 'h', 'rookies-h', i + 1, i + 1, true)));
 
-  // Rookies — Pitchers (top 10)
-  const rookiePSorted = [...rookiePitchers].sort((a, b) => isoPit(b.stat, _pp(b)) - isoPit(a.stat, _pp(a)));
+  // Rookies — Pitchers (top 10 by RAW production)
+  const rookiePSorted = [...rookiePitchers].sort((a, b) => rawPit(b.stat) - rawPit(a.stat));
   rookiePSorted.slice(0, 10).forEach((s, i) => rows.push(buildRow(s, 'p', 'rookies-p', i + 1, i + 1, true)));
 
-  // Unicorn — Hitters (top 10 value)
-  const unicornH = hitters.slice(0, 50).map(s => ({ sp: s, val: valScore(isoHit(s.stat, _pp(s)), _pp(s)) }))
+  // Unicorn — Hitters: value picks from raw-stat top 50, EXCLUDING Superstars top 15
+  const superHIds = new Set(supersSorted.slice(0, 15).map(s => s.player.id));
+  const rawTop50H = [...hitters].sort((a, b) => rawHit(b.stat) - rawHit(a.stat)).slice(0, 50);
+  const unicornH = rawTop50H
+    .filter(s => !superHIds.has(s.player.id))
+    .map(s => ({ sp: s, val: valScore(isoHit(s.stat, _pp(s)), _pp(s)) }))
     .sort((a, b) => b.val - a.val);
   unicornH.slice(0, 10).forEach((r, i) => rows.push(buildRow(r.sp, 'h', 'unicorn-h', i + 1, i + 1, false)));
 
-  // Unicorn — Pitchers (top 10 value)
-  const unicornP = pitchers.slice(0, 25).map(s => ({ sp: s, val: valScore(isoPit(s.stat, _pp(s)), _pp(s)) }))
+  // Unicorn — Pitchers: value picks from raw-stat top 25, EXCLUDING Superstars top 10
+  const superPIds = new Set(pitchersSorted.slice(0, 10).map(s => s.player.id));
+  const rawTop25P = [...pitchers].sort((a, b) => rawPit(b.stat) - rawPit(a.stat)).slice(0, 25);
+  const unicornP = rawTop25P
+    .filter(s => !superPIds.has(s.player.id))
+    .map(s => ({ sp: s, val: valScore(isoPit(s.stat, _pp(s)), _pp(s)) }))
     .sort((a, b) => b.val - a.val);
   unicornP.slice(0, 10).forEach((r, i) => rows.push(buildRow(r.sp, 'p', 'unicorn-p', i + 1, i + 1, false)));
 
-  // Position-specific (hitters by position)
+  // Position-specific (hitters by position, ranked by RAW production)
   const positions = ['C', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'DH'];
   positions.forEach(pos => {
     const filtered = hitters.filter(s => s.position && s.position.abbreviation === pos);
-    filtered.sort((a, b) => isoHit(b.stat, _pp(b)) - isoHit(a.stat, _pp(a)));
+    filtered.sort((a, b) => rawHit(b.stat) - rawHit(a.stat));
     filtered.slice(0, 10).forEach((s, i) => rows.push(buildRow(s, 'h', 'pos-' + pos, i + 1, i + 1, false)));
   });
 
-  // Pitchers position
+  // Pitchers position (same RAW-sorted list as superstars-p)
   pitchersSorted.slice(0, 10).forEach((s, i) => rows.push(buildRow(s, 'p', 'pos-P', i + 1, i + 1, false)));
 
   // 5. Recalculate last5 ranks using actual last5 ISO scores

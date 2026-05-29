@@ -280,19 +280,22 @@ function warFor(split, lookup) {
   return null;
 }
 
-// ── Composite score: WAR + in-season production + price discount ──
-// "Power Players" formula per Scott — most-valuable + lowest-cost.
-// WAR carries 60% weight (captures defense + position + baserunning the
-// rate stats miss). In-season raw stat carries 40% (recency). Price
-// multiplier 1.0-1.3x rewards cheap cards. Falls back to stats only
-// when WAR unavailable (newcomers, name match failure).
+// ── Composite score: WAR + in-season production + card-price discount ──
+// "Power Players" formula per Scott — three EQUAL components, each 0-500:
+//   WAR:   bWAR × 100, capped 500 (5.0 WAR maxes)
+//   STATS: rawHit / rawPit, capped 500
+//   PRICE: max(0, 500 - price × 10) — $0 = 500, $25 = 250, $50+ = 0
+// Sum them: total 0-1500. Equal weight means a player must be high on
+// ALL THREE to top the list (great talent + producing now + cheap card).
+// Missing price treated as $20 (neutral median) so unmatched-eBay players
+// neither win nor lose by default. Missing WAR treated as 0 so newcomers
+// don't get a free pass.
 function combinedScore(war, rawStat, price) {
-  const warScore = Math.min(500, Math.max(0, (war || 0) * 100));
-  const statScore = Math.min(500, Math.max(0, rawStat || 0));
-  const talent = war == null ? statScore : (warScore * 0.6 + statScore * 0.4);
-  const p = Math.max(price || 5, 0.5);
-  const priceMult = Math.min(1.3, 1 + (1 / Math.log2(p + 2)) * 0.5);
-  return Math.round(talent * priceMult);
+  const warPts = Math.min(500, Math.max(0, (war || 0) * 100));
+  const statPts = Math.min(500, Math.max(0, rawStat || 0));
+  const p = (price == null || price <= 0) ? 20 : price;
+  const pricePts = Math.max(0, Math.min(500, 500 - p * 10));
+  return Math.round(warPts + statPts + pricePts);
 }
 
 // ── Fake/junk card filter ────────────────────────────────────
@@ -513,10 +516,11 @@ async function refreshRankings() {
     const isoLast5 = last5Stats ? (type === 'h' ? isoHit(last5Stats, price) : isoPit(last5Stats, price)) : isoSeason;
     const valSeason = valScore(isoSeason, price);
     const valLast5 = valScore(isoLast5, price);
-    // WAR + composite (Power Players score)
+    // WAR + composite (Power Players score) — pass real price or null
     const war = type === 'h' ? warFor(split, warHitMap) : warFor(split, warPitMap);
     const rawSeason = type === 'h' ? rawHit(seasonStats) : rawPit(seasonStats);
-    const combinedSeason = combinedScore(war, rawSeason, price);
+    const realPrice = (pid in _priceMap) ? _priceMap[pid] : null;
+    const combinedSeason = combinedScore(war, rawSeason, realPrice);
     // Stuff WAR + combined into season_stats JSON (no schema change required)
     const seasonStatsWithWar = Object.assign({}, seasonStats, {
       bwar: war,
@@ -546,11 +550,14 @@ async function refreshRankings() {
     };
   }
 
-  // Helper: get price for a split's player
+  // Helper: get price for a split's player ($5 fallback for ISO display only)
   const _pp = (s) => _priceMap[s.player.id] || 5;
+  // For combined score, pass null when price is missing so the formula
+  // uses its own $20 neutral default (not the $5 ISO-display fallback).
+  const _ppOrNull = (s) => (s.player.id in _priceMap) ? _priceMap[s.player.id] : null;
   // Helper: combined "Power Players" score for sorting (WAR + stats + price)
-  const _comboH = (s) => combinedScore(warFor(s, warHitMap), rawHit(s.stat), _pp(s));
-  const _comboP = (s) => combinedScore(warFor(s, warPitMap), rawPit(s.stat), _pp(s));
+  const _comboH = (s) => combinedScore(warFor(s, warHitMap), rawHit(s.stat), _ppOrNull(s));
+  const _comboP = (s) => combinedScore(warFor(s, warPitMap), rawPit(s.stat), _ppOrNull(s));
 
   // Superstars — Hitters: top 15 by Power Players combined score (WAR+stats+price)
   const supersSorted = [...hitters].sort((a, b) => _comboH(b) - _comboH(a));

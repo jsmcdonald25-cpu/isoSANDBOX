@@ -174,6 +174,127 @@ async function getPrevRanks() {
   } catch (e) { return {}; }
 }
 
+// ── Baseball Reference WAR scrape ───────────────────────────
+// BR exposes WAR on their value-batting / value-pitching pages.
+// We parse HTML directly (no API). Returns map: normalizedKey → war.
+const BR_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+
+function normalizeName(s) {
+  if (!s) return '';
+  return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z]/g, '');
+}
+
+// BR team code → MLB team abbrev mapping (tiebreaker on name collisions)
+const BR_TEAM_TO_MLB = {
+  'ARI':'AZ','ATL':'ATL','BAL':'BAL','BOS':'BOS','CHC':'CHC','CHW':'CHW','CIN':'CIN','CLE':'CLE',
+  'COL':'COL','DET':'DET','HOU':'HOU','KCR':'KC','LAA':'LAA','LAD':'LAD','MIA':'MIA','MIL':'MIL',
+  'MIN':'MIN','NYM':'NYM','NYY':'NYY','OAK':'ATH','ATH':'ATH','PHI':'PHI','PIT':'PIT','SDP':'SD',
+  'SEA':'SEA','SFG':'SF','STL':'STL','TBR':'TB','TEX':'TEX','TOR':'TOR','WSN':'WAS',
+};
+
+function httpGetText(url) {
+  return new Promise((resolve, reject) => {
+    const u = new URL(url);
+    https.get({
+      hostname: u.hostname, path: u.pathname + u.search,
+      headers: { 'User-Agent': BR_UA, 'Accept': 'text/html' },
+    }, (res) => {
+      let data = '';
+      res.on('data', (c) => (data += c));
+      res.on('end', () => resolve({ status: res.statusCode, body: data }));
+    }).on('error', reject);
+  });
+}
+
+function parseBRWarTable(html, tableId, warField) {
+  const tableMatch = html.match(new RegExp('<table[^>]*id="' + tableId + '"[^>]*>([\\s\\S]*?)</table>'));
+  if (!tableMatch) return [];
+  const tbodyMatch = tableMatch[1].match(/<tbody[^>]*>([\s\S]*?)<\/tbody>/);
+  if (!tbodyMatch) return [];
+  const rows = [...tbodyMatch[1].matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)];
+  const out = [];
+  for (const m of rows) {
+    const row = m[1];
+    const name = row.match(/data-stat="name_display"[^>]*>\s*<a[^>]*>([^<]+)/);
+    const team = row.match(/data-stat="team_name_abbr"[^>]*>(?:<a[^>]*>)?([^<]+)/);
+    const warCell = row.match(new RegExp('<td[^>]*data-stat="' + warField + '"[^>]*>([\\s\\S]*?)</td>'));
+    if (warCell && name) {
+      const clean = warCell[1].replace(/<[^>]+>/g, '').trim();
+      const w = parseFloat(clean);
+      if (!isNaN(w)) {
+        out.push({
+          name: name[1].trim(),
+          team: (team ? team[1].trim() : ''),
+          war: w,
+        });
+      }
+    }
+  }
+  return out;
+}
+
+async function fetchBRWar(year) {
+  const out = { hitters: [], pitchers: [] };
+  try {
+    const [bat, pit] = await Promise.all([
+      httpGetText('https://www.baseball-reference.com/leagues/majors/' + year + '-value-batting.shtml'),
+      httpGetText('https://www.baseball-reference.com/leagues/majors/' + year + '-value-pitching.shtml'),
+    ]);
+    if (bat.status === 200) {
+      out.hitters = parseBRWarTable(bat.body, 'players_value_batting', 'b_war');
+      console.log('[PR Refresh] BR bWAR hitters parsed: ' + out.hitters.length);
+    } else {
+      console.warn('[PR Refresh] BR bWAR hitters HTTP ' + bat.status);
+    }
+    if (pit.status === 200) {
+      out.pitchers = parseBRWarTable(pit.body, 'players_value_pitching', 'p_war');
+      console.log('[PR Refresh] BR bWAR pitchers parsed: ' + out.pitchers.length);
+    } else {
+      console.warn('[PR Refresh] BR bWAR pitchers HTTP ' + pit.status);
+    }
+  } catch (e) {
+    console.warn('[PR Refresh] BR WAR fetch failed (non-fatal):', e.message);
+  }
+  return out;
+}
+
+function buildWarLookup(brRows) {
+  const map = {};
+  for (const r of brRows) {
+    const mlbTm = BR_TEAM_TO_MLB[r.team] || r.team;
+    const key = normalizeName(r.name) + '|' + mlbTm;
+    if (!(key in map) || map[key] < r.war) map[key] = r.war;
+    const nameOnly = normalizeName(r.name);
+    if (!(nameOnly in map) || map[nameOnly] < r.war) map[nameOnly] = r.war;
+  }
+  return map;
+}
+
+function warFor(split, lookup) {
+  if (!split || !split.player) return null;
+  const tm = TEAMS[split.team && split.team.id] || '';
+  const k1 = normalizeName(split.player.fullName) + '|' + tm;
+  if (k1 in lookup) return lookup[k1];
+  const k2 = normalizeName(split.player.fullName);
+  if (k2 in lookup) return lookup[k2];
+  return null;
+}
+
+// ── Composite score: WAR + in-season production + price discount ──
+// "Power Players" formula per Scott — most-valuable + lowest-cost.
+// WAR carries 60% weight (captures defense + position + baserunning the
+// rate stats miss). In-season raw stat carries 40% (recency). Price
+// multiplier 1.0-1.3x rewards cheap cards. Falls back to stats only
+// when WAR unavailable (newcomers, name match failure).
+function combinedScore(war, rawStat, price) {
+  const warScore = Math.min(500, Math.max(0, (war || 0) * 100));
+  const statScore = Math.min(500, Math.max(0, rawStat || 0));
+  const talent = war == null ? statScore : (warScore * 0.6 + statScore * 0.4);
+  const p = Math.max(price || 5, 0.5);
+  const priceMult = Math.min(1.3, 1 + (1 / Math.log2(p + 2)) * 0.5);
+  return Math.round(talent * priceMult);
+}
+
 // ── Fake/junk card filter ────────────────────────────────────
 const JUNK_TERMS = [
   'custom', 'reprint', 'facsimile', 'novelty', 'fantasy card',
@@ -252,13 +373,17 @@ async function refreshRankings() {
   const yesterday = yesterdayEST();
   console.log(`[PR Refresh] Starting for ${today}, season ${yr}`);
 
-  // 1. Fetch all season stats (bulk — 2 calls)
-  const [hData, pData, rhData, rpData] = await Promise.all([
+  // 1. Fetch all season stats (bulk MLB calls) + Baseball Reference WAR
+  const [hData, pData, rhData, rpData, brWar] = await Promise.all([
     httpGet(`${MLB}/stats?stats=season&group=hitting&season=${yr}&sportId=1&limit=500&sortStat=onBasePlusSlugging&order=desc`),
     httpGet(`${MLB}/stats?stats=season&group=pitching&season=${yr}&sportId=1&limit=200&sortStat=earnedRunAverage&order=asc`),
     httpGet(`${MLB}/stats?stats=season&group=hitting&season=${yr}&sportId=1&limit=100&sortStat=onBasePlusSlugging&order=desc&playerPool=rookies`),
     httpGet(`${MLB}/stats?stats=season&group=pitching&season=${yr}&sportId=1&limit=50&sortStat=earnedRunAverage&order=asc&playerPool=rookies`),
+    fetchBRWar(yr),
   ]);
+  const warHitMap = buildWarLookup(brWar.hitters || []);
+  const warPitMap = buildWarLookup(brWar.pitchers || []);
+  console.log('[PR Refresh] WAR lookups built — hitters:' + Object.keys(warHitMap).length + ' pitchers:' + Object.keys(warPitMap).length);
 
   const extract = (d) => (d && d.stats && d.stats[0] && d.stats[0].splits) || [];
   // Dedup by player ID — MLB API returns separate splits for traded players
@@ -383,12 +508,20 @@ async function refreshRankings() {
     const seasonStats = split.stat;
     const l5 = last5Map[pid];
     const last5Stats = type === 'h' ? (l5 && l5.hitting) : (l5 && l5.pitching);
-    // Price filled in later by eBay fetch pass; use placeholder for initial sort
     const price = _priceMap[pid] || 5;
     const isoSeason = type === 'h' ? isoHit(seasonStats, price) : isoPit(seasonStats, price);
     const isoLast5 = last5Stats ? (type === 'h' ? isoHit(last5Stats, price) : isoPit(last5Stats, price)) : isoSeason;
     const valSeason = valScore(isoSeason, price);
     const valLast5 = valScore(isoLast5, price);
+    // WAR + composite (Power Players score)
+    const war = type === 'h' ? warFor(split, warHitMap) : warFor(split, warPitMap);
+    const rawSeason = type === 'h' ? rawHit(seasonStats) : rawPit(seasonStats);
+    const combinedSeason = combinedScore(war, rawSeason, price);
+    // Stuff WAR + combined into season_stats JSON (no schema change required)
+    const seasonStatsWithWar = Object.assign({}, seasonStats, {
+      bwar: war,
+      combined_score: combinedSeason,
+    });
 
     return {
       player_id: pid,
@@ -398,9 +531,9 @@ async function refreshRankings() {
       category: category,
       rank_season: seasonRank,
       rank_last5: last5Rank,
-      prev_rank_season: null, // Updated below
+      prev_rank_season: null,
       prev_rank_last5: null,
-      season_stats: seasonStats,
+      season_stats: seasonStatsWithWar,
       last5_stats: last5Stats || seasonStats,
       iso_score_season: isoSeason,
       iso_score_last5: isoLast5,
@@ -415,50 +548,54 @@ async function refreshRankings() {
 
   // Helper: get price for a split's player
   const _pp = (s) => _priceMap[s.player.id] || 5;
+  // Helper: combined "Power Players" score for sorting (WAR + stats + price)
+  const _comboH = (s) => combinedScore(warFor(s, warHitMap), rawHit(s.stat), _pp(s));
+  const _comboP = (s) => combinedScore(warFor(s, warPitMap), rawPit(s.stat), _pp(s));
 
-  // Superstars — Hitters (top 15 by RAW production, not price-boosted ISO)
-  const supersSorted = [...hitters].sort((a, b) => rawHit(b.stat) - rawHit(a.stat));
+  // Superstars — Hitters: top 15 by Power Players combined score (WAR+stats+price)
+  const supersSorted = [...hitters].sort((a, b) => _comboH(b) - _comboH(a));
   supersSorted.slice(0, 15).forEach((s, i) => rows.push(buildRow(s, 'h', 'superstars-h', i + 1, i + 1, false)));
 
-  // Superstars — Pitchers (top 10 by RAW production)
-  const pitchersSorted = [...pitchers].sort((a, b) => rawPit(b.stat) - rawPit(a.stat));
+  // Superstars — Pitchers: top 10 by Power Players combined score
+  const pitchersSorted = [...pitchers].sort((a, b) => _comboP(b) - _comboP(a));
   pitchersSorted.slice(0, 10).forEach((s, i) => rows.push(buildRow(s, 'p', 'superstars-p', i + 1, i + 1, false)));
 
-  // Rookies — Hitters (top 10 by RAW production)
-  const rookieHSorted = [...rookieHitters].sort((a, b) => rawHit(b.stat) - rawHit(a.stat));
+  // Rookies — Hitters: WAR thin for rookies, falls back to raw stats via combinedScore
+  const rookieHSorted = [...rookieHitters].sort((a, b) => _comboH(b) - _comboH(a));
   rookieHSorted.slice(0, 10).forEach((s, i) => rows.push(buildRow(s, 'h', 'rookies-h', i + 1, i + 1, true)));
 
-  // Rookies — Pitchers (top 10 by RAW production)
-  const rookiePSorted = [...rookiePitchers].sort((a, b) => rawPit(b.stat) - rawPit(a.stat));
+  // Rookies — Pitchers
+  const rookiePSorted = [...rookiePitchers].sort((a, b) => _comboP(b) - _comboP(a));
   rookiePSorted.slice(0, 10).forEach((s, i) => rows.push(buildRow(s, 'p', 'rookies-p', i + 1, i + 1, true)));
 
-  // Unicorn — Hitters: value picks from raw-stat top 50, EXCLUDING Superstars top 15
+  // Unicorn — Hitters: deeper value picks. Pool = combined-score top 50,
+  // EXCLUDE Superstars top 15, re-rank emphasizing cheap (extra valScore boost).
   const superHIds = new Set(supersSorted.slice(0, 15).map(s => s.player.id));
-  const rawTop50H = [...hitters].sort((a, b) => rawHit(b.stat) - rawHit(a.stat)).slice(0, 50);
-  const unicornH = rawTop50H
+  const comboTop50H = [...hitters].sort((a, b) => _comboH(b) - _comboH(a)).slice(0, 50);
+  const unicornH = comboTop50H
     .filter(s => !superHIds.has(s.player.id))
     .map(s => ({ sp: s, val: valScore(isoHit(s.stat, _pp(s)), _pp(s)) }))
     .sort((a, b) => b.val - a.val);
   unicornH.slice(0, 10).forEach((r, i) => rows.push(buildRow(r.sp, 'h', 'unicorn-h', i + 1, i + 1, false)));
 
-  // Unicorn — Pitchers: value picks from raw-stat top 25, EXCLUDING Superstars top 10
+  // Unicorn — Pitchers: same dedup-from-superstars approach
   const superPIds = new Set(pitchersSorted.slice(0, 10).map(s => s.player.id));
-  const rawTop25P = [...pitchers].sort((a, b) => rawPit(b.stat) - rawPit(a.stat)).slice(0, 25);
-  const unicornP = rawTop25P
+  const comboTop25P = [...pitchers].sort((a, b) => _comboP(b) - _comboP(a)).slice(0, 25);
+  const unicornP = comboTop25P
     .filter(s => !superPIds.has(s.player.id))
     .map(s => ({ sp: s, val: valScore(isoPit(s.stat, _pp(s)), _pp(s)) }))
     .sort((a, b) => b.val - a.val);
   unicornP.slice(0, 10).forEach((r, i) => rows.push(buildRow(r.sp, 'p', 'unicorn-p', i + 1, i + 1, false)));
 
-  // Position-specific (hitters by position, ranked by RAW production)
+  // Position-specific (hitters by position, ranked by Power Players score)
   const positions = ['C', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'DH'];
   positions.forEach(pos => {
     const filtered = hitters.filter(s => s.position && s.position.abbreviation === pos);
-    filtered.sort((a, b) => rawHit(b.stat) - rawHit(a.stat));
+    filtered.sort((a, b) => _comboH(b) - _comboH(a));
     filtered.slice(0, 10).forEach((s, i) => rows.push(buildRow(s, 'h', 'pos-' + pos, i + 1, i + 1, false)));
   });
 
-  // Pitchers position (same RAW-sorted list as superstars-p)
+  // Pitchers position (mirror of superstars-p)
   pitchersSorted.slice(0, 10).forEach((s, i) => rows.push(buildRow(s, 'p', 'pos-P', i + 1, i + 1, false)));
 
   // 5. Recalculate last5 ranks using actual last5 ISO scores

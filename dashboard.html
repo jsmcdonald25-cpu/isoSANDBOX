@@ -3424,7 +3424,7 @@ async function logOut(){
           <th class="s" id="prH1">AVG</th><th class="s" id="prH2">HR</th>
           <th class="s" id="prH3">RBI</th><th class="s" id="prH4">OPS</th>
           <th class="s" id="prH5">SB</th>
-          <th class="s">ISO</th><th class="v">Card $</th><th class="v">Value</th><th class="s">Signal</th><th style="width:70px"></th>
+          <th class="s" title="Baseball Reference WAR — overall player value incl. defense, position, baserunning">WAR</th><th class="s">ISO</th><th class="v">Card $</th><th class="v">Value</th><th class="s">Signal</th><th style="width:70px"></th>
         </tr></thead>
         <tbody id="prBody"></tbody>
       </table>
@@ -13993,6 +13993,7 @@ function _prBuildHitterRow(rk, sp, isRookie){
   <td class="s">${s.avg}</td><td class="s">${s.homeRuns}</td>
   <td class="s">${s.rbi}</td><td class="s">${s.ops}</td>
   <td class="s">${s.stolenBases}</td>
+  <td class="s">${s.bwar!=null?s.bwar.toFixed(1):'—'}</td>
   <td class="s">${_prIB(iso)}</td><td class="v">${_prPriceFmt(cardPrice,pct)}</td><td class="v">${_prVB(val)}</td><td>${_prSignalBadge(pid)}</td><td>${_prShopLink(p.fullName)}</td></tr>`;
 }
 function _prBuildPitcherRow(rk, sp, isRookie){
@@ -14014,6 +14015,7 @@ function _prBuildPitcherRow(rk, sp, isRookie){
   <td class="s">${s.era}</td><td class="s">${wl}</td>
   <td class="s">${s.strikeOuts}</td><td class="s">${s.whip}</td>
   <td class="s">${s.inningsPitched}</td>
+  <td class="s">${s.bwar!=null?s.bwar.toFixed(1):'—'}</td>
   <td class="s">${_prIB(iso)}</td><td class="v">${_prPriceFmt(cardPrice,pct)}</td><td class="v">${_prVB(val)}</td><td>${_prSignalBadge(pid)}</td><td>${_prShopLink(p.fullName)}</td></tr>`;
 }
 

@@ -262,8 +262,9 @@ async function refreshRankings() {
   }
   const hitters = dedup(extract(hData).filter(s => s.stat.gamesPlayed >= 5));
   const pitchers = dedup(extract(pData).filter(s => parseFloat(s.stat.inningsPitched) >= 10));
-  const rookieHitters = dedup(extract(rhData));
-  const rookiePitchers = dedup(extract(rpData).filter(s => parseFloat(s.stat.inningsPitched) >= 5));
+  // Rookies need a real sample — tiny-sample call-ups (e.g. 6 AB / .500) were ranking #1
+  const rookieHitters = dedup(extract(rhData).filter(s => (s.stat.gamesPlayed || 0) >= 20 && (s.stat.atBats || 0) >= 50));
+  const rookiePitchers = dedup(extract(rpData).filter(s => parseFloat(s.stat.inningsPitched) >= 15));
 
   console.log(`[PR Refresh] Season: ${hitters.length} hitters, ${pitchers.length} pitchers, ${rookieHitters.length} rookie H, ${rookiePitchers.length} rookie P`);
 

@@ -81,13 +81,16 @@ function rawHit(s) {
   return (avg * 400) + (ops * 120) + (hrPG * 200) + (rbiPG * 100) + (sbPG * 80);
 }
 function rawPit(s) {
+  // Weights halved from prior version so pitcher raw score lands ~350-500
+  // for top performers (same range as rawHit). Previously a good cheap
+  // pitcher would blow past the 1000 cap once price factor applied.
   const era = parseFloat(s.era) || 9, whip = parseFloat(s.whip) || 2;
   const k = s.strikeOuts || 0, ip = parseFloat(s.inningsPitched) || 1, w = s.wins || 0;
   const kPer9 = (k / ip) * 9;
-  const eraScore = Math.max(0, 500 - (era * 60));
-  const whipScore = Math.max(0, 400 - (whip * 150));
-  const kScore = Math.min(200, kPer9 * 18);
-  const wScore = Math.min(80, w * 15);
+  const eraScore = Math.max(0, 250 - (era * 30));
+  const whipScore = Math.max(0, 200 - (whip * 75));
+  const kScore = Math.min(100, kPer9 * 9);
+  const wScore = Math.min(40, w * 8);
   return eraScore + whipScore * 0.6 + kScore + wScore;
 }
 

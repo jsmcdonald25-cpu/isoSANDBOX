@@ -361,28 +361,53 @@ async function getEbayToken() {
   return JSON.parse(res.body).access_token;
 }
 
-async function ebayAvgPrice(token, playerName) {
-  const yr = new Date().getFullYear();
-  // Try current year + player name (no brand lock — catches Topps, Bowman, Panini, etc.)
-  // Add "baseball card" to filter out non-card results
-  const q = encodeURIComponent(`${yr} ${playerName} baseball card`);
-  const url = new URL(`${EBAY_BROWSE_URL}?q=${q}&filter=buyingOptions:{FIXED_PRICE|AUCTION}&limit=40`);
+// Run a single eBay Browse query, return sorted valid prices (low → high).
+async function ebaySearchPrices(token, query) {
+  const url = new URL(`${EBAY_BROWSE_URL}?q=${encodeURIComponent(query)}&filter=buyingOptions:{FIXED_PRICE|AUCTION}&limit=40`);
   const res = await httpsRequest(url, {
     method: 'GET', hostname: url.hostname, path: `${url.pathname}${url.search}`,
     headers: { Authorization: `Bearer ${token}`, 'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US', 'Content-Type': 'application/json' },
   });
-  if (res.statusCode !== 200) return null;
+  if (res.statusCode !== 200) return [];
   const data = JSON.parse(res.body);
-  const prices = (data.itemSummaries || [])
+  return (data.itemSummaries || [])
     .filter(i => i.price && i.price.value && !isJunkListing(i.title))
     .map(i => parseFloat(i.price.value))
-    .filter(p => p >= 0.99) // Floor: cut junk lots, damaged, combo listings
+    .filter(p => p >= 0.99)
     .sort((a, b) => a - b);
-  // Drop top 2 most expensive (graded slabs, parallels, autos that skew the avg)
-  if (prices.length > 4) prices.splice(-2);
+}
+
+// Average a price list. Drops top 2 (slabs/autos) only if we have ≥5 hits,
+// so small-sample queries still produce a number instead of being trimmed
+// down to nothing.
+function _avgPrices(prices) {
   if (!prices.length) return null;
-  const trimmed = prices;
+  const trimmed = prices.length >= 5 ? prices.slice(0, -2) : prices;
   return Math.round((trimmed.reduce((a, b) => a + b, 0) / trimmed.length) * 100) / 100;
+}
+
+// Brand-targeted eBay search with fallback chain. Rookies → Bowman first,
+// vets → Topps first. Falls through to the other brand, then a generic
+// "baseball card" search. Targets Topps base / Bowman base specifically
+// instead of averaging across autos/parallels/slabs.
+async function ebayAvgPrice(token, playerName, isRookie) {
+  const yr = new Date().getFullYear();
+  const primary = isRookie ? 'Bowman' : 'Topps';
+  const alt = isRookie ? 'Topps' : 'Bowman';
+
+  // 1. Primary brand for player type
+  let prices = await ebaySearchPrices(token, `${yr} ${primary} ${playerName}`);
+  if (prices.length >= 2) return _avgPrices(prices);
+
+  // 2. Other brand fallback (rookies sometimes have Topps; vets sometimes only have Bowman)
+  prices = await ebaySearchPrices(token, `${yr} ${alt} ${playerName}`);
+  if (prices.length >= 2) return _avgPrices(prices);
+
+  // 3. Generic baseball card last-resort (original query)
+  prices = await ebaySearchPrices(token, `${yr} ${playerName} baseball card`);
+  if (prices.length >= 1) return _avgPrices(prices);
+
+  return null;
 }
 
 // ── Main refresh logic ──────────────────────────────────────
@@ -481,13 +506,23 @@ async function refreshRankings() {
   try {
     const ebayToken = await getEbayToken();
     if (ebayToken) {
+      // Build rookie ID set first so any player who is also in the rookies
+      // pool gets the Bowman-first search treatment.
+      const rookieIds = new Set();
+      rookieHitters.forEach(s => rookieIds.add(s.player.id));
+      rookiePitchers.forEach(s => rookieIds.add(s.player.id));
+
       // Collect unique players — top hitters + pitchers + rookies
       const pricePlayers = [];
       const seenPids = new Set();
       const addPlayer = (s) => {
         if (!seenPids.has(s.player.id)) {
           seenPids.add(s.player.id);
-          pricePlayers.push({ id: s.player.id, name: s.player.fullName });
+          pricePlayers.push({
+            id: s.player.id,
+            name: s.player.fullName,
+            isRookie: rookieIds.has(s.player.id),
+          });
         }
       };
       hitters.slice(0, 30).forEach(addPlayer);
@@ -495,14 +530,14 @@ async function refreshRankings() {
       rookieHitters.slice(0, 15).forEach(addPlayer);
       rookiePitchers.slice(0, 10).forEach(addPlayer);
 
-      console.log(`[PR Refresh] Fetching eBay prices for ${pricePlayers.length} players`);
+      console.log(`[PR Refresh] Fetching eBay prices for ${pricePlayers.length} players (${[...rookieIds].length} rookies use Bowman-first)`);
 
       // Batch 5 at a time to stay within rate limits
       for (let i = 0; i < pricePlayers.length; i += 5) {
         const batch = pricePlayers.slice(i, i + 5);
         const results = await Promise.all(batch.map(async (p) => {
           try {
-            const avg = await ebayAvgPrice(ebayToken, p.name);
+            const avg = await ebayAvgPrice(ebayToken, p.name, p.isRookie);
             return { id: p.id, avg };
           } catch (e) { return { id: p.id, avg: null }; }
         }));

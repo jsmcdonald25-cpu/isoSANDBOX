@@ -361,14 +361,31 @@ async function getEbayToken() {
   return JSON.parse(res.body).access_token;
 }
 
+// Strip accents from player names — eBay search behaves better with ASCII
+// (Yohendrick Piñango → Yohendrick Pinango returns hits; ñ-encoded does not).
+function asciiName(s) {
+  return (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+
+function _sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
 // Run a single eBay Browse query, return sorted valid prices (low → high).
-async function ebaySearchPrices(token, query) {
-  const url = new URL(`${EBAY_BROWSE_URL}?q=${encodeURIComponent(query)}&filter=buyingOptions:{FIXED_PRICE|AUCTION}&limit=40`);
+// Retries once on 429 (rate limit) with backoff.
+async function ebaySearchPrices(token, query, _retry) {
+  const url = new URL(`${EBAY_BROWSE_URL}?q=${encodeURIComponent(asciiName(query))}&filter=buyingOptions:{FIXED_PRICE|AUCTION}&limit=40`);
   const res = await httpsRequest(url, {
     method: 'GET', hostname: url.hostname, path: `${url.pathname}${url.search}`,
     headers: { Authorization: `Bearer ${token}`, 'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US', 'Content-Type': 'application/json' },
   });
-  if (res.statusCode !== 200) return [];
+  if (res.statusCode === 429 && !_retry) {
+    // eBay throttle — wait and retry once
+    await _sleep(800);
+    return ebaySearchPrices(token, query, true);
+  }
+  if (res.statusCode !== 200) {
+    if (res.statusCode >= 400) console.warn('[PR] eBay search ' + res.statusCode + ' for q=' + query);
+    return [];
+  }
   const data = JSON.parse(res.body);
   return (data.itemSummaries || [])
     .filter(i => i.price && i.price.value && !isJunkListing(i.title))
@@ -532,9 +549,12 @@ async function refreshRankings() {
 
       console.log(`[PR Refresh] Fetching eBay prices for ${pricePlayers.length} players (${[...rookieIds].length} rookies use Bowman-first)`);
 
-      // Batch 5 at a time to stay within rate limits
-      for (let i = 0; i < pricePlayers.length; i += 5) {
-        const batch = pricePlayers.slice(i, i + 5);
+      // Batch 3 at a time + 200ms inter-batch delay. Each player can fire
+      // up to 3 sub-queries (brand fallback chain), so 3 concurrent × 3
+      // sub-queries = ~9 in-flight max instead of 15. Inter-batch delay
+      // keeps us well under eBay's per-second throttle.
+      for (let i = 0; i < pricePlayers.length; i += 3) {
+        const batch = pricePlayers.slice(i, i + 3);
         const results = await Promise.all(batch.map(async (p) => {
           try {
             const avg = await ebayAvgPrice(ebayToken, p.name, p.isRookie);
@@ -542,6 +562,7 @@ async function refreshRankings() {
           } catch (e) { return { id: p.id, avg: null }; }
         }));
         results.forEach(r => { if (r.avg != null) _priceMap[r.id] = r.avg; });
+        if (i + 3 < pricePlayers.length) await _sleep(200);
       }
       console.log(`[PR Refresh] eBay prices fetched: ${Object.keys(_priceMap).length} players with prices`);
     } else {

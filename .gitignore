@@ -42,3 +42,8 @@ Checklist/_done/
 Checklist/_failed/
 Checklist/_skipped/
 Checklist/_unmatched/
+
+
+# Local-only — contains Supabase access token, never commit
+.mcp.json
+

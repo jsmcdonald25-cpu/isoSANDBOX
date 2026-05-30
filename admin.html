@@ -5498,24 +5498,25 @@ async function prefreshRun() {
   const btn = document.getElementById('prefreshBtn');
   const log = document.getElementById('prefresh-log');
   btn.disabled = true;
-  btn.textContent = '⏳ Running…';
-  log.textContent = 'POST /.netlify/functions/power-rankings-refresh\n';
-  const started = Date.now();
+  btn.textContent = '⏳ Queuing…';
+  log.textContent = 'POST /.netlify/functions/power-rankings-refresh-background\n';
   try {
-    const res = await fetch('/.netlify/functions/power-rankings-refresh', { method: 'POST' });
-    const d = await res.json();
-    const secs = ((Date.now() - started)/1000).toFixed(1);
-    if (!res.ok) throw new Error(d.error || `HTTP ${res.status}`);
-    log.textContent += `\n✔ DONE in ${secs}s\nDate:     ${d.date}\nRows:     ${d.total}\nHitters:  ${d.hitters}\nPitchers: ${d.pitchers}`;
-    if (d.profiles) {
-      log.textContent += `\n\nPlayer profiles: ${d.profiles.total||0} total · BUY ${d.profiles.buy||0} · SELL ${d.profiles.sell||0}`;
-    }
-    toast(`Power Rankings refreshed · ${d.total} rows`, 'ok');
-    prefreshLoadStatus();
+    // Background function returns 202 immediately, runs async up to 15 min
+    const res = await fetch('/.netlify/functions/power-rankings-refresh-background', { method: 'POST' });
+    if (res.status !== 202) throw new Error(`Expected 202, got HTTP ${res.status}`);
+    log.textContent += `\n✔ QUEUED — refresh running in background (~30-60s typical)\nClick "Reload Status" below in a minute to see updated counts.`;
+    toast('Power Rankings refresh queued', 'ok');
+    btn.textContent = '⏳ Running in background…';
+    // Auto-reload status after 75s
+    setTimeout(() => {
+      prefreshLoadStatus();
+      btn.disabled = false;
+      btn.textContent = '↻ Refresh Power Rankings Now';
+      log.textContent += '\n\n(status auto-reloaded after 75s)';
+    }, 75000);
   } catch (e) {
     log.textContent += `\n✘ FAILED: ${e.message}`;
-    toast('Refresh failed: ' + e.message, 'err');
-  } finally {
+    toast('Refresh queue failed: ' + e.message, 'err');
     btn.disabled = false;
     btn.textContent = '↻ Refresh Power Rankings Now';
   }

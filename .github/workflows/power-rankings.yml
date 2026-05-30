@@ -20,16 +20,19 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - name: Trigger power-rankings-refresh
+      - name: Trigger power-rankings-refresh (background)
         run: |
-          echo "Hitting https://isosandbox.com/.netlify/functions/power-rankings-refresh"
+          echo "Hitting https://isosandbox.com/.netlify/functions/power-rankings-refresh-background"
           HTTP_CODE=$(curl -s -o /tmp/response.json -w "%{http_code}" -X POST \
-            "https://isosandbox.com/.netlify/functions/power-rankings-refresh" \
-            --max-time 120)
+            "https://isosandbox.com/.netlify/functions/power-rankings-refresh-background" \
+            --max-time 30)
           echo "HTTP status: $HTTP_CODE"
-          echo "Response:"
+          echo "Response (background functions return empty body with 202):"
           cat /tmp/response.json || true
           echo ""
-          if [ "$HTTP_CODE" -ne 200 ]; then
+          # Netlify background functions return 202 Accepted on successful queue.
+          # The actual work runs async for up to 15 min. We treat anything
+          # outside 202 as failure for cron health monitoring.
+          if [ "$HTTP_CODE" -ne 202 ]; then
             exit 1
           fi

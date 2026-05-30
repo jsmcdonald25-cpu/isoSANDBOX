@@ -403,24 +403,18 @@ function _avgPrices(prices) {
   return Math.round((trimmed.reduce((a, b) => a + b, 0) / trimmed.length) * 100) / 100;
 }
 
-// Brand-targeted eBay search with fallback chain. Rookies → Bowman first,
-// vets → Topps first. Falls through to the other brand, then a generic
-// "baseball card" search. Targets Topps base / Bowman base specifically
-// instead of averaging across autos/parallels/slabs.
+// Brand-targeted eBay search with one fallback. Rookies → Bowman primary,
+// vets → Topps primary. If primary returns nothing, fall straight to generic
+// "baseball card" search (alt-brand fallback removed for speed — almost
+// never produced hits the generic search wouldn't).
 async function ebayAvgPrice(token, playerName, isRookie) {
   const yr = new Date().getFullYear();
   const primary = isRookie ? 'Bowman' : 'Topps';
-  const alt = isRookie ? 'Topps' : 'Bowman';
 
-  // 1. Primary brand for player type
   let prices = await ebaySearchPrices(token, `${yr} ${primary} ${playerName}`);
   if (prices.length >= 2) return _avgPrices(prices);
 
-  // 2. Other brand fallback (rookies sometimes have Topps; vets sometimes only have Bowman)
-  prices = await ebaySearchPrices(token, `${yr} ${alt} ${playerName}`);
-  if (prices.length >= 2) return _avgPrices(prices);
-
-  // 3. Generic baseball card last-resort (original query)
+  // Generic last-resort — covers anything (Bowman draft, Chrome, parallels)
   prices = await ebaySearchPrices(token, `${yr} ${playerName} baseball card`);
   if (prices.length >= 1) return _avgPrices(prices);
 
@@ -554,12 +548,12 @@ async function refreshRankings() {
 
       console.log(`[PR Refresh] Fetching eBay prices for ${pricePlayers.length} players (${[...rookieIds].length} rookies use Bowman-first)`);
 
-      // Batch 3 at a time + 200ms inter-batch delay. Each player can fire
-      // up to 3 sub-queries (brand fallback chain), so 3 concurrent × 3
-      // sub-queries = ~9 in-flight max instead of 15. Inter-batch delay
-      // keeps us well under eBay's per-second throttle.
-      for (let i = 0; i < pricePlayers.length; i += 3) {
-        const batch = pricePlayers.slice(i, i + 3);
+      // 5 concurrent. ebayAvgPrice now does at most 2 sequential sub-queries
+      // per player, so 5 × 2 = 10 in-flight max. The per-call 429 retry
+      // (ebaySearchPrices) handles any rate-limit hits. No inter-batch delay
+      // — function needs to finish under Netlify's 30s timeout.
+      for (let i = 0; i < pricePlayers.length; i += 5) {
+        const batch = pricePlayers.slice(i, i + 5);
         const results = await Promise.all(batch.map(async (p) => {
           try {
             const avg = await ebayAvgPrice(ebayToken, p.name, p.isRookie);
@@ -567,7 +561,6 @@ async function refreshRankings() {
           } catch (e) { return { id: p.id, avg: null }; }
         }));
         results.forEach(r => { if (r.avg != null) _priceMap[r.id] = r.avg; });
-        if (i + 3 < pricePlayers.length) await _sleep(200);
       }
       console.log(`[PR Refresh] eBay prices fetched: ${Object.keys(_priceMap).length} players with prices`);
     } else {

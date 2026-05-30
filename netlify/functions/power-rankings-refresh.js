@@ -542,10 +542,15 @@ async function refreshRankings() {
           });
         }
       };
-      hitters.slice(0, 30).forEach(addPlayer);
-      pitchers.slice(0, 15).forEach(addPlayer);
-      rookieHitters.slice(0, 15).forEach(addPlayer);
-      rookiePitchers.slice(0, 10).forEach(addPlayer);
+      // Pool MUST be wider than the widest ranking category. Unicorn pulls
+      // top 50 hitters / top 25 pitchers by combinedScore from these lists.
+      // If we don't fetch a price here, the player will show "—" in the UI
+      // even though their cards are on eBay (Skenes was getting nulled because
+      // his ERA put him outside the old top-15 pitcher slice).
+      hitters.slice(0, 50).forEach(addPlayer);
+      pitchers.slice(0, 30).forEach(addPlayer);
+      rookieHitters.slice(0, 25).forEach(addPlayer);
+      rookiePitchers.slice(0, 20).forEach(addPlayer);
 
       console.log(`[PR Refresh] Fetching eBay prices for ${pricePlayers.length} players (${[...rookieIds].length} rookies use Bowman-first)`);
 

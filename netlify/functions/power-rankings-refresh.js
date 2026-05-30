@@ -206,7 +206,16 @@ function httpGetText(url) {
   });
 }
 
-function parseBRWarTable(html, tableId, warField) {
+// Parse a single numeric data-stat cell from a row of BR HTML
+function brCellNum(row, field) {
+  const m = row.match(new RegExp('<td[^>]*data-stat="' + field + '"[^>]*>([\\s\\S]*?)</td>'));
+  if (!m) return null;
+  const s = m[1].replace(/<[^>]+>/g, '').trim();
+  const n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+
+function parseBRTable(html, tableId, extractWar) {
   const tableMatch = html.match(new RegExp('<table[^>]*id="' + tableId + '"[^>]*>([\\s\\S]*?)</table>'));
   if (!tableMatch) return [];
   const tbodyMatch = tableMatch[1].match(/<tbody[^>]*>([\s\S]*?)<\/tbody>/);
@@ -217,18 +226,14 @@ function parseBRWarTable(html, tableId, warField) {
     const row = m[1];
     const name = row.match(/data-stat="name_display"[^>]*>\s*<a[^>]*>([^<]+)/);
     const team = row.match(/data-stat="team_name_abbr"[^>]*>(?:<a[^>]*>)?([^<]+)/);
-    const warCell = row.match(new RegExp('<td[^>]*data-stat="' + warField + '"[^>]*>([\\s\\S]*?)</td>'));
-    if (warCell && name) {
-      const clean = warCell[1].replace(/<[^>]+>/g, '').trim();
-      const w = parseFloat(clean);
-      if (!isNaN(w)) {
-        out.push({
-          name: name[1].trim(),
-          team: (team ? team[1].trim() : ''),
-          war: w,
-        });
-      }
-    }
+    if (!name) continue;
+    const w = extractWar(row);
+    if (w == null) continue;
+    out.push({
+      name: name[1].trim(),
+      team: (team ? team[1].trim() : ''),
+      war: w,
+    });
   }
   return out;
 }
@@ -241,13 +246,24 @@ async function fetchBRWar(year) {
       httpGetText('https://www.baseball-reference.com/leagues/majors/' + year + '-value-pitching.shtml'),
     ]);
     if (bat.status === 200) {
-      out.hitters = parseBRWarTable(bat.body, 'players_value_batting', 'b_war');
-      console.log('[PR Refresh] BR bWAR hitters parsed: ' + out.hitters.length);
+      // For hitters use OFFENSIVE WAR equivalent: (Rbat + Rbaser) / 10.
+      // This matches FanGraphs Off — pure offense + baserunning, NO defense
+      // or position adjustment skewing the ranking. Yordan Alvarez > Bobby
+      // Witt Jr. by bat alone, even though Witt's bWAR is higher.
+      out.hitters = parseBRTable(bat.body, 'players_value_batting', (row) => {
+        const rbat = brCellNum(row, 'b_runs_batting');
+        if (rbat == null) return null;
+        const rbaser = brCellNum(row, 'b_runs_baserunning') || 0;
+        return (rbat + rbaser) / 10;  // runs → wins (offensive WAR analog)
+      });
+      console.log('[PR Refresh] BR offensive-WAR hitters parsed: ' + out.hitters.length);
     } else {
-      console.warn('[PR Refresh] BR bWAR hitters HTTP ' + bat.status);
+      console.warn('[PR Refresh] BR hitters HTTP ' + bat.status);
     }
     if (pit.status === 200) {
-      out.pitchers = parseBRWarTable(pit.body, 'players_value_pitching', 'p_war');
+      // Pitchers stay on p_war — pitching WAR is almost entirely about
+      // pitching, no defense/position skew to worry about.
+      out.pitchers = parseBRTable(pit.body, 'players_value_pitching', (row) => brCellNum(row, 'p_war'));
       console.log('[PR Refresh] BR bWAR pitchers parsed: ' + out.pitchers.length);
     } else {
       console.warn('[PR Refresh] BR bWAR pitchers HTTP ' + pit.status);
